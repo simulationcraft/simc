@@ -136,32 +136,22 @@ void blood( player_t* p )
   default_->add_action( "run_action_list,name=sanlayn,if=hero_tree.sanlayn" );
 
   high_prio_actions->add_action( "raise_dead,use_off_gcd=1" );
-  high_prio_actions->add_action( "blood_tap,if=(rune<=2&rune.time_to_3>gcd&charges_fractional>=1.8)" );
-  high_prio_actions->add_action( "blood_tap,if=(rune<=1&rune.time_to_3>gcd)" );
   high_prio_actions->add_action( "death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd" );
   high_prio_actions->add_action( "dancing_rune_weapon" );
 
-  deathbringer->add_action( "rune_tap,if=rune>4" );
-  deathbringer->add_action( "bonestorm,if=buff.bone_shield.stack>=5&buff.death_and_decay.remains" );
   deathbringer->add_action( "death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))" );
-  deathbringer->add_action( "soul_reaper,if=active_enemies<=2&buff.reaper_of_souls.up&target.time_to_die>(dot.soul_reaper.remains+5)" );
-  deathbringer->add_action( "soul_reaper,if=active_enemies<=2&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
   deathbringer->add_action( "reapers_mark" );
   deathbringer->add_action( "blood_boil,if=buff.dancing_rune_weapon.up&!drw.bp_ticking" );
   deathbringer->add_action( "death_and_decay,if=!buff.death_and_decay.up" );
   deathbringer->add_action( "marrowrend,if=buff.exterminate.up|(buff.bone_shield.stack<5&!dot.bonestorm.ticking)" );
   deathbringer->add_action( "death_strike" );
-  deathbringer->add_action( "tombstone,if=buff.bone_shield.stack>=8&buff.death_and_decay.remains&cooldown.dancing_rune_weapon.remains>=25" );
-  deathbringer->add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&active_enemies<=2&buff.coagulopathy.remains>3" );
   deathbringer->add_action( "consumption" );
   deathbringer->add_action( "blood_boil" );
   deathbringer->add_action( "heart_strike,if=buff.coagulopathy.stack<5" );
   deathbringer->add_action( "heart_strike" );
-  deathbringer->add_action( "soul_reaper,if=buff.reaper_of_souls.up" );
   deathbringer->add_action( "arcane_torrent,if=runic_power.deficit>20" );
 
   san_drw->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains" );
-  san_drw->add_action( "bonestorm,if=buff.bone_shield.stack>=5" );
   san_drw->add_action( "death_strike,if=runic_power.deficit<36" );
   san_drw->add_action( "blood_boil,if=!drw.bp_ticking" );
   san_drw->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
@@ -174,17 +164,13 @@ void blood( player_t* p )
   sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1" );
   sanlayn->add_action( "blood_boil,if=dot.blood_plague.remains<3" );
   sanlayn->add_action( "heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)" );
-  sanlayn->add_action( "bonestorm,if=buff.bone_shield.stack>=5&(buff.death_and_decay.remains|active_enemies<=3)" );
   sanlayn->add_action( "death_strike,if=runic_power.deficit<20" );
   sanlayn->add_action( "consumption,if=buff.infliction_of_sorrow.up&buff.death_and_decay.up" );
   sanlayn->add_action( "heart_strike,if=(buff.infliction_of_sorrow.up|buff.vampiric_strike.up)&buff.death_and_decay.up" );
-  sanlayn->add_action( "soul_reaper,if=active_enemies<=2&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
   sanlayn->add_action( "blood_boil,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking&active_enemies>=2" );
   sanlayn->add_action( "deaths_caress,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
   sanlayn->add_action( "marrowrend,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
-  sanlayn->add_action( "tombstone,if=buff.bone_shield.stack>=6&(buff.death_and_decay.remains|active_enemies<=3)&cooldown.dancing_rune_weapon.remains>=25" );
   sanlayn->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
-  sanlayn->add_action( "blooddrinker,if=active_enemies<=2&buff.coagulopathy.remains>3" );
   sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
   sanlayn->add_action( "death_strike" );
   sanlayn->add_action( "heart_strike,if=rune>=2" );

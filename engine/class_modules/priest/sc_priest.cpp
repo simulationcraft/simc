@@ -2701,6 +2701,16 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
     mul *= 1.0 + pwf_val + wof_val;
   }
 
+  if ( attr == ATTR_STAMINA && talents.strength_of_soul.enabled() )
+  {
+    mul *= talents.strength_of_soul->effectN( 1 ).percent();
+  }
+
+  if ( attr == ATTR_INTELLECT && talents.spiritual_guidance.enabled() )
+  {
+    mul *= 1.0 + talents.spiritual_guidance->effectN( 1 ).percent();
+  }
+
   return mul;
 }
 
@@ -3081,7 +3091,7 @@ void priest_t::init_spells()
   talents.leap_of_faith      = CT( "Leap of Faith" );   // NYI
   talents.purify_disease     = CT( "Purify Disease" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
-  talents.painful_invocation = CT( "Painful Invocation" );  // NYI
+  talents.painful_invocation = CT( "Painful Invocation" );
   talents.sheer_terror       = CT( "Sheer Terror" );        // NYI
   talents.petrifying_scream  = CT( "Petrifying Scream" );   // NYI
   // Row 4
@@ -3099,7 +3109,7 @@ void priest_t::init_spells()
   talents.everlasting_light  = CT( "Everlasting Light" );  // NYI
   talents.move_with_grace    = CT( "Move With Grace" );    // NYI
   talents.mental_agility     = CT( "Mental Agility" );
-  talents.twin_disciplines   = CT( "Twin Disciplines" );    // NYI
+  talents.twin_disciplines   = CT( "Twin Disciplines" );
   talents.dark_enlightenment = CT( "Dark Enlightenment" );  // NYI
   talents.false_autonomy     = CT( "False Autonomy" );      // NYI
   talents.shackle_undead     = CT( "Shackle Undead" );      // NYI
@@ -4212,7 +4222,6 @@ struct priest_module_t final : public module_t
                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );
   }
   void static_init() const override
   {

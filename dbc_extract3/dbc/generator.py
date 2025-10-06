@@ -2343,6 +2343,23 @@ class SpellDataGenerator(DataGenerator):
           ( 452117, 3 ), # Flurry of Xuen Driver
           ( 461404, 3 ), # WW Chi Burst Cast
 
+          # Windwalker Combo Strike Display spells
+          ( 1249753, 3 ), # Rising Sun Kick
+          ( 1249754, 3 ), # Spinning Crane Kick
+          ( 1249756, 3 ), # Tiger Palm
+          ( 1249757, 3 ), # Blackout Kick
+          ( 1249758, 3 ), # Fists of Fury
+          ( 1249759, 3 ), # Slicing Winds
+          ( 1249762, 3 ), # Storm, Earth, and Fire
+          ( 1249763, 3 ), # Weapons of Order
+          ( 1249764, 3 ), # Crackling Jade Lightning
+          ( 1249765, 3 ), # Whirling Dragon Punch
+          ( 1249766, 3 ), # Strike of the Windlord
+          ( 1249790, 3 ), # Celestial Conduit
+          ( 1249791, 3 ), # Touch of Death
+          ( 1249987, 3 ), # Rushing Wind Kick
+
+
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal

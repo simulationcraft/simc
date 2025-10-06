@@ -54,7 +54,6 @@ actions.ar+=/vengeful_retreat,if=talent.unhindered_assault
 actions.ar+=/throw_glaive
 actions.ar+=/shear,if=!talent.fracture
 
-actions.externals=invoke_external_buff,name=symbol_of_hope
 actions.externals+=/invoke_external_buff,name=power_infusion
 
 actions.fel_dev=spirit_bomb,if=buff.demonsurge_spirit_burst.up&(variable.can_spburst|soul_fragments>=4|(buff.metamorphosis.remains<(gcd.max*2)))

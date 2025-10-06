@@ -41,9 +41,8 @@ struct monk_pet_t : public pet_t
   const monk_t *o() const;
   void init_assessors() override;
 };
-struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-namespace niuzao  // niuzao
+namespace niuzao
 {
 struct niuzao_pet_t : public monk_pet_t
 {
@@ -54,49 +53,16 @@ struct niuzao_pet_t : public monk_pet_t
   void init_spells() override;
 };
 }  // namespace niuzao
-struct call_to_arms_niuzao_pet_t;
-struct chiji_pet_t;
-struct yulon_pet_t;
 struct white_tiger_statue_t;
-struct fury_of_xuen_pet_t;
-
-enum class sef_pet_e
-{
-  SEF_FIRE = 0,
-  SEF_EARTH,
-  SEF_PET_MAX
-};
 }  // namespace pets
 
 namespace actions
 {
-enum class sef_ability_e
-{
-  SEF_MIN = -1,
-  SEF_TIGER_PALM,
-  SEF_BLACKOUT_KICK,
-  SEF_BLACKOUT_KICK_TOTM,
-  SEF_RISING_SUN_KICK,
-  SEF_GLORY_OF_THE_DAWN,
-  SEF_FISTS_OF_FURY,
-  SEF_SPINNING_CRANE_KICK,
-  SEF_WHIRLING_DRAGON_PUNCH,
-  SEF_STRIKE_OF_THE_WINDLORD,
-  SEF_STRIKE_OF_THE_WINDLORD_OH,
-  SEF_CELESTIAL_CONDUIT,
-  SEF_RJW_TICK,
-  SEF_CHI_WAVE,
-  SEF_CRACKLING_JADE_LIGHTNING,
-  SEF_CRACKLING_JADE_LIGHTNING_AOE
-};
-
 template <class Base>
 struct monk_action_t : public parse_action_effects_t<Base>
 {
-  sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
-  bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
 
@@ -127,10 +93,6 @@ public:
     base_t::parse_target_effects( std::forward<Ts>( args )... );
   }
 
-  const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
-                                              const spell_data_t *affected, effect_type_t type );
-  const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
   bool usable_moving() const override;
@@ -146,8 +108,6 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
-  void assess_damage( result_amount_type typ, action_state_t *s ) override;
-  void trigger_storm_earth_and_fire( const action_t *action );
   void trigger_mystic_touch( action_state_t *state );
 };
 
@@ -174,19 +134,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   using base_t = monk_action_t<melee_attack_t>;
   monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
-};
-
-struct summon_pet_t : public monk_spell_t
-{
-  timespan_t summoning_duration;
-  std::string_view pet_name;
-  pet_t *pet;
-
-  summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
-                const spell_data_t *spell_data = spell_data_t::nil() );
-  void init_finished() override;
-  void execute() override;
-  bool ready() override;
 };
 
 template <class base_action_t>
@@ -367,13 +314,10 @@ struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
 
 struct monk_td_t : public actor_target_data_t
 {
-public:
   struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> crackling_jade_lightning_aoe;
-    propagate_const<dot_t *> crackling_jade_lightning_sef;
-    propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
 
     // Master of Harmony
     propagate_const<dot_t *> aspect_of_harmony;
@@ -384,17 +328,9 @@ public:
     // Brewmaster
     propagate_const<buff_t *> keg_smash;
     propagate_const<buff_t *> exploding_keg;
-    propagate_const<buff_t *> weapons_of_order;
 
     // Windwalker
-    propagate_const<buff_t *> acclamation;
-    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> empowered_tiger_lightning;
-    propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
-    propagate_const<buff_t *> jadefire_brand;
-
-    // Mistweaver
-    propagate_const<buff_t *> lesson_of_anger;
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
@@ -473,19 +409,29 @@ private:
   target_specific_t<monk_td_t> target_data;
 
 public:
-  // Active
-  action_t *windwalking_aura;
-
-  // Special Auto-Attacks
-  action_t *dual_threat_kick;
-
   // For Debug reporting, used by create_proc_callback in init_special_effects
   std::map<std::string, std::vector<action_t *>> proc_tracking;
 
-  struct active_actions_t
+  struct
   {
-    // General
+    // Monk
     propagate_const<action_t *> chi_wave;
+
+    // Brewmaster
+    propagate_const<action_t *> special_delivery;
+    propagate_const<action_t *> breath_of_fire;
+    propagate_const<heal_t *> celestial_fortune;
+    propagate_const<action_t *> exploding_keg;
+    propagate_const<action_t *> walk_with_the_ox;
+    propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
+    propagate_const<action_t *> press_the_advantage;
+
+    // Windwalker
+    propagate_const<action_t *> dual_threat;
+    propagate_const<action_t *> empowered_tiger_lightning;
+    propagate_const<action_t *> flurry_of_xuen;
+    propagate_const<action_t *> combat_wisdom_eh;
+    propagate_const<action_t *> thunderfist;
 
     // Conduit of the Celestials
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
@@ -494,147 +440,25 @@ public:
 
     // Shado-Pan
     action_t *flurry_strikes;
-
-    // Brewmaster
-    propagate_const<action_t *> special_delivery;
-    propagate_const<action_t *> breath_of_fire;
-    propagate_const<heal_t *> celestial_fortune;
-    propagate_const<action_t *> exploding_keg;
-    propagate_const<action_t *> niuzao_call_to_arms_summon;
-    propagate_const<action_t *> chi_surge;
-    propagate_const<action_t *> walk_with_the_ox;
-    propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
-
-    // Mistweaver
-    propagate_const<action_t *> lesson_of_anger_damage;
-
-    // Windwalker
-    propagate_const<action_t *> empowered_tiger_lightning;
-    propagate_const<action_t *> flurry_of_xuen;
-    propagate_const<action_t *> fury_of_xuen_summon;
-    propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
-    propagate_const<action_t *> gale_force;
-  } active_actions;
-
-  struct passive_actions_t
-  {
-    action_t *combat_wisdom_eh;
-    action_t *thunderfist;
-    action_t *press_the_advantage;
-  } passive_actions;
+  } action;
 
   std::vector<action_t *> combo_strike_actions;
-  double squirm_timer;
-  double spiritual_focus_count;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
 
-  //==============================================
-  // Monk Movement
-  //==============================================
-
-  struct monk_movement_t : public buff_t
-  {
-  private:
-    monk_t *p;
-
-    propagate_const<buff_t *> base_movement;
-    const spell_data_t *data;
-
-  public:
-    double distance_moved;
-
-    monk_movement_t( monk_t *player, util::string_view n, const spell_data_t *s = spell_data_t::not_found() )
-      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) ), data( s )
-    {
-      set_chance( 1 );
-      set_max_stack( 1 );
-      set_duration( timespan_t::from_seconds( 1 ) );
-
-      if ( base_movement == nullptr )
-        base_movement = new movement_buff_t( p );
-
-      if ( s->ok() )
-      {
-        set_trigger_spell( s );
-        set_duration( s->duration() );
-      }
-    };
-
-    void set_distance( double distance )
-    {
-      distance_moved = distance;
-    }
-
-    bool trigger( int stacks = 1, double value = -std::numeric_limits<double>::min(), double chance = -1.0,
-                  timespan_t /*duration*/ = timespan_t::min() ) override
-    {
-      if ( distance_moved > 0 )
-      {
-        // Check if we're already moving away from the target, if so we will now be moving towards it
-        if ( p->current.distance_to_move )
-        {
-          // TODO: Movement speed increase based on distance_moved for roll / fsk style abilities
-          if ( data->ok() )
-          {
-          }
-          p->current.distance_to_move   = distance_moved;
-          p->current.movement_direction = movement_direction_type::TOWARDS;
-        }
-        else
-        {
-          // TODO: Set melee out of range
-          p->current.moving_away        = distance_moved;
-          p->current.movement_direction = movement_direction_type::AWAY;
-        }
-
-        return base_movement->trigger( stacks, value, chance, this->buff_duration() );
-      }
-
-      return false;
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      base_movement->expire_override( expiration_stacks, remaining_duration );
-    }
-  };
-
-  struct movement_t
-  {
-    propagate_const<monk_movement_t *> chi_torpedo;
-    propagate_const<monk_movement_t *> flying_serpent_kick;
-    propagate_const<monk_movement_t *> melee_squirm;
-    propagate_const<monk_movement_t *> roll;
-    propagate_const<monk_movement_t *> whirling_dragon_punch;
-  } movement;
-
-  //=================================================
-
-  struct buffs_t
+  struct
   {
     // General
-    propagate_const<buff_t *> awakened_jadefire;
-    propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
-    propagate_const<buff_t *> dampen_harm;
-    propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
-    propagate_const<buff_t *> jadefire_stomp;
-    propagate_const<buff_t *> invokers_delight;
     propagate_const<buff_t *> rushing_jade_wind;
-    propagate_const<buff_t *> spinning_crane_kick;
-    propagate_const<buff_t *> windwalking_driver;
+    propagate_const<buff_t *> spinning_crane_kick;  // TODO: is this necessary?
     propagate_const<buff_t *> yulons_grace;
-    propagate_const<buff_t *> windwalking_movement_aura;
-    propagate_const<buff_t *> chi_burst;
 
     // Brewmaster
-    propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
-    propagate_const<buff_t *> call_to_arms_invoke_niuzao;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elusive_brawler;
@@ -642,72 +466,38 @@ public:
     propagate_const<buff_t *> fortifying_brew;
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
-    propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
-    propagate_const<buff_t *> purified_chi;
     propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
-    propagate_const<buff_t *> weapons_of_order;
-    // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> ox_stance;
 
-    // Mistweaver
-    propagate_const<buff_t *> dance_of_chiji_mw;
-    propagate_const<buff_t *> jade_empowerment;
-    propagate_const<buff_t *> jadefire_stomp_reset;
-    propagate_const<buff_t *> secret_infusion_haste;
-    propagate_const<buff_t *> secret_infusion_crit;
-    propagate_const<buff_t *> secret_infusion_mastery;
-    propagate_const<buff_t *> secret_infusion_versatility;
-    propagate_const<buff_t *> sheiluns_gift;
-    propagate_const<buff_t *> lesson_of_anger;
-    propagate_const<buff_t *> lesson_of_despair;
-    propagate_const<buff_t *> lesson_of_doubt;
-    propagate_const<buff_t *> lesson_of_fear;
-    propagate_const<buff_t *> teachings_of_the_monastery;
-    propagate_const<buff_t *> thunder_focus_tea;
-
     // Windwalker
-    propagate_const<buff_t *> bok_proc;
+    propagate_const<buff_t *> teachings_of_the_monastery;
+    propagate_const<buff_t *> combo_breaker;
     propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
-    propagate_const<buff_t *> dance_of_chiji_ww;
+    propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
-    propagate_const<buff_t *> dizzying_kicks;
-    propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> ferociousness;
-    propagate_const<buff_t *> flying_serpent_kick_movement;
-    propagate_const<buff_t *> fury_of_xuen_stacks;
-    propagate_const<buff_t *> fury_of_xuen;
-    propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
-    propagate_const<buff_t *> jadefire_brand;
-    propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
-    propagate_const<buff_t *> ordered_elements;
-    propagate_const<buff_t *> pressure_point;
-    propagate_const<buff_t *> storm_earth_and_fire;
-    propagate_const<buff_t *> the_emperors_capacitor;
     propagate_const<buff_t *> thunderfist;
     propagate_const<buff_t *> touch_of_death_ww;
     propagate_const<buff_t *> touch_of_karma;
-    propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
-    propagate_const<buff_t *> august_dynasty;
     propagate_const<buff_t *> celestial_conduit;
-    propagate_const<buff_t *> chi_jis_swiftness;
+    propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> flight_of_the_red_crane;
-    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
     propagate_const<buff_t *> inner_compass_crane_stance;
@@ -740,54 +530,25 @@ public:
     propagate_const<buff_t *> flow_of_battle_free_keg_smash;
   } buff;
 
-  struct gains_t
+  struct
   {
     propagate_const<gain_t *> black_ox_brew_energy;
     propagate_const<gain_t *> chi_refund;
-    propagate_const<gain_t *> bok_proc;
-    propagate_const<gain_t *> chi_burst;
-    propagate_const<gain_t *> crackling_jade_lightning;
+    propagate_const<gain_t *> combo_breaker;
     propagate_const<gain_t *> energy_burst;
     propagate_const<gain_t *> energy_refund;
-    propagate_const<gain_t *> energizing_elixir_chi;
-    propagate_const<gain_t *> energizing_elixir_energy;
-    propagate_const<gain_t *> expel_harm;
-    propagate_const<gain_t *> focus_of_xuen;
-    propagate_const<gain_t *> fortuitous_spheres;
-    propagate_const<gain_t *> gift_of_the_ox;
-    propagate_const<gain_t *> glory_of_the_dawn;
-    propagate_const<gain_t *> healing_elixir;
-    propagate_const<gain_t *> open_palm_strikes;
-    propagate_const<gain_t *> ordered_elements;
-    propagate_const<gain_t *> power_strikes;
-    propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
-    propagate_const<gain_t *> weapons_of_order;
   } gain;
 
-  struct procs_t
+  struct
   {
     propagate_const<proc_t *> anvil__stave;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
-    propagate_const<proc_t *> blackout_combo_breath_of_fire;
     propagate_const<proc_t *> blackout_combo_keg_smash;
-    propagate_const<proc_t *> blackout_combo_celestial_brew;
-    propagate_const<proc_t *> blackout_combo_purifying_brew;
-    propagate_const<proc_t *> blackout_combo_rising_sun_kick;
-    propagate_const<proc_t *> blackout_kick_cdr_oe;
-    propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
-    propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
-    propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
-    propagate_const<proc_t *> face_palm;
-    propagate_const<proc_t *> jadefire_stomp_reset;
-    propagate_const<proc_t *> glory_of_the_dawn;
-    propagate_const<proc_t *> keg_smash_scalding_brew;
-    propagate_const<proc_t *> quick_sip;
     propagate_const<proc_t *> rsk_reset_totm;
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
@@ -796,31 +557,13 @@ public:
     propagate_const<proc_t *> elusive_brawler_preserved;
   } proc;
 
-  struct cooldowns_t
+  struct
   {
     propagate_const<cooldown_t *> anvil__stave;
     propagate_const<cooldown_t *> blackout_kick;
-    propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> chi_torpedo;
-    propagate_const<cooldown_t *> drinking_horn_cover;
     propagate_const<cooldown_t *> expel_harm;
-    propagate_const<cooldown_t *> jadefire_stomp;
     propagate_const<cooldown_t *> fists_of_fury;
-    propagate_const<cooldown_t *> flying_serpent_kick;
-    propagate_const<cooldown_t *> healing_elixir;
-    propagate_const<cooldown_t *> invoke_niuzao;
-    propagate_const<cooldown_t *> invoke_xuen;
-    propagate_const<cooldown_t *> invoke_yulon;
-    propagate_const<cooldown_t *> keg_smash;
     propagate_const<cooldown_t *> rising_sun_kick;
-    propagate_const<cooldown_t *> refreshing_jade_wind;
-    propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> storm_earth_and_fire;
-    propagate_const<cooldown_t *> strike_of_the_windlord;
-    propagate_const<cooldown_t *> thunder_focus_tea;
-    propagate_const<cooldown_t *> touch_of_death;
-    propagate_const<cooldown_t *> weapons_of_order;
-    propagate_const<cooldown_t *> whirling_dragon_punch;
   } cooldown;
 
   struct
@@ -850,6 +593,8 @@ public:
       const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *aura_3;
+      const spell_data_t *aura_4;
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
@@ -859,7 +604,6 @@ public:
       const spell_data_t *spinning_crane_kick_rank_2;
       const spell_data_t *touch_of_death_rank_3;
 
-      const spell_data_t *stagger;
       const spell_data_t *stagger_self_damage;
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
@@ -874,35 +618,35 @@ public:
       const spell_data_t *aura;
       const spell_data_t *aura_2;
       const spell_data_t *aura_3;
-      const spell_data_t *expel_harm_rank_2;
-      const spell_data_t *teachings_of_the_monastery;
-    } mistweaver;
-
-    struct
-    {
-      const spell_data_t *mastery;
-      const spell_data_t *aura;
-      const spell_data_t *aura_2;
-      const spell_data_t *aura_3;
+      const spell_data_t *aura_4;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
-      const spell_data_t *combo_breaker;
       const spell_data_t *combat_conditioning;
-      const spell_data_t *empowered_tiger_lightning;
       const spell_data_t *flying_serpent_kick;
       const spell_data_t *touch_of_death_rank_3;
       const spell_data_t *touch_of_karma;
+      const spell_data_t *touch_of_karma_buff;
+      const spell_data_t *touch_of_karma_tick;
+      const spell_data_t *empowered_tiger_lightning;
+      const spell_data_t *empowered_tiger_lightning_damage;
     } windwalker;
   } baseline;
 
-  struct talents_t
+  struct
   {
+    struct
+    {
+      const spell_data_t *rushing_jade_wind_buff;
+      const spell_data_t *rushing_jade_wind_tick;
+    } shared_spell;
+
     struct
     {
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
-      player_talent_t rising_sun_kick;
+      player_talent_t rising_sun_kick;  // Windwalker
+      player_talent_t stagger;          // Brewmaster
       // Row 2
       player_talent_t elusive_mists;
       player_talent_t tigers_lust;
@@ -914,8 +658,7 @@ public:
       player_talent_t bounding_agility;
       player_talent_t calming_presence;
       player_talent_t winds_reach;
-      player_talent_t detox;
-      player_talent_t improved_detox;
+      player_talent_t detox;  // Brewmaster and Windwalker
       // Row 4
       player_talent_t vivacious_vivification;
       player_talent_t jade_walk;
@@ -923,12 +666,12 @@ public:
       player_talent_t spear_hand_strike;
       player_talent_t ancient_arts;
       // Row 5
-      player_talent_t chi_wave;
+      player_talent_t chi_wave;  // Brewmaster and Windwalker
       const spell_data_t *chi_wave_buff;
       const spell_data_t *chi_wave_driver;
       const spell_data_t *chi_wave_damage;
       const spell_data_t *chi_wave_heal;
-      player_talent_t chi_burst;
+      player_talent_t chi_burst;  // Brewmaster
       const spell_data_t *chi_burst_buff;
       const spell_data_t *chi_burst_projectile;
       const spell_data_t *chi_burst_damage;
@@ -949,23 +692,23 @@ public:
       // Row 7
       player_talent_t vigorous_expulsion;
       player_talent_t yulons_grace;
-      player_talent_t diffuse_magic;
+      const spell_data_t *yulons_grace_buff;
       player_talent_t peace_and_prosperity;
       player_talent_t fortifying_brew;
       const spell_data_t *fortifying_brew_buff;
       player_talent_t dance_of_the_wind;
-      player_talent_t dampen_harm;
       // Row 8
       player_talent_t save_them_all;
       player_talent_t swift_art;
       player_talent_t strength_of_spirit;
       player_talent_t profound_rebuttal;
-      player_talent_t summon_black_ox_statue;
-      player_talent_t summon_jade_serpent_statue;
-      player_talent_t summon_white_tiger_statue;
+      player_talent_t summon_black_ox_statue;     // Brewmaster
+      player_talent_t summon_white_tiger_statue;  // Windwalker
       const spell_data_t *claw_of_the_white_tiger;
+      const spell_data_t *summon_white_tiger_statue_npc;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
+      player_talent_t diffuse_magic;
       player_talent_t celestial_determination;
       // Row 9
       player_talent_t chi_proficiency;
@@ -980,7 +723,6 @@ public:
       player_talent_t transcendence_linked_spirits;
       player_talent_t fatal_touch;
       player_talent_t rushing_reflexes;
-      player_talent_t clash;
     } monk;
 
     // Brewmaster
@@ -994,37 +736,37 @@ public:
       const spell_data_t *shuffle_buff;
       // row 3
       player_talent_t august_blessing;
+      player_talent_t staggering_strikes;
+      player_talent_t quick_sip;
+      player_talent_t elixir_of_determination;
+      player_talent_t improved_blackout_kick;
+      player_talent_t swift_as_a_coursing_river;
+      // row 4
       player_talent_t gift_of_the_ox;
       const spell_data_t *gift_of_the_ox_buff;
       const spell_data_t *gift_of_the_ox_heal_trigger;
       const spell_data_t *gift_of_the_ox_heal_expire;
-      player_talent_t staggering_strikes;
-      player_talent_t quick_sip;
-      player_talent_t spirit_of_the_ox;
-      player_talent_t strike_at_dawn;
-      // row 4
-      player_talent_t hit_scheme;
-      player_talent_t elixir_of_determination;
       player_talent_t special_delivery;
       const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
+      player_talent_t spirit_of_the_ox;
       // row 5
+      player_talent_t jade_flash;
       player_talent_t celestial_brew;
-      const spell_data_t *purified_chi;
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
-      player_talent_t autumn_blessing;
-      player_talent_t one_with_the_wind;
+      player_talent_t celestial_flames;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
+      player_talent_t elusive_footwork;
+      player_talent_t one_with_the_wind;
       // row 6
       player_talent_t breath_of_fire;
       const spell_data_t *breath_of_fire_dot;
       player_talent_t gai_plins_imperial_brew;
       const spell_data_t *gai_plins_imperial_brew_heal;
-      player_talent_t invoke_niuzao_the_black_ox;
-      const spell_data_t *invoke_niuzao_the_black_ox_stomp;
-      player_talent_t tranquil_spirit;
+      player_talent_t light_brewing;
+      player_talent_t training_of_niuzao;
       player_talent_t pretense_of_instability;
       // row 7
       player_talent_t scalding_brew;
@@ -1034,199 +776,187 @@ public:
       player_talent_t black_ox_brew;
       player_talent_t walk_with_the_ox;
       const spell_data_t *walk_with_the_ox_stomp;
-      player_talent_t light_brewing;
-      player_talent_t training_of_niuzao;
       player_talent_t zen_state;
-      player_talent_t counterstrike;
+      player_talent_t tranquil_spirit;
+      player_talent_t face_palm;
       // row 8
       player_talent_t dragonfire_brew;
       const spell_data_t *dragonfire_brew_hit;
       player_talent_t charred_passions;
       const spell_data_t *charred_passions_damage;
       player_talent_t high_tolerance;
-      player_talent_t exploding_keg;
-      player_talent_t improved_invoke_niuzao_the_black_ox;
-      player_talent_t elusive_footwork;
+      player_talent_t press_the_advantage;
+      const spell_data_t *press_the_advantage_damage;
+      player_talent_t blackout_combo;
       player_talent_t anvil__stave;
-      player_talent_t face_palm;
+      player_talent_t counterstrike;
       // row 9
+      player_talent_t exploding_keg;
       player_talent_t ox_stance;
       const spell_data_t *ox_stance_buff;
-      player_talent_t stormstouts_last_keg;
-      player_talent_t blackout_combo;
-      player_talent_t press_the_advantage;
-      player_talent_t weapons_of_order;
-      const spell_data_t *weapons_of_order_debuff;
+      player_talent_t awakening_spirit;
+      player_talent_t vital_flame;
+      player_talent_t invoke_niuzao_the_black_ox;
+      const spell_data_t *invoke_niuzao_the_black_ox_npc;
+      const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       // row 10
-      player_talent_t black_ox_adept;
-      player_talent_t heightened_guard;
-      player_talent_t call_to_arms;
-      const spell_data_t *call_to_arms_buff;
-      player_talent_t chi_surge;
+      player_talent_t fuel_on_the_fire;
+      player_talent_t empty_the_cellar;
+      player_talent_t keg_volley;
+      player_talent_t stormstouts_last_keg;
+      player_talent_t heart_of_the_ox;
+      player_talent_t mighty_stomp;
+      // apex
+      player_talent_t bring_me_another_1;
+      player_talent_t bring_me_another_2;
+      player_talent_t bring_me_another_3;
     } brewmaster;
-
-    // Mistweaver
-    struct
-    {
-      // Row 1
-      player_talent_t enveloping_mist;
-      // Row 2
-      player_talent_t thunder_focus_tea;
-      player_talent_t renewing_mist;
-      // Row 3
-      player_talent_t life_cocoon;
-      player_talent_t mana_tea;
-      player_talent_t invigorating_mists;
-      // Row 4
-      player_talent_t crane_style;
-      player_talent_t revival;
-      player_talent_t restoral;
-      player_talent_t healing_elixir;
-      // 8 Required
-      // Row 5
-      player_talent_t nourishing_chi;
-      player_talent_t calming_coalescence;
-      player_talent_t uplifting_spirits;
-      player_talent_t energizing_brew;
-      player_talent_t lifecycles;
-      player_talent_t zen_pulse;
-      // Row 6
-      player_talent_t mists_of_life;
-      player_talent_t overflowing_mists;
-      player_talent_t invoke_yulon_the_jade_serpent;
-      player_talent_t invoke_chi_ji_the_red_crane;
-      player_talent_t deep_clarity;
-      player_talent_t rapid_diffusion;
-      // Row 7
-      player_talent_t chrysalis;
-      player_talent_t burst_of_life;
-      player_talent_t yulons_whisper;
-      player_talent_t mist_wrap;
-      player_talent_t refreshing_jade_wind;
-      const spell_data_t *refreshing_jade_wind_tick;
-      player_talent_t celestial_harmony;
-      player_talent_t dancing_mists;
-      player_talent_t chi_harmony;
-      // 20 Required
-      // Row 8
-      player_talent_t jadefire_stomp;
-      player_talent_t peer_into_peace;
-      player_talent_t jade_bond;
-      player_talent_t gift_of_the_celestials;
-      player_talent_t focused_thunder;
-      player_talent_t sheiluns_gift;
-      const spell_data_t *sheiluns_gift_stacks;
-      // Row 9
-      player_talent_t ancient_teachings;
-      player_talent_t resplendent_mist;
-      player_talent_t secret_infusion;
-      const spell_data_t *secret_infusion_haste_buff;
-      const spell_data_t *secret_infusion_crit_buff;
-      const spell_data_t *secret_infusion_mastery_buff;
-      const spell_data_t *secret_infusion_vers_buff;
-      player_talent_t misty_peaks;
-      player_talent_t peaceful_mending;
-      player_talent_t veil_of_pride;
-      player_talent_t shaohaos_lessons;
-      const spell_data_t *lesson_of_doubt_buff;
-      const spell_data_t *lesson_of_despair_buff;
-      const spell_data_t *lesson_of_fear_buff;
-      const spell_data_t *lesson_of_anger_buff;
-      const spell_data_t *lesson_of_anger_damage;
-      // Row 10
-      player_talent_t awakened_jadefire;
-      const spell_data_t *awakened_jadefire_buff;
-      player_talent_t dance_of_chiji;
-      player_talent_t jade_empowerment;
-      const spell_data_t *jade_empowerment_buff;
-      player_talent_t tea_of_serenity;
-      player_talent_t tea_of_plenty;
-      player_talent_t unison;
-      player_talent_t mending_proliferation;
-      player_talent_t invokers_delight;
-      player_talent_t tear_of_morning;
-      player_talent_t rising_mist;
-      player_talent_t legacy_of_wisdom;
-    } mistweaver;
 
     // Windwalker
     struct
     {
       // Row 1
       player_talent_t fists_of_fury;
+      const spell_data_t *fists_of_fury_tick;
       // Row 2
       player_talent_t momentum_boost;
+      const spell_data_t *momentum_boost_speed;
       player_talent_t combat_wisdom;
+      const spell_data_t *combat_wisdom_buff;
       const spell_data_t *combat_wisdom_expel_harm;
-      player_talent_t acclamation;
+      player_talent_t sharp_reflexes;
       // Row 3
       player_talent_t touch_of_the_tiger;
+      player_talent_t ferociousness;
       player_talent_t hardened_soles;
       player_talent_t ascension;
-      player_talent_t ferociousness;
       // Row 4
-      player_talent_t crane_vortex;
+      player_talent_t dual_threat;
+      const spell_data_t *dual_threat_damage;
       player_talent_t teachings_of_the_monastery;
+      const spell_data_t *teachings_of_the_monastery_buff;
       const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
-      // 8 Required
+      const spell_data_t *glory_of_the_dawn_damage;
       // Row 5
-      player_talent_t jade_ignition;
-      player_talent_t courageous_impulse;
-      player_talent_t storm_earth_and_fire;
-      player_talent_t flurry_of_xuen;
-      player_talent_t hit_combo;
-      player_talent_t brawlers_intensity;
+      player_talent_t crane_vortex;
       player_talent_t meridian_strikes;
+      player_talent_t rising_star;
+      player_talent_t weapons_of_order;
+      player_talent_t hit_combo;
+      const spell_data_t *hit_combo_buff;
+      player_talent_t brawlers_intensity;
       // Row 6
-      player_talent_t dance_of_chiji;
+      player_talent_t jade_ignition;
+      const spell_data_t *chi_energy_buff;
+      const spell_data_t *chi_explosion;
+      player_talent_t cyclones_drift;
+      player_talent_t crashing_fists;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
-      player_talent_t ordered_elements;
-      player_talent_t strike_of_the_windlord;
+      player_talent_t obsidian_spiral;
+      player_talent_t combo_breaker;
+      const spell_data_t *combo_breaker_buff;
       // Row 7
-      player_talent_t martial_mixture;
-      player_talent_t energy_burst;
+      player_talent_t dance_of_chiji;
+      const spell_data_t *dance_of_chiji_buff;
       player_talent_t shadowboxing_treads;
-      player_talent_t invoke_xuen_the_white_tiger;
+      player_talent_t strike_of_the_windlord;
+      player_talent_t whirling_dragon_punch;
+      const spell_data_t *whirling_dragon_punch_aoe_tick;
+      const spell_data_t *whirling_dragon_punch_st_tick;
+      const spell_data_t *whirling_dragon_punch_buff;
+      player_talent_t energy_burst;
       player_talent_t inner_peace;
-      player_talent_t rushing_jade_wind;
-      player_talent_t thunderfist;
-      // 20 Required
       // Row 8
       player_talent_t sequenced_strikes;
-      player_talent_t rising_star;
-      player_talent_t invokers_delight;
-      player_talent_t dual_threat;
-      player_talent_t gale_force;
-      const spell_data_t *gale_force_damage;
-      // Row 9
-      player_talent_t last_emperors_capacitor;
-      player_talent_t whirling_dragon_punch;
-      const spell_data_t *whirling_dragon_punch_buff;
-      player_talent_t xuens_bond;
-      player_talent_t xuens_battlegear;
-      player_talent_t transfer_the_power;
-      player_talent_t jadefire_fists;
-      player_talent_t jadefire_stomp;
-      const spell_data_t *jadefire_stomp_debuff;
-      const spell_data_t *jadefire_stomp_damage;
-      const spell_data_t *jadefire_stomp_ww_damage;
+      player_talent_t stormspirit_strikes;
       player_talent_t communion_with_wind;
-      // Row 10
-      player_talent_t power_of_the_thunder_king;
       player_talent_t revolving_whirl;
-      player_talent_t knowledge_of_the_broken_temple;
+      player_talent_t echo_technique;
+      player_talent_t rushing_jade_wind;
       player_talent_t memory_of_the_monastery;
-      player_talent_t fury_of_xuen;
-      player_talent_t path_of_jade;
-      player_talent_t singularly_focused_jade;
-      player_talent_t jadefire_harmony;
-      const spell_data_t *jadefire_brand_dmg;
-      const spell_data_t *jadefire_brand_heal;
+      const spell_data_t *memory_of_the_monastery_buff;
+      // Row 9
+      player_talent_t rushing_wind_kick;
+      player_talent_t xuens_battlegear;
+      player_talent_t thunderfist;
+      const spell_data_t *thunderfist_buff;
+      player_talent_t invoke_xuen_the_white_tiger;
+      const spell_data_t *invoke_xuen_the_white_tiger_npc;
+      const spell_data_t *crackling_tiger_lightning_driver;
+      const spell_data_t *crackling_tiger_lightning;
+      player_talent_t knowledge_of_the_broken_temple;
       player_talent_t slicing_winds;
       const spell_data_t *slicing_winds_damage;
+      player_talent_t jadefire_stomp;
+      const spell_data_t *jadefire_stomp_damage;
+      // Row 10
+      player_talent_t skyfire_heel;
+      player_talent_t harmonic_combo;
+      player_talent_t flurry_of_xuen;
+      const spell_data_t *flurry_of_xuen_driver;
+      player_talent_t xuens_bond;
+      player_talent_t airborne_rhythm;
+      player_talent_t hurricanes_vault;
+      player_talent_t path_of_jade;
+      player_talent_t singularly_focused_jade;
+      // Apex
+      player_talent_t tigereye_brew_1;
+      player_talent_t tigereye_brew_2;
+      player_talent_t tigereye_brew_3;
     } windwalker;
+
+    // Conduit of the Celestials
+    struct
+    {
+      // Row 1
+      player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_buff;
+      const spell_data_t *celestial_conduit_dmg;
+      const spell_data_t *celestial_conduit_heal;
+      // Row 2
+      player_talent_t temple_training;
+      player_talent_t xuens_guidance;
+      player_talent_t courage_of_the_white_tiger;
+      const spell_data_t *courage_of_the_white_tiger_buff;
+      const spell_data_t *courage_of_the_white_tiger_damage;
+      const spell_data_t *courage_of_the_white_tiger_heal;
+      player_talent_t restore_balance;
+      player_talent_t yulons_knowledge;
+      player_talent_t heart_of_the_jade_serpent;
+      const spell_data_t *heart_of_the_jade_serpent_buff;
+      const spell_data_t *heart_of_the_jade_serpent_celestial_buff;
+      // Row 3
+      player_talent_t chijis_swiftness;
+      const spell_data_t *chijis_swiftness_buff;
+      player_talent_t strength_of_the_black_ox;
+      const spell_data_t *strength_of_the_black_ox_buff;
+      const spell_data_t *strength_of_the_black_ox_absorb;
+      const spell_data_t *strength_of_the_black_ox_damage;
+      player_talent_t flight_of_the_red_crane;
+      const spell_data_t *flight_of_the_red_crane_buff;
+      const spell_data_t *flight_of_the_red_crane_dmg;
+      const spell_data_t *flight_of_the_red_crane_heal;
+      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
+      const spell_data_t *flight_of_the_red_crane_celestial_heal;
+      player_talent_t yulons_avatar;
+      // Row 4
+      player_talent_t niuzaos_protection;
+      player_talent_t jade_sanctuary;
+      const spell_data_t *jade_sanctuary_buff;
+      player_talent_t stampede_of_the_ancients;
+      player_talent_t inner_compass;
+      const spell_data_t *inner_compass_crane_stance_buff;
+      const spell_data_t *inner_compass_ox_stance_buff;
+      const spell_data_t *inner_compass_tiger_stance_buff;
+      const spell_data_t *inner_compass_serpent_stance_buff;
+      player_talent_t flowing_wisdom;
+      // Row 5
+      player_talent_t unity_within;
+      const spell_data_t *unity_within_buff;
+      const spell_data_t *unity_within_dmg_mult;
+    } conduit_of_the_celestials;
 
     // Master of Harmony
     struct
@@ -1269,11 +999,14 @@ public:
       // Row 1
       player_talent_t flurry_strikes;
       const spell_data_t *flurry_strikes_hit;
+      const spell_data_t *flurry_charge;
       // Row 2
       player_talent_t pride_of_pandaria;
       player_talent_t high_impact;
       const spell_data_t *high_impact_debuff;
       player_talent_t veterans_eye;
+      const spell_data_t *veterans_eye_buff;
+      const spell_data_t *veterans_eye_debuff;
       player_talent_t martial_precision;
       // Row 3
       player_talent_t protect_and_serve;
@@ -1283,48 +1016,18 @@ public:
       player_talent_t predictive_training;
       // Row 4
       player_talent_t against_all_odds;
+      const spell_data_t *against_all_odds_buff;
       player_talent_t efficient_training;
       player_talent_t vigilant_watch;
+      const spell_data_t *vigilant_watch_buff;
       // Row 5
       player_talent_t wisdom_of_the_wall;
+      const spell_data_t *wisdom_of_the_wall_crit_buff;
+      const spell_data_t *wisdom_of_the_wall_dodge_buff;
+      const spell_data_t *wisdom_of_the_wall_flurry_buff;
+      const spell_data_t *wisdom_of_the_wall_mastery_buff;
       const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
-
-    // Conduit of the Celestials
-    struct
-    {
-      // Row 1
-      player_talent_t celestial_conduit;
-      const spell_data_t *celestial_conduit_dmg;
-      const spell_data_t *celestial_conduit_heal;
-      // Row 2
-      player_talent_t temple_training;
-      player_talent_t xuens_guidance;
-      player_talent_t courage_of_the_white_tiger;
-      const spell_data_t *courage_of_the_white_tiger_damage;
-      const spell_data_t *courage_of_the_white_tiger_heal;
-      player_talent_t restore_balance;
-      player_talent_t yulons_knowledge;
-      // Row 3
-      player_talent_t heart_of_the_jade_serpent;
-      player_talent_t strength_of_the_black_ox;
-      const spell_data_t *strength_of_the_black_ox_absorb;
-      const spell_data_t *strength_of_the_black_ox_damage;
-      player_talent_t flight_of_the_red_crane;
-      const spell_data_t *flight_of_the_red_crane_dmg;
-      const spell_data_t *flight_of_the_red_crane_heal;
-      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
-      const spell_data_t *flight_of_the_red_crane_celestial_heal;
-      // Row 4
-      player_talent_t niuzaos_protection;
-      player_talent_t jade_sanctuary;
-      player_talent_t chi_jis_swiftness;
-      player_talent_t inner_compass;
-      player_talent_t august_dynasty;
-      // Row 5
-      player_talent_t unity_within;
-      const spell_data_t *unity_within_dmg_mult;
-    } conduit_of_the_celestials;
   } talent;
 
   struct
@@ -1380,16 +1083,9 @@ public:
 
   struct pets_t
   {
-    std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
     spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> yulon;
-    spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
-    spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> call_to_arms_niuzao;
-
-    pet_t *bron;
 
     pets_t( monk_t *p );
   } pets;
@@ -1399,60 +1095,12 @@ public:
   {
     int initial_chi;
     double expel_harm_effectiveness;
-    double jadefire_stomp_uptime;
     int chi_burst_healing_targets;
-    double squirm_frequency;
-
     int shado_pan_initial_charge_accumulator;
   } user_options;
 
-  // exterminate these structs
-  struct
-  {
-    const spell_data_t *jadefire_stomp;
-    const spell_data_t *invokers_delight;
-    const spell_data_t *teachings_of_the_monastery;
-  } shared;
-
-  struct
-  {
-    // General
-    const spell_data_t *rushing_jade_wind;
-    const spell_data_t *rushing_jade_wind_tick;
-
-    // Windwalker
-    const spell_data_t *bok_proc;
-    const spell_data_t *chi_explosion;
-    const spell_data_t *crackling_tiger_lightning;
-    const spell_data_t *crackling_tiger_lightning_driver;
-    const spell_data_t *combat_wisdom_expel_harm;
-    const spell_data_t *cyclone_strikes;
-    const spell_data_t *dance_of_chiji;
-    const spell_data_t *dual_threat_kick;
-    const spell_data_t *dizzying_kicks;
-    const spell_data_t *empowered_tiger_lightning;
-    const spell_data_t *jadefire_brand_dmg;
-    const spell_data_t *jadefire_brand_heal;
-    const spell_data_t *fists_of_fury_tick;
-    const spell_data_t *flurry_of_xuen_driver;
-    const spell_data_t *flying_serpent_kick_damage;
-    const spell_data_t *focus_of_xuen;
-    const spell_data_t *fury_of_xuen_stacking_buff;
-    const spell_data_t *fury_of_xuen;
-    const spell_data_t *glory_of_the_dawn_damage;
-    const spell_data_t *hidden_masters_forbidden_touch;
-    const spell_data_t *hit_combo;
-    const spell_data_t *improved_touch_of_death;
-    const spell_data_t *summon_white_tiger_statue;
-    const spell_data_t *power_strikes_chi;
-    const spell_data_t *thunderfist;
-    const spell_data_t *touch_of_karma_tick;
-    const spell_data_t *whirling_dragon_punch_aoe_tick;
-    const spell_data_t *whirling_dragon_punch_st_tick;
-  } passives;
-
 public:
-  monk_t( sim_t *sim, util::string_view name, race_e r );
+  monk_t( sim_t *sim, std::string_view name, race_e r );
 
   // APL
   std::string default_potion() const override;
@@ -1471,28 +1119,23 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
-  void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
   void init_base_stats() override;
   void init_scaling() override;
   void init_gains() override;
   void init_procs() override;
-  void init_assessors() override;
   void init_special_effects() override;
-  void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
   void create_buffs() override;
-  action_t *create_action( util::string_view name, util::string_view options ) override;
+  action_t *create_action( std::string_view name, std::string_view options ) override;
   void create_actions() override;
   void create_options() override;
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
   void reset() override;
   void copy_from( player_t * ) override;
-  void collect_resource_timeline_information() override;
 
   // Combat
-  void activate() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
@@ -1505,7 +1148,6 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
-  double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
   double resource_regen_per_second( resource_e ) const override;
 
@@ -1531,29 +1173,6 @@ public:
   // Actions
   void trigger_celestial_fortune( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-
-  // Storm Earth and Fire targeting logic
-  bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
-  std::vector<player_t *> create_storm_earth_and_fire_target_list() const;
-  void summon_storm_earth_and_fire( timespan_t duration );
-  void retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> &targets ) const;
-  void retarget_storm_earth_and_fire_pets() const;
-
-  void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
-  void storm_earth_and_fire_fixate( player_t *target );
-  bool storm_earth_and_fire_fixate_ready( player_t *target );
-  player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
-};
-
-struct sef_despawn_cb_t
-{
-  monk_t *monk;
-
-  sef_despawn_cb_t( monk_t *m ) : monk( m )
-  {
-  }
-
-  void operator()( player_t * );
 };
 
 namespace events

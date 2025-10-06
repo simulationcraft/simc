@@ -477,7 +477,6 @@ void vengeance( player_t* p )
   ar->add_action( "throw_glaive" );
   ar->add_action( "shear,if=!talent.fracture" );
 
-  externals->add_action( "invoke_external_buff,name=symbol_of_hope" );
   externals->add_action( "invoke_external_buff,name=power_infusion" );
 
   fel_dev->add_action( "spirit_bomb,if=buff.demonsurge_spirit_burst.up&(variable.can_spburst|soul_fragments>=4|(buff.metamorphosis.remains<(gcd.max*2)))" );

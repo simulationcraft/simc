@@ -45,6 +45,9 @@ public:
     buff_t* sigil_of_flame;
     buff_t* sigil_of_doom;
 
+    // Devourer
+    buff_t* devourers_bite;
+
     // Havoc
     buff_t* burning_wound;
     buff_t* essence_break;
@@ -74,8 +77,9 @@ public:
   void target_demise();
 };
 
-constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
-constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
+constexpr unsigned MAX_SOUL_FRAGMENTS          = 5;
+constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
+constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
 
 enum class soul_fragment : unsigned
 {
@@ -257,8 +261,6 @@ public:
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
-  event_t* winning_streak_conversion_event;
-
   // Buffs
   struct buffs_t
   {
@@ -267,6 +269,10 @@ public:
     buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
+
+    // Devourer
+    buff_t* reap;
+    buff_t* feast_of_souls;
 
     // Havoc
     buff_t* blind_fury;
@@ -318,14 +324,6 @@ public:
     buff_t* demonsurge;
 
     // Set Bonuses
-    buff_t* tww1_havoc_4pc;
-    buff_t* tww1_vengeance_4pc;
-    buff_t* luck_of_the_draw;
-    buff_t* winning_streak;
-    buff_t* winning_streak_residual;
-    buff_t* necessary_sacrifice;
-    buff_t* demon_soul_tww3;
-    buff_t* scarred_strikes;
   } buff;
 
   // Talents
@@ -335,7 +333,7 @@ public:
     {
       player_talent_t vengeful_retreat;
       player_talent_t felblade;
-      player_talent_t voidblade;        // NYI
+      player_talent_t voidblade;
       player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t vengeful_bonds;  // No Implementation
@@ -382,28 +380,28 @@ public:
     {
       player_talent_t void_ray;  // NYI
 
-      player_talent_t soul_immolation;   // NYI
-      player_talent_t predators_thirst;  // NYI
+      player_talent_t soul_immolation;
+      player_talent_t predators_thirst;
 
-      player_talent_t tempered_soul;           // NYI
-      player_talent_t spontaneous_immolation;  // NYI
-      player_talent_t void_metamorphosis;      // NYI
-      player_talent_t feast_of_souls;          // NYI
+      player_talent_t tempered_soul;  // NYI
+      player_talent_t spontaneous_immolation;
+      player_talent_t void_metamorphosis;  // NYI
+      player_talent_t feast_of_souls;
 
-      player_talent_t scythes_embrace;    // NYI
-      player_talent_t duty_eternal;       // NYI
+      player_talent_t scythes_embrace;
+      player_talent_t duty_eternal;
       player_talent_t entropy;            // NYI
       player_talent_t moment_of_craving;  // NYI
 
-      player_talent_t sunder;          // NYI
-      player_talent_t second_helping;  // NYI
-      player_talent_t waste_not;       // NYI
-      player_talent_t soulshaper;      // NYI
+      player_talent_t sunder;  // NYI
+      player_talent_t second_helping;
+      player_talent_t waste_not;  // NYI
+      player_talent_t soulshaper;
 
       player_talent_t focused_ray;      // NYI
       player_talent_t collapsing_star;  // NYI
-      player_talent_t sweet_suffering;  // NYI
-      player_talent_t voidpurge;        // NYI
+      player_talent_t sweet_suffering;
+      player_talent_t voidpurge;  // NYI
 
       player_talent_t hungering_slash;  // NYI
       player_talent_t voidrage;         // NYI
@@ -417,11 +415,11 @@ public:
       player_talent_t rolling_torment;       // NYI
       player_talent_t improved_reap;         // NYI
 
-      player_talent_t devourers_bite;  // NYI
+      player_talent_t devourers_bite;
       player_talent_t star_fragments;  // NYI
       player_talent_t calamitous;      // NYI
 
-      player_talent_t the_hunt;      // NYI
+      player_talent_t the_hunt;
       player_talent_t emptiness;     // NYI
       player_talent_t soul_glutton;  // NYI
       player_talent_t eradicate;     // NYI
@@ -658,11 +656,20 @@ public:
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* sigil_of_misery;
     const spell_data_t* sigil_of_misery_debuff;
+    const spell_data_t* shattered_souls;
+    const spell_data_t* the_hunt;
 
     // Devourer
     const spell_data_t* devourer_demon_hunter;
     const spell_data_t* consume;
     const spell_data_t* voidblade;
+    const spell_data_t* soul_immolation_energize;
+    const spell_data_t* spontaneous_immolation_buff;
+    const spell_data_t* reap;
+    const spell_data_t* reap_damage;
+    const spell_data_t* reap_energize;
+    const spell_data_t* feast_of_souls_buff;
+    const spell_data_t* devourers_bite_debuff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -779,7 +786,6 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
-
     // Auxilliary
   } set_bonuses;
 
@@ -905,17 +911,6 @@ public:
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
 
     // Set Bonuses
-    proc_t* soul_fragment_from_vengeance_tww1_2pc;
-    proc_t* metamorphosis_from_tww2_vengeance_2pc;
-    proc_t* the_hunt_reset_from_tww2_vengeance_4pc;
-    proc_t* winning_streak_drop_from_tww2_havoc_2pc;
-    proc_t* winning_streak_drop_wasted_from_tww2_havoc_2pc;
-    proc_t* winning_streak_wasted_from_tww2_havoc_4pc;
-    proc_t* necessary_sacrifice_wasted_from_tww2_havoc_4pc;
-    proc_t* chaos_strike_in_immolation_aura;
-    proc_t* annihilation_in_immolation_aura;
-    proc_t* soul_cleave_in_immolation_aura;
-    proc_t* soul_sunder_in_immolation_aura;
   } proc;
 
   // RPPM objects
@@ -945,6 +940,9 @@ public:
     spell_t* immolation_aura              = nullptr;
     spell_t* immolation_aura_initial      = nullptr;
     spell_t* collective_anguish           = nullptr;
+
+    // Devourer
+    spell_t* spontaneous_immolation = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -1100,6 +1098,7 @@ public:
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
   }
   void parse_player_effects();
+  unsigned max_soul_fragments() const;
 
   // Secondary Action Tracking
 private:
@@ -1502,7 +1501,7 @@ struct soul_fragment_t
     {
       make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
     }
-    if ( heal )
+    if ( heal && dh->specialization() != DEMON_HUNTER_DEVOURER )
     {
       if ( instant || delay == 0_s )
       {
@@ -1755,6 +1754,9 @@ public:
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
 
+    // Devourer
+    ab::parse_effects( p()->buff.feast_of_souls );
+
     // Havoc
     ab::parse_effects( p()->buff.exergy );
     ab::parse_effects( p()->buff.inertia );
@@ -1807,18 +1809,14 @@ public:
     ab::parse_effects( p()->buff.demonsurge );
 
     // Tier sets
-    ab::parse_effects( p()->buff.tww1_havoc_4pc );
-    ab::parse_effects( p()->buff.tww1_vengeance_4pc );
-    ab::parse_effects( p()->buff.winning_streak );
-    ab::parse_effects( p()->buff.winning_streak_residual );
-    ab::parse_effects( p()->buff.luck_of_the_draw );
-    ab::parse_effects( p()->buff.demon_soul_tww3 );
-    ab::parse_effects( p()->buff.scarred_strikes );
   }
 
   void apply_debuff_effects()
   {
     // Shared
+
+    // Devourer
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::devourers_bite ), p()->spec.devourers_bite_debuff );
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
@@ -3051,11 +3049,6 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
         p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       }
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
-    }
-
-    if ( p()->buff.tww1_vengeance_4pc->up() )
-    {
-      p()->buff.tww1_vengeance_4pc->expire();
     }
   }
 
@@ -4481,18 +4474,26 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
       }
     };
 
-    // TODO: Use the correct The Hunt for Devourer
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.havoc.the_hunt->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger() )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+
+      if ( s->chain_target == 0 && p()->talent.devourer.devourers_bite->ok() )
+      {
+        td( target )->debuffs.devourers_bite->trigger();
+      }
+    }
   };
 
-  // TODO: Use the correct The Hunt for Devourer
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "the_hunt", p, p->talent.havoc.the_hunt, options_str )
+    : base_t( "the_hunt", p, p->spec.the_hunt, options_str )
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
@@ -4733,21 +4734,17 @@ struct consume_soul_t : public demon_hunter_spell_t
 
     p()->buff.painbringer->trigger();
     p()->buff.art_of_the_glaive->trigger();
-    p()->buff.tww1_vengeance_4pc->trigger();
+
+    p()->buff.feast_of_souls->trigger();
 
     // Warblade's hunger currently applies an additional stack on first buff application
-
     if ( !p()->buff.warblades_hunger->up() )
     {
       p()->buff.warblades_hunger->trigger();
     }
     p()->buff.warblades_hunger->trigger();
 
-    if ( type == soul_fragment::EMPOWERED_DEMON )
-    {
-      p()->buff.demon_soul_tww3->trigger();
-    }
-    else if ( type == soul_fragment::GREATER_DEMON )
+    if ( type == soul_fragment::GREATER_DEMON )
     {
       p()->buff.demon_soul->trigger();
     }
@@ -4756,8 +4753,18 @@ struct consume_soul_t : public demon_hunter_spell_t
 
 struct consume_t : public demon_hunter_spell_t
 {
-  consume_t(demon_hunter_t* p, util::string_view o) : demon_hunter_spell_t( "consume", p, p->spec.consume, o )
+  consume_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "consume", p, p->spec.consume, o )
   {
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( p()->talent.devourer.predators_thirst->ok() )
+    {
+      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+    }
   }
 };
 
@@ -4767,18 +4774,141 @@ struct voidblade_t : public demon_hunter_spell_t
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
     {
-      background = dual               = true;
-      gain                            = p->get_gain( "voidblade" );
+      background = dual = true;
+      gain              = p->get_gain( "voidblade" );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+
+      if ( p()->talent.devourer.devourers_bite->ok() )
+      {
+        td( s->target )->debuffs.devourers_bite->trigger();
+      }
     }
   };
 
-  voidblade_t(demon_hunter_t* p, util::string_view o) : demon_hunter_spell_t( "voidblade", p, p->talent.demon_hunter.voidblade, o )
+  voidblade_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "voidblade", p, p->talent.demon_hunter.voidblade, o )
   {
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action        = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
     execute_action->stats = stats;
+  }
+};
+
+struct soul_immolation_t : public demon_hunter_spell_t
+{
+  struct soul_immolation_energize_t : public demon_hunter_spell_t
+  {
+    soul_immolation_energize_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->spec.soul_immolation_energize, "" )
+    {
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      background = dual = true;
+      energize_type     = action_energize::ON_CAST;
+      target            = p;
+    }
+  };
+
+  soul_immolation_energize_t* energize_action;
+
+  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "" )
+    : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
+  {
+    // self damage doesn't count as DPS
+    stats->type = stats_e::STATS_NEUTRAL;
+
+    energize_action = p->get_background_action<soul_immolation_energize_t>( "soul_immolation_energize" );
+  }
+
+  void execute() override
+  {
+    target = p();
+    demon_hunter_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    assert( s->target == p() );
+    demon_hunter_spell_t::impact( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    energize_action->execute();
+
+    // seems to spawn a soul fragment every other tick, starting with the first tick
+    if ( d->current_tick % 2 == 0 )
+    {
+      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+    }
+  }
+};
+
+struct reap_t : public demon_hunter_spell_t
+{
+  struct reap_damage_t : public demon_hunter_spell_t
+  {
+    reap_damage_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_damage, "" )
+    {
+    }
+  };
+
+  struct reap_energize_t : public demon_hunter_spell_t
+  {
+    reap_energize_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_energize, "" )
+    {
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      background = dual = true;
+      energize_type     = action_energize::ON_CAST;
+      target            = p;
+    }
+  };
+
+  reap_damage_t* damage_action;
+  reap_energize_t* energize_action;
+
+  reap_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "reap", p, p->spec.reap, o ), damage_action( nullptr ), energize_action( nullptr )
+  {
+    damage_action        = p->get_background_action<reap_damage_t>( "reap_damage" );
+    damage_action->stats = stats;
+
+    if ( p->talent.devourer.scythes_embrace->ok() )
+    {
+      energize_action = p->get_background_action<reap_energize_t>( "reap_energize" );
+    }
+  }
+
+  void execute() override
+  {
+    if ( energize_action )
+    {
+      energize_action->execute();
+    }
+    p()->buff.reap->trigger();
+    demon_hunter_spell_t::execute();
+
+    double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
+
+    damage_action->set_target( target );
+    action_state_t* damage_state = damage_action->get_state();
+    damage_state->target         = target;
+    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+
+    if ( p()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
+
+    damage_action->schedule_execute( damage_state );
   }
 };
 
@@ -5620,16 +5750,6 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
-
-  void execute() override
-  {
-    chaos_strike_base_t::execute();
-
-    if ( !from_onslaught && p()->buff.immolation_aura->check() )
-    {
-      p()->proc.chaos_strike_in_immolation_aura->occur();
-    }
-  }
 };
 
 // Annihilation =============================================================
@@ -5666,16 +5786,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
     }
 
     return base_t::ready();
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( !from_onslaught && p()->buff.immolation_aura->check() )
-    {
-      p()->proc.annihilation_in_immolation_aura->occur();
-    }
   }
 };
 
@@ -6171,16 +6281,6 @@ struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUND
   soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
   }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( p()->buff.immolation_aura->check() )
-    {
-      p()->proc.soul_sunder_in_immolation_aura->occur();
-    }
-  }
 };
 
 struct soul_cleave_t : public soul_cleave_base_t
@@ -6220,11 +6320,6 @@ struct soul_cleave_t : public soul_cleave_base_t
     }
 
     soul_cleave_base_t::execute();
-
-    if ( p()->buff.immolation_aura->check() )
-    {
-      p()->proc.soul_cleave_in_immolation_aura->occur();
-    }
   }
 };
 
@@ -6991,16 +7086,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     if ( s > 0 )
       base_t::execute( s, value, duration );
   }
-
-  void expire_override( int stacks, timespan_t remaining_duration ) override
-  {
-    demon_hunter_buff_t::expire_override( stacks, remaining_duration );
-
-    if ( p()->buff.scarred_strikes->up() )
-    {
-      p()->buff.scarred_strikes->expire();
-    }
-  }
 };
 
 // Metamorphosis Buff =======================================================
@@ -7281,9 +7366,14 @@ struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( p.specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      debuffs.devourers_bite = make_buff( *this, "devourers_bite", p.spec.devourers_bite_debuff )
+                                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                   ->disable_ticking( true );
+      break;
     case DEMON_HUNTER_HAVOC:
       debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
                                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
@@ -7508,6 +7598,10 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new consume_t( this, options_str );
   if ( name == "voidblade" )
     return new voidblade_t( this, options_str );
+  if ( name == "soul_immolation" )
+    return new soul_immolation_t( "soul_immolation", this, talent.devourer.soul_immolation, options_str );
+  if ( name == "reap" )
+    return new reap_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -7557,6 +7651,15 @@ void demon_hunter_t::create_buffs()
   buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
   buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
+  buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff );
+
+  // Devourer ===============================================================
+
+  buff.reap           = make_buff( this, "reap", spec.reap );
+  buff.feast_of_souls = make_buff( this, "feast_of_souls", spec.feast_of_souls_buff )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                            ->disable_ticking( true );
 
   // Havoc ==================================================================
 
@@ -7634,8 +7737,6 @@ void demon_hunter_t::create_buffs()
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          ->disable_ticking( true );
-
-  buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )->set_max_stack( 10 );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -8076,17 +8177,6 @@ void demon_hunter_t::init_procs()
   proc.demonsurge_abilities[ ENTER_META ] = get_proc( demonsurge_ability_name( ENTER_META ) );
 
   // Set Bonuses
-  proc.soul_fragment_from_vengeance_tww1_2pc          = get_proc( "soul_fragment_from_vengeance_tww1_2pc" );
-  proc.metamorphosis_from_tww2_vengeance_2pc          = get_proc( "metamorphosis_from_tww2_vengeance_2pc" );
-  proc.the_hunt_reset_from_tww2_vengeance_4pc         = get_proc( "the_hunt_reset_from_tww2_vengeance_4pc" );
-  proc.winning_streak_drop_from_tww2_havoc_2pc        = get_proc( "winning_streak_drop_from_tww2_havoc_2pc" );
-  proc.winning_streak_drop_wasted_from_tww2_havoc_2pc = get_proc( "winning_streak_drop_wasted_from_tww2_havoc_2pc" );
-  proc.winning_streak_wasted_from_tww2_havoc_4pc      = get_proc( "winning_streak_wasted_from_tww2_havoc_4pc" );
-  proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc = get_proc( "necessary_sacrifice_wasted_from_tww2_havoc_4pc" );
-  proc.chaos_strike_in_immolation_aura                = get_proc( "chaos_strike_in_immolation_aura" );
-  proc.annihilation_in_immolation_aura                = get_proc( "annihilation_in_immolation_aura" );
-  proc.soul_cleave_in_immolation_aura                 = get_proc( "soul_cleave_in_immolation_aura" );
-  proc.soul_sunder_in_immolation_aura                 = get_proc( "soul_sunder_in_immolation_aura" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -8111,6 +8201,19 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
+
+  // Devourer
+  if ( talent.devourer.spontaneous_immolation->ok() )
+  {
+    auto effect            = new special_effect_t( this );
+    effect->name_str       = "spontaneous_immolation";
+    effect->spell_id       = talent.devourer.spontaneous_immolation->id();
+    effect->proc_chance_   = talent.devourer.spontaneous_immolation->effectN( 1 ).percent();
+    effect->execute_action = active.spontaneous_immolation;
+    special_effects.push_back( effect );
+
+    new demon_hunter_proc_callback_t( *effect );
+  }
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -8190,6 +8293,8 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = spec.consume_soul_greater;
       spec.metamorphosis        = find_class_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
+      spec.soul_fragments_buff  = spell_data_t::not_found();
+      spec.shattered_souls      = find_spell( 178940 );
       break;
     case DEMON_HUNTER_VENGEANCE:
       spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
@@ -8197,18 +8302,30 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = find_spell( 203794 );
       spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis;
+      spec.soul_fragments_buff  = find_spell( 203981 );
+      spec.shattered_souls      = find_spell( 178940 );
       break;
     case DEMON_HUNTER_DEVOURER:
-      spec.metamorphosis = find_specialization_spell( "Void Metamorphosis" );
-      spec.metamorphosis_buff = spec.metamorphosis->effectN( 1 ).trigger();
+      spell.throw_glaive        = find_class_spell( "Throw Glaive" );
+      spec.consume_soul_greater = find_spell( 1223628 );
+      spec.consume_soul_lesser  = find_spell( 1223628 );
+      spec.metamorphosis        = find_specialization_spell( "Void Metamorphosis" );
+      spec.metamorphosis_buff   = spec.metamorphosis->effectN( 1 ).trigger();
+      spec.soul_fragments_buff  = find_spell( 1245577 );
+      spec.shattered_souls      = find_spell( 1227619 );
     default:
       break;
   }
 
   // Devourer Spells
-  spec.devourer_demon_hunter = find_specialization_spell( "Devourer Demon Hunter" );
-  spec.consume = find_spell( 473662, DEMON_HUNTER_DEVOURER );
-  spec.voidblade = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
+  spec.devourer_demon_hunter       = find_specialization_spell( "Devourer Demon Hunter" );
+  spec.consume                     = find_spell( 473662, DEMON_HUNTER_DEVOURER );
+  spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
+  spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
+  spec.spontaneous_immolation_buff = find_spell( 1263610, DEMON_HUNTER_DEVOURER );
+  spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
+  spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
+  spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
@@ -8232,13 +8349,12 @@ void demon_hunter_t::init_spells()
   // Vengeance Spells
   spec.vengeance_demon_hunter = find_specialization_spell( "Vengeance Demon Hunter" );
 
-  spec.demon_spikes        = find_specialization_spell( "Demon Spikes" );
-  spec.infernal_strike     = find_specialization_spell( "Infernal Strike" );
-  spec.soul_cleave         = find_specialization_spell( "Soul Cleave" );
-  spec.shear               = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
-  spec.soul_cleave_2       = find_rank_spell( "Soul Cleave", "Rank 2" );
-  spec.riposte             = find_specialization_spell( "Riposte" );
-  spec.soul_fragments_buff = find_spell( 203981, DEMON_HUNTER_VENGEANCE );
+  spec.demon_spikes    = find_specialization_spell( "Demon Spikes" );
+  spec.infernal_strike = find_specialization_spell( "Infernal Strike" );
+  spec.soul_cleave     = find_specialization_spell( "Soul Cleave" );
+  spec.shear           = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
+  spec.soul_cleave_2   = find_rank_spell( "Soul Cleave", "Rank 2" );
+  spec.riposte         = find_specialization_spell( "Riposte" );
 
   // Masteries ==============================================================
 
@@ -8528,12 +8644,14 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
+  spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
-  spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
-  spec.chaos_theory_buff    = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
-  spec.demon_blades_damage =
-      spell_data_t::not_found();  // TODO: replace - talent.havoc.demon_blades->effectN( 1 ).trigger();
+  spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
+  spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
+  spec.demon_blades_damage              = find_spell( 203796 );
   spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
   spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
   spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
@@ -8551,8 +8669,8 @@ void demon_hunter_t::init_spells()
   spec.soulscar_debuff                  = talent_spell_lookup( talent.havoc.soulscar, 390181 );
   spec.tactical_retreat_buff            = talent_spell_lookup( talent.havoc.tactical_retreat, 389890 );
   spec.unbound_chaos_buff               = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
-  spec.cycle_of_hatred_buff             = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
-  spec.furious_throws_damage            = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
+  spec.cycle_of_hatred_buff             = talent_spell_lookup( talent.havoc.cycle_of_hatred, 1214887 );
+  spec.furious_throws_damage            = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
 
   spec.demon_spikes_buff        = find_spell( 203819 );
   spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
@@ -8569,6 +8687,21 @@ void demon_hunter_t::init_spells()
   spec.feast_of_souls_heal      = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
   spec.fel_devastation_2        = find_rank_spell( "Fel Devastation", "Rank 2" );
   spec.fel_devastation_heal     = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
+
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      spec.the_hunt = talent.devourer.the_hunt;
+      break;
+    case DEMON_HUNTER_HAVOC:
+      spec.the_hunt = talent.havoc.the_hunt;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      spec.the_hunt = spell_data_t::not_found();
+      break;
+    default:
+      break;
+  }
 
   // Hero spec background spells
   hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
@@ -8706,23 +8839,34 @@ void demon_hunter_t::init_spells()
   using namespace actions::spells;
   using namespace actions::heals;
 
-  if (specialization() != DEMON_HUNTER_DEVOURER)
+  if ( specialization() != DEMON_HUNTER_DEVOURER )
   {
     active.consume_soul_greater =
-      new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
-    active.consume_soul_lesser =
-        new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
-    active.consume_soul_greater_demon =
-        new consume_soul_t( this, "consume_soul_greater_demon", spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
-    active.consume_soul_empowered_demon = new consume_soul_t( this, "consume_soul_empowered_demon",
-                                                              spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
+        new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
+    active.consume_soul_greater_demon   = new consume_soul_t( this, "consume_soul_greater_demon",
+                                                              spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
+    active.consume_soul_empowered_demon = new consume_soul_t(
+        this, "consume_soul_empowered_demon", spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
     active.consume_soul_greater_heal =
         new consume_soul_heal_t( this, "consume_soul_greater_heal", spec.consume_soul_greater, soul_fragment::GREATER );
     active.consume_soul_lesser_heal =
         new consume_soul_heal_t( this, "consume_soul_lesser_heal", spec.consume_soul_lesser, soul_fragment::LESSER );
   }
 
-  active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
+  active.consume_soul_lesser =
+      new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
+
+  if ( talent.devourer.spontaneous_immolation->ok() )
+  {
+    active.spontaneous_immolation =
+        get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", spec.spontaneous_immolation_buff );
+    active.spontaneous_immolation->cooldown->duration = 0_s;
+  }
+
+  if ( talent.havoc.burning_wound->ok() )
+  {
+    active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
+  }
 
   if ( talent.havoc.collective_anguish->ok() )
   {
@@ -8840,9 +8984,11 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
   }
 #endif
 
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
+             style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
     case DEMON_HUNTER_HAVOC:
       return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
              style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
@@ -9024,6 +9170,8 @@ void demon_hunter_t::create_gains()
 {
   // General
   gain.miss_refund = get_gain( "miss_refund" );
+
+  // Devourer
 
   // Havoc
   gain.blind_fury       = get_gain( "blind_fury" );
@@ -9452,16 +9600,15 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up           = nullptr;
-  frailty_driver                  = nullptr;
-  exit_melee_event                = nullptr;
-  winning_streak_conversion_event = nullptr;
-  next_fragment_spawn             = 0;
-  metamorphosis_health            = 0;
-  frailty_accumulator             = 0.0;
-  shattered_destiny_accumulator   = 0.0;
-  wounded_quarry_accumulator      = 0.0;
-  last_reavers_mark_applied       = nullptr;
+  soul_fragment_pick_up         = nullptr;
+  frailty_driver                = nullptr;
+  exit_melee_event              = nullptr;
+  next_fragment_spawn           = 0;
+  metamorphosis_health          = 0;
+  frailty_accumulator           = 0.0;
+  shattered_destiny_accumulator = 0.0;
+  wounded_quarry_accumulator    = 0.0;
+  last_reavers_mark_applied     = nullptr;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
@@ -9648,7 +9795,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
 {
   if ( type_mask == soul_fragment::ANY )
   {
-    return (unsigned)soul_fragments.size();
+    return static_cast<unsigned>( soul_fragments.size() );
   }
 
   return std::accumulate(
@@ -9669,10 +9816,12 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
     return;
   }
 
+  auto max_soul_frags = max_soul_fragments();
+
   if ( frag->type == soul_fragment::LESSER )
   {
     unsigned active_fragments = get_active_soul_fragments( frag->type );
-    if ( active_fragments > MAX_SOUL_FRAGMENTS )
+    if ( active_fragments > max_soul_frags )
     {
       // Find and delete the oldest active fragment of this type.
       for ( auto& it : soul_fragments )
@@ -9695,7 +9844,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       }
     }
 
-    assert( get_active_soul_fragments( soul_fragment::LESSER ) <= MAX_SOUL_FRAGMENTS );
+    assert( get_active_soul_fragments( soul_fragment::LESSER ) <= max_soul_frags );
   }
 }
 
@@ -9805,7 +9954,23 @@ void demon_hunter_t::parse_player_effects()
   // Fel-scarred
 
   // Set Bonuses
-  parse_effects( buff.necessary_sacrifice );
+}
+
+// demon_hunter_t::max_soul_fragments =============================================
+
+unsigned demon_hunter_t::max_soul_fragments() const
+{
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      return DEVOURER_MAX_SOUL_FRAGMENTS;
+    case DEMON_HUNTER_HAVOC:
+      return MAX_SOUL_FRAGMENTS;
+    case DEMON_HUNTER_VENGEANCE:
+      return MAX_SOUL_FRAGMENTS;
+    default:
+      return 0;
+  }
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================
