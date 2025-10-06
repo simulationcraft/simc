@@ -1292,8 +1292,8 @@ void parse_player_effects_t::throw_passive_error( const spell_data_t* s )
   if ( s->flags( SX_PASSIVE ) )
     sim->error( TRIVIAL,
                 "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
-                "parse_effects() at line {}",
-                s->name_cstr(), __LINE__ );
+                "parse_effects().",
+                s->name_cstr() );
   else
     sim->error( TRIVIAL,
                 "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
@@ -1653,8 +1653,8 @@ void parse_action_base_t::throw_passive_error( const spell_data_t* s )
     _action->sim->error(
         TRIVIAL,
         "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
-        "parse_effects() at line {}",
-        s->name_cstr(), __LINE__ );
+        "parse_effects().",
+        s->name_cstr() );
   else
     _action->sim->error( TRIVIAL,
                          "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
