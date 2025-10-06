@@ -475,7 +475,7 @@ public:
 
     // Windwalker
     propagate_const<buff_t *> teachings_of_the_monastery;
-    propagate_const<buff_t *> bok_proc;
+    propagate_const<buff_t *> combo_breaker;
     propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
@@ -494,7 +494,6 @@ public:
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
-    propagate_const<buff_t *> august_dynasty;
     propagate_const<buff_t *> celestial_conduit;
     propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
@@ -535,22 +534,9 @@ public:
   {
     propagate_const<gain_t *> black_ox_brew_energy;
     propagate_const<gain_t *> chi_refund;
-    propagate_const<gain_t *> bok_proc;
-    propagate_const<gain_t *> chi_burst;
-    propagate_const<gain_t *> crackling_jade_lightning;
+    propagate_const<gain_t *> combo_breaker;
     propagate_const<gain_t *> energy_burst;
     propagate_const<gain_t *> energy_refund;
-    propagate_const<gain_t *> energizing_elixir_chi;
-    propagate_const<gain_t *> energizing_elixir_energy;
-    propagate_const<gain_t *> expel_harm;
-    propagate_const<gain_t *> focus_of_xuen;
-    propagate_const<gain_t *> fortuitous_spheres;
-    propagate_const<gain_t *> gift_of_the_ox;
-    propagate_const<gain_t *> glory_of_the_dawn;
-    propagate_const<gain_t *> healing_elixir;
-    propagate_const<gain_t *> open_palm_strikes;
-    propagate_const<gain_t *> power_strikes;
-    propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
   } gain;
 
@@ -558,23 +544,11 @@ public:
   {
     propagate_const<proc_t *> anvil__stave;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
-    propagate_const<proc_t *> blackout_combo_breath_of_fire;
     propagate_const<proc_t *> blackout_combo_keg_smash;
-    propagate_const<proc_t *> blackout_combo_celestial_brew;
-    propagate_const<proc_t *> blackout_combo_purifying_brew;
-    propagate_const<proc_t *> blackout_combo_rising_sun_kick;
-    propagate_const<proc_t *> blackout_kick_cdr_oe;
-    propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
-    propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
-    propagate_const<proc_t *> face_palm;
-    propagate_const<proc_t *> glory_of_the_dawn;
-    propagate_const<proc_t *> keg_smash_scalding_brew;
-    propagate_const<proc_t *> quick_sip;
     propagate_const<proc_t *> rsk_reset_totm;
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
@@ -619,6 +593,8 @@ public:
       const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *aura_3;
+      const spell_data_t *aura_4;
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
@@ -628,7 +604,6 @@ public:
       const spell_data_t *spinning_crane_kick_rank_2;
       const spell_data_t *touch_of_death_rank_3;
 
-      const spell_data_t *stagger;
       const spell_data_t *stagger_self_damage;
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;

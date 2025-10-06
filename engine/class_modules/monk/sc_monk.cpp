@@ -131,11 +131,10 @@ void monk_action_t<Base>::apply_buff_effects()
   }
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
-  parse_effects( p()->buff.bok_proc, affect_list_t( 1, 2, 3 ).remove_spell(
-                                         p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
+  parse_effects( p()->buff.combo_breaker, affect_list_t( 1, 2, 3 ).remove_spell(
+                                              p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.august_dynasty, CONSUME_BUFF );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
@@ -985,10 +984,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void execute() override
   {
-    if ( p()->wowv_l( { 11, 2, 0 } ) &&
-         ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
-      p()->proc.face_palm->occur();
-
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_tiger_palm->occur();
 
@@ -1008,7 +1003,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    p()->buff.bok_proc->trigger();
+    p()->buff.combo_breaker->trigger();
 
     // Reduces the remaining cooldown on your Brews by 1 sec
     p()->baseline.brewmaster.brews.adjust(
@@ -1115,18 +1110,11 @@ struct press_the_advantage_t : base_action_t
     {
       base_action_t::p()->buff.press_the_advantage->expire();
 
-      if ( ( face_palm = base_action_t::rng().roll(
-                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+      if ( ( face_palm = true ) )
       {
-        base_action_t::p()->proc.face_palm->occur();
         base_action_t::p()->baseline.brewmaster.brews.adjust(
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
       }
-
-      // Blackout Combo gets consumed by Keg Smash prior to the bonus attack, so if we make it here,
-      // we know it's a bonus Rising Sun Kick
-      if ( base_action_t::p()->buff.blackout_combo->up() )
-        base_action_t::p()->proc.blackout_combo_rising_sun_kick->occur();
 
       base_action_t::execute();
 
@@ -1418,8 +1406,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     base_t::consume_resource();
 
     // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.bok_proc->up() )
-      p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    if ( p()->buff.combo_breaker->up() )
+      p()->gain.combo_breaker->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
   void execute() override
@@ -1451,23 +1439,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     p()->buff.vigilant_watch->trigger();
     p()->buff.tigers_ferocity->trigger();
 
-    if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
-    {
-      // Reduce the cooldown of Rising Sun Kick and Fists of Fury
-      timespan_t cd_reduction = p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
-      p()->proc.blackout_kick_cdr->occur();
-
-      p()->cooldown.rising_sun_kick->adjust( -1 * cd_reduction, true );
-      p()->cooldown.fists_of_fury->adjust( -1 * cd_reduction, true );
-    }
-
-    if ( p()->buff.bok_proc->up() )
+    if ( p()->buff.combo_breaker->up() )
     {
       if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
         p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
                             p()->gain.energy_burst );
 
-      p()->buff.bok_proc->decrement();
+      p()->buff.combo_breaker->decrement();
     }
 
     if ( p()->buff.teachings_of_the_monastery->check() )
@@ -1720,7 +1698,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->increment();  // increment is used to directly trigger without rolling chance
+          p()->buff.combo_breaker->increment();  // increment is used to directly trigger without rolling chance
       }
     }
 
@@ -3119,9 +3097,6 @@ public:
     if ( no_bof_hit )
       return;
 
-    if ( blackout_combo = p()->buff.blackout_combo->up(); blackout_combo )
-      p()->proc.blackout_combo_breath_of_fire->occur();
-
     if ( dragonfire_brew )
       dragonfire_brew->execute();
 
@@ -3302,7 +3277,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     {
       timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
       p()->find_stagger( "Stagger" )->delay_tick( delay );
-      p()->proc.blackout_combo_purifying_brew->occur();
     }
     p()->buff.blackout_combo->expire();
   }
@@ -3842,8 +3816,6 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
 
   void execute() override
   {
-    if ( p()->buff.blackout_combo->up() )
-      p()->proc.blackout_combo_celestial_brew->occur();
     p()->buff.aspect_of_harmony.trigger_spend();
 
     brew_t<monk_absorb_t>::execute();
@@ -4778,6 +4750,8 @@ void monk_t::parse_player_effects()
   // brewmaster player auras
   parse_effects( baseline.brewmaster.aura );
   parse_effects( baseline.brewmaster.aura_2 );
+  parse_effects( baseline.brewmaster.aura_3 );
+  parse_effects( baseline.brewmaster.aura_4 );
   parse_effects( baseline.brewmaster.brewmasters_balance );
   parse_effects( baseline.brewmaster.celestial_fortune );
 
@@ -5115,12 +5089,13 @@ void monk_t::init_spells()
     baseline.brewmaster.mastery                = find_mastery_spell( MONK_BREWMASTER );
     baseline.brewmaster.aura                   = find_specialization_spell( "Brewmaster Monk" );
     baseline.brewmaster.aura_2                 = find_specialization_spell( 462087 );
+    baseline.brewmaster.aura_3                 = find_specialization_spell( 1246978 );
+    baseline.brewmaster.aura_4                 = find_specialization_spell( 1258153 );
     baseline.brewmaster.brewmasters_balance    = find_specialization_spell( "Brewmaster's Balance" );
     baseline.brewmaster.celestial_fortune      = find_specialization_spell( "Celestial Fortune" );
     baseline.brewmaster.celestial_fortune_heal = find_spell( 216521 );  // TODO: Can you be more specific?
     baseline.brewmaster.expel_harm_rank_2      = find_rank_spell( "Expel Harm", "Rank 2", specialization() );
     baseline.brewmaster.blackout_kick          = find_spell( 205523 );
-    baseline.brewmaster.stagger                = find_specialization_spell( "Stagger" );
     baseline.brewmaster.stagger_self_damage    = find_spell( 124255 );
     baseline.brewmaster.light_stagger          = find_spell( 124275 );
     baseline.brewmaster.moderate_stagger       = find_spell( 124274 );
@@ -5138,15 +5113,16 @@ void monk_t::init_spells()
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
     baseline.windwalker.aura_2                    = find_specialization_spell( 462091 );
     baseline.windwalker.aura_3                    = find_specialization_spell( 1222923 );
+    baseline.windwalker.aura_4                    = find_specialization_spell( 1258122 );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
     baseline.windwalker.combat_conditioning       = find_specialization_spell( "Combat Conditioning" );
-    baseline.windwalker.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
     baseline.windwalker.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
     baseline.windwalker.touch_of_death_rank_3     = find_rank_spell( "Touch of Death", "Rank 3", specialization() );
     baseline.windwalker.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
     baseline.windwalker.touch_of_karma_buff       = find_spell( 125174 );
     baseline.windwalker.touch_of_karma_tick       = find_spell( 124280 );
+    baseline.windwalker.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
     baseline.windwalker.empowered_tiger_lightning_damage = find_spell( 335913 );
   }
 
@@ -5727,7 +5703,7 @@ void monk_t::create_buffs()
           return true;
         },
         [ this ]( school_e school, result_amount_type, action_state_t *state ) {
-          double stagger_rating = agility() * baseline.brewmaster.stagger->effectN( 1 ).percent();
+          double stagger_rating = agility() * talent.monk.stagger->effectN( 1 ).percent();
           if ( talent.brewmaster.high_tolerance->ok() )
             stagger_rating *= 1.0 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
@@ -5756,7 +5732,7 @@ void monk_t::create_buffs()
 
           // order of operations here is untestable with current in game values
           if ( school != SCHOOL_PHYSICAL )
-            stagger_percent *= baseline.brewmaster.stagger->effectN( 5 ).percent();
+            stagger_percent *= talent.monk.stagger->effectN( 5 ).percent();
 
           return std::min( stagger_percent, 0.99 );
         } } );
@@ -5870,10 +5846,10 @@ void monk_t::create_buffs()
           ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   // Windwalker
-  buff.bok_proc = make_buff_fallback( talent.windwalker.combo_breaker->ok(), this, "bok_proc",
-                                      talent.windwalker.combo_breaker_buff )
-                      ->set_trigger_spell( talent.windwalker.combo_breaker )
-                      ->set_chance( talent.windwalker.combo_breaker->effectN( 1 ).percent() );
+  buff.combo_breaker = make_buff_fallback( talent.windwalker.combo_breaker->ok(), this, "bok_proc",
+                                           talent.windwalker.combo_breaker_buff )
+                           ->set_trigger_spell( talent.windwalker.combo_breaker )
+                           ->set_chance( talent.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", talent.windwalker.chi_energy_buff )
@@ -6167,51 +6143,31 @@ void monk_t::init_gains()
 {
   base_t::init_gains();
 
-  gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
-  gain.bok_proc                 = get_gain( "blackout_kick_proc" );
-  gain.chi_refund               = get_gain( "chi_refund" );
-  gain.chi_burst                = get_gain( "chi_burst" );
-  gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
-  gain.energy_burst             = get_gain( "energy_burst" );
-  gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
-  gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
-  gain.energy_refund            = get_gain( "energy_refund" );
-  gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
-  gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
-  gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
-  gain.power_strikes            = get_gain( "power_strikes" );
-  gain.tiger_palm               = get_gain( "tiger_palm" );
-  gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
+  gain.black_ox_brew_energy = get_gain( "black_ox_brew_energy" );
+  gain.combo_breaker        = get_gain( "combo_breaker" );
+  gain.chi_refund           = get_gain( "chi_refund" );
+  gain.energy_burst         = get_gain( "energy_burst" );
+  gain.energy_refund        = get_gain( "energy_refund" );
+  gain.touch_of_death_ww    = get_gain( "touch_of_death_ww" );
 }
 
 void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.anvil__stave                   = get_proc( "Anvil & Stave" );
-  proc.blackout_combo_tiger_palm      = get_proc( "Blackout Combo - Tiger Palm" );
-  proc.blackout_combo_breath_of_fire  = get_proc( "Blackout Combo - Breath of Fire" );
-  proc.blackout_combo_keg_smash       = get_proc( "Blackout Combo - Keg Smash" );
-  proc.blackout_combo_celestial_brew  = get_proc( "Blackout Combo - Celestial Brew" );
-  proc.blackout_combo_purifying_brew  = get_proc( "Blackout Combo - Purifying Brew" );
-  proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
-  proc.blackout_kick_cdr              = get_proc( "Blackout Kick CDR" );
-  proc.bountiful_brew_proc            = get_proc( "Bountiful Brew Trigger" );
-  proc.charred_passions               = get_proc( "Charred Passions" );
-  proc.counterstrike_tp               = get_proc( "Counterstrike - Tiger Palm" );
-  proc.counterstrike_sck              = get_proc( "Counterstrike - Spinning Crane Kick" );
-  proc.dance_of_chiji                 = get_proc( "Dance of Chi-Ji" );
-  proc.elusive_footwork_proc          = get_proc( "Elusive Footwork" );
-  proc.face_palm                      = get_proc( "Face Palm" );
-  proc.glory_of_the_dawn              = get_proc( "Glory of the Dawn" );
-  proc.keg_smash_scalding_brew        = get_proc( "Keg Smash - Scalding Brew" );
-  proc.quick_sip                      = get_proc( "Quick Sip" );
-  proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
-  proc.salsalabims_strength           = get_proc( "Sal'salabim Breath of Fire Reset" );
-  proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
-  proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
-  proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
-  proc.elusive_brawler_preserved      = get_proc( "Elusive Brawler Stacks Preserved" );
+  proc.anvil__stave               = get_proc( "Anvil & Stave" );
+  proc.blackout_combo_tiger_palm  = get_proc( "Blackout Combo - Tiger Palm" );
+  proc.blackout_combo_keg_smash   = get_proc( "Blackout Combo - Keg Smash" );
+  proc.charred_passions           = get_proc( "Charred Passions" );
+  proc.counterstrike_tp           = get_proc( "Counterstrike - Tiger Palm" );
+  proc.counterstrike_sck          = get_proc( "Counterstrike - Spinning Crane Kick" );
+  proc.elusive_footwork_proc      = get_proc( "Elusive Footwork" );
+  proc.rsk_reset_totm             = get_proc( "Rising Sun Kick TotM Reset" );
+  proc.salsalabims_strength       = get_proc( "Sal'salabim Breath of Fire Reset" );
+  proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
+  proc.tranquil_spirit_goto       = get_proc( "Tranquil Spirit - Gift of the Ox" );
+  proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
+  proc.elusive_brawler_preserved  = get_proc( "Elusive Brawler Stacks Preserved" );
 }
 
 monk_effect_callback_t::monk_effect_callback_t( const special_effect_t &effect, monk_t *player )
