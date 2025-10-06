@@ -5040,14 +5040,14 @@ void monk_t::init_spells()
     baseline.monk.leather_specialization   = find_specialization_spell( "Leather Specialization" );
     baseline.monk.expel_harm               = find_spell( 322101 );
     baseline.monk.expel_harm_damage        = find_spell( 115129 );
-    baseline.monk.blackout_kick            = find_specialization_spell( "Blackout Kick" );
+    baseline.monk.blackout_kick            = find_class_spell( "Blackout Kick" );
     baseline.monk.crackling_jade_lightning = find_class_spell( "Crackling Jade Lightning" );
     baseline.monk.leg_sweep                = find_class_spell( "Leg Sweep" );
     baseline.monk.mystic_touch             = find_spell( 113746 );
     baseline.monk.provoke                  = find_class_spell( "Provoke" );
     baseline.monk.roll                     = find_class_spell( "Roll" );
     baseline.monk.spinning_crane_kick      = find_spell( 101546 );
-    baseline.monk.tiger_palm               = find_class_spell( "Tiger Palm" );
+    baseline.monk.tiger_palm               = find_spell( 100780 );
     baseline.monk.touch_of_death           = find_spell( 322109 );
     baseline.monk.vivify                   = find_class_spell( "Vivify" );
   }
