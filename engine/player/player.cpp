@@ -15777,11 +15777,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_OVERRIDE_AP_PER_SP:
         field    = "ap_per_sp";
-        pct_val = modifying_eff.percent();
+        flat_val = modifying_eff.percent();
         break;
       case A_OVERRIDE_SP_PER_AP:
         field    = "sp_per_ap";
-        pct_val = modifying_eff.percent();
+        flat_val = modifying_eff.percent();
         break;
       case A_MOD_PARRY_FROM_CRIT_RATING:
         field    = "parry_from_crit_rating";
