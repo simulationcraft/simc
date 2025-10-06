@@ -1597,9 +1597,6 @@ void player_t::init_base_stats()
         continue;
 
       std::string res_str = util::resource_type_string( resource );
-      // Passive Flat Resource Modifiers
-      resources.base[ resource ] =
-          get_passive_player_value( resources.base[ resource ], fmt::format( "flat_{}", res_str ) );
       // Max Resource Modifiers
       resources.base[ resource ] = get_passive_player_value( resources.base[ resource ], fmt::format( "max_{}", res_str ) );
       // Passive Resource Multipliers
