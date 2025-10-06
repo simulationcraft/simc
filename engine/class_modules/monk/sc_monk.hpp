@@ -520,7 +520,6 @@ public:
     propagate_const<buff_t *> vigilant_watch;
     propagate_const<buff_t *> wisdom_of_the_wall_crit;
     propagate_const<buff_t *> wisdom_of_the_wall_dodge;
-    propagate_const<buff_t *> wisdom_of_the_wall_flurry;
     propagate_const<buff_t *> wisdom_of_the_wall_mastery;
 
     // TWW1 Set Bonus
@@ -912,6 +911,7 @@ public:
     {
       // Row 1
       player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_action;
       const spell_data_t *celestial_conduit_buff;
       const spell_data_t *celestial_conduit_dmg;
       const spell_data_t *celestial_conduit_heal;
@@ -1024,9 +1024,7 @@ public:
       player_talent_t wisdom_of_the_wall;
       const spell_data_t *wisdom_of_the_wall_crit_buff;
       const spell_data_t *wisdom_of_the_wall_dodge_buff;
-      const spell_data_t *wisdom_of_the_wall_flurry_buff;
       const spell_data_t *wisdom_of_the_wall_mastery_buff;
-      const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
   } talent;
 

@@ -608,32 +608,18 @@ struct flurry_strikes_t : public monk_melee_attack_t
     }
   };
 
-  struct flurry_strike_wisdom_t : public monk_spell_t
-  {
-    flurry_strike_wisdom_t( monk_t *p )
-      : monk_spell_t( p, "flurry_strike_wisdom", p->talent.shado_pan.wisdom_of_the_wall_flurry )
-    {
-      aoe        = -1;
-      background = dual = true;
-
-      name_str_reporting = "flurry_strike_wisdom_of_the_wall";
-    }
-  };
-
   struct flurry_strike_t : public monk_melee_attack_t
   {
     enum wisdom_buff_e
     {
       WISDOM_OF_THE_WALL_CRIT,
       WISDOM_OF_THE_WALL_DODGE,
-      WISDOM_OF_THE_WALL_FLURRY,
       WISDOM_OF_THE_WALL_MASTERY
     };
 
     int flurry_strikes_counter;
     int flurry_strikes_threshold;
     shuffled_rng_t *deck;
-    flurry_strike_wisdom_t *wisdom_flurry;
 
     /*
      * [shadow] buff application tends to be a bit late, thus up cannot reliably
@@ -648,17 +634,12 @@ struct flurry_strikes_t : public monk_melee_attack_t
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
         flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
-        deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
-                                                           { WISDOM_OF_THE_WALL_DODGE, 1 },
-                                                           { WISDOM_OF_THE_WALL_FLURRY, 1 },
-                                                           { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) ),
+        deck( p->get_shuffled_rng(
+            "wisdom_of_the_wall",
+            { { WISDOM_OF_THE_WALL_CRIT, 1 }, { WISDOM_OF_THE_WALL_DODGE, 1 }, { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) ),
         recent_shadow_trigger( false )
     {
       background = dual = true;
-
-      wisdom_flurry = new flurry_strike_wisdom_t( p );
-
-      parent->add_child( wisdom_flurry );
     }
 
     void set_recent_trigger( bool state )
@@ -697,10 +678,6 @@ struct flurry_strikes_t : public monk_melee_attack_t
             case WISDOM_OF_THE_WALL_DODGE:
               p()->buff.wisdom_of_the_wall_dodge->trigger();
               break;
-            case WISDOM_OF_THE_WALL_FLURRY:
-              set_recent_trigger( true );
-              p()->buff.wisdom_of_the_wall_flurry->trigger();
-              break;
             case WISDOM_OF_THE_WALL_MASTERY:
               p()->buff.wisdom_of_the_wall_mastery->trigger();
               break;
@@ -714,9 +691,6 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
       if ( auto target_data = p()->get_target_data( s->target ); target_data )
         target_data->debuff.high_impact->trigger();
-
-      if ( p()->buff.wisdom_of_the_wall_flurry->up() || recent_shadow_trigger )
-        wisdom_flurry->execute_on_target( s->target );
     }
 
     void reset() override
@@ -3557,9 +3531,10 @@ struct celestial_conduit_t : public monk_spell_t
       double cam = monk_spell_t::composite_aoe_multiplier( state );
 
       if ( state->n_targets > 0 )
-        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( as<double>( state->n_targets ),
-                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
+                     std::min(
+                         as<double>( state->n_targets ),
+                         p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
 
       return cam;
     }
@@ -3579,9 +3554,10 @@ struct celestial_conduit_t : public monk_spell_t
       double cam = monk_heal_t::composite_aoe_multiplier( state );
 
       if ( state->n_targets > 0 )
-        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( (double)state->n_targets,
-                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
+                     std::min(
+                         (double)state->n_targets,
+                         p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
 
       return cam;
     }
@@ -3591,7 +3567,7 @@ struct celestial_conduit_t : public monk_spell_t
   celestial_conduit_heal_t *heal;
 
   celestial_conduit_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit ),
+    : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit_action ),
       damage( new celestial_conduit_dmg_t( p ) ),
       heal( new celestial_conduit_heal_t( p ) )
   {
@@ -3602,6 +3578,14 @@ struct celestial_conduit_t : public monk_spell_t
     interrupt_auto_attack = false;
 
     tick_action = damage;
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.conduit_of_the_celestials.celestial_conduit->ok() )
+      return monk_spell_t::ready();
+
+    return false;
   }
 
   bool usable_moving() const override
@@ -5355,6 +5339,7 @@ void monk_t::init_spells()
   // monk_t::talent::conduit_of_the_celestials
   {
     talent.conduit_of_the_celestials.celestial_conduit                        = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit_action                 = find_spell( 443028 );
     talent.conduit_of_the_celestials.celestial_conduit_buff                   = find_spell( 443028 );
     talent.conduit_of_the_celestials.celestial_conduit_dmg                    = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal                   = find_spell( 443039 );
@@ -5451,9 +5436,7 @@ void monk_t::init_spells()
     talent.shado_pan.wisdom_of_the_wall              = _HT( "Wisdom of the Wall" );
     talent.shado_pan.wisdom_of_the_wall_crit_buff    = find_spell( 452684 );
     talent.shado_pan.wisdom_of_the_wall_dodge_buff   = find_spell( 451242 );
-    talent.shado_pan.wisdom_of_the_wall_flurry_buff  = find_spell( 452688 );
     talent.shado_pan.wisdom_of_the_wall_mastery_buff = find_spell( 452685 );
-    talent.shado_pan.wisdom_of_the_wall_flurry       = find_spell( 451250 );
   }
 
   // monk_t::talent::tier
@@ -5683,8 +5666,6 @@ void monk_t::create_buffs()
         },
         [ this ]( school_e school, result_amount_type, action_state_t *state ) {
           double stagger_rating = agility() * talent.monk.stagger->effectN( 1 ).percent();
-          if ( talent.brewmaster.high_tolerance->ok() )
-            stagger_rating *= 1.0 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
           if ( talent.brewmaster.fortifying_brew_determination->ok() && buff.fortifying_brew->up() )
             stagger_rating *= 1.0 + talent.monk.fortifying_brew_buff->effectN( 6 ).percent();
@@ -5718,7 +5699,7 @@ void monk_t::create_buffs()
 
   base_t::create_buffs();
 
-  // General
+  // Monk
   buff.combat_wisdom = make_buff_fallback( talent.windwalker.combat_wisdom->ok(), this, "combat_wisdom",
                                            talent.windwalker.combat_wisdom_buff )
                            ->set_trigger_spell( talent.windwalker.combat_wisdom )
@@ -5727,6 +5708,8 @@ void monk_t::create_buffs()
   buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch",
                                          talent.monk.fatal_touch->effectN( 2 ).trigger() )
                          ->set_trigger_spell( talent.monk.fatal_touch );
+
+  buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
 
   buff.fortifying_brew = make_buff_fallback<buffs::fortifying_brew_t>(
       talent.monk.fortifying_brew->ok() && specialization() == MONK_BREWMASTER, this, "fortifying_brew" );
@@ -5739,12 +5722,6 @@ void monk_t::create_buffs()
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", baseline.monk.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-
-  buff.teachings_of_the_monastery =
-      make_buff_fallback( talent.windwalker.teachings_of_the_monastery->ok(), this, "teachings_of_the_monastery",
-                          talent.windwalker.teachings_of_the_monastery_buff )
-          ->set_trigger_spell( talent.windwalker.teachings_of_the_monastery )
-          ->set_default_value_from_effect( 1 );
 
   buff.yulons_grace = make_buff_fallback<absorb_buff_t>( talent.monk.yulons_grace->ok(), this, "yulons_grace",
                                                          talent.monk.yulons_grace_buff );
@@ -5825,6 +5802,12 @@ void monk_t::create_buffs()
           ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   // Windwalker
+  buff.teachings_of_the_monastery =
+      make_buff_fallback( talent.windwalker.teachings_of_the_monastery->ok(), this, "teachings_of_the_monastery",
+                          talent.windwalker.teachings_of_the_monastery_buff )
+          ->set_trigger_spell( talent.windwalker.teachings_of_the_monastery )
+          ->set_default_value_from_effect( 1 );
+
   buff.combo_breaker = make_buff_fallback( talent.windwalker.combo_breaker->ok(), this, "combo_breaker",
                                            talent.windwalker.combo_breaker_buff )
                            ->set_trigger_spell( talent.windwalker.combo_breaker )
@@ -6050,12 +6033,6 @@ void monk_t::create_buffs()
             self->current_value = self->data().effectN( 3 ).percent() * composite_damage_versatility();
           } )
           ->set_tick_behavior( buff_tick_behavior::CLIP );
-
-  buff.wisdom_of_the_wall_flurry =
-      make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this, "wisdom_of_the_wall_flurry",
-                          talent.shado_pan.wisdom_of_the_wall_flurry_buff )
-          ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
-          ->set_default_value_from_effect( 1 );
 
   buff.wisdom_of_the_wall_mastery =
       make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this, "wisdom_of_the_wall_mastery",
