@@ -1474,7 +1474,7 @@ struct soul_fragment_t
     assert( active() );
     timespan_t delay = get_travel_time();
 
-    action_t* consume_action;
+    action_t* consume_action = nullptr;
     action_t* heal_action =
         is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater_heal : dh->active.consume_soul_lesser_heal;
     switch ( type )
@@ -1493,6 +1493,7 @@ struct soul_fragment_t
         break;
     }
 
+    assert( consume_action != nullptr );
     if ( instant || delay == 0_s )
     {
       consume_action->execute();
