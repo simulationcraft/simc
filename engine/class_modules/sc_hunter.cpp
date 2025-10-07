@@ -1797,7 +1797,7 @@ struct dark_hound_t final : public hunter_pet_t
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 3;
+    owner_coeff.ap_from_ap = owner->specialization() == HUNTER_BEAST_MASTERY ? 5 : 6.05;
   }
 
   void summon( timespan_t duration = 0_ms ) override
