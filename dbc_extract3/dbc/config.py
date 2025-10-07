@@ -10,9 +10,13 @@ class Config:
         self.base_module_path = None
         self.base_module = None
         self.base_output_path = None
+        self.base_output_path_txt = None
 
     def output_file(self, file_name):
-        return os.path.join(self.base_output_path, file_name)
+        if file_name.split('.')[-1] == 'txt':
+            return os.path.join(self.base_output_path_txt, file_name)
+        else:
+            return os.path.join(self.base_output_path, file_name)
 
     def open(self):
         if len(self.options.args) < 1:
@@ -25,6 +29,7 @@ class Config:
             if section == 'general':
                 self.base_module_path = config.get('general', 'module_base')
                 self.base_output_path = config.get('general', 'output_base')
+                self.base_output_path_txt = config.get('general', 'output_base_txt')
             else:
                 if section not in self.config:
                     self.config[section] = { 'generators': [], 'objects': [], 'append': False }
