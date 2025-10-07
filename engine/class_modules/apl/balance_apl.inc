@@ -124,19 +124,20 @@ pre_cd->add_action( "use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!tri
 pre_cd->add_action( "use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&variable.on_use_trinket=2&variable.cd_condition" );
 pre_cd->add_action( "use_item,name=bestinslots,if=hero_tree.keeper_of_the_grove&buff.harmony_of_the_grove.up|hero_tree.elunes_chosen&(cooldown.ca_inc.full_recharge_time>20|buff.ca_inc.up)" );
 
-st->add_action( "warrior_of_elune,if=hero_tree.elunes_chosen" );
-st->add_action( "wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition" );
-st->add_action( "starfire,if=!variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition" );
+st->add_action( "warrior_of_elune,if=talent.lunar_calling&!buff.dreamstate.up&(buff.ca_inc.up|cooldown.ca_inc.remains>10|fight_remains<cooldown.ca_inc.remains+5)|!talent.lunar_calling&variable.eclipse_remains<=7" );
+st->add_action( "fury_of_elune,if=(cooldown.ca_inc.remains<?variable.eclipse_remains)<gcd.max|cooldown.ca_inc.remains<fight_remains&fight_remains<(buff.ca_inc.duration+gcd.max>?fight_remains-cooldown.ca_inc.remains)+gcd.max|fight_remains<8+gcd.max" );
+st->add_action( "wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!(cooldown.ca_inc.remains<action.starfire.cast_time)" );
+st->add_action( "starfire,if=(!variable.enter_lunar|cooldown.ca_inc.remains<cast_time)&eclipse.in_eclipse&variable.eclipse_remains<cast_time" );
 st->add_action( "sunfire,target_if=remains<3|refreshable&(hero_tree.keeper_of_the_grove&cooldown.force_of_nature.ready|hero_tree.elunes_chosen&variable.cd_condition)" );
 st->add_action( "moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)" );
+st->add_action( "fury_of_elune,if=5+variable.passive_asp<astral_power.deficit&(!(cooldown.ca_inc.remains<variable.eclipse_remains&variable.eclipse_remains<12)|buff.dreamstate.up&cooldown.ca_inc.remains<gcd.max)" );
 st->add_action( "call_action_list,name=pre_cd" );
 st->add_action( "celestial_alignment,if=variable.cd_condition" );
-st->add_action( "incarnation,if=variable.cd_condition" );
+st->add_action( "incarnation,if=variable.cd_condition&(buff.dreamstate.stack=2|prev_gcd.1.fury_of_elune&buff.dreamstate.up|fight_remains<buff.ca_inc.duration+gcd.max)" );
 st->add_action( "wrath,if=variable.enter_lunar&(eclipse.in_none|variable.eclipse_remains<cast_time)" );
 st->add_action( "starfire,if=!variable.enter_lunar&(eclipse.in_none|variable.eclipse_remains<cast_time)" );
 st->add_action( "starsurge,if=variable.cd_condition&astral_power.deficit>variable.passive_asp+action.force_of_nature.energize_amount" );
 st->add_action( "force_of_nature,if=variable.pre_cd_condition|cooldown.ca_inc.full_recharge_time+5+15*talent.control_of_the_dream>cooldown&(!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains+10+15*talent.control_of_the_dream>cooldown|fight_remains<cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration+5)&(variable.on_use_trinket=0|cooldown.ca_inc.remains>20|talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>20|(variable.on_use_trinket=1|variable.on_use_trinket=3)&(trinket.1.cooldown.remains>5+15*talent.control_of_the_dream|trinket.1.cooldown.ready)|variable.on_use_trinket=2&(trinket.2.cooldown.remains>5+15*talent.control_of_the_dream|trinket.2.cooldown.ready))&(fight_remains>cooldown+5|fight_remains<cooldown.ca_inc.remains+7)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10&fight_remains>cooldown.convoke_the_spirits.remains+6" );
-st->add_action( "fury_of_elune,if=5+variable.passive_asp<astral_power.deficit" );
 st->add_action( "starfall,if=buff.starweavers_warp.up" );
 st->add_action( "starsurge,if=talent.starlord&buff.starlord.stack<3" );
 st->add_action( "sunfire,target_if=refreshable" );
@@ -149,8 +150,8 @@ st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+energize_
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
 st->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos.up" );
-st->add_action( "starsurge,if=astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))" );
+st->add_action( "starsurge,if=astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max+action.starfire.cast_time))" );
 st->add_action( "force_of_nature,if=!hero_tree.keeper_of_the_grove" );
 st->add_action( "wild_mushroom,if=!prev_gcd.1.wild_mushroom&dot.fungal_growth.remains<2" );
-st->add_action( "starfire,if=hero_tree.elunes_chosen" );
+st->add_action( "starfire,if=talent.lunar_calling" );
 st->add_action( "wrath" );
