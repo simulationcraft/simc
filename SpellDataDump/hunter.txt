@@ -2515,13 +2515,15 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 4690 (Label) | Target: Self (1)
                    Affected Spells (Label): Bear Summon (1225858)
 #10 (id=1215335) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.666 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
+Hotfixed         : Base Value (20 -> 12), PvP Coefficient (1 -> 1.666)
 #11 (id=1215355) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.666 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
+Hotfixed         : Base Value (20 -> 12), PvP Coefficient (1 -> 1.666)
 #12 (id=1257051) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
                    Affected Spells: Stampede (201594)
@@ -2597,6 +2599,16 @@ Effects          :
 #15 (id=1262478) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Misc Value 2: 5612 (Label) | Target: Self (1)
                    Affected Spells (Label): Hunter Sentinel 11.2 Class Set 4pc (1236375)
+#16 (id=1280691) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 91
+Hotfixed         : NEW EFFECT
+#17 (id=1280692) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 91
+Hotfixed         : NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -15461,7 +15473,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 4289
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #9, #13, #14), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5), Precise Shots (1257703 effect#2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #9, #13, #14, #16, #17), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5), Precise Shots (1257703 effect#2)
 Family Flags     : 1, 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -15744,7 +15756,8 @@ Family Flags     : 106
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181302)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6.1875 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.82 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (6.1875 -> 5.82)
 Description      : $@spelldesc467911
 
 Name             : Bleak Powder (id=467922) [Spell Family (9)] 
@@ -15828,7 +15841,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 5085: Hunter Dark Ranger 11.2 Class Set 4pc (1236371 effect#1)
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #13, #14), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #13, #14, #16, #17), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5)
 Family Flags     : 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -15905,7 +15918,7 @@ Labels           : 16: Class Spells
                  : 1218
                  : 3022
                  : 3993: Unnatural Causes (459529 effect#2)
-Affecting Spells : Beast Mastery Hunter (137015 effects: #10, #11), Marksmanship Hunter (137016 effects: #13, #14), Mastery: Sniper Training (193468 effect#4), Soul Drinker (469638 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5)
+Affecting Spells : Beast Mastery Hunter (137015 effects: #10, #11), Marksmanship Hunter (137016 effects: #13, #14, #16, #17), Mastery: Sniper Training (193468 effect#4), Soul Drinker (469638 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5)
 Family Flags     : 91
 Attributes       : No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Do Not Display Range (126), Rolling Periodic (334), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -16605,7 +16618,8 @@ Family Flags     : 106
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1189956)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.25 | PvP Coefficient: 0.56 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.83 | PvP Coefficient: 0.56 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (5.25 -> 4.83)
 Description      : $@spelldesc467911
 
 Name             : Howl of the Pack Leader (id=472324) [Spell Family (9)] 
