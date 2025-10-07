@@ -3038,12 +3038,13 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
+    demon_hunter_spell_t::execute();
+
     if ( p()->talent.havoc.cycle_of_hatred->ok() )
     {
       p()->buff.cycle_of_hatred->trigger();
     }
 
-    demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
