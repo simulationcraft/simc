@@ -15638,8 +15638,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   {
     // check player affecting subtypes
     auto misc_type = modifying_eff.misc_value1();
-    std::string field {};
-    std::string subtype_str {};
+    std::string field{};
+    std::string subtype_str{};
     bitmap_type_e bit_type = BITMAP_NONE;
     resource_e resource_type;
     double flat_val = 0.0;
@@ -15972,9 +15972,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // grab the override/hotfix variant
     auto spell = dbc::find_spell( this, spell_ );
 
-    std::string_view field, field2;
-    std::string_view eff_field, eff_field2;
-    std::string_view pow_field;
+    std::string field{};
+    std::string field2{};
+    std::string eff_field{};
+    std::string eff_field2{};
+    std::string pow_field{};
     unsigned field_type   = P_MAX;
     unsigned field_type2  = P_MAX;
     int eff_idx = 0;
@@ -15985,7 +15987,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
     bool allow_zero = true;  // modify even if base dbc value is 0
 
-    auto do_debug = [ & ]( std::string_view msg ) {
+    auto do_debug = [ & ]( std::string msg ) {
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
