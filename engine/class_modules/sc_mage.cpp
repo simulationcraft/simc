@@ -3446,14 +3446,10 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
   {
     double m = residual_action_t::composite_target_multiplier( target );
 
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 5 } )  // TODO: Remove PTR check
+    if ( auto td = debug_cast<mage_t*>( player )->find_target_data( target ) )
     {
-      auto p = debug_cast<mage_t*>( player );
-      if ( auto td = p->find_target_data( target ) )
-      {
-        m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
-        m *= 1.0 + td->debuffs.molten_fury->check_value();
-      }
+      m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
+      m *= 1.0 + td->debuffs.molten_fury->check_value();
     }
 
     return m;
