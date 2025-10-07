@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1996,11 +1996,13 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.57 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 1.57 | Target: Self (1)
+Hotfixed         : Base Value (33 -> 38)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1104540)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 75 | Scaled Value: 75
+Hotfixed         : Base Value (100 -> 75)
 Description      : Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
@@ -4786,7 +4788,9 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1028684)  : Trigger Missiles (32): Shadow Crash
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391286 | Radius: 8 yards | Target: at Area (87)
-Description      : Aim a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds and applying Vampiric Touch to up to $391286s1 of them.
+Description      : Aims a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
+
+Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -14666,7 +14670,7 @@ Labels           : 16: Class Spells
                  : 5170: Priest Archon 11.2 Class Set 2pc (1236398 effect#2)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Do Not Display Range (126), Aura Points On Client (268)
+Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1155949)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
@@ -14695,7 +14699,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
 Effects          :
 #1 (id=1155952)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -5 | Scaled Value: -5 | Mechanic: Snare | Target: Targeted Enemy (6)
@@ -14716,7 +14720,7 @@ Labels           : 16: Class Spells
                  : 5169: Priest Archon 11.2 Class Set 2pc (1236398 effect#1)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
 Effects          :
 #1 (id=1155954)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
@@ -14962,7 +14966,9 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1161703)  : Trigger Missiles (32): Shadow Crash
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 465521 | Target: Targeted Enemy (6)
-Description      : Hurl a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $a1 yds and applying Vampiric Touch to up to $465521s1 of them.
+Description      : Hurls a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
+
+Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -15207,7 +15213,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Max Targets      : 6
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
@@ -16243,7 +16248,7 @@ Effects          :
 #1 (id=1242980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc373280
-Tooltip          : Witnissing nightmares from $@auracaster.
+Tooltip          : Witnessing nightmares from $@auracaster.
 
 Name             : Horrific Vision (id=1243105) [Spell Family (6)] 
 Class            : Priest

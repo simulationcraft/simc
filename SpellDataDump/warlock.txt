@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1034,6 +1034,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 773
+                 : 5682
 Category Cooldown: 600 seconds
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Swift Artifice (452902 effect#1)
 Family Flags     : 56
@@ -4424,7 +4425,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
-Category         : 1630 (Type 0x0)
+Category         : 1630 (Type 0x1)
 Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 88
                  : 203
@@ -4625,7 +4626,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Demonic Calling (205145)
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=302852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -5855,7 +5856,7 @@ Proc Flags       : Cast Successful
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Triggered By     : Demonic Core (270171)
 Family Flags     : 82
-Attributes       : No Aura Cancel (31), Do Not Consume if Gained During Cast (79), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Do Not Consume if Gained During Cast (79), Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=707410)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
@@ -5938,7 +5939,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Ravenous Afflictions (459440)
-Attributes       : Do Not Consume if Gained During Cast (79), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Do Not Consume if Gained During Cast (79), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=708162)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -9891,7 +9892,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1818: Lifeblood (386646 effect#2)
 Triggered By     : Lifeblood (386646)
-Attributes       : Aura Points On Client (268), Do Not Log on Learn (355)
+Attributes       : Aura Points On Client (268), Do Not Log on Learn (355), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1020869)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10201,7 +10202,7 @@ Labels           : 16: Class Spells
                  : 1835
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1021526)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -10250,6 +10251,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Attributes       : Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1021630)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11225,7 +11227,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Soulburn (385899)
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Change Specialization (38)
 Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
@@ -11363,7 +11365,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
-Category         : 1630 (Type 0x0)
+Category         : 1630 (Type 0x1)
 Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
@@ -11618,6 +11620,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Triggered By     : Abyss Walker (389609)
+Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1025957)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 2 | Misc Value: 0x7f | Target: Self (1)
@@ -13472,7 +13475,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1120165)  : Apply Aura (6) | Dummy (4)
@@ -13655,7 +13658,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121772)  : Apply Aura (6) | Dummy (4)
@@ -13677,7 +13680,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121774)  : Apply Aura (6) | Dummy (4)
@@ -14737,7 +14740,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Feast of Souls (450752)
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
 #1 (id=1149315)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15272,7 +15275,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting Spells : Reap and Sow (236114 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 31
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1154875)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -16314,6 +16317,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Malign Omen (458041)
+Attributes       : Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1163744)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
