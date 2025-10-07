@@ -1551,8 +1551,8 @@
     "fields": [
       { "data_type": "S", "field": "category" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "B", "field": "uses_per_week" },
-      { "data_type": "b", "field": "charges" },
+      { "data_type": "i", "field": "uses_per_week" },
+      { "data_type": "i", "field": "charges" },
       { "data_type": "i", "field": "charge_cooldown" },
       { "data_type": "i", "field": "type_mask" }
     ]
