@@ -410,8 +410,8 @@ void monk_action_t<Base>::consume_resource()
         p()->efficient_training_energy += std::lround( final_cost );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
-          timespan_t cdr =
-              timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
+          // timespan_t cdr =
+          //     timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
           p()->efficient_training_energy -=
               as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
         }
@@ -630,7 +630,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
      */
     bool recent_shadow_trigger;
 
-    flurry_strike_t( monk_t *p, action_t *parent )
+    flurry_strike_t( monk_t *p, action_t * )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
         flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
@@ -3520,17 +3520,17 @@ struct celestial_conduit_t : public monk_spell_t
     tick_action_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
       : TBase( player, name, spell_data )
     {
-      background = true;
+      TBase::background = true;
 
       if constexpr ( std::is_same_v<TBase, monk_spell_t> )
       {
-        aoe              = -1;
-        split_aoe_damage = true;
-        ww_mastery       = true;
+        TBase::aoe              = -1;
+        TBase::split_aoe_damage = true;
+        TBase::ww_mastery       = true;
       }
 
       if constexpr ( std::is_same_v<TBase, monk_heal_t> )
-        target = player;
+        TBase::target = player;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override

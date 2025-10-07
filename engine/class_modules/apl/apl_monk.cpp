@@ -81,7 +81,7 @@ std::string default_rune( const monk_t* player )
   return "disabled";
 }
 
-std::string default_temporary_enchant( const monk_t* player )
+std::string default_temporary_enchant( const monk_t* /* player */ )
 {
   // if ( player->true_level >= 80 )
   //   return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
