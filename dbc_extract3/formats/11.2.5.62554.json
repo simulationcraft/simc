@@ -1648,10 +1648,11 @@
   "SpellInterrupts": {
     "parent": "SpellName",
     "fields": [
-      { "data_type": "h", "field": "difficulty" },
+      { "data_type": "B", "field": "difficulty" },
       { "data_type": "i", "field": "interrupt_flags" },
       { "data_type": "i", "field": "aura_interrupt_flags", "elements": 2 },
-      { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 }
+      { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 },
+      { "data_type": "i", "field": "id_spell" },
     ]
   },
   "SpellItemEnchantment": {
