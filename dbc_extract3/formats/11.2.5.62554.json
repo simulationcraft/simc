@@ -1652,7 +1652,7 @@
       { "data_type": "i", "field": "interrupt_flags" },
       { "data_type": "i", "field": "aura_interrupt_flags", "elements": 2 },
       { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 },
-      { "data_type": "i", "field": "id_spell" },
+      { "data_type": "i", "field": "id_spell" }
     ]
   },
   "SpellItemEnchantment": {
