@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -676,7 +676,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.67)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -697,7 +698,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.67)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -2513,12 +2515,12 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7)
 Family Flags     : 41
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=128434)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 36 | Misc Value: 0x7f | Target: Master (27)
                    Affected School(s): All
-Description      : $@spelldesc108270
+Description      : Absorbing up to $s1 damage.
 Tooltip          : Absorbing up to $w1 damage.
 
 Name             : Ancestral Guidance (id=114911) [Spell Family (11)] 
@@ -2765,11 +2767,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : $@spelldesc117014
+Description      : Critical Strike increased by $s1%.
 Tooltip          : Critical Strike increased by $s1%.
 
 Name             : Static Charge (id=118905) [Spell Family (11)] 
@@ -3796,11 +3798,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : $@spelldesc117014
+Description      : Haste increased by $s1%.
 Tooltip          : Haste increased by $s1%.
 
 Name             : Elemental Blast: Mastery (id=173184) [Spell Family (11)] 
@@ -3813,11 +3815,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : $@spelldesc117014
+Description      : Mastery increased by ${$s1*$168534bc1}%.
 Tooltip          : Mastery increased by ${$s1*$168534bc1}%.
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -4490,11 +4492,11 @@ Labels           : 16: Class Spells
                  : 292
                  : 3930: Ascending Air (462791 effect#2), Jet Stream (462817 effect#1)
 Family Flags     : 53
-Attributes       : Do Not Log Immune Misses (3), No Cast Log (128), AI Doesn't Face Target (179), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Attributes       : Do Not Log Immune Misses (3), Do Not Display Range (126), No Cast Log (128), AI Doesn't Face Target (179), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=281771)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Ally (21)
-Description      : $@spelldesc192077
+Description      : Movement speed increased by $s1%.
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive, Hidden] 
@@ -6230,21 +6232,25 @@ Family Flags     : 48
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335388)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Searing Bolt (3606), Flametongue Attack (10444), Fire Blast (57984), Lava Lash (60103), Elemental Blast (117014), Meteor (117588), Immolate (118297), Elemental Blast Overload (120588), Flame Shock (188389), Liquid Magma (192231), Sundering (197214), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Primordial Wave (375984), Magma Eruption (383061), Tremor (455622), Searing Volley (458147), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Flame Shock (470411), Primordial Fire (1218113)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=722416)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Searing Bolt (3606), Flametongue Attack (10444), Fire Blast (57984), Lava Lash (60103), Elemental Blast (117014), Meteor (117588), Immolate (118297), Elemental Blast Overload (120588), Flame Shock (188389), Liquid Magma (192231), Sundering (197214), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Primordial Wave (375984), Magma Eruption (383061), Tremor (455622), Searing Volley (458147), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Flame Shock (470411), Primordial Fire (1218113)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1200010)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1200011)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases Fire damage dealt from your abilities by $s1%.
 
@@ -6264,21 +6270,25 @@ Family Flags     : 48
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Echoing Shock (320125), Ice Strike (342240), Primordial Wave (375984), Ice Strike (470194), Primordial Frost (1218116)
                    Family Flags: 24
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1030541)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Echoing Shock (320125), Ice Strike (342240), Primordial Wave (375984), Ice Strike (470194), Primordial Frost (1218116)
                    Family Flags: 24
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1200008)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1200009)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases Frost damage dealt from your abilities by $s1%.
 
@@ -6300,21 +6310,25 @@ Family Flags     : 48
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Wind Gust (157331), Call Lightning (157348), Stormfury (157375), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Stormfury (269005), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Echoing Shock (320125), Fae Transfusion (328928), Ascendance (344548), Primordial Wave (375984), Acid Rain (378597), Earth Shock Overload (381725), Stormblast (390287), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Ascendance (467263), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Lightning (1218118), Storm's Eye (1235840)
                    Family Flags: 126
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=624158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Wind Gust (157331), Call Lightning (157348), Stormfury (157375), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Stormfury (269005), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Echoing Shock (320125), Fae Transfusion (328928), Ascendance (344548), Primordial Wave (375984), Acid Rain (378597), Earth Shock Overload (381725), Stormblast (390287), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Ascendance (467263), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Lightning (1218118), Storm's Eye (1235840)
                    Family Flags: 126
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1200006)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1200007)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases Nature damage dealt from your abilities by $s1%.
 
@@ -6898,11 +6912,11 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered By     : Storm Elemental (157299), Primal Storm Elemental (157319), Lesser Storm Elemental (462990), Lesser Storm Elemental (462993)
-Attributes       : Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=706799)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.5 | Target: Self (1)
-Description      : $@spelldesc192249
+Description      : Haste increased by $s1%.
 Tooltip          : Haste increased by $w1%.
 
 Name             : Fire Elemental (id=263819) [Spell Family (11)] 
@@ -12792,7 +12806,8 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 3 | Misc Value 2: 4093 (Label) | Target: Self (1)
                    Affected Spells (Label): Deeply Rooted Elements (378270)
 #3 (id=1123796)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.7 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.7 -> 0.5)
 #4 (id=1184226)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Ascendance (114050), Ascendance (114051), Ascendance (114052), Ascendance (344548), Ascendance (467263), Ascendance (1219480)
@@ -15236,7 +15251,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1155240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15260,7 +15275,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1155243)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -15278,7 +15293,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1155246)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
@@ -15420,12 +15435,12 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Shaman Stormbringer 11.2 Class Set 2pc (1236408)
-Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Tempest overrides Lightning Bolt | Attributes: Suppress Points Stacking (6)
                    Base Value: 452201 | Scaled Value: 452201 | Misc Value: 188196 | Target: Self (1)
-Description      : $@spelldesc454009
+Description      : Lightning Bolt replaced by Tempest.
 Tooltip          : Lightning Bolt replaced by Tempest.
 
 Name             : Stormcaller (id=454021) [Spell Family (11), Passive, Hidden] 
@@ -17126,12 +17141,12 @@ Labels           : 16: Class Spells
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7)
 Triggered By     : Stone Bulwark Totem Passive (114889)
 Family Flags     : 41
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1173042)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.6 | Misc Value: 0x7f | Target: Master (27)
                    Affected School(s): All
-Description      : $@spelldesc108270
+Description      : Absorbing up to $s1 damage.
 Tooltip          : Absorbing up to $w1 damage.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
@@ -17550,9 +17565,10 @@ Family Flags     : 16, 39, 58
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1179546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 18 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Windfury Weapon (33757), Windfury Weapon (319773)
                    Family Flags: 72
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1179547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
@@ -18286,13 +18302,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1196250)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 37 | Scaled Value: 37 | Target: Self (1)
+                   Base Value: 64 | Scaled Value: 64 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (37 -> 64)
 #2 (id=1196251)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (-40 -> -50)
 #3 (id=1196252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)

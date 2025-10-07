@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -531,7 +531,8 @@ Family Flags     : 1, 17, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Bouncy Chain Missiles (146), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.03 | PvP Coefficient: 1.7825 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.03 | PvP Coefficient: 1.60425 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.7825 -> 1.60425)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -6938,7 +6939,7 @@ Effects          :
 #2 (id=1019070)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 (Category) | Target: Self (1)
                    Affected Spells (Category): Harpoon (190925)
-Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy resets the cooldown of Harpoon.
+Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy that yields experience or honor resets the cooldown of Harpoon.
 
 Name             : Terms of Engagement (id=265896) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -14618,7 +14619,8 @@ Mechanic         : Bleed
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Aura Never Bounces (148), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166792)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : Leap forward and claw deeply into the flesh of your enemy, bleeding them for $o1 damage over $d.
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -15156,7 +15158,8 @@ Family Flags     : 3, 106, 121
 Attributes       : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Durability Loss (101), Not a Proc (105), Bouncy Chain Missiles (146), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1168219)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.165 | PvP Coefficient: 1.45 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.165 | PvP Coefficient: 1.595 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.45 -> 1.595)
 Description      : $@spelldesc257044
 
 Name             : Tip of the Spear (id=460852) [Spell Family (9), Hidden] 
@@ -17214,7 +17217,7 @@ Effects          :
                    Family Flags: 16
 #6 (id=1193961)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.
+Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced by ${-$s3}%.
 
 Casting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.
 

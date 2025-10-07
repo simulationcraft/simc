@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1075,6 +1075,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 773
+                 : 5682
 Category Cooldown: 600 seconds
 Affecting Spells : Cat Form (3025 effect#4), Bear Form (5487 effects: #2, #9, #12), Cheaper Druid Shapeshifting (38314 effect#1), Nature's Swiftness (132158 effects: #1, #3, #4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 28
@@ -5601,6 +5602,8 @@ Category         : 511 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+                 : 3205
+                 : 4711
 Affecting Spells : Starfall (191034 effect#2)
 Family Flags     : 112
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not In Spellbook Until Learned (269), Not in Battleground (284), Allow Class Ability Procs (416)
@@ -8808,6 +8811,8 @@ Category         : 511 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+                 : 3205
+                 : 4711
 Affecting Spells : Starfall (191034 effect#2)
 Triggered By     : Dreamwalk (293887)
 Family Flags     : 112
@@ -20132,7 +20137,8 @@ Family Flags     : 118
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Unknown (456)
 Effects          :
 #1 (id=1181629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (0.3 -> 0.54)
 Description      : $@spelldesc468146
 Tooltip          : Healing $s1 every $t sec.
 

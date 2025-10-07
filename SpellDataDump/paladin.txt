@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63660 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -6953,7 +6953,8 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=817890)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=817891)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=845536)   : Apply Aura (6) | Dummy (4)
@@ -11563,6 +11564,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 773
+                 : 5682
 Category Cooldown: 600 seconds
 Affecting Spells : Protection Paladin (137028 effect#13), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Final Reckoning (343721 effect#3), Divine Purpose (408458 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1)
 Family Flags     : 93, 111
@@ -14317,12 +14319,14 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 4716 (Label) | Target: Self (1)
                    Affected Spells (Label): Second Sunrise (431474)
 #27 (id=1216314) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 125 | Scaled Value: 125 | Misc Value 2: 4717 (Label) | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 0.73 | Misc Value 2: 4717 (Label) | Target: Self (1)
                    Affected Spells (Label): Sun's Avatar (431911)
+Hotfixed         : PvP Coefficient (1 -> 0.73)
 #28 (id=1235110) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.48 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Dawnlight (431380), Dawnlight (431381)
                    Family Flags: 1
+Hotfixed         : PvP Coefficient (1 -> 0.48)
 #29 (id=1235111) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Dawnlight (431380), Dawnlight (431381)
@@ -15425,7 +15429,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
+Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1106892)  : Apply Aura (6) | Dummy (4)
