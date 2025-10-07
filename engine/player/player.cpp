@@ -15458,7 +15458,7 @@ std::string_view get_field_from_type( unsigned type )
   return {};
 }
 
-int get_type_from_field( std::string_view field )
+unsigned get_type_from_field( std::string_view field )
 {
   for ( auto [ t, f ] : field_type_map )
     if ( f == field )
@@ -15522,7 +15522,7 @@ std::array<double, 3> player_t::get_passive_value( const spelleffect_data_t& eff
     return { it->orig, it->flat, it->pct };
 }
 
-double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type ) const
+double player_t::get_passive_player_value( double base_val, std::string_view field, unsigned misc_type ) const
 {
   assert( !is_pet() || get_owner_or_self() != this );
   if ( is_pet() )
@@ -15597,7 +15597,7 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
 }
 
 std::pair<player_t::modified_value_t, const player_t::modified_value_t&> player_t::add_passive_effect_modifier(
-  std::vector<player_t::modified_value_t>& modifiers, int id, int field_id,
+  std::vector<player_t::modified_value_t>& modifiers, unsigned id, unsigned field_id,
   double orig_val, double flat_val, double pct_val )
 {
   auto it = range::find_if( modifiers, [ id, field_id ]( const auto& mod ) {
@@ -15975,8 +15975,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     std::string_view field, field2;
     std::string_view eff_field, eff_field2;
     std::string_view pow_field;
-    int field_type = -1;
-    int field_type2 = -1;
+    unsigned field_type   = P_MAX;
+    unsigned field_type2  = P_MAX;
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
