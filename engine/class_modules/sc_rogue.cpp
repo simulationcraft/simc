@@ -11429,7 +11429,7 @@ void rogue_t::init_spells()
   talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
 
   talent.fatebound.delivered_doom = find_talent_spell( talent_tree::HERO, "Delivered Doom" );
-  talent.fatebound.inevitable_end = find_talent_spell( talent_tree::HERO, is_ptr() ? "Inevitable End" : "Inevitabile End" );
+  talent.fatebound.inevitable_end = find_talent_spell( talent_tree::HERO, "Inevitable End" );
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
   talent.fatebound.double_jeopardy = find_talent_spell( talent_tree::HERO, "Double Jeopardy" );
 
@@ -12222,11 +12222,10 @@ void rogue_t::create_buffs()
   if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_initial_buff->ok() )
   {
     // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff
-    // 2025-09-27 -- The initial buff is currently bugged due to using Add Flat Modifier (107) instead of Add Percent Modifier (108)
     buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + ( this->bugs ? 0.0 : spell.fatebound_coin_heads_initial_buff->effectN( 1 ).percent() ) );
+                                                1.0 + ( spell.fatebound_coin_heads_initial_buff->effectN( 1 ).percent() ) );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + ( this->bugs ? 0.0 : spell.fatebound_coin_heads_initial_buff->effectN( 2 ).percent() ) );
+                                                  1.0 + ( spell.fatebound_coin_heads_initial_buff->effectN( 2 ).percent() ) );
     buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
                                                       1.0 + spell.fatebound_coin_heads_initial_buff->effectN( 3 ).percent() );
   }
