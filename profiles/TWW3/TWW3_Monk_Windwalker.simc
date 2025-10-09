@@ -68,7 +68,7 @@ actions+=/rocket_barrage,if=buff.storm_earth_and_fire.down
 actions+=/arcane_pulse,if=buff.storm_earth_and_fire.down
 
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
-actions.cooldowns=invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff.bloodlust.up&cooldown.strike_of_the_windlord.remains)
+actions.cooldowns=invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff.bloodlust.up&cooldown.strike_of_the_windlord.remains|!talent.strike_of_the_windlord)
 actions.cooldowns+=/storm_earth_and_fire,target_if=max:target.time_to_die,if=fight_style.dungeonroute&buff.invokers_delight.remains>15&(active_enemies>2|!talent.ordered_elements|cooldown.rising_sun_kick.remains)
 actions.cooldowns+=/tiger_palm,if=(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&!cooldown.invoke_xuen_the_white_tiger.remains&(chi<5&!talent.ordered_elements|chi<3)&(combo_strike|!talent.hit_combo)
 actions.cooldowns+=/invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=!fight_style.dungeonroute&(target.time_to_die>12|!talent.xuens_bond&target.time_to_die>8)&set_bonus.tww3_2pc&talent.celestial_conduit&cooldown.strike_of_the_windlord.remains<3&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<20
