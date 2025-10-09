@@ -424,8 +424,7 @@ void live_apl( monk_t* player )
   // Cooldowns
   cooldowns->add_action(
       "invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff."
-      "bloodlust."
-      "up&cooldown.strike_of_the_windlord.remains)",
+      "bloodlust.up&cooldown.strike_of_the_windlord.remains|!talent.strike_of_the_windlord)",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a "
       "href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is "
       "active." );
