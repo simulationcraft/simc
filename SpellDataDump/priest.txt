@@ -5127,6 +5127,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
+                 : 1419
 Affecting Spells : Afterlife (196707 effects: #1, #2, #3), Heightened Alteration (453729 effect#1)
 Family Flags     : 5
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
