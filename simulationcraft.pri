@@ -60,7 +60,7 @@ CONFIG(openssl) {
 contains(QMAKE_CXX, .+/clang\+\+)|contains(QMAKE_CXX, .+/g\+\+) {
   QMAKE_CXXFLAGS += -Wextra
   QMAKE_CXXFLAGS_RELEASE -= -O2
-  QMAKE_CXXFLAGS_RELEASE += -O3 -ffast-math -fomit-frame-pointer -Os -fPIE
+  QMAKE_CXXFLAGS_RELEASE += -O3 -fomit-frame-pointer -Os -fPIE
 
   !isEmpty(LTO) {
     QMAKE_CXXFLAGS_RELEASE += -flto
