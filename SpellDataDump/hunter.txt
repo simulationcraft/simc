@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63660 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.63796 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -532,7 +532,6 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.03 | PvP Coefficient: 1.60425 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.7825 -> 1.60425)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -2518,12 +2517,10 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.666 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (20 -> 12), PvP Coefficient (1 -> 1.666)
 #11 (id=1215355) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.666 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (20 -> 12), PvP Coefficient (1 -> 1.666)
 #12 (id=1257051) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
                    Affected Spells: Stampede (201594)
@@ -2603,12 +2600,10 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : NEW EFFECT
 #17 (id=1280692) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -14632,7 +14627,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapes
 Effects          :
 #1 (id=1166792)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : Leap forward and claw deeply into the flesh of your enemy, bleeding them for $o1 damage over $d.
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -15171,7 +15165,6 @@ Attributes       : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset
 Effects          :
 #1 (id=1168219)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.165 | PvP Coefficient: 1.595 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.45 -> 1.595)
 Description      : $@spelldesc257044
 
 Name             : Tip of the Spear (id=460852) [Spell Family (9), Hidden] 
@@ -15757,7 +15750,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1181302)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.82 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (6.1875 -> 5.82)
 Description      : $@spelldesc467911
 
 Name             : Bleak Powder (id=467922) [Spell Family (9)] 
@@ -16619,7 +16611,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1189956)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.83 | PvP Coefficient: 0.56 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (5.25 -> 4.83)
 Description      : $@spelldesc467911
 
 Name             : Howl of the Pack Leader (id=472324) [Spell Family (9)] 

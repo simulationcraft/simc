@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63660 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.63796 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1997,12 +1997,10 @@ Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Do No
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 1.57 | Target: Self (1)
-Hotfixed         : Base Value (33 -> 38)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1104540)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75
-Hotfixed         : Base Value (100 -> 75)
 Description      : Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
@@ -4772,7 +4770,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Travel Time      : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
-Category         : 2416 (Type 0x0)
+Category         : 2416 (Type 0x1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
@@ -5128,6 +5126,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
+                 : 1419
 Affecting Spells : Afterlife (196707 effects: #1, #2, #3), Heightened Alteration (453729 effect#1)
 Family Flags     : 5
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
@@ -14950,7 +14949,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Travel Time      : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
-Category         : 2416 (Type 0x0)
+Category         : 2416 (Type 0x1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
