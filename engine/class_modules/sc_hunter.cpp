@@ -8747,6 +8747,7 @@ void hunter_t::create_buffs()
   buffs.serpentine_blessing = 
     make_buff( this, "serpentine_blessing", find_spell( 468704 ) )
     -> set_default_value_from_effect( 1 )
+    -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
     -> set_chance( talents.serpentine_rhythm.ok() );
 
   buffs.huntmasters_call = 
@@ -8759,6 +8760,7 @@ void hunter_t::create_buffs()
 
   buffs.summon_hati = 
     make_buff( this, "summon_hati", find_spell( 459738 ) )
+      -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       -> set_default_value_from_effect( 2 );
 
   // Survival Tree
@@ -8809,6 +8811,7 @@ void hunter_t::create_buffs()
     make_buff( this, "coordinated_assault", talents.coordinated_assault )
       ->set_default_value( talents.coordinated_assault->effectN( 1 ).percent() )
       ->set_cooldown( 0_ms )
+      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
         if ( cur == 0 )
         {
@@ -8865,6 +8868,7 @@ void hunter_t::create_buffs()
 
   buffs.harmonize =
     make_buff( this, "harmonize", find_spell( 457072 ) )
+      -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       -> set_default_value_from_effect( 1 );
 
   buffs.jackpot
@@ -8943,6 +8947,7 @@ void hunter_t::create_buffs()
   buffs.wyverns_cry = 
     make_buff( this, "wyverns_cry", talents.howl_of_the_pack_leader_wyvern_buff )
       ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_stack_change_callback(
         [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 )
@@ -8955,6 +8960,7 @@ void hunter_t::create_buffs()
   
   buffs.lead_from_the_front =
     make_buff( this, "lead_from_the_front", talents.lead_from_the_front_buff )
+      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_default_value_from_effect( specialization() == HUNTER_BEAST_MASTERY ? 4 : 5 );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
@@ -8996,6 +9002,7 @@ void hunter_t::create_buffs()
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )
       ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
@@ -9632,6 +9639,15 @@ void hunter_t::invalidate_cache( cache_e c )
       // XXX: Do we? We don't change action range anywhere.
       for ( action_t* action : action_list )
         action -> target_cache.is_valid = false;
+    }
+    if( specialization() == HUNTER_BEAST_MASTERY && mastery.master_of_beasts.ok() )
+    {
+      invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
+      invalidate_cache( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
+    }
+    if( specialization() == HUNTER_SURVIVAL && mastery.spirit_bond.ok() )
+    {
+      invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
     }
     break;
   default: break;

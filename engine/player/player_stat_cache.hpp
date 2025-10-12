@@ -147,6 +147,8 @@ public:
   double avoidance() const { return _player->composite_avoidance(); }
   double corruption() const { return _player->composite_corruption(); }
   double corruption_resistance() const { return _player->composite_corruption_resistance(); }
+  double player_multiplier( school_e s ) const { return _player->composite_player_multiplier( s ); }
+  double player_heal_multiplier( const action_state_t* s ) const { return _player->composite_player_heal_multiplier( s ); }
   double pet_damage_multiplier( const action_state_t* s, bool guardian ) const { return _player->composite_pet_damage_multiplier( s, guardian ); }
 #endif
 };

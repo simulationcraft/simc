@@ -377,6 +377,24 @@ void warlock_t::init_finished()
   player_t::init_finished();
 }
 
+void warlock_t::invalidate_cache( cache_e c )
+{
+  parse_player_effects_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+    case CACHE_MASTERY:
+      if ( demonology() )
+      {
+        player_t::invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
+        player_t::invalidate_cache( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
 int warlock_t::get_spawning_imp_count()
 { return as<int>( wild_imp_spawns.size() ); }
