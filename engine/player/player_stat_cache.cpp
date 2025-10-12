@@ -615,4 +615,7 @@ double player_stat_cache_t::run_speed() const { return _player->composite_run_sp
 double player_stat_cache_t::avoidance() const { return _player->composite_avoidance(); }
 double player_stat_cache_t::corruption() const { return _player->composite_corruption(); }
 double player_stat_cache_t::corruption_resistance() const { return _player->composite_corruption_resistance(); }
+double player_stat_cache_t::player_multiplier( school_e s ) const { return _player->composite_player_multiplier( s ); }
+double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) const { return _player->composite_player_heal_multiplier( s ); }
+double player_stat_cache_t::pet_damage_multiplier( const action_state_t* s, bool guardian ) const { return _player->composite_pet_damage_multiplier( s, guardian ); }
 #endif
