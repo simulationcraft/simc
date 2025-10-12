@@ -42,6 +42,7 @@ struct player_stat_cache_t
   mutable std::array<bool, CACHE_MAX> valid;
   mutable std::array<bool, SCHOOL_MAX + 1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
   mutable std::array<bool, static_cast<unsigned>( attack_power_type::NONE )> weapon_attack_power_valid;
+  mutable std::array<bool, 2> pet_damage_multiplier_valid;  // 0 = pet, 1 = guardian
   // 'valid'-states
 private:
   // cached values
