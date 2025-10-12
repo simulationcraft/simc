@@ -4732,7 +4732,7 @@ void candle_confidant( special_effect_t& effect )
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = melee_attack_t::composite_da_multiplier( s );
-      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, player->type == PLAYER_GUARDIAN );
+      m *= this->player->cast_pet()->owner->cache.pet_damage_multiplier( s, player->type == PLAYER_GUARDIAN );
       return m;
     }
 

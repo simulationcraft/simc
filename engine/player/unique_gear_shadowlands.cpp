@@ -5574,7 +5574,8 @@ void shard_of_cor( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
                ->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).average( effect.player ), 1 )
-               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER );
   }
 
   effect.custom_buff = effect.player->buffs.coldhearted = buff;

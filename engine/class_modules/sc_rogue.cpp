@@ -5648,7 +5648,7 @@ struct secret_technique_t : public rogue_attack_t
       if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE )
       {
         // Secret Technique clones count as pets and benefit from pet modifiers
-        m *= p()->composite_player_pet_damage_multiplier( state, true );
+        m *= p()->cache.pet_damage_multiplier( state, true );
       }
 
       return m;

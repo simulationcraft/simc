@@ -1709,6 +1709,7 @@ struct incanters_flow_t final : public buff_t
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow.ok() );
     set_default_value_from_effect( 1 );
+    add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
@@ -8668,6 +8669,7 @@ void mage_t::create_buffs()
   // Frost
   buffs.bone_chilling      = make_buff( this, "bone_chilling", find_spell( 205766 ) )
                                ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
+                               ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
                                ->set_chance( talents.bone_chilling.ok() );
   buffs.chain_reaction     = make_buff( this, "chain_reaction", find_spell( 278310 ) )
                                ->set_default_value( talents.chain_reaction->effectN( 1 ).percent() )
