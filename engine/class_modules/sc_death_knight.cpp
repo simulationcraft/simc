@@ -2422,13 +2422,13 @@ struct death_knight_pet_t : public pet_t
     double value() override
     {
       return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->dk()->cache.mastery_value() );
+             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
     }
 
     double check_value() const override
     {
       return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->dk()->cache.mastery_value() );
+             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
     }
   };
 
@@ -2483,17 +2483,17 @@ struct death_knight_pet_t : public pet_t
 
   double composite_mastery_value() const override
   {
-    return dk()->composite_mastery_value();
+    return dk()->cache.mastery_value();
   }
 
   double composite_mastery() const override
   {
-    return dk()->composite_mastery();
+    return dk()->cache.mastery();
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
-    double m = current.crit_damage_multiplier[ school ];
+    double m = pet_t::composite_player_critical_damage_multiplier( s, school );
 
     m *= 1.0 + grave_mastery->check_value();
 
@@ -14670,8 +14670,6 @@ void death_knight_t::invalidate_cache( cache_e c )
         player_t::invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
         player_t::invalidate_cache( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
       }
-      for ( auto& pet : dk_active_pets )
-        pet->invalidate_cache( c );
       break;
     case CACHE_STRENGTH:
       if ( spell.bone_shield->ok() )
