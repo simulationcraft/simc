@@ -77,7 +77,7 @@ public:
   virtual void adjust_duration( timespan_t adjustment );
 
   virtual double composite_owner_pet_damage_multiplier( const action_state_t* s ) const
-  { return owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN ); }
+  { return owner->cache.pet_damage_multiplier( s, type == PLAYER_GUARDIAN ); }
 
   virtual double composite_owner_pet_target_damage_multiplier( player_t* t ) const
   { return owner->composite_player_target_pet_damage_multiplier( t, type == PLAYER_GUARDIAN ); }

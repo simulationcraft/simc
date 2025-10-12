@@ -62,6 +62,7 @@ private:
   mutable double _leech, _run_speed, _avoidance;
   mutable double _rppm_haste_coeff, _rppm_crit_coeff;
   mutable double _corruption, _corruption_resistance;
+  mutable std::array<double, 2> _pet_damage_multiplier;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -107,6 +108,7 @@ public:
   double avoidance() const;
   double corruption() const;
   double corruption_resistance() const;
+  double pet_damage_multiplier( const action_state_t*, bool ) const;
   double rppm_haste_coeff() const;
   double rppm_crit_coeff() const;
 #else

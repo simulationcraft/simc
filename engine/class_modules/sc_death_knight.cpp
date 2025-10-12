@@ -14665,6 +14665,11 @@ void death_knight_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      if ( specialization() == DEATH_KNIGHT_UNHOLY )
+      {
+        player_t::invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
+        player_t::invalidate_cache( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
+      }
       for ( auto& pet : dk_active_pets )
         pet->invalidate_cache( c );
       break;

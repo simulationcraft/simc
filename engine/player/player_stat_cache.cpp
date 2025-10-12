@@ -565,6 +565,20 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
   return _player_heal_mult[ sch ];
 }
 
+double player_stat_cache_t::pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+{
+  unsigned idx = guardian ? 1 : 0;
+  cache_e c    = guardian ? CACHE_GUARDIAN_DAMAGE_MULTIPLIER : CACHE_PET_DAMAGE_MULTIPLIER;
+  if ( !active || !valid[ c ] )
+  {
+    valid[ CACHE_PET_DAMAGE_MULTIPLIER ] = true;
+    _pet_damage_multiplier[ idx ]         = player->composite_player_pet_damage_multiplier( s, guardian );
+  }
+  else
+    assert( _pet_damage_multiplier[ idx ] == player->composite_player_pet_damage_multiplier( s, guardian ) );
+  return _pet_damage_multiplier[ idx ];
+}
+
 #else
   // Passthrough cache stat functions for inactive cache
 double player_stat_cache_t::strength() const { return _player->strength(); }

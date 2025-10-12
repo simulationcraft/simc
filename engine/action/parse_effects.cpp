@@ -1178,11 +1178,13 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_PET_DAMAGE_DONE:
       tmp.opt_enum = 0;
       str = "pet damage";
+      invalidate( CACHE_PET_DAMAGE_MULTIPLIER );
       return &pet_multiplier_effects;
 
     case A_MOD_GUARDIAN_DAMAGE_DONE:
       tmp.opt_enum = 1;
       str = "guardian damage";
+      invalidate( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
       return &pet_multiplier_effects;
 
     case A_MOD_ATTACK_POWER_PCT:
