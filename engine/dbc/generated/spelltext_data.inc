@@ -27552,8 +27552,8 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1233152, "Drain the warmth of life from all nearby enemies within $196771A1 yards, dealing ${9*$196771s1*$<CAP>/$AP} Frost damage over $d and reducing their movement speed by $211793s1%.", "Dealing $196771s1 Frost damage to enemies within $196771A1 yards each second.$?s316916[\r\n\r\nFrostscythe damage increased by $w4%.][]", 0 },
   { 1233155, "$@spelldesc1229197", "Brann's hat decreases the enemy's damage dealt by $w1%.", 0 },
   { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
-  { 1233179, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233181[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nUnleash a wrathful storm, inflicting |CFFffffff${$<damageValue>*$1233181d/$1233181t}|R Nature damage over $1233181d to enemies within $1233196A1 yards. \r\n\r\nEach enemy struck grants you $@spellname1242203, increasing the damage of $@spellname1233179 by $1233181s2%.", 0, 0 },
-  { 1233181, "$@spelldesc1233179", "Every $t1 sec, inflict $1233196s1 Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $w2%.", 0 },
+  { 1233179, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233181[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nUnleash a wrathful storm, inflicting |CFFffffff${$<damageValue>*$1233181d/$1233181t}|R Nature damage over $1233181d to enemies within $1233196A1 yards. \r\n\r\nEach enemy struck grants you $@spellname1242203, increasing the damage of $@spellname1233179 by $1233181s2%.", "Every $1233181t1 sec, inflict $<damageValue> Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $1233181w2%.", 0 },
+  { 1233181, "$@spelldesc1233179", "$@spellaura1233179", 0 },
   { 1233196, "$@spelldesc1233179", "$@spellaura1233181", 0 },
   { 1233223, "Apply Greater Rune of Twilight Devastation to a helm. \r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
   { 1233224, "$@spelldesc1233109", 0, 0 },
@@ -27902,7 +27902,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1237591, "$@spelldesc369939", 0, 0 },
   { 1237615, "$@spelldesc1236397", "The damage of your next $?c1[Mind Blast][Void Torrent] is increased by $w1%.", 0 },
   { 1237711, "$@spelldesc1242247", "You have subjugated an infernal dreadlord who periodically strikes enemies with $@spellname1237721.", 0 },
-  { 1237721, "The infernal dreadlord calls down infernal meteors, inflicting |CFFffffff$<damageValue>|R Chaos damage to enemies within $1240126a1 yards every $t2 sec for $d.\r\n", "Inflicting $1240126s1 Chaos damage every $t2 sec.", 0 },
+  { 1237721, "The infernal dreadlord calls down infernal meteors, inflicting |CFFffffff$<damageValue>|R Chaos damage to enemies within $1240126a1 yards every $t2 sec for $d.\r\n", "Inflicting $<damageValue> Chaos damage every $t2 sec.", 0 },
   { 1237777, "The powers of your Reshii Wraps also reduce Cosmic damage taken by $1237859s2% for $1237859d or until $s1 damage has been prevented.", 0, 0 },
   { 1237859, "$@spelldesc1237777", "Cosmic damage taken reduced by $w2% until ${$w1} damage has been prevented.", 0 },
   { 1237978, "Temporal Compression increases the damage or healing of your next empower spell by $s1% per stack.", 0, 0 },
@@ -28169,7 +28169,10 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.5.63825
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  { 1233179,  1, nullptr, "Every $1233181t1 sec, inflict $<damageValue> Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $1233181w2%." },
+  { 1233181,  1, "Every $t1 sec, inflict $1233196s1 Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $w2%.", "$@spellaura1233179" },
+  { 1237721,  1, "Inflicting $1240126s1 Chaos damage every $t2 sec.", "Inflicting $<damageValue> Chaos damage every $t2 sec." },
 } };
 
 // Spell description variables, wow build 11.2.5.63825
