@@ -265128,6 +265128,7 @@ Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
 Name             : Tempest Wrath (id=1233179) [Passive] 
+Hotfixed         : Tooltip
 School           : Nature
 Spell Type       : None
 Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
@@ -265141,9 +265142,11 @@ Description      : $?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233181[|C
 Unleash a wrathful storm, inflicting |CFFffffff${$<damageValue>*$1233181d/$1233181t}|R Nature damage over $1233181d to enemies within $1233196A1 yards. 
 
 Each enemy struck grants you $@spellname1242203, increasing the damage of $@spellname1233179 by $1233181s2%.
+Tooltip          : Every $1233181t1 sec, inflict $<damageValue> Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $1233181w2%.
 Variables        : $damageValue=${($max($AP,$SP)*($1250003w10/100))}
 
 Name             : Tempest Wrath (id=1233181) 
+Hotfixed         : Tooltip
 School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -265163,7 +265166,7 @@ Effects          :
 #2 (id=1227139)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc1233179
-Tooltip          : Every $t1 sec, inflict $1233196s1 Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $w2%.
+Tooltip          : $@spellaura1233179
 
 Name             : Tempest Wrath (id=1233196) 
 School           : Nature
@@ -268322,6 +268325,7 @@ Description      : $@spelldesc1242247
 Tooltip          : You have subjugated an infernal dreadlord who periodically strikes enemies with $@spellname1237721.
 
 Name             : Reign of Chaos (id=1237721) 
+Hotfixed         : Tooltip
 School           : Magic
 Spell Type       : Magic
 Range            : 40 yards
@@ -268336,7 +268340,7 @@ Effects          :
                    Base Value: 0.5 | Scaled Value: 0.5 | Trigger Spell: 1240126 | Target: Targeted Enemy (6)
 Description      : The infernal dreadlord calls down infernal meteors, inflicting |CFFffffff$<damageValue>|R Chaos damage to enemies within $1240126a1 yards every $t2 sec for $d.
 
-Tooltip          : Inflicting $1240126s1 Chaos damage every $t2 sec.
+Tooltip          : Inflicting $<damageValue> Chaos damage every $t2 sec.
 Variables        : $damageValue=${($max($AP,$SP)*($1250003w8/100))}
 
 Name             : Band of the Shattered Soul (id=1237777) [Passive] 
