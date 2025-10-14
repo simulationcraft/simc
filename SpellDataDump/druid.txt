@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63660 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.63825 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -20138,7 +20138,6 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), D
 Effects          :
 #1 (id=1181629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (0.3 -> 0.54)
 Description      : $@spelldesc468146
 Tooltip          : Healing $s1 every $t sec.
 
