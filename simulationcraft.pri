@@ -86,7 +86,7 @@ macx {
 }
 
 win32 {
-  QMAKE_CXXFLAGS += /MP
+  QMAKE_CXXFLAGS += /MP /utf-8
   win32-msvc {
     QMAKE_CXXFLAGS_RELEASE += /O2 /GL
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
