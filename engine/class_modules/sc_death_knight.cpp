@@ -9607,6 +9607,13 @@ struct frostbane_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
+
     // 11.2 TODO drive the delays from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
@@ -9686,17 +9693,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
   {
     const auto td = get_td( target );
 
-    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
-    // additional stacks til after the FS is resolved
-    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc damage, expire IO
-
-    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
-    // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
-    }
-
     if ( td->debuff.frostreaper->up() )
     {
       frostreaper->execute_on_target( target );
@@ -9719,6 +9715,16 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     }
 
     death_knight_melee_attack_t::execute();
+
+    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
+    // additional stacks til after the FS is resolved
+    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
+    // damage, expire IO
+
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
 
     if ( hit_any_target )
     {
