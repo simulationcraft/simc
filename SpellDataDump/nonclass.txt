@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63825 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.63834 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -265828,7 +265828,8 @@ Effects          :
 #1 (id=1227736)  : Create Area Trigger (179)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37614 | Target: at Self (18)
 #2 (id=1265452)  : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 50)
 Description      : $?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233775[|CFFff0000$@spelldesc1247808|R
 
 ][]|CFFe6cc80Artifact Ability|R
@@ -267088,7 +267089,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Suppress Caster Procs (112), Not In Spellbook (143), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1229113)  : Apply Aura (6) | Proc Trigger Spell (42): Fortitude
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1234684 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 1234684 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 3)
 Description      : Once every $proccooldown sec, you begin accumulating |CFFffffff$<absorbValue>%|R of all damage taken as $@spellname1234684. After $1234684d, $@spellname1234684 becomes a protective barrier, absorbing the amount accumulated for $1234691d.
 Variables        : $absorbValue=${$1234683s1}
 
