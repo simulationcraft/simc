@@ -269927,6 +269927,7 @@ Description      : $@spelldesc1244402
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Touch of Malice (id=1245385) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -269936,7 +269937,7 @@ Internal Cooldown: 2 seconds
 Proc Chance      : 33%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Triggered By     : Touch of Malice (1242992)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Ignore Target Requirements (181), Ignore Caster Requirements (184), Can Assist Immune PC (195), Can Target Untargetable (216), Aura Points On Client (268), Proc cooldown on a per target basis (330), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Apply Zone Aura Spell To Pets (383), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Ignore Target Requirements (181), Ignore Caster Requirements (184), Can Assist Immune PC (195), Can Target Untargetable (216), Aura Points On Client (268), Proc cooldown on a per target basis (330), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Apply Zone Aura Spell To Pets (383), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1246397)  : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1231982 | Radius: 100 yards | Target: Self (1)
