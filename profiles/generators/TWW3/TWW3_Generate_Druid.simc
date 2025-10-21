@@ -8,22 +8,22 @@ role=spell
 position=back
 talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUmtMGzMwDYWYZmZAzMGLzsNjlxMjZmFjZGzMjNswAMAbbjNMNzsMCAAAwmZmZMwmBG
 
-head=,id=237682,bonus_id=4795/1808,gem_id=213743,ilevel=723
-neck=,id=242406,bonus_id=4795/8781,gem_id=213497/213467,ilevel=723
-shoulder=,id=237552,bonus_id=4795,ilevel=723
-back=,id=235499,bonus_id=9886/12361/12239,enchant_id=7403,gem_id=238044,ilevel=730
-chest=,id=237685,bonus_id=4795,enchant_id=7364,ilevel=723
-wrist=,id=219334,bonus_id=10421/1599/1808/11109/8960/8791,enchant_id=7385,gem_id=213458,crafted_stats=36/49
-hands=,id=237683,bonus_id=4795,ilevel=723
-waist=,id=237557,bonus_id=4795/1808,gem_id=213482,ilevel=723
-legs=,id=237681,bonus_id=4795,enchant_id=7534,ilevel=723
-feet=,id=243306,bonus_id=4795/13504,enchant_id=7424,ilevel=723
-finger1=,id=221200,bonus_id=4795/8781,enchant_id=7334,gem_id=213482/213482,ilevel=723
-finger2=,id=221141,bonus_id=4795/8781,enchant_id=7346,gem_id=213458/213458,ilevel=723
-trinket1=,id=242402,bonus_id=4795,ilevel=723
-trinket2=,id=242395,bonus_id=1533/12361/12239,ilevel=723
-main_hand=,id=237728,bonus_id=4795,enchant_id=7448,ilevel=723
-off_hand=,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960,ilevel=720,crafted_stats=49/40
+head=skymane_of_the_mother_eagle,id=237682,bonus_id=4795/1808,ilevel=730,gem_id=213743
+neck=salhadaars_folly,id=242406,bonus_id=4795/8781,ilevel=730,gem_id=213467/213467
+shoulders=deathbound_shoulderpads,id=237552,bonus_id=4795,ilevel=730
+back=reshii_wraps,id=235499,bonus_id=9886/12361/12239,ilevel=730,gem_id=238044,enchant_id=7403
+chest=vest_of_the_mother_eagle,id=237685,bonus_id=4795,ilevel=730,enchant_id=7364
+wrists=runebranded_armbands,id=219334,bonus_id=10421/1599/1808/11109/8960/8791,ilevel=727,gem_id=213467,enchant_id=7385,crafted_stats=36/49
+hands=wings_of_the_mother_eagle,id=237683,bonus_id=4795,ilevel=730
+waist=reapers_dreadbelt,id=237557,bonus_id=4795/1808,ilevel=730,gem_id=213491
+legs=breeches_of_the_mother_eagle,id=237681,bonus_id=4795,ilevel=730,enchant_id=7534
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=4795/13504,ilevel=730,enchant_id=7424
+finger1=radiant_necromancers_band,id=221200,bonus_id=4795/8781,ilevel=730,gem_id=213491/213458,enchant_id=7334
+finger2=high_nerubian_signet,id=221141,bonus_id=4795/8781,ilevel=730,gem_id=213482/213473,enchant_id=7346
+trinket1=arazs_ritual_forge,id=242402,bonus_id=4795,ilevel=730
+trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239,ilevel=730
+main_hand=voidglass_kris,id=237728,bonus_id=4795,ilevel=730,enchant_id=7439
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8791,ilevel=727,crafted_stats=49/40
 
 save=TWW3_Druid_Balance.simc
 
