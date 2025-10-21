@@ -11,6 +11,7 @@
 #include "progress_bar.hpp"
 #include "sim_ostream.hpp"
 #include "sim/option.hpp"
+#include "interfaces/sc_js.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"
 #include "util/sample_data.hpp"
@@ -20,6 +21,7 @@
 #include <map>
 #include <memory>
 #include <unordered_set>
+#include <mutex>
 
 struct actor_target_data_t;
 struct buff_t;
@@ -46,9 +48,72 @@ namespace report::json
 class report_configuration_t;
 }
 
-namespace profileset{
+namespace profileset
+{
   class profilesets_t;
 }
+
+struct sim_controller_data_t;
+namespace
+{
+template <typename T>
+struct data_wrapper_t
+{
+  T& data;
+
+  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m )
+  {
+  }
+
+private:
+  std::scoped_lock<std::mutex> lock;
+};
+
+struct sim_controller_data_wrapper_t
+{
+  std::mutex mutex;
+  std::shared_ptr<sim_controller_data_t> data;
+
+  sim_controller_data_wrapper_t();
+  sim_controller_data_wrapper_t( std::shared_ptr<sim_controller_data_t> data );
+
+  // disallow copy, as that would introduce additional mutexes for a single controller name
+  sim_controller_data_wrapper_t( sim_controller_data_wrapper_t& )       = delete;
+  sim_controller_data_wrapper_t( const sim_controller_data_wrapper_t& ) = delete;
+};
+}  // namespace
+
+struct sim_controller_data_t
+{
+  sim_controller_data_t();
+  sim_controller_data_t( sim_controller_data_t& data );
+};
+
+struct sim_controller_t
+{
+  using data_t = sim_controller_data_t;
+
+private:
+  sim_t* parent;
+
+public:
+  sim_t* sim;
+
+  sim_controller_t( sim_t* sim );
+  virtual ~sim_controller_t() = default;
+
+  virtual const std::string name() const                 = 0;
+  virtual int evaluate()                                 = 0;
+  virtual void report_json_profileset( js::JsonOutput& ) = 0;
+  virtual void report_json_options( js::JsonOutput& )    = 0;
+  virtual void report_html( std::ostream& )              = 0;
+
+protected:
+  template <typename T>
+  data_wrapper_t<T> get_data();
+  template <typename T>
+  bool set_data( T&& data );
+};
 
 struct sim_progress_t
 {
@@ -581,6 +646,13 @@ struct sim_t : private sc_thread_t
   double scaling_normalized;
   bool merge_enemy_priority_dmg;
 
+  // sim control
+private:
+  friend sim_controller_t;
+  std::vector<std::unique_ptr<sim_controller_t>> sim_controllers;
+  std::map<std::string, sim_controller_data_wrapper_t> sim_controller_data;
+
+public:
   // Multi-Threading
   mutex_t merge_mutex;
   int threads;
@@ -780,6 +852,19 @@ struct sim_t : private sc_thread_t
   { return _rng; }
   double averaged_range( double min, double max );
 
+  template <typename TBase, typename... Args,
+            typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
+  bool register_sim_controller( Args&&... args )
+  {
+    sim_controllers.emplace_back( std::make_unique<TBase>( this, std::forward<Args>( args )... ) );
+    typedef typename TBase::data_t data_t;
+    return parent->sim_controller_data
+        .emplace( std::make_pair( sim_controllers.back()->name(), std::make_shared<data_t>() ) )
+        .second;
+  }
+  bool evaluate_sim_controller_post_init();
+  bool evaluate_sim_controller_post_iter();
+
   // Thread id of this sim_t object
 #ifndef SC_NO_THREADING
   std::thread::id thread_id() const
@@ -833,3 +918,19 @@ private:
   void disable_debug_seed();
   bool requires_cleanup() const;
 };
+
+template <typename T>
+data_wrapper_t<T> sim_controller_t::get_data()
+{
+  auto& data = parent->sim_controller_data.at( name() );
+  return { *std::static_pointer_cast<T>( data.data ), data.mutex };
+}
+
+template <typename T>
+bool sim_controller_t::set_data( T&& data )
+{
+  auto& scd = parent->sim_controller_data;
+  assert( scd.find( name() ) != scd.end() );
+  scd[ name() ].data = std::make_shared<T>( data );
+  return true;
+}

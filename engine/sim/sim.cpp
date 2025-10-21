@@ -4846,3 +4846,24 @@ bool sim_t::rethrow_exception_queue()
 
   return false;
 }
+
+sim_controller_data_t::sim_controller_data_t()
+{
+}
+
+sim_controller_data_t::sim_controller_data_t( sim_controller_data_t& )
+{
+}
+
+sim_controller_data_wrapper_t::sim_controller_data_wrapper_t() : mutex(), data( nullptr )
+{
+}
+
+sim_controller_data_wrapper_t::sim_controller_data_wrapper_t( std::shared_ptr<sim_controller_data_t> data )
+  : mutex(), data( data )
+{
+}
+
+sim_controller_t::sim_controller_t( sim_t* sim ) : parent( sim->parent ), sim( sim )
+{
+}
