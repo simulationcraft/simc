@@ -16,6 +16,7 @@
 #include "sc_enums.hpp"
 #include "sc_stagger.hpp"
 #include "sim/proc.hpp"
+#include "sim/sim_controller.hpp"
 #include "util/timeline.hpp"
 
 #include <array>
@@ -1157,6 +1158,8 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
+  void init() override;
+  void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
   void init_base_stats() override;

@@ -1552,6 +1552,8 @@ sim_t::sim_t()
     count_overheal_as_heal( false ),
     scaling_normalized( 1.0 ),
     merge_enemy_priority_dmg( false ),
+    sim_controllers(),
+    sim_controller_data(),
     // Multi-Threading
     threads( 0 ),
     thread_index( 0 ),
@@ -3110,6 +3112,12 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
+  if ( profileset_enabled && parent && evaluate_sim_controller_post_init() )
+  {
+    cancel();
+    return true;
+  }
+
   try
   {
     activate_actors();
@@ -3126,6 +3134,9 @@ bool sim_t::iterate()
       {
         progress_bar.output( false );
       }
+
+      if ( profileset_enabled && parent && evaluate_sim_controller_post_iter() )
+        cancel();
 
       do_pause();
       auto old_active = current_index;
@@ -4847,14 +4858,6 @@ bool sim_t::rethrow_exception_queue()
   return false;
 }
 
-sim_controller_data_t::sim_controller_data_t()
-{
-}
-
-sim_controller_data_t::sim_controller_data_t( sim_controller_data_t& )
-{
-}
-
 sim_controller_data_wrapper_t::sim_controller_data_wrapper_t() : mutex(), data( nullptr )
 {
 }
@@ -4864,6 +4867,36 @@ sim_controller_data_wrapper_t::sim_controller_data_wrapper_t( std::shared_ptr<si
 {
 }
 
+sim_controller_data_t::sim_controller_data_t()
+{
+}
+
+sim_controller_data_t::sim_controller_data_t( sim_controller_data_t& )
+{
+}
+
 sim_controller_t::sim_controller_t( sim_t* sim ) : parent( sim->parent ), sim( sim )
 {
+}
+
+bool sim_t::evaluate_sim_controller_post_init()
+{
+  if ( !profileset_enabled && parent != nullptr )
+    return false;
+
+  for ( auto &sc : sim_controllers )
+    if ( sc->evaluate_post_init() )
+      return true;
+  return false;
+}
+
+bool sim_t::evaluate_sim_controller_post_iter()
+{
+  if ( !profileset_enabled && parent != nullptr )
+    return false;
+
+  for ( auto &sc : sim_controllers )
+    if ( sc->evaluate_post_iter() )
+      return true;
+  return false;
 }

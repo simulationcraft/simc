@@ -54,16 +54,12 @@ namespace profileset
 }
 
 struct sim_controller_data_t;
-namespace
-{
 template <typename T>
 struct data_wrapper_t
 {
   T& data;
 
-  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m )
-  {
-  }
+  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m ) {}
 
 private:
   std::scoped_lock<std::mutex> lock;
@@ -81,7 +77,6 @@ struct sim_controller_data_wrapper_t
   sim_controller_data_wrapper_t( sim_controller_data_wrapper_t& )       = delete;
   sim_controller_data_wrapper_t( const sim_controller_data_wrapper_t& ) = delete;
 };
-}  // namespace
 
 struct sim_controller_data_t
 {
@@ -103,7 +98,8 @@ public:
   virtual ~sim_controller_t() = default;
 
   virtual const std::string name() const                 = 0;
-  virtual int evaluate()                                 = 0;
+  virtual bool evaluate_post_init()                      = 0;
+  virtual bool evaluate_post_iter()                      = 0;
   virtual void report_json_profileset( js::JsonOutput& ) = 0;
   virtual void report_json_options( js::JsonOutput& )    = 0;
   virtual void report_html( std::ostream& )              = 0;
@@ -856,11 +852,14 @@ public:
             typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
   bool register_sim_controller( Args&&... args )
   {
-    sim_controllers.emplace_back( std::make_unique<TBase>( this, std::forward<Args>( args )... ) );
-    typedef typename TBase::data_t data_t;
-    return parent->sim_controller_data
-        .emplace( std::make_pair( sim_controllers.back()->name(), std::make_shared<data_t>() ) )
+    if ( profileset_enabled && parent != nullptr )
+    {
+      sim_controllers.emplace_back( std::make_unique<TBase>( this, std::forward<Args>( args )... ) );
+      return parent->sim_controller_data
+        .emplace( sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
         .second;
+    }
+    return false;
   }
   bool evaluate_sim_controller_post_init();
   bool evaluate_sim_controller_post_iter();
@@ -932,5 +931,5 @@ bool sim_controller_t::set_data( T&& data )
   auto& scd = parent->sim_controller_data;
   assert( scd.find( name() ) != scd.end() );
   scd[ name() ].data = std::make_shared<T>( data );
-  return true;
+  return true; // TODO: this RV is stupid
 }

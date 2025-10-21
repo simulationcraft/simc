@@ -5549,6 +5549,14 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
   return true;
 }
 
+void monk_t::init()
+{
+  base_t::init();
+
+  sim->register_sim_controller<min_player_stat_t>( this, STAT_CRIT_RATING, 100 );
+}
+
+// monk_t::init_spells ======================================================
 void monk_t::init_spells()
 {
   base_t::init_spells();

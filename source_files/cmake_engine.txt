@@ -163,6 +163,7 @@ sim/reforge_plot.hpp
 sim/scale_factor_control.hpp
 sim/sim.hpp
 sim/sim_control.hpp
+sim/sim_controller.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
 sim/work_queue.hpp
@@ -352,6 +353,7 @@ sim/raid_event.cpp
 sim/reforge_plot.cpp
 sim/scale_factor_control.cpp
 sim/sim.cpp
+sim/sim_controller.cpp
 sim/sim_ostream.cpp
 sim/uptime_benefit.cpp
 util/cache.cpp
