@@ -108,7 +108,7 @@ protected:
   template <typename T>
   data_wrapper_t<T> get_data();
   template <typename T>
-  bool set_data( T&& data );
+  void set_data( T&& data );
 };
 
 struct sim_progress_t
@@ -926,10 +926,9 @@ data_wrapper_t<T> sim_controller_t::get_data()
 }
 
 template <typename T>
-bool sim_controller_t::set_data( T&& data )
+void sim_controller_t::set_data( T&& data )
 {
   auto& scd = parent->sim_controller_data;
   assert( scd.find( name() ) != scd.end() );
   scd[ name() ].data = std::make_shared<T>( data );
-  return true; // TODO: this RV is stupid
 }
