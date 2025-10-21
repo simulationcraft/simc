@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63834 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.63906 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -265128,7 +265128,6 @@ Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
 Name             : Tempest Wrath (id=1233179) [Passive] 
-Hotfixed         : Tooltip
 School           : Nature
 Spell Type       : None
 Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
@@ -265146,7 +265145,6 @@ Tooltip          : Every $1233181t1 sec, inflict $<damageValue> Nature damage to
 Variables        : $damageValue=${($max($AP,$SP)*($1250003w10/100))}
 
 Name             : Tempest Wrath (id=1233181) 
-Hotfixed         : Tooltip
 School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -265829,7 +265827,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37614 | Target: at Self (18)
 #2 (id=1265452)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 50)
 Description      : $?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233775[|CFFff0000$@spelldesc1247808|R
 
 ][]|CFFe6cc80Artifact Ability|R
@@ -267090,7 +267087,6 @@ Attributes       : Passive (6), Suppress Caster Procs (112), Not In Spellbook (1
 Effects          :
 #1 (id=1229113)  : Apply Aura (6) | Proc Trigger Spell (42): Fortitude
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 1234684 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 3)
 Description      : Once every $proccooldown sec, you begin accumulating |CFFffffff$<absorbValue>%|R of all damage taken as $@spellname1234684. After $1234684d, $@spellname1234684 becomes a protective barrier, absorbing the amount accumulated for $1234691d.
 Variables        : $absorbValue=${$1234683s1}
 
@@ -268327,7 +268323,6 @@ Description      : $@spelldesc1242247
 Tooltip          : You have subjugated an infernal dreadlord who periodically strikes enemies with $@spellname1237721.
 
 Name             : Reign of Chaos (id=1237721) 
-Hotfixed         : Tooltip
 School           : Magic
 Spell Type       : Magic
 Range            : 40 yards
@@ -269927,6 +269922,7 @@ Description      : $@spelldesc1244402
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Touch of Malice (id=1245385) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -269936,7 +269932,7 @@ Internal Cooldown: 2 seconds
 Proc Chance      : 33%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Triggered By     : Touch of Malice (1242992)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Ignore Target Requirements (181), Ignore Caster Requirements (184), Can Assist Immune PC (195), Can Target Untargetable (216), Aura Points On Client (268), Proc cooldown on a per target basis (330), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Apply Zone Aura Spell To Pets (383), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Ignore Target Requirements (181), Ignore Caster Requirements (184), Can Assist Immune PC (195), Can Target Untargetable (216), Aura Points On Client (268), Proc cooldown on a per target basis (330), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Apply Zone Aura Spell To Pets (383), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1246397)  : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1231982 | Radius: 100 yards | Target: Self (1)

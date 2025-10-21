@@ -1,4 +1,4 @@
-// Spell text, wow build 11.2.5.63834
+// Spell text, wow build 11.2.5.63906
 static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -28168,14 +28168,11 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1261118, "$@spelldesc1233592", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.5.63834
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
-  { 1233179,  1, nullptr, "Every $1233181t1 sec, inflict $<damageValue> Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $1233181w2%." },
-  { 1233181,  1, "Every $t1 sec, inflict $1233196s1 Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $w2%.", "$@spellaura1233179" },
-  { 1237721,  1, "Inflicting $1240126s1 Chaos damage every $t2 sec.", "Inflicting $<damageValue> Chaos damage every $t2 sec." },
+// spelltext hotfix entries, wow build 11.2.5.63906
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.2.5.63834
+// Spell description variables, wow build 11.2.5.63906
 static constexpr std::array<spelldesc_vars_data_t, 691> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28870,7 +28867,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __spelldesc_vars_data { 
   { 1258587, "$damageValue=${$1258587s1*($max($AP,$SP)*($1250003w25/100))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.5.63834
+// spelldesc_vars hotfix entries, wow build 11.2.5.63906
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
