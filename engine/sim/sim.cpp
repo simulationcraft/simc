@@ -3113,10 +3113,7 @@ bool sim_t::iterate()
   progress_bar.init();
 
   if ( profileset_enabled && parent && evaluate_sim_controller_post_init() )
-  {
     cancel();
-    return true;
-  }
 
   try
   {
