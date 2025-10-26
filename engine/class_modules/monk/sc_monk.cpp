@@ -5553,8 +5553,8 @@ void monk_t::init()
 {
   base_t::init();
 
-  // sim->register_sim_controller<min_player_stat_t>( this, STAT_CRIT_RATING, 100 );
-  sim->register_sim_controller<tier_set_count_t>( this, TWW2, B2 );
+  // sim_controller_t::register_sim_controller<min_player_stat_t>( sim, this, STAT_CRIT_RATING, 100 );
+  sim_controller_t::register_sim_controller<tier_set_count_t>( sim, this, TWW2, B2 );
 }
 
 // monk_t::init_spells ======================================================

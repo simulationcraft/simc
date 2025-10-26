@@ -96,6 +96,9 @@ struct sim_controller_t
 
   static const std::string call_point_string( call_point_e call_point );
   static void evaluate( sim_t* sim, call_point_e call_point );
+  template <typename TBase, typename... Args,
+            typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
+  static bool register_sim_controller( sim_t* sim, Args&&... args );
 
 private:
   sim_t* parent;
@@ -859,19 +862,6 @@ public:
   { return _rng; }
   double averaged_range( double min, double max );
 
-  template <typename TBase, typename... Args,
-            typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
-  bool register_sim_controller( Args&&... args )
-  {
-    if ( profileset_enabled && parent )
-    {
-      sim_controllers.emplace_back( std::make_shared<TBase>( this, std::forward<Args>( args )... ) );
-      return parent->sim_controller_data
-        .emplace( sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
-        .second;
-    }
-    return false;
-  }
 
   // Thread id of this sim_t object
 #ifndef SC_NO_THREADING
@@ -926,18 +916,3 @@ private:
   void disable_debug_seed();
   bool requires_cleanup() const;
 };
-
-template <typename T>
-data_wrapper_t<T> sim_controller_t::get_data()
-{
-  auto& data = parent->sim_controller_data.at( name() );
-  return { *std::static_pointer_cast<T>( data.data ), data.mutex };
-}
-
-template <typename T>
-void sim_controller_t::set_data( T&& data )
-{
-  auto& scd = parent->sim_controller_data;
-  assert( scd.find( name() ) != scd.end() );
-  scd[ name() ].data = std::make_shared<T>( data );
-}
