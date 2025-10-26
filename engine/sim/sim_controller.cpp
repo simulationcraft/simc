@@ -75,7 +75,7 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   sim->interrupt();
 }
 
-const std::string sim_controller_t::message( call_point_e call_point ) const
+const std::string sim_controller_t::message( call_point_e call_point )
 {
   std::string msg =
       fmt::format( "Profileset {} was canceled by {} after {}", parent->profilesets->current_profileset_name(), name(),

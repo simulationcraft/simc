@@ -112,7 +112,7 @@ public:
   sim_controller_t( sim_controller_t& )       = delete;
   sim_controller_t( const sim_controller_t& ) = delete;
 
-  const std::string message( call_point_e ) const;
+  const std::string message( call_point_e );
 
   virtual const std::string name() const   = 0;
   virtual const std::string reason() const = 0;
