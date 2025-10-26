@@ -59,7 +59,9 @@ struct data_wrapper_t
 {
   T& data;
 
-  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m ) {}
+  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m )
+  {
+  }
 
 private:
   std::scoped_lock<std::mutex> lock;
@@ -78,18 +80,14 @@ struct sim_controller_data_wrapper_t
   sim_controller_data_wrapper_t( const sim_controller_data_wrapper_t& ) = delete;
 };
 
-struct sim_controller_data_t
-{
-  sim_controller_data_t();
-  sim_controller_data_t( sim_controller_data_t& data );
-};
-
+// local profileset data and methods
 struct sim_controller_t
 {
   using data_t = sim_controller_data_t;
 
   enum call_point_e
   {
+    NONE,
     POST_INIT,
     POST_ITER
   };
@@ -102,18 +100,33 @@ struct sim_controller_t
 
 private:
   sim_t* parent;
+  call_point_e exit_point;
+  std::string exit_reason;
+
 public:
   sim_t* sim;
 
   sim_controller_t( sim_t* sim );
   virtual ~sim_controller_t() = default;
 
+  sim_controller_t( sim_controller_t& )       = delete;
+  sim_controller_t( const sim_controller_t& ) = delete;
+
   const std::string message( call_point_e ) const;
 
-  virtual const std::string name() const = 0;
-  virtual const std::string reason() const { return {}; }
-  virtual bool evaluate_post_init() { return true; };
-  virtual bool evaluate_post_iter() { return true; };
+  virtual const std::string name() const   = 0;
+  virtual const std::string reason() const = 0;
+
+  virtual bool evaluate_post_init()
+  {
+    return true;
+  }
+
+  virtual bool evaluate_post_iter()
+  {
+    return true;
+  }
+
   virtual void report_json_profileset( js::JsonOutput& ) {};
   virtual void report_json_options( js::JsonOutput& ) {};
   virtual void report_html( std::ostream& ) {};
@@ -123,6 +136,13 @@ protected:
   data_wrapper_t<T> get_data();
   template <typename T>
   void set_data( T&& data );
+};
+
+// global profileset data to be shared across all instantiations of a derived `sim_controller_t`
+struct sim_controller_data_t
+{
+  sim_controller_data_t();
+  sim_controller_data_t( sim_controller_data_t& data );
 };
 
 struct sim_progress_t

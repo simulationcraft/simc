@@ -1,9 +1,22 @@
 #pragma once
 
-#include "sim.hpp"
-#include "player/rating.hpp"
 #include "player/player.hpp"
+#include "player/rating.hpp"
 #include "sc_enums.hpp"
+#include "sim.hpp"
+
+template <typename TBase, typename... Args, typename>
+bool sim_controller_t::register_sim_controller( sim_t* sim, Args&&... args )
+{
+  if ( sim && sim->profileset_enabled && sim->parent )
+  {
+    sim->sim_controllers.emplace_back( std::make_shared<TBase>( sim, std::forward<Args>( args )... ) );
+    return sim->parent->sim_controller_data
+        .emplace( sim->sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
+        .second;
+  }
+  return false;
+}
 
 template <typename T>
 data_wrapper_t<T> sim_controller_t::get_data()
@@ -18,19 +31,6 @@ void sim_controller_t::set_data( T&& data )
   auto& scd = parent->sim_controller_data;
   assert( scd.find( name() ) != scd.end() );
   scd[ name() ].data = std::make_shared<T>( data );
-}
-
-template <typename TBase, typename... Args, typename>
-bool sim_controller_t::register_sim_controller( sim_t* sim, Args&&... args )
-{
-  if ( sim && sim->profileset_enabled && sim->parent )
-  {
-    sim->sim_controllers.emplace_back( std::make_shared<TBase>( sim, std::forward<Args>( args )... ) );
-    return sim->parent->sim_controller_data
-      .emplace( sim->sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
-      .second;
-  }
-  return false;
 }
 
 struct min_player_stat_t : sim_controller_t
@@ -48,7 +48,10 @@ struct min_player_stat_t : sim_controller_t
   double min_rating;
 
   min_player_stat_t( sim_t*, player_t*, stat_e, double );
-  const std::string name() const override { return "min_player_stat"; }
+  const std::string name() const override
+  {
+    return "min_player_stat";
+  }
   bool evaluate_post_init() override;
 };
 
@@ -61,7 +64,10 @@ struct tier_set_count_t : sim_controller_t
   set_bonus_e count;
 
   tier_set_count_t( sim_t*, player_t*, set_bonus_type_e, set_bonus_e );
-  const std::string name() const override { return "tier_set_count"; }
+  const std::string name() const override
+  {
+    return "tier_set_count";
+  }
   bool evaluate_post_init() override;
   const std::string reason() const override;
 };
