@@ -22,10 +22,6 @@ struct min_player_stat_t : sim_controller_t
   min_player_stat_t( sim_t*, player_t*, stat_e, double );
   const std::string name() const override { return "min_player_stat"; }
   bool evaluate_post_init() override;
-  bool evaluate_post_iter() override;
-  void report_json_profileset( js::JsonOutput& ) override;
-  void report_json_options( js::JsonOutput& ) override;
-  void report_html( std::ostream& ) override;
 };
 
 struct tier_set_count_t : sim_controller_t
@@ -39,8 +35,5 @@ struct tier_set_count_t : sim_controller_t
   tier_set_count_t( sim_t*, player_t*, set_bonus_type_e, set_bonus_e );
   const std::string name() const override { return "tier_set_count"; }
   bool evaluate_post_init() override;
-  bool evaluate_post_iter() override;
-  void report_json_profileset( js::JsonOutput& ) override;
-  void report_json_options( js::JsonOutput& ) override;
-  void report_html( std::ostream& ) override;
+  const std::string reason() const override;
 };

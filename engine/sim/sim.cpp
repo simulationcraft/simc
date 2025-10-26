@@ -3112,8 +3112,7 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  if ( profileset_enabled && parent && evaluate_sim_controller_post_init() )
-    cancel();
+  sim_controller_t::evaluate( this, sim_controller_t::POST_INIT );
 
   try
   {
@@ -3132,8 +3131,7 @@ bool sim_t::iterate()
         progress_bar.output( false );
       }
 
-      if ( profileset_enabled && parent && evaluate_sim_controller_post_iter() )
-        cancel();
+      sim_controller_t::evaluate( this, sim_controller_t::POST_ITER );
 
       do_pause();
       auto old_active = current_index;
@@ -4876,24 +4874,64 @@ sim_controller_t::sim_controller_t( sim_t* sim ) : parent( sim->parent ), sim( s
 {
 }
 
-bool sim_t::evaluate_sim_controller_post_init()
+const std::string sim_controller_t::message( call_point_e call_point ) const
 {
-  if ( !profileset_enabled && parent != nullptr )
-    return false;
+  std::string msg =
+      fmt::format( "Profileset {} was canceled by {} after {}", parent->profilesets->current_profileset_name(), name(),
+                   call_point_string( call_point ) );
+  if ( call_point == POST_ITER )
+    msg += std::to_string( sim->current_iteration );
 
-  for ( auto &sc : sim_controllers )
-    if ( sc->evaluate_post_init() )
-      return true;
-  return false;
+  if ( const std::string r = reason(); r != "" )
+    msg += fmt::format( " because {}.", r );
+  else
+    msg += ".";
+
+  return msg;
 }
 
-bool sim_t::evaluate_sim_controller_post_iter()
+const std::string sim_controller_t::call_point_string( call_point_e call_point )
 {
-  if ( !profileset_enabled && parent != nullptr )
-    return false;
+  switch ( call_point )
+  {
+    case POST_INIT:
+      return "simulation initialization";
+    case POST_ITER:
+      return "iteration";
+    default:
+      assert( false );
+      return "no matching call point";
+  }
+}
 
-  for ( auto &sc : sim_controllers )
-    if ( sc->evaluate_post_iter() )
-      return true;
-  return false;
+void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
+{
+  if ( !sim->profileset_enabled || !sim->parent )
+    return;
+
+  typedef std::shared_ptr<sim_controller_t> iter_t;
+  std::function<bool( iter_t& )> cb;
+  switch ( call_point )
+  {
+    case POST_INIT:
+      cb = []( iter_t& sc ) { return !sc->evaluate_post_init(); };
+      break;
+    case POST_ITER:
+      cb = []( iter_t& sc ) { return !sc->evaluate_post_iter(); };
+      break;
+    default:
+      assert( false );
+      break;
+  }
+  auto sc = range::find_if( sim->sim_controllers, cb );
+  if ( sc == sim->sim_controllers.end() )
+    return;
+
+  std::shared_ptr<sim_controller_t>& controller = *sc;
+  assert( controller->sim == sim );
+  assert( controller->parent == sim->parent );
+
+  sim->canceled = true;
+  sim->error( controller->message( call_point ) );
+  sim->interrupt();
 }

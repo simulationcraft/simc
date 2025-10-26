@@ -88,21 +88,32 @@ struct sim_controller_t
 {
   using data_t = sim_controller_data_t;
 
+  enum call_point_e
+  {
+    POST_INIT,
+    POST_ITER
+  };
+
+  static const std::string call_point_string( call_point_e call_point );
+  static void evaluate( sim_t* sim, call_point_e call_point );
+
 private:
   sim_t* parent;
-
 public:
   sim_t* sim;
 
   sim_controller_t( sim_t* sim );
   virtual ~sim_controller_t() = default;
 
-  virtual const std::string name() const                 = 0;
-  virtual bool evaluate_post_init()                      = 0;
-  virtual bool evaluate_post_iter()                      = 0;
-  virtual void report_json_profileset( js::JsonOutput& ) = 0;
-  virtual void report_json_options( js::JsonOutput& )    = 0;
-  virtual void report_html( std::ostream& )              = 0;
+  const std::string message( call_point_e ) const;
+
+  virtual const std::string name() const = 0;
+  virtual const std::string reason() const { return {}; }
+  virtual bool evaluate_post_init() { return true; };
+  virtual bool evaluate_post_iter() { return true; };
+  virtual void report_json_profileset( js::JsonOutput& ) {};
+  virtual void report_json_options( js::JsonOutput& ) {};
+  virtual void report_html( std::ostream& ) {};
 
 protected:
   template <typename T>
@@ -645,7 +656,7 @@ struct sim_t : private sc_thread_t
   // sim control
 private:
   friend sim_controller_t;
-  std::vector<std::unique_ptr<sim_controller_t>> sim_controllers;
+  std::vector<std::shared_ptr<sim_controller_t>> sim_controllers;
   std::map<std::string, sim_controller_data_wrapper_t> sim_controller_data;
 
 public:
@@ -852,17 +863,15 @@ public:
             typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
   bool register_sim_controller( Args&&... args )
   {
-    if ( profileset_enabled && parent != nullptr )
+    if ( profileset_enabled && parent )
     {
-      sim_controllers.emplace_back( std::make_unique<TBase>( this, std::forward<Args>( args )... ) );
+      sim_controllers.emplace_back( std::make_shared<TBase>( this, std::forward<Args>( args )... ) );
       return parent->sim_controller_data
         .emplace( sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
         .second;
     }
     return false;
   }
-  bool evaluate_sim_controller_post_init();
-  bool evaluate_sim_controller_post_iter();
 
   // Thread id of this sim_t object
 #ifndef SC_NO_THREADING
