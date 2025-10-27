@@ -48,8 +48,7 @@ namespace report::json
 class report_configuration_t;
 }
 
-namespace profileset
-{
+namespace profileset{
   class profilesets_t;
 }
 
@@ -679,7 +678,7 @@ struct sim_t : private sc_thread_t
   // sim control
 private:
   friend sim_controller_t;
-  std::vector<std::shared_ptr<sim_controller_t>> sim_controllers;
+  std::vector<std::unique_ptr<sim_controller_t>> sim_controllers;
   std::map<std::string, sim_controller_data_wrapper_t> sim_controller_data;
 
 public:

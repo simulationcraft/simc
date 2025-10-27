@@ -45,15 +45,15 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   if ( !sim->profileset_enabled || !sim->parent )
     return;
 
-  typedef std::shared_ptr<sim_controller_t> iter_t;
-  std::function<bool( iter_t& )> cb;
+  typedef std::unique_ptr<sim_controller_t> sc_ptr_t;
+  std::function<bool( sc_ptr_t& )> cb;
   switch ( call_point )
   {
     case POST_INIT:
-      cb = []( iter_t& sc ) { return !sc->evaluate_post_init(); };
+      cb = []( sc_ptr_t& sc ) { return !sc->evaluate_post_init(); };
       break;
     case POST_ITER:
-      cb = []( iter_t& sc ) { return !sc->evaluate_post_iter(); };
+      cb = []( sc_ptr_t& sc ) { return !sc->evaluate_post_iter(); };
       break;
     default:
       assert( false );
@@ -63,7 +63,7 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   if ( sc == sim->sim_controllers.end() )
     return;
 
-  std::shared_ptr<sim_controller_t>& controller = *sc;
+  auto* controller = sc->get();
   assert( controller->sim == sim );
   assert( controller->parent == sim->parent );
 

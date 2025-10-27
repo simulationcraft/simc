@@ -10,7 +10,7 @@ bool sim_controller_t::register_sim_controller( sim_t* sim, Args&&... args )
 {
   if ( sim && sim->profileset_enabled && sim->parent )
   {
-    sim->sim_controllers.emplace_back( std::make_shared<TBase>( sim, std::forward<Args>( args )... ) );
+    sim->sim_controllers.emplace_back( std::make_unique<TBase>( sim, std::forward<Args>( args )... ) );
     return sim->parent->sim_controller_data
         .emplace( sim->sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
         .second;
