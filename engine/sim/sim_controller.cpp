@@ -1,5 +1,6 @@
 #include "sim_controller.hpp"
 
+#include "sc_enums.hpp"
 #include "player/set_bonus.hpp"
 #include "profileset.hpp"
 #include "sim.hpp"
@@ -71,7 +72,7 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   controller->exit_reason = controller->reason();
 
   sim->canceled = true;
-  sim->error( controller->message( call_point ) );
+  sim->error( error_level_e::TRIVIAL, "{}", controller->message( call_point ) );
   sim->interrupt();
 }
 
