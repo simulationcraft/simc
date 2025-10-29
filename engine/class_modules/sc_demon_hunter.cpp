@@ -799,6 +799,7 @@ public:
     const spell_data_t* first_blood_death_sweep_damage;
     const spell_data_t* first_blood_death_sweep_2_damage;
     const spell_data_t* furious_gaze_buff;
+    const spell_data_t* glaive_tempest;
     const spell_data_t* glaive_tempest_damage;
     const spell_data_t* immolation_aura_3;
     const spell_data_t* initiative_buff;
@@ -4052,7 +4053,7 @@ struct glaive_tempest_t : public demon_hunter_spell_t
     {
       background = dual = ground_aoe = true;
       aoe                            = -1;
-      reduced_aoe_targets            = p->talent.havoc.glaive_tempest->effectN( 2 ).base_value();
+      reduced_aoe_targets            = p->spec.glaive_tempest->effectN( 2 ).base_value();
     }
   };
 
@@ -4060,7 +4061,7 @@ struct glaive_tempest_t : public demon_hunter_spell_t
   glaive_tempest_damage_t* glaive_tempest_oh;
 
   glaive_tempest_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->talent.havoc.glaive_tempest )
+    : demon_hunter_spell_t( n, p, p->spec.glaive_tempest )
   {
     school            = SCHOOL_CHAOS;  // Reporting purposes only
     glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( fmt::format( "{}_mh", name() ) );
@@ -10457,6 +10458,7 @@ void demon_hunter_t::init_spells()
   spec.first_blood_blade_dance_2_damage = talent_spell_lookup( talent.havoc.first_blood, 391378 );
   spec.first_blood_death_sweep_damage   = talent_spell_lookup( talent.havoc.first_blood, 393055 );
   spec.first_blood_death_sweep_2_damage = talent_spell_lookup( talent.havoc.first_blood, 393054 );
+  spec.glaive_tempest                   = talent_spell_lookup( talent.havoc.glaive_tempest, 342817 );
   spec.glaive_tempest_damage            = talent_spell_lookup( talent.havoc.glaive_tempest, 342857 );
   spec.initiative_buff                  = talent_spell_lookup( talent.havoc.initiative, 391215 );
   spec.inner_demon_buff                 = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
