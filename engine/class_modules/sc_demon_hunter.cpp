@@ -709,8 +709,6 @@ public:
     const spell_data_t* demon_soul;
     const spell_data_t* demon_soul_empowered;
     const spell_data_t* felblade_damage;
-    const spell_data_t* felblade_reset_havoc;
-    const spell_data_t* felblade_reset_vengeance;
     const spell_data_t* immolation_aura_damage;
     const spell_data_t* infernal_armor_damage;
     const spell_data_t* sigil_of_flame_damage;
@@ -1057,8 +1055,6 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    real_ppm_t* felblade;
-
     // Havoc
     real_ppm_t* demonic_appetite;
   } rppm;
@@ -6342,32 +6338,6 @@ struct soulscar_trigger_t : public BASE
   }
 };
 
-template <typename BASE>
-struct felblade_trigger_t : public BASE
-{
-  using base_t = felblade_trigger_t<BASE>;
-
-  felblade_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::p()->talent.demon_hunter.felblade->ok() || !BASE::p()->rppm.felblade->trigger() )
-      return;
-
-    if ( action_t::result_is_miss( s->result ) )
-      return;
-
-    BASE::p()->proc.felblade_reset->occur();
-    BASE::p()->cooldown.felblade->reset( true );
-  }
-};
-
 // Auto Attack ==============================================================
 
 struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
@@ -7223,9 +7193,9 @@ struct burning_wound_t : public demon_hunter_spell_t
 
 // Demon Blades =============================================================
 
-struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
+struct demon_blades_t : public demon_hunter_attack_t
 {
-  demon_blades_t( demon_hunter_t* p ) : base_t( "demon_blades", p, p->spec.demon_blades_damage )
+  demon_blades_t( demon_hunter_t* p ) : demon_hunter_attack_t( "demon_blades", p, p->spec.demon_blades_damage )
   {
     background     = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
@@ -7445,8 +7415,8 @@ struct fel_rush_t : public inertia_trigger_t<demon_hunter_attack_t>
 
 // Fracture =================================================================
 
-struct fracture_t : public voidfall_building_trigger_t<felblade_trigger_t<
-                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>>
+struct fracture_t : public voidfall_building_trigger_t<
+                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
@@ -9973,11 +9943,9 @@ void demon_hunter_t::init_rng()
     case DEMON_HUNTER_DEVOURER:
       break;
     case DEMON_HUNTER_HAVOC:
-      rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
       rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
       break;
     case DEMON_HUNTER_VENGEANCE:
-      rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
       break;
     default:
       break;
@@ -10425,14 +10393,12 @@ void demon_hunter_t::init_spells()
   talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
   // Class Background Spells
-  spell.felblade_damage          = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
-  spell.felblade_reset_havoc     = talent_spell_lookup( talent.demon_hunter.felblade, 236167 );
-  spell.felblade_reset_vengeance = talent_spell_lookup( talent.demon_hunter.felblade, 203557 );
-  spell.infernal_armor_damage    = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
-  spell.immolation_aura_damage   = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
-  spell.sigil_of_flame_damage    = find_spell( 204598 );
-  spell.sigil_of_flame_fury      = find_spell( 389787 );
-  spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
+  spell.felblade_damage        = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
+  spell.infernal_armor_damage  = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
+  spell.immolation_aura_damage = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
+  spell.sigil_of_flame_damage  = find_spell( 204598 );
+  spell.sigil_of_flame_fury    = find_spell( 389787 );
+  spec.sigil_of_misery_debuff  = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
   spec.feast_of_souls_buff           = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
