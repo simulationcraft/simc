@@ -4060,8 +4060,7 @@ struct glaive_tempest_t : public demon_hunter_spell_t
   glaive_tempest_damage_t* glaive_tempest_mh;
   glaive_tempest_damage_t* glaive_tempest_oh;
 
-  glaive_tempest_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->spec.glaive_tempest )
+  glaive_tempest_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.glaive_tempest )
   {
     school            = SCHOOL_CHAOS;  // Reporting purposes only
     glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( fmt::format( "{}_mh", name() ) );
@@ -6757,9 +6756,14 @@ struct blade_dance_base_t
       }
     }
 
+    // Eternal Hunt buff expires ~500ms after Blade Dance is used
+
     if ( p()->buff.eternal_hunt->up() )
     {
-      cooldown->reset( true );
+      make_event( *p()->sim, 500_ms, [ this ] {
+        p()->buff.eternal_hunt->expire();
+        cooldown->reset( true );
+      } );
     }
   }
 
