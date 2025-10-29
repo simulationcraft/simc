@@ -6612,7 +6612,8 @@ struct blade_dance_base_t
           trail_of_ruin_dot->execute_on_target( s->target );
         }
 
-        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets )
+        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets &&
+             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
         {
           p()->active.glaive_tempest->execute_on_target( target );
         }
