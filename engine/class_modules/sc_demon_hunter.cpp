@@ -6548,6 +6548,7 @@ struct blade_dance_base_t
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
+    bool first_attack;
     bool last_attack;
     bool from_first_blood;
     unsigned glaive_tempest_targets;
@@ -6557,6 +6558,7 @@ struct blade_dance_base_t
       : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
+        first_attack( false ),
         last_attack( false ),
         from_first_blood( first_blood_override != nullptr )
     {
@@ -6600,7 +6602,7 @@ struct blade_dance_base_t
     {
       demon_hunter_attack_t::impact( s );
 
-      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
       {
         p()->active.essence_break_proc->execute_on_target( target );
       }
@@ -6658,6 +6660,11 @@ struct blade_dance_base_t
     for ( auto& attack : attacks )
     {
       attack->stats = stats;
+    }
+
+    if ( attacks.front() )
+    {
+      attacks.front()->first_attack = true;
     }
 
     if ( attacks.back() )
