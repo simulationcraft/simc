@@ -8940,7 +8940,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 
 void demon_hunter_td_t::target_demise()
 {
-  if ( dh().specialization() != DEMON_HUNTER_HAVOC && dh().specialization() != DEMON_HUNTER_VENGEANCE )
+  if ( dh().specialization() == DEMON_HUNTER_DEVOURER )
     return;
   if ( !( target->is_enemy() ) )
     return;
