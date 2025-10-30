@@ -512,7 +512,7 @@ class CASCObject:
 
     def get_url(self, url, headers=None):
         attempt = 0
-        maxAttempts = 5
+        maxAttempts = 6
         while attempt < maxAttempts:
             r = None
             try:
@@ -538,26 +538,18 @@ class CASCObject:
                     # try a random, different CDN host
                     # TODO: clean this up
                     # depending on how this gets called the cdn_host is buried in the build object
-                    if self.cdn_host:
-                        if len(self.cdn_host):
+                    search_hosts = self.cdn_host or self.build.cdn_host
+                    if search_hosts:
+                        if len(search_hosts):
                             cur_host = ''
-                            for host in self.cdn_host:
-                                if url.find(host):
+                            for host in search_hosts:
+                                if host in url:
                                     cur_host = host
+
                             if cur_host:
-                                other_hosts = [host for host in self.cdn_host if host != cur_host]
-                                url = url.replace(cur_host, random.choice(other_hosts))
-                        time.sleep(2**attempt)
-                        attempt += 1
-                    elif self.build.cdn_host:
-                        if len(self.build.cdn_host):
-                            cur_host = ''
-                            for host in self.build.cdn_host:
-                                if url.find(host):
-                                    cur_host = host
-                            if cur_host:
-                                other_hosts = [host for host in self.build.cdn_host if host != cur_host]
-                                url = url.replace(cur_host, random.choice(other_hosts))
+                                other_hosts = [host for host in search_hosts if host != cur_host]
+                                try_host = other_hosts[attempt % len(other_hosts)]
+                                url = url.replace(cur_host, try_host)
                         time.sleep(2**attempt)
                         attempt += 1
                     else:
