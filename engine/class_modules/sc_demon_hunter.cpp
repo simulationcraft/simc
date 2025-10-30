@@ -6826,10 +6826,12 @@ struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWE
   {
     assert( p()->buff.metamorphosis->check() );
 
-    // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
-    if ( p()->buff.metamorphosis->remains_lt( 1_s ) )
+    timespan_t ds_extension = timespan_t::from_millis( data().effectN( 5 ).misc_value1() );
+
+    // If Metamorphosis has less than 950ms remaining, it gets extended so the whole Death Sweep happens during Meta.
+    if ( p()->buff.metamorphosis->remains_lt( ds_extension ) )
     {
-      p()->buff.metamorphosis->extend_duration( p(), 1_s - p()->buff.metamorphosis->remains() );
+      p()->buff.metamorphosis->extend_duration( p(), ds_extension - p()->buff.metamorphosis->remains() );
     }
 
     base_t::execute();
