@@ -7994,6 +7994,12 @@ struct vengeful_retreat_t
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
 
+    cooldown->duration = data().category_cooldown();
+    if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+    {
+      cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+    }
+
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality                       = movement_direction_type::OMNI;
     p->buff.vengeful_retreat_move->distance_moved = base_teleport_distance;
