@@ -1039,8 +1039,8 @@ void profileset_json2( const profileset::profilesets_t& profileset, const sim_t&
 
                      // report source, location, and reason of interrupt for
                      // all registered profileset sim controllers
-                     for ( const auto& controller: sim.sim_controllers )
-                       controller->report_json_profileset( obj );
+                     // for ( const auto& controller: sim.sim_controllers )
+                     //   controller->report_json_profileset( obj );
 
                      // Optional override ouput data
                      if ( !sim.profileset_output_data.empty() )
@@ -1089,8 +1089,8 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
 
                      // report source, location, and reason of interrupt for
                      // all registered profileset sim controllers
-                     for ( const auto& controller: sim.sim_controllers )
-                       controller->report_json_profileset( obj );
+                     // for ( const auto& controller: sim.sim_controllers )
+                     //   controller->report_json_profileset( obj );
 
 
                      // Optional override ouput data

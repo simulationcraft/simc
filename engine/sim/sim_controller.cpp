@@ -5,12 +5,12 @@
 #include "profileset.hpp"
 #include "sim.hpp"
 
-sim_controller_data_wrapper_t::sim_controller_data_wrapper_t() : mutex(), data( nullptr )
+sim_controller_data_wrapper_t::sim_controller_data_wrapper_t() : mutex(), data(), exit_reasons()
 {
 }
 
-sim_controller_data_wrapper_t::sim_controller_data_wrapper_t( std::shared_ptr<sim_controller_data_t> data )
-  : mutex(), data( data )
+sim_controller_data_wrapper_t::sim_controller_data_wrapper_t( std::unique_ptr<sim_controller_data_t>&& data )
+  : mutex(), data( std::move( data ) ), exit_reasons()
 {
 }
 
@@ -23,8 +23,10 @@ sim_controller_data_t::sim_controller_data_t( sim_controller_data_t& )
 }
 
 sim_controller_t::sim_controller_t( sim_t* sim )
-  : parent( sim->parent ), exit_point( sim_controller_t::NONE ), exit_reason( {} ), sim( sim )
+  : parent( sim->parent ), sim( sim )
 {
+  assert( sim );
+  assert( sim->parent );
 }
 
 const std::string sim_controller_t::call_point_string( call_point_e call_point )
@@ -68,8 +70,12 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   assert( controller->sim == sim );
   assert( controller->parent == sim->parent );
 
-  controller->exit_point  = call_point;
-  controller->exit_reason = controller->reason();
+  auto& scd = sim->parent->sim_controller_data.at( controller->name() );
+  std::scoped_lock<std::recursive_mutex> L( scd.mutex );
+
+  auto name = controller->name();
+  scd.exit_reasons.emplace_back( sim->parent->profilesets->current_profileset_name(), call_point,
+                                 controller->reason() );
 
   sim->canceled = true;
   sim->error( error_level_e::TRIVIAL, "{}", controller->message( call_point ) );
@@ -92,30 +98,32 @@ const std::string sim_controller_t::message( call_point_e call_point )
   return msg;
 }
 
-void sim_controller_t::report_json_profileset( js::JsonOutput& output )
+void sim_controller_data_wrapper_t::report_json_profileset( js::JsonOutput& output ) const
 {
-  if ( !exit_point || exit_reason.empty() )
-    return;
-
-  output["interrupted_by"] = name();
-  output["exit_point"] = call_point_string( exit_point );
-  output["exit_reason"] = exit_reason;
+  for ( const exit_reason_t& exit_reason : exit_reasons )
+  {
+    output[ "interrupted_by" ] = exit_reason.profileset_name;
+    output[ "exit_point" ]     = sim_controller_t::call_point_string( exit_reason.exit_point );
+    output[ "exit_reason" ]    = exit_reason.exit_reason;
+  }
 }
 
-void sim_controller_t::report_json_options( js::JsonOutput& )
+void sim_controller_data_wrapper_t::report_json_options( js::JsonOutput& ) const
 {
   // TODO: implement opt parsing and automatic generation of report json from opts
 }
 
-void sim_controller_t::report_html_profileset( std::ostream& output )
+void sim_controller_data_wrapper_t::report_html_profileset( std::ostream& output ) const
 {
-  output << "<li>"
-         << util::encode_html( call_point_string( exit_point ) )
-         << util::encode_html( exit_reason )
-         << "</li>";
+  for ( const exit_reason_t& exit_reason : exit_reasons )
+    output << "<li>"
+          << util::encode_html( exit_reason.profileset_name ) << " "
+          << util::encode_html( sim_controller_t::call_point_string( exit_reason.exit_point ) ) << " "
+          << util::encode_html( exit_reason.exit_reason )
+          << "</li>";
 }
 
-void sim_controller_t::report_html_options( std::ostream& )
+void sim_controller_data_wrapper_t::report_html_options( std::ostream& ) const
 {}
 
 min_player_stat_t::min_player_stat_t( sim_t* sim, player_t* target_player, stat_e rating, double amount )
@@ -125,7 +133,13 @@ min_player_stat_t::min_player_stat_t( sim_t* sim, player_t* target_player, stat_
 
 bool min_player_stat_t::evaluate_post_init()
 {
-  return target_player->get_stat_value( rating ) >= min_rating;
+  return true;
+}
+
+const std::string min_player_stat_t::reason() const
+{
+  return fmt::format( "player {} does not exceed {} rating for {}", target_player->name(),
+                      min_rating, util::stat_type_string( rating ) );
 }
 
 tier_set_count_t::tier_set_count_t( sim_t* sim, player_t* target_player, set_bonus_type_e tier, set_bonus_e count )

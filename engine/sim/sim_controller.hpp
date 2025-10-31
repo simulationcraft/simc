@@ -12,7 +12,7 @@ bool sim_controller_t::register_sim_controller( sim_t* sim, Args&&... args )
   {
     sim->sim_controllers.emplace_back( std::make_unique<TBase>( sim, std::forward<Args>( args )... ) );
     return sim->parent->sim_controller_data
-        .emplace( sim->sim_controllers.back()->name(), std::make_shared<typename TBase::data_t>() )
+        .emplace( sim->sim_controllers.back()->name(), std::make_unique<typename TBase::data_t>() )
         .second;
   }
   return false;
@@ -30,7 +30,7 @@ void sim_controller_t::set_data( T&& data )
 {
   auto& scd = parent->sim_controller_data;
   assert( scd.find( name() ) != scd.end() );
-  scd[ name() ].data = std::make_shared<T>( data );
+  scd[ name() ].data = std::make_unique<T>( data );
 }
 
 struct min_player_stat_t : sim_controller_t
@@ -53,6 +53,7 @@ struct min_player_stat_t : sim_controller_t
     return "min_player_stat";
   }
   bool evaluate_post_init() override;
+  const std::string reason() const override;
 };
 
 struct tier_set_count_t : sim_controller_t

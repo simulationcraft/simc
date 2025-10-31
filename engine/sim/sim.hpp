@@ -58,24 +58,33 @@ struct data_wrapper_t
 {
   T& data;
 
-  data_wrapper_t( T& data, std::mutex& m ) : data( data ), lock( m )
+  data_wrapper_t( T& data, std::recursive_mutex& m ) : data( data ), lock( m )
   {
   }
 
 private:
-  std::scoped_lock<std::mutex> lock;
+  std::scoped_lock<std::recursive_mutex> lock;
 };
 
+struct exit_reason_t;
 struct sim_controller_data_wrapper_t
 {
-  std::mutex mutex;
-  std::shared_ptr<sim_controller_data_t> data;
+  std::recursive_mutex mutex;
+  std::unique_ptr<sim_controller_data_t> data;
+  std::vector<exit_reason_t> exit_reasons;
+  // configuration for reporting
 
   sim_controller_data_wrapper_t();
-  sim_controller_data_wrapper_t( std::shared_ptr<sim_controller_data_t> data );
+  sim_controller_data_wrapper_t( std::unique_ptr<sim_controller_data_t>&& data );
+
+  ~sim_controller_data_wrapper_t() = default;
+
+  void report_json_profileset( js::JsonOutput& ) const;
+  void report_json_options( js::JsonOutput& ) const;
+  void report_html_profileset( std::ostream& ) const;
+  void report_html_options( std::ostream& ) const;
 
   // disallow copy, as that would introduce additional mutexes for a single controller name
-  sim_controller_data_wrapper_t( sim_controller_data_wrapper_t& )       = delete;
   sim_controller_data_wrapper_t( const sim_controller_data_wrapper_t& ) = delete;
 };
 
@@ -97,12 +106,7 @@ struct sim_controller_t
             typename = typename std::enable_if_t<std::is_constructible_v<TBase, sim_t*, Args...>, bool>>
   static bool register_sim_controller( sim_t* sim, Args&&... args );
 
-private:
   sim_t* parent;
-  call_point_e exit_point;
-  std::string exit_reason;
-
-public:
   sim_t* sim;
 
   sim_controller_t( sim_t* sim );
@@ -126,25 +130,6 @@ public:
     return true;
   }
 
-
-  void report_json_profileset( js::JsonOutput& );
-  void report_json_options( js::JsonOutput& );
-  void report_html_profileset( std::ostream& );
-  void report_html_options( std::ostream& );
-  /*
-   * TODO: controllers currently cannot sensibly report, as only `parent` likely
-   * exists as of the time of report generation. upon destruction, profileset exit
-   * points and reasons must be collected by the parent sim for safekeeping
-   *
-   * on each profileset:
-   * interrupt_by: name()
-   * exit_point: to_string(exit_point)
-   * exit_reason: exit_reason
-   *
-   * on sim:
-   * TODO: config representation (active controllers, configuration parameters)
-   */
-
 protected:
   template <typename T>
   data_wrapper_t<T> get_data();
@@ -152,11 +137,25 @@ protected:
   void set_data( T&& data );
 };
 
+struct exit_reason_t
+{
+  const std::string profileset_name;
+  const sim_controller_t::call_point_e exit_point;
+  const std::string exit_reason;
+
+  exit_reason_t( const std::string profileset_name, const sim_controller_t::call_point_e exit_point, const std::string exit_reason )
+    : profileset_name( profileset_name ), exit_point( exit_point ), exit_reason( exit_reason )
+  {}
+};
+
 // global profileset data to be shared across all instantiations of a derived `sim_controller_t`
 struct sim_controller_data_t
 {
   sim_controller_data_t();
   sim_controller_data_t( sim_controller_data_t& data );
+  sim_controller_data_t( const sim_controller_data_t& ) = delete;
+
+  virtual ~sim_controller_data_t() = default;
 };
 
 struct sim_progress_t
