@@ -73,7 +73,6 @@ void sim_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   auto& scd = sim->parent->sim_controller_data.at( controller->name() );
   std::scoped_lock<std::recursive_mutex> L( scd.mutex );
 
-  auto name = controller->name();
   scd.exit_reasons.emplace_back( sim->parent->profilesets->current_profileset_name(), call_point,
                                  controller->reason() );
 
@@ -96,6 +95,10 @@ const std::string sim_controller_t::message( call_point_e call_point )
     msg += ".";
 
   return msg;
+}
+
+void sim_controller_t::add_option( std::unique_ptr<option_t> option )
+{
 }
 
 void sim_controller_data_wrapper_t::report_json_profileset( js::JsonOutput& output ) const

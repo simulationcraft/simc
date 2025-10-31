@@ -72,7 +72,7 @@ struct sim_controller_data_wrapper_t
   std::recursive_mutex mutex;
   std::unique_ptr<sim_controller_data_t> data;
   std::vector<exit_reason_t> exit_reasons;
-  // configuration for reporting
+  std::vector<std::unique_ptr<option_t>> options;
 
   sim_controller_data_wrapper_t();
   sim_controller_data_wrapper_t( std::unique_ptr<sim_controller_data_t>&& data );
@@ -116,9 +116,11 @@ struct sim_controller_t
   sim_controller_t( const sim_controller_t& ) = delete;
 
   const std::string message( call_point_e );
+  void add_option( std::unique_ptr<option_t> );
 
   virtual const std::string name() const   = 0;
   virtual const std::string reason() const = 0;
+  virtual void create_options() {}
 
   virtual bool evaluate_post_init()
   {
