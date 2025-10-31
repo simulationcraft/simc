@@ -92,6 +92,32 @@ const std::string sim_controller_t::message( call_point_e call_point )
   return msg;
 }
 
+void sim_controller_t::report_json_profileset( js::JsonOutput& output )
+{
+  if ( !exit_point || exit_reason.empty() )
+    return;
+
+  output["interrupted_by"] = name();
+  output["exit_point"] = call_point_string( exit_point );
+  output["exit_reason"] = exit_reason;
+}
+
+void sim_controller_t::report_json_options( js::JsonOutput& )
+{
+  // TODO: implement opt parsing and automatic generation of report json from opts
+}
+
+void sim_controller_t::report_html_profileset( std::ostream& output )
+{
+  output << "<li>"
+         << util::encode_html( call_point_string( exit_point ) )
+         << util::encode_html( exit_reason )
+         << "</li>";
+}
+
+void sim_controller_t::report_html_options( std::ostream& )
+{}
+
 min_player_stat_t::min_player_stat_t( sim_t* sim, player_t* target_player, stat_e rating, double amount )
   : sim_controller_t( sim ), target_player( target_player ), rating( rating ), min_rating( amount )
 {

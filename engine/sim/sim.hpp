@@ -126,9 +126,24 @@ public:
     return true;
   }
 
-  virtual void report_json_profileset( js::JsonOutput& ) {};
-  virtual void report_json_options( js::JsonOutput& ) {};
-  virtual void report_html( std::ostream& ) {};
+
+  void report_json_profileset( js::JsonOutput& );
+  void report_json_options( js::JsonOutput& );
+  void report_html_profileset( std::ostream& );
+  void report_html_options( std::ostream& );
+  /*
+   * TODO: controllers currently cannot sensibly report, as only `parent` likely
+   * exists as of the time of report generation. upon destruction, profileset exit
+   * points and reasons must be collected by the parent sim for safekeeping
+   *
+   * on each profileset:
+   * interrupt_by: name()
+   * exit_point: to_string(exit_point)
+   * exit_reason: exit_reason
+   *
+   * on sim:
+   * TODO: config representation (active controllers, configuration parameters)
+   */
 
 protected:
   template <typename T>
@@ -676,8 +691,6 @@ struct sim_t : private sc_thread_t
   bool merge_enemy_priority_dmg;
 
   // sim control
-private:
-  friend sim_controller_t;
   std::vector<std::unique_ptr<sim_controller_t>> sim_controllers;
   std::map<std::string, sim_controller_data_wrapper_t> sim_controller_data;
 
