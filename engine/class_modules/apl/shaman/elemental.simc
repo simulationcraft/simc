@@ -58,7 +58,7 @@ actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.arc_dis
 actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning,if=active_enemies>=6&buff.surge_of_power.up
 
-actions.aoe+=/lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
+actions.aoe+=/lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&(maelstrom<variable.mael_cap-15)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)
 
 # Use Lava Surge procs to consume fire part of fusion if you can also buff Earthquake with it.
@@ -92,6 +92,7 @@ actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=(buff.st
 
 actions.aoe+=/frost_shock,if=buff.icefury_dmg.up&!buff.ascendance.up&!buff.stormkeeper.up&(talent.call_of_the_ancestors|spell_targets.chain_lightning<=3)
 
+actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
