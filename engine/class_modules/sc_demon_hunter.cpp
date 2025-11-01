@@ -3741,6 +3741,11 @@ struct eye_beam_base_t : public final_breath_trigger_t<demon_hunter_spell_t>
       p()->buff.metamorphosis->extend_duration( p(), duration );
     }
 
+    if ( p()->talent.scarred.student_of_suffering->ok() )
+    {
+      p()->buff.student_of_suffering->trigger();
+    }
+
     if ( p()->talent.havoc.blind_fury->ok() )
     {
       p()->buff.blind_fury->trigger( duration );
@@ -4129,10 +4134,6 @@ struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
   void execute() override
   {
     demon_hunter_sigil_t::execute();
-    if ( p()->talent.scarred.student_of_suffering->ok() )
-    {
-      p()->buff.student_of_suffering->trigger();
-    }
     if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
     {
       trigger_cycle_of_binding_event();
@@ -6020,6 +6021,12 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
                                                        : p()->talent.devourer.void_ray->cooldown();
 
     base_t::execute();
+
+    if ( p()->talent.scarred.student_of_suffering->ok() )
+    {
+      p()->buff.student_of_suffering->trigger();
+    }
+
     p()->devourer_fury_state.reschedule_drain();
   }
 
