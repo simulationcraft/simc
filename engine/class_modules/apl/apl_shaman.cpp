@@ -79,7 +79,7 @@ void elemental( player_t* p )
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=buff.arc_discharge.stack<2&(buff.surge_of_power.up|!talent.surge_of_power)", "Surge of Power is strong and should be used. ©" );
   aoe->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2" );
   aoe->add_action( "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up" );
-  aoe->add_action( "lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
+  aoe->add_action( "lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&(maelstrom<variable.mael_cap-15)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
   aoe->add_action( "chain_lightning,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)" );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&buff.fusion_of_elements_fire.up&!buff.master_of_the_elements.up&(maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_es.up|!talent.echoes_of_great_sundering))", "Use Lava Surge procs to consume fire part of fusion if you can also buff Earthquake with it." );
   aoe->add_action( "earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))&(cooldown.primordial_wave.remains>8|!(set_bonus.tww3_4pc&talent.ancestral_swiftness)|maelstrom>variable.mael_cap-20)", "Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire." );
@@ -97,6 +97,7 @@ void elemental( player_t* p )
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=(buff.stormkeeper.up&active_enemies>=6|buff.tempest.up)&talent.surge_of_power" );
   aoe->add_action( "earth_shock,target_if=min:debuff.lightning_rod.remains,if=(buff.stormkeeper.up&active_enemies>=6|buff.tempest.up)&talent.surge_of_power" );
   aoe->add_action( "frost_shock,if=buff.icefury_dmg.up&!buff.ascendance.up&!buff.stormkeeper.up&(talent.call_of_the_ancestors|spell_targets.chain_lightning<=3)" );
+  aoe->add_action( "lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
   aoe->add_action( "chain_lightning" );
   aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
   aoe->add_action( "frost_shock,moving=1" );
