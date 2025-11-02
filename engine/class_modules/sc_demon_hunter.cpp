@@ -1049,6 +1049,7 @@ public:
     proc_t* soul_fragment_from_aldrachi_tactics;
     proc_t* soul_fragment_from_wounded_quarry;
     proc_t* wounded_quarry_accumulator_reset;
+    proc_t* soul_fragment_from_broken_spirit;
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
@@ -5214,6 +5215,11 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
       {
         p()->proc.soul_fragment_from_sigil_of_spite->occur();
       }
+
+      if ( p()->talent.aldrachi_reaver.broken_spirit->ok() )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+      }
     }
   };
 
@@ -5281,6 +5287,11 @@ struct the_hunt_base_t
       if ( s->chain_target == 0 && p()->talent.devourer.devourers_bite->ok() )
       {
         td( target )->debuffs.devourers_bite->trigger();
+      }
+
+      if ( s->chain_target == 0 && p()->talent.aldrachi_reaver.broken_spirit->ok() )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
       }
     }
   };
@@ -7148,6 +7159,14 @@ struct chaos_strike_base_t
     if ( p()->rppm.demonic_appetite->trigger() )
     {
       p()->proc.demonic_appetite->occur();
+      p()->spawn_soul_fragment( soul_fragment::LESSER );
+    }
+
+    // Broken Spirit
+    if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
+         rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 4 ).percent() ) )
+    {
+      p()->proc.soul_fragment_from_broken_spirit->occur();
       p()->spawn_soul_fragment( soul_fragment::LESSER );
     }
 
@@ -9987,6 +10006,7 @@ void demon_hunter_t::init_procs()
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
+  proc.soul_fragment_from_broken_spirit    = get_proc( "soul_fragment_from_broken_spirit" );
   proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
   proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
 
