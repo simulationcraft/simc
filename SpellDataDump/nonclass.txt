@@ -140978,7 +140978,7 @@ Triggered By     : Dinner Time (335105)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=874623)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
 Description      : Summon a gargon to strike your target from the shadows causing them to Bleed for ${$s1*($d/$t+1)} over $d. Only usable outdoors in the Shadowlands.
 Tooltip          : Bleeding for $s1 every $t sec. Only usable outdoors in the Shadowlands.
 
@@ -194597,7 +194597,7 @@ Triggered By     : Hunting Scope (445598), Hunting Scope (459027), Hunting Scope
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Allow Cast While Casting (135), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), AI Face Target (283), Allow Cast While Channeling (308), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1132627)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Unknown(151) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Enemy in Area around Caster (151) -> Line to Enemy (134)
 Description      : $@spelldesc432842
 
 Name             : Searing Light (id=439349) 
@@ -194652,7 +194652,7 @@ Velocity         : 50 yards/sec
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), AI Face Target (283), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1132660)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Unknown(151)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Enemy in Area around Caster (151)
 Description      : $@spelldesc432842
 
 Name             : Olden Seeker Relic (id=439470) 
@@ -205404,7 +205404,7 @@ Labels           : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1153612)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 20 - 40 yards | Target: Unknown(151) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 20 - 40 yards | Target: Enemy in Area around Caster (151) -> Line to Enemy (134)
 #2 (id=1153613)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc443378

@@ -1,1 +1,1 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA ()
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA (hotfix 2025-11-01/64124)

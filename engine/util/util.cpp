@@ -66,6 +66,8 @@ const spec_map_t spec_map[] =
   { DRUID_FERAL,            "Feral Druid"            },
   { DRUID_GUARDIAN,         "Guardian Druid"         },
   { DRUID_RESTORATION,      "Restoration Druid"      },
+  { DEMON_HUNTER_DEVOURER,  "Devourer Demon Hunter"  },
+  { DEMON_HUNTER_DEVOURER,  "Devourer DemonHunter"  },
   { DEMON_HUNTER_HAVOC,     "Havoc Demon Hunter"     },
   { DEMON_HUNTER_HAVOC,     "Havoc DemonHunter"      },
   { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },

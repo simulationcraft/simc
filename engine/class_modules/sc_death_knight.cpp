@@ -5382,7 +5382,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       p()->last_target = s->target;
 
     if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
-         dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
+         dbc::has_common_school( this->get_school(), SCHOOL_SHADOW ) )
     {
       p()->pets.blood_beast.active_pet()->accumulator +=
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
@@ -5787,11 +5787,11 @@ private:
 
 struct summon_magus_t : public death_knight_summon_spell_t
 {
-  summon_magus_t( std::string_view n, death_knight_t* p, const spell_data_t* s,  magus_of_the_dead_e type )
+  summon_magus_t( std::string_view n, death_knight_t* p, const spell_data_t* s, magus_of_the_dead_e type )
     : death_knight_summon_spell_t( n, p, s ), source( type ), default_duration( 0_s )
   {
     background = true;
-    switch (type)
+    switch ( type )
     {
       case MAGUS_ARMY_OF_THE_DEAD:
       case MAGUS_DARK_TRANSFORMATION:
@@ -10684,14 +10684,14 @@ struct putrefy_t final : public death_knight_spell_t
     if ( p()->talent.unholy.unholy_aura.ok() )
       p()->buffs.unholy_aura->trigger();
 
-    if ( p()->talent.unholy.reanimation.ok() && p()->buffs.dark_transformation->check() )
-      ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() ) +
-                          as<int>( p()->talent.unholy.reanimation->effectN( 3 ).base_value() );
-
     // Delayed by about 1 second in game
     make_event( *p()->sim, 1_s, [ & ] {
       int ghouls_putrefied = 0;
       int ghouls_devoted   = 0;
+
+      if ( p()->talent.unholy.reanimation.ok() && p()->buffs.dark_transformation->check() )
+        ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() ) +
+                            as<int>( p()->talent.unholy.reanimation->effectN( 3 ).base_value() );
 
       range::sort( p()->active_lesser_ghouls,
                    []( const pets::lesser_ghoul_pet_t* a, const pets::lesser_ghoul_pet_t* b ) {
@@ -10734,10 +10734,19 @@ struct putrefy_t final : public death_knight_spell_t
         p()->soul_reaper_castable = true;
         p()->cooldown.soul_reaper->reset( false );
       }
+
+      // Reset ghouls to putrefy for next cast
+      ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
     } );
 
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
       p()->buffs.blighted->trigger();
+  }
+
+  void reset() override
+  {
+    death_knight_spell_t::reset();
+    ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
   }
 
   bool ready() override

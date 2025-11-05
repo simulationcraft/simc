@@ -303,6 +303,7 @@ public:
     buff_t* impending_apocalypse;
     buff_t* hungering_slash;
     buff_t* voidstep;
+    buff_t* voidrush;
 
     // Havoc
     buff_t* blind_fury;
@@ -673,15 +674,15 @@ public:
 
       player_talent_t burning_blades;
       player_talent_t violent_transformation;
-      player_talent_t enduring_torment;  // NYI for Vengeance
+      player_talent_t enduring_torment;  // Partial Implementation (Havoc)
 
       player_talent_t untethered_fury;
       player_talent_t student_of_suffering;
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;     // NYI
-      player_talent_t undying_embers;  // NYI
+      player_talent_t blind_focus;     // Partial implementation (no Meta)
+      player_talent_t undying_embers;  // Partial implementation (Devourer)
       player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
@@ -911,6 +912,7 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
+    const spell_data_t* stars_fury; // MID Devourer 4pc Energize
     // Auxilliary
   } set_bonuses;
 
@@ -1017,6 +1019,9 @@ public:
     proc_t* soul_sigils;
     proc_t* shattered_souls;
 
+    // Devourer
+    proc_t* spontaneous_immolation;
+
     // Havoc
     proc_t* demonic_appetite;
     proc_t* chaos_strike_in_essence_break;
@@ -1048,6 +1053,7 @@ public:
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
     std::unordered_map<voidsurge_ability, proc_t*> voidsurge_abilities;
+    proc_t* undying_embers;
 
     // Set Bonuses
   } proc;
@@ -1468,6 +1474,9 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
 {
   assert( distance_moved > 0 );
   assert( buff_duration() > timespan_t::zero() );
+
+  if ( dh->specialization() == DEMON_HUNTER_DEVOURER )
+    return buff_t::trigger( s, v, c, d );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
   if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() ||
@@ -3025,17 +3034,32 @@ struct hungering_slash_trigger_t : BASE
   {
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    BASE::impact( s );
+    BASE::execute();
 
-    if ( !BASE::p()->talent.devourer.hungering_slash->ok() )
-      return;
+    if ( BASE::p()->talent.devourer.hungering_slash->ok() )
+      BASE::p()->buff.hungering_slash->trigger();
+  }
+};
 
-    if ( s->chain_target != 0 || !BASE::result_is_hit( s->result ) )
-      return;
+template <typename BASE>
+struct voidrush_trigger_t : BASE
+{
+  using base_t = voidrush_trigger_t<BASE>;
 
-    BASE::p()->buff.hungering_slash->trigger();
+  voidrush_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                      util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( BASE::p()->talent.devourer.voidrush->ok() )
+      BASE::p()->buff.voidrush->trigger();
   }
 };
 
@@ -5226,7 +5250,8 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 // The Hunt =================================================================
 
 struct the_hunt_base_t
-  : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
+  : public voidrush_trigger_t<hungering_slash_trigger_t<
+        unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>>>
 {
   struct the_hunt_dot_t : public demon_hunter_spell_t
   {
@@ -5238,10 +5263,10 @@ struct the_hunt_base_t
     }
   };
 
-  struct the_hunt_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
+  struct the_hunt_damage_t : public demon_hunter_spell_t
   {
     the_hunt_damage_t( util::string_view n, demon_hunter_t* p )
-      : base_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
+      : demon_hunter_spell_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( n );
@@ -5575,11 +5600,11 @@ struct consume_t : public consume_base_t
   }
 };
 
-struct voidblade_base_t : public demon_hunter_spell_t
+struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
+  struct voidblade_damage_t : public demon_hunter_spell_t
   {
-    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
+    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
     {
       background = dual = true;
       gain              = p->get_gain( "voidblade" );
@@ -5587,7 +5612,7 @@ struct voidblade_base_t : public demon_hunter_spell_t
 
     void impact( action_state_t* s ) override
     {
-      base_t::impact( s );
+      demon_hunter_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) && p()->talent.devourer.devourers_bite->ok() )
       {
@@ -5597,7 +5622,7 @@ struct voidblade_base_t : public demon_hunter_spell_t
   };
 
   voidblade_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( n, p, s, o )
+    : base_t( n, p, s, o )
   {
     cooldown = p->cooldown.voidblade;
 
@@ -5622,6 +5647,7 @@ struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::PIERCE_
     {
       return false;
     }
+
     return base_t::action_ready();
   }
 };
@@ -5635,10 +5661,11 @@ struct voidblade_t : public voidblade_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
+    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
     {
       return false;
     }
+
     return voidblade_base_t::action_ready();
   }
 };
@@ -5697,6 +5724,23 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::last_tick( d );
+
+    if ( p()->talent.scarred.undying_embers->ok() &&
+         rng().roll( p()->talent.scarred.undying_embers->effectN( 2 ).percent() ) )
+    {
+      p()->proc.undying_embers->occur();
+
+      // retriggers the DoT but doesn't count as a cast/execute
+      action_state_t* undying_embers_state = get_state();
+      snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
+
+      make_event( sim, [ undying_embers_state, this ] { trigger_dot( undying_embers_state ); } );
+    }
+  }
 };
 
 struct soul_immolation_t : public soul_immolation_base_t
@@ -5721,6 +5765,13 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
   spontaneous_immolation_t( util::string_view n, demon_hunter_t* p ) : soul_immolation_base_t( n, p, "" )
   {
     cooldown->duration = 0_s;
+  }
+
+  void execute() override
+  {
+    soul_immolation_base_t::execute();
+
+    p()->proc.spontaneous_immolation->occur();
   }
 };
 
@@ -5752,19 +5803,35 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     }
   }
 
+  virtual unsigned int souls_to_consume() const
+  {
+    unsigned int souls = as<unsigned int>( p()->spec.shattered_souls->effectN( 2 ).base_value() );
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls += as<unsigned int>( p()->buff.moment_of_craving->check_value() );
+    }
+    return souls;
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "max_souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() { return souls_to_consume(); } );
+
+    if ( util::str_compare_ci( name, "souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() {
+        return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), souls_to_consume() );
+      } );
+
+    return base_t::create_expression( name );
+  }
+
   void execute() override
   {
     p()->buff.reap->trigger();
     base_t::execute();
 
-    double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
-    if ( p()->buff.moment_of_craving->up() )
-    {
-      souls_to_consume += p()->buff.moment_of_craving->check_value();
-    }
-
-    unsigned fragments_consumed =
-        p()->consume_soul_fragments( soul_fragment::LESSER, false, as<unsigned int>( souls_to_consume ) );
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
@@ -5858,7 +5925,7 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
       double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
       if ( p()->talent.devourer.focused_ray->ok() &&
-           s->n_targets <= as<int>( p()->talent.devourer.focused_ray->effectN( 2 ).base_value() ) )
+           s->n_targets <= as<unsigned int>( p()->talent.devourer.focused_ray->effectN( 2 ).base_value() ) )
       {
         m *= 1.0 + p()->talent.devourer.focused_ray->effectN( 1 ).percent();
       }
@@ -5948,7 +6015,8 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
   void execute() override
   {
     tick_action        = p()->buff.metamorphosis->up() ? tick_meta : tick;
-    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value()
+    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value() +
+                                                             p()->talent.devourer.voidpurge->effectN( 1 ).time_value()
                                                        : p()->talent.devourer.void_ray->cooldown();
 
     base_t::execute();
@@ -6055,6 +6123,12 @@ struct collapsing_star_t : public demon_hunter_spell_t
   {
     execute_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
     add_child( execute_action );
+
+    if ( p->sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ) )
+    {
+      execute_energize_action =
+          p->get_background_action<demon_hunter_energize_t>( "stars_fury", p->set_bonuses.stars_fury );
+    }
   }
 
   void execute() override
@@ -6250,6 +6324,7 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
+    p()->buff.hungering_slash->expire();
     p()->buff.voidstep->trigger();
   }
 
@@ -6313,7 +6388,7 @@ struct hungering_slash_t : public hungering_slash_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
+    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
     {
       return false;
     }
@@ -8018,7 +8093,7 @@ struct vengeful_retreat_t
         timespan_t::from_seconds( p()->options.felblade_lockout_from_vengeful_retreat ) );
     p()->buff.vengeful_retreat_move->trigger();
 
-    if ( p()->specialization() != DEMON_HUNTER_VENGEANCE )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
     {
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
@@ -8531,6 +8606,8 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.devourer.midnight3->ok() )
     {
       p()->buff.collapsing_star_ready->trigger();
+      p()->buff.collapsing_star_stack->trigger(
+          as<int>( p()->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) );
       p()->spawn_soul_fragment( soul_fragment::LESSER,
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
@@ -8584,15 +8661,15 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.enduring_torment->trigger();
     }
 
-    p()->buff.collapsing_star_ready->expire();
-    p()->buff.collapsing_star_stack->expire();
-    p()->buff.emptiness->expire();
-    p()->buff.impending_apocalypse->expire();
-    event_t::cancel( p()->devourer_fury_state.next_drain_event );
-    p()->devourer_fury_state.clear_state();
     if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
     {
       p()->resources.current[ RESOURCE_FURY ] = 0;
+      p()->buff.collapsing_star_ready->expire();
+      p()->buff.collapsing_star_stack->expire();
+      p()->buff.emptiness->expire();
+      p()->buff.impending_apocalypse->expire();
+      event_t::cancel( p()->devourer_fury_state.next_drain_event );
+      p()->devourer_fury_state.clear_state();
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
@@ -9277,6 +9354,13 @@ void demon_hunter_t::create_buffs()
 
   buff.voidstep = make_buff( this, "voidstep", spec.voidstep );
 
+  // TODO: Measure this slow duration instead of guessing.
+  buff.voidrush =
+      make_buff( this, "voidrush", talent.devourer.voidrush )
+          ->set_duration( 1_s )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
+
   // Havoc ==================================================================
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )->set_chance( 1.0 );
@@ -9452,18 +9536,32 @@ void demon_hunter_t::create_buffs()
 
   buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                              ->set_allow_precombat( true );
+                              ->set_allow_precombat( true )
+                              ->set_quiet( true );
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-                            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                             ->set_allow_precombat( true )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                            ->add_invalidate( CACHE_AGILITY );
+                            ->set_quiet( true );
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      buff.monster_rising->set_default_value_from_effect( 2 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+          ->add_invalidate( CACHE_INTELLECT );
+      break;
+    case DEMON_HUNTER_HAVOC:
+      buff.monster_rising->set_default_value_from_effect( 1 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->add_invalidate( CACHE_AGILITY );
+      break;
+    default:
+      break;
+  }
 
   buff.pursuit_of_angryness =
       make_buff( this, "pursuit_of_angriness", talent.scarred.pursuit_of_angriness )
@@ -9854,6 +9952,9 @@ void demon_hunter_t::init_procs()
   proc.soul_sigils                   = get_proc( "soul_sigils" );
   proc.shattered_souls               = get_proc( "shattered_souls" );
 
+  // Devourer
+  proc.spontaneous_immolation = get_proc( "spontaneous_immolation" );
+
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
   proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
@@ -9898,6 +9999,7 @@ void demon_hunter_t::init_procs()
       get_proc( voidsurge_ability_name( voidsurge_ability::REAPERS_TOLL ) );
   proc.voidsurge_abilities[ voidsurge_ability::VOLATILE_INSTINCT ] =
       get_proc( voidsurge_ability_name( voidsurge_ability::VOLATILE_INSTINCT ) );
+  proc.undying_embers = get_proc( "undying_embers" );
 
   // Set Bonuses
 }
@@ -10610,11 +10712,14 @@ void demon_hunter_t::init_spells()
   hero_spec.voidsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1246161 );
   hero_spec.voidsurge_damage  = hero_spec.voidsurge_trigger->effectN( 1 ).trigger();
   hero_spec.voidsurge_stacking_buff = hero_spec.voidsurge_damage;
-  hero_spec.sigil_of_doom           = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452490 );
-  hero_spec.sigil_of_doom_damage    = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 462030 );
-  hero_spec.abyssal_gaze            = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452497 );
+  hero_spec.sigil_of_doom = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage =
+      spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452497 );
   hero_spec.predators_wake =
-      spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonic_intensity, 1259431 );
+      conditional_spell_lookup( specialization() == DEMON_HUNTER_DEVOURER && talent.devourer.the_hunt->ok() &&
+                                    talent.scarred.demonic_intensity->ok(),
+                                1259431 );
   hero_spec.pierce_the_veil = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245483 );
   hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
   hero_spec.volatile_instinct =
@@ -10646,6 +10751,8 @@ void demon_hunter_t::init_spells()
   // Set Bonus Items ========================================================
 
   // Set Bonus Auxilliary ===================================================
+  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                     1271663 );  // Stars' Fury (set bonus)
 
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
@@ -11683,27 +11790,19 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 {
   double drain = base_fury_drain_per_second( stacks );
 
-  if ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() )
+  bool has_reduced_drain = !p()->in_combat || p()->buff.voidrush->check() ||
+                           p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() ||
+                           p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id();
+
+  if ( has_reduced_drain )
   {
     // Guess
-    drain *= 0.4;
-  }
-
-  if ( !p()->in_combat )
-  {
-    // Guess, it's slow as all heck though.
-    drain *= 0.1;
+    drain *= 0.15;
   }
 
   if ( drain_stacks < 6 )
   {
     // Slow after meta cast
-    drain *= 0.4;
-  }
-
-  if ( p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() )
-  {
-    // Guess
     drain *= 0.4;
   }
 

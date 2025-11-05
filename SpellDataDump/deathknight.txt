@@ -1058,7 +1058,7 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=41134)    : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
                    Modified By: Everlasting Bond (377668 effect#1)
 #2 (id=41135)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50707 | Scaled Value: 50707 | Trigger Spell: 1206 | Target: Self (1)
@@ -14327,7 +14327,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1005638)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
 #2 (id=1005639)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc377668
@@ -20708,7 +20708,7 @@ Effects          :
 Tooltip          : Your Frost Strike has become Frostbane.
 
 Name             : Single-Button Assistant (id=1229376) 
-Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker, Unknown Warrior (1480)
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devourer Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
@@ -21693,7 +21693,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1233541)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
 #2 (id=1233542)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc377668
@@ -21716,7 +21716,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1233718)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
                    Modified By: Everlasting Bond (377668 effect#1)
 #2 (id=1233719)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -22360,7 +22360,7 @@ Family Flags     : 13, 43, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241583)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38420 | Radius: 1 - 12 yards | Target: Front of Self (47) -> Unknown(151)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38420 | Radius: 1 - 12 yards | Target: Front of Self (47) -> Enemy in Area around Caster (151)
 Description      : Unleash vortex of necrotic energy and bone, dealing $1242172s1 Shadowstrike damage up to $1242158s2 foes and $1242178s1 Shadow damage to all pierced enemies.
 
 Name             : Necrotic Coil (id=1242175) [Hidden] 
@@ -23500,7 +23500,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1275661)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Enemy in Area around Caster (151)
 #2 (id=1275662)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc49028

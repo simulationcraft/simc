@@ -985,7 +985,7 @@ Effects          :
 Description      : $@spelldesc178940
 
 Name             : Leather Specialization (desc=Passive) (id=178976) [Passive, Hidden] 
-Class            : Havoc Demon Hunter, Unknown Demon Hunter (1480)
+Class            : Havoc Demon Hunter, Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
@@ -1660,7 +1660,7 @@ Effects          :
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
-Class            : Havoc Demon Hunter, Unknown Demon Hunter (1480)
+Class            : Havoc Demon Hunter, Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
@@ -15350,7 +15350,7 @@ Tooltip          : Suffering $w2 $@spelldesc395020 damage every $t2 sec.$?$w4>0[
 Variables        : $pord=$@switch<$s5>[ $@auracaster has $s4% increased chance to parry your attacks.][ $@auracaster has $s4% increased chance to dodge your attacks.]
 
 Name             : Demon Hunter (id=462065) [Spell Family (107), Passive, Hidden] 
-Class            : Havoc Demon Hunter, Vengeance Demon Hunter, Unknown Demon Hunter (1480)
+Class            : Havoc Demon Hunter, Vengeance Demon Hunter, Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -15532,7 +15532,7 @@ Description      : $@spelldesc258920
 
 Name             : Consume (id=473662) [Spell Family (107)] 
 Replaces         : Demon's Bite (id=344859)
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
 Range            : 25 yards
@@ -15620,7 +15620,7 @@ Effects          :
 Description      : $@spelldesc442806
 
 Name             : Devourer Demon Hunter (id=1213636) [Spell Family (107), Passive, Hidden] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -15878,7 +15878,7 @@ Tooltip          : Sacrificed a |cFFFFFFFFWinning Streak!|r to increase critical
 
 Name             : Void Metamorphosis (id=1217605) [Spell Family (107)] 
 Replaces         : Metamorphosis (id=191427)
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 10
@@ -16326,7 +16326,7 @@ Description      : $@spelldesc1225826
 
 Name             : Reap (id=1226019) [Spell Family (107)] 
 Replaces         : Chaos Strike (id=344862)
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
 Range            : 25 yards
@@ -16417,7 +16417,7 @@ Effects          :
 Tooltip          : Your next Collapsing Star deals $s1% increased damage.
 
 Name             : Shattered Souls (id=1227619) [Spell Family (107), Passive] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Cosmic
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -16476,7 +16476,7 @@ Effects          :
 Description      : Each Collapsing Star you cast increases the damage of your next Collapsing Star by $1227338s1%.
 
 Name             : Single-Button Assistant (id=1229376) 
-Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker, Unknown Warrior (1480)
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devourer Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
@@ -16591,7 +16591,7 @@ Tooltip          : Stunned.
 
 Name             : Shift (id=1234796) [Spell Family (107)] 
 Replaces         : Fel Rush (id=344865)
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Range            : 30 yards
@@ -16935,7 +16935,7 @@ Effects          :
 Description      : $@spelldesc178940
 
 Name             : Mastery: Monster Within (id=1238855) [Spell Family (107), Passive] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
@@ -18111,7 +18111,7 @@ Description      : Entering Void Metamorphosis causes your soul to erupt, genera
 
 Name             : Spectral Sight (id=1251417) [Spell Family (107)] 
 Replaces         : Spectral Sight (id=188501)
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -18800,7 +18800,7 @@ Effects          :
                    Family Flags: 70
 
 Name             : Devourer Demon Hunter (id=1256964) [Spell Family (107), Passive, Hidden] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -18818,7 +18818,7 @@ Effects          :
                    Family Flags: 95
 
 Name             : Devourer Demon Hunter (id=1256968) [Spell Family (107), Passive, Hidden] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -18876,7 +18876,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Grim Focus (id=1260008) [Spell Family (107), Passive] 
-Class            : Unknown Demon Hunter (1480)
+Class            : Devourer Demon Hunter
 School           : Cosmic
 Spell Type       : None
 Spell Level      : 13
@@ -19992,6 +19992,20 @@ Effects          :
 Description      : Voidblade damage increased by $s1%.
 
 Hungering Slash deals $s2% increased damage to its primary target.
+
+Name             : Voidrush (id=1272778) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : None
+Duration         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1286069)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Tooltip          : Your Fury drain is dramatically reduced.
 
 Name             : Improved Consume (id=1272817) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Devourer [tree=spec, row=6, col=5, max_rank=1, req_points=8]

@@ -3195,7 +3195,7 @@ Demon Hunter
 1272453  Volatile Instinct
 1272462  Volatile Instinct
 1272770  Singular Strikes
-1272778 *Voidrush
+1272778  Voidrush
 1272817  Improved Consume
 1272832  Singed Spirit
 1272842  Umbral Blade
@@ -4806,8 +4806,8 @@ Druid
 393897  *Tireless Pursuit
 393903   Ursine Vigor
 393940   Starweaver
-393942  *Starweaver's Warp
-393944  *Starweaver's Weft
+393942   Starweaver's Warp
+393944   Starweaver's Weft
 393954   Rattle the Stars
 393956  *Waning Twilight
 393957  *Waning Twilight
@@ -4821,7 +4821,7 @@ Druid
 394047   Goldrinn's Fang
 394048   Balance of All Things
 394049   Balance of All Things
-394050  *Balance of All Things
+394050   Balance of All Things
 394065   Denizen of the Dream
 394076   Denizen of the Dream
 394081  *Friend of the Fae
@@ -4967,7 +4967,7 @@ Druid
 429415  *Dryad's Blessing
 429420   Potent Enchantments
 429433   Blooming Infusion
-429438  *Blooming Infusion
+429438   Blooming Infusion
 429474   Blooming Infusion
 429520   Moon Guardian
 429523   Lunar Calling
@@ -6195,11 +6195,11 @@ Evoker
 1266165  Strafing Run
 1267206  Strike from Above
 1268881  Improved Defy Fate
-1271687 *Rising Fury
-1271783 *Rising Fury
-1271788 *Rising Fury
-1271796 *Rising Fury
-1271799 *Risen Fury
+1271687  Rising Fury
+1271783  Rising Fury
+1271788  Rising Fury
+1271796  Rising Fury
+1271799  Risen Fury
 1271912 *Blessing of the Bronze Highlight
 
 Hunter
