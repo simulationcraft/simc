@@ -538,7 +538,7 @@ class CASCObject:
                     # try a random, different CDN host
                     # TODO: clean this up
                     # depending on how this gets called the cdn_host is buried in the build object
-                    search_hosts = self.cdn_host or self.build.cdn_host
+                    search_hosts = getattr(self, 'cdn_host', None) or getattr(self.build, 'cdn_host', None)
                     if search_hosts:
                         if len(search_hosts):
                             cur_host = ''
