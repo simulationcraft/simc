@@ -907,6 +907,7 @@ public:
     const spell_data_t* pierce_the_veil;
     const spell_data_t* reapers_toll;
     const spell_data_t* volatile_instinct;
+    const spell_data_t* demonsurge_meta_trigger;
   } hero_spec;
 
   // Set Bonus effects
@@ -3171,7 +3172,7 @@ struct student_of_suffering_trigger_t : public BASE
   using base_t = student_of_suffering_trigger_t<BASE>;
 
   student_of_suffering_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                       util::string_view o = {} )
+                                  util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -4868,6 +4869,13 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
           p()->buff.metamorphosis_move->distance_moved = landing_distance;
           p()->buff.metamorphosis_move->trigger();
         }
+
+        if ( p()->talent.scarred.volatile_instinct->ok() )
+        {
+          p()->trigger_demonsurge(
+              demonsurge_ability::ENTER_META,
+              timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
+        }
         break;
       case DEMON_HUNTER_VENGEANCE:
         p()->buff.metamorphosis->trigger();
@@ -5942,7 +5950,8 @@ struct reap_t : public reap_base_t
   }
 };
 
-struct void_ray_t : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
+struct void_ray_t
+  : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
 {
   struct void_ray_tick_t : public demon_hunter_spell_t
   {
@@ -8642,6 +8651,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
       p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
       p()->buff.demonsurge_demonsurge->trigger();
+
+      if ( p()->talent.scarred.volatile_instinct->ok() )
+      {
+        p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
+      }
     }
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
@@ -8693,19 +8707,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.enduring_torment->expire();
     }
 
-    if ( p()->talent.scarred.volatile_instinct->ok() )
+    if ( p()->talent.scarred.volatile_instinct->ok() && p()->specialization() == DEMON_HUNTER_DEVOURER )
     {
-      switch ( p()->specialization() )
-      {
-        case DEMON_HUNTER_DEVOURER:
-          p()->buff.volatile_instinct->trigger();
-          break;
-        case DEMON_HUNTER_HAVOC:
-          p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
-          break;
-        default:
-          break;
-      }
+      p()->buff.volatile_instinct->trigger();
     }
   }
 
@@ -10801,6 +10805,8 @@ void demon_hunter_t::init_spells()
   hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
   hero_spec.volatile_instinct =
       spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.volatile_instinct, 1272462 );
+  hero_spec.demonsurge_meta_trigger =
+      spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.volatile_instinct, 1238696 );
 
   switch ( specialization() )
   {
