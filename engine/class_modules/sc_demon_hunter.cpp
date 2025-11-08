@@ -12089,8 +12089,19 @@ void demon_hunter_t::trigger_demonic() const
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, const bool check_buff )
 {
-  trigger_demonsurge( ability, timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ),
-                      check_buff );
+  timespan_t delay;
+
+  // TOCHECK: Death sweep currently uses a 700 ms delay, while all other abilities use 450 ms delay.
+  switch ( ability )
+  {
+    case demonsurge_ability::DEATH_SWEEP:
+      delay = timespan_t::from_millis( hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() );
+      break;
+    default:
+      delay = timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() );
+      break;
+  }
+  trigger_demonsurge( ability, delay, check_buff );
 }
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, timespan_t delay, const bool check_buff )
