@@ -3867,7 +3867,7 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
       heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
     }
 
-    tick_action        = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
+    tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
     add_child( tick_action );
   }
 
@@ -5164,7 +5164,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
   {
     may_miss = proc = callbacks = false;
 
-    damage        = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
+    damage = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     add_child( damage );
   }
 
@@ -5372,8 +5372,8 @@ struct sigil_of_misery_t : public demon_hunter_spell_t
   {
     if ( data().ok() )
     {
-      sigil        = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
-                                                                        p->spec.sigil_of_misery_debuff, ground_aoe_duration );
+      sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
+                                                                 p->spec.sigil_of_misery_debuff, ground_aoe_duration );
       add_child( sigil );
     }
   }
@@ -5464,8 +5464,8 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   {
     if ( data().ok() )
     {
-      sigil        = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
-                                                                        p->spec.sigil_of_chains_debuff, ground_aoe_duration );
+      sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
+                                                                 p->spec.sigil_of_chains_debuff, ground_aoe_duration );
       add_child( sigil );
     }
   }
@@ -6411,7 +6411,7 @@ struct mid1_vengeance_4pc_damage_t : public demon_hunter_spell_t
   mid1_vengeance_4pc_damage_t( util::string_view n, demon_hunter_t* p )
     : demon_hunter_spell_t( n, p, p->set_bonuses.mid1_vengeance_4pc_damage )
   {
-    background = dual = true;
+    background = dual   = true;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
   }
 };
@@ -7559,7 +7559,8 @@ struct fracture_t : public voidfall_building_trigger_t<
   fracture_damage_t *mh, *oh;
   spells::mid1_vengeance_4pc_damage_t* mid1_veng_4pc_damage;
 
-  fracture_t( demon_hunter_t* p, util::string_view o ) : base_t( "fracture", p, p->spec.fracture, o ), mid1_veng_4pc_damage( nullptr )
+  fracture_t( demon_hunter_t* p, util::string_view o )
+    : base_t( "fracture", p, p->spec.fracture, o ), mid1_veng_4pc_damage( nullptr )
   {
     int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
     // divide the number in 2 as half come from main hand, half come from offhand.
@@ -7571,11 +7572,11 @@ struct fracture_t : public voidfall_building_trigger_t<
         number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover;
     int oh_soul_fragments_to_spawn = number_of_soul_fragments_to_spawn_per_hit;
 
-    mh        = p->get_background_action<fracture_damage_t>( "fracture_mh", data().effectN( 2 ).trigger(),
-                                                             mh_soul_fragments_to_spawn );
+    mh = p->get_background_action<fracture_damage_t>( "fracture_mh", data().effectN( 2 ).trigger(),
+                                                      mh_soul_fragments_to_spawn );
     add_child( mh );
-    oh        = p->get_background_action<fracture_damage_t>( "fracture_oh", data().effectN( 3 ).trigger(),
-                                                             oh_soul_fragments_to_spawn );
+    oh = p->get_background_action<fracture_damage_t>( "fracture_oh", data().effectN( 3 ).trigger(),
+                                                      oh_soul_fragments_to_spawn );
     add_child( oh );
 
     if ( p->set_bonuses.mid1_vengeance_4pc->ok() )
@@ -7635,7 +7636,8 @@ struct fracture_t : public voidfall_building_trigger_t<
       }
 
       double percent = p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent();
-      if ( p()->set_bonuses.mid1_vengeance_4pc->ok() && rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ))
+      if ( p()->set_bonuses.mid1_vengeance_4pc->ok() &&
+           rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) )
       {
         mid1_veng_4pc_damage->execute_on_target( target );
       }
@@ -8102,6 +8104,13 @@ struct vengeful_retreat_t
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
+
+    // TODO: Remove or modify when category cooldowns are implemented/fixed
+    cooldown->duration = data().category_cooldown();
+    if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+    {
+      cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+    }
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality                       = movement_direction_type::OMNI;
