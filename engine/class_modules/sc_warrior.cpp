@@ -628,7 +628,6 @@ public:
       player_talent_t blademasters_torment;
       player_talent_t warlords_torment;
       player_talent_t titans_torment;
-      player_talent_t uproar;
       player_talent_t thunderous_words;
       player_talent_t piercing_challenge;
       player_talent_t champions_might;
@@ -8326,7 +8325,6 @@ void warrior_t::init_spells()
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
 
-  talents.warrior.uproar                           = find_talent_spell( talent_tree::CLASS, "Uproar" );
   talents.warrior.thunderous_words                 = find_talent_spell( talent_tree::CLASS, "Thunderous Words" );
   talents.warrior.blademasters_torment             = find_talent_spell( talent_tree::CLASS, "Blademaster's Torment" );
   talents.warrior.warlords_torment                 = find_talent_spell( talent_tree::CLASS, "Warlord's Torment" );
