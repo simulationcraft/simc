@@ -128,7 +128,6 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
-  buff_t* debuffs_skullsplitter;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
@@ -241,12 +240,9 @@ public:
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
-    buff_t* in_for_the_kill;
     buff_t* intercept_movement;
     buff_t* intervene_movement;
     buff_t* into_the_fray;
-    buff_t* juggernaut;
-    buff_t* juggernaut_prot;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* overpower;
@@ -262,8 +258,6 @@ public:
     buff_t* storm_of_swords;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
-    buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
-    buff_t* test_of_might;
     buff_t* unnerving_focus;
     buff_t* whirlwind;
     buff_t* wild_strikes;
@@ -351,12 +345,10 @@ public:
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
     cooldown_t* shockwave;
-    cooldown_t* skullsplitter;
     cooldown_t* storm_bolt;
     cooldown_t* sudden_death_icd;
     cooldown_t* tough_as_nails_icd;
     cooldown_t* thunder_clap;
-    cooldown_t* warbreaker;
     cooldown_t* champions_spear;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* reap_the_storm_icd;
@@ -609,14 +601,12 @@ public:
 
       player_talent_t overpower;
 
-      player_talent_t martial_prowess;
       player_talent_t die_by_the_sword;
       player_talent_t improved_execute;
 
       player_talent_t improved_overpower;
       player_talent_t bloodsurge;
       player_talent_t fueled_by_violence;
-      player_talent_t storm_wall;
       player_talent_t ignore_pain;
       player_talent_t sudden_death;
       player_talent_t fervor_of_battle;
@@ -625,7 +615,6 @@ public:
       player_talent_t colossus_smash;
       player_talent_t impale;
 
-      player_talent_t skullsplitter;
       player_talent_t rend;
       player_talent_t finishing_blows;
       player_talent_t anger_management;
@@ -638,10 +627,7 @@ public:
       player_talent_t bloodborne;
       player_talent_t dreadnaught;
       player_talent_t strength_of_arms;
-      player_talent_t in_for_the_kill;
-      player_talent_t test_of_might;
       player_talent_t blunt_instruments;
-      player_talent_t warbreaker;
       player_talent_t massacre;
       player_talent_t storm_of_swords;
 
@@ -654,7 +640,6 @@ public:
       player_talent_t bladestorm;
       player_talent_t ravager;
       player_talent_t sharpened_blades;
-      player_talent_t juggernaut;
 
       player_talent_t fatality;
       player_talent_t dance_of_death;
@@ -783,7 +768,6 @@ public:
       player_talent_t challenging_shout;
       player_talent_t show_of_force;
       player_talent_t spell_block;
-      player_talent_t juggernaut;
       player_talent_t battering_ram;
       player_talent_t champions_bulwark;
       player_talent_t dance_of_death;
@@ -1067,10 +1051,7 @@ public:
       // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
 
       parse_effects( p()->buff.dance_of_death_bladestorm );
-      parse_effects( p()->buff.juggernaut );
       parse_effects( p()->buff.merciless_bonegrinder );
-      if ( p()->talents.arms.martial_prowess->ok() )
-        parse_effects( p()->buff.overpower, effect_mask_t( false ).enable( 2 ) );
       parse_effects( p()->buff.storm_of_swords );
 
       // TWW1 Tier
@@ -1108,8 +1089,6 @@ public:
       if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
         parse_effects( p()->buff.battering_ram );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
-      if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-        parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
@@ -1436,12 +1415,6 @@ public:
 
     double rage = ab::last_resource_cost;
 
-    if ( p()->buff.test_of_might_tracker->check() )
-    {
-        if ( ab::id != 190456)  // Test of might ignores rage used for ignore pain
-          p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
-    }
-
     if ( p()->talents.arms.anger_management->ok() || p()->talents.fury.anger_management->ok() || p()->talents.protection.anger_management->ok() )
     {
       anger_management( rage );
@@ -1520,7 +1493,6 @@ public:
         cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();
 
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.warbreaker->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
@@ -2167,28 +2139,6 @@ struct rend_dot_t : public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
-  }
-
-  timespan_t tick_time ( const action_state_t* s ) const override
-  {
-    auto base_tick_time = warrior_attack_t::tick_time( s );
-
-      auto td = p() -> get_target_data( s -> target );
-      if ( td -> debuffs_skullsplitter -> up() )
-        base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-
-    return base_tick_time;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    auto dot_duration = warrior_attack_t::composite_dot_duration( s );
-
-      auto td = p() -> get_target_data( s -> target );
-      if ( td -> debuffs_skullsplitter -> up() )
-        dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-
-    return dot_duration;
   }
 };
 
@@ -3676,16 +3626,9 @@ struct colossus_smash_t : public warrior_attack_t
   colossus_smash_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "colossus_smash", p, p->talents.arms.colossus_smash )
   {
-    if ( p->talents.arms.warbreaker->ok() )
-    {
-      background = true;  // Warbreaker replaces Colossus Smash for Arms
-    }
-    else
-    {
-      parse_options( options_str );
-      weapon = &( player->main_hand_weapon );
-      impact_action    = p->active.deep_wounds_ARMS;
-    }
+    parse_options( options_str );
+    weapon = &( player->main_hand_weapon );
+    impact_action    = p->active.deep_wounds_ARMS;
   }
 
   void impact( action_state_t* s ) override
@@ -3695,19 +3638,6 @@ struct colossus_smash_t : public warrior_attack_t
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->debuffs_colossus_smash->trigger();
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      p()->buff.test_of_might_tracker->trigger();
-
-      if ( p()->talents.arms.in_for_the_kill->ok() )
-        p()->buff.in_for_the_kill->trigger();
     }
   }
 };
@@ -3723,28 +3653,6 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
-  }
-
-  timespan_t tick_time ( const action_state_t* s ) const override
-  {
-    auto base_tick_time = warrior_attack_t::tick_time( s );
-
-    auto td = p() -> get_target_data( s -> target );
-    if ( td -> debuffs_skullsplitter -> up() )
-      base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-
-    return base_tick_time;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    auto dot_duration = warrior_attack_t::composite_dot_duration( s );
-
-    auto td = p() -> get_target_data( s -> target );
-    if ( td -> debuffs_skullsplitter -> up() )
-      dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-
-    return dot_duration;
   }
 };
 
@@ -4419,14 +4327,6 @@ struct execute_arms_t : public warrior_attack_t
       {
         p()->buff.imminent_demise->trigger();
       }
-    }
-    if ( p()->talents.arms.juggernaut.ok() )
-    {
-      p()->buff.juggernaut->trigger();
-    }
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->talents.protection.juggernaut.ok() )
-    {
-      p()->buff.juggernaut_prot->trigger();
     }
 
     if ( rng().roll( shield_slam_reset ) )
@@ -5451,28 +5351,6 @@ struct shattering_throw_t : public warrior_attack_t
   //add absorb shield bonus (are those even in SimC?), add cast time?
 };
 
-// Skullsplitter ===========================================================
-
-struct skullsplitter_t : public warrior_attack_t
-{
-  skullsplitter_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "skullsplitter", p, p->talents.arms.skullsplitter )
-  {
-    parse_options( options_str );
-    weapon = &( player->main_hand_weapon );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      td( s->target )->debuffs_skullsplitter->trigger();
-    }
-  }
-};
-
 // Sweeping Strikes ===================================================================
 
 struct sweeping_strikes_t : public warrior_spell_t
@@ -5679,11 +5557,6 @@ struct overpower_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
     }
 
-    if ( p()->talents.arms.martial_prowess->ok() )
-    {
-      p()->buff.overpower->trigger();
-    }
-
     if ( p()->talents.arms.finishing_blows->ok() && target->health_percentage() < 35 )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_finishing_blows, p()->gain.finishing_blows );
@@ -5705,46 +5578,6 @@ struct overpower_t : public warrior_attack_t
       return false;
     }
     return warrior_attack_t::ready();
-  }
-};
-
-// Warbreaker ==============================================================================
-
-struct warbreaker_t : public warrior_attack_t
-{
-  warbreaker_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "warbreaker", p, p->talents.arms.warbreaker )
-  {
-    parse_options( options_str );
-    weapon = &( p->main_hand_weapon );
-    aoe    = -1;
-    // warbreaker reduced target count is not in spelldata yet
-    reduced_aoe_targets = 5;
-
-    impact_action    = p->active.deep_wounds_ARMS;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( hit_any_target )
-    {
-      p()->buff.test_of_might_tracker->trigger();
-
-      if ( p()->talents.arms.in_for_the_kill->ok() )
-        p()->buff.in_for_the_kill->trigger();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      td( s->target )->debuffs_colossus_smash->trigger();
-    }
   }
 };
 
@@ -7174,41 +7007,6 @@ struct die_by_the_sword_t : public warrior_spell_t
   }
 };
 
-// In for the Kill ===================================================================
-
-struct in_for_the_kill_t : public buff_t
-{
-  double base_value;
-  double below_pct_increase_amount;
-  double below_pct_increase;
-
-  in_for_the_kill_t( warrior_t& p, util::string_view n, const spell_data_t* s )
-    : buff_t( &p, n, s ),
-      base_value( p.talents.arms.in_for_the_kill->effectN( 1 ).percent() ),
-      below_pct_increase_amount( p.talents.arms.in_for_the_kill->effectN( 2 ).percent() ),
-      below_pct_increase( p.talents.arms.in_for_the_kill->effectN( 3 ).base_value() )
-
-  {
-    add_invalidate( CACHE_ATTACK_HASTE );
-    set_duration( s->duration() +
-                  p.talents.arms.spiteful_serenity->effectN( 8 ).time_value() +
-                  p.talents.arms.blunt_instruments->effectN( 2 ).time_value() );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    if ( source->target->health_percentage() <= below_pct_increase )
-    {
-      default_value = below_pct_increase_amount;
-    }
-    else
-    {
-      default_value = base_value;
-    }
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
 // Last Stand ===============================================================
 
 struct last_stand_t : public warrior_spell_t
@@ -7540,8 +7338,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new shield_wall_t( this, options_str );
   if ( name == "shockwave" )
     return new shockwave_t( this, options_str );
-  if ( name == "skullsplitter" )
-    return new skullsplitter_t( this, options_str );
   if ( name == "slam" )
     return new slam_t( this, options_str );
   if ( name == "champions_spear" )
@@ -7560,8 +7356,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new thunder_blast_t( this, options_str );
   if ( name == "victory_rush" )
     return new victory_rush_t( this, options_str );
-  if ( name == "warbreaker" )
-    return new warbreaker_t( this, options_str );
   if ( name == "ignore_pain" )
     return new ignore_pain_t( this, options_str );
   if ( name == "whirlwind" )
@@ -7730,14 +7524,12 @@ void warrior_t::init_spells()
 
   talents.arms.overpower                           = find_talent_spell( talent_tree::SPECIALIZATION, "Overpower" );
 
-  talents.arms.martial_prowess                     = find_talent_spell( talent_tree::SPECIALIZATION, "Martial Prowess" );
   talents.arms.die_by_the_sword                    = find_talent_spell( talent_tree::SPECIALIZATION, "Die by the Sword" );
   talents.arms.improved_execute                    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_ARMS );
 
   talents.arms.improved_overpower                  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Overpower" );
   talents.arms.bloodsurge                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_ARMS );
   talents.arms.fueled_by_violence                  = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_ARMS );
-  talents.arms.storm_wall                          = find_talent_spell( talent_tree::SPECIALIZATION, "Storm Wall" );
   talents.arms.ignore_pain                         = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain", WARRIOR_ARMS );
   talents.arms.sudden_death                        = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_ARMS );
   talents.arms.fervor_of_battle                    = find_talent_spell( talent_tree::SPECIALIZATION, "Fervor of Battle" );
@@ -7746,7 +7538,6 @@ void warrior_t::init_spells()
   talents.arms.colossus_smash                      = find_talent_spell( talent_tree::SPECIALIZATION, "Colossus Smash" );
   talents.arms.impale                              = find_talent_spell( talent_tree::SPECIALIZATION, "Impale" );
 
-  talents.arms.skullsplitter                       = find_talent_spell( talent_tree::SPECIALIZATION, "Skullsplitter" );
   talents.arms.rend                                = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_ARMS );
   talents.arms.finishing_blows                     = find_talent_spell( talent_tree::SPECIALIZATION, "Finishing Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
@@ -7759,10 +7550,7 @@ void warrior_t::init_spells()
   talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
   talents.arms.dreadnaught                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
   talents.arms.strength_of_arms                    = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Arms", WARRIOR_ARMS );
-  talents.arms.in_for_the_kill                     = find_talent_spell( talent_tree::SPECIALIZATION, "In for the Kill" );
-  talents.arms.test_of_might                       = find_talent_spell( talent_tree::SPECIALIZATION, "Test of Might" );
   talents.arms.blunt_instruments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blunt Instruments" );
-  talents.arms.warbreaker                          = find_talent_spell( talent_tree::SPECIALIZATION, "Warbreaker" );
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
   talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
 
@@ -7775,7 +7563,6 @@ void warrior_t::init_spells()
   talents.arms.bladestorm                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_ARMS );
   talents.arms.ravager                             = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_ARMS );
   talents.arms.sharpened_blades                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpened Blades" );
-  talents.arms.juggernaut                          = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_ARMS );
 
   talents.arms.fatality                            = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
   talents.arms.dance_of_death                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_ARMS );
@@ -7872,8 +7659,6 @@ void warrior_t::init_spells()
   talents.protection.defenders_aegis        = find_talent_spell( talent_tree::SPECIALIZATION, "Defender's Aegis" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.juggernaut             = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_PROTECTION );
 
   talents.protection.focused_vigor          = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
   talents.protection.shield_specialization  = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
@@ -8055,7 +7840,6 @@ void warrior_t::init_spells()
   cooldown.shield_charge                    = get_cooldown( "shield_charge" );
   cooldown.shield_slam                      = get_cooldown( "shield_slam" );
   cooldown.shield_wall                      = get_cooldown( "shield_wall" );
-  cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.sudden_death_icd                 = get_cooldown( "sudden_death" );
@@ -8067,7 +7851,6 @@ void warrior_t::init_spells()
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
-  cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
@@ -8365,27 +8148,6 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
   }
 };
 
-// Test of Might Tracker ===================================================================
-
-struct test_of_might_t : public warrior_buff_t<buff_t>
-{
-  test_of_might_t( warrior_t& p, util::string_view n, const spell_data_t* s )
-    : base_t( p, n, s )
-  {
-    quiet = true;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t* test_of_might = warrior().buff.test_of_might;
-    test_of_might->expire();
-    double strength = ( current_value / 10 ) * ( warrior().talents.arms.test_of_might->effectN( 1 ).percent() );
-    test_of_might->trigger( 1, strength );
-    current_value = 0;
-    base_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
 }  // end namespace buffs
 
 // ==========================================================================
@@ -8409,25 +8171,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_fatal_mark = make_buff( *this, "fatal_mark" )
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
-
-  debuffs_skullsplitter = make_buff( *this, "skullsplitter",  p.find_spell( 427040 ) )
-                            ->set_default_value( p.find_spell( 427040 ) -> effectN( 1 ).percent() )
-                            ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ )
-                            {
-                              // Dot ticks twice as fast, for half the time with skullsplitter up
-                              if ( old_ == 0 )
-                              {
-                                auto coeff = 1.0 / ( 1.0 + buff_ -> default_value );
-                                dots_deep_wounds -> adjust( coeff );
-                                dots_rend -> adjust( coeff );
-                              }
-                              else if ( new_ == 0 )
-                              {
-                                auto coeff = 1.0 + buff_ -> default_value;
-                                dots_deep_wounds -> adjust( coeff );
-                                dots_rend -> adjust( coeff );
-                              }
-                            } );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
@@ -8559,19 +8302,6 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE );
 
-  buff.juggernaut = make_buff( this, "juggernaut", talents.arms.juggernaut->effectN( 1 ).trigger() )
-    ->set_default_value( talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-    ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() )
-    ->set_cooldown( talents.arms.juggernaut->internal_cooldown() );
-
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-  {
-    buff.juggernaut_prot = make_buff( this, "juggernaut_prot", talents.protection.juggernaut->effectN( 1 ).trigger() )
-      ->set_default_value( talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->set_duration( talents.protection.juggernaut->effectN( 1 ).trigger()->duration() )
-      ->set_cooldown( talents.protection.juggernaut->internal_cooldown() );
-  }
-
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand );
 
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
@@ -8611,17 +8341,7 @@ void warrior_t::create_buffs()
     ->set_default_value( spell.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
-  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
-  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() );
-  buff.test_of_might = make_buff( this, "test_of_might", find_spell( 385013 ) )
-                              ->set_default_value( talents.arms.test_of_might->effectN( 1 ).percent() )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                              ->set_trigger_spell( test_of_might_tracker );
-
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
-
-  buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
   buff.dance_of_death_ravager = make_buff( this, "dance_of_death_ravager", find_spell( 459567 ) )
       ->set_duration( 20_s ) // Longer than the max extension
@@ -9807,7 +9527,6 @@ void warrior_t::parse_player_effects()
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    parse_effects( buff.in_for_the_kill, USE_CURRENT );
     parse_effects( buff.pay_them_back );
   }
   else if ( specialization() == WARRIOR_FURY )
