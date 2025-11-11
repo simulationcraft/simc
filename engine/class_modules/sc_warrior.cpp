@@ -125,7 +125,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_deep_wounds;
   dot_t* dots_gushing_wound;
   dot_t* dots_rend;
-  dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
   buff_t* debuffs_champions_might;
@@ -338,7 +337,6 @@ public:
     cooldown_t* cleave;
     cooldown_t* colossus_smash;
     cooldown_t* demoralizing_shout;
-    cooldown_t* thunderous_roar;
     cooldown_t* enraged_regeneration;
     cooldown_t* execute;
     cooldown_t* heroic_leap;
@@ -618,8 +616,6 @@ public:
       player_talent_t seismic_reverberation;
       player_talent_t endurance_training;
       player_talent_t avatar;
-      player_talent_t thunderous_roar;
-      player_talent_t thunderous_words;
       player_talent_t piercing_challenge;
       player_talent_t champions_might;
     } warrior;
@@ -1220,14 +1216,6 @@ public:
     parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
                           p()->spell.deep_wounds_arms, effect_mask_t( true ).disable( 4, 5 ),
                           p()->mastery.deep_wounds_ARMS );
-
-    if ( p()->talents.warrior.thunderous_words->ok() )
-    {
-      // Action-scoped Thunderous Roar effect(#3) only apply with Thunderous Words
-      parse_target_effects( d_fn( &warrior_td_t::dots_thunderous_roar ),
-                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(),
-                            effect_mask_t( false ).enable( 3 ) );
-    }
 
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff );
@@ -4058,47 +4046,6 @@ struct demoralizing_shout_t : public warrior_attack_t
     warrior_attack_t::impact( s );
     td( s->target ) -> debuffs_demoralizing_shout -> trigger(
       1, data().effectN( 1 ).percent(), 1.0, p()->talents.protection.demoralizing_shout->duration()  );
-  }
-};
-
-// Thunderous Roar ==============================================================
-
-struct thunderous_roar_dot_t : public warrior_attack_t
-{
-  double bloodsurge_chance, rage_from_bloodsurge;
-  thunderous_roar_dot_t( warrior_t* p )
-    : warrior_attack_t( "thunderous_roar_dot", p, p->find_spell( 397364 ) ),
-      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
-  {
-    background = tick_may_crit = true;
-    //hasted_ticks               = false; //currently hasted in game - likely unintended
-  }
-};
-
-struct thunderous_roar_t : public warrior_attack_t
-{
-  warrior_attack_t* thunderous_roar_dot;
-  thunderous_roar_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
-      thunderous_roar_dot( nullptr )
-  {
-    parse_options( options_str );
-    aoe       = -1;
-    reduced_aoe_targets = p->talents.warrior.thunderous_roar->effectN( 3 ).base_value();
-    may_dodge = may_parry = may_block = false;
-
-    thunderous_roar_dot   = new thunderous_roar_dot_t( p );
-    add_child( thunderous_roar_dot );
-
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    thunderous_roar_dot->set_target( s->target );
-    thunderous_roar_dot->execute();
   }
 };
 
@@ -7912,8 +7859,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new devastate_t( this, options_str );
   if ( name == "die_by_the_sword" )
     return new die_by_the_sword_t( this, options_str );
-  if ( name == "thunderous_roar" )
-    return new thunderous_roar_t( this, options_str );
   if ( name == "enraged_regeneration" )
     return new enraged_regeneration_t( this, options_str );
   if ( name == "execute" )
@@ -8172,11 +8117,9 @@ void warrior_t::init_spells()
   talents.warrior.endurance_training               = find_talent_spell( talent_tree::CLASS, "Endurance Training", specialization() );
   talents.warrior.armored_to_the_teeth             = find_talent_spell( talent_tree::CLASS, "Armored to the Teeth" );
 
-  talents.warrior.thunderous_roar                  = find_talent_spell( talent_tree::CLASS, "Thunderous Roar" );
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
 
-  talents.warrior.thunderous_words                 = find_talent_spell( talent_tree::CLASS, "Thunderous Words" );
   talents.warrior.piercing_challenge                = find_talent_spell( talent_tree::CLASS, "Piercing Challenge" );
   talents.warrior.champions_might                  = find_talent_spell( talent_tree::CLASS, "Champion's Might" );
 
@@ -8510,7 +8453,6 @@ void warrior_t::init_spells()
   cooldown.cleave                           = get_cooldown( "cleave" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
-  cooldown.thunderous_roar                  = get_cooldown( "thunderous_roar" );
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
   cooldown.execute                          = get_cooldown( "execute" );
   cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
@@ -8878,7 +8820,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
-  dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
   debuffs_champions_might = make_buff( *this, "champions_might", p.talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
