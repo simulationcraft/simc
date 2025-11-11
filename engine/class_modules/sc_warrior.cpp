@@ -720,7 +720,6 @@ public:
 
       player_talent_t dancing_blades;
       player_talent_t titanic_rage;
-      player_talent_t unbridled_ferocity;
       player_talent_t depths_of_insanity;
       player_talent_t tenderize;
       player_talent_t storm_of_steel;
@@ -3444,12 +3443,10 @@ struct bladestorm_t : public warrior_attack_t
 
 struct onslaught_t : public warrior_attack_t
 {
-  double unbridled_chance;
   const spell_data_t* damage_spell;
   int aoe_targets;
   onslaught_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "onslaught", p, p->talents.fury.onslaught ),
-      unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
       damage_spell( p->find_spell( 396718U ) ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
@@ -3476,12 +3473,6 @@ struct onslaught_t : public warrior_attack_t
       p()->enrage();
       if ( p()->talents.fury.slaughtering_strikes->ok() )
         p()->buff.slaughtering_strikes->trigger( as<int>( p()->talents.fury.tenderize->effectN( 1 ).base_value() ) );
-    }
-
-    if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
-    {
-      const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
 
     warrior_attack_t::execute();
@@ -5952,12 +5943,10 @@ struct rampage_attack_t : public warrior_attack_t
 struct rampage_parent_t : public warrior_attack_t
 {
   double cost_rage;
-  double unbridled_chance;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   rampage_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
-    unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent())
   {
@@ -5983,11 +5972,6 @@ struct rampage_parent_t : public warrior_attack_t
     if ( p()->talents.fury.frenzy->ok() )
     {
       p()->buff.frenzy->trigger();
-    }
-    if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
-    {
-      const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
 
     p()->enrage();
@@ -7974,7 +7958,6 @@ void warrior_t::init_spells()
 
   talents.fury.dancing_blades       = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Blades" );
   talents.fury.titanic_rage         = find_talent_spell( talent_tree::SPECIALIZATION, "Titanic Rage" );
-  talents.fury.unbridled_ferocity   = find_talent_spell( talent_tree::SPECIALIZATION, "Unbridled Ferocity" );
   talents.fury.depths_of_insanity   = find_talent_spell( talent_tree::SPECIALIZATION, "Depths of Insanity" );
   talents.fury.tenderize            = find_talent_spell( talent_tree::SPECIALIZATION, "Tenderize" );
   talents.fury.storm_of_steel       = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_FURY );
