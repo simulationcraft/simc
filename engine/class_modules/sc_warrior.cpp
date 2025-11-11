@@ -1080,8 +1080,6 @@ public:
     }
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
-      if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-        parse_effects( p()->buff.battering_ram );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
@@ -3842,18 +3840,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->check() )
-    {
-      am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
-    }
-
-    return am;
-  }
-
   double bonus_da( const action_state_t* s ) const override
   {
     double da = warrior_attack_t::bonus_da( s );
@@ -3866,11 +3852,6 @@ struct thunder_blast_t : public warrior_attack_t
     rend_targets_hit = 0;
 
     warrior_attack_t::execute();
-
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->up() )
-    {
-      p()->buff.show_of_force->expire();
-    }
 
     if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p()->buff.severe_thunder->up() )
       p()->buff.severe_thunder->expire();
@@ -4033,18 +4014,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->check() )
-    {
-      am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
-    }
-
-    return am;
-  }
-
   double bonus_da( const action_state_t* s ) const override
   {
     double da = warrior_attack_t::bonus_da( s );
@@ -4057,11 +4026,6 @@ struct thunder_clap_t : public warrior_attack_t
     rend_targets_hit = 0;
 
     warrior_attack_t::execute();
-
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->up() )
-    {
-      p()->buff.show_of_force->expire();
-    }
 
     if ( rng().roll( shield_slam_reset ) )
     {
@@ -5889,15 +5853,6 @@ struct revenge_t : public warrior_attack_t
       }
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double cost = warrior_attack_t::cost_pct_multiplier();
-    // Converted this to parse_effects for 11.2
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-      cost *= 1.0 + p()->buff.revenge->check_value();
-    return cost;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5908,11 +5863,6 @@ struct revenge_t : public warrior_attack_t
       p()->cooldown.shield_slam->reset( true );
       if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
         p()->buff.expert_strategist->trigger();
-    }
-
-    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->talents.protection.show_of_force->ok() )
-    {
-      p()->buff.show_of_force->trigger();
     }
 
     if ( p()->talents.warrior.frothing_berserker->ok() && !background && rng().roll( frothing_berserker_chance ) )
@@ -5998,28 +5948,7 @@ struct shield_charge_damage_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.protection.champions_bulwark->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    {
-      if ( p()->buff.shield_block->check() )
-      {
-        p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
-      }
-      else
-      {
-        p()->buff.shield_block->trigger();
-      }
-      p()->buff.revenge->trigger();
-    }
-    else
-    {
-      p()->buff.shield_block->extend_duration_or_trigger( p()->buff.shield_block->buff_duration() );
-    }
-
-    if ( p()->talents.protection.battering_ram->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    {
-      p()->buff.battering_ram->trigger();
-    }
-
+    p()->buff.shield_block->extend_duration_or_trigger( p()->buff.shield_block->buff_duration() );
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_charge );
   }
 };
@@ -6331,8 +6260,6 @@ struct tough_as_nails_t : public warrior_attack_t
     critical_block( false )
   {
     may_crit = false;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-      ignores_armor = true;
 
     background = true;
   }
@@ -7601,8 +7528,6 @@ void warrior_t::init_spells()
   talents.protection.brace_for_impact       = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
   talents.protection.unnerving_focus        = find_talent_spell( talent_tree::SPECIALIZATION, "Unnerving Focus" );
 
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.challenging_shout      = find_talent_spell( talent_tree::SPECIALIZATION, "Challenging Shout" );
   talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
   talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_PROTECTION );
   talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
@@ -7610,15 +7535,11 @@ void warrior_t::init_spells()
   talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
 
   talents.protection.disrupting_shout       = find_talent_spell( talent_tree::SPECIALIZATION, "Disrupting Shout" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.show_of_force          = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
   talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
   talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
   talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
   talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.spell_block            = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Block" );
   talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
 
   talents.protection.heavy_repercussions    = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
@@ -7639,14 +7560,7 @@ void warrior_t::init_spells()
   talents.protection.indomitable            = find_talent_spell( talent_tree::SPECIALIZATION, "Indomitable" );
   talents.protection.violent_outburst       = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
   talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_PROTECTION );
-
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.battering_ram          = find_talent_spell( talent_tree::SPECIALIZATION, "Battering Ram" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
-  if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
-    talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
 
   // 11.2 New talents
   talents.protection.armor_specialization   = find_talent_spell( talent_tree::SPECIALIZATION, "Armor Specialization", WARRIOR_PROTECTION );
@@ -8220,9 +8134,6 @@ void warrior_t::create_buffs()
       ->set_cooldown( talents.warrior.wild_strikes->internal_cooldown() )
       ->set_trigger_spell( talents.warrior.wild_strikes );
 
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-    buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) );
-
   buff.berserker_rage = make_buff( this, "berserker_rage", spell.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
 
@@ -8331,12 +8242,6 @@ void warrior_t::create_buffs()
 
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     buff.best_served_cold = make_buff( this, "best_served_cold", find_spell( 1234772 ) );
-
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-  {
-    buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
-                            ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
-  }
 
   // Arma: 2022 Nov 4.  Unnerving focus seems to get the value from the parent, not the value set in the buff
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
@@ -9076,12 +8981,6 @@ double warrior_t::composite_armor_multiplier() const
 
   ar *= 1.0 + talents.protection.armor_specialization -> effectN( 1 ).percent();
 
-  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-  {
-    ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
-    ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
-  }
-
   return ar;
 }
 
@@ -9504,8 +9403,6 @@ void warrior_t::parse_player_effects()
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
-    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-      parse_effects( buff.battering_ram );
     parse_effects( buff.into_the_fray );
   }
 
