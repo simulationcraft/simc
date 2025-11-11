@@ -221,7 +221,6 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* ashen_juggernaut;
     buff_t* avatar;
     buff_t* battle_stance;
     buff_t* battering_ram;
@@ -236,7 +235,6 @@ public:
     buff_t* collateral_damage;
     buff_t* dance_of_death_bladestorm;
     buff_t* dance_of_death_ravager;
-    buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* enrage;
@@ -697,7 +695,6 @@ public:
       player_talent_t frenzy;
       player_talent_t hack_and_slash;
       player_talent_t slaughtering_strikes;
-      player_talent_t ashen_juggernaut;
       player_talent_t improved_whirlwind;
 
       player_talent_t bloodborne;
@@ -718,7 +715,6 @@ public:
       player_talent_t ravager;
       player_talent_t bladestorm;
 
-      player_talent_t dancing_blades;
       player_talent_t titanic_rage;
       player_talent_t depths_of_insanity;
       player_talent_t tenderize;
@@ -1098,10 +1094,8 @@ public:
     else if ( p()->specialization() == WARRIOR_FURY )
     {
       parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
-      parse_effects( p()->buff.ashen_juggernaut );
       parse_effects( p()->buff.berserker_stance );
       parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
-      parse_effects( p()->buff.dancing_blades );
       // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
       if ( p()->talents.fury.powerful_enrage->ok() )
         parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
@@ -4778,11 +4772,6 @@ struct execute_fury_t : public warrior_attack_t
       }
     }
 
-    if ( p()->talents.fury.ashen_juggernaut->ok() )
-    {
-      p()->buff.ashen_juggernaut->trigger();
-    }
-
     if ( p()->talents.mountain_thane.lightning_strikes->ok() )
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
@@ -5685,11 +5674,6 @@ struct odyns_fury_t : warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p()->talents.fury.dancing_blades->ok() )
-    {
-      p()->buff.dancing_blades->trigger();
-    }
 
     if ( p()->talents.fury.titanic_rage->ok() )
     {
@@ -7935,7 +7919,6 @@ void warrior_t::init_spells()
   talents.fury.frenzy               = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy" );
   talents.fury.hack_and_slash       = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
   talents.fury.slaughtering_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Slaughtering Strikes" );
-  talents.fury.ashen_juggernaut     = find_talent_spell( talent_tree::SPECIALIZATION, "Ashen Juggernaut" );
   talents.fury.improved_whirlwind   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Whirlwind" );
 
   talents.fury.bloodborne           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_FURY );
@@ -7956,7 +7939,6 @@ void warrior_t::init_spells()
   talents.fury.ravager              = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_FURY );
   talents.fury.bladestorm           = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_FURY );
 
-  talents.fury.dancing_blades       = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Blades" );
   talents.fury.titanic_rage         = find_talent_spell( talent_tree::SPECIALIZATION, "Titanic Rage" );
   talents.fury.depths_of_insanity   = find_talent_spell( talent_tree::SPECIALIZATION, "Depths of Insanity" );
   talents.fury.tenderize            = find_talent_spell( talent_tree::SPECIALIZATION, "Tenderize" );
@@ -8634,10 +8616,6 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", talents.fury.ashen_juggernaut->effectN( 1 ).trigger() )
-                            ->set_cooldown( talents.fury.ashen_juggernaut->internal_cooldown() )
-                            ->set_default_value_from_effect( 1 );
-
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
@@ -8655,9 +8633,6 @@ void warrior_t::create_buffs()
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes->effectN( 2 ).trigger() )
       ->set_cooldown( talents.warrior.wild_strikes->internal_cooldown() )
       ->set_trigger_spell( talents.warrior.wild_strikes );
-
-  buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
-      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC);
 
   if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) );
@@ -9968,7 +9943,6 @@ void warrior_t::parse_player_effects()
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    parse_effects( buff.dancing_blades );
     parse_effects( buff.frenzy );
 
     if ( talents.fury.frenzied_enrage->ok() )
