@@ -619,8 +619,6 @@ public:
       player_talent_t endurance_training;
       player_talent_t avatar;
       player_talent_t thunderous_roar;
-      player_talent_t immovable_object;
-      player_talent_t unstoppable_force;
       player_talent_t thunderous_words;
       player_talent_t piercing_challenge;
       player_talent_t champions_might;
@@ -1149,9 +1147,6 @@ public:
       if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
         parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
-
-      if ( p()->talents.warrior.unstoppable_force->ok() )
-        parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
       if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
         parse_effects( p()->buff.revenge );
@@ -1719,23 +1714,16 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 struct avatar_t : public warrior_spell_t
 {
   timespan_t avatar_of_the_storm_duration;
-  timespan_t immovable_object_duration;
   bool from_avatar_of_the_storm;
-  bool from_immovable_object;
   avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
     : warrior_spell_t( n, p, spell ),
     avatar_of_the_storm_duration( 0_s ),
-    immovable_object_duration( 0_s ),
-    from_avatar_of_the_storm( false ),
-    from_immovable_object( false )
+    from_avatar_of_the_storm( false )
   {
 
     parse_options( options_str );
     harmful   = false;
     target    = p;
-
-    if ( p->talents.warrior.immovable_object->ok() )
-      immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
@@ -1745,18 +1733,13 @@ struct avatar_t : public warrior_spell_t
   avatar_t( util::string_view name, warrior_t* p )
     : warrior_spell_t( name, p, p->spell.avatar ),
     avatar_of_the_storm_duration( 0_s ),
-    immovable_object_duration( 0_s ),
-    from_avatar_of_the_storm( false ),
-    from_immovable_object( false )
+    from_avatar_of_the_storm( false )
   {
     background = true;
     cooldown->duration = 0_s;
     trigger_gcd = timespan_t::zero();
     harmful    = false;
     target     = p;
-
-    if ( p->talents.warrior.immovable_object->ok() )
-      immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
@@ -1790,8 +1773,6 @@ struct avatar_t : public warrior_spell_t
       // Arms
 
       // Protection
-      if ( p()->talents.warrior.immovable_object->ok() )
-        p()->buff.shield_wall->extend_duration_or_trigger( immovable_object_duration );
 
       // Hero Talents
       // Mountain Thane
@@ -1803,10 +1784,6 @@ struct avatar_t : public warrior_spell_t
     }
     else  // For background triggered avatar procs
     {
-      // Protection
-      if ( p()->talents.warrior.immovable_object->ok() && from_immovable_object )
-        p()->buff.avatar->extend_duration_or_trigger( immovable_object_duration );
-
       // Mountain Thane
       if ( from_avatar_of_the_storm )
         p()->buff.avatar->extend_duration_or_trigger( avatar_of_the_storm_duration );
@@ -7806,13 +7783,6 @@ struct shield_wall_t : public warrior_spell_t
     parse_options( options_str );
     harmful = false;
     range   = -1;
-
-    if ( p->talents.warrior.immovable_object->ok() )
-    {
-      avatar = new avatar_t( "avatar_immovable_object", p );
-      debug_cast<avatar_t*>(avatar)->from_immovable_object = true;
-    }
-
   }
 
   void execute() override
@@ -7820,9 +7790,6 @@ struct shield_wall_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.shield_wall->trigger( 1, p()->buff.shield_wall->data().effectN( 1 ).percent() );
-
-    if ( p()->talents.warrior.immovable_object->ok() )
-      avatar->schedule_execute();
   }
 };
 
@@ -8210,8 +8177,6 @@ void warrior_t::init_spells()
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
 
   talents.warrior.thunderous_words                 = find_talent_spell( talent_tree::CLASS, "Thunderous Words" );
-  talents.warrior.immovable_object                 = find_talent_spell( talent_tree::CLASS, "Immovable Object" );
-  talents.warrior.unstoppable_force                = find_talent_spell( talent_tree::CLASS, "Unstoppable Force" );
   talents.warrior.piercing_challenge                = find_talent_spell( talent_tree::CLASS, "Piercing Challenge" );
   talents.warrior.champions_might                  = find_talent_spell( talent_tree::CLASS, "Champion's Might" );
 
