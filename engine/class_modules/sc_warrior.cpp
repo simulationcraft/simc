@@ -127,7 +127,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
-  buff_t* debuffs_champions_might;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_skullsplitter;
@@ -445,7 +444,6 @@ public:
     // Fury
 
     // Protection
-    const spell_data_t* seismic_reverberation_revenge;
 
     // Extra Spells To Make Things Work
 
@@ -613,11 +611,8 @@ public:
       player_talent_t concussive_blows;
       player_talent_t sidearm;
       player_talent_t bitter_immunity;
-      player_talent_t seismic_reverberation;
       player_talent_t endurance_training;
       player_talent_t avatar;
-      player_talent_t piercing_challenge;
-      player_talent_t champions_might;
     } warrior;
 
     struct arms_talents_t
@@ -1208,8 +1203,6 @@ public:
   void apply_debuff_effects()
   {
     // Shared
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_champions_might ),
-                            p()->talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
     // Arms
     // Arms deep wounds spell data contains DF2 2pc bonus, which is disabled/enabled via script.  Stored on effect 4 and 5, so we disable them.
@@ -3669,43 +3662,6 @@ struct slam_t : public warrior_attack_t
 };
 
 // Cleave ===================================================================
-struct cleave_seismic_reverberation_t : public warrior_attack_t
-{
-  cleave_seismic_reverberation_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->find_spell( 458459 ) )
-  {
-    weapon = &( player->main_hand_weapon );
-    aoe = -1;
-    reduced_aoe_targets = 5.0;
-    background = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
-    {
-      am *= 1.0 + p()->buff.collateral_damage->stack_value();
-    }
-
-    return am;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = warrior_attack_t::composite_da_multiplier( state );
-
-    if ( p()->talents.colossus.one_against_many->ok() )
-    {
-      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
-    }
-
-    return m;
-  }
-
-};
-
 struct cleave_t : public warrior_attack_t
 {
   slam_t* fervor_slam;
@@ -3713,14 +3669,12 @@ struct cleave_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   action_t* reap_the_storm;
-  action_t* seismic_action;
   cleave_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
     fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-    reap_the_storm( nullptr ),
-    seismic_action( nullptr )
+    reap_the_storm( nullptr )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -3737,11 +3691,6 @@ struct cleave_t : public warrior_attack_t
     {
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_cleave", p );
       add_child( reap_the_storm );
-    }
-    if ( p->talents.warrior.seismic_reverberation->ok() )
-    {
-      seismic_action = new cleave_seismic_reverberation_t( "cleave_seismic_reverberation", p );
-      add_child( seismic_action );
     }
   }
 
@@ -3795,12 +3744,6 @@ struct cleave_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p()->talents.warrior.seismic_reverberation->ok() &&
-          execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      seismic_action->execute_on_target( target );
-    }
 
     cost_rage = last_resource_cost;
     if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
@@ -4050,28 +3993,12 @@ struct demoralizing_shout_t : public warrior_attack_t
 };
 
 // Thunder Clap =============================================================
-
-struct thunder_blast_seismic_reverberation_t : public warrior_attack_t
-{
-  thunder_blast_seismic_reverberation_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->find_spell( 436793 ) )
-  {
-    background = true;
-    may_dodge = may_parry = may_block = false;
-    may_crit = false;
-    tick_may_crit = false;
-
-    energize_type = action_energize::NONE;
-  }
-};
-
 struct thunder_blast_t : public warrior_attack_t
 {
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  action_t* seismic_action;
   action_t* ignore_pain;
   action_t* ionizing_strike;
   double rend_target_cap;
@@ -4082,7 +4009,6 @@ struct thunder_blast_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
       lightning_strike( nullptr ),
-      seismic_action( nullptr ),
       ignore_pain( nullptr ),
       ionizing_strike( nullptr ),
       rend_target_cap( 0 ),
@@ -4116,12 +4042,6 @@ struct thunder_blast_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_thunder_blast", p );
       add_child( lightning_strike );
-    }
-
-    if ( p->talents.mountain_thane.crashing_thunder->ok() && p->talents.warrior.seismic_reverberation->ok() )
-    {
-      seismic_action = new thunder_blast_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
-      add_child( seismic_action );
     }
 
     if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
@@ -4263,19 +4183,6 @@ struct thunder_blast_t : public warrior_attack_t
         rend_targets_hit++;
       }
     }
-
-    if ( p()->talents.mountain_thane.crashing_thunder->ok() &&
-          p()->talents.warrior.seismic_reverberation->ok() &&
-          state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      // Seismic Reverb deals 70% reduced Thunder Blast damage, despite only listing Whirlwind/Cleave as affected spells
-      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
-      if ( p()->bugs && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0} )
-        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
-      else
-        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
-      seismic_action->execute_on_target( target );
-    }
   }
 
   bool ready() override
@@ -4289,27 +4196,12 @@ struct thunder_blast_t : public warrior_attack_t
   }
 };
 
-struct thunder_clap_seismic_reverberation_t : public warrior_attack_t
-{
-  thunder_clap_seismic_reverberation_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->find_spell( 436792 ) )
-  {
-    background = true;
-    may_dodge = may_parry = may_block = false;
-    may_crit = false;
-    tick_may_crit = false;
-
-    energize_type = action_energize::NONE;
-  }
-};
-
 struct thunder_clap_t : public warrior_attack_t
 {
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  action_t* seismic_action;
   action_t* ignore_pain;
   double rend_target_cap;
   double rend_targets_hit;
@@ -4319,7 +4211,6 @@ struct thunder_clap_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
       lightning_strike( nullptr ),
-      seismic_action( nullptr ),
       ignore_pain( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
@@ -4349,12 +4240,6 @@ struct thunder_clap_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_thunder_clap", p );
       add_child( lightning_strike );
-    }
-
-    if ( p->talents.mountain_thane.crashing_thunder->ok() && p->talents.warrior.seismic_reverberation->ok() )
-    {
-      seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_clap_seismic_reverberation", p );
-      add_child( seismic_action );
     }
 
     if ( p->talents.protection.violent_outburst->ok() )
@@ -4456,19 +4341,6 @@ struct thunder_clap_t : public warrior_attack_t
         rend->execute_on_target( state->target );
         rend_targets_hit++;
       }
-    }
-
-    if ( p()->talents.mountain_thane.crashing_thunder->ok() &&
-          p()->talents.warrior.seismic_reverberation->ok() &&
-          state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      // Seismic Reverb deals 70% reduced Thunder Clap damage, despite only listing Whirlwind/Cleave as affected spells
-      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
-      if ( p()->bugs && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0} )
-        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
-      else
-        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
-      seismic_action->execute_on_target( target );
     }
   }
 
@@ -6333,44 +6205,16 @@ struct ravager_t : public warrior_attack_t
 };
 
 // Revenge ==================================================================
-
-struct revenge_seismic_reverberation_t : public warrior_attack_t
-{
-  revenge_seismic_reverberation_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->find_spell( 1215174 ) )
-  {
-    weapon = &( player->main_hand_weapon );
-    aoe = -1;
-    background = true;
-    proc = true;
-    impact_action = p->active.deep_wounds_PROT;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = warrior_attack_t::composite_da_multiplier( state );
-
-    if ( p()->talents.colossus.one_against_many->ok() )
-    {
-      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
-    }
-
-    return m;
-  }
-
-};
-
 struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
-  action_t* seismic_action;
   action_t* lightning_strike;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
-  revenge_t( warrior_t* p, util::string_view options_str, bool seismic = false )
-    : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->talents.protection.revenge ),
+  revenge_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "revenge", p, p->talents.protection.revenge ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
-      seismic_action( nullptr ),
+
       lightning_strike( nullptr ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
@@ -6379,23 +6223,9 @@ struct revenge_t : public warrior_attack_t
       aoe           = -1;
       impact_action = p->active.deep_wounds_PROT;
 
-      if ( seismic )
-      {
-        background = proc = true;
-        base_multiplier *= 1.0 + p -> find_spell( 382956 ) -> effectN( 3 ).percent();
-      }
-      else if ( p -> talents.warrior.seismic_reverberation -> ok() )
-      {
-        seismic_action = new revenge_seismic_reverberation_t( "revenge_seismic_reverberation", p );
-        add_child( seismic_action );
-      }
-
       if ( p->talents.mountain_thane.lightning_strikes->ok() )
       {
-        if ( seismic )
-          lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge_seismic_reverberation", p );
-        else
-          lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge", p );
+        lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge", p );
         add_child( lightning_strike );
       }
 
@@ -6421,12 +6251,6 @@ struct revenge_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     p()->buff.revenge->expire();
-
-    if ( p()->talents.warrior.seismic_reverberation->ok() && !background &&
-    execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      seismic_action->execute_on_target( target );
-    }
 
     if ( rng().roll( shield_slam_reset ) )
     {
@@ -6956,8 +6780,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   whirlwind_fury_damage_t* oh_first_attack;
   whirlwind_fury_damage_t* mh_other_attack;
   whirlwind_fury_damage_t* oh_other_attack;
-  whirlwind_fury_damage_t* mh_seismic_reverberation_attack;
-  whirlwind_fury_damage_t* oh_seismic_reverberation_attack;
   double base_rage_gain;
   double additional_rage_gain_per_target;
   fury_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
@@ -6966,8 +6788,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
       oh_first_attack( nullptr ),
       mh_other_attack( nullptr ),
       oh_other_attack( nullptr ),
-      mh_seismic_reverberation_attack( nullptr ),
-      oh_seismic_reverberation_attack( nullptr ),
       base_rage_gain( p->spec.whirlwind->effectN( 1 ).base_value() ),
       additional_rage_gain_per_target( p->spec.whirlwind->effectN( 2 ).base_value() )
   {
@@ -6986,14 +6806,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
       mh_other_attack->radius = radius;
       add_child( mh_other_attack );
 
-      if ( p->talents.warrior.seismic_reverberation.ok() )
-      {
-        mh_seismic_reverberation_attack = new whirlwind_fury_damage_t( "whirlwind_mh_seismic_reverberation", p, p->find_spell( 385233 ) );
-        mh_seismic_reverberation_attack->weapon = &( p->main_hand_weapon );
-        mh_seismic_reverberation_attack->radius = radius;
-        add_child( mh_seismic_reverberation_attack );
-      }
-
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
         oh_first_attack         = new whirlwind_fury_damage_t( "whirlwind_oh_first", p, data().effectN( 5 ).trigger() );
@@ -7005,14 +6817,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
         oh_other_attack->weapon = &( p->off_hand_weapon );
         oh_other_attack->radius = radius;
         add_child( oh_other_attack );
-
-        if ( p->talents.warrior.seismic_reverberation.ok() )
-        {
-          oh_seismic_reverberation_attack         = new whirlwind_fury_damage_t( "whirlwind_oh_seismic_reverberation", p, p->find_spell( 385234 ) );
-          oh_seismic_reverberation_attack->weapon = &( p->off_hand_weapon );
-          oh_seismic_reverberation_attack->radius = radius;
-          add_child( oh_seismic_reverberation_attack );
-        }
       }
     }
   }
@@ -7033,13 +6837,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     mh_first_attack->execute_on_target( target );
     if ( oh_first_attack )
       oh_first_attack->execute_on_target( target );
-
-    if ( p() -> talents.warrior.seismic_reverberation.ok() && mh_first_attack->num_targets_hit >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      mh_seismic_reverberation_attack->execute_on_target( target );
-      if ( oh_seismic_reverberation_attack )
-        oh_seismic_reverberation_attack->execute_on_target( target );
-    }
 
     make_event( *sim, timespan_t::from_millis(data().effectN( 6 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
     make_event( *sim, timespan_t::from_millis(data().effectN( 8 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
@@ -7120,15 +6917,13 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   whirlwind_arms_damage_t* first_attack;
   whirlwind_arms_damage_t* second_attack;
   whirlwind_arms_damage_t* third_attack;
-  whirlwind_arms_damage_t* seismic_reverberation_attack;
 
   arms_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "whirlwind", p, p->spell.whirlwind ),
       fervor_slam( nullptr ),
       first_attack( nullptr ),
       second_attack( nullptr ),
-      third_attack( nullptr ),
-      seismic_reverberation_attack( nullptr )
+      third_attack( nullptr )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
@@ -7149,14 +6944,6 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
       third_attack->weapon = &( p->main_hand_weapon );
       third_attack->radius = radius;
       add_child( third_attack );
-
-      if ( p->talents.warrior.seismic_reverberation.ok() )
-      {
-        seismic_reverberation_attack         = new whirlwind_arms_damage_t( "whirlwind_seismic_reverberation", p, p->find_spell( 385228 ) );
-        seismic_reverberation_attack->weapon = &( p->main_hand_weapon );
-        seismic_reverberation_attack->radius = radius;
-        add_child( seismic_reverberation_attack );
-      }
 
       if ( p->talents.arms.fervor_of_battle->ok() )
       {
@@ -7194,11 +6981,6 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && first_attack->num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
-
-    if ( p() -> talents.warrior.seismic_reverberation.ok() && first_attack->num_targets_hit >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      seismic_reverberation_attack->execute_on_target( target );
-    }
 
     make_event( *sim, timespan_t::from_millis(data().effectN( 2 ).misc_value1()), [ this ]() { second_attack->execute_on_target( target ); } );
     make_event( *sim, timespan_t::from_millis(data().effectN( 3 ).misc_value1()), [ this ]() { third_attack->execute_on_target( target ); } );
@@ -7286,19 +7068,6 @@ struct champions_spear_t : public warrior_attack_t
     add_child( execute_action );
 
     energize_type     = action_energize::NONE;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if ( p()->talents.warrior.champions_might->ok() )
-    {
-      if ( result_is_hit( state->result ) )
-      {
-        td( state->target )->debuffs_champions_might->trigger();
-      }
-    }
   }
 };
 
@@ -8039,7 +7808,6 @@ void warrior_t::init_spells()
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
-  spell.seismic_reverberation_revenge = find_spell( 384730 );
   spell.devastator              = find_spell( 236279 );
 
   // Shared Spells
@@ -8104,7 +7872,6 @@ void warrior_t::init_spells()
   talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
   talents.warrior.sidearm                          = find_talent_spell( talent_tree::CLASS, "Sidearm" );
   talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
-  talents.warrior.seismic_reverberation            = find_talent_spell( talent_tree::CLASS, "Seismic Reverberation" );
   talents.warrior.concussive_blows                 = find_talent_spell( talent_tree::CLASS, "Concussive Blows" );
   talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
   talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
@@ -8119,9 +7886,6 @@ void warrior_t::init_spells()
 
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
-
-  talents.warrior.piercing_challenge                = find_talent_spell( talent_tree::CLASS, "Piercing Challenge" );
-  talents.warrior.champions_might                  = find_talent_spell( talent_tree::CLASS, "Champion's Might" );
 
   // Arms Talents
   talents.arms.mortal_strike                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
@@ -8820,8 +8584,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
-
-  debuffs_champions_might = make_buff( *this, "champions_might", p.talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
 
