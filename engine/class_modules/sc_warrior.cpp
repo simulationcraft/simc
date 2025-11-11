@@ -126,7 +126,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
-  buff_t* debuffs_concussive_blows;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_skullsplitter;
@@ -235,7 +234,6 @@ public:
     buff_t* brace_for_impact;
     buff_t* charge_movement;
     buff_t* collateral_damage;
-    buff_t* concussive_blows;
     buff_t* dance_of_death_bladestorm;
     buff_t* dance_of_death_ravager;
     buff_t* dancing_blades;
@@ -451,7 +449,6 @@ public:
     const spell_data_t* dance_of_death;
     const spell_data_t* dance_of_death_bs_buff; // Bladestorm
     const spell_data_t* fatal_mark_debuff;
-    const spell_data_t* concussive_blows_debuff;
     const spell_data_t* ravager;
     const spell_data_t* recklessness_buff;
     const spell_data_t* shield_block_buff;
@@ -606,9 +603,6 @@ public:
 
       // Below here is marked for removal
       player_talent_t inspiring_presence;
-      player_talent_t cacophonous_roar;
-      player_talent_t menace;
-      player_talent_t concussive_blows;
       player_talent_t sidearm;
       player_talent_t bitter_immunity;
       player_talent_t endurance_training;
@@ -930,7 +924,6 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
@@ -5124,16 +5117,6 @@ struct pummel_t : public warrior_attack_t
     is_interrupt = true;
   }
 
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p()->talents.warrior.concussive_blows.ok() && result_is_hit( execute_state->result ) )
-    {
-      td( execute_state->target )->debuffs_concussive_blows->trigger();
-    }
-  }
-
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
@@ -7764,7 +7747,6 @@ void warrior_t::init_spells()
   spell.victory_rush            = find_class_spell( "Victory Rush" );
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
-  spell.concussive_blows_debuff = find_spell( 383116 );
   spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
 
   // Class Passives
@@ -7853,8 +7835,6 @@ void warrior_t::init_spells()
   talents.warrior.pain_and_gain                    = find_talent_spell( talent_tree::CLASS, "Pain and Gain" );
   talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap", specialization() );
 
-  talents.warrior.cacophonous_roar                 = find_talent_spell( talent_tree::CLASS, "Cacophonous Roar" );
-  talents.warrior.menace                           = find_talent_spell( talent_tree::CLASS, "Menace" );
   talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
   talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
@@ -7872,7 +7852,6 @@ void warrior_t::init_spells()
   talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
   talents.warrior.sidearm                          = find_talent_spell( talent_tree::CLASS, "Sidearm" );
   talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
-  talents.warrior.concussive_blows                 = find_talent_spell( talent_tree::CLASS, "Concussive Blows" );
   talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
   talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
 
@@ -8586,9 +8565,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
-
-  debuffs_concussive_blows = make_buff( *this, "concussive_blows", p.spell.concussive_blows_debuff )
-                                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
 
   debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
@@ -9522,24 +9498,6 @@ void warrior_t::trigger_movement( double distance, movement_direction_type direc
   {
     parse_player_effects_t::trigger_movement( distance, direction );
   }
-}
-
-// warrior_t::composite_player_target_multiplier ==============================
-double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
-
-  if ( talents.warrior.concussive_blows.ok() )
-  {
-    auto debuff = get_target_data( target )->debuffs_concussive_blows;
-
-    if ( debuff->check() && debuff->has_common_school( school ) )
-    {
-      m *= 1.0 + debuff->value();
-    }
-  }
-
-  return m;
 }
 
 // warrior_t::composite_attribute ================================
