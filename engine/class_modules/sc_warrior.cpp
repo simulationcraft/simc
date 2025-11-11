@@ -218,7 +218,6 @@ public:
     action_t* fatality;
     action_t* torment_avatar;
     action_t* torment_odyns_fury;
-    action_t* torment_recklessness;
     action_t* tough_as_nails;
     action_t* slayers_strike;
     action_t* ravager_whirling_blade;
@@ -372,7 +371,6 @@ public:
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
     cooldown_t* champions_spear;
-    cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* reap_the_storm_icd;
     cooldown_t* demolish;
@@ -548,74 +546,92 @@ public:
   {
     struct class_talents_t
     {
+      // Row 1
       player_talent_t battle_stance;
       player_talent_t berserker_stance;
       player_talent_t defensive_stance;
 
-      player_talent_t impending_victory;
-      player_talent_t war_machine;
-      player_talent_t intervene;
-      player_talent_t rallying_cry;
-
-      player_talent_t berserker_shout;
-      player_talent_t piercing_howl;
+      // Row 2
       player_talent_t fast_footwork;
-      player_talent_t spell_reflection;
-      player_talent_t leeching_strikes;
-      player_talent_t inspiring_presence;
-      player_talent_t second_wind;
-
-      player_talent_t frothing_berserker;
-      player_talent_t heroic_leap;
-      player_talent_t intimidating_shout;
+      player_talent_t war_machine;
       player_talent_t thunder_clap;
+      player_talent_t leeching_strikes;
 
+      // Row 3
+      player_talent_t impending_victory;
+      player_talent_t heroic_leap;
+      player_talent_t crackling_thunder;
+      player_talent_t intervene;
+      player_talent_t interpose;  // NYI
+
+      // Row 4
+      player_talent_t second_wind;
+      player_talent_t frothing_berserker;
+      player_talent_t bounding_stride;
+      player_talent_t pain_and_gain;
+      player_talent_t storm_bolt;
+
+      // Row 5
+      player_talent_t rend;
+      player_talent_t overwhelming_rage;
+      player_talent_t rallying_cry;
+      player_talent_t field_dressing;  // NYI
+      player_talent_t spell_reflection;
+
+      // Row 6
+      player_talent_t javelineer;  // NYI
+      player_talent_t berserker_shout;
+      player_talent_t fearless;  // NYI
+      player_talent_t resonant_voice;  // NYI
+      player_talent_t intimidating_shout;
+      player_talent_t piercing_howl;
+      player_talent_t honed_reflexes;
+
+      // Row 7
       player_talent_t wrecking_throw;
       player_talent_t shattering_throw;
+      player_talent_t armored_to_the_teeth;
+      player_talent_t double_time;
+      player_talent_t reinforced_plates;
+
+      // Row 8
+      player_talent_t barbaric_training;
+      player_talent_t shockwave;
+      player_talent_t retaliation;  // NYI
       player_talent_t crushing_force;
-      player_talent_t pain_and_gain;
+
+      // Row 9
+      player_talent_t cruel_strikes;
+      player_talent_t rumbling_earth;
+      player_talent_t two_handed_weapon_specialization;  // Arms
+      player_talent_t dual_wield_specialization;  // Fury
+      player_talent_t one_handed_weapon_specialization;  // Prot
+      player_talent_t wild_strikes;
+      player_talent_t anger_management;  // MOVED FROM SPEC TREES
+      player_talent_t last_stand; // MOVED FROM PROTECTION
+      player_talent_t champions_spear;
+      player_talent_t battlefield_commander;  // NYI
+
+      // Below here is marked for removal
+      player_talent_t inspiring_presence;
       player_talent_t cacophonous_roar;
       player_talent_t menace;
-      player_talent_t storm_bolt;
-      player_talent_t overwhelming_rage;
-      player_talent_t barbaric_training;
       player_talent_t concussive_blows;
-
-      player_talent_t reinforced_plates;
-      player_talent_t bounding_stride;
-      player_talent_t crackling_thunder;
       player_talent_t sidearm;
-
-      player_talent_t honed_reflexes;
       player_talent_t bitter_immunity;
-      player_talent_t double_time;
       player_talent_t seismic_reverberation;
-
-      player_talent_t armored_to_the_teeth;
-      player_talent_t wild_strikes;
-      player_talent_t one_handed_weapon_specialization;
-      player_talent_t two_handed_weapon_specialization;
-      player_talent_t dual_wield_specialization;
-      player_talent_t cruel_strikes;
       player_talent_t endurance_training;
-
       player_talent_t avatar;
       player_talent_t thunderous_roar;
-      player_talent_t champions_spear;
-      player_talent_t shockwave;
-
       player_talent_t immovable_object;
       player_talent_t unstoppable_force;
       player_talent_t blademasters_torment;
       player_talent_t warlords_torment;
-      player_talent_t berserkers_torment;
       player_talent_t titans_torment;
       player_talent_t uproar;
       player_talent_t thunderous_words;
       player_talent_t piercing_challenge;
       player_talent_t champions_might;
-      player_talent_t rumbling_earth;
-
     } warrior;
 
     struct arms_talents_t
@@ -1717,7 +1733,6 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 struct avatar_t : public warrior_spell_t
 {
   timespan_t warlords_torment_duration;
-  timespan_t berserkers_torment_duration;
   timespan_t titans_torment_duration;
   timespan_t avatar_of_the_storm_duration;
   timespan_t immovable_object_duration;
@@ -1727,7 +1742,6 @@ struct avatar_t : public warrior_spell_t
   avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
     : warrior_spell_t( n, p, spell ),
     warlords_torment_duration( 0_s ),
-    berserkers_torment_duration( 0_s ),
     titans_torment_duration( 0_s ),
     avatar_of_the_storm_duration( 0_s ),
     immovable_object_duration( 0_s ),
@@ -1743,9 +1757,6 @@ struct avatar_t : public warrior_spell_t
     if ( p->talents.warrior.warlords_torment->ok() )
       warlords_torment_duration = p->talents.warrior.warlords_torment->effectN( 1 ).time_value();
 
-    if ( p->talents.warrior.berserkers_torment->ok() )
-      berserkers_torment_duration = p->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
-
     if ( p->talents.warrior.titans_torment->ok() )
       titans_torment_duration = p->talents.warrior.titans_torment->effectN( 1 ).time_value();
 
@@ -1760,7 +1771,6 @@ struct avatar_t : public warrior_spell_t
   avatar_t( util::string_view name, warrior_t* p )
     : warrior_spell_t( name, p, p->spell.avatar ),
     warlords_torment_duration( 0_s ),
-    berserkers_torment_duration( 0_s ),
     titans_torment_duration( 0_s ),
     avatar_of_the_storm_duration( 0_s ),
     immovable_object_duration( 0_s ),
@@ -1776,9 +1786,6 @@ struct avatar_t : public warrior_spell_t
 
     if ( p->talents.warrior.warlords_torment->ok() )
       warlords_torment_duration = p->talents.warrior.warlords_torment->effectN( 1 ).time_value();
-
-    if ( p->talents.warrior.berserkers_torment->ok() )
-      berserkers_torment_duration = p->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
 
     if ( p->talents.warrior.titans_torment->ok() )
       titans_torment_duration = p->talents.warrior.titans_torment->effectN( 1 ).time_value();
@@ -1822,10 +1829,6 @@ struct avatar_t : public warrior_spell_t
       if ( p()->talents.warrior.warlords_torment->ok() )
         p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( warlords_torment_duration );
 
-      // Fury
-      if ( p()->talents.warrior.berserkers_torment.ok() )
-        p()->active.torment_recklessness->schedule_execute();
-
       // Protection
       if ( p()->talents.warrior.immovable_object->ok() )
         p()->buff.shield_wall->extend_duration_or_trigger( immovable_object_duration );
@@ -1840,10 +1843,6 @@ struct avatar_t : public warrior_spell_t
     }
     else  // For background triggered avatar procs
     {
-      // Fury
-      if ( p()->talents.warrior.berserkers_torment->ok() && from_torment )
-        p()->buff.avatar->extend_duration_or_trigger( berserkers_torment_duration );
-
       // Protection
       if ( p()->talents.warrior.immovable_object->ok() && from_immovable_object )
         p()->buff.avatar->extend_duration_or_trigger( immovable_object_duration );
@@ -7862,9 +7861,6 @@ struct recklessness_t : public warrior_spell_t
 
     p()->buff.recklessness->extend_duration_or_trigger();
 
-    if ( p()->talents.warrior.berserkers_torment.ok() )
-      p()->active.torment_avatar->schedule_execute();
-
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
   }
@@ -7875,30 +7871,6 @@ struct recklessness_t : public warrior_spell_t
       return true;
 
     return warrior_spell_t::verify_actor_spec();
-  }
-};
-
-// Torment Recklessness =============================================================
-
-struct torment_recklessness_t : public warrior_spell_t
-{
-  torment_recklessness_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_spell_t( n, p, spell )
-  {
-    parse_options( options_str );
-    callbacks  = false;
-    harmful    = false;
-    target     = p;
-
-    energize_type = action_energize::NONE;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
-    p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
   }
 };
 
@@ -8295,6 +8267,9 @@ void warrior_t::init_spells()
   spell.ionizing_strike             = find_spell( 1238042 );
 
   // Class Talents
+  // Arms Battle / Defensive
+  // Fury Berserker / Defensive
+  // Prot Battle / Defensive
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
   talents.warrior.berserker_stance                 = find_talent_spell( talent_tree::CLASS, "Berserker Stance" );
   talents.warrior.defensive_stance                 = find_talent_spell( talent_tree::CLASS, "Defensive Stance" );
@@ -8355,7 +8330,6 @@ void warrior_t::init_spells()
   talents.warrior.thunderous_words                 = find_talent_spell( talent_tree::CLASS, "Thunderous Words" );
   talents.warrior.blademasters_torment             = find_talent_spell( talent_tree::CLASS, "Blademaster's Torment" );
   talents.warrior.warlords_torment                 = find_talent_spell( talent_tree::CLASS, "Warlord's Torment" );
-  talents.warrior.berserkers_torment               = find_talent_spell( talent_tree::CLASS, "Berserker's Torment" );
   talents.warrior.titans_torment                   = find_talent_spell( talent_tree::CLASS, "Titan's Torment" );
   talents.warrior.immovable_object                 = find_talent_spell( talent_tree::CLASS, "Immovable Object" );
   talents.warrior.unstoppable_force                = find_talent_spell( talent_tree::CLASS, "Unstoppable Force" );
@@ -9964,17 +9938,6 @@ void warrior_t::create_actions()
   if ( talents.protection.tough_as_nails->ok() )
   {
     active.tough_as_nails = new tough_as_nails_t( this );
-  }
-  if ( talents.warrior.berserkers_torment->ok() )
-  {
-    active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
-    active.torment_avatar       = new avatar_t( "avatar_torment", this );
-    debug_cast<avatar_t*>(active.torment_avatar)->from_torment = true;
-    for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
   }
 
   if( talents.slayer.slayers_dominance->ok() )
