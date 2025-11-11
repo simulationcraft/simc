@@ -246,7 +246,6 @@ public:
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* overpower;
-    buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -618,8 +617,6 @@ public:
       player_talent_t rend;
       player_talent_t finishing_blows;
       player_talent_t anger_management;
-      player_talent_t spiteful_serenity;
-      player_talent_t exhilarating_blows;
       player_talent_t improved_sweeping_strikes;
       player_talent_t collateral_damage;
       player_talent_t cleave;
@@ -627,7 +624,6 @@ public:
       player_talent_t bloodborne;
       player_talent_t dreadnaught;
       player_talent_t strength_of_arms;
-      player_talent_t blunt_instruments;
       player_talent_t massacre;
       player_talent_t storm_of_swords;
 
@@ -644,7 +640,6 @@ public:
       player_talent_t fatality;
       player_talent_t dance_of_death;
       player_talent_t unhinged;
-      player_talent_t merciless_bonegrinder;
       player_talent_t executioners_precision;
     } arms;
 
@@ -1051,7 +1046,6 @@ public:
       // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
 
       parse_effects( p()->buff.dance_of_death_bladestorm );
-      parse_effects( p()->buff.merciless_bonegrinder );
       parse_effects( p()->buff.storm_of_swords );
 
       // TWW1 Tier
@@ -2960,7 +2954,6 @@ struct bloodbath_t : public warrior_attack_t
 struct mortal_strike_t : public warrior_attack_t
 {
   double cost_rage;
-  double exhilarating_blows_chance;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   warrior_attack_t* rend_dot;
@@ -2968,7 +2961,6 @@ struct mortal_strike_t : public warrior_attack_t
   bool unhinged;
   mortal_strike_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
-      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
@@ -2991,7 +2983,6 @@ struct mortal_strike_t : public warrior_attack_t
   // This version is used for unhinged and other background actions
   mortal_strike_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->talents.arms.mortal_strike ),
-      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
@@ -3056,12 +3047,6 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
-    }
-
-    if ( p()->talents.arms.exhilarating_blows->ok() && rng().roll( exhilarating_blows_chance ) )
-    {
-      p()->cooldown.mortal_strike->reset( true );
-      p()->cooldown.cleave->reset( true );
     }
 
     p()->buff.overpower->expire();
@@ -3323,11 +3308,6 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
     p()->buff.bladestorm->expire();
-
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      p()->buff.merciless_bonegrinder->trigger();
-    }
 
     if ( p() -> talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_bladestorm->up() )
     {
@@ -5836,14 +5816,8 @@ struct ravager_t : public warrior_attack_t
             switch ( type )
             {
               case ground_aoe_params_t::EVENT_STARTED:
-                if ( p()->talents.arms.merciless_bonegrinder->ok() )
-                {
-                  // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
-                  p()->buff.merciless_bonegrinder->trigger(30_s);
-                }
                 break;
               case ground_aoe_params_t::EVENT_STOPPED:
-                p()->buff.merciless_bonegrinder->expire();
                 break;
               case ground_aoe_params_t::EVENT_DESTRUCTED:
                 if ( ( mortal_strike || bloodthirst || bloodbath ) && ( event->current_pulse % 2 == 0 ) )
@@ -7541,8 +7515,6 @@ void warrior_t::init_spells()
   talents.arms.rend                                = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_ARMS );
   talents.arms.finishing_blows                     = find_talent_spell( talent_tree::SPECIALIZATION, "Finishing Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
-  talents.arms.spiteful_serenity                   = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Serenity", WARRIOR_ARMS );
-  talents.arms.exhilarating_blows                  = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Blows" );
   talents.arms.improved_sweeping_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sweeping Strikes", WARRIOR_ARMS );
   talents.arms.collateral_damage                   = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
   talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
@@ -7550,7 +7522,6 @@ void warrior_t::init_spells()
   talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
   talents.arms.dreadnaught                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
   talents.arms.strength_of_arms                    = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Arms", WARRIOR_ARMS );
-  talents.arms.blunt_instruments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blunt Instruments" );
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
   talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
 
@@ -7567,7 +7538,6 @@ void warrior_t::init_spells()
   talents.arms.fatality                            = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
   talents.arms.dance_of_death                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_ARMS );
   talents.arms.unhinged                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged", WARRIOR_ARMS );
-  talents.arms.merciless_bonegrinder               = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Bonegrinder" );
   talents.arms.executioners_precision              = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
 
   // Fury Talents
@@ -8307,10 +8277,6 @@ void warrior_t::create_buffs()
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
 
   buff.overpower = make_buff(this, "overpower", talents.arms.overpower);
-
-  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 383316 ) )
-    ->set_default_value( find_spell( 383316 )->effectN( 1 ).percent() )
-    ->set_duration( find_spell( 383316 )->duration() );
 
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
