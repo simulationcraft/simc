@@ -524,34 +524,29 @@ public:
       player_talent_t battle_stance;
       player_talent_t berserker_stance;
       player_talent_t defensive_stance;
-
       // Row 2
       player_talent_t fast_footwork;
       player_talent_t war_machine;
       player_talent_t thunder_clap;
       player_talent_t leeching_strikes;
-
       // Row 3
       player_talent_t impending_victory;
       player_talent_t heroic_leap;
       player_talent_t crackling_thunder;
       player_talent_t intervene;
       player_talent_t interpose;  // NYI
-
       // Row 4
       player_talent_t second_wind;
       player_talent_t frothing_berserker;
       player_talent_t bounding_stride;
       player_talent_t pain_and_gain;
       player_talent_t storm_bolt;
-
       // Row 5
       player_talent_t rend;
       player_talent_t overwhelming_rage;
       player_talent_t rallying_cry;
       player_talent_t field_dressing;  // NYI
       player_talent_t spell_reflection;
-
       // Row 6
       player_talent_t javelineer;  // NYI
       player_talent_t berserker_shout;
@@ -560,20 +555,17 @@ public:
       player_talent_t intimidating_shout;
       player_talent_t piercing_howl;
       player_talent_t honed_reflexes;
-
       // Row 7
       player_talent_t wrecking_throw;
       player_talent_t shattering_throw;
       player_talent_t armored_to_the_teeth;
       player_talent_t double_time;
       player_talent_t reinforced_plates;
-
       // Row 8
       player_talent_t barbaric_training;
       player_talent_t shockwave;
       player_talent_t retaliation;  // NYI
       player_talent_t crushing_force;
-
       // Row 9
       player_talent_t cruel_strikes;
       player_talent_t rumbling_earth;
@@ -585,13 +577,6 @@ public:
       player_talent_t last_stand; // MOVED FROM PROTECTION
       player_talent_t champions_spear;
       player_talent_t battlefield_commander;  // NYI
-
-      // Below here is marked for removal
-      player_talent_t inspiring_presence;
-      player_talent_t sidearm;
-      player_talent_t bitter_immunity;
-      player_talent_t endurance_training;
-      player_talent_t avatar;
     } warrior;
 
     struct arms_talents_t
@@ -645,50 +630,59 @@ public:
 
     struct fury_talents_t
     {
+      // Row 1
       player_talent_t bloodthirst;
-
-      player_talent_t raging_blow;
-
+      // Row 2
       player_talent_t frenzied_enrage;
       player_talent_t powerful_enrage;
-      player_talent_t enraged_regeneration;
-      player_talent_t improved_execute;
-
-      player_talent_t improved_bloodthirst;
+      player_talent_t raging_blow;
+      // Row 3
       player_talent_t fresh_meat;
+      player_talent_t enraged_regeneration;
+      player_talent_t improved_raging_blow;
+      // Row 4
+      player_talent_t focus_in_chaos;
+      player_talent_t sudden_death;
       player_talent_t warpaint;
       player_talent_t invigorating_fury;
-      player_talent_t sudden_death;
-      player_talent_t cruelty;
-
-      player_talent_t focus_in_chaos;
-      player_talent_t rampage;
-      player_talent_t improved_raging_blow;
-
-      player_talent_t cold_steel_hot_blood;
-      player_talent_t vicious_contempt;
-      player_talent_t frenzy;
-      player_talent_t hack_and_slash;
+      player_talent_t improved_execute;
       player_talent_t improved_whirlwind;
-
-      player_talent_t bloodborne;
+      // Row 5
+      player_talent_t improved_bloodthirst;
+      player_talent_t rampage;
+      player_talent_t cruelty;
+      player_talent_t rampaging_ruin;  // NYI
+      // Row 6
+      player_talent_t cold_steel_hot_blood;
+      player_talent_t scent_of_blood;  // NYI
+      player_talent_t kill_or_be_killed;  // NYI
+      player_talent_t hack_and_slash;
       player_talent_t bloodcraze;
+      // Row 7
+      player_talent_t ragedrinker;  // NYI
+      player_talent_t deep_wounds;  // NYI
       player_talent_t recklessness;
       player_talent_t massacre;
       player_talent_t wrath_and_fury;
       player_talent_t meat_cleaver;
-
+      // Row 8
       player_talent_t deft_experience;
-      player_talent_t swift_strikes;
+      player_talent_t frenzy;
       player_talent_t critical_thinking;
-
+      // Row 9
+      player_talent_t vicious_contempt;
       player_talent_t odyns_fury;
-      player_talent_t anger_management;
+      player_talent_t bloodborne;
+      player_talent_t surge_of_adrenaline;  // NYI
+      // Row 10
+      player_talent_t executioners_wrath;  // NYI
       player_talent_t reckless_abandon;
-      player_talent_t ravager;
+      player_talent_t avatar;
       player_talent_t bladestorm;
-
-      player_talent_t unhinged;
+      // Apex
+      player_talent_t rampaging_berserker_1;
+      player_talent_t rampaging_berserker_2;
+      player_talent_t rampaging_berserker_3;
     } fury;
 
     struct protection_talents_t
@@ -1791,15 +1785,6 @@ struct devastate_t : public warrior_attack_t
 };
 
 // Melee Attack =============================================================
-
-struct sidearm_t : warrior_attack_t
-{
-  sidearm_t( warrior_t* p ) : warrior_attack_t( "sidearm", p, p->find_spell( 384391 ) )
-  {
-    background = true;
-  }
-};
-
 struct devastator_t : warrior_attack_t
 {
   double shield_slam_reset;
@@ -1833,17 +1818,15 @@ struct melee_t : public warrior_attack_t
 {
   int sync_weapons;
   bool first;
-  warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, prot_rage_multiplier, seasoned_soldier_crit_mult;
   double war_machine_rage_multiplier;
-  double sidearm_chance, enrage_chance;
+  double enrage_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p, int sw )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
       sync_weapons( sw ),
       first( true ),
-      sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
       base_rage_generation( 1.75 ),
@@ -1852,7 +1835,6 @@ struct melee_t : public warrior_attack_t
       prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       war_machine_rage_multiplier( 1.0 ),
-      sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       devastator( nullptr )
   {
     school                    = SCHOOL_PHYSICAL;
@@ -1876,10 +1858,6 @@ struct melee_t : public warrior_attack_t
     {
       devastator = new devastator_t( p );
       add_child( devastator );
-    }
-    if ( p->talents.warrior.sidearm->ok() )
-    {
-      sidearm = new sidearm_t( p );
     }
 
     if ( p->talents.warrior.war_machine->ok() )
@@ -1996,9 +1974,6 @@ struct melee_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-
-    if ( sidearm && result_is_hit( s->result ) && rng().roll( sidearm_chance ) )
-      sidearm->execute_on_target( s->target );
 
     if ( p()->talents.warrior.wild_strikes->ok() && s->result == RESULT_CRIT )
     {
@@ -7396,7 +7371,6 @@ void warrior_t::init_spells()
 
   talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
   talents.warrior.crushing_force                   = find_talent_spell( talent_tree::CLASS, "Crushing Force", specialization() );
-  talents.warrior.bitter_immunity                  = find_talent_spell( talent_tree::CLASS, "Bitter Immunity" );
   talents.warrior.overwhelming_rage                = find_talent_spell( talent_tree::CLASS, "Overwhelming Rage" );
   talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
   talents.warrior.reinforced_plates                = find_talent_spell( talent_tree::CLASS, "Reinforced Plates" );
@@ -7404,7 +7378,6 @@ void warrior_t::init_spells()
   talents.warrior.wrecking_throw                   = find_talent_spell( talent_tree::CLASS, "Wrecking Throw" );
   talents.warrior.shattering_throw                 = find_talent_spell( talent_tree::CLASS, "Shattering Throw" );
   talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
-  talents.warrior.sidearm                          = find_talent_spell( talent_tree::CLASS, "Sidearm" );
   talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
   talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
   talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
@@ -7414,7 +7387,6 @@ void warrior_t::init_spells()
   talents.warrior.two_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "Two-Handed Weapon Specialization" );
   talents.warrior.dual_wield_specialization        = find_talent_spell( talent_tree::CLASS, "Dual Wield Specialization" );
   talents.warrior.one_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "One-Handed Weapon Specialization" );
-  talents.warrior.endurance_training               = find_talent_spell( talent_tree::CLASS, "Endurance Training", specialization() );
   talents.warrior.armored_to_the_teeth             = find_talent_spell( talent_tree::CLASS, "Armored to the Teeth" );
 
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
@@ -7502,7 +7474,6 @@ void warrior_t::init_spells()
   talents.fury.meat_cleaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
 
   talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
-  talents.fury.swift_strikes        = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Strikes" );
   talents.fury.critical_thinking    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
 
   talents.fury.odyns_fury           = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
