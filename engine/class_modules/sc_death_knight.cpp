@@ -1335,7 +1335,7 @@ public:
       player_talent_t frenzied_bloodthirst;
       player_talent_t the_blood_is_life;
       player_talent_t visceral_strength;
-      player_talent_t unending_misery;
+      player_talent_t desecrate;
       player_talent_t incite_terror;
       player_talent_t pact_of_the_sanlayn;
       player_talent_t sanguine_scent;
@@ -1511,6 +1511,7 @@ public:
     const spell_data_t* visceral_strength_unholy_buff;
     const spell_data_t* bloodsoaked_ground_buff;
     const spell_data_t* transfusion_buff;
+    const spell_data_t* desecrate_damage;
 
     // Deathbringer spells
     const spell_data_t* reapers_mark_debuff;
@@ -8255,16 +8256,73 @@ struct dark_command_t final : public death_knight_spell_t
 
 // Death and Decay ==========================================================
 
+// Desecrate
+struct desecrate_t final : public death_knight_spell_t
+{
+  desecrate_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.desecrate_damage ), ticks_remain( 0 )
+  {
+    background   = true;
+    aoe          = -1;
+    unsigned idx = p->specialization() == DEATH_KNIGHT_UNHOLY ? 1 : 3;
+    base_multiplier = p->talent.sanlayn.desecrate->effectN( idx ).percent();;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( s );
+
+    m *= ticks_remain;
+
+    return m;
+  }
+
+public:
+  unsigned ticks_remain;
+};
+
 // Death and Decay direct damage spells
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
   death_and_decay_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : death_knight_spell_t( name, p, spell )
+    : death_knight_spell_t( name, p, spell ), desecrate( nullptr )
   {
     aoe        = -1;
     background = dual = true;
     tick_zero         = true;
+
+    if ( p->talent.sanlayn.desecrate.ok() )
+      desecrate = get_action<desecrate_t>( "desecrate", p );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    // TODO: Double Check proc mechanics
+    if ( p()->talent.sanlayn.desecrate.ok() && p()->active_dnd &&
+         rng().roll( p()->talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
+    {
+      timespan_t remaining_time = p()->active_dnd->remains();
+      double ticks_left         = remaining_time.total_seconds();
+      desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
+      des->ticks_remain         = ticks_left;
+      desecrate->execute();
+
+      make_event( *sim, 1_ms, [ & ]() {
+        if ( p()->active_dnd )
+          event_t::cancel( p()->active_dnd );
+      } );
+
+      // Retrigger the buff since the event destruction expires it
+      p()->buffs.death_and_decay->trigger();
+      // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
+      make_event( *sim, remaining_time, [ & ]() { p()->buffs.death_and_decay->expire(); } );
+    }
+  }
+
+private:
+  action_t* desecrate;
 };
 
 struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
@@ -12156,12 +12214,6 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     }
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
 
-    if ( talent.sanlayn.unending_misery.ok() && t == target )
-    {
-      size_t idx = specialization() == DEATH_KNIGHT_UNHOLY ? 2 : 4;
-      extension += talent.sanlayn.unending_misery->effectN( idx ).time_value();
-    }
-
     for ( auto& disease : disease_td )
       if ( disease->is_ticking() )
         disease->adjust_duration( extension );
@@ -12470,11 +12522,14 @@ void death_knight_t::create_actions()
   last_cast_rp_spender                 = background_actions.death_coil_damage;
 
   // Runeforges
-  runeforge_actions.apocalypse_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence", this );
-  runeforge_actions.razorice_damage       = get_action<razorice_attack_t>( "razorice", this );
-  runeforge_actions.sanguination_heal     = get_action<sanguination_heal_t>( "sanguination_heal", this );
-  runeforge_actions.spellwarding_absorb   = get_action<spellwarding_absorb_t>( "spellwarding", this );
-  runeforge_actions.sanguination_heal     = get_action<sanguination_heal_t>( "sanguination_heal", this );
+  if ( has_runeforge( RUNEFORGE_APOCALYPSE ) )
+    runeforge_actions.apocalypse_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence", this );
+  if ( has_runeforge( RUNEFORGE_RAZORICE ) )
+    runeforge_actions.razorice_damage = get_action<razorice_attack_t>( "razorice", this );
+  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) )
+    runeforge_actions.spellwarding_absorb = get_action<spellwarding_absorb_t>( "spellwarding", this );
+  if ( has_runeforge( RUNEFORGE_SANGUINATION ) )
+    runeforge_actions.sanguination_heal = get_action<sanguination_heal_t>( "sanguination_heal", this );
 
   // Class talents
   if ( talent.blood_draw.ok() )
@@ -13465,7 +13520,7 @@ void death_knight_t::init_spells()
   talent.sanlayn.frenzied_bloodthirst = find_talent_spell( talent_tree::HERO, "Frenzied Bloodthirst" );
   talent.sanlayn.the_blood_is_life    = find_talent_spell( talent_tree::HERO, "The Blood is Life" );
   talent.sanlayn.visceral_strength    = find_talent_spell( talent_tree::HERO, "Visceral Strength" );
-  talent.sanlayn.unending_misery      = find_talent_spell( talent_tree::HERO, "Unending Misery" );
+  talent.sanlayn.desecrate            = find_talent_spell( talent_tree::HERO, "Desecrate" );
   talent.sanlayn.incite_terror        = find_talent_spell( talent_tree::HERO, "Incite Terror" );
   talent.sanlayn.pact_of_the_sanlayn  = find_talent_spell( talent_tree::HERO, "Pact of the San'layn" );
   talent.sanlayn.sanguine_scent       = find_talent_spell( talent_tree::HERO, "Sanguine Scent" );
@@ -13709,6 +13764,7 @@ void death_knight_t::spell_lookups()
       talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, 1234532 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
   spell.transfusion_buff        = conditional_spell_lookup( talent.sanlayn.transfusion.ok(), 1265577 );
+  spell.desecrate_damage        = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff          = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
@@ -14476,7 +14532,7 @@ void death_knight_t::create_buffs()
 
   buffs.ancient_power =
       make_fallback( talent.unholy.ancient_power.ok(), this, "ancient_power", spell.ancient_runes_buff )
-          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+          ->set_default_value( talent.unholy.ancient_power->effectN( 1 ).percent() )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
           ->add_invalidate( CACHE_STRENGTH )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );

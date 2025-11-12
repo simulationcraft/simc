@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -4708,14 +4708,6 @@ bonus_id={ 8794 }, mod_to_stat={ Mastery (100), Vers (100) }
 bonus_id={ 8795 }, mod_to_stat={ Crit (100), Vers (100) }
 bonus_id={ 8796 }, effects={ Fang Adornments (id=377708, index=0, type=equip) }
 bonus_id={ 8797 }, effects={ Toxified (id=378758, index=0, type=equip) }
-bonus_id={ 8799 }, ilevel_adjust={ 1 }
-bonus_id={ 8800 }, ilevel_adjust={ 2 }
-bonus_id={ 8801 }, ilevel_adjust={ 3 }
-bonus_id={ 8802 }, ilevel_adjust={ 4 }
-bonus_id={ 8804 }, ilevel_adjust={ 1 }
-bonus_id={ 8805 }, ilevel_adjust={ 2 }
-bonus_id={ 8806 }, ilevel_adjust={ 3 }
-bonus_id={ 8807 }, ilevel_adjust={ 4 }
 bonus_id={ 8809 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 8810 }, socket={ 1 }
 bonus_id={ 8831 }
@@ -5128,10 +5120,6 @@ bonus_id={ 9384 }, recursive_bonus_ids={ 13479 }
 bonus_id={ 9385 }, recursive_bonus_ids={ 13479 }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
 bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
-bonus_id={ 9402 }, ilevel_adjust={ 1 }
-bonus_id={ 9403 }, ilevel_adjust={ 2 }
-bonus_id={ 9404 }, ilevel_adjust={ 3 }
-bonus_id={ 9405 }, ilevel_adjust={ 4 }
 bonus_id={ 9406 }, desc={ Timewarped }, recursive_bonus_ids={ 6682 }
 bonus_id={ 9407 }, desc={ Timewarped }, recursive_bonus_ids={ 6682 }
 bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
@@ -5246,14 +5234,6 @@ bonus_id={ 9619 }, stats={ 100% Mastery [0.9558] }
 bonus_id={ 9620 }, stats={ 100% Leech [0.9558] }
 bonus_id={ 9621 }, stats={ 100% unknown [14.3370] }
 bonus_id={ 9622 }, stats={ 100% RunSpeed [0.2390] }
-bonus_id={ 9624 }, ilevel_adjust={ 3 }
-bonus_id={ 9625 }, ilevel_adjust={ 6 }
-bonus_id={ 9626 }, ilevel_adjust={ 9 }
-bonus_id={ 9627 }, ilevel_adjust={ 13 }
-bonus_id={ 9629 }, ilevel_adjust={ 6 }
-bonus_id={ 9630 }, ilevel_adjust={ 12 }
-bonus_id={ 9631 }, ilevel_adjust={ 19 }
-bonus_id={ 9632 }, ilevel_adjust={ 26 }
 bonus_id={ 9634 }, quality={ rare }
 bonus_id={ 9637 }, ilevel={ 15 @plvl 10 - 548 @plvl 80 }
 bonus_id={ 9783 }
@@ -6182,7 +6162,7 @@ bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
 bonus_id={ 10825 }, effects={ Memory of Vengeance (id=436583, index=0, type=equip) }
 bonus_id={ 10826 }, effects={ Searing Light (id=436586, index=0, type=equip) }
 bonus_id={ 10827 }, base_ilevel={ 538 }, req_ilevel={ 68 }
-bonus_id={ 10828 }, base_ilevel={ 564 }, req_ilevel={ 68 }
+bonus_id={ 10828 }, base_ilevel={ 106 }, req_ilevel={ 68 }
 bonus_id={ 10829 }, base_ilevel={ 590 }, req_ilevel={ 68 }
 bonus_id={ 10835 }, socket={ 1 }
 bonus_id={ 10836 }, socket={ 2 }
@@ -7323,8 +7303,8 @@ bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
 bonus_id={ 12245 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 12247 }, base_ilevel={ 201 }, req_ilevel={ 90 }
 bonus_id={ 12249 }, base_ilevel={ 165 }, req_ilevel={ 81 }
-bonus_id={ 12252 }, base_ilevel={ 183 }, req_ilevel={ 81 }
-bonus_id={ 12253 }, base_ilevel={ 220 }, req_ilevel={ 81 }
+bonus_id={ 12252 }, base_ilevel={ 180 }, req_ilevel={ 81 }
+bonus_id={ 12253 }, base_ilevel={ 206 }, req_ilevel={ 81 }
 bonus_id={ 12255 }, stats={ 100% Mastery [0.5600] }
 bonus_id={ 12256 }, stats={ 100% Mastery [0.8000] }
 bonus_id={ 12257 }, stats={ 100% Crit [0.8000] }
@@ -7535,15 +7515,7 @@ bonus_id={ 12486 }, quality={ rare }, effects={ Unknown Effect (id=210157) }
 bonus_id={ 12487 }, quality={ epic }, effects={ Unknown Effect (id=210158) }
 bonus_id={ 12488 }, quality={ legendary }, effects={ Unknown Effect (id=210159) }
 bonus_id={ 12489 }, stats={ 100% StrAgiInt [0.5259] }
-bonus_id={ 12494 }, ilevel_adjust={ 3 }
-bonus_id={ 12495 }, ilevel_adjust={ 6 }
-bonus_id={ 12496 }, ilevel_adjust={ 9 }
-bonus_id={ 12497 }, ilevel_adjust={ 13 }
-bonus_id={ 12499 }, ilevel_adjust={ 6 }
-bonus_id={ 12500 }, ilevel_adjust={ 12 }
-bonus_id={ 12501 }, ilevel_adjust={ 19 }
-bonus_id={ 12502 }, ilevel_adjust={ 26 }
-bonus_id={ 12503 }, base_ilevel={ 132 }, req_ilevel={ 81 }
+bonus_id={ 12503 }, base_ilevel={ 232 }, req_ilevel={ 81 }
 bonus_id={ 12504 }, quality={ epic }
 bonus_id={ 12505 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Haste [-0.2000] }
 bonus_id={ 12506 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Vers [-0.2000] }
@@ -7723,7 +7695,7 @@ bonus_id={ 12695 }, quality={ epic }
 bonus_id={ 12696 }, quality={ epic }
 bonus_id={ 12697 }, quality={ epic }
 bonus_id={ 12704 }, quality={ uncommon }
-bonus_id={ 12705 }, effects={ Blood (id=1245965, index=0, type=equip), Blood (id=1245053, index=0, type=equip) }
+bonus_id={ 12705 }, effects={ Blood (id=1245053, index=0, type=equip) }
 bonus_id={ 12706 }, stats={ 25% Crit [0.0750], 25% Vers [0.0750], 25% Haste [0.0750], 25% Mastery [0.0750] }
 bonus_id={ 12707 }, stats={ 100% Vers [0.1500] }
 bonus_id={ 12708 }, stats={ 100% Haste [0.1500] }
@@ -8155,13 +8127,10 @@ bonus_id={ 13620 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 13621 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 13622 }, base_ilevel={ 272 }, req_ilevel={ 90 }
 bonus_id={ 13623 }, base_ilevel={ 220 }, req_ilevel={ 90 }
-bonus_id={ 13625 }, ilevel_adjust={ 1 }
-bonus_id={ 13626 }, ilevel_adjust={ 2 }
-bonus_id={ 13627 }, ilevel_adjust={ 3 }
-bonus_id={ 13628 }, ilevel_adjust={ 4 }
 bonus_id={ 13629 }, base_ilevel={ 217 }, req_ilevel={ 90 }
 bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
 bonus_id={ 13635 }, ilevel={ 70 @plvl 70 - 130 @plvl 130 }
 bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
 bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
+bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }

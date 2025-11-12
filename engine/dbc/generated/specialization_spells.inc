@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.64228
-static constexpr std::array<specialization_spell_entry_t, 607> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.64339
+static constexpr std::array<specialization_spell_entry_t, 612> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -149,6 +149,7 @@ static constexpr std::array<specialization_spell_entry_t, 607> __specialization_
   {  3,  255, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  3,  255, 1244920,      0, "Track Pets"                        , 0 },
   {  3,  255, 1256941,      0, "Survival Hunter"                   , 0 },
+  {  3,  255, 1277760,      0, "Dual Wield"                        , 0 },
   {  4,  259,     703,      0, "Garrote"                           , 0 },
   {  4,  259,    1329,   1752, "Mutilate"                          , 0 },
   {  4,  259,    1943,      0, "Rupture"                           , 0 },
@@ -526,6 +527,7 @@ static constexpr std::array<specialization_spell_entry_t, 607> __specialization_
   { 12,  577,  203555,      0, "Demon Blades"                      , 0 },
   { 12,  577,  206478,      0, "Demonic Appetite"                  , 0 },
   { 12,  577,  212612,      0, "Havoc Demon Hunter"                , 0 },
+  { 12,  577,  221351,      0, "Critical Strikes"                  , 0 },
   { 12,  577,  278386,      0, "Demonic Wards"                     , 0 },
   { 12,  577,  320377,      0, "Immolation Aura"                   , "Rank 3" },
   { 12,  577,  320402,      0, "Blade Dance"                       , "Rank 2" },
@@ -547,6 +549,7 @@ static constexpr std::array<specialization_spell_entry_t, 607> __specialization_
   { 12,  581,  207197,      0, "Riposte"                           , 0 },
   { 12,  581,  212611,      0, "Demon Hunter"                      , 0 },
   { 12,  581,  212613,      0, "Vengeance Demon Hunter"            , 0 },
+  { 12,  581,  221351,      0, "Critical Strikes"                  , 0 },
   { 12,  581,  226359,      0, "Leather Specialization"            , 0 },
   { 12,  581,  228477, 344862, "Soul Cleave"                       , 0 },
   { 12,  581,  263642, 344859, "Fracture"                          , 0 },
@@ -563,7 +566,7 @@ static constexpr std::array<specialization_spell_entry_t, 607> __specialization_
   { 12,  581,  462067,      0, "Vengeance Demon Hunter"            , 0 },
   { 12,  581, 1229376,      0, "Single-Button Assistant"           , 0 },
   { 12,  581, 1256959,      0, "Vengeance Demon Hunter"            , 0 },
-  { 12, 1480,  178976,      0, "Leather Specialization"            , 0 },
+  { 12, 1480,  162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   { 12, 1480,  198589,      0, "Blur"                              , 0 },
   { 12, 1480,  462065,      0, "Demon Hunter"                      , 0 },
   { 12, 1480,  473662, 344859, "Consume"                           , 0 },
@@ -578,6 +581,8 @@ static constexpr std::array<specialization_spell_entry_t, 607> __specialization_
   { 12, 1480, 1256964,      0, "Devourer Demon Hunter"             , 0 },
   { 12, 1480, 1256968,      0, "Devourer Demon Hunter"             , 0 },
   { 12, 1480, 1260008,      0, "Grim Focus"                        , 0 },
+  { 12, 1480, 1277734,      0, "Leather Specialization"            , 0 },
+  { 12, 1480, 1277736,      0, "Demonic Wards"                     , 0 },
   { 13, 1467,  356809,      0, "Devastation Evoker"                , 0 },
   { 13, 1467,  362980,      0, "Mastery: Giantkiller"              , 0 },
   { 13, 1467,  365261,      0, "Emerald Blossom"                   , 0 },

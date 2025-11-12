@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -342,6 +342,7 @@ Description      : Summons an Infernal from the Twisting Nether, impacting for $
 The Infernal will serve you for $111685d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
 
 Name             : Curse of Tongues (id=1714) [Spell Family (5)] 
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -361,6 +362,8 @@ Attributes       : Not Shapeshifted (16), Aura Bounce Fails Spell (157), Taps im
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.3334 | Target: Targeted Enemy (6)
+#2 (id=522)      : Apply Aura (6) | Unknown(75)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Targeted Enemy (6)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
 |CFFE55BB0Soulburn: Your Curse of Tongues will affect all enemies in a $104224A yard radius around your target.|R][]
@@ -2977,7 +2980,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -3607,7 +3610,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Flashover (267115 effects: #1, #2)
 Family Flags     : 121
-Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Not In Spellbook (143), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=133885)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
@@ -4224,7 +4227,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid, Warrior, Paladin, Hunter, Rogue, Death Knight, Monk, Demon Hunter, Evoker
+Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid, Devourer Demon Hunter, Warrior, Paladin, Hunter, Rogue, Death Knight, Monk, Evoker
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -7274,7 +7277,6 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Triggered By     : Ravenous Afflictions (459440)
 Attributes       : Do Not Consume if Gained During Cast (79), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=708162)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -7561,7 +7563,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Triggered By     : Reverse Entropy (205148)
-Attributes       : No Threat (42), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Threat (42), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=710711)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -10472,6 +10474,7 @@ Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or F
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
 
 Name             : Curse of Exhaustion (id=334275) [Spell Family (5)] 
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -12788,8 +12791,9 @@ Talent Entry     : Destruction [tree=spec, row=8, col=4, max_rank=2, req_points=
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 88
-                 : 293
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -12809,13 +12813,13 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1021684)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Conflagrate (17962)
                    Family Flags: 55
-Description      : $@spelldesc387108
+Description      : Your next Conflagrate will critically strike and your critical strike chance will increase its critical strike damage.
 Tooltip          : Your next Conflagrate will critically strike and your critical strike chance will increase its critical strike damage.
 
 Name             : Conflagration of Chaos (id=387110) [Spell Family (5)] 
@@ -12829,13 +12833,13 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1021685)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shadowburn (17877)
                    Family Flags: 7
-Description      : $@spelldesc387108
+Description      : Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.
 Tooltip          : Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
@@ -13932,7 +13936,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 2335: Bane of Havoc (200546 effect#3)
-Attributes       : Unknown (465)
+Attributes       : Do Not Display Cast Time (441), Unknown (465)
 Effects          :
 #1 (id=1033456)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -14662,7 +14666,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 8 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Aura Points On Client (268)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
@@ -15409,7 +15413,6 @@ Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=5, col=1
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -15421,9 +15424,7 @@ Effects          :
                    Modified By: Warlock Hellcaller 11.2 Class Set 2pc (1236413 effect#1), Alzzin's Iniquity (1266803 effect#2)
 #2 (id=1137633)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Dark magic erupts from you and corrupts your soul for $442726d, causing enemies suffering from your Wither to take $446285s1 Shadowflame damage and increase its stack count by $s1.
-
-While corrupted your Haste is increased by $442726s1% and spending Soul Shards on damaging spells grants $s2 additional stack of Wither.
+Description      : $@spelldesc442726
 
 Name             : Diabolic Ritual: Overlord (id=431944) [Spell Family (5)] 
 Class            : Warlock
@@ -15691,10 +15692,17 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1123506)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Infernal Bolt overrides Incinerate
+#1 (id=1123506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1290242)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Infernal Bolt overrides Shadow Bolt
+                   Base Value: 434506 | Scaled Value: 434506 | Misc Value: 686 | Misc Value 2: 2 | Target: Self (1)
+#3 (id=1290243)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Infernal Bolt overrides Incinerate
                    Base Value: 434506 | Scaled Value: 434506 | Misc Value: 29722 | Misc Value 2: 2 | Target: Self (1)
 Description      : $@spelldesc428518
 Tooltip          : Your next $?s137044[Shadow Bolt][Incinerate] is empowered, dealing $434506s1 Fire damage and generating ${$434506s2/10} $LSoul Shard:Soul Shards;.
@@ -15811,6 +15819,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Triggered By     : Avatar of Destruction (1245089)
+Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1124675)  : Summon Guardian (28)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 217429 | Misc Value 2: 6024 | Radius: 5 yards | Target: Front Left in Area (85)
@@ -16345,7 +16354,9 @@ Effects          :
 #4 (id=1281491)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Misc Value 2: 5910 (Label) | Target: Self (1)
                    Affected Spells (Label): Through the Felvine (1266799)
-Description      : $@spelldesc430014
+Description      : Dark magic erupts from you and corrupts your soul for $d, causing enemies suffering from your Wither to take $446285s1 Shadowflame damage and increase its stack count by $430014s1.
+
+While corrupted your Haste is increased by $s1% and spending Soul Shards on damaging spells grants $430014s2 additional stack of Wither.
 Tooltip          : Haste increased by $w1% and $?s324536[Malefic Rapture grants $w2 additional stack of Wither to targets affected by Unstable Affliction.][Chaos Bolt grants $w3 additional stack of Wither.]
 
 All of your active Withers are acute.
@@ -16458,7 +16469,7 @@ Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #7, #8), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effects: #1, #2), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Unstable Affliction (1219045 effect#4), Man'ari Erudition (1244490 effect#3), Lake of Fire (1244918 effect#1), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Nocturnal Yield (1260271 effects: #1, #2), Evil Eye (1276730 effect#1)
 Triggered By     : Wither (445468)
 Family Flags     : 1, 4, 49, 118
-Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1142358)  : Apply Aura (6) | Periodic Damage (3): shadowflame every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.329493 | PvP Coefficient: 0.75 | Target: Targeted Enemy (6)
@@ -17619,16 +17630,13 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2 seconds
-GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 25 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Affecting Spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Mark of Shatug (455449 effect#1), Mark of F'harg (455450 effect#1), Stabilized Portals (1276661 effect#1)
 Family Flags     : 114
-Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Display Range (126), No Cooldown On Tooltip (192), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1158911)  : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 226268 | Misc Value 2: 4266 | Radius: 5 yards | Target: Front Right of Self (41)
@@ -17640,16 +17648,13 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2 seconds
-GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 25 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Affecting Spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Mark of Shatug (455449 effect#1), Mark of F'harg (455450 effect#1), Stabilized Portals (1276661 effect#1)
 Family Flags     : 114
-Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Display Range (126), No Cooldown On Tooltip (192), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1158927)  : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 226269 | Misc Value 2: 4266 | Radius: 5 yards | Target: Front Right of Self (41)
@@ -17943,8 +17948,8 @@ Real PPM         : 1.2
 Proc Flags       : Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1166224)  : Apply Aura (6) | Proc Trigger Spell (42): Nightfall
-                   Base Value: 8 | Scaled Value: 8 | Trigger Spell: 264571 | Target: Self (1)
+#1 (id=1166224)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Critical strikes from your Agony, $?a445465[Wither][Corruption], and Unstable Affliction have a chance to grant Nightfall.
 
 Name             : Doom (id=460551) [Spell Family (5), Passive, Hidden] 
@@ -17979,7 +17984,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Evil Eye (1276730 effect#1)
 Triggered By     : Demonbolt (264178)
 Family Flags     : 49
-Attributes       : Ignore Line of Sight (66), DoT Stacking Rule (103), Aura Unique Per Caster (189), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Ignore Line of Sight (66), DoT Stacking Rule (103), Do Not Display Range (126), Aura Unique Per Caster (189), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1168317)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -19087,7 +19092,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Chaotic Inferno (1244788)
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Cast Time (441)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1245613)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -19214,7 +19219,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1245769)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -19328,7 +19333,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : No Aura Cancel (31)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Cast Time (441)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1246848)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
@@ -19341,6 +19346,34 @@ Effects          :
                    Family Flags: 7
 Description      : $@spelldesc1245633
 Tooltip          : Shadowburn costs no Soul Shards and can be used on any target, regardless of their health.
+
+Name             : Equip Transmog Outfit (id=1247613) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 3 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1249963)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cnNORMAL_FONT_COLOR:Transmogrify the appearance of your weapons and armor|r
+
+Lock Appearance:
+|cnNORMAL_FONT_COLOR:Prevent this appearance from being replaced by a Situation|r
+
+|cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
+
+Name             : Clear Transmog Outfit (id=1247917) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 3 seconds
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1250344)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Hand of Gul'dan (id=1250273) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Corruption" (id=172), override="Hand of Gul'dan" (id=105174)]
@@ -19495,13 +19528,13 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2 seconds
 Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Affecting Spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Mark of Shatug (455449 effect#1), Mark of F'harg (455450 effect#1), Stabilized Portals (1276661 effect#1)
 Family Flags     : 114
+Attributes       : Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1256576)  : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135816 | Misc Value 2: 4266 | Radius: 5 yards | Target: Front Right of Self (41)
@@ -19870,6 +19903,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158)
                    Family Flags: 1
+#3 (id=1289953)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Nightfall overrides Nightfall
+                   Base Value: 1260279 | Scaled Value: 1260279 | Misc Value: 264571 | Target: Self (1)
 Description      : Increases Corruption damage by $s1% and Nightfall additionally makes your next Seed of Corruption cost no Soul Shards and cast instantly.
 
 Name             : Nightfall (id=1260279) [Spell Family (5)] 
@@ -19985,7 +20020,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display Range (126)
+Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1270754)  : Apply Aura (6) | Modify All Haste% (193)
@@ -20180,10 +20215,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1271975)  : Apply Aura (6) | Proc Trigger Spell (42): Summon Desperate Soul
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1262094 | Target: Self (1)
-Description      : Damage dealt by Haunt has a chance to release the desperate, demonic soul haunting its host, casting Fel Claw and Carrion Swarm over $1262094d before being banished back to Nathreza.
-
-$@spellicon1262015 $@spellname1262015
-$@spelldesc1262015
+Description      : Damage dealt by Haunt has a chance to release the desperate, demonic soul haunting its host, casting Wrath of Nathreza before being banished back to Nathreza.
 
 $@spellicon1262028 $@spellname1262028
 $@spelldesc1262028
@@ -20203,23 +20235,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.88733 | Target: Targeted Enemy (6)
 Description      : Violently carves the enemy target, dealing $s1 Fire damage.
 
-Name             : Carrion Swarm (id=1262028) [Spell Family (5)] 
+Name             : Wrath of Nathreza (id=1262028) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Range            : 40 yards
-Cast Time        : 2 seconds
+Range            : 100 yards
+Cast Time        : 1.5 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 5671
-Attributes       : Area Effects Use Target Radius (328)
+Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1272046)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.59155 | Radius: 20 yards | Target: Enemies in Cone to Targeted Enemy (104)
+#1 (id=1272046)  : Trigger Missiles (32): Wrath of Nathreza
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1278047 | Target: At Enemy (53)
 #2 (id=1273097)  : None (0)
                    Base Value: 8 | Scaled Value: 8
-Description      : Unleashes a horde of bats to assault enemies in front of the caster, dealing $s1 Shadow damage. Damage reduced beyond $s2 targets.
+Description      : Calls down a meteor formed from the ruins of Nathreza that explodes upon impact, dealing $1278047s1 Shadow damage to all enemies within $1278047a1 yds.
 
 Name             : Summon Desperate Soul (id=1262094) [Spell Family (5)] 
 Class            : Warlock
@@ -20232,6 +20264,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5671
 Triggered By     : Shadow of Nathreza (1261992)
+Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1272142)  : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 254505 | Misc Value 2: 6532 | Radius: 5 yards | Target: at Random (72)
@@ -20250,7 +20283,7 @@ Effects          :
 #1 (id=1272482)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
 #2 (id=1272537)  : Apply Aura (6) | Override Auto-Attack with Ability (361): Fel Claws
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262015 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262015
 Description      : $@spelldesc1261992
 Tooltip          : Tethered to Nathreza, bound by inescapable darkness.
 
@@ -20270,6 +20303,17 @@ Effects          :
 #1 (id=1273144)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36181 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1261984
+
+Name             : Equip Transmog Outfit (id=1263886) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.5 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1274826)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fel Armaments (id=1263935) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -20580,7 +20624,7 @@ Description      : Casting Chaos Bolt or Rain of Fire evokes an echo of the Dark
 If no target is found, a random target suffering from your Immolate will be selected.
 
 Name             : Blight of Weakness (id=1265799) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, override="Blight of Weakness" (id=1271748)]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=100, override="Blight of Weakness" (id=1271748)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20669,7 +20713,6 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
-Velocity         : 20 yards/sec
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -21035,46 +21078,6 @@ Description      : Fire a beam of destructive chaos magic at the target, dealing
 
 Damage is increased by $s2% per Demonic Oculus active.
 
-Name             : Pact of Exhaustion (id=1269991) [Spell Family (5)] 
-Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
-Class            : Warlock
-School           : Shadow
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 16: Class Spells
-                 : 19: Warlock Spells
-                 : 292
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1281895)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Curse of Exhaustion overrides Curse of Weakness
-                   Base Value: 334275 | Scaled Value: 334275 | Misc Value: 702 | Target: Self (1)
-#2 (id=1284758)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (1271800) overrides (1271748)
-                   Base Value: 1271800 | Scaled Value: 1271800 | Misc Value: 1271748 | Target: Self (1)
-Description      : Replaces Curse of Weakness with Curse of Exhaustion while active.
-
-$@spellicon334275 $@spellname334275
-$@spelldesc334275
-
-Name             : Pact of Tongues (id=1270032) [Spell Family (5)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
-Class            : Warlock
-School           : Shadow
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 16: Class Spells
-                 : 19: Warlock Spells
-                 : 292
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1281912)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Curse of Tongues overrides Curse of Weakness
-                   Base Value: 1714 | Scaled Value: 1714 | Misc Value: 702 | Target: Self (1)
-#2 (id=1284759)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (1271802) overrides (1271748)
-                   Base Value: 1271802 | Scaled Value: 1271802 | Misc Value: 1271748 | Target: Self (1)
-Description      : Replaces Curse of Weakness with Curse of Tongues while active.
-
-$@spellicon1714 $@spellname1714
-$@spelldesc1714
-
 Name             : Oppressive Darkness (id=1270255) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warlock
@@ -21161,7 +21164,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1%.
 
-Name             : Gorefiend's Avarice (id=1270701) [Spell Family (5), Passive] 
+Name             : Gorefiend's Avarice (id=1270701) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
@@ -21169,7 +21172,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=1283003)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1 | Target: Self (1)
@@ -21285,11 +21288,35 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
 Effects          :
 #1 (id=1284747)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Targeted Enemy (6)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Targeted Enemy (6)
 #2 (id=1284748)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: -10 | Scaled Value: -10 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1271748
 Tooltip          : Time between attacks increased by $w1%. Chance to critically strike reduced by $w2%.
+
+Name             : Blight of Tongues (id=1271802) [Spell Family (5)] 
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 12 seconds
+Cooldown         : 120 seconds
+Category         : 2475 (Type 0x0)
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Category Cooldown: 120 seconds
+Attributes       : Not Shapeshifted (16), No Threat (42), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1284756)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=1284757)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 40854 | Target: at Self (18) -> Targeted Enemy (6)
+Description      : Call forth a cloud of cloying shadow mist that envelopes the target and all enemies within $1272123a1 yds, increasing their casting time of all spells by $1272122s1% for $1272122d.
+
+|cFF8282FFCurses: A warlock can only have one Curse or Blight active per target.|r
 
 Name             : Blight of Weakness (id=1271803) [Spell Family (5)] 
 Class            : Warlock
@@ -21304,6 +21331,47 @@ Effects          :
 #1 (id=1284761)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1271748
+
+Name             : Blight of Tongues (id=1272122) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : Magic
+Range            : 40 yards
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
+Effects          :
+#1 (id=1285187)  : Apply Aura (6) | Modify Spell Haste% (355)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.3 | Target: Targeted Enemy (6)
+Description      : $@spelldesc1271802
+Tooltip          : Speaking Demonic increasing casting time by $w1%.
+
+Name             : Blight of Tongues (id=1272123) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Attributes       : Allow Cast While Dead (23), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Aura Always Shown (438)
+Effects          :
+#1 (id=1285189)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+Description      : $@spelldesc1271802
+
+Name             : Clear Transmog Outfit (id=1272615) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1285872)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Dominion of Argus (id=1276163) [Spell Family (5), Passive] 
 Talent Entry     : Demonology [tree=spec, row=8, col=1, max_rank=1, req_points=20]
@@ -21356,7 +21424,7 @@ Proc Chance      : 100%
 Attributes       : Do Not Display Range (126), Visible only to caster (conversations only) (343), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1287861)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 255147 | Misc Value 2: 6549 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 255147 | Misc Value 2: 6549 | Radius: 8 yards | Target: at Random (72)
 Description      : $@spelldesc1276163
 
 Name             : Dominion of Argus (id=1276190) [Spell Family (5), Passive] 
@@ -21435,7 +21503,7 @@ Proc Chance      : 100%
 Attributes       : Do Not Display Range (126), Visible only to caster (conversations only) (343), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1288002)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258242 | Misc Value 2: 6549 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258242 | Misc Value 2: 6549 | Radius: 8 yards | Target: at Random (72)
 Description      : $@spelldesc1276163
 
 Name             : Dominion of Argus (id=1276318) [Spell Family (5)] 
@@ -21487,8 +21555,8 @@ Attributes       : No Reflection (39), No AutoCast (AI) (49), Allow Class Abilit
 Effects          :
 #1 (id=1288224)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1288225)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258584 | Misc Value 2: 3314 | Target: Summoner in Area (32)
+#2 (id=1290246)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258584 | Misc Value 2: 3314 | Radius: 8 yards | Target: at Random (72)
 Description      : Summons an Imp Lord to assist you in combat for $d and will remove 1 harmful effect from you when summoned. 
 
 Transforms into Singe Magic while on cooldown.
@@ -21586,11 +21654,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Reflection (39), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1288585)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
-#2 (id=1288586)  : Summon Guardian (28)
+#1 (id=1288585)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 250785 | Misc Value 2: 5970 | Radius: 5 yards | Target: Summoner in Area (32)
-Description      : Summons a Doomguard to assist you in combat for $d. Consuming a Demonic Core reduces the cooldown of Summon Doomguard by $s1 sec.
+#2 (id=1288586)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
+Description      : Summons a Doomguard to assist you in combat for $d. Consuming a Demonic Core reduces the cooldown of Summon Doomguard by $s2 sec.
 
 $@spellicon1251989 $@spellname1251989
 $@spelldesc1251989
@@ -21808,4 +21876,22 @@ Effects          :
 #1 (id=1289333)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Self (1)
 Description      : $@spelldesc1264017
+
+Name             : Wrath of Nathreza (id=1278047) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 5671
+Triggered By     : Wrath of Nathreza (1262028)
+Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1290665)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.59155 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+#2 (id=1290666)  : None (0)
+                   Base Value: 8 | Scaled Value: 8
+Description      : $@spelldesc1262028
 

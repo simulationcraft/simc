@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.64228
+Class Spell ID List, wow build 12.0.0.64339
 
 Death Knight
 3714     Path of Frost
@@ -1698,7 +1698,7 @@ Death Knight
 1264803  Death Knight Unholy 12.0 Class Set 2pc
 1264804  Death Knight Unholy 12.0 Class Set 4pc
 1265384  Frostwyrm's Fury
-1265543  Unending Misery
+1265543 *Unending Misery
 1265547  Thrill of Blood
 1265574  Transfusion
 1265630  Chosen of Frostbrood
@@ -1740,6 +1740,7 @@ Death Knight
 1272116  Pestilence
 1277016  Putrefy
 1277098 *Lesser Ghoul
+1277365  Blood Bond
 
 Demon Hunter
 1490     Chaos Brand
@@ -2878,7 +2879,7 @@ Demon Hunter
 471306   Void Metamorphosis
 473661  *Void Spear
 473662   Consume
-473671   Void Buildup
+473671   Void Metamorphosis
 473728   Void Ray
 474339   Wounded Quarry
 1213511 *Predator's Thirst
@@ -3201,7 +3202,11 @@ Demon Hunter
 1272832  Singed Spirit
 1272842  Umbral Blade
 1272847  Gift of the Void
-1276488  Demon Hunter Vengeance 12.0 Class Set 4pc
+1276488  Explosion of the Soul
+1277734  Leather Specialization
+1277736  Demonic Wards
+1277738  Consume Magic
+1277769  Rolling Torment
 
 Druid
 99       Incapacitating Roar
@@ -4755,7 +4760,7 @@ Druid
 391889  *Adaptive Swarm
 391891  *Adaptive Swarm
 391951  *Unbridled Swarm
-391969   Circle of Life and Death
+391969  *Circle of Life and Death
 391972  *Lion's Strength
 391978   Veinripper
 392099   Nurturing Dormancy
@@ -5247,7 +5252,7 @@ Druid
 1251877  Gift of an Ancient Guardian
 1252024  Dryad's Favor
 1252871  Red Moon
-1252994  Killing Blow
+1252994  Killing Blow [NYI]
 1253035  Harnessed Rage
 1253461  Waking Nightmare
 1253462  Waking Nightmare
@@ -8463,7 +8468,7 @@ Hunter
 473326  *Bear Dressing
 473340  *Wyvern Dressing
 473369   Eagle's Accuracy
-473370  *Double Tap
+473370   Double Tap
 473378   Bullet Hell
 473379   Target Acquisition
 473380   Quickdraw
@@ -8486,7 +8491,7 @@ Hunter
 474747  *Solitary Companion
 474751   Solitary Companion
 1214849  Empty Nest
-1215021  Ohn'ahran Winds
+1215021 *Ohn'ahran Winds
 1215032 *Killer Mark
 1215057  Spotter's Mark
 1215633  Hunter Marksmanship 11.1 Class Set 2pc
@@ -8650,7 +8655,7 @@ Hunter
 1262293  Raptor Swipe
 1262323  Raptor's Fury
 1262328  Feral Lunge
-1262343 *Raptor Swipe
+1262343  Raptor Swipe
 1262361  Raptor Swipe
 1262384 *Sticky Bombs
 1262390  Sticky Bomb
@@ -8715,18 +8720,26 @@ Hunter
 1273043  Nature's Ally
 1273065  Nature's Ally
 1273126  Nature's Ally
-1273128  Deadly Insight
-1273129  Deadly Insight
-1273132  Deadly Insight (NYI)
+1273128  Take Aim
+1273129  Take Aim
+1273132  Take Aim
 1273144  Nature's Ally
 1273145  Nature's Ally
 1273147  Deadly Insight
-1273155 *Raptor Swipe!
-1275630 *Raptor Swipe!
+1273155  Raptor Swipe!
+1275630  Raptor Swipe!
 1276720  Nature's Ally
 1277131  Deadly Insight
 1277134  Deadly Insight
 1277136  Deadly Insight
+1277546  Focus Fire
+1277548  Unload
+1277549  Focus Fire
+1277558  Headshot
+1277565  Through the Eyes
+1277571 *Flurry Shots
+1277572  Critical Precision
+1277760  Dual Wield
 
 Mage
 66       Invisibility
@@ -10847,8 +10860,6 @@ Mage
 462085   Fire Mage
 462086   Frost Mage
 463192   Controlled Instincts
-463356  *Arcane Orb
-463357   Arcane Orb
 464515   Arcane Echo
 464884   Living Bomb
 467633  *Aethervision
@@ -10967,13 +10978,13 @@ Mage
 1247544  Crystalline Refraction
 1247554  Freezing Winds
 1247690  Artisanal Blink Trap
-1247729  Master Lancer
-1247730  Master Lancer
+1247729  Thermal Void
+1247730  Thermal Void
 1247742  Hailstones
 1247743  Rimecaster
 1247744 *Inclement Weather
 1247759  Glacial Attunement
-1247769  Winter's Whisper
+1247769  Improved Flurry
 1247775  Icy Hand
 1247777  Comet Storm
 1247778  Comet Storm!
@@ -11002,7 +11013,6 @@ Mage
 1256909  Arcane Mage
 1256911  Fire Mage
 1256913  Frost Mage
-1257168 *Arcane Blast
 1257343  Fired Up
 1257348  Fired Up
 1257349  Fired Up
@@ -11055,10 +11065,13 @@ Mage
 1271320 *Fired Up
 1271335  Burnout
 1271907  Arcane Intellect Highlight
-1272182  Glacial Spike
 1272960 *Orb Mastery
 1272965 *Arcane Salvo
 1277009  Overpowered Missiles
+1277420 *Clearcasting
+1277421 *Clearcasting
+1277422 *Clearcasting
+1278079  Flash Freezeburn
 
 Monk
 8647     Mystic Touch
@@ -12889,7 +12902,7 @@ Monk
 1271011  Harmonic Surge
 1271045  Harmonic Surge
 1271048  Potential Energy
-1271105  Zenith
+1271105  Meditative Focus
 1271431  Amplified Rush
 1271484 *Bounce Back
 1272175  Universal Energy
@@ -12907,7 +12920,9 @@ Monk
 1272849  Initiator's Edge
 1272850  Initiator's Edge
 1273154  Path of the Falling Star
-1277302 *Morning Breeze
+1277302  Morning Breeze
+1277444  Chi Warding
+1277446  Chi Warding
 
 Paladin
 465      Devotion Aura
@@ -14654,7 +14669,7 @@ Paladin
 414193   Awakening
 414195   Awakening
 414196   Awakening
-414204   Rising Sunlight
+414204  *Rising Sunlight
 414214  *Holy Infusion
 414273   Hand of Divinity
 414378  *Illumination
@@ -14867,7 +14882,7 @@ Paladin
 461244   Overflowing Light
 461245  *Glistening Radiance
 461246   Glorious Dawn
-461250   Rising Sunlight
+461250  *Rising Sunlight
 461273   Truth Prevails
 461278   Extrication
 461287   Liberation
@@ -15070,6 +15085,8 @@ Paladin
 1277038  Adjudication
 1277046  Adjudication
 1277162  Instrument of the Divine
+1277443  Armory of Light
+1277651  Rising Sunlight
 
 Priest
 17       Power Word: Shield
@@ -17233,7 +17250,6 @@ Rogue
 79008    Elusiveness
 79096    Restless Blades
 79134    Venomous Wounds
-79136   *Venomous Wound
 79140   *Vendetta
 81428   *Song of Persuasion
 81549   *Cloak of Shadows
@@ -17289,7 +17305,7 @@ Rogue
 115851  *Shroud of Concealment
 115855  *Shroud of Concealment
 121153   Blindside
-121411   Crimson Tempest
+121411  *Crimson Tempest
 121471   Shadow Blades
 121473  *Shadow Blade
 121474   Shadow Blade Off-hand
@@ -18155,7 +18171,6 @@ Rogue
 381640   Lethal Dose
 381652   Systemic Failure
 381664   Amplifying Poison
-381669   Twist the Knife
 381672   Mutilated Flesh
 381673   Doomblade
 381797   Dashing Scoundrel
@@ -18220,7 +18235,6 @@ Rogue
 385794   Ambush
 385802   Mutilate
 385806   Mutilate
-385835   Deft Maneuvers
 385897   Ambush
 385907   Take 'em by Surprise
 385948   Finality: Black Powder
@@ -18268,7 +18282,6 @@ Rogue
 394326   Instant Poison
 394327   Wound Poison
 394328   Amplifying Poison
-394331   Deathmark
 394332  *Reverberation
 394757   Flagellation
 394758   Flagellation
@@ -18510,8 +18523,6 @@ Rogue
 470679   Deathmark
 470680   Adrenaline Rush
 470786  *Killing Spree
-474721  *Envenom
-474722  *Envenom
 1213344 *Distract
 1213556  Glyph of the Ashvane Pistol Shot
 1213567  Glyph of the Twilight Pistol Shot
@@ -18555,7 +18566,6 @@ Rogue
 1247227  Crimson Tempest
 1247993  Motivated Murderer
 1248603  Killing Spree
-1248604  Killing Spree
 1248774  Unshakeable Drive
 1248775  Unshakeable Drive
 1248785  Corrupt the Blood
@@ -18673,6 +18683,7 @@ Rogue
 1276809  Ravenholdt Mint
 1276816  Controlled Chaos
 1277030  Sometimes Lucky
+1277933  Preparation
 
 Shaman
 370      Purge
@@ -22505,7 +22516,7 @@ Warlock
 1261990  Shadow of Nathreza
 1261992  Shadow of Nathreza
 1262015  Fel Claws
-1262028  Carrion Swarm
+1262028  Wrath of Nathreza
 1262094  Summon Desperate Soul
 1262252 *Felstorm
 1262320  Abyssal Tether
@@ -22567,8 +22578,8 @@ Warlock
 1269885 *Diabolic Gaze
 1269886 *Diabolic Gaze
 1269892  Diabolic Gaze
-1269991  Pact of Exhaustion
-1270032  Pact of Tongues
+1269991 *Pact of Exhaustion
+1270032 *Pact of Tongues
 1270255  Oppressive Darkness
 1270690  Pact of the Nathrezim
 1270691  Pact of the Satyr
@@ -22583,10 +22594,10 @@ Warlock
 1271748  Blight of Weakness
 1271798  Blight of Weakness
 1271800 *Blight of Exhaustion
-1271802 *Blight of Tongues
+1271802  Blight of Tongues
 1271803  Blight of Weakness
-1272122 *Blight of Tongues
-1272123 *Blight of Tongues
+1272122  Blight of Tongues
+1272123  Blight of Tongues
 1272126 *Blight of Exhaustion
 1272127 *Blight of Exhaustion
 1276163  Dominion of Argus
@@ -22620,6 +22631,10 @@ Warlock
 1277139 *Fixate
 1277151  Infernal Grudge
 1277235 *Unholy Vitality
+1277805 *Demonic Portal <DNT>
+1277806 *Demonic Portal <DNT>
+1277879 *Echo of Sargeras
+1278047  Wrath of Nathreza
 
 Warrior
 71       Vanguard
@@ -24327,7 +24342,6 @@ Warrior
 1217487 *Dragon Charge
 1218163  Luck of the Draw!
 1219165 *Sharpen Blade
-1219201  Berserker Roar
 1219209  Berserker Roar
 1223110 *Warbreaker
 1223131  Strom'kar's Might
@@ -24391,9 +24405,9 @@ Warrior
 1261216  Master Tactician
 1261220 *Soften Them Up
 1261759  Champion's Spear
-1264147  Revenge
+1264147 *Revenge
 1264149  I Can Do This All Day [NYI]
-1264330  Sweeping Revenge
+1264330  Devastating Focus
 1264875  Warrior Arms 12.0 Class Set 2pc
 1264876  Warrior Arms 12.0 Class Set 4pc
 1264877  Warrior Fury 12.0 Class Set 2pc
@@ -24401,13 +24415,12 @@ Warrior
 1264879  Warrior Protection 12.0 Class Set 2pc
 1264880  Warrior Protection 12.0 Class Set 4pc
 1265355  Scent of Blood
-1265356  Unslaked Thirst
+1265356  Ragedrinker
 1265357  Rampaging Ruin
-1265358  Ragedrinker
 1265359  Surge of Adrenaline
 1265361  Kill or Be Killed
 1265399  Scent of Blood
-1265403  Unslaked Thirst
+1265403  Ragedrinker
 1265406  Bloodborne
 1265560  Surge of Adrenaline
 1265570  Executioner's Wrath
@@ -24430,7 +24443,7 @@ Warrior
 1269312  Phalanx
 1269313  Phalanx
 1269314  Master of Warfare
-1269349  Rampaging Berserker
+1269349  Berserk
 1269383  Heroic Strike
 1269391  Master of Warfare
 1269394  Master of Warfare
@@ -24461,3 +24474,6 @@ Warrior
 1277104  Javelineer
 1277108  Javelineer
 1277297  Ignore Pain
+1277983  Devastating Focus
+1278009  Phalanx
+1278016  Rampaging Berserker

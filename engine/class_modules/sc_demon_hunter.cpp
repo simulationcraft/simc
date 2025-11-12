@@ -773,6 +773,8 @@ public:
     const spell_data_t* hungering_slash_damage;
     const spell_data_t* hungering_slash_energize;
     const spell_data_t* voidstep;
+    const spell_data_t* rolling_torment_buff;
+    const spell_data_t* rolling_torment_energize;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -1117,9 +1119,9 @@ public:
 
     // Aldrachi Reaver
     attack_t* art_of_the_glaive = nullptr;
-    attack_t* preemptive_strike    = nullptr;
-    attack_t* warblades_hunger     = nullptr;
-    attack_t* wounded_quarry       = nullptr;
+    attack_t* preemptive_strike = nullptr;
+    attack_t* warblades_hunger  = nullptr;
+    attack_t* wounded_quarry    = nullptr;
 
     // Annihilator
     spell_t* voidfall_meteor = nullptr;
@@ -2044,7 +2046,7 @@ public:
 
     // Devourer
     ab::parse_effects( p()->buff.feast_of_souls );
-    ab::parse_effects( p()->buff.rolling_torment, USE_DEFAULT );
+    ab::parse_effects( p()->buff.rolling_torment );
     ab::parse_effects( p()->buff.impending_apocalypse );
 
     // Havoc
@@ -6151,6 +6153,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
     {
       double m = base_t::composite_da_multiplier( s );
 
+      if ( s->chain_target == 0 )
+      {
+        m *= 1.0 + p()->spec.collapsing_star_spell->effectN( 2 ).percent();
+      }
+
       if ( p()->talent.annihilator.otherworldly_focus->ok() )
       {
         // 1 target is always effect 1 %
@@ -6466,13 +6473,30 @@ struct hungering_slash_t : public hungering_slash_base_t
   }
 };
 
-struct mid1_vengeance_4pc_damage_t : public demon_hunter_spell_t
+struct explosion_of_the_soul_t : public demon_hunter_spell_t
 {
-  mid1_vengeance_4pc_damage_t( util::string_view n, demon_hunter_t* p )
+  explosion_of_the_soul_t( util::string_view n, demon_hunter_t* p )
     : demon_hunter_spell_t( n, p, p->set_bonuses.mid1_vengeance_4pc_damage )
   {
     background = dual   = true;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
+  }
+};
+
+struct rolling_torment_energize_t : demon_hunter_energize_t
+{
+  rolling_torment_energize_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_energize_t( n, p, p->spec.rolling_torment_energize )
+  {
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double e = demon_hunter_energize_t::composite_energize_amount( s );
+
+    int stacks = p()->buff.collapsing_star_stack->check();
+
+    return e * stacks;
   }
 };
 
@@ -7617,10 +7641,10 @@ struct fracture_t : public voidfall_building_trigger_t<
   };
 
   fracture_damage_t *mh, *oh;
-  spells::mid1_vengeance_4pc_damage_t* mid1_veng_4pc_damage;
+  spells::explosion_of_the_soul_t* explosion_of_the_soul;
 
   fracture_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "fracture", p, p->spec.fracture, o ), mid1_veng_4pc_damage( nullptr )
+    : base_t( "fracture", p, p->spec.fracture, o ), explosion_of_the_soul( nullptr )
   {
     int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
     // divide the number in 2 as half come from main hand, half come from offhand.
@@ -7641,8 +7665,8 @@ struct fracture_t : public voidfall_building_trigger_t<
 
     if ( p->set_bonuses.mid1_vengeance_4pc->ok() )
     {
-      mid1_veng_4pc_damage = p->get_background_action<spells::mid1_vengeance_4pc_damage_t>( "mid1_vengeance_4pc" );
-      add_child( mid1_veng_4pc_damage );
+      explosion_of_the_soul = p->get_background_action<spells::explosion_of_the_soul_t>( "explosion_of_the_soul" );
+      add_child( explosion_of_the_soul );
     }
 
     if ( p->talent.aldrachi_reaver.warblades_hunger->ok() )
@@ -7704,7 +7728,7 @@ struct fracture_t : public voidfall_building_trigger_t<
       if ( p()->set_bonuses.mid1_vengeance_4pc->ok() &&
            rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) )
       {
-        mid1_veng_4pc_damage->execute_on_target( target );
+        explosion_of_the_soul->execute_on_target( target );
       }
     }
   }
@@ -8634,7 +8658,10 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
-  metamorphosis_buff_t( demon_hunter_t* p ) : base_t( *p, "metamorphosis", p->spec.metamorphosis_buff )
+  actions::demon_hunter_energize_t* rolling_torment_energize;
+
+  metamorphosis_buff_t( demon_hunter_t* p )
+    : base_t( *p, "metamorphosis", p->spec.metamorphosis_buff ), rolling_torment_energize( nullptr )
   {
     set_cooldown( timespan_t::zero() );
     buff_period   = timespan_t::zero();
@@ -8663,6 +8690,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p->talent.demon_hunter.soul_rending->ok() )
     {
       add_invalidate( CACHE_LEECH );
+    }
+
+    if ( p->talent.devourer.rolling_torment->ok() )
+    {
+      rolling_torment_energize =
+          p->get_background_action<actions::spells::rolling_torment_energize_t>( "rolling_torment_energize" );
     }
   }
 
@@ -8715,11 +8748,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.devourer.rolling_torment->ok() )
-    {
-      p()->buff.rolling_torment->trigger();
-    }
-
     if ( p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->expire();
@@ -8768,6 +8796,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->resources.current[ RESOURCE_FURY ] = 0;
       p()->buff.collapsing_star_ready->expire();
+      if ( p()->talent.devourer.rolling_torment->ok() )
+      {
+        p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
+        rolling_torment_energize->execute_on_target( p() );
+      }
       p()->buff.collapsing_star_stack->expire();
       p()->buff.emptiness->expire();
       p()->buff.impending_apocalypse->expire();
@@ -8824,23 +8857,6 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     }
 
     return demon_hunter_buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
-struct rolling_torment_t : public demon_hunter_buff_t<buff_t>
-{
-  rolling_torment_t( demon_hunter_t* p )
-    : base_t( *p, "rolling_torment", p->talent.devourer.rolling_torment->effectN( 2 ).trigger() )
-  {
-    auto max_stacks    = std::max( 1, as<int>( data().duration() / 1_s ) );
-    auto default_value = data().effectN( 1 ).percent() / max_stacks;
-
-    // 2025-10-07 -- seems to only decrement half speed atm for w/e reason
-    set_period( 2_s );
-    set_reverse( true );
-    set_max_stack( max_stacks );
-    set_initial_stack( max_stacks );
-    set_default_value( default_value );
   }
 };
 
@@ -9452,7 +9468,7 @@ void demon_hunter_t::create_buffs()
   buff.void_metamorphosis_stack = make_buff( this, "void_metamorphosis_stack", spec.void_metamorphosis_stack )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                       ->disable_ticking( true );
-  buff.rolling_torment = make_buff<buffs::rolling_torment_t>( this );
+  buff.rolling_torment = make_buff( this, "rolling_torment", spec.rolling_torment_buff )->disable_ticking( true );
 
   buff.emptiness = make_buff( this, "emptiness", spec.emptiness_buff )
                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -10679,6 +10695,8 @@ void demon_hunter_t::init_spells()
   spec.hungering_slash_damage    = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
   spec.hungering_slash_energize  = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
   spec.voidstep                  = talent_spell_lookup( talent.devourer.hungering_slash, 1223157 );
+  spec.rolling_torment_buff      = talent_spell_lookup( talent.devourer.rolling_torment, 1244235 );
+  spec.rolling_torment_energize  = talent_spell_lookup( talent.devourer.rolling_torment, 1277769 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 

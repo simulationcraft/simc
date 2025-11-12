@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2770,7 +2770,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Health periodically normalized among other affected party and raid members.
 
 Name             : Spirit Link Totem (id=98008) [Spell Family (11)] 
-Talent Entry     : Restoration [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -2886,7 +2886,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -2998,7 +2998,7 @@ Effects          :
 Description      : Relocates your active totems to the specified location.
 
 Name             : Ascendance (id=114050) [Spell Family (11)] 
-Talent Entry     : Elemental [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -3021,7 +3021,7 @@ Effects          :
 Description      : $@spelldesc1219480
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
+Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -3300,7 +3300,7 @@ Description      : Reduces the movement speed of all nearby enemies by $s1%.
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Primal Elementalist (id=117013) [Passive] 
-Talent Entry     : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -3607,17 +3607,17 @@ Effects          :
                    Base Value: 55 | Scaled Value: 55 | Misc Value: 24 | Misc Value 2: 5683 (Label) | Target: Self (1)
                    Affected Spells (Label): Hydrobubble (444490)
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #5 (id=191049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #6 (id=260997)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 20 | Scaled Value: 20
 #7 (id=260998)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 20 | Scaled Value: 20
 #8 (id=260999)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #9 (id=261000)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -3774,19 +3774,19 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191040)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261007)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | Target: Self (1)
 #7 (id=261008)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -4282,7 +4282,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid, Warrior, Paladin, Hunter, Rogue, Death Knight, Monk, Demon Hunter, Evoker
+Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid, Devourer Demon Hunter, Warrior, Paladin, Hunter, Rogue, Death Knight, Monk, Evoker
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -5464,7 +5464,7 @@ Description      : $@spelldesc210689
 Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal $210689s2% of their damage to the Lightning Rod.
 
 Name             : Sundering (id=197214) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
@@ -6441,7 +6441,7 @@ Description      : $@spelldesc210606
 Tooltip          : Increases the healing of your next Chain Heal by $s1%.
 
 Name             : Lightning Rod (id=210689) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -6518,7 +6518,7 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Elemental Assault (id=210853) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -9940,7 +9940,7 @@ Effects          :
 Description      : $@spelldesc196840
 
 Name             : Ride the Lightning (id=289874) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13260,7 +13260,7 @@ Description      : Your Healing $?a137039[Wave][Surge] is $s1% more effective on
 
 
 Name             : Call of Fire (id=378255) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13302,8 +13302,8 @@ Description      : Reduces the cooldown of Flame Shock and Voltaic Blaze by ${$s
 Flame Shock deals damage ${100*(1/(1+$m1/100)-1)}% faster.
 
 Name             : Deeply Rooted Elements (id=378270) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
-                 : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
+                 : Restoration [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13593,7 +13593,7 @@ Description      : Increases your maximum Maelstrom by $s1.
 Increases Earth Shock, Elemental Blast, and Earthquake damage by $s2%.
 
 Name             : Eye of the Storm (id=381708) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13644,7 +13644,7 @@ Effects          :
 Description      : Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1*$168534s2/100} Nature damage.
 
 Name             : Mountains Will Fall (id=381726) [Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13736,7 +13736,7 @@ Effects          :
 Description      : $@spelldesc381782
 
 Name             : Flames of the Firelord (id=381784) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13825,7 +13825,7 @@ Effects          :
 Description      : Increases the critical strike chance of Lightning Bolt$?a454009[, Tempest,][] and Chain Lightning by $s1%.
 
 Name             : Wavespeaker's Blessing (id=381946) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3000, 6000)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -13847,7 +13847,7 @@ Effects          :
 Description      : Increases Riptide's duration by ${$s1/1000}.1 sec and its healing over time by $s2%.
 
 Name             : Earthen Harmony (id=382020) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14062,7 +14062,7 @@ Description      : Chain Heal bounces an additional time and casting Chain Heal 
 
 
 Name             : Surging Elements (id=382042) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14101,7 +14101,7 @@ Description      : $@spelldesc382042
 Tooltip          : Haste increased by $w1%.
 
 Name             : Primal Tide Core (id=382045) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14117,7 +14117,7 @@ Effects          :
 Description      : Every $s1 casts of Riptide also applies Riptide to another friendly target near your Riptide target.
 
 Name             : Undercurrent (id=382194) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.5, 1)]
                  : Effect#2 [op=set, values=(5, 10)]
                  : Effect#3 [op=set, values=(0.5, 1)]
@@ -14217,7 +14217,7 @@ Effects          :
 Description      : $@spelldesc382215
 
 Name             : Ancestral Awakening (id=382309) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=2, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(25, 50)]
 Class            : Shaman
 School           : Physical
@@ -14616,7 +14616,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning can consume up to $s1 Maelstrom Weapon stacks. 
 
 Name             : Doom Winds (id=384352) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -14670,7 +14670,7 @@ Effects          :
 Description      : Each target hit by Crash Lightning increases the damage of your next Stormstrike by $198300s1%, up to a maximum of $198300u stacks.
 
 Name             : Static Accumulation (id=384411) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -14703,7 +14703,7 @@ Description      : $@spelldesc384411
 Tooltip          : Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $t1 sec.
 
 Name             : Thorim's Invocation (id=384444) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14733,7 +14733,7 @@ Description      : Doom Winds and Deeply Rooted Elements last ${$s5/1000} sec lo
 During Doom Winds or Ascendance, Stormstrike and Crash Lightning consume up to $s1 Maelstrom Weapon to discharge a Lightning Bolt or Chain Lightning at $s2% effectiveness at your enemy, whichever you most recently used.
 
 Name             : Lightning Strikes (id=384450) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18402,7 +18402,7 @@ Effects          :
 Description      : Healing from Healing Stream Totem reduces Fire, Frost, and Nature damage taken by $462568s1% for $462568d.
 
 Name             : Spouting Spirits (id=462383) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18440,7 +18440,7 @@ Effects          :
 Description      : $@spelldesc462383
 
 Name             : Tidewaters (id=462424) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18474,7 +18474,7 @@ Description      : $@spelldesc462424
 
 Name             : First Ascendant (id=462440) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
-                 : Elemental [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+                 : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18490,7 +18490,7 @@ Effects          :
 Description      : The cooldown of Ascendance$?a137039[ and Healing Tide Totem][] is reduced by ${$s1/-1000} sec.
 
 Name             : Preeminence (id=462443) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
                  : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Shaman
 School           : Physical
@@ -18569,7 +18569,7 @@ Effects          :
 Description      : $@spelldesc462454
 
 Name             : Downpour (id=462486) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18938,7 +18938,7 @@ Effects          :
 Description      : $@spelldesc462817
 
 Name             : Fusion of Elements (id=462840) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19003,7 +19003,7 @@ Effects          :
 Description      : While Lightning Shield is active, your Nature damage dealt is increased by $s3%.
 
 Name             : Echo of the Elementals (id=462864) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19478,7 +19478,7 @@ Effects          :
 Description      : Reduces the cooldown of Stormkeeper by ${$s1/-1000} sec.
 
 Name             : Charged Conduit (id=468625) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -19534,7 +19534,7 @@ Effects          :
 Description      : $@spelldesc384352
 
 Name             : Feral Spirit (id=469314) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19698,7 +19698,7 @@ Description      : $@spelldesc469314
 
 Name             : Voltaic Blaze (id=470057) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=6, col=3, max_rank=1, req_points=8, replace="Flame Shock" (id=470411)]
-                 : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20, replace="Flame Shock" (id=470411)]
+                 : Elemental [tree=spec, row=9, col=5, max_rank=1, req_points=20, replace="Flame Shock" (id=470411)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -19731,7 +19731,7 @@ Description      : Instantly shocks the target and $s4 enemies within $A1 yds wi
 Generates $s2 $Lstack:stacks; of Maelstrom Weapon.]
 
 Name             : Coalescing Water (id=470076) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20041,7 +20041,7 @@ Effects          :
 Description      : When you lose your |cFFFFFFFFWinning Streak!|r the winds shift into Doom Winds for ${$s1/1000} sec. When Doom Winds deal damage, your next Crash Lightning deals ${$1223332s1}.1% increased damage, up to ${$1223332s1*$1223332u}.1%. This effect can be stored up to $1223410u stacks. Additionally, Crash Lightning deals $s2% more damage to your main target.
 
 Name             : Whispering Waves (id=1217598) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20116,7 +20116,7 @@ Effects          :
 Description      : Earth Shield $?c3[and Water Shield no longer lose charges and are][no longer loses charges and is] ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21020,6 +21020,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Targeted Enemy (6)
 Description      : $@spelldesc33757
 
+Name             : Equip Transmog Outfit (id=1247613) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 3 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1249963)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cnNORMAL_FONT_COLOR:Transmogrify the appearance of your weapons and armor|r
+
+Lock Appearance:
+|cnNORMAL_FONT_COLOR:Prevent this appearance from being replaced by a Situation|r
+
+|cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
+
+Name             : Clear Transmog Outfit (id=1247917) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 3 seconds
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1250344)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Elemental Tempo (id=1250364) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Shaman
@@ -21111,7 +21139,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
 Name             : Storm Unleashed (id=1252373) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -21252,7 +21280,7 @@ Effects          :
 Description      : Increases the healing done by $?a455630[Surging Totem by $s1%.][Healing Rain by $s1% and reduces its cast time by ${$s2/-1000}.1 sec.]
 
 Name             : Double Dip (id=1252882) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21268,7 +21296,7 @@ Description      : $?a455630[Surging Totem][Healing Rain] grants an additional u
 
 
 Name             : Water Expulsion (id=1253014) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21518,7 +21546,7 @@ Effects          :
 Description      : Earth Shock, Elemental Blast, and Earthquake deal $s1% increased damage.
 
 Name             : Inferno Arc (id=1259047) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21551,7 +21579,7 @@ Effects          :
 Description      : $@spelldesc470057
 
 Name             : Purging Flames (id=1259471) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=6, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -21714,7 +21742,7 @@ Description      : $@spelldesc1236411
 Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
 
 Name             : Thunder Capacitor (id=1262635) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21732,7 +21760,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning deal $s1% increased damage and have a $s2% chance to refund the Maelstrom Weapon spent.
 
 Name             : Storm Unleashed (id=1262713) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21746,7 +21774,7 @@ Effects          :
 Description      : Each Maelstrom Weapon spent has a ${$s1/10}% chance to cause your next Crash Lightning to ignore its cooldown. The weapon enhancement effect of Crash Lightning may now overlap.
 
 Name             : Storm Unleashed (id=1262761) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=2, max_rank=2, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -21803,6 +21831,17 @@ Effects          :
 #1 (id=1273848)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Mastery increased by $s1%.
+
+Name             : Equip Transmog Outfit (id=1263886) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.5 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1274826)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Descending Skies (id=1264688) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
@@ -21977,7 +22016,7 @@ Effects          :
 Description      : Unleash Life affects an additional spell cast at $s1% effectiveness.
 
 Name             : Stormstream Totem (id=1267016) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22051,7 +22090,7 @@ Description      : $@spelldesc1267016
 Tooltip          : Healing Stream Totem is upgraded to Stormstream Totem.
 
 Name             : Stormstream Totem (id=1267093) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=2, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(30, 60)]
 Class            : Shaman
 School           : Physical
@@ -22071,7 +22110,7 @@ Effects          :
 Description      : Healing Stream and Stormstream Totem healing increased by $s1%.
 
 Name             : Stormstream Totem (id=1267120) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=3, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22148,7 +22187,7 @@ Effects          :
 Description      : $@spelldesc1267016
 
 Name             : Crackling Fury (id=1269215) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=5, max_rank=2, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-3000, -6000)]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Shaman
@@ -22220,7 +22259,7 @@ Effects          :
 Description      : Increases your Intellect by $s1%.
 
 Name             : Feedback Loop (id=1270061) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22237,7 +22276,7 @@ Effects          :
 Description      : Elemental Overload damage increased by $s1%.
 
 Name             : Feedback Loop (id=1270062) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=2, max_rank=2, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Shaman
@@ -22258,7 +22297,7 @@ Effects          :
 Description      : Spell critical strike chance increased by $s1%. Elemental Fury increases spell critical strike damage by an additional $s2%.
 
 Name             : Feedback Loop (id=1270064) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=3, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22461,6 +22500,16 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1264862
 Tooltip          : Haste increased by ${$w1}.1%.
+
+Name             : Clear Transmog Outfit (id=1272615) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Effects          :
+#1 (id=1285872)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Lava Flows (id=1273485) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=7, col=7, max_rank=1, req_points=8]
