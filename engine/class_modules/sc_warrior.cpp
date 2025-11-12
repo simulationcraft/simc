@@ -760,14 +760,17 @@ public:
       player_talent_t colossal_might;
       player_talent_t boneshaker; // NYI
       player_talent_t earthquaker;
+      player_talent_t decimator;  // NYI
       player_talent_t one_against_many;
       player_talent_t arterial_bleed;
       player_talent_t tide_of_battle;
       player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
+      player_talent_t cut_to_the_bone;  // NYI
       player_talent_t practiced_strikes;
       player_talent_t precise_might;
       player_talent_t mountain_of_muscle_and_scars;
+      player_talent_t celeritous_conclusion;  // NYI
       player_talent_t dominance_of_the_colossus;
     } colossus;
 
@@ -798,16 +801,19 @@ public:
       player_talent_t crashing_thunder;
       player_talent_t ground_current;
       player_talent_t strength_of_the_mountain;
+      player_talent_t storm_surge;  // NYI
       player_talent_t thunder_blast;
       player_talent_t storm_bolts;
       player_talent_t storm_shield; // NYI
       player_talent_t keep_your_feet_on_the_ground; // NYI
       player_talent_t steadfast_as_the_peaks;
+      player_talent_t conductivity;  // NYI
       player_talent_t flashing_skies;
       player_talent_t snap_induction;
       player_talent_t gathering_clouds;
       player_talent_t thorims_might;
       player_talent_t burst_of_power;
+      player_talent_t capacitance;  // NYI
       player_talent_t avatar_of_the_storm;
     } mountain_thane;
 
@@ -7168,52 +7174,63 @@ void warrior_t::init_spells()
   // Arms Battle / Defensive
   // Fury Berserker / Defensive
   // Prot Battle / Defensive
+  // Row 1
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
   talents.warrior.berserker_stance                 = find_talent_spell( talent_tree::CLASS, "Berserker Stance" );
   talents.warrior.defensive_stance                 = find_talent_spell( talent_tree::CLASS, "Defensive Stance" );
-
-  talents.warrior.second_wind                      = find_talent_spell( talent_tree::CLASS, "Second Wind" );
-  talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine", specialization() );
+  // Row 2
   talents.warrior.fast_footwork                    = find_talent_spell( talent_tree::CLASS, "Fast Footwork" );
+  talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine", specialization() );
+  talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap", specialization() );
   talents.warrior.leeching_strikes                 = find_talent_spell( talent_tree::CLASS, "Leeching Strikes" );
-
+  // Row 3
   talents.warrior.impending_victory                = find_talent_spell( talent_tree::CLASS, "Impending Victory" );
   talents.warrior.heroic_leap                      = find_talent_spell( talent_tree::CLASS, "Heroic Leap" );
-  talents.warrior.storm_bolt                       = find_talent_spell( talent_tree::CLASS, "Storm Bolt" );
+  talents.warrior.crackling_thunder                = find_talent_spell( talent_tree::CLASS, "Crackling Thunder" );
   talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
-
-  talents.warrior.intimidating_shout               = find_talent_spell( talent_tree::CLASS, "Intimidating Shout" );
+  talents.warrior.interpose                        = find_talent_spell( talent_tree::CLASS, "Interpose" );
+  // Row 4
+  talents.warrior.second_wind                      = find_talent_spell( talent_tree::CLASS, "Second Wind" );
   talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker", specialization() );
   talents.warrior.bounding_stride                  = find_talent_spell( talent_tree::CLASS, "Bounding Stride" );
   talents.warrior.pain_and_gain                    = find_talent_spell( talent_tree::CLASS, "Pain and Gain" );
-  talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap", specialization() );
-
-  talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
-  talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
-  talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
-  talents.warrior.crackling_thunder                = find_talent_spell( talent_tree::CLASS, "Crackling Thunder" );
-
-  talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
-  talents.warrior.crushing_force                   = find_talent_spell( talent_tree::CLASS, "Crushing Force", specialization() );
+  talents.warrior.storm_bolt                       = find_talent_spell( talent_tree::CLASS, "Storm Bolt" );
+  // Row 5
+  talents.warrior.rend                             = find_talent_spell( talent_tree::CLASS, "Rend" );
   talents.warrior.overwhelming_rage                = find_talent_spell( talent_tree::CLASS, "Overwhelming Rage" );
-  talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
-  talents.warrior.reinforced_plates                = find_talent_spell( talent_tree::CLASS, "Reinforced Plates" );
-
+  talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
+  talents.warrior.field_dressing                   = find_talent_spell( talent_tree::CLASS, "Field Dressing" );
+  talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
+  // Row 6
+  talents.warrior.javelineer                       = find_talent_spell( talent_tree::CLASS, "Javelineer" );
+  talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
+  talents.warrior.fearless                         = find_talent_spell( talent_tree::CLASS, "Fearless" );
+  talents.warrior.resonant_voice                   = find_talent_spell( talent_tree::CLASS, "Resonant Voice" );
+  talents.warrior.intimidating_shout               = find_talent_spell( talent_tree::CLASS, "Intimidating Shout" );
+  talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
+  talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
+  // Row 7
   talents.warrior.wrecking_throw                   = find_talent_spell( talent_tree::CLASS, "Wrecking Throw" );
   talents.warrior.shattering_throw                 = find_talent_spell( talent_tree::CLASS, "Shattering Throw" );
-  talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
-  talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
-  talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
-  talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
-
-  talents.warrior.cruel_strikes                    = find_talent_spell( talent_tree::CLASS, "Cruel Strikes" );
-  talents.warrior.wild_strikes                     = find_talent_spell( talent_tree::CLASS, "Wild Strikes" );
-  talents.warrior.two_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "Two-Handed Weapon Specialization" );
-  talents.warrior.dual_wield_specialization        = find_talent_spell( talent_tree::CLASS, "Dual Wield Specialization" );
-  talents.warrior.one_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "One-Handed Weapon Specialization" );
   talents.warrior.armored_to_the_teeth             = find_talent_spell( talent_tree::CLASS, "Armored to the Teeth" );
-
+  talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
+  talents.warrior.reinforced_plates                = find_talent_spell( talent_tree::CLASS, "Reinforced Plates" );
+  // Row 8
+  talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
+  talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
+  talents.warrior.retaliation                      = find_talent_spell( talent_tree::CLASS, "Retaliation" );
+  talents.warrior.crushing_force                   = find_talent_spell( talent_tree::CLASS, "Crushing Force", specialization() );
+  // Row 9
+  talents.warrior.cruel_strikes                    = find_talent_spell( talent_tree::CLASS, "Cruel Strikes" );
+  talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
+  talents.warrior.two_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "Two-Handed Weapon Specialization", specialization() );
+  talents.warrior.dual_wield_specialization        = find_talent_spell( talent_tree::CLASS, "Dual Wield Specialization", specialization() );
+  talents.warrior.one_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "One-Handed Weapon Specialization", specialization() );
+  talents.warrior.wild_strikes                     = find_talent_spell( talent_tree::CLASS, "Wild Strikes" );
+  talents.warrior.anger_management                 = find_talent_spell( talent_tree::CLASS, "Anger Management", specialization() );
+  talents.warrior.last_stand                       = find_talent_spell( talent_tree::CLASS, "Last Stand" );
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
+  talents.warrior.battlefield_commander            = find_talent_spell( talent_tree::CLASS, "Battlefield Commander" );
 
   // Arms Talents
   talents.arms.mortal_strike                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
