@@ -54,12 +54,10 @@ void fury( player_t* p )
   slayer->add_action( "avatar" );
   slayer->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<=gcd" );
   slayer->add_action( "execute,if=buff.sudden_death.remains<2&!variable.execute_phase" );
-  slayer->add_action( "thunderous_roar,if=active_enemies>1&buff.enrage.up" );
   slayer->add_action( "champions_spear,if=!cooldown.bladestorm.remains&(!cooldown.avatar.remains|!cooldown.recklessness.remains|buff.avatar.up|buff.recklessness.up)&buff.enrage.up" );
   slayer->add_action( "odyns_fury,if=active_enemies>1&talent.titanic_rage&buff.meat_cleaver.stack=0" );
   slayer->add_action( "bladestorm,if=buff.enrage.up&(talent.reckless_abandon&cooldown.avatar.remains>=24|talent.anger_management&cooldown.recklessness.remains>=15&(buff.avatar.up|cooldown.avatar.remains>=8))" );
   slayer->add_action( "whirlwind,if=active_enemies>=2&talent.meat_cleaver&buff.meat_cleaver.stack=0" );
-  slayer->add_action( "onslaught,if=talent.tenderize&buff.brutal_finish.up" );
   slayer->add_action( "rampage,if=buff.enrage.remains<gcd" );
   slayer->add_action( "execute,if=buff.sudden_death.stack=2&buff.enrage.up" );
   slayer->add_action( "execute,if=debuff.marked_for_execution.stack>1&buff.enrage.up" );
@@ -75,13 +73,11 @@ void fury( player_t* p )
   slayer->add_action( "raging_blow,if=buff.opportunist.up" );
   slayer->add_action( "bloodthirst,if=target.health.pct<35&talent.vicious_contempt&crit_pct_current>=70" );
   slayer->add_action( "raging_blow,if=action.raging_blow.charges=2" );
-  slayer->add_action( "onslaught,if=talent.tenderize" );
   slayer->add_action( "raging_blow" );
   slayer->add_action( "rampage" );
   slayer->add_action( "odyns_fury,if=buff.enrage.up|talent.titanic_rage" );
   slayer->add_action( "execute,if=buff.sudden_death.up" );
   slayer->add_action( "bloodthirst" );
-  slayer->add_action( "thunderous_roar" );
   slayer->add_action( "wrecking_throw" );
   slayer->add_action( "whirlwind" );
   slayer->add_action( "storm_bolt,if=buff.bladestorm.up" );
@@ -89,7 +85,6 @@ void fury( player_t* p )
   thane->add_action( "recklessness" );
   thane->add_action( "avatar" );
   thane->add_action( "ravager" );
-  thane->add_action( "thunderous_roar,if=active_enemies>1&buff.enrage.up" );
   thane->add_action( "champions_spear,if=buff.enrage.up&talent.champions_might" );
   thane->add_action( "thunder_clap,if=buff.meat_cleaver.stack=0&talent.meat_cleaver&active_enemies>=2" );
   thane->add_action( "thunder_blast,if=buff.enrage.up&talent.meat_cleaver" );
@@ -99,7 +94,6 @@ void fury( player_t* p )
   thane->add_action( "bloodbath" );
   thane->add_action( "rampage,if=rage>=115&talent.reckless_abandon&buff.recklessness.up&buff.slaughtering_strikes.stack>=3" );
   thane->add_action( "crushing_blow" );
-  thane->add_action( "onslaught,if=talent.tenderize" );
   thane->add_action( "bloodthirst,if=talent.vicious_contempt&target.health.pct<35" );
   thane->add_action( "rampage,if=rage>=100" );
   thane->add_action( "bloodthirst" );
@@ -107,7 +101,6 @@ void fury( player_t* p )
   thane->add_action( "raging_blow" );
   thane->add_action( "rampage" );
   thane->add_action( "thunder_blast,if=!talent.meat_cleaver" );
-  thane->add_action( "thunderous_roar" );
   thane->add_action( "odyns_fury,if=buff.enrage.up|talent.titanic_rage" );
   thane->add_action( "champions_spear,if=!talent.champions_might" );
   thane->add_action( "execute" );
@@ -187,18 +180,15 @@ void arms( player_t* p )
 
   colossus_aoe->add_action( "cleave,if=!dot.deep_wounds.remains" );
   colossus_aoe->add_action( "thunder_clap,if=!dot.rend.remains" );
-  colossus_aoe->add_action( "thunderous_roar" );
   colossus_aoe->add_action( "sweeping_strikes" );
-  colossus_aoe->add_action( "warbreaker,if=cooldown.avatar.remains>14" );
   colossus_aoe->add_action( "colossus_smash,if=cooldown.avatar.remains>14" );
   colossus_aoe->add_action( "champions_spear" );
   colossus_aoe->add_action( "ravager" );
   colossus_aoe->add_action( "avatar" );
-  colossus_aoe->add_action( "demolish,if=buff.colossal_might.stack=10&(debuff.colossus_smash.remains>=2|cooldown.colossus_smash.remains>=10|cooldown.warbreaker.remains>=10)" );
+  colossus_aoe->add_action( "demolish,if=buff.colossal_might.stack=10&(debuff.colossus_smash.remains>=2|cooldown.colossus_smash.remains>=10)" );
   colossus_aoe->add_action( "cleave" );
-  colossus_aoe->add_action( "bladestorm,if=talent.unhinged|talent.merciless_bonegrinder" );
+  colossus_aoe->add_action( "bladestorm,if=talent.unhinged" );
   colossus_aoe->add_action( "mortal_strike" );
-  colossus_aoe->add_action( "skullsplitter" );
   colossus_aoe->add_action( "thunder_clap,if=dot.rend.remains<5" );
   colossus_aoe->add_action( "overpower" );
   colossus_aoe->add_action( "thunder_clap" );
@@ -209,14 +199,10 @@ void arms( player_t* p )
 
   colossus_execute->add_action( "sweeping_strikes,if=active_enemies=2" );
   colossus_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
-  colossus_execute->add_action( "thunderous_roar" );
   colossus_execute->add_action( "champions_spear" );
   colossus_execute->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd&(cooldown.avatar.remains>14|cooldown.avatar.remains<2)" );
   colossus_execute->add_action( "avatar" );
   colossus_execute->add_action( "colossus_smash" );
-  colossus_execute->add_action( "warbreaker,if=cooldown.avatar.remains>14" );
-  colossus_execute->add_action( "execute,if=buff.juggernaut.remains<=gcd&talent.juggernaut" );
-  colossus_execute->add_action( "skullsplitter" );
   colossus_execute->add_action( "demolish,if=debuff.colossus_smash.up&buff.colossal_might.stack=10" );
   colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|!talent.executioners_precision|talent.battlelord" );
   colossus_execute->add_action( "overpower,if=rage<90" );
@@ -227,15 +213,12 @@ void arms( player_t* p )
   colossus_execute->add_action( "execute" );
 
   colossus_st->add_action( "rend,if=dot.rend.remains<=gcd" );
-  colossus_st->add_action( "thunderous_roar" );
   colossus_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd&(cooldown.avatar.remains>14|cooldown.avatar.remains<2)" );
   colossus_st->add_action( "avatar,if=raid_event.adds.in>15" );
   colossus_st->add_action( "colossus_smash,if=cooldown.avatar.remains>14" );
-  colossus_st->add_action( "warbreaker,if=cooldown.avatar.remains>14" );
   colossus_st->add_action( "champions_spear" );
   colossus_st->add_action( "demolish,if=debuff.colossus_smash.up&buff.colossal_might.up" );
   colossus_st->add_action( "mortal_strike" );
-  colossus_st->add_action( "skullsplitter" );
   colossus_st->add_action( "overpower" );
   colossus_st->add_action( "execute" );
   colossus_st->add_action( "wrecking_throw" );
@@ -244,13 +227,11 @@ void arms( player_t* p )
 
   colossus_sweep->add_action( "thunder_clap,if=!dot.rend.remains&!buff.sweeping_strikes.up" );
   colossus_sweep->add_action( "rend,if=dot.rend.remains<=gcd&buff.sweeping_strikes.up" );
-  colossus_sweep->add_action( "thunderous_roar" );
   colossus_sweep->add_action( "sweeping_strikes" );
   colossus_sweep->add_action( "champions_spear" );
   colossus_sweep->add_action( "ravager,if=cooldown.colossus_smash.ready" );
   colossus_sweep->add_action( "avatar" );
   colossus_sweep->add_action( "colossus_smash" );
-  colossus_sweep->add_action( "warbreaker" );
   colossus_sweep->add_action( "mortal_strike" );
   colossus_sweep->add_action( "demolish,if=debuff.colossus_smash.up" );
   colossus_sweep->add_action( "overpower" );
@@ -264,16 +245,13 @@ void arms( player_t* p )
 
   slayer_aoe->add_action( "thunder_clap,if=!dot.rend.remains&talent.rend" );
   slayer_aoe->add_action( "sweeping_strikes" );
-  slayer_aoe->add_action( "thunderous_roar" );
   slayer_aoe->add_action( "avatar" );
   slayer_aoe->add_action( "champions_spear" );
-  slayer_aoe->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd|cooldown.warbreaker.remains<=gcd" );
-  slayer_aoe->add_action( "warbreaker" );
+  slayer_aoe->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_aoe->add_action( "colossus_smash" );
   slayer_aoe->add_action( "cleave" );
-  slayer_aoe->add_action( "execute,if=buff.juggernaut.remains<3&talent.juggernaut|debuff.marked_for_execution.stack=3" );
+  slayer_aoe->add_action( "execute,if=debuff.marked_for_execution.stack=3" );
   slayer_aoe->add_action( "bladestorm" );
-  slayer_aoe->add_action( "skullsplitter,if=buff.sweeping_strikes.up" );
   slayer_aoe->add_action( "overpower,if=buff.opportunist.up&talent.dreadnaught" );
   slayer_aoe->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
   slayer_aoe->add_action( "execute,if=buff.sudden_death.up" );
@@ -286,21 +264,16 @@ void arms( player_t* p )
   slayer_aoe->add_action( "thunder_clap,if=dot.rend.remains" );
   slayer_aoe->add_action( "wrecking_throw" );
   slayer_aoe->add_action( "whirlwind" );
-  slayer_aoe->add_action( "skullsplitter" );
   slayer_aoe->add_action( "slam" );
   slayer_aoe->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
   slayer_execute->add_action( "sweeping_strikes,if=active_enemies=2" );
   slayer_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
-  slayer_execute->add_action( "thunderous_roar" );
   slayer_execute->add_action( "avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up" );
   slayer_execute->add_action( "champions_spear,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_execute->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
-  slayer_execute->add_action( "warbreaker" );
   slayer_execute->add_action( "colossus_smash" );
-  slayer_execute->add_action( "execute,if=buff.juggernaut.remains<=gcd*2&talent.juggernaut" );
   slayer_execute->add_action( "bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision" );
-  slayer_execute->add_action( "skullsplitter,if=rage<=40" );
   slayer_execute->add_action( "overpower,if=buff.overpower.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<80)" );
   slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up" );
   slayer_execute->add_action( "overpower,if=rage<=40&buff.overpower.stack<2&talent.fierce_followthrough" );
@@ -311,36 +284,30 @@ void arms( player_t* p )
   slayer_execute->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
   slayer_st->add_action( "rend,if=dot.rend.remains<=gcd" );
-  slayer_st->add_action( "thunderous_roar" );
   slayer_st->add_action( "avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up" );
   slayer_st->add_action( "champions_spear,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_st->add_action( "colossus_smash,if=cooldown.avatar.remains>10&(variable.trinket_1_buffs|variable.trinket_2_buffs)|(!variable.trinket_1_buffs&!variable.trinket_2_buffs)" );
-  slayer_st->add_action( "warbreaker,if=cooldown.avatar.remains>10&(variable.trinket_1_buffs|variable.trinket_2_buffs)|(!variable.trinket_1_buffs&!variable.trinket_2_buffs)" );
   slayer_st->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
-  slayer_st->add_action( "execute,if=buff.juggernaut.remains<=gcd*4&talent.juggernaut|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3|debuff.marked_for_execution.stack=3" );
+  slayer_st->add_action( "execute,if=buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3|debuff.marked_for_execution.stack=3" );
   slayer_st->add_action( "overpower,if=buff.opportunist.up" );
-  slayer_st->add_action( "bladestorm,if=(cooldown.colossus_smash.remains>=gcd*4|cooldown.warbreaker.remains>=gcd*4)|debuff.colossus_smash.remains>=gcd*4" );
+  slayer_st->add_action( "bladestorm,if=cooldown.colossus_smash.remains>=gcd*4|debuff.colossus_smash.remains>=gcd*4" );
   slayer_st->add_action( "mortal_strike" );
-  slayer_st->add_action( "skullsplitter" );
   slayer_st->add_action( "overpower" );
   slayer_st->add_action( "rend,if=dot.rend.remains<=8" );
   slayer_st->add_action( "wrecking_throw" );
-  slayer_st->add_action( "execute,if=!talent.juggernaut" );
+  slayer_st->add_action( "execute" );
   slayer_st->add_action( "slam" );
   slayer_st->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
   slayer_sweep->add_action( "thunder_clap,if=!dot.rend.remains&!buff.sweeping_strikes.up" );
-  slayer_sweep->add_action( "thunderous_roar" );
   slayer_sweep->add_action( "sweeping_strikes" );
   slayer_sweep->add_action( "rend,if=dot.rend.remains<=gcd" );
   slayer_sweep->add_action( "champions_spear" );
   slayer_sweep->add_action( "avatar" );
   slayer_sweep->add_action( "colossus_smash,if=buff.sweeping_strikes.up" );
-  slayer_sweep->add_action( "warbreaker" );
-  slayer_sweep->add_action( "skullsplitter,if=buff.sweeping_strikes.up" );
-  slayer_sweep->add_action( "execute,if=buff.juggernaut.remains<=gcd*2|debuff.marked_for_execution.stack>3|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
-  slayer_sweep->add_action( "bladestorm,if=(cooldown.colossus_smash.remains>=gcd*4|cooldown.warbreaker.remains>=gcd*4)|debuff.colossus_smash.remains>=gcd*4" );
+  slayer_sweep->add_action( "execute,if=debuff.marked_for_execution.stack>3|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
+  slayer_sweep->add_action( "bladestorm,if=cooldown.colossus_smash.remains>=gcd*4|debuff.colossus_smash.remains>=gcd*4" );
   slayer_sweep->add_action( "overpower,if=buff.opportunist.up" );
   slayer_sweep->add_action( "mortal_strike" );
   slayer_sweep->add_action( "overpower" );
@@ -348,7 +315,7 @@ void arms( player_t* p )
   slayer_sweep->add_action( "rend,if=dot.rend.remains<=5" );
   slayer_sweep->add_action( "cleave,if=talent.fervor_of_battle&!buff.overpower.up" );
   slayer_sweep->add_action( "whirlwind,if=talent.fervor_of_battle" );
-  slayer_sweep->add_action( "execute,if=!talent.juggernaut" );
+  slayer_sweep->add_action( "execute" );
   slayer_sweep->add_action( "wrecking_throw,if=!buff.sweeping_strikes.up" );
   slayer_sweep->add_action( "slam" );
   slayer_sweep->add_action( "storm_bolt,if=buff.bladestorm.up" );
@@ -384,7 +351,7 @@ void protection( player_t* p )
   default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   default_->add_action( "use_items" );
   default_->add_action( "avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2" );
-  default_->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
+  default_->add_action( "shield_wall" );
   default_->add_action( "blood_fury" );
   default_->add_action( "berserking" );
   default_->add_action( "arcane_torrent" );
@@ -394,16 +361,15 @@ void protection( player_t* p )
   default_->add_action( "bag_of_tricks" );
   default_->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
   if ( p->sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
-    default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4&set_bonus.tier31_2pc,use_off_gcd=1" );
+    default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4,use_off_gcd=1" );
   else
-    default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4&set_bonus.tier31_2pc,use_off_gcd=1" );
-  default_->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
+    default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4,use_off_gcd=1" );
+  default_->add_action( "last_stand,if=(target.health.pct>=90&target.health.pct<=20)|talent.bolster.enabled" );
   default_->add_action( "ravager" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_->add_action( "champions_spear" );
   default_->add_action( "thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.stack=2" );
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
-  default_->add_action( "thunderous_roar" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.remains<=10" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
@@ -411,16 +377,16 @@ void protection( player_t* p )
 
   aoe->add_action( "thunder_blast,if=dot.rend.remains<=1" );
   aoe->add_action( "thunder_clap,if=dot.rend.remains<=1" );
-  aoe->add_action( "thunder_blast,if=buff.violent_outburst.up&spell_targets.thunderclap>=2&buff.avatar.up&talent.unstoppable_force.enabled" );
+  aoe->add_action( "thunder_blast,if=buff.violent_outburst.up&spell_targets.thunderclap>=2&buff.avatar.up" );
   aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
-  aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>=4&buff.avatar.up&talent.unstoppable_force.enabled&talent.crashing_thunder.enabled|buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up&talent.unstoppable_force.enabled" );
-  aoe->add_action( "revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3" );
+  aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>=4&buff.avatar.up&talent.crashing_thunder.enabled|buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up" );
+  aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
   aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4&talent.crashing_thunder.enabled" );
   aoe->add_action( "thunder_blast" );
   aoe->add_action( "thunder_clap" );
   aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
-  generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up&talent.unstoppable_force.enabled)" );
+  generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up)" );
   generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
   generic->add_action( "execute,if=rage>=70|(rage>=40&cooldown.shield_slam.remains&talent.demolish.enabled|rage>=50&cooldown.shield_slam.remains)|buff.sudden_death.up&talent.sudden_death.enabled" );
   generic->add_action( "shield_slam" );
