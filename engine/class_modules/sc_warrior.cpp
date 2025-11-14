@@ -1073,11 +1073,9 @@ public:
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
-      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-        parse_effects( p()->buff.revenge );
+      parse_effects( p()->buff.revenge );
 
-      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-        parse_effects( p()->buff.best_served_cold );
+      parse_effects( p()->buff.best_served_cold );
 
       // TWW1 Tier
       parse_effects( p()->buff.expert_strategist );   // Prot 2pc
@@ -1110,11 +1108,8 @@ public:
       // Effect 3 is the auto attack mod
       parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
 
-      if ( p()->sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
-      {
-        parse_effects( p()->buff.critical_conclusion );
-        parse_effects( p()->buff.deeper_wounds );
-      }
+      parse_effects( p()->buff.critical_conclusion );
+      parse_effects( p()->buff.deeper_wounds );
     }
 
     // Slayer
@@ -1129,8 +1124,7 @@ public:
     if ( p()->talents.mountain_thane.lightning_strikes->ok() )
     {
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
-      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-        parse_effects( p()->buff.severe_thunder );
+      parse_effects( p()->buff.severe_thunder );
     }
   }
 
@@ -1163,13 +1157,10 @@ public:
       parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
                             p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), p()->spell.wrecked_debuff->effectN( 2 ).base_value() / 1000 );
 
-      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      if( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B2 ) )
       {
-        if( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B2 ) )
-        {
-          parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
-                            p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 3 ), p()->spell.wrecked_debuff->effectN( 3 ).base_value() / 1000 );
-        }
+        parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
+                          p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 3 ), p()->spell.wrecked_debuff->effectN( 3 ).base_value() / 1000 );
       }
     }
 
@@ -1546,7 +1537,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   {
     warrior_action_t::impact( s );
 
-    if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p()->talents.protection.whirling_blade->ok() &&
+    if ( p()->talents.protection.whirling_blade->ok() &&
             s->target == p()->target && p()->rppm.whirling_blade->trigger() )
     {
       p()->active.ravager_whirling_blade->execute_on_target( s->target );
@@ -2969,10 +2960,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.lethal_blows->expire();
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
-    {
-      p()->buff.critical_conclusion->expire();
-    }
+    p()->buff.critical_conclusion->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3028,12 +3016,9 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
     {
-      if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-      {
-        p()->buff.deeper_wounds->trigger();
-      }
+      p()->buff.deeper_wounds->trigger();
     }
   }
 
@@ -3626,12 +3611,9 @@ struct demolish_t : public warrior_attack_t
     warrior_attack_t::last_tick( d );
     p()->buff.colossal_might->expire();
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
     {
-      if ( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-      {
-        p()->buff.critical_conclusion->trigger();
-      }
+      p()->buff.critical_conclusion->trigger();
     }
   }
 };
@@ -3717,13 +3699,10 @@ struct thunder_blast_t : public warrior_attack_t
       add_child( lightning_strike );
     }
 
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    if ( p->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) )
     {
-      if ( p->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) )
-      {
-        ionizing_strike = get_action<ionizing_strike_t>( "ionizing_strike", p );
-        add_child( ionizing_strike );
-      }
+      ionizing_strike = get_action<ionizing_strike_t>( "ionizing_strike", p );
+      add_child( ionizing_strike );
     }
 
     if ( p->talents.protection.violent_outburst->ok() )
@@ -3749,7 +3728,7 @@ struct thunder_blast_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p()->buff.severe_thunder->up() )
+    if (  p()->buff.severe_thunder->up() )
       p()->buff.severe_thunder->expire();
 
     if ( rng().roll( shield_slam_reset ) )
@@ -3804,25 +3783,22 @@ struct thunder_blast_t : public warrior_attack_t
 
     p()->buff.thunder_blast->decrement();
 
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
     {
-      if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
+      size_t ionizing_bolt_target = 0;
+      for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
       {
-        size_t ionizing_bolt_target = 0;
-        for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
-        {
-          ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
-          ionizing_bolt_target++;
-          if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
-            ionizing_bolt_target = 0;
-        }
+        ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
+        ionizing_bolt_target++;
+        if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
+          ionizing_bolt_target = 0;
+      }
 
-        if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
-        {
-          p()->buff.thunder_blast->trigger();
-          p()->cooldown.thunder_clap->reset( true );
-          p()->buff.severe_thunder->trigger();
-        }
+      if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
+      {
+        p()->buff.thunder_blast->trigger();
+        p()->cooldown.thunder_clap->reset( true );
+        p()->buff.severe_thunder->trigger();
       }
     }
   }
@@ -4009,7 +3985,7 @@ struct execute_damage_t : public warrior_attack_t
     finishing_wound = new finishing_wound_t( "finishing_wound", p);
     add_child( finishing_wound );
 
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p->talents.protection.heavy_handed->ok() )
+    if ( p->talents.protection.heavy_handed->ok() )
     {
       base_aoe_multiplier = p->talents.protection.heavy_handed->effectN( 2 ).percent();
     }
@@ -4091,13 +4067,10 @@ struct execute_arms_t : public warrior_attack_t
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
     {
-      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-      {
-        slayers_strike = get_action<slayers_strike_t>( "slayers_strike_execute", p );
-        add_child( slayers_strike );
-      }
+      slayers_strike = get_action<slayers_strike_t>( "slayers_strike_execute", p );
+      add_child( slayers_strike );
     }
   }
 
@@ -4192,17 +4165,14 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->buff.sudden_death -> up() )
     {
-      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
       {
-        if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
+        auto target_data = td( state->target );
+        if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
         {
-          auto target_data = td( state->target );
-          if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-          {
-            // This is resolved after everything else happens
-            slayers_strike->set_target( state-> target );
-            slayers_strike->schedule_execute();
-          }
+          // This is resolved after everything else happens
+          slayers_strike->set_target( state-> target );
+          slayers_strike->schedule_execute();
         }
       }
     }
@@ -4355,13 +4325,10 @@ struct execute_fury_t : public warrior_attack_t
       add_child( lightning_strike );
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
     {
-      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-      {
-        slayers_strike = get_action<slayers_strike_t>("slayers_strike_execute", p );
-        add_child( slayers_strike );
-      }
+      slayers_strike = get_action<slayers_strike_t>("slayers_strike_execute", p );
+      add_child( slayers_strike );
     }
   }
 
@@ -4380,17 +4347,14 @@ struct execute_fury_t : public warrior_attack_t
 
     if ( p()->buff.sudden_death -> up() )
     {
-      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
       {
-        if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
+        auto target_data = td( state->target );
+        if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
         {
-          auto target_data = td( state->target );
-          if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-          {
-            // This is resolved after everything else happens
-            slayers_strike->set_target( state->target );
-            slayers_strike->schedule_execute();
-          }
+          // This is resolved after everything else happens
+          slayers_strike->set_target( state->target );
+          slayers_strike->schedule_execute();
         }
       }
     }
@@ -5932,10 +5896,7 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.thunder_blast->trigger();
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
-    {
-      p()->buff.critical_conclusion->expire();
-    }
+    p()->buff.critical_conclusion->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -5988,12 +5949,9 @@ struct shield_slam_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.shield_slam->reset( true ); } );
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
     {
-      if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-      {
-        p()->buff.deeper_wounds->trigger();
-      }
+      p()->buff.deeper_wounds->trigger();
     }
   }
 
@@ -6099,8 +6057,7 @@ struct tough_as_nails_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
-      p() -> cooldown.tough_as_nails_icd -> start();
+    p() -> cooldown.tough_as_nails_icd -> start();
   }
 };
 
@@ -8058,8 +8015,7 @@ void warrior_t::create_buffs()
                          -> set_default_value( talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 1 ).percent() )
                          -> set_initial_stack( 1 );
 
-  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-    buff.best_served_cold = make_buff( this, "best_served_cold", find_spell( 1234772 ) );
+  buff.best_served_cold = make_buff( this, "best_served_cold", find_spell( 1234772 ) );
 
   // Colossus
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
@@ -8103,12 +8059,9 @@ void warrior_t::create_buffs()
   buff.luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218163 ) );       // Prot 2pc
 
   // TWW3 Tier
-  if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
-  {
-    buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ); // Colossus 4pc
-    buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );             // Colossus 4pc
-    buff.severe_thunder = make_buff( this, "severe_thunder", find_spell( 1252096 ) );          // Mountain Thane 4pc
-  }
+  buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ); // Colossus 4pc
+  buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );             // Colossus 4pc
+  buff.severe_thunder = make_buff( this, "severe_thunder", find_spell( 1252096 ) );          // Mountain Thane 4pc
 }
 
 // warrior_t::init_special_effects() ====================================
@@ -8144,7 +8097,7 @@ void warrior_t::init_rng()
   parse_player_effects_t::init_rng();
   rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
-  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.protection.best_served_cold->ok() )
+  if ( talents.protection.best_served_cold->ok() )
   {
     // The 20% benefit when you have best served cold is not in spelldata.  Just in the description of 202560 (Best Served Cold)
     rppm.revenge->set_modifier( rppm.revenge->get_modifier() + 0.20 );
@@ -8669,7 +8622,7 @@ void warrior_t::create_actions()
     active.slayers_strike = new slayers_strike_t( this );
   }
 
-  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.protection.whirling_blade->ok() )
+  if ( talents.protection.whirling_blade->ok() )
   {
     active.ravager_whirling_blade = new ravager_t( "ravager_whirling_blade", this );
   }
@@ -9082,13 +9035,10 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
     ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) &&
     s -> action -> player -> is_enemy() )
   {
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-    {
-      if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-        debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = true;
-      else
-        debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = false;
-    }
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+      debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = true;
+    else
+      debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = false;
     active.tough_as_nails -> execute_on_target( s -> action -> player );
   }
 }
