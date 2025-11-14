@@ -7234,171 +7234,179 @@ void warrior_t::init_spells()
 
   // Arms Talents
   // Row 1
-  talents.arms.mortal_strike                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
+  talents.arms.mortal_strike             = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
   // Row 2
-  talents.arms.overpower                           = find_talent_spell( talent_tree::SPECIALIZATION, "Overpower" );
-  talents.arms.sudden_death                        = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_ARMS );
+  talents.arms.overpower                 = find_talent_spell( talent_tree::SPECIALIZATION, "Overpower" );
+  talents.arms.sudden_death              = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_ARMS );
   // Row 3
-  talents.arms.fueled_by_violence                  = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_ARMS );
-  talents.arms.ignore_pain                         = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain", WARRIOR_ARMS );
-  talents.arms.die_by_the_sword                    = find_talent_spell( talent_tree::SPECIALIZATION, "Die by the Sword" );
+  talents.arms.fueled_by_violence        = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_ARMS );
+  talents.arms.ignore_pain               = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain", WARRIOR_ARMS );
+  talents.arms.die_by_the_sword          = find_talent_spell( talent_tree::SPECIALIZATION, "Die by the Sword" );
   // Row 4
-  talents.arms.bloodsurge                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_ARMS );
-  talents.arms.initiative                          = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
-  talents.arms.improved_overpower                  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Overpower" );
-  talents.arms.improved_execute                    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_ARMS );
-  talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
-  talents.arms.fervor_of_battle                    = find_talent_spell( talent_tree::SPECIALIZATION, "Fervor of Battle" );
+  talents.arms.bloodsurge                = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_ARMS );
+  talents.arms.initiative                = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
+  talents.arms.improved_overpower        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Overpower" );
+  talents.arms.improved_execute          = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_ARMS );
+  talents.arms.storm_of_swords           = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
+  talents.arms.fervor_of_battle          = find_talent_spell( talent_tree::SPECIALIZATION, "Fervor of Battle" );
   // Row 5
-  talents.arms.tactician                           = find_talent_spell( talent_tree::SPECIALIZATION, "Tactician" );
-  talents.arms.colossus_smash                      = find_talent_spell( talent_tree::SPECIALIZATION, "Colossus Smash" );
-  talents.arms.impale                              = find_talent_spell( talent_tree::SPECIALIZATION, "Impale" );
+  talents.arms.tactician                 = find_talent_spell( talent_tree::SPECIALIZATION, "Tactician" );
+  talents.arms.colossus_smash            = find_talent_spell( talent_tree::SPECIALIZATION, "Colossus Smash" );
+  talents.arms.impale                    = find_talent_spell( talent_tree::SPECIALIZATION, "Impale" );
   // Row 6
-  talents.arms.brute_force                         = find_talent_spell( talent_tree::SPECIALIZATION, "Brute Force" );
-  talents.arms.efficiency                          = find_talent_spell( talent_tree::SPECIALIZATION, "Efficiency" );
-  talents.arms.overpowering_finish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Overpowering Finish" );
-  talents.arms.strength_of_arms                    = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Arms", WARRIOR_ARMS );
-  talents.arms.just_warming_up                     = find_talent_spell( talent_tree::SPECIALIZATION, "Just Warming Up" );
-  talents.arms.broad_strokes                       = find_talent_spell( talent_tree::SPECIALIZATION, "Broad Strokes" );
-  talents.arms.sharpened_blades                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpened Blades" );
-  talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
-  talents.arms.collateral_damage                   = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
+  talents.arms.brute_force               = find_talent_spell( talent_tree::SPECIALIZATION, "Brute Force" );
+  talents.arms.efficiency                = find_talent_spell( talent_tree::SPECIALIZATION, "Efficiency" );
+  talents.arms.overpowering_finish       = find_talent_spell( talent_tree::SPECIALIZATION, "Overpowering Finish" );
+  talents.arms.strength_of_arms          = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Arms", WARRIOR_ARMS );
+  talents.arms.just_warming_up           = find_talent_spell( talent_tree::SPECIALIZATION, "Just Warming Up" );
+  talents.arms.broad_strokes             = find_talent_spell( talent_tree::SPECIALIZATION, "Broad Strokes" );
+  talents.arms.sharpened_blades          = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpened Blades" );
+  talents.arms.cleave                    = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
+  talents.arms.collateral_damage         = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
   // Row 7
-  talents.arms.martial_prowess                     = find_talent_spell( talent_tree::SPECIALIZATION, "Martial Prowess" );
-  talents.arms.dreadnaught                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
-  talents.arms.deep_wounds                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_ARMS );
-  talents.arms.tactical_edge                       = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Edge" );
-  talents.arms.crushing_combo                      = find_talent_spell( talent_tree::SPECIALIZATION, "Crushing Combo" );
-  talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
-  talents.arms.mass_execution                      = find_talent_spell( talent_tree::SPECIALIZATION, "Mass Execution" );
-  talents.arms.improved_sweeping_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sweeping Strikes", WARRIOR_ARMS );
-  talents.arms.powerful_momentum                   = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Momentum" );
+  talents.arms.martial_prowess           = find_talent_spell( talent_tree::SPECIALIZATION, "Martial Prowess" );
+  talents.arms.dreadnaught               = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
+  talents.arms.deep_wounds               = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_ARMS );
+  talents.arms.tactical_edge             = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Edge" );
+  talents.arms.crushing_combo            = find_talent_spell( talent_tree::SPECIALIZATION, "Crushing Combo" );
+  talents.arms.massacre                  = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
+  talents.arms.mass_execution            = find_talent_spell( talent_tree::SPECIALIZATION, "Mass Execution" );
+  talents.arms.improved_sweeping_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sweeping Strikes", WARRIOR_ARMS );
+  talents.arms.powerful_momentum         = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Momentum" );
   // Row 8
-  talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
-  talents.arms.bladestorm                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_ARMS );
-  talents.arms.ravager                             = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_ARMS );
-  talents.arms.critical_thinking                   = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_ARMS );
+  talents.arms.bloodborne                = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
+  talents.arms.bladestorm                = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_ARMS );
+  talents.arms.ravager                   = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_ARMS );
+  talents.arms.critical_thinking         = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_ARMS );
   // Row 9
-  talents.arms.battlelord                          = find_talent_spell( talent_tree::SPECIALIZATION, "Battlelord" );
-  talents.arms.bloodletting                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodletting" );  
-  talents.arms.executioners_precision              = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
-  talents.arms.fatality                            = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
+  talents.arms.battlelord                = find_talent_spell( talent_tree::SPECIALIZATION, "Battlelord" );
+  talents.arms.bloodletting              = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodletting" );  
+  talents.arms.executioners_precision    = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
+  talents.arms.fatality                  = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
   // Row 10
-  talents.arms.master_tactician                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Tactician" );
-  talents.arms.mortal_wounds                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Wounds" );
-  talents.arms.avatar                              = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar", WARRIOR_ARMS );
+  talents.arms.master_tactician          = find_talent_spell( talent_tree::SPECIALIZATION, "Master Tactician" );
+  talents.arms.mortal_wounds             = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Wounds" );
+  talents.arms.avatar                    = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar", WARRIOR_ARMS );
   // Apex
-  talents.arms.master_of_warfare_1                 = find_talent_spell( talent_tree::SPECIALIZATION, 1269314 );
-  talents.arms.master_of_warfare_2                 = find_talent_spell( talent_tree::SPECIALIZATION, 1269306 );
-  talents.arms.master_of_warfare_3                 = find_talent_spell( talent_tree::SPECIALIZATION, 1269307 );
+  talents.arms.master_of_warfare_1       = find_talent_spell( talent_tree::SPECIALIZATION, 1269314 );
+  talents.arms.master_of_warfare_2       = find_talent_spell( talent_tree::SPECIALIZATION, 1269306 );
+  talents.arms.master_of_warfare_3       = find_talent_spell( talent_tree::SPECIALIZATION, 1269307 );
 
   // Fury Talents
   // Row 1
-  talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
+  talents.fury.bloodthirst           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
   // Row 2
-  talents.fury.frenzied_enrage      = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Enrage" );
-  talents.fury.powerful_enrage      = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Enrage" );
-  talents.fury.raging_blow          = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Blow" );
+  talents.fury.frenzied_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Enrage" );
+  talents.fury.powerful_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Enrage" );
+  talents.fury.raging_blow           = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Blow" );
   // Row 3
-  talents.fury.fresh_meat           = find_talent_spell( talent_tree::SPECIALIZATION, "Fresh Meat" );
-  talents.fury.enraged_regeneration = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
-  talents.fury.improved_raging_blow = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Raging Blow" );
+  talents.fury.fresh_meat            = find_talent_spell( talent_tree::SPECIALIZATION, "Fresh Meat" );
+  talents.fury.enraged_regeneration  = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
+  talents.fury.improved_raging_blow  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Raging Blow" );
   // Row 4
-  talents.fury.focus_in_chaos       = find_talent_spell( talent_tree::SPECIALIZATION, "Focus in Chaos" );
-  talents.fury.sudden_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_FURY );
-  talents.fury.warpaint             = find_talent_spell( talent_tree::SPECIALIZATION, "Warpaint" );
-  talents.fury.invigorating_fury    = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Fury" );
-  talents.fury.improved_execute     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
-  talents.fury.improved_whirlwind   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Whirlwind" );
+  talents.fury.focus_in_chaos        = find_talent_spell( talent_tree::SPECIALIZATION, "Focus in Chaos" );
+  talents.fury.sudden_death          = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_FURY );
+  talents.fury.warpaint              = find_talent_spell( talent_tree::SPECIALIZATION, "Warpaint" );
+  talents.fury.invigorating_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Fury" );
+  talents.fury.improved_execute      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
+  talents.fury.improved_whirlwind    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Whirlwind" );
   // Row 5
-  talents.fury.improved_bloodthirst = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bloodthirst" );
-  talents.fury.rampage              = find_talent_spell( talent_tree::SPECIALIZATION, "Rampage" );
-  talents.fury.cruelty              = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
-  talents.fury.rampaging_ruin       = find_talent_spell( talent_tree::SPECIALIZATION, "Rampaging Ruin" );
+  talents.fury.improved_bloodthirst  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bloodthirst" );
+  talents.fury.rampage               = find_talent_spell( talent_tree::SPECIALIZATION, "Rampage" );
+  talents.fury.cruelty               = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
+  talents.fury.rampaging_ruin        = find_talent_spell( talent_tree::SPECIALIZATION, "Rampaging Ruin" );
   // Row 6
-  talents.fury.cold_steel_hot_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
-  talents.fury.scent_of_blood       = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
-  talents.fury.kill_or_be_killed    = find_talent_spell( talent_tree::SPECIALIZATION, "Kill or Be Killed" );
-  talents.fury.hack_and_slash       = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
-  talents.fury.bloodcraze           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodcraze" );
+  talents.fury.cold_steel_hot_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
+  talents.fury.scent_of_blood        = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
+  talents.fury.kill_or_be_killed     = find_talent_spell( talent_tree::SPECIALIZATION, "Kill or Be Killed" );
+  talents.fury.hack_and_slash        = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
+  talents.fury.bloodcraze            = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodcraze" );
   // Row 7
-  talents.fury.ragedrinker          = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
-  talents.fury.deep_wounds          = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_FURY );
-  talents.fury.recklessness         = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
-  talents.fury.massacre             = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
-  talents.fury.wrath_and_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
-  talents.fury.meat_cleaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
+  talents.fury.ragedrinker           = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
+  talents.fury.deep_wounds           = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_FURY );
+  talents.fury.recklessness          = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
+  talents.fury.massacre              = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
+  talents.fury.wrath_and_fury        = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
+  talents.fury.meat_cleaver          = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
   // Row 8
-  talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
-  talents.fury.frenzy               = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy" );
-  talents.fury.critical_thinking    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
+  talents.fury.deft_experience       = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
+  talents.fury.frenzy                = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy" );
+  talents.fury.critical_thinking     = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
   // Row 9
-  talents.fury.vicious_contempt     = find_talent_spell( talent_tree::SPECIALIZATION, "Vicious Contempt" );
-  talents.fury.odyns_fury           = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
-  talents.fury.bloodborne           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_FURY );
-  talents.fury.surge_of_adrenaline  = find_talent_spell( talent_tree::SPECIALIZATION, "Surge of Adrenaline" );
+  talents.fury.vicious_contempt      = find_talent_spell( talent_tree::SPECIALIZATION, "Vicious Contempt" );
+  talents.fury.odyns_fury            = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
+  talents.fury.bloodborne            = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_FURY );
+  talents.fury.surge_of_adrenaline   = find_talent_spell( talent_tree::SPECIALIZATION, "Surge of Adrenaline" );
   // Row 10
   talents.fury.executioners_wrath    = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Wrath" );
-  talents.fury.reckless_abandon     = find_talent_spell( talent_tree::SPECIALIZATION, "Reckless Abandon" );
+  talents.fury.reckless_abandon      = find_talent_spell( talent_tree::SPECIALIZATION, "Reckless Abandon" );
   talents.fury.avatar                = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar", WARRIOR_FURY );
-  talents.fury.bladestorm           = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_FURY );
+  talents.fury.bladestorm            = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_FURY );
   // Apex
   talents.fury.rampaging_berserker_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1269308 );
   talents.fury.rampaging_berserker_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1269309 );
   talents.fury.rampaging_berserker_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1269310 );
 
   // Protection Talents
+  // Row 1
   talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
-
-  talents.protection.revenge                = find_talent_spell( talent_tree::SPECIALIZATION, "Revenge" );
-
+  // Row 2
   talents.protection.demoralizing_shout     = find_talent_spell( talent_tree::SPECIALIZATION, "Demoralizing Shout" );
-  talents.protection.devastator             = find_talent_spell( talent_tree::SPECIALIZATION, "Devastator" );
-
-  talents.protection.fight_through_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Fight Through the Flames" );
-  talents.protection.best_served_cold       = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
-  talents.protection.strategist             = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
+  talents.protection.revenge                = find_talent_spell( talent_tree::SPECIALIZATION, "Revenge" );
+  // Row 3
   talents.protection.brace_for_impact       = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
-
-  talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
-  talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
-  talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_PROTECTION );
-  talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
-
+  talents.protection.armor_specialization   = find_talent_spell( talent_tree::SPECIALIZATION, "Armor Specialization", WARRIOR_PROTECTION );
+  talents.protection.fight_through_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Fight Through the Flames" );
+  talents.protection.devastator             = find_talent_spell( talent_tree::SPECIALIZATION, "Devastator" );
+  // Row 4
   talents.protection.disrupting_shout       = find_talent_spell( talent_tree::SPECIALIZATION, "Disrupting Shout" );
-  talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
-  talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
+  talents.protection.strategist             = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
+  talents.protection.devastating_focus      = find_talent_spell( talent_tree::SPECIALIZATION, "Devastating Focus" );
+  // Row 5
+  talents.protection.i_can_do_this_all_day  = find_talent_spell( talent_tree::SPECIALIZATION, "I Can Do This All Day" );
+  talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
+  talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
-  talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
+  talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
+  talents.protection.best_served_cold       = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
+  // Row 6
   talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
-  talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
-
-  talents.protection.heavy_repercussions    = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
-  talents.protection.into_the_fray          = find_talent_spell( talent_tree::SPECIALIZATION, "Into the Fray" );
-  talents.protection.enduring_defenses      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
-  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
+  talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
   talents.protection.defenders_aegis        = find_talent_spell( talent_tree::SPECIALIZATION, "Defender's Aegis" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
+  talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
+  talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-
+  talents.protection.spellbreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Breaker", WARRIOR_PROTECTION );
+  talents.protection.hunker_down            = find_talent_spell( talent_tree::SPECIALIZATION, "Hunker Down", WARRIOR_PROTECTION );
+  // Row 7
+  talents.protection.heavy_handed           = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed", WARRIOR_PROTECTION );
+  talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_PROTECTION );
+  talents.protection.enduring_defenses      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
+  talents.protection.unyielding_stance      = find_talent_spell( talent_tree::SPECIALIZATION, "Unyielding Stance", WARRIOR_PROTECTION );
+  talents.protection.deep_wounds            = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_PROTECTION );
+  // Row 8
+  talents.protection.heavy_repercussions    = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
+  talents.protection.into_the_fray          = find_talent_spell( talent_tree::SPECIALIZATION, "Into the Fray" );
   talents.protection.focused_vigor          = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
   talents.protection.shield_specialization  = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
   talents.protection.enduring_alacrity      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Alacrity" );
-
-  talents.protection.shield_charge          = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Charge" );
+  talents.protection.avatar                 = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar", WARRIOR_PROTECTION );
+  // Row 9
+  talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
   talents.protection.booming_voice          = find_talent_spell( talent_tree::SPECIALIZATION, "Booming Voice" );
   talents.protection.indomitable            = find_talent_spell( talent_tree::SPECIALIZATION, "Indomitable" );
   talents.protection.violent_outburst       = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
-  talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_PROTECTION );
+  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
+  // Row 10
+  talents.protection.shield_charge          = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Charge" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
-
-  // 11.2 New talents
-  talents.protection.armor_specialization   = find_talent_spell( talent_tree::SPECIALIZATION, "Armor Specialization", WARRIOR_PROTECTION );
-  talents.protection.heavy_handed           = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed", WARRIOR_PROTECTION );
   talents.protection.whirling_blade         = find_talent_spell( talent_tree::SPECIALIZATION, "Whirling Blade", WARRIOR_PROTECTION );
-  talents.protection.hunker_down            = find_talent_spell( talent_tree::SPECIALIZATION, "Hunker Down", WARRIOR_PROTECTION );
-  talents.protection.spellbreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Breaker", WARRIOR_PROTECTION );
-  talents.protection.unyielding_stance      = find_talent_spell( talent_tree::SPECIALIZATION, "Unyielding Stance", WARRIOR_PROTECTION );
+  talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_PROTECTION );
+  // Apex
+  talents.protection.phalanx_1              = find_talent_spell( talent_tree::SPECIALIZATION, 1269311 );
+  talents.protection.phalanx_2              = find_talent_spell( talent_tree::SPECIALIZATION, 1269312 );
+  talents.protection.phalanx_3              = find_talent_spell( talent_tree::SPECIALIZATION, 1269313 );
 
   // Colossus Hero Talents
   talents.colossus.demolish                     = find_talent_spell( talent_tree::HERO, "Demolish" );
@@ -7406,14 +7414,17 @@ void warrior_t::init_spells()
   talents.colossus.colossal_might               = find_talent_spell( talent_tree::HERO, "Colossal Might" );
   talents.colossus.boneshaker                   = find_talent_spell( talent_tree::HERO, "Boneshaker" );
   talents.colossus.earthquaker                  = find_talent_spell( talent_tree::HERO, "Earthquaker" );
+  talents.colossus.decimator                    = find_talent_spell( talent_tree::HERO, "Decimator" );
   talents.colossus.one_against_many             = find_talent_spell( talent_tree::HERO, "One Against Many" );
   talents.colossus.arterial_bleed               = find_talent_spell( talent_tree::HERO, "Arterial Bleed" );
   talents.colossus.tide_of_battle               = find_talent_spell( talent_tree::HERO, "Tide of Battle" );
   talents.colossus.no_stranger_to_pain          = find_talent_spell( talent_tree::HERO, "No Stranger to Pain" );
   talents.colossus.veteran_vitality             = find_talent_spell( talent_tree::HERO, "Veteran Vitality" );
+  talents.colossus.cut_to_the_bone              = find_talent_spell( talent_tree::HERO, "Cut to the Bone" );
   talents.colossus.practiced_strikes            = find_talent_spell( talent_tree::HERO, "Practiced Strikes" );
   talents.colossus.precise_might                = find_talent_spell( talent_tree::HERO, "Precise Might" );
   talents.colossus.mountain_of_muscle_and_scars = find_talent_spell( talent_tree::HERO, "Mountain of Muscle and Scars" );
+  talents.colossus.celeritous_conclusion        = find_talent_spell( talent_tree::HERO, "Celeritous Conclusion" );
   talents.colossus.dominance_of_the_colossus    = find_talent_spell( talent_tree::HERO, "Dominance of the Colossus" );
 
   // Slayer Hero Talents
