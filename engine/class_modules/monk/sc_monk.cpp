@@ -132,6 +132,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.combo_breaker, affect_list_t( 1, 2, 3 ).remove_spell(
                                               p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
+  parse_effects( p()->buff.zenith );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
@@ -3554,6 +3555,24 @@ struct jadefire_stomp_t : public monk_spell_t
     damage->execute_on_target( s->target );
   }
 };
+
+struct zenith_t : public monk_spell_t
+{
+  zenith_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.zenith->trigger();
+    p()->cooldown.rising_sun_kick->reset( true );
+    p()->resource_gain( RESOURCE_CHI, data().effectN( 9 ).base_value(), p()->gain.zenith );
+  }
+};
 }  // namespace spells
 
 namespace heals
@@ -4730,6 +4749,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new rushing_jade_wind_t( this, options_str );
   if ( name == "whirling_dragon_punch" )
     return new whirling_dragon_punch_t( this, options_str );
+  if ( name == "zenith" )
+    return new zenith_t( this, options_str );
 
   // Conduit of the Celestials
   if ( name == "celestial_conduit" )
@@ -5703,6 +5724,8 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
+  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith );
+
   // Conduit of the Celestials
   buff.celestial_conduit =
       make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this, "celestial_conduit",
@@ -5878,6 +5901,7 @@ void monk_t::init_gains()
   gain.energy_burst         = get_gain( "energy_burst" );
   gain.energy_refund        = get_gain( "energy_refund" );
   gain.touch_of_death_ww    = get_gain( "touch_of_death_ww" );
+  gain.zenith               = get_gain( "zenith" );
 }
 
 void monk_t::init_procs()

@@ -488,6 +488,7 @@ public:
     propagate_const<buff_t *> touch_of_death_ww;
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
+    propagate_const<buff_t *> zenith;
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
@@ -526,6 +527,7 @@ public:
     propagate_const<gain_t *> energy_burst;
     propagate_const<gain_t *> energy_refund;
     propagate_const<gain_t *> touch_of_death_ww;
+    propagate_const<gain_t *> zenith;
   } gain;
 
   struct
