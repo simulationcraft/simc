@@ -2836,6 +2836,12 @@ struct voidfall_building_trigger_t : public BASE
     if ( !BASE::rng().roll( BASE::p()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
       return;
 
+    // can't gain building while spending is up
+    if ( BASE::p()->buff.voidfall_spending->up() )
+    {
+      return;
+    }
+
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() ) );
   }
@@ -8887,17 +8893,6 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
     expire_at_max_stack = true;
   }
 
-  void increment( int stacks, double value, timespan_t duration ) override
-  {
-    // can't gain building while spending is up
-    if ( p()->buff.voidfall_spending->up() )
-    {
-      return;
-    }
-
-    base_t::increment( stacks, value, duration );
-  }
-
   void expire( timespan_t d ) override
   {
     int stacks = current_stack;
@@ -9496,7 +9491,7 @@ void demon_hunter_t::create_buffs()
   // TODO: Measure this slow duration instead of guessing.
   buff.voidrush =
       make_buff( this, "voidrush", talent.devourer.voidrush )
-          ->set_duration( 1_s )
+          ->set_duration( 0.5_s )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
 

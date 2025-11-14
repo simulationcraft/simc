@@ -15474,13 +15474,15 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_EXPERTISE:  // 240
       case A_MOD_BLOCK_PCT:  // 272
       case A_MOD_ALL_CRIT_CHANCE:  // 290
-      case A_MOD_MASTERY_PCT:  // 318
       case A_OVERRIDE_SP_PER_AP:  // 366
       case A_OVERRIDE_AP_PER_SP:  // 404
       case A_MOD_VERSATILITY_PCT:  // 417
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
         flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_MASTERY_PCT:  // 318
+        flat_val = modifying_eff.base_value();
         break;
 
       case A_MOD_PERCENT_STAT:  // 80

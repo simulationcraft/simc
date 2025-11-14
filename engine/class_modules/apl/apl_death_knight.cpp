@@ -315,12 +315,13 @@ void unholy( player_t* p )
   default_->add_action( "army_of_the_dead" );
   default_->add_action( "dark_transformation" );
   default_->add_action( "soul_reaper" );
-  default_->add_action( "putrefy,if=lesser_ghoul.count>1&buff.forbidden_knowledge.up&runic_power.deficit>10" );
+  default_->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate" );
+  default_->add_action( "putrefy,if=lesser_ghoul.count>1+(buff.dark_transformation.up&talent.reanimation)&(buff.forbidden_knowledge.up&runic_power.deficit>10|charges=max_charges|buff.dark_transformation.up&talent.reanimation)" );
   default_->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&buff.forbidden_knowledge.up&runic_power.deficit>10" );
-  default_->add_action( "epidemic,if=active_enemies>=4&(buff.sudden_doom.react|buff.forbidden_knowledge.up&rune<4|runic_power.deficit<20)" );
+  default_->add_action( "epidemic,if=active_enemies>=4&(buff.sudden_doom.react|buff.forbidden_knowledge.up&rune<4&active_enemies>=6|runic_power.deficit<20)" );
   default_->add_action( "death_coil,if=buff.sudden_doom.react|buff.forbidden_knowledge.up&rune<4|runic_power.deficit<20" );
   default_->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
-  default_->add_action( "putrefy,if=lesser_ghoul.count>1" );
+  default_->add_action( "putrefy,if=lesser_ghoul.count>1+(buff.dark_transformation.up&talent.reanimation)&(!talent.reanimation|talent.reanimation&cooldown.dark_transformation.remains>cooldown.putrefy.duration)" );
   default_->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
   default_->add_action( "epidemic,if=active_enemies>=4" );
   default_->add_action( "death_coil" );

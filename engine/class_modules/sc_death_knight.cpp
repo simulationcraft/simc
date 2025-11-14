@@ -14532,7 +14532,7 @@ void death_knight_t::create_buffs()
 
   buffs.ancient_power =
       make_fallback( talent.unholy.ancient_power.ok(), this, "ancient_power", spell.ancient_runes_buff )
-          ->set_default_value( talent.unholy.ancient_power->effectN( 1 ).percent() )
+          ->set_default_value( talent.unholy.ancient_power->effectN( 1 ).percent() / 100 )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
           ->add_invalidate( CACHE_STRENGTH )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
