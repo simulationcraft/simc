@@ -5642,7 +5642,7 @@ struct razorice_attack_t final : public death_knight_spell_t
 struct sanguination_heal_t final : public heal_t
 {
   sanguination_heal_t( std::string_view name, death_knight_t* p )
-    : heal_t( "rune_of_sanguination", p, p->runeforge_spell.sanguination_heal )
+    : heal_t( name, p, p->runeforge_spell.sanguination_heal )
   {
     background    = true;
     harmful       = false;
