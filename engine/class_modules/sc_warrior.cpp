@@ -2413,7 +2413,7 @@ struct bloodthirst_t : public warrior_attack_t
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      enrage_chance( p->talents.fury.bloodthirst->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
       reap_the_storm( nullptr ),
@@ -2452,7 +2452,7 @@ struct bloodthirst_t : public warrior_attack_t
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      enrage_chance( p->talents.fury.bloodthirst->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
       unhinged( false )
@@ -2644,7 +2644,7 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound( nullptr ),
       bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      enrage_chance( p->spec.bloodbath->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
       reap_the_storm( nullptr ),
@@ -2688,7 +2688,7 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound( nullptr ),
       bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      enrage_chance( p->spec.bloodbath->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
       unhinged( false )
@@ -7087,7 +7087,6 @@ void warrior_t::init_spells()
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
   spec.fury_warrior             = find_specialization_spell( "Fury Warrior" );
   spec.fury_warrior_2           = find_spell( 462117 );  // Trinket aura
-  spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.execute                  = find_specialization_spell( "Execute" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.bloodbath                = find_spell(335096);
