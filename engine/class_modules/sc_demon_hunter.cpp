@@ -6813,6 +6813,11 @@ struct blade_dance_base_t
           first_blood_attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
         }
       }
+
+      if ( attacks.front() )
+      {
+        first_blood_attacks.front()->first_attack = true;
+      }
     }
   }
 
