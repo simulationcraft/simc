@@ -279,7 +279,8 @@ private:
   struct crackling_tiger_lightning_tick_t : public pet_spell_t
   {
     crackling_tiger_lightning_tick_t( xuen_pet_t *p )
-      : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->talent.windwalker.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning_tick", p,
+                     p->o()->talent.conduit_of_the_celestials.crackling_tiger_lightning_driver->effectN( 1 ).trigger() )
     {
       background   = true;
       merge_report = false;
@@ -289,14 +290,17 @@ private:
   struct crackling_tiger_lightning_t : public pet_spell_t
   {
     crackling_tiger_lightning_t( xuen_pet_t *p, std::string_view options_str )
-      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->talent.windwalker.crackling_tiger_lightning_driver )
+      : pet_spell_t( "crackling_tiger_lightning", p,
+                     p->o()->talent.conduit_of_the_celestials.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
-      s_data_reporting = p->o()->talent.windwalker.crackling_tiger_lightning;
+      s_data_reporting =
+          p->o()->talent.conduit_of_the_celestials.crackling_tiger_lightning_driver->effectN( 1 ).trigger();
 
-      dot_duration = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();
+      dot_duration = p->o()->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->duration();
       cooldown->duration =
-          p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();  // we're done when Xuen despawns
+          p->o()->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->duration();  // we're done when Xuen
+                                                                                             // despawns
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -403,8 +407,8 @@ struct auto_attack_t : public pet_auto_attack_t
 niuzao_pet_t::niuzao_pet_t( std::string_view name, monk_t *player )
   : monk_pet_t( player, name, PET_NIUZAO, false, true ), stomp( nullptr )
 {
-  npc_id                = as<int>( o()->talent.windwalker.invoke_xuen_the_white_tiger_npc->effectN( 1 ).misc_value1() );
-  main_hand_weapon.type = WEAPON_BEAST;
+  npc_id = as<int>( o()->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger_npc->effectN( 1 ).misc_value1() );
+  main_hand_weapon.type       = WEAPON_BEAST;
   main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
   main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
   main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
@@ -442,54 +446,11 @@ struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
   {
   }
 };
-
-struct white_tiger_statue_t : public monk_pet_t
-{
-private:
-  struct claw_of_the_white_tiger_t : public pet_spell_t
-  {
-    claw_of_the_white_tiger_t( white_tiger_statue_t *p, std::string_view options_str )
-      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->talent.monk.claw_of_the_white_tiger )
-    {
-      parse_options( options_str );
-      aoe = -1;
-    }
-  };
-
-public:
-  white_tiger_statue_t( monk_t *owner ) : monk_pet_t( owner, "white_tiger_statue", PET_MONK_STATUE, false, true )
-  {
-    npc_id                      = owner->talent.monk.summon_white_tiger_statue->effectN( 1 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap      = 1.00;
-  }
-
-  void init_action_list() override
-  {
-    action_list_str = "claw_of_the_white_tiger";
-
-    pet_t::init_action_list();
-  }
-
-  action_t *create_action( std::string_view name, std::string_view options_str ) override
-  {
-    if ( name == "claw_of_the_white_tiger" )
-      return new claw_of_the_white_tiger_t( this, options_str );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t *p )
   : xuen( "xuen_the_white_tiger", p, []( monk_t *p ) { return new pets::xuen_pet_t( p ); } ),
-    niuzao( "niuzao_the_black_ox", p, []( monk_t *p ) { return new pets::invoke_niuzao_pet_t( p ); } ),
-    white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } )
+    niuzao( "niuzao_the_black_ox", p, []( monk_t *p ) { return new pets::invoke_niuzao_pet_t( p ); } )
 {
 }
 }  // namespace monk
