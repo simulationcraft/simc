@@ -5332,6 +5332,48 @@ void monk_t::init_spells()
   talent.shared_spell.rushing_jade_wind_tick = find_spell( 148187 );
 
   // Register passives
+  // Instant Spells with a reduced GCD
+  register_passive_affect_list( baseline.brewmaster.aura_2, affect_list_t( 3 ).remove_label( 640 ) );
+  // Instant Spells with a reduced GCD
+  register_passive_affect_list( baseline.brewmaster.aura_4,
+                                affect_list_t( 7 ).remove_spell( 115098,  // Chi Wave Action
+                                                                 130654,  // Chi Burst Heal
+                                                                 148135,  // Chi Burst Damage
+                                                                 185099,  // Rising Sun Kick Damage
+                                                                 228649,  // Teachings of the Monastery Blackout Kick
+                                                                 261682,  // Chi Burst Energize
+                                                                 280184,  // Unknown Leg Sweep?
+                                                                 322111,  // Touch of Death Damage
+                                                                 331433,  // Unknown Tiger Palm?
+                                                                 392959,  // Glory of the Dawn
+                                                                 450342,  // Crashing Momentum
+                                                                 451968,  // Combat Wisdom Expel Harm Heal
+                                                                 468179,  // Rushing Wind Kick Damage
+                                                                 1249625  // Zenith
+                                                                 ) );
+  // Chargeless Spells with a reduced Charge Cooldown
+  register_passive_affect_list( talent.brewmaster.fluidity_of_motion,
+                                affect_list_t( 2 ).remove_spell( 100784 ) );  // Blackout Kick
+  // Instant Spells with a reduced GCD
+  register_passive_affect_list( baseline.windwalker.aura_2, affect_list_t( 2 ).remove_label( 640 ) );
+  // Instant Spells with a reduced GCD
+  register_passive_affect_list( baseline.windwalker.aura_4,
+                                affect_list_t( 8 ).remove_spell( 115098,  // Chi Wave Action
+                                                                 130654,  // Chi Burst Heal
+                                                                 148135,  // Chi Burst Damage
+                                                                 185099,  // Rising Sun Kick Damage
+                                                                 228649,  // Teachings of the Monastery Blackout Kick
+                                                                 261682,  // Chi Burst Energize
+                                                                 280184,  // Old Leg Sweep Modifier
+                                                                 322111,  // Touch of Death Damage
+                                                                 331433,  // Some Weird Tiger Palm
+                                                                 392959,  // Glory of the Dawn
+                                                                 450342,  // Crashing Momentum
+                                                                 451968,  // Combat Wisdom Expel Harm Heal
+                                                                 468179,  // Rushing Wind Kick Damage
+                                                                 1249625  // Zenith
+                                                                 ) );
+  // Scripted enablement based on specialization
   register_passive_effect_mask( talent.shado_pan.efficient_training, specialization() == MONK_WINDWALKER
                                                                          ? effect_mask_t( true ).disable( 5 )
                                                                          : effect_mask_t( true ) );
