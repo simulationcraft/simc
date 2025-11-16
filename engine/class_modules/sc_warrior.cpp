@@ -6235,7 +6235,7 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
 
-    if ( p()->talents.colossus.one_against_many->ok() )
+    if ( p()->talents.colossus.one_against_many->ok() && p()->specialization() == WARRIOR_ARMS )
     {
       m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
     }
