@@ -1049,9 +1049,6 @@ public:
       parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
       parse_effects( p()->buff.berserker_stance );
       parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
-      // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
-      if ( p()->talents.fury.powerful_enrage->ok() )
-        parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 10, 11, 12 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -9051,26 +9048,21 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
   if ( s->result == RESULT_HIT || s->result == RESULT_CRIT || s->result == RESULT_GLANCE )
   {
     if ( buff.defensive_stance->up() )
-    {
       s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent();
-    }
 
     if ( buff.defensive_stance->up() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
-    {
       s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 3 ).percent();
-    }
+
+    if ( buff.enrage->up() && talents.fury.warpaint->ok() )
+      s->result_amount *= 1.0 + buff.enrage->data().effectN( 3 ).percent();
 
     warrior_td_t* td = get_target_data( s->action->player );
 
     if ( td->debuffs_demoralizing_shout->up() )
-    {
       s->result_amount *= 1.0 + td->debuffs_demoralizing_shout->value();
-    }
 
     if ( td -> debuffs_punish -> up() )
-    {
       s -> result_amount *= 1.0 + td -> debuffs_punish -> value();
-    }
 
     if ( school != SCHOOL_PHYSICAL && buff.spell_reflection->up() )
     {
@@ -9079,13 +9071,9 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
     }
     // take care of dmg reduction CDs
     if ( buff.shield_wall->up() )
-    {
       s->result_amount *= 1.0 + buff.shield_wall->value();
-    }
     else if ( buff.die_by_the_sword->up() )
-    {
       s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
-    }
 
     if ( specialization() == WARRIOR_PROTECTION )
       s->result_amount *= 1.0 + spec.vanguard -> effectN( 3 ).percent();
@@ -9146,6 +9134,8 @@ void warrior_t::parse_player_effects()
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
+    if ( talents.fury.powerful_enrage->ok() )
+      parse_effects( buff.enrage, effect_mask_t( false ).enable( 5, 6 ) );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
