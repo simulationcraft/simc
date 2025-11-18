@@ -129,6 +129,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_demoralizing_shout;
+  buff_t* debuffs_honed_reflexes;
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
   buff_t* debuffs_callous_reprisal;
@@ -4703,6 +4704,14 @@ struct pummel_t : public warrior_attack_t
     is_interrupt = true;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.warrior.honed_reflexes->ok() )
+      td( state->target )->debuffs_honed_reflexes->trigger();
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
@@ -7851,6 +7860,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
 
+  debuffs_honed_reflexes = make_buff( *this, "honed_reflexes", p.talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
+
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
   debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() );
@@ -9123,6 +9134,8 @@ void warrior_t::parse_player_effects()
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
   parse_effects( buff.battle_stance );
   parse_effects( buff.defensive_stance );
+
+  parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
 
   if ( specialization() == WARRIOR_ARMS )
   {
