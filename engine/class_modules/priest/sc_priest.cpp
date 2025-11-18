@@ -3144,6 +3144,9 @@ void priest_t::init_spells()
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
   tww3_spells.voidweaver_4pc = sets->set( HERO_VOIDWEAVER, TWW3, B4 );
+  
+  if ( specialization()  == PRIEST_SHADOW)
+    deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
   // Register passives
   parse_all_class_passives();

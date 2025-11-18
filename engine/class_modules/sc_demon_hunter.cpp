@@ -5928,6 +5928,8 @@ struct eradicate_t : public reap_base_t
   eradicate_t( demon_hunter_t* p, util::string_view o )
     : reap_base_t( "eradicate", p, p->spec.eradicate, o, p->spec.eradicate_damage, p->spec.reap_energize )
   {
+    damage_action->aoe                 = -1;
+    damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -6159,9 +6161,9 @@ struct collapsing_star_t : public demon_hunter_spell_t
     {
       double m = base_t::composite_da_multiplier( s );
 
-      if ( s->chain_target == 0 )
+      if ( s->chain_target != 0 )
       {
-        m *= 1.0 + p()->spec.collapsing_star_spell->effectN( 2 ).percent();
+        m *= 1.0 - p()->spec.collapsing_star_spell->effectN( 2 ).percent();
       }
 
       if ( p()->talent.annihilator.otherworldly_focus->ok() )

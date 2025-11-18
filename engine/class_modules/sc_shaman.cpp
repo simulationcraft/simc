@@ -5,6 +5,7 @@
 
 #include "config.hpp"
 
+#include "action/action.hpp"
 #include "action/action_state.hpp"
 #include "action/attack.hpp"
 #include "action/dot.hpp"
@@ -1186,6 +1187,15 @@ public:
     action_t* tww3_fire_nova;
   } action;
 
+  // Set of dummy actions for reporting (stats collection) purposes
+  struct dummy_actions_t
+  {
+    action_t* arc_discharge;
+    action_t* stormblast;
+    action_t* thorims_invocation;
+    action_t* ride_the_lightning;
+  } dummy;
+
   // Pets
   struct pets_t
   {
@@ -2265,6 +2275,27 @@ struct hprio_cd_min_remains_expr_t : public expr_t
   }
 };
 } // namespace expr ends
+
+// ==========================================================================
+// Shaman Action Base Template
+// ==========================================================================
+
+struct dummy_action_t : public action_t
+{
+  dummy_action_t( player_t* actor, const spell_data_t* spell, util::string_view name_str = {} ) :
+    action_t( ACTION_OTHER, name_str.empty() ? spell->name_cstr() : name_str, actor, spell )
+  {
+    background = true;
+    callbacks = may_crit = false;
+  }
+
+  dummy_action_t( player_t* actor, const player_talent_t& talent, util::string_view name_str = {} ) :
+    dummy_action_t( actor, talent.spell(), name_str )
+  { }
+
+  bool ready() override
+  { return false; }
+};
 
 // ==========================================================================
 // Shaman Action Base Template
@@ -4601,7 +4632,16 @@ struct stormstrike_attack_t : public shaman_attack_t
       std::string name_str { "stormblast_" };
       name_str += n;
       stormblast = new stormblast_t( player, name_str );
-      add_child( stormblast );
+    }
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    if ( p()->talent.stormblast.ok() )
+    {
+      p()->dummy.stormblast->add_child( stormblast );
     }
   }
 
@@ -6381,9 +6421,9 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto ws_action = p()->find_action( "windstrike" ) )
+        if ( auto parent = p()->find_action( "thorims_invocation" ) )
         {
-          ws_action->add_child( this );
+          parent->add_child( this );
         }
         break;
       }
@@ -6394,17 +6434,9 @@ struct chain_lightning_t : public chained_base_t
         base_costs[ RESOURCE_MANA ] = 0;
         chain_multiplier *= 1.0 - p()->talent.ride_the_lightning->effectN( 1 ).percent();
         base_multiplier *= p()->talent.ride_the_lightning->effectN( 2 ).percent();
-        if ( util::str_in_str_ci( name_str, "_ll" ) )
+        if ( auto parent = player->find_action( "ride_the_lightning" ) )
         {
-          if ( auto a = p()->find_action( "lava_lash" ) ) { a->add_child( this ); }
-        }
-        else if ( util::str_in_str_ci( name_str, "_ss" ) )
-        {
-          if ( auto a = p()->find_action( "stormstrike" ) ) { a->add_child( this ); }
-        }
-        else if ( util::str_in_str_ci( name_str, "_ws" ) )
-        {
-          if ( auto a = p()->find_action( "windstrike" ) ) { a->add_child( this ); }
+          parent->add_child( this );
         }
         break;
       }
@@ -6413,9 +6445,9 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto ptr = p()->find_action( "chain_lightning" ) )
+        if ( auto parent = p()->find_action( "arc_discharge" ) )
         {
-          ptr->add_child( this );
+          parent->add_child( this );
         }
         break;
       }
@@ -7311,9 +7343,9 @@ struct lightning_bolt_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto ws_action = p()->find_action( "windstrike" ) )
+        if ( auto parent = p()->find_action( "thorims_invocation" ) )
         {
-          ws_action->add_child( this );
+          parent->add_child( this );
         }
         break;
       }
@@ -10274,9 +10306,9 @@ struct tempest_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto ws_action = p()->find_action( "windstrike" ) )
+        if ( auto parent = p()->find_action( "thorims_invocation" ) )
         {
-          ws_action->add_child( this );
+          parent->add_child( this );
         }
         break;
       }
@@ -10986,6 +11018,11 @@ void shaman_t::create_actions()
     action.crash_lightning_unleashed = new crash_lightning_unleashed_t( this );
   }
 
+  if ( talent.stormblast.ok() )
+  {
+    dummy.stormblast = new dummy_action_t( this, talent.stormblast, "stormblast" );
+  }
+
   if ( specialization() == SHAMAN_ELEMENTAL && ( talent.ascendance.ok() ||
        talent.deeply_rooted_elements.ok() ) )
   {
@@ -10999,6 +11036,8 @@ void shaman_t::create_actions()
 
   if ( talent.thorims_invocation.ok() )
   {
+    dummy.thorims_invocation = new dummy_action_t( this,
+      talent.thorims_invocation, "thorims_invocation" );
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_variant::THORIMS_INVOCATION );
     action.tempest_ti = new tempest_t( this, spell_variant::THORIMS_INVOCATION );
     action.chain_lightning_ti = new chain_lightning_t( this, spell_variant::THORIMS_INVOCATION );
@@ -11054,6 +11093,7 @@ void shaman_t::create_actions()
 
   if ( talent.arc_discharge.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
+    dummy.arc_discharge = new dummy_action_t( this, talent.arc_discharge, "arc_discharge" );
     action.chain_lightning_ad = new chain_lightning_t( this, spell_variant::ARC_DISCHARGE );
   }
 
@@ -11075,6 +11115,8 @@ void shaman_t::create_actions()
 
   if ( talent.ride_the_lightning.ok() )
   {
+    dummy.ride_the_lightning = new dummy_action_t( this,
+      talent.ride_the_lightning, "ride_the_lightning" );
     action.chain_lightning_ll_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ll" );
     action.chain_lightning_ss_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ss" );
     action.chain_lightning_ws_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ws" );
