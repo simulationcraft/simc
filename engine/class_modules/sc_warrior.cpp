@@ -7451,6 +7451,12 @@ void warrior_t::init_spells()
     : specialization() == WARRIOR_FURY ? effect_mask_t( false ).enable( 3, 4, 5, 6 )
                                        : effect_mask_t( false ).enable( 7, 8 ) );
 
+  register_passive_effect_mask ( talents.warrior.crushing_force,
+    specialization() == WARRIOR_ARMS   ? effect_mask_t( false ).enable( 1, 2 )
+    : specialization() == WARRIOR_FURY ? effect_mask_t( false ).enable( 3, 4 )
+                                       : effect_mask_t( false ).enable( 5, 6 ) );
+
+
   register_passive_effect_mask( talents.colossus.practiced_strikes,
     specialization() == WARRIOR_ARMS ? effect_mask_t( true ).disable( 2, 3 )
                                      : effect_mask_t( true ).disable( 1 ) );
@@ -7470,6 +7476,9 @@ void warrior_t::init_spells()
   // Armor Handled Manually for ATTT
   register_passive_effect_mask( talents.protection.armor_specialization, effect_mask_t( false ).enable( 1, 2 ) );
   register_passive_effect_mask( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
+
+  // As of Midnight Beta  Nov 18 2025 Bounding Stride effect 2 makes the cooldown of leap go negative
+  register_passive_affect_list ( talents.warrior.bounding_stride, affect_list_t( 2 ).remove_spell( 6544 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
