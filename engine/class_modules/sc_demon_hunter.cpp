@@ -5032,8 +5032,11 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         case DEMON_HUNTER_VENGEANCE:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
           break;
-        default:
+        case DEMON_HUNTER_DEVOURER:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
+          break;
+        default:
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
           break;
       }
       if ( frag->is_type( soul_fragment::GREATER_DEMON ) )
