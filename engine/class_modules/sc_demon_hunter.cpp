@@ -4928,7 +4928,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       // Evaluate if_expr to make sure the actor still wants to consume.
       if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
       {
-        frag->consume( true );
+        frag->consume();
       }
 
       dh->soul_fragment_pick_up = nullptr;
@@ -5016,7 +5016,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     // Havoc Lesser and Greater souls: 8 yards
     // Havoc Greater Demon soul: 10 yards
     // TODO: 11.2 Empowered soul for both specs: 6 yards
-    // TOCHECK: Devourer souls (currently default to previous 6 yard)
+    // Devourer has a 4 yard pickup range
     double dtm;
     if ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
@@ -5033,7 +5033,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
           dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
           break;
         default:
-          dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
           break;
       }
       if ( frag->is_type( soul_fragment::GREATER_DEMON ) )
@@ -11895,7 +11895,7 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   double drain = base_fury_drain_per_second( stacks );
 
   bool has_reduced_drain = !p()->in_combat || p()->buff.voidrush->check() ||
-                           p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() ||
+                           p()->executing && p()->executing->id == p()->spec.collapsing_star_spell->id() ||
                            p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id();
 
   if ( has_reduced_drain )
@@ -12003,7 +12003,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       {
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
-          it->consume( true );
+          it->consume();
 
           if ( sim->debug )
           {
