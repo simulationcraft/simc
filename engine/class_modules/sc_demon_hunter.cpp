@@ -6814,7 +6814,7 @@ struct blade_dance_base_t
         }
       }
 
-      if ( attacks.front() )
+      if ( first_blood_attacks.front() )
       {
         first_blood_attacks.front()->first_attack = true;
       }
