@@ -401,19 +401,6 @@ void monk_action_t<Base>::consume_resource()
           p()->action.flurry_strikes->execute();
         }
       }
-
-      if ( p()->talent.shado_pan.efficient_training.ok() )
-      {
-        // this needs to be rounded to the nearest whole number
-        p()->efficient_training_energy += std::lround( final_cost );
-        if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
-        {
-          // timespan_t cdr =
-          //     timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
-          p()->efficient_training_energy -=
-              as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
-        }
-      }
     }
   }
 
@@ -492,10 +479,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
       if ( p()->talent.shado_pan.flurry_strikes->ok() )
       {
         double damage_contribution = s->result_amount;
-
-        if ( p()->talent.shado_pan.one_versus_many->ok() &&
-             ( base_t::data().id() == 117418 || base_t::data().id() == 121253 ) )
-          damage_contribution *= ( 1.0f + p()->talent.shado_pan.one_versus_many->effectN( 1 ).percent() );
 
         p()->flurry_strikes_damage += damage_contribution;
 
@@ -4577,7 +4560,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 monk_t::monk_t( sim_t *sim, std::string_view name, race_e r )
   : base_t( sim, MONK, name, r ),
     action(),
-    efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 ),
     buff(),
@@ -5278,7 +5260,7 @@ void monk_t::init_spells()
     talent.shado_pan.flurry_strikes             = _HT( "Flurry Strikes" );
     talent.shado_pan.flurry_charge              = find_spell( 451021 );
     talent.shado_pan.flurry_strikes_hit         = find_spell( 450617 );
-    talent.shado_pan.pride_of_pandaria          = _HT( "Pride of Pandaria" );
+    talent.shado_pan.pride_of_pandaria          = _HT( "Pride of Pandaria" );  //
     talent.shado_pan.high_impact                = _HT( "High Impact" );
     talent.shado_pan.high_impact_debuff         = find_spell( 451037 );
     talent.shado_pan.veterans_eye               = _HT( "Veteran's Eye" );

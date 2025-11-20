@@ -441,7 +441,6 @@ public:
 
   std::vector<action_t *> combo_strike_actions;
 
-  int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
 
