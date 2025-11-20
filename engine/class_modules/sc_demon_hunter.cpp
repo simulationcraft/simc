@@ -8988,7 +8988,6 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
     base_t::expire( d );
 
     p()->buff.voidfall_spending->trigger( stacks );
-    p()->buff.voidfall_final_hour->trigger( stacks );
   }
 };
 
