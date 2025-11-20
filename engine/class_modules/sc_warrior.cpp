@@ -1031,12 +1031,13 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8, 9, 10, 11, 12 ) );
+    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 6, 7, 8, 9, 10 ) );
 
     if ( p()->specialization() == WARRIOR_ARMS )
     {
       // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
 
+      parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
       parse_effects( p()->buff.storm_of_swords );
 
       // TWW1 Tier
@@ -1049,6 +1050,9 @@ public:
     {
       parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
       parse_effects( p()->buff.berserker_stance );
+
+      parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 7 ) );
+
       parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 10, 11, 12 ) );
@@ -1068,6 +1072,7 @@ public:
     }
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
+      parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ) );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
@@ -1123,6 +1128,9 @@ public:
     {
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
       parse_effects( p()->buff.severe_thunder );
+
+      if ( p()->talents.mountain_thane.storm_surge->ok() )
+        parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 9, 10 ) );
     }
   }
 
