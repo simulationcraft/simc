@@ -59,13 +59,11 @@ void fury( player_t* p )
   slayer->add_action( "whirlwind,if=active_enemies>=2&talent.meat_cleaver&buff.meat_cleaver.stack=0" );
   slayer->add_action( "rampage,if=buff.enrage.remains<gcd" );
   slayer->add_action( "execute,if=buff.sudden_death.stack=2&buff.enrage.up" );
-  slayer->add_action( "execute,if=debuff.marked_for_execution.stack>1&buff.enrage.up" );
   slayer->add_action( "odyns_fury,if=active_enemies>1" );
   slayer->add_action( "crushing_blow,if=action.raging_blow.charges=2|buff.brutal_finish.up" );
   slayer->add_action( "bloodbath,if=buff.bloodcraze.stack>=1|buff.enrage.up&buff.enrage.remains<gcd" );
   slayer->add_action( "raging_blow,if=buff.brutal_finish.up" );
   slayer->add_action( "rampage,if=rage>115" );
-  slayer->add_action( "execute,if=variable.execute_phase&debuff.marked_for_execution.up&buff.enrage.up&active_enemies=1" );
   slayer->add_action( "bloodthirst,if=target.health.pct<35&talent.vicious_contempt&buff.brutal_finish.up&buff.enrage.up&crit_pct_current>=85&active_enemies=1|(!set_bonus.tww3_4pc&active_enemies>4)" );
   slayer->add_action( "crushing_blow" );
   slayer->add_action( "bloodbath" );
@@ -248,7 +246,6 @@ void arms( player_t* p )
   slayer_aoe->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_aoe->add_action( "colossus_smash" );
   slayer_aoe->add_action( "cleave" );
-  slayer_aoe->add_action( "execute,if=debuff.marked_for_execution.stack=3" );
   slayer_aoe->add_action( "bladestorm" );
   slayer_aoe->add_action( "overpower,if=buff.opportunist.up&talent.dreadnaught" );
   slayer_aoe->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
@@ -287,7 +284,7 @@ void arms( player_t* p )
   slayer_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_st->add_action( "colossus_smash,if=cooldown.avatar.remains>10&(variable.trinket_1_buffs|variable.trinket_2_buffs)|(!variable.trinket_1_buffs&!variable.trinket_2_buffs)" );
   slayer_st->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
-  slayer_st->add_action( "execute,if=buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3|debuff.marked_for_execution.stack=3" );
+  slayer_st->add_action( "execute,if=buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
   slayer_st->add_action( "overpower,if=buff.opportunist.up" );
   slayer_st->add_action( "bladestorm,if=cooldown.colossus_smash.remains>=gcd*4|debuff.colossus_smash.remains>=gcd*4" );
   slayer_st->add_action( "mortal_strike" );
@@ -304,7 +301,7 @@ void arms( player_t* p )
   slayer_sweep->add_action( "champions_spear" );
   slayer_sweep->add_action( "avatar" );
   slayer_sweep->add_action( "colossus_smash,if=buff.sweeping_strikes.up" );
-  slayer_sweep->add_action( "execute,if=debuff.marked_for_execution.stack>3|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
+  slayer_sweep->add_action( "execute,if=buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
   slayer_sweep->add_action( "bladestorm,if=cooldown.colossus_smash.remains>=gcd*4|debuff.colossus_smash.remains>=gcd*4" );
   slayer_sweep->add_action( "overpower,if=buff.opportunist.up" );
   slayer_sweep->add_action( "mortal_strike" );

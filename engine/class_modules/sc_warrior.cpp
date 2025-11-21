@@ -133,7 +133,6 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
   buff_t* debuffs_callous_reprisal;
-  buff_t* debuffs_marked_for_execution;
   buff_t* debuffs_overwhelmed;
   buff_t* debuffs_wrecked;  // Dominance of the Colossus
   bool hit_by_fresh_meat;
@@ -203,6 +202,7 @@ public:
   int into_the_fray_friends;
   int never_surrender_percentage;
   bool first_rampage_attack_missed;
+  int slayers_strike_attempts_since_last_proc;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -265,6 +265,7 @@ public:
     buff_t* colossal_might;
 
     // Slayer
+    buff_t* executioner;
     buff_t* imminent_demise;
     buff_t* brutal_finish;
     buff_t* fierce_followthrough;
@@ -302,7 +303,6 @@ public:
     real_ppm_t* fatal_mark;
     real_ppm_t* revenge;
     real_ppm_t* sudden_death;
-    real_ppm_t* slayers_dominance;
     real_ppm_t* whirling_blade;
     real_ppm_t* tww2_arms_2pc;
     real_ppm_t* tww2_fury_2pc;
@@ -349,6 +349,7 @@ public:
     cooldown_t* reap_the_storm_icd;
     cooldown_t* demolish;
     cooldown_t* burst_of_power_icd;
+    cooldown_t* slayers_dominance_icd;
   } cooldown;
 
   // Gains
@@ -442,7 +443,6 @@ public:
     const spell_data_t* wrecked_debuff;
 
     // Slayer
-    const spell_data_t* marked_for_execution_debuff;
     const spell_data_t* slayers_strike;
     const spell_data_t* overwhelmed_debuff;
     const spell_data_t* reap_the_storm;
@@ -858,6 +858,7 @@ public:
     warrior_fixed_time    = true;
     into_the_fray_friends = -1;
     never_surrender_percentage = 70;
+    slayers_strike_attempts_since_last_proc = 0;
 
     resource_regeneration = regen_type::DISABLED;
   }
@@ -924,6 +925,8 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
+  double psuedo_random_p_from_c( double c );
+  double pseudo_random_c_from_p( double p );
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -1121,6 +1124,9 @@ public:
       parse_effects( p()->buff.brutal_finish );
       parse_effects( p()->buff.fierce_followthrough );
       parse_effects( p()->buff.opportunist );
+      parse_effects( p()->buff.executioner, effect_mask_t( false ).enable( 1 ) );
+      if ( p()->talents.slayer.show_no_mercy->ok() )
+        parse_effects( p()->buff.executioner, effect_mask_t( false ).enable( 2, 3 ) );
     }
 
     // Mountain Thane
@@ -1173,17 +1179,6 @@ public:
     // Slayer
     if ( p()->talents.slayer.slayers_dominance->ok() )
     {
-      parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
-                            p()->spell.marked_for_execution_debuff,
-                            effect_mask_t( false ).enable( 1 ) );
-
-      if ( p()->talents.slayer.show_no_mercy->ok() )
-      {
-        parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
-                            p()->spell.marked_for_execution_debuff,
-                            effect_mask_t( false ).enable( 2, 3 ) );
-      }
-
       parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
                             p()->spell.overwhelmed_debuff );
     }
@@ -1533,9 +1528,13 @@ struct warrior_spell_t : public warrior_action_t<spell_t>
 
 struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 {  // Main Warrior Attack Class
+  double slayers_strike_proc_chance;
   warrior_attack_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, p, s )
+    : base_t( n, p, s ),
+    slayers_strike_proc_chance( 0 )
   {
+    if ( p->talents.slayer.slayers_dominance->ok() )
+      slayers_strike_proc_chance = p->pseudo_random_c_from_p( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
     special = true;
   }
 
@@ -1552,9 +1551,15 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && p()->rppm.slayers_dominance->trigger() )
+    // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
+    // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
+    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && 
+          p()->cooldown.slayers_dominance_icd->up() &&
+          p()->rng().roll( slayers_strike_proc_chance * ++p()->slayers_strike_attempts_since_last_proc ) )
     {
+      p()->slayers_strike_attempts_since_last_proc = 0;
       p()->active.slayers_strike->execute_on_target(s->target);
+      p()->cooldown.slayers_dominance_icd->start();
     }
   }
 
@@ -2263,16 +2268,6 @@ struct slayers_strike_t : public warrior_attack_t
       imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
   }
 
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      td( state -> target ) -> debuffs_marked_for_execution->trigger();
-    }
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2287,6 +2282,14 @@ struct slayers_strike_t : public warrior_attack_t
         p()->cooldown.execute->reset( true );
       }
     }
+
+    // TODO this uses a different async behavior than what is default in simc.  This looks to be
+    // Used by a lot of new spells now, so may be the default wow implementation these days
+    // When you get a proc with max stats, rather than remove the oldest stack, and push on a fresh stack
+    // it now appears to just refresh the buff on the top of the stack, leaving the bottom buffs untouched, so
+    // they expire earlier than you would expect.
+    if ( p()->talents.slayer.slayers_dominance->ok() && !p()->buff.executioner->at_max_stacks() )
+      p()->buff.executioner->trigger();
   }
 
   void reset() override
@@ -4017,14 +4020,15 @@ struct execute_damage_t : public warrior_attack_t
       td( state->target )->debuffs_executioners_precision->trigger();
     }
 
-    if ( td( state->target )->debuffs_marked_for_execution->up() )
+    if ( p()->buff.sudden_death->up() )
     {
       if ( p()->talents.slayer.unrelenting_onslaught->ok() )
       {
-        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
-        td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * td( state->target )->debuffs_marked_for_execution->stack() );
+        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
+        // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
+        if ( state->target == p()->target && p()->buff.executioner->up() )
+          td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
       }
-      td( state->target )->debuffs_marked_for_execution->expire();
     }
   }
 };
@@ -4249,10 +4253,12 @@ struct execute_main_hand_t : public warrior_attack_t
   void impact( action_state_t* state ) override
   {
     warrior_attack_t::impact( state );
-    if ( p()->talents.slayer.unrelenting_onslaught->ok() && td( state->target )->debuffs_marked_for_execution->up() )
+    if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.sudden_death->up() )
     {
-      p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
-      td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * td( state->target )->debuffs_marked_for_execution->stack() );
+      p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
+      // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
+      if ( state->target == p()->target && p()->buff.executioner->up() )
+        td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
     }
   }
 };
@@ -4279,14 +4285,6 @@ struct execute_off_hand_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-    // We only remove the debuff in the off hand, if the target dies from the MH attack, we don't need to worry about expiring it.
-    if ( td( state->target )->debuffs_marked_for_execution->up() )
-      td( state->target )->debuffs_marked_for_execution->expire();
   }
 };
 
@@ -7129,7 +7127,6 @@ void warrior_t::init_spells()
   spell.wrecked_debuff              = find_spell( 447513 );
 
   // Slayer Spells
-  spell.marked_for_execution_debuff = find_spell( 445584 );
   spell.slayers_strike              = find_spell( 445579 );
   spell.overwhelmed_debuff          = find_spell( 445836 );
   spell.reap_the_storm              = find_spell( 446005 );
@@ -7563,6 +7560,8 @@ void warrior_t::init_spells()
   cooldown.demolish                         = get_cooldown( "demolish" );
   cooldown.burst_of_power_icd               = get_cooldown( "burst_of_power" );
   cooldown.burst_of_power_icd -> duration = find_spell( 437121 )->internal_cooldown();
+  cooldown.slayers_dominance_icd            = get_cooldown( "slayers_dominance" );
+  cooldown.slayers_dominance_icd -> duration = find_spell( 444767 )->internal_cooldown();
 }
 
 // warrior_t::init_items ===============================================
@@ -7890,7 +7889,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Slayer
-  debuffs_marked_for_execution = make_buff( *this, "marked_for_execution", p.spell.marked_for_execution_debuff );
   debuffs_overwhelmed          = make_buff( *this, "overwhelmed", p.spell.overwhelmed_debuff );
 
   // Mountain Thane
@@ -8046,6 +8044,8 @@ void warrior_t::create_buffs()
                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Slayer
+  buff.executioner          = make_buff( this, "executioner", find_spell( 445584 ) )
+                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
   buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
   buff.fierce_followthrough = make_buff( this, "fierce_followthrough", find_spell( 458689 ) );
@@ -8129,7 +8129,6 @@ void warrior_t::init_rng()
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death :
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death :
                                                     talents.protection.sudden_death );
-  rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
   rppm.whirling_blade    = get_rppm( "whirling_blade", talents.protection.whirling_blade );
   rppm.tww2_arms_2pc     = get_rppm( "tww2_arms_2pc", find_spell( 1215713 ) );
   rppm.tww2_fury_2pc     = get_rppm( "tww2_fury_2pc", find_spell( 1215714 ) );
@@ -8671,6 +8670,7 @@ void warrior_t::reset()
 {
   parse_player_effects_t::reset();
   first_rampage_attack_missed = false;
+  slayers_strike_attempts_since_last_proc = 0;
 }
 
 // Movement related overrides. =============================================
@@ -9144,6 +9144,58 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
   never_surrender_percentage = p -> never_surrender_percentage;
+}
+
+double warrior_t::psuedo_random_p_from_c( double c )
+{
+  if ( c <= 0 )
+    return 0.0;
+
+  double p_proc_on_n       = 0;
+  double p_proc_by_n       = 0;
+  double sum_n_p_proc_on_n = 0;
+
+  int max_fails = as<int>( std::ceil( 1 / c ) );
+  for ( int n = 1; n <= max_fails; ++n )
+  {
+    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
+    p_proc_by_n += p_proc_on_n;
+    sum_n_p_proc_on_n += n * p_proc_on_n;
+  }
+
+  return ( 1 / sum_n_p_proc_on_n );
+}
+
+double warrior_t::pseudo_random_c_from_p( double p )
+{
+  if ( p <= 0 )
+    return 0.0;
+
+  double c_upper = p;
+  double c_lower = 0;
+  double c_mid;
+  double p1;
+  double p2 = 1;
+  while ( true )
+  {
+    c_mid = ( c_upper + c_lower ) * 0.5;
+    p1    = psuedo_random_p_from_c( c_mid );
+    if ( std::abs( p1 - p2 ) <= 0 )
+      break;
+
+    if ( p1 > p )
+    {
+      c_upper = c_mid;
+    }
+    else
+    {
+      c_lower = c_mid;
+    }
+
+    p2 = p1;
+  }
+
+  return c_mid;
 }
 
 void warrior_t::parse_player_effects()
