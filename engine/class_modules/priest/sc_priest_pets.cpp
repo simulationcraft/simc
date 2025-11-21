@@ -596,7 +596,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.shared.shadowfiend.enabled() )
+    if ( o().talents.shared.depth_of_shadows.enabled() )
     {
       return power_leech_insanity;
     }
@@ -737,7 +737,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      if ( p().o().talents.shared.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
+      if ( p().o().talents.shared.depth_of_shadows.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -1130,80 +1130,47 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 
 namespace priestspace
 {
-// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
-// summoned through the action list, so please check for null.
-spawner::pet_spawner_t<pet_t, priest_t>& priest_t::get_current_main_pet()
-{
-  return talents.voidweaver.voidwraith.enabled()
-             ? pets.voidwraith
-             : talents.shared.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
-}
-
+// ==========================================================================
+// Inescapable Torment
+// Triggers all active "fiend" style pets to attack, can have all 3 out at once
+// TODO: refactor this
+// ==========================================================================
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
   if ( !talents.shared.inescapable_torment.enabled() )
     return;
 
-  if ( get_current_main_pet().n_active_pets() > 0 )
-  {
-    auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
+  auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
 
-    for ( auto a_pet : get_current_main_pet() )
+  if ( talents.shared.depth_of_shadows.enabled() && pets.shadowfiend.n_active_pets() > 0 )
+  {
+    for ( auto a_pet : pets.shadowfiend )
     {
       auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
       pet->inescapable_torment->trigger( target, echo, mod );
     }
   }
-}
 
-std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expression_str,
-                                                         util::span<util::string_view> splits )
-{
-  if ( splits.size() <= 2 )
+  if ( talents.shared.mindbender.enabled() && pets.mindbender.n_active_pets() > 0 )
   {
-    return {};
-  }
-
-  if ( util::str_compare_ci( splits[ 0 ], "pet" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
+    for ( auto a_pet : pets.mindbender )
     {
-      // pet.fiend.X refers to either shadowfiend or mindbender
-
-      auto expr = get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
-      if ( expr )
-      {
-        return expr;
-      }
-
-      auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
-
-      throw sc_invalid_apl_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
-    }
-  }
-  else if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
-         util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) ||
-         util::str_compare_ci( splits[ 1 ], "voidwraith" ) )
-    {
-      if ( cooldown_t* cooldown =
-               get_cooldown( talents.voidweaver.voidwraith.enabled()
-                                 ? "voidwraith"
-                                 : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
-      {
-        return cooldown->create_expression( splits[ 2 ] );
-      }
-      throw sc_invalid_apl_argument(
-          fmt::format( "Cannot find any cooldown with name '{}'.",
-                       talents.voidweaver.voidwraith.enabled()
-                           ? "voidwraith"
-                           : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
+      auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
+      assert( pet->inescapable_torment );
+      pet->inescapable_torment->trigger( target, echo, mod );
     }
   }
 
-  return {};
+  if ( talents.voidweaver.voidwraith.enabled() && pets.voidwraith.n_active_pets() > 0 )
+  {
+    for ( auto a_pet : pets.voidwraith )
+    {
+      auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
+      assert( pet->inescapable_torment );
+      pet->inescapable_torment->trigger( target, echo, mod );
+    }
+  }
 }
 
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
@@ -1232,6 +1199,15 @@ void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
+
+  auto shadowfiend_spell = p.find_spell( 34433 );
+  shadowfiend.set_default_duration( shadowfiend_spell->duration() );
+
+  auto mindbender_spell = p.find_spell( 200174 );
+  mindbender.set_default_duration( mindbender_spell->duration() );
+
+  auto voidwraith_spell = p.find_spell( 451235 );
+  voidwraith.set_default_duration( voidwraith_spell->duration() );
 }
 
 }  // namespace priestspace

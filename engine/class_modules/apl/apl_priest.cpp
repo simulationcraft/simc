@@ -13,27 +13,27 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
+  return ( p->true_level > 80 ) ? "lights_potential_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  return ( p->true_level > 80 ) ? "midnight_mastery_flask_2" : "flask_of_alchemical_chaos_3";
 }
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "feast_of_the_divine_day" : "fated_fortune_cookie";
+  return ( p->true_level > 80 ) ? "feast_of_the_divine_day" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "crystallized" : "draconic";
+  return ( p->true_level > 80 ) ? "crystallized" : "crystallized";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
+  return ( p->true_level > 80 ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:algari_mana_oil_3";
 }
 
 //shadow_apl_start
@@ -82,10 +82,10 @@ void shadow( player_t* p )
   cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|set_bonus.tww2_4pc)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
-  cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
+  cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  cds->add_action( "halo,if=talent.power_surge", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
-  cds->add_action( "voidform", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
+  cds->add_action( "halo" );
+  cds->add_action( "voidform" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
 
@@ -104,7 +104,7 @@ void shadow( player_t* p )
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo", "Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used." );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12", "Put out Vampiric Touch on enemies that will live at least 12s as a filler action." );
-  main->add_action( "mindbender", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
+  main->add_action( "shadow_word_pain,target_if=max:(refreshable*10000+target.time_to_die),if=talent.invoked_nightmare&refreshable&target.time_to_die>12", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "shadow_word_death,target_if=target.health.pct<(20+15*talent.deathspeaker),if=talent.depth_of_shadows&!talent.shattered_psyche" );
   main->add_action( "mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   main->add_action( "tentacle_slam,if=raid_event.adds.in>20", "Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds." );
@@ -162,10 +162,10 @@ void shadow_ptr( player_t* p )
   cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|set_bonus.tww2_4pc)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
-  cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
+  cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  cds->add_action( "halo,if=talent.power_surge", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
-  cds->add_action( "voidform", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
+  cds->add_action( "halo" );
+  cds->add_action( "voidform" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
 
@@ -184,7 +184,7 @@ void shadow_ptr( player_t* p )
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo", "Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used." );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12", "Put out Vampiric Touch on enemies that will live at least 12s as a filler action." );
-  main->add_action( "mindbender", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
+  main->add_action( "shadow_word_pain,target_if=max:(refreshable*10000+target.time_to_die),if=talent.invoked_nightmare&refreshable&target.time_to_die>12", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "shadow_word_death,target_if=target.health.pct<(20+15*talent.deathspeaker),if=talent.depth_of_shadows&!talent.shattered_psyche" );
   main->add_action( "mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   main->add_action( "tentacle_slam,if=raid_event.adds.in>20", "Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds." );
@@ -221,8 +221,6 @@ void discipline( player_t* p )
   main->add_action( "shadow_word_death,if=target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration)" );
   main->add_action( "smite" );
 
-  cooldowns->add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  cooldowns->add_action( "mindbender,if=talent.mindbender.enabled" );
   cooldowns->add_action( "power_infusion" );
   cooldowns->add_action( "potion,if=buff.power_infusion.up", "sync potion with PI" );
   cooldowns->add_action( "use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown", "sync trinkets with PI" );
@@ -296,7 +294,6 @@ void holy( player_t* p )
   generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "smite" );
 
-  cooldowns->add_action( "shadowfiend", "---------------------------------------------------------------------------  Cooldowns  ---------------------------------------------------------------------------" );
   cooldowns->add_action( "power_infusion,if=(!talent.divine_word|(cooldown.divine_word.up&cooldown.holy_word_chastise.up))", "Sync PI with divine favor: chastise if we took divine word" );
   cooldowns->add_action( "potion,if=buff.power_infusion.up", "Only potion in sync with power infusion" );
   cooldowns->add_action( "use_items,if=buff.power_infusion.up", "hold trinkets to use with PI" );
@@ -311,7 +308,6 @@ void no_spec( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "smite" );
   def->add_action( "mana_potion,if=mana.pct<=75" );
-  def->add_action( "shadowfiend" );
   def->add_action( "berserking" );
   def->add_action( "arcane_torrent,if=mana.pct<=90" );
   def->add_action( "shadow_word_pain,if=remains<tick_time|!ticking" );

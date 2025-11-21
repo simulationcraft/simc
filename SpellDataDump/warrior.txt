@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64529 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1219,8 +1219,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=214752)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=214753)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=214753)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 Description      : Removes all harmful Poison, Disease, Curse, Magic, and Bleed effects and reduces all physical damage taken by $65116s1% for $65116d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Frost Resistance (desc=Racial Passive) (id=20596) [Passive] 
@@ -3253,21 +3253,21 @@ Proc Flags       : White Melee
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179733)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
 #3 (id=191014)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #4 (id=191015)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261047)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #7 (id=261048)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 #8 (id=261049)   : Apply Aura (6) | Dummy (4)
@@ -3312,7 +3312,7 @@ Effects          :
 #4 (id=191012)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191013)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #6 (id=831458)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=877674)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -3734,10 +3734,9 @@ Effects          :
 #6 (id=1218690)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $@spelldesc184361
-Tooltip          : Damage done increased by $76856s1%$?s383848[, Haste increased by $m1%,
-and Movement speed increased by $m2%.]?s440277[, Mastery increased by $m5%, and Leech increased by $m6%.][.]$?s208154[
+Tooltip          : Damage done increased by $76856s3%$?s383848[, Haste increased by $w1%, and Movement speed increased by $w2%.]?s440277[, Mastery increased by $w5%, and Leech increased by $w6%.][.]$?s208154[
 
-Damage taken reduced by $208154m3%.][]
+Damage taken reduced by $w3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
 Talent Entry     : Fury [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -6733,8 +6732,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=709239)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=709240)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=709240)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
@@ -9901,7 +9900,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=831412)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 335082 | Target: Self (1)
-Description      : Rampage increases your Haste by $s1% for $335082d. Multiple instances of this effect may overlap.
+Description      : Rampage increases your haste by $s1% for $335082d. Multiple instances of this effect may overlap.
 
 Name             : Frenzy (id=335082) [Spell Family (4)] 
 Class            : Warrior
@@ -12335,7 +12334,7 @@ Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Lo
 Effects          :
 #1 (id=1016024)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Enrage increases your Haste by $184362s1% and your movement speed by $184362s2%.
+Description      : Enrage increases your haste by $184362s1% and your movement speed by $184362s2%.
 
 Name             : Improved Bloodthirst (id=383852) [Spell Family (4), Passive] 
 Talent Entry     : Fury [tree=spec, row=5, col=1, max_rank=2, req_points=8]
@@ -15779,8 +15778,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1134052)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Description      : Enrage increases your Mastery by $184362s5% and your Leech by $184362s6%.
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Enrage increases your mastery by $184362s5% and your Leech by $184362s6%.
 
 Name             : Demolish (id=440884) [Spell Family (4)] 
 Class            : Warrior
@@ -16196,7 +16195,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Bladestorm overrides Bladestorm
                    Base Value: 446035 | Scaled Value: 446035 | Misc Value: 227847 | Target: Self (1)
-Description      : Using Execute causes you to both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stack of Overwhelmed to your primary target per stack of Executioner you have.
+Description      : Using Sudden Death causes you to both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stack of Overwhelmed to your primary target per stack of Executioner you have.
 
 You can use Pummel and Storm Bolt while Bladestorming.
 
@@ -18313,16 +18312,22 @@ Lock Appearance:
 
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
-Name             : Clear Transmog Outfit (id=1247917) 
+Name             : Clear Current Transmogrifications (id=1247917) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Cooldown         : 3 seconds
+GCD              : 1.5 seconds
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
+
+|cnWHITE_FONT_COLOR:Lock Appearance:|r
+|cnNORMAL_FONT_COLOR:Prevent this appearance from being replaced by a Situation|r
+
+|cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Severe Thunder (id=1252096) [Spell Family (4)] 
 Class            : Warrior
@@ -19417,8 +19422,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1281056)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Rampage extends the duration of Berserk by $s1 sec.
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
+Description      : Rampage extends the duration of Berserk by ${$s1/1000}.1 sec.
 
 Name             : Phalanx (id=1269311) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=8, col=1, max_rank=1, req_points=20]
@@ -19460,7 +19465,7 @@ Effects          :
 #2 (id=1282007)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 5918 (Label) | Target: Self (1)
                    Affected Spells (Label): Phalanx (1270116)
-Description      : Damage dealt by Thunder Clap and Phalanx' wave of force is increased by $s1%.
+Description      : Damage dealt by Thunder Clap and Phalanx's wave of force is increased by $s1%.
 
 Name             : Phalanx (id=1269313) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=10, col=1, max_rank=1, req_points=20]
@@ -19690,7 +19695,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1283020)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Bladestorm puts you into a battle trance, granting you 15% Haste for 8 sec after you stop Bladestorming.
+Description      : Bladestorm puts you into a battle trance, granting you 15% haste for 8 sec after you stop Bladestorming.
 
 Name             : Deadly Focus (id=1270718) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
@@ -19871,9 +19876,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1284955)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Storm Bolt, Shattering Throw, Wrecking Throw, and Champion's Spear apply Hamstring to all affected targets, reducing their movement speed by $1715s1% for $1715d.
-
-Heroic Throw silences non-Player targets for $1277104d. This effect can only occur once every $1277108d.
+Description      : Storm Bolt, Shattering Throw, Wrecking Throw, and Champion's Spear apply Hamstring to all affected targets, reducing their movement speed by $1715s1% for $1715d.
 
 Name             : Honed Reflexes (id=1271964) [Spell Family (4)] 
 Class            : Warrior

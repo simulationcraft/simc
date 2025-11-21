@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.0.0.64339
-static constexpr std::array<active_class_spell_t, 353> __active_spells_data { {
+// Active class spells, wow build 12.0.0.64529
+static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -129,12 +129,11 @@ static constexpr std::array<active_class_spell_t, 353> __active_spells_data { {
   {  4,  260, 1214909,       0, "Roll the Bones"                     },
   {  4,  260, 1229376,       0, "Single-Button Assistant"            },
   {  4,  261,      53,    1752, "Backstab"                           },
-  {  4,  261,    1943,       0, "Rupture"                            },
   {  4,  261,  114014,       0, "Shuriken Toss"                      },
   {  4,  261,  185313,       0, "Shadow Dance"                       },
   {  4,  261,  185438,    8676, "Shadowstrike"                       },
   {  4,  261,  197835,       0, "Shuriken Storm"                     },
-  {  4,  261,  212283,       0, "Symbols of Death"                   },
+  {  4,  261,  280719,       0, "Secret Technique"                   },
   {  4,  261,  319175,       0, "Black Powder"                       },
   {  4,  261, 1229376,       0, "Single-Button Assistant"            },
   {  5,    0,      17,       0, "Power Word: Shield"                 },
@@ -295,7 +294,7 @@ static constexpr std::array<active_class_spell_t, 353> __active_spells_data { {
   { 11,    0,   22812,       0, "Barkskin"                           },
   { 11,    0,   33917,       0, "Mangle"                             },
   { 11,    0,   50769,       0, "Revive"                             },
-  { 11,    0,  213764,       0, "Swipe"                              },
+  { 11,    0,   77758,       0, "Thrash"                             },
   { 11,  102,  190984,    5176, "Wrath"                              },
   { 11,  102,  191034,       0, "Starfall"                           },
   { 11,  102, 1229376,       0, "Single-Button Assistant"            },
@@ -355,7 +354,7 @@ static constexpr std::array<active_class_spell_t, 353> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.64339
+// Pet active spells, wow build 12.0.0.64529
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

@@ -1022,67 +1022,6 @@ struct mindgames_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Summon Shadowfiend
-//
-// Summon Mindbender
-// Shadow - 200174 (base effect 2 value)
-// Holy/Discipline - 123040 (base effect 3 value)
-// ==========================================================================
-struct summon_fiend_t final : public priest_spell_t
-{
-  timespan_t default_duration;
-  spawner::pet_spawner_t<pet_t, priest_t>* spawner;
-
-  std::string pet_name( priest_t& p )
-  {
-    if ( p.talents.voidweaver.voidwraith.enabled() )
-      return "voidwraith";
-
-    return p.talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend";
-  }
-
-  spawner::pet_spawner_t<pet_t, priest_t>* pet_spawner( priest_t& p )
-  {
-    if ( p.talents.voidweaver.voidwraith.enabled() )
-      return &p.pets.voidwraith;
-
-    return p.talents.shared.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend;
-  }
-
-  const spell_data_t* pet_summon_spell( priest_t& p )
-  {
-    if ( p.talents.voidweaver.voidwraith.enabled() && p.talents.shared.shadowfiend.enabled() )
-      return p.talents.voidweaver.voidwraith_spell;
-
-    return p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shared.shadowfiend;
-  }
-
-  summon_fiend_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( pet_name( p ), p, pet_summon_spell( p ) ),
-      default_duration( data().duration() ),
-      spawner( pet_spawner( p ) )
-  {
-    parse_options( options_str );
-    harmful = false;
-
-    idol_of_nzoth_execute_stacks = 5;
-
-    if ( p.talents.voidweaver.voidwraith.ok() && p.talents.shared.mindbender.ok() )
-    {
-      cooldown->duration = p.talents.shared.mindbender->cooldown();
-    }
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( spawner )
-      spawner->spawn( default_duration );
-  }
-};
-
-// ==========================================================================
 // Fade
 // ==========================================================================
 struct fade_t final : public priest_spell_t
@@ -1186,7 +1125,6 @@ public:
   double execute_percent;
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
-  timespan_t depth_of_shadows_duration;
   double depth_of_shadows_threshold;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
@@ -1198,9 +1136,7 @@ public:
       execute_percent( data().effectN( 3 ).base_value() ),
       execute_modifier( data().effectN( 4 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
-      depth_of_shadows_duration(
-          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
+      depth_of_shadows_threshold( p.talents.shared.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1331,7 +1267,7 @@ public:
     {
       double save_health_percentage = s->target->health_percentage();
 
-      if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
+      if ( priest().talents.shared.depth_of_shadows.enabled() )
       {
         double chance = 0.9;
         // TODO: Find out the actual chance, this is a guess
@@ -1344,7 +1280,7 @@ public:
         if ( ( save_health_percentage <= depth_of_shadows_threshold ) && rng().roll( chance ) )
         {
           priest().procs.depth_of_shadows->occur();
-          priest().get_current_main_pet().spawn( depth_of_shadows_duration );
+          priest().pets.shadowfiend.spawn();
         }
       }
 
@@ -2246,9 +2182,6 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
-  cooldowns.mindbender                    = get_cooldown( "mindbender" );
-  cooldowns.shadowfiend                   = get_cooldown( "shadowfiend" );
-  cooldowns.voidwraith                    = get_cooldown( "voidwraith" );
   cooldowns.penance                       = get_cooldown( "penance" );
   cooldowns.ultimate_penitence            = get_cooldown( "ultimate_penitence" );
   cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
@@ -2393,11 +2326,6 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
   }
 
   auto splits = util::string_split<util::string_view>( expression_str, "." );
-
-  if ( auto pet_expr = create_pet_expression( expression_str, splits ) )
-  {
-    return pet_expr;
-  }
 
   if ( splits.size() >= 2 )
   {
@@ -2730,10 +2658,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_fortitude_t( *this, options_str );
   }
-  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) || ( name == "fiend" ) || ( name == "voidwraith" ) )
-  {
-    return new summon_fiend_t( *this, options_str );
-  }
   if ( name == "mind_blast" )
   {
     return new mind_blast_t( *this, options_str );
@@ -2829,9 +2753,6 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
-  cooldowns.fiend = talents.voidweaver.voidwraith.enabled()
-                        ? cooldowns.voidwraith
-                        : ( talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend );
 
   /*PRECOMBAT SHENANIGANS
   we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
@@ -2968,7 +2889,8 @@ void priest_t::init_spells()
   // Shared Spells
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
-  talents.shared.shadowfiend         = ST( "Shadowfiend" );
+  talents.shared.shadowfiend         = find_spell( 34433 );
+  talents.shared.depth_of_shadows    = ST( "Depth of Shadows" );
 
   // Generic Spells
   specs.levitate_buff     = find_spell( 111759 );
@@ -3131,7 +3053,6 @@ void priest_t::init_spells()
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
-  talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
   talents.voidweaver.touch_of_the_void      = HT( "Touch of the Void" );
@@ -3144,8 +3065,8 @@ void priest_t::init_spells()
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
   tww3_spells.voidweaver_4pc = sets->set( HERO_VOIDWEAVER, TWW3, B4 );
-  
-  if ( specialization()  == PRIEST_SHADOW)
+
+  if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
   // Register passives
@@ -3227,6 +3148,17 @@ void priest_t::create_buffs()
             }
             buffs.collapsing_void->expire();
             buffs.voidheart->expire();
+
+            if ( talents.voidweaver.touch_of_the_void.enabled() )
+            {
+              buffs.voidheart->trigger(
+                  timespan_t::from_seconds( talents.voidweaver.touch_of_the_void->effectN( 1 ).base_value() ) );
+            }
+
+            if ( talents.voidweaver.voidwraith.enabled() )
+            {
+              pets.voidwraith.spawn();
+            }
           }
         } );
   }

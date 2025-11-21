@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64529 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -204,7 +204,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2)
 Family Flags     : 15, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (454)
 Effects          :
@@ -713,13 +713,13 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#2), Mental Decay (375994 effect#2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Surge of Insanity (391399 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#2), Mental Decay (375994 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Surge of Insanity (391399 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 70, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.660358 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.924 | Target: Targeted Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -1001,8 +1001,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=214752)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=214753)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=214753)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 Description      : Removes all harmful Poison, Disease, Curse, Magic, and Bleed effects and reduces all physical damage taken by $65116s1% for $65116d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Frost Resistance (desc=Racial Passive) (id=20596) [Passive] 
@@ -1427,15 +1427,13 @@ Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
 Name             : Shadowfiend (id=34433) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=8, col=5, max_rank=1, req_points=20]
-                 : Shadow [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 5 seconds
 Cooldown         : 180 seconds
 Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
@@ -1457,7 +1455,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41967 | Target: Self (1)
 #4 (id=1040021)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Summons a shadowy fiend to attack the target for $d.$?s137033[
+Description      : Summons a shadowy fiend to attack your target.$?s137033[
 
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r][
 
@@ -5084,14 +5082,13 @@ Effects          :
 Description      : $s1% of healing done by Flash Heal is replicated to the previous target you healed with those spells.
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, replace="Shadowfiend" (id=34433)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 6 seconds
+Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
@@ -5101,6 +5098,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Triggered By     : Mindbender (1230339)
 Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
@@ -6211,7 +6209,7 @@ Effects          :
 #1 (id=343555)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: Targeted Enemy (6)
 #2 (id=1033519)  : Dummy (3)
-                   Base Value: 2500 | Scaled Value: 2500
+                   Base Value: 3000 | Scaled Value: 3000
 Description      : Bombards your target with a Void Volley and twists your Shadowform with void magic, increasing your spell damage by $194249s1% for $194249d. 
 
 This spell is replaced with Void Volley while Voidform is active.
@@ -6646,7 +6644,7 @@ Effects          :
 Description      : When Holy Word: Serenity $?a1246517[finishes its][or Holy Word: Sanctify finish their] cooldown, you emit a burst of light that heals up to $s1 injured targets within $243241A1 yards for $243241s1.
 
 Name             : Misery (id=238558) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6661,9 +6659,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Description      : Vampiric Touch also applies Shadow Word: Pain to the target. Shadow Word: Pain lasts an additional ${$s2/1000} sec.
-
-|cFFFFFFFFReplaces Shadow Word: Pain.|r
+Description      : Vampiric Touch also applies Shadow Word: Pain to the target. Shadow Word: Pain lasts an additional ${$s2/1000} sec.
 
 Name             : The Night's Dichotomy (id=241334) [Passive] 
 School           : Physical
@@ -7542,8 +7538,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=709239)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=709240)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=709240)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
@@ -7990,23 +7986,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
-
-Name             : Coming Soon! (id=274960) 
-Talent Entry     : Shadow [tree=spec, row=8, col=6, max_rank=1, req_points=20]
-                 : Shadow [tree=spec, row=9, col=8, max_rank=1, req_points=20]
-                 : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
-Class            : Priest
-School           : Physical
-Spell Type       : None
-GCD              : 1.5 seconds
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
-Attributes       : Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=727670)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : This talent is lost in the void but will be found soon!
 
 Name             : Depth of the Shadows (id=275541) [Spell Family (6), Passive] 
 School           : Holy
@@ -10225,11 +10204,7 @@ Effects          :
                    Affected Spells: Shadowy Apparition (413231), Void Apparition (1264176)
                    Family Flags: 90
 #3 (id=832088)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | Target: Targeted Enemy (6)
-#4 (id=832089)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
-#5 (id=836855)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.5 | Target: Targeted Enemy (6)
 Description      : A word of madness haunts the target's mind, dealing $s1 Shadow damage instantly plus an additional $o3 Shadow damage over $d.
 
 When reapplied to a target, all remaining damage is added to the new effect.
@@ -10329,7 +10304,7 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=833215)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Shadowfiend (34433), Mindbender (123040), Mindbender (200174)
+                   Affected Spells: Shadowfiend (34433), Mindbender (123040), Mindbender (200174), Mindbender (1230339)
                    Family Flags: 19, 40
 #2 (id=869346)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
@@ -12171,7 +12146,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998007)   : Apply Aura (6) | Proc Trigger Spell (42): Protector of the Frail
@@ -12602,7 +12577,7 @@ Effects          :
                    Affected Spells (Label): Inescapable Torment (373442)
 #4 (id=1033126)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.9
-Description      : $?a137032[Penance, ][]Mind Blast and Shadow Word: Death cause your Mindbender or Shadowfiend to teleport behind your target, slashing up to $s1 nearby enemies for $<value> Shadow damage and extending its duration by ${$s2/1000}.1 sec.
+Description      : $?a137032[Penance, ][]Mind Blast and Shadow Word: Death cause your Shadowfiend, Mindbender, and Voidwraith to teleport behind your target, slashing up to $s1 nearby enemies for $<value> Shadow damage and extending their durations by ${$s2/1000}.1 sec.
 Variables        : $mindbendermult=$?a137032[${0.478}][${0.442}]
 $value=${$s4*$<mindbendermult>}
 
@@ -12958,19 +12933,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Proc Chance      : 101%
-Proc Flags       : Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002746)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1071056)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+#1 (id=1002746)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
-Description      : Increases the damage of Mind Flay by $s2%.
-
-The duration of your Shadow Word: Pain and Vampiric Touch is increased by $s1 sec when enemies suffer damage from Mind Flay.
+Description      : Increases the damage of Mind Flay by $s1%.
 
 Name             : Surge Forward (desc=Racial) (id=376743) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -13404,7 +13373,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1027699)  : Apply Aura (6) | Proc Trigger Spell (42): Borrowed Time
@@ -13918,7 +13887,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ig
 Effects          :
 #1 (id=1028403)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Shadowfiend (34433), Corrupted Apparitions (73510), Mindbender (123040), Mindbender (200174), Void Bolt (205448), Voidform (228260), Void Eruption (228360), Void Eruption (228361), Mindgames (323673), Shadow Word: Madness (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Shadowy Apparition (413231), Entropic Rift (447445), Entropic Rift (447448), Collapsing Void (448405), Entropic Rift (450193), Void Blast (450983), Entropic Rift (459314), Tentacle Slam (1227280), Tentacle Slam (1227621), Void Volley (1242173), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Shadowfiend (34433), Corrupted Apparitions (73510), Mindbender (123040), Mindbender (200174), Void Bolt (205448), Voidform (228260), Void Eruption (228360), Void Eruption (228361), Mindgames (323673), Shadow Word: Madness (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Shadowy Apparition (413231), Entropic Rift (447445), Entropic Rift (447448), Collapsing Void (448405), Entropic Rift (450193), Void Blast (450983), Entropic Rift (459314), Tentacle Slam (1227280), Tentacle Slam (1227621), Mindbender (1230339), Void Volley (1242173), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176)
                    Family Flags: 13, 15, 19, 23, 30, 31, 33, 36, 40, 41, 44, 67, 80, 84, 85, 87, 90, 106, 121
 #2 (id=1030642)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14131,7 +14100,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1028890)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
 #2 (id=1070942)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
@@ -14177,14 +14146,14 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Proc Flags       : Cast Successful
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#2), Mental Decay (375994 effect#2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Surge of Insanity (391399 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#2), Mental Decay (375994 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Surge of Insanity (391399 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Triggered By     : Mind Flay: Insanity (391401)
 Family Flags     : 70, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=1028897)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.375 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.745 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.043 | Target: Targeted Enemy (6)
 #2 (id=1028898)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.375 seconds
@@ -15153,7 +15122,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 1218
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Word: Madness (335467 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Subservient Shadows (1228516 effect#6), Holy Priest (1238052 effects: #4, #5), Phantom Menace (1242779 effects: #1, #2), Spiritwell (1247178 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest Shadow 12.0 Class Set 4pc (1264855 effect#1)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Word: Madness (335467 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Subservient Shadows (1228516 effect#6), Holy Priest (1238052 effects: #4, #5), Phantom Menace (1242779 effects: #1, #2), Spiritwell (1247178 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest Shadow 12.0 Class Set 4pc (1264855 effect#1), Haunting Shadows (1279355 effect#1)
 Triggered By     : Shadowy Apparition (148859)
 Family Flags     : 72, 90
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -16424,7 +16393,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Discipline Priest (137032 effect#23), Shadow Priest (137033 effect#20), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1), Quickened Pulse (1266845 effect#1)
 Family Flags     : 44
-Attributes       : Do Not Log on Learn (355)
+Attributes       : No Aura Icon (60), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150022)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16621,7 +16590,7 @@ Description      : $@spelldesc451204
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Voidwraith (id=451234) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16631,15 +16600,9 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1151694)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Shadowfiend
-                   Base Value: 451235 | Scaled Value: 451235 | Misc Value: 34433 | Target: Self (1)
-#2 (id=1152159)  : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
-#3 (id=1152718)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Mindbender
-                   Base Value: 451235 | Scaled Value: 451235 | Misc Value: 200174 | Target: Self (1)
-#4 (id=1152719)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Mindbender
-                   Base Value: 451235 | Scaled Value: 451235 | Misc Value: 123040 | Target: Self (1)
-Description      : Transform your Shadowfiend or Mindbender into a Voidwraith.
+#1 (id=1151694)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : When Entropic Rift ends, a Voidwraith is summoned from the collapsed rift for $451235d.
 
 $@spellicon451235$@spellname451235
 $@spelldesc451235
@@ -16650,7 +16613,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 5 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
@@ -16662,17 +16625,16 @@ Family Flags     : 113
 Attributes       : Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=1151696)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 224466 | Misc Value 2: 5123 | Radius: 3 yards | Target: Summoner in Area (32)
-#2 (id=1158794)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Description      : Summon a Voidwraith for $d that casts Void Flay from afar. Void Flay deals bonus damage to high health enemies, up to a maximum of $451435s2% if they are full health.$?s137033[
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 224466 | Misc Value 2: 5123 | Target: at Area (87)
+Description      : Summon a Voidwraith that casts Void Flay from afar. Void Flay deals bonus damage to high health enemies, up to a maximum of $451435s2% if they are full health.$?s137033[
 
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Voidwraith attacks.|r][
 
 |cFFFFFFFFGenerates ${$34433s4/10}.1% Mana each time the Voidwraith attacks.|r]
 
 Name             : Depth of Shadows (id=451308) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+                 : Shadow [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16689,7 +16651,10 @@ Effects          :
 #2 (id=1151812)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Modified By: Deathspeaker (392507 effect#4)
-Description      : Shadow Word: Death has a high chance to summon a Shadowfiend for $s1 sec when damaging targets below $s2% health.
+Description      : Shadow Word: Death has a high chance to summon a Shadowfiend for $s1 sec when damaging targets below $s2% health.
+
+$@spellicon34433 $@spellname34433
+$@spelldesc34433
 
 Name             : Void Leech (id=451311) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
@@ -18287,7 +18252,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1219599)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Misc Value 2: 4779 (Label) | Target: Self (1)
-                   Affected Spells (Label): Shadowfiend (34433), Mindbender (200174), Thing from Beyond (373277), Idol of C'Thun (377355), Idol of C'Thun (377357), Voidwraith (451235)
+                   Affected Spells (Label): Shadowfiend (34433), Mindbender (200174), Thing from Beyond (373277), Idol of C'Thun (377355), Idol of C'Thun (377357), Voidwraith (451235), Mindbender (1230339)
 #3 (id=1238723)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Misc Value 2: 5194 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Flay (193473), Mind Sear (394976)
@@ -18319,6 +18284,32 @@ Description      : Casts damaging abilities for use in combat, rotating through 
 
 The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
+Name             : Mindbender (id=1230339) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Class            : Priest
+School           : Shadow
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 40 yards
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 4779: Subservient Shadows (1228516 effect#2)
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Family Flags     : 19
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1221868)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 200174 | Target: Self (1)
+Description      : Casting Voidform summons a Mindbender for $200174d.
+
+$@spellicon200174 $@spellname200174
+Summons a shadowy fiend to attack your target.
+
+|cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
+
 Name             : Ancient Madness (id=1231346) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
@@ -18334,7 +18325,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1223332)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Casting Shadow Word: Madness increases the duration of Voidform by ${$228260s2/1000}.1 sec.
+#3 (id=1292055)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : Casting Shadow Word: Madness increases the duration of Voidform by ${$228260s2/1000}.1 sec.
+
+Each time this occurs during Voidform, its effectiveness is reduced by $s3%.
 
 Name             : Recuperate (id=1231411) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -18889,7 +18884,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1), Focused Outburst (1272320 effects: #3, #4)
+Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1), Focused Outburst (1272320 effects: #3, #4), Crushing Void (1279354 effect#1), Crushing Void (1279437 effect#2)
 Family Flags     : 41
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83)
 Effects          :
@@ -18912,7 +18907,7 @@ Velocity         : 50 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Focused Outburst (1272320 effects: #3, #4)
+Affecting Spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Focused Outburst (1272320 effects: #3, #4), Crushing Void (1279354 effect#1), Crushing Void (1279437 effect#2)
 Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
@@ -19240,16 +19235,22 @@ Lock Appearance:
 
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
-Name             : Clear Transmog Outfit (id=1247917) 
+Name             : Clear Current Transmogrifications (id=1247917) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Cooldown         : 3 seconds
+GCD              : 1.5 seconds
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
+
+|cnWHITE_FONT_COLOR:Lock Appearance:|r
+|cnNORMAL_FONT_COLOR:Prevent this appearance from being replaced by a Situation|r
+
+|cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Cosmic Wave (id=1248418) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
@@ -19668,6 +19669,7 @@ Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
 Name             : Master the Darkness (id=1253590) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19709,8 +19711,6 @@ Attributes       : Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1259449)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Shield overrides Power Word: Shield
                    Base Value: 1253593 | Scaled Value: 1253593 | Misc Value: 17 | Target: Self (1)
-#2 (id=1290728)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1253590
 Tooltip          : Next Power Word: Shield is upgraded to Void Shield.
 Variables        : $castigation=$?a193134[${1}][${0}]
@@ -19730,7 +19730,6 @@ Resource         : 10% Base Mana (0) (id=311560) w/ Shadow Priest (id=137033)
 Resource         : 10% Base Mana (0) (id=311561) w/ Initial Priest (id=417191)
 Spell Level      : 4
 Range            : 40 yards
-Max Targets      : 3
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 7.5 seconds
@@ -19744,7 +19743,7 @@ Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting Spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Limit N (165), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Chain by Most Hit (440)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Chain by Most Hit (440)
 Effects          :
 #1 (id=1259452)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
@@ -19753,7 +19752,10 @@ Effects          :
 #2 (id=1285766)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Modified By: Improved Power Word: Shield (24191 effect#1)
-Description      : Shields $i allies for $d, absorbing $s1 damage.
+#3 (id=1290816)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
+Description      : Shields $s3 allies for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Greater Smite (id=1253724) [Spell Family (6), Passive, Hidden] 
@@ -19794,7 +19796,7 @@ Effects          :
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
 Description      : $@spelldesc1253724
-Tooltip          : Smite casting speed and damage increased by $s3%.
+Tooltip          : Smite damage increased by $s3%.
 
 Name             : Master the Darkness (id=1253827) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=10, col=1, max_rank=1, req_points=20]
@@ -20153,7 +20155,7 @@ Labels           : 16: Class Spells
                  : 1218
                  : 5671
                  : 5815: Void Apparitions (1264104 effect#1)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Word: Madness (335467 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Subservient Shadows (1228516 effect#6), Holy Priest (1238052 effects: #4, #5), Phantom Menace (1242779 effects: #1, #2), Spiritwell (1247178 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest Shadow 12.0 Class Set 4pc (1264855 effect#1)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Word: Madness (335467 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Subservient Shadows (1228516 effect#6), Holy Priest (1238052 effects: #4, #5), Phantom Menace (1242779 effects: #1, #2), Spiritwell (1247178 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest Shadow 12.0 Class Set 4pc (1264855 effect#1), Haunting Shadows (1279355 effect#1)
 Triggered By     : Void Apparition (1264175)
 Family Flags     : 72, 90
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -20516,4 +20518,106 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Co
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Invoked Nightmare (id=1279350) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1291799)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
+#2 (id=1291800)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
+Description      : Shadow Word: Pain deals $s1% increased damage.
+
+Name             : Maddening Tentacles (id=1279353) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1291803)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : Tentacle Slam afflicts your target with Shadow Word: Madness at $s1% effectiveness.
+
+Name             : Crushing Void (id=1279354) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=9, col=8, max_rank=1, req_points=20]
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1291805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Void Volley (1242173), Void Volley (1242189)
+                   Family Flags: 41
+#2 (id=1291806)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#3 (id=1291807)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Tentacle Slam deals $s2% increased damage and Void Volley deals $s1% increased damage.
+
+When Voidform ends, you can cast Void Volley $1279437U additional $Ltime:times; within $1279437d.
+
+Name             : Haunting Shadows (id=1279355) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1291814)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Shadowy Apparition (413231), Void Apparition (1264176)
+                   Family Flags: 90
+#2 (id=1291815)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1500 | Scaled Value: 1500 | Target: Self (1)
+Description      : Shadowy Apparition damage increased by $s1%.
+
+When Shadowy Apparitions deal damage, they extend the duration of your Shadow Word: Pain and Vampiric Touch on the target by ${$s2/1000}.1 sec.
+
+Name             : Crushing Void (id=1279437) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1291927)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Volley overrides Voidform | Attributes: Suppress Points Stacking (6)
+                   Base Value: 1242173 | Scaled Value: 1242173 | Misc Value: 228260 | Misc Value 2: 2 | Target: Self (1)
+#2 (id=1291937)  : Apply Aura (6) | Ignore Spell Cooldown (383) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Void Volley (1242173), Void Volley (1242189)
+                   Family Flags: 41
+Description      : $@spelldesc1279354
+Tooltip          : Void Volley is available!
 

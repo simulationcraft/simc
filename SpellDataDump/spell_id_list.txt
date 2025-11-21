@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.64339
+Class Spell ID List, wow build 12.0.0.64529
 
 Death Knight
 3714     Path of Frost
@@ -826,8 +826,8 @@ Death Knight
 288845  *Bloody Runeblade
 288846  *Bloody Runeblade
 288847  *Bloody Runeblade
-288848  *Necromancer's Bargain
-288849  *Necromancer's Bargain
+288848   Necromancer's Cunning
+288849   Necromancer's Bargain
 288853   Raise Abomination
 288855  *Life and Death
 288977  *Transfusion
@@ -1643,7 +1643,7 @@ Death Knight
 1244516  Forbidden Knowledge
 1244519  Reaping
 1244900 *Unholy Aura
-1245427  [NYI] New Talent Pending
+1245427 *[NYI] New Talent Pending
 1247316  Putrefy
 1247378  Putrefy
 1247379  Blightburst
@@ -1741,6 +1741,10 @@ Death Knight
 1277016  Putrefy
 1277098 *Lesser Ghoul
 1277365  Blood Bond
+1278150  Sweeping Claws
+1278154  Necromancer's Cunning
+1279633  Bloody Reflection
+1279656  Bloody Reflection
 
 Demon Hunter
 1490     Chaos Brand
@@ -2933,7 +2937,7 @@ Demon Hunter
 1223157  Voidstep
 1223171  Guile
 1223412  Soul Fragment
-1223423 *Consume Soul
+1223423  Consume Soul
 1223445 *Shattered Souls
 1223448 *Shattered Souls
 1223450 *Shattered Souls
@@ -3207,6 +3211,8 @@ Demon Hunter
 1277736  Demonic Wards
 1277738  Consume Magic
 1277769  Rolling Torment
+1279200  Eradicate
+1279247  Harness the Cosmos
 
 Druid
 99       Incapacitating Roar
@@ -3586,7 +3592,6 @@ Druid
 106785   Swipe
 106829   Bear Form
 106830   Thrash
-106832   Thrash
 106839   Skull Bash
 106840   Cat Form
 106898   Stampeding Roar
@@ -5252,7 +5257,7 @@ Druid
 1251877  Gift of an Ancient Guardian
 1252024  Dryad's Favor
 1252871  Red Moon
-1252994  Killing Blow [NYI]
+1252994  Killing Blow
 1253035  Harnessed Rage
 1253461  Waking Nightmare
 1253462  Waking Nightmare
@@ -5359,6 +5364,10 @@ Druid
 1272262  Flash of Clarity
 1272339  Shooting Stars
 1272376  Celestial Might
+1278789  Natural Resilience
+1278800  Natural Resilience
+1278914  Dream Guide
+1278969  Frantic Frenzy
 
 Evoker
 351338   Quell
@@ -8328,7 +8337,7 @@ Hunter
 459759  *A Murder of Crows
 459760  *A Murder of Crows
 459783   Penetrating Shots
-459794   Ammo Conservation
+459794   Quick Draw
 459796  *Barrage
 459800  *Rapid Fire Barrage
 459802   Small Game Hunter
@@ -8740,6 +8749,7 @@ Hunter
 1277571 *Flurry Shots
 1277572  Critical Precision
 1277760  Dual Wield
+1279347  Quick Draw
 
 Mage
 66       Invisibility
@@ -14270,7 +14280,6 @@ Paladin
 343723  *Final Reckoning
 343724   Reckoning
 344067   Expurgation
-344172   Consecration
 344217   Retribution Aura
 344218   Devotion Aura
 344219   Crusader Aura
@@ -14613,7 +14622,7 @@ Paladin
 406656  *Templar Strikes
 406661  *Templar Sweep
 406693  *Templar Strikes
-406833   Crusading Strikes
+406833  *Crusading Strikes
 406834   Crusading Strikes
 406835  *Vengeful Wrath
 406872   Divine Wrath
@@ -14819,7 +14828,6 @@ Paladin
 434255   Blessing of the Forge
 439632  *Excoriation
 439760   Aurora
-439841   Solar Grace
 440013   Cleanse Toxins
 440267  *Glyph of Divine Toll
 440268  *Glyph of Blessing of the Seasons
@@ -15087,6 +15095,10 @@ Paladin
 1277162  Instrument of the Divine
 1277443  Armory of Light
 1277651  Rising Sunlight
+1279187  Crusader Strike
+1279302 *Beacon of Light
+1279303 *Beacon of Fath
+1279408  Hammer of Wrath
 
 Priest
 17       Power Word: Shield
@@ -15834,7 +15846,6 @@ Priest
 204213   Purge the Wicked
 204215   Encroaching Shadows
 204263  *Shining Force
-204778  *Void Shield
 204883  *Circle of Healing
 205065   Void Torrent
 205084  *Void Terror
@@ -15895,8 +15906,6 @@ Priest
 213556  *Initiation
 213610   Holy Ward
 213634   Purify Disease
-213640  *Borrowed Time
-213642  *Borrowed Time
 213654  *Spiritual Cleansing
 214205  *Trinity
 214484   Cord of Maiev, Priestess of the Moon
@@ -16922,7 +16931,7 @@ Priest
 1228516  Subservient Shadows
 1229034 *Holy Fire Funeral Rites [DNT]
 1230101 *11.1.7 Lorewalking - Elves - Mind Flay
-1230339 *Mindbender
+1230339  Mindbender
 1231346  Ancient Madness
 1231479  Corrupted Apparition
 1232567  Penance
@@ -17047,6 +17056,13 @@ Priest
 1272352  Words of the Wise
 1272359  Prophet's Insight
 1272363  Unfolding Vision
+1279165 *Voidwraith
+1279281 *Voidwraith
+1279350  Invoked Nightmare
+1279353  Maddening Tentacles
+1279354  Crushing Void
+1279355  Haunting Shadows
+1279437  Crushing Void
 
 Rogue
 53       Backstab
@@ -18201,12 +18217,12 @@ Rogue
 382503   Quick Decisions
 382504   Dark Brew
 382505   The First Dance
-382506   Replicating Shadows
+382506   Replicating Shadows [NYI]
 382507   Shrouded in Darkness
 382508   Planned Execution
 382509  *Stiletto Staccato
 382511   Shadowed Finishers
-382512   Inevitability
+382512   Improved Find Weakness
 382513   Without a Trace
 382514   Fade to Nothing
 382515   Cloaked in Shadows
@@ -18260,7 +18276,7 @@ Rogue
 393970   Soothing Darkness
 393971   Soothing Darkness
 394021   Mutilated Flesh
-394023   Improved Shadow Techniques
+394023  *Improved Shadow Techniques
 394026  *Sepsis
 394031   Rupture
 394036  *Serrated Bone Spike
@@ -18274,7 +18290,7 @@ Rogue
 394140  *Echoing Reprimand
 394203   The Rotten
 394254   Perforated Veins
-394309   Swift Death
+394309  *Swift Death
 394320   Secret Stratagem
 394321   Devious Stratagem
 394324   Deadly Poison
@@ -18684,6 +18700,9 @@ Rogue
 1276816  Controlled Chaos
 1277030  Sometimes Lucky
 1277933  Preparation
+1279356  Gravedigger
+1279401  Shuriken Storm
+1279444  Improved Secret Technique
 
 Shaman
 370      Purge
@@ -22297,7 +22316,7 @@ Warlock
 453070  *Empowered Unstable Affliction
 453077  *Empowered Unstable Affliction
 453080   Improved Shadow Bolt
-453083   Relinquished
+453083  *Relinquished
 453087   Malediction
 453096   Contagion
 453105   Summoner's Embrace
@@ -22492,7 +22511,7 @@ Warlock
 1257065  Dark Harvest
 1259790  Unstable Affliction
 1259811  Practiced Pestilence
-1259815  Hex Weaver
+1259815  Potent Soul Shards
 1259825  Shared Agony
 1259838  Seeds of Destruction
 1259886  Cull the Weak
@@ -22503,19 +22522,19 @@ Warlock
 1260271  Nocturnal Yield
 1260279  Nightfall
 1260285  Patient Zero
-1261036  Cloying Power
+1261036 *Cloying Power
 1261124  Cascading Calamity
-1261147  Soul Miser
+1261147 *Soul Miser
 1261149  Malefic Grasp
 1261153  Malefic Grasp
 1261158  Corruption
 1261166  Agony
 1261176  Unstable Affliction
-1261181  Soul Miser
+1261181 *Soul Miser
 1261984  Shadow of Nathreza
 1261990  Shadow of Nathreza
 1261992  Shadow of Nathreza
-1262015  Fel Claws
+1262015 *Fel Claws
 1262028  Wrath of Nathreza
 1262094  Summon Desperate Soul
 1262252 *Felstorm
@@ -22621,8 +22640,8 @@ Warlock
 1276748  Reign of Tyranny
 1276767  Tyrant's Oblation
 1276788  Demonic Power
-1276929  Aura of Contempt
-1276934  Aura of Contempt
+1276929 *Aura of Contempt
+1276934 *Aura of Contempt
 1276947  Demonic Calling
 1276956  Blighted Maw
 1276960  Blighted Maw
@@ -22635,6 +22654,11 @@ Warlock
 1277806 *Demonic Portal <DNT>
 1277879 *Echo of Sargeras
 1278047  Wrath of Nathreza
+1279510  Niskaran Methods
+1279521  Eye Contract
+1279575  Empowered Felstorm
+1279659  Malefic Grasp
+1279686  Wither
 
 Warrior
 71       Vanguard

@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.64339
-static constexpr std::array<specialization_spell_entry_t, 612> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.64529
+static constexpr std::array<specialization_spell_entry_t, 611> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -87,7 +87,6 @@ static constexpr std::array<specialization_spell_entry_t, 612> __specialization_
   {  2,   66,  317907,      0, "Mastery: Divine Bulwark"           , "Rank 2" },
   {  2,   66,  327980,      0, "Consecration"                      , "Rank 3" },
   {  2,   66,  342348,      0, "Crusader Strike"                   , "Rank 2" },
-  {  2,   66,  344172,      0, "Consecration"                      , "Rank 2" },
   {  2,   66,  353367,      0, "Aegis of Light"                    , 0 },
   {  2,   66,  358934,      0, "Aegis of Light"                    , "Rank 2" },
   {  2,   66,  376996,      0, "Seasoned Warhorse"                 , 0 },
@@ -185,7 +184,6 @@ static constexpr std::array<specialization_spell_entry_t, 612> __specialization_
   {  4,  260, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  4,  260, 1256947,      0, "Outlaw Rogue"                      , 0 },
   {  4,  261,      53,   1752, "Backstab"                          , 0 },
-  {  4,  261,    1943,      0, "Rupture"                           , 0 },
   {  4,  261,   51667,      0, "Cut to the Chase"                  , 0 },
   {  4,  261,   76808,      0, "Mastery: Executioner"              , 0 },
   {  4,  261,  114014,      0, "Shuriken Toss"                     , 0 },
@@ -195,13 +193,14 @@ static constexpr std::array<specialization_spell_entry_t, 612> __specialization_
   {  4,  261,  185438,   8676, "Shadowstrike"                      , 0 },
   {  4,  261,  196912,      0, "Shadow Techniques"                 , 0 },
   {  4,  261,  197835,      0, "Shuriken Storm"                    , 0 },
-  {  4,  261,  212283,      0, "Symbols of Death"                  , 0 },
+  {  4,  261,  280719,      0, "Secret Technique"                  , 0 },
   {  4,  261,  319175,      0, "Black Powder"                      , 0 },
   {  4,  261,  394935,      0, "Shadowstep"                        , 0 },
   {  4,  261,  462103,      0, "Rogue"                             , 0 },
   {  4,  261,  462105,      0, "Subtlety Rogue"                    , 0 },
   {  4,  261, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  4,  261, 1256946,      0, "Subtlety Rogue"                    , 0 },
+  {  4,  261, 1279401,      0, "Shuriken Storm"                    , "Rank 2" },
   {  5,  256,     527, 440006, "Purify"                            , 0 },
   {  5,  256,   47540,      0, "Penance"                           , 0 },
   {  5,  256,  137032,      0, "Discipline Priest"                 , 0 },

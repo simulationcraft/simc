@@ -652,6 +652,7 @@ public:
       player_talent_t state_of_matter;   // No Implementation
       player_talent_t mass_acceleration;
       player_talent_t doomsayer;
+      player_talent_t harness_the_cosmos;
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
@@ -757,6 +758,7 @@ public:
     const spell_data_t* eradicate;
     const spell_data_t* eradicate_buff;
     const spell_data_t* eradicate_damage;
+    const spell_data_t* eradicate_damage_meta;
     const spell_data_t* void_ray_tick;
     const spell_data_t* void_ray_tick_meta;
     const spell_data_t* moment_of_craving_buff;
@@ -909,6 +911,7 @@ public:
     const spell_data_t* pierce_the_veil;
     const spell_data_t* reapers_toll;
     const spell_data_t* volatile_instinct;
+    const spell_data_t* demonsurge_meta_trigger;
   } hero_spec;
 
   // Set Bonus effects
@@ -978,6 +981,7 @@ public:
     cooldown_t* wounded_quarry_trigger_icd;
 
     // Scarred
+    cooldown_t* predators_wake;
   } cooldown;
 
   // Gains
@@ -2868,19 +2872,24 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
-    int stacks = BASE::p()->buff.voidfall_spending->stack();
+    int stacks                  = BASE::p()->buff.voidfall_spending->stack();
+    int stacks_for_world_killer = 0;
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      stacks_for_world_killer += 1;
+    }
 
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
     BASE::p()->buff.voidfall_spending->decrement();
 
-    if ( stacks != 1 )
+    if ( BASE::p()->buff.voidfall_spending->stack() == 0 && BASE::p()->talent.annihilator.world_killer->ok() )
     {
-      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+      BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
     else
     {
-      BASE::p()->active.world_killer->execute_on_target( BASE::target );
+      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
     }
   }
 };
@@ -4862,7 +4871,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         if ( p()->talent.scarred.violent_transformation->ok() )
         {
           p()->cooldown.voidblade->reset( true );
-          p()->cooldown.the_hunt->reset( true );
+          p()->cooldown.predators_wake->reset( true );
         }
         break;
       case DEMON_HUNTER_HAVOC:
@@ -5036,8 +5045,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     // Vengeance Greater Demon soul: 6 yards
     // Havoc Lesser and Greater souls: 8 yards
     // Havoc Greater Demon soul: 10 yards
-    // TODO: 11.2 Empowered soul for both specs: 6 yards
-    // TOCHECK: Devourer souls (currently default to previous 6 yard)
+    // Devourer Lesser and Greater souls: 4 yards
     double dtm;
     if ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
@@ -5047,6 +5055,9 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       switch ( p()->specialization() )
       {
+        case DEMON_HUNTER_DEVOURER:
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
+          break;
         case DEMON_HUNTER_HAVOC:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 8.0 );
           break;
@@ -5676,9 +5687,9 @@ struct consume_t : public consume_base_t
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public demon_hunter_spell_t
+  struct voidblade_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
-    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
+    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
       background = dual = true;
       gain              = p->get_gain( "voidblade" );
@@ -5686,7 +5697,7 @@ struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<de
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_spell_t::impact( s );
+      base_t::impact( s );
 
       if ( result_is_hit( s->result ) && p()->talent.devourer.devourers_bite->ok() )
       {
@@ -5923,18 +5934,90 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   }
 };
 
-struct eradicate_t : public reap_base_t
+struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  eradicate_t( demon_hunter_t* p, util::string_view o )
-    : reap_base_t( "eradicate", p, p->spec.eradicate, o, p->spec.eradicate_damage, p->spec.reap_energize )
+  struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
-    damage_action->aoe                 = -1;
+    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
+    {
+      background = dual = true;
+    }
+  };
+
+  eradicate_damage_t* damage_action;
+  eradicate_damage_t* damage_action_meta;
+
+  eradicate_t( demon_hunter_t* p, util::string_view o )
+    : base_t( "eradicate", p, p->spec.eradicate, o ), damage_action( nullptr ), damage_action_meta( nullptr )
+  {
+    cooldown = p->cooldown.reap;
+
+    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+    add_child( damage_action );
+
+    if ( p->talent.devourer.void_metamorphosis->ok() )
+    {
+      damage_action_meta =
+          p->get_background_action<eradicate_damage_t>( "eradicate_damage_meta", p->spec.eradicate_damage_meta );
+      damage_action_meta->aoe                 = -1;
+      damage_action_meta->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+      add_child( damage_action_meta );
+    }
+
+    if ( p->talent.devourer.scythes_embrace->ok() )
+    {
+      execute_energize_action =
+          p->get_background_action<demon_hunter_energize_t>( "eradicate_energize", p->spec.reap_energize );
+    }
+  }
+
+  virtual unsigned int souls_to_consume() const
+  {
+    unsigned int souls = as<unsigned int>( p()->spec.shattered_souls->effectN( 2 ).base_value() );
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls += as<unsigned int>( p()->buff.moment_of_craving->check_value() );
+    }
+    return souls;
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "max_souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() { return souls_to_consume(); } );
+
+    if ( util::str_compare_ci( name, "souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() {
+        return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), souls_to_consume() );
+      } );
+
+    return base_t::create_expression( name );
   }
 
   void execute() override
   {
-    reap_base_t::execute();
+    p()->buff.reap->trigger();
+    base_t::execute();
+
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
+    auto damage = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
+
+    damage->set_target( target );
+    action_state_t* damage_state = damage->get_state();
+    damage_state->target         = target;
+    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+
+    if ( p()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
+
+    damage->schedule_execute( damage_state );
+
+    p()->buff.moment_of_craving->expire();
 
     p()->buff.eradicate->expire();
   }
@@ -5946,7 +6029,7 @@ struct eradicate_t : public reap_base_t
       return false;
     }
 
-    return reap_base_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
@@ -6859,7 +6942,13 @@ struct blade_dance_base_t
         attack->stats = first_blood_attacks.front()->stats;
       }
 
-      add_child( first_blood_attacks.front() );
+
+      if ( first_blood_attacks.front() )
+      {
+        first_blood_attacks.front()->first_attack = true;
+
+        add_child( first_blood_attacks.front() );
+      }
 
       if ( first_blood_attacks.back() )
       {
@@ -8730,6 +8819,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
+
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.volatile_instinct->ok() )
+    {
+      p()->trigger_demonsurge(
+          demonsurge_ability::ENTER_META,
+          timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -8765,19 +8861,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.enduring_torment->expire();
     }
 
-    if ( p()->talent.scarred.volatile_instinct->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_DEVOURER && p()->talent.scarred.volatile_instinct->ok() )
     {
-      switch ( p()->specialization() )
-      {
-        case DEMON_HUNTER_DEVOURER:
-          p()->buff.volatile_instinct->trigger();
-          break;
-        case DEMON_HUNTER_HAVOC:
-          p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
-          break;
-        default:
-          break;
-      }
+      p()->buff.volatile_instinct->trigger();
     }
   }
 
@@ -10619,11 +10705,12 @@ void demon_hunter_t::init_spells()
   talent.annihilator.catastrophe   = find_talent_spell( talent_tree::HERO, "Catastrophe" );
   talent.annihilator.phase_shift   = find_talent_spell( talent_tree::HERO, "Phase Shift" );
 
-  talent.annihilator.path_to_oblivion  = find_talent_spell( talent_tree::HERO, "Path to Oblivion" );
-  talent.annihilator.state_of_matter   = find_talent_spell( talent_tree::HERO, "State of Matter" );
-  talent.annihilator.mass_acceleration = find_talent_spell( talent_tree::HERO, "Mass Acceleration" );
-  talent.annihilator.doomsayer         = find_talent_spell( talent_tree::HERO, "Doomsayer" );
-  talent.annihilator.celestial_echoes  = find_talent_spell( talent_tree::HERO, "Celestial Echoes" );
+  talent.annihilator.path_to_oblivion   = find_talent_spell( talent_tree::HERO, "Path to Oblivion" );
+  talent.annihilator.state_of_matter    = find_talent_spell( talent_tree::HERO, "State of Matter" );
+  talent.annihilator.mass_acceleration  = find_talent_spell( talent_tree::HERO, "Mass Acceleration" );
+  talent.annihilator.doomsayer          = find_talent_spell( talent_tree::HERO, "Doomsayer" );
+  talent.annihilator.harness_the_cosmos = find_talent_spell( talent_tree::HERO, "Harness the Cosmos" );
+  talent.annihilator.celestial_echoes   = find_talent_spell( talent_tree::HERO, "Celestial Echoes" );
 
   talent.annihilator.final_hour         = find_talent_spell( talent_tree::HERO, "Final Hour" );
   talent.annihilator.meteoric_fall      = find_talent_spell( talent_tree::HERO, "Meteoric Fall" );
@@ -10671,6 +10758,7 @@ void demon_hunter_t::init_spells()
   spec.void_metamorphosis_stack = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
   spec.eradicate                = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
   spec.eradicate_damage         = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_damage_meta    = talent_spell_lookup( talent.devourer.eradicate, 1279200 );
   spec.eradicate_buff           = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
   spec.void_ray_tick            = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta       = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
@@ -10855,6 +10943,8 @@ void demon_hunter_t::init_spells()
   hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
   hero_spec.volatile_instinct =
       spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.volatile_instinct, 1272462 );
+  hero_spec.demonsurge_meta_trigger =
+      spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.volatile_instinct, 1238696 );
 
   switch ( specialization() )
   {
@@ -10910,6 +11000,7 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
+  deregister_passive_spell( talent.havoc.tactical_retreat );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -11290,6 +11381,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.wounded_quarry_trigger_icd        = get_cooldown( "wounded_quarry_trigger_icd" );
 
   // Scarred
+  cooldown.predators_wake = get_cooldown( "predators_wake" );
 }
 
 // demon_hunter_t::create_gains =============================================
@@ -11938,7 +12030,7 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   double drain = base_fury_drain_per_second( stacks );
 
   bool has_reduced_drain = !p()->in_combat || p()->buff.voidrush->check() ||
-                           p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() ||
+                           p()->executing && p()->executing->id == p()->spec.collapsing_star_spell->id() ||
                            p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id();
 
   if ( has_reduced_drain )
@@ -12137,8 +12229,13 @@ void demon_hunter_t::trigger_demonic() const
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, const bool check_buff )
 {
-  trigger_demonsurge( ability, timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ),
-                      check_buff );
+  timespan_t delay = timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() );
+  if ( ability == demonsurge_ability::DEATH_SWEEP )
+  {
+    delay = timespan_t::from_millis( hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() );
+  }
+
+  trigger_demonsurge( ability, delay, check_buff );
 }
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, timespan_t delay, const bool check_buff )

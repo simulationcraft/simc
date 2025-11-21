@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64529 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -7852,7 +7852,7 @@ bonus_id={ 12902 }, quality={ epic }
 bonus_id={ 12903 }, quality={ epic }
 bonus_id={ 12904 }, quality={ epic }
 bonus_id={ 12922 }, socket={ 1 }
-bonus_id={ 12990 }, effects={ Soul Sear Matrix (id=1246309, index=0, type=use) }
+bonus_id={ 12990 }, effects={ B1P, Scorcher of Souls (id=1246309, index=0, type=use) }
 bonus_id={ 12991 }, effects={ Meddy, Pocket-Sized (id=1246312, index=0, type=equip) }
 bonus_id={ 13183 }, effects={ Drum of Renewed Bonds (id=1247568, index=2, type=equip) }
 bonus_id={ 13184 }, effects={ Drum of Renewed Bonds (id=1247569, index=2, type=equip) }
@@ -8134,3 +8134,4 @@ bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
 bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
+bonus_id={ 13642 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }

@@ -610,6 +610,7 @@ struct augmentation_t : public dbc_consumable_base_t
     // NOTE: still using hte old spell for Draconic Augment Rune in spelldata
     else if ( util::str_in_str_ci( consumable_name, "dreambound"     ) ) return player->find_spell( 393438 );
     else if ( util::str_in_str_ci( consumable_name, "crystallized"   ) ) return player->find_spell( 453250 );
+    else if ( util::str_in_str_ci( consumable_name, "void_touched"   ) ) return player->find_spell( 1264426 );
     else return spell_data_t::not_found();
   }
 

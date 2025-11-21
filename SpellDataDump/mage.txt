@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64339 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64529 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1113,8 +1113,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=214752)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=214753)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=214753)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 Description      : Removes all harmful Poison, Disease, Curse, Magic, and Bleed effects and reduces all physical damage taken by $65116s1% for $65116d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Frost Resistance (desc=Racial Passive) (id=20596) [Passive] 
@@ -6010,7 +6010,7 @@ Family Flags     : 3, 20, 102
 Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=343734)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.785 | Target: Targeted Enemy (6)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44614
 
@@ -7483,8 +7483,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
 #4 (id=709239)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=709240)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
+#5 (id=709240)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
@@ -12507,7 +12507,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1015682)  : Apply Aura (6) | Proc Trigger Spell (42): Fiery Rush
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383637 | Target: Self (1)
-Description      : While Combustion is active, Fire Blast recharges $383637s2% faster.
+Description      : While Combustion is active, Fire Blast recharges $383637s1% faster.
 
 Name             : Fiery Rush (id=383637) [Spell Family (3)] 
 Class            : Mage
@@ -13495,11 +13495,11 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While
 Effects          :
 #1 (id=1034997)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
                    Family Flags: 16
 #2 (id=1034998)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
                    Family Flags: 16
 Description      : $@spelldesc393629
 Tooltip          : Damage increased by $s1%.
@@ -14757,7 +14757,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1118781)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -14810,7 +14810,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1118785)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17596,7 +17596,7 @@ Family Flags     : 0, 3, 5, 108
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Do Not Chain To Crowd-Controlled Targets (200), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Rolling Periodic (334), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.86 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.916 | Target: Targeted Enemy (6)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1584 | Target: Targeted Enemy (6)
@@ -19159,7 +19159,7 @@ Effects          :
 #3 (id=1248585)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=1250022)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Modified By: Heart of Ice (1247799 effect#1)
 #5 (id=1252026)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -19219,7 +19219,7 @@ Family Flags     : 3, 35
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1248791)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.375 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5625 | Target: Targeted Enemy (6)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1246949
 
@@ -19374,15 +19374,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1250144)  : Apply Aura (6) | Proc Trigger Spell (42): Thermal Void
+#1 (id=1250144)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1247730 | Target: Self (1)
 #2 (id=1289765)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1247730 | Target: Self (1)
-Description      : Flurry has a $s1% chance to cause your next Ice Lance to cast an additional time at $s2% effectiveness.
+Description      : Consuming Brain Freeze has a $s1% chance to cause your next Ice Lance to cast an additional time at $s2% effectiveness.
 
 Name             : Thermal Void (id=1247730) [Spell Family (3)] 
 Class            : Mage
@@ -19572,16 +19570,22 @@ Effects          :
 Description      : $@spelldesc443783
 Tooltip          : Any time you would generates a Frost Splinter, you have a $443783s2% chance to generate an additional Frost Splinter.
 
-Name             : Clear Transmog Outfit (id=1247917) 
+Name             : Clear Current Transmogrifications (id=1247917) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Cooldown         : 3 seconds
+GCD              : 1.5 seconds
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
+
+|cnWHITE_FONT_COLOR:Lock Appearance:|r
+|cnNORMAL_FONT_COLOR:Prevent this appearance from being replaced by a Situation|r
+
+|cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Heat Sink (id=1248002) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -19791,7 +19795,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1259124)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Misc Value 2: 5652 (Label) | Target: Self (1)
-                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256322)
+                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256302), Voidfall (1256322)
 Description      : Each stack of Voidfall grants $s1% increased movement speed.
 
 Name             : Swift Erasure (id=1253668) [Spell Family (107), Passive] 
@@ -19807,7 +19811,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1259589)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Misc Value 2: 5652 (Label) | Target: Self (1)
-                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256322)
+                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256302), Voidfall (1256322)
                    Modified By: Devourer Demon Hunter (1213636 effect#8)
 Description      : Each stack of Voidfall grants $s1% Haste.
 
@@ -20030,7 +20034,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1263659)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Misc Value 2: 5652 (Label) | Target: Self (1)
-                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256322)
+                   Affected Spells (Label): Voidfall (1256301), Voidfall (1256302), Voidfall (1256322)
 Description      : Each stack of Voidfall grants $s1% reduced damage taken.
 
 Name             : Voidfall (id=1256301) [Spell Family (107)] 
@@ -20060,10 +20064,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Path to Oblivion (1253399 effect#1)
 Description      : $@spelldesc1253304
-Tooltip          : Building up to a meteor strike.
-$?a1253668[Haste increased by $s3%.][]
-$?a1256245[Damage taken reduced by $s2%.][]
-$?a1253399[Movement speed increased by $s4%.][]
+Tooltip          : Building up to a meteor strike.$?a1253668[
+Haste increased by $s3%.][]
+$?a1256245[
+Damage taken reduced by $s2%.][]
+$?a1253399[
+Movement speed increased by $s4%.][]
 
 Name             : Voidfall Meteor (id=1256303) [Spell Family (107)] 
 Class            : Mage
@@ -20109,13 +20115,13 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
-Triggered By     : Voidfall Meteor (1256304), World Killer (1256618)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Harness the Cosmos (1279247 effects: #1, #2)
+Triggered By     : Voidfall Meteor (1256304)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 
@@ -20126,20 +20132,20 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Harness the Cosmos (1279247 effects: #1, #2)
 Triggered By     : Voidfall Meteor (1256303), Voidfall Meteor (1266127)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263764)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall (id=1256322) [Spell Family (107)] 
 Class            : Mage, Demon Hunter
 School           : None
 Spell Type       : None
-Duration         : 12 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -20162,9 +20168,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Path to Oblivion (1253399 effect#1)
 Description      : $@spelldesc1253304
-Tooltip          : Haste increased by $s3%.
-$?a1256245[Damage taken reduced by $s2%.][]
-$?a1253399[Movement speed increased by $s4%.][]
+Tooltip          : Haste increased by $s3%.$?a1256245[
+Damage taken reduced by $s2%.][]
+$?a1253399[
+Movement speed increased by $s4%.][]
 
 Name             : World Killer (id=1256616) [Spell Family (107)] 
 Class            : Mage
@@ -20192,13 +20199,13 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Harness the Cosmos (1279247 effects: #1, #2)
 Triggered By     : World Killer (1256616), World Killer (1266123)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264191)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.5 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : World Killer (id=1256618) [Spell Family (107)] 
@@ -20215,8 +20222,8 @@ Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273),
 Effects          :
 #1 (id=1264192)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#2 (id=1264193)  : Trigger Missiles (32): Voidfall Meteor
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1256305 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+#2 (id=1264193)  : Trigger Missiles (32): World Killer
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1256619 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc153561
 
 Name             : World Killer (id=1256619) [Spell Family (107)] 
@@ -20227,12 +20234,13 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Harness the Cosmos (1279247 effects: #1, #2)
+Triggered By     : World Killer (1256618)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264194)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : Arcane Mage (id=1256909) [Spell Family (3), Passive, Hidden] 
@@ -20959,7 +20967,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Harness the Cosmos (1279247 effects: #1, #2)
 Triggered By     : Meteor Shower (1264126)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -20976,7 +20984,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Harness the Cosmos (1279247 effects: #1, #2)
 Triggered By     : Meteor Shower (1264128)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)

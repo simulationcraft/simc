@@ -1,10 +1,9 @@
-// Rank class spells, wow build 12.0.0.64339
+// Rank class spells, wow build 12.0.0.64529
 static constexpr std::array<rank_class_spell_t, 42> __rank_spells_data { {
   {  1,    0,  319158,       0, "Victory Rush"                      , "Rank 2" },
   {  2,    0,  327977,       0, "Judgment"                          , "Rank 2" },
   {  2,   65,  315867,       0, "Judgment"                          , "Rank 3" },
   {  2,   66,  358934,       0, "Aegis of Light"                    , "Rank 2" },
-  {  2,   66,  344172,       0, "Consecration"                      , "Rank 2" },
   {  2,   66,  327980,       0, "Consecration"                      , "Rank 3" },
   {  2,   66,  342348,       0, "Crusader Strike"                   , "Rank 2" },
   {  2,   66,  315867,       0, "Judgment"                          , "Rank 3" },
@@ -14,6 +13,7 @@ static constexpr std::array<rank_class_spell_t, 42> __rank_spells_data { {
   {  2,   70,  315867,       0, "Judgment"                          , "Rank 3" },
   {  4,  259,  319473,       0, "Mastery: Potent Assassin"          , "Rank 2" },
   {  4,  260,  331851,       0, "Blade Flurry"                      , "Rank 2" },
+  {  4,  261, 1279401,       0, "Shuriken Storm"                    , "Rank 2" },
   {  6,  252,  325554,       0, "Dark Transformation"               , "Rank 2" },
   {  7,    0,  318044,       0, "Lightning Bolt"                    , "Rank 2" },
   {  9,    0,  342914,       0, "Fear"                              , "Rank 2" },

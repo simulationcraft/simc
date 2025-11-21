@@ -61,6 +61,8 @@ CONSUMABLE_ITEM_WHITELIST = {
     191399, 191400, 191401,            # Potion of Shocking Disclosure
     # The War Within
     224572,                            # Crystallized Augment Rune
+    # Midnight
+    259085,                            # Void-Touched Augment Rune
     ]
 }
 
