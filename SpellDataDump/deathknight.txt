@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63906 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.64502 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -8631,7 +8631,7 @@ Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown 
 Effects          :
 #1 (id=815924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Dark Transformation (63560), Dark Transformation (1235391)
+                   Affected Spells: Dark Transformation (63560)
                    Family Flags: 69
 Description      : Dark Transformation grants your ghoul $s1% energy.
 
@@ -9533,7 +9533,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #2 (id=874420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Dark Transformation (63560), Dark Transformation (1235391)
+                   Affected Spells: Dark Transformation (63560)
                    Family Flags: 69
 Description      : Dark Transformation's duration is increased by ${$s2/1000} sec and your Minion damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
@@ -18668,8 +18668,6 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Stance Mask      : 0x01000000
-Affecting Spells : Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#2)
-Family Flags     : 69
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1230682)  : Apply Aura (6) | Dummy (4)

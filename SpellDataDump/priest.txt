@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63906 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.64502 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -14086,7 +14086,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151642)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.715 | Target: Self (1)
 Description      : Entropic Rift slows enemies by up to $s1%, increased the closer they are to its center.
 
 Name             : No Escape (id=451210) [Spell Family (6)] 
@@ -14103,7 +14103,7 @@ Mechanic         : Snare
 Attributes       : Do Not Log (8), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1151650)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 0.715 | Target: Targeted Enemy (6)
 Description      : $@spelldesc451204
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -15306,7 +15306,7 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1190454)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Smite extends the duration of an active Atonement by ${$s1/1000}.1 sec.
 
 Name             : Evangelism (id=472433) [Spell Family (6)] 

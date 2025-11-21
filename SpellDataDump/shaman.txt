@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63906 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.5.64502 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1053,7 +1053,7 @@ Internal Cooldown: 3 seconds
 Stacks           : 9 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken
-Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7)
+Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7, #8)
 Family Flags     : 37
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38)
@@ -1075,7 +1075,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7)
+Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7, #8)
 Family Flags     : 37
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Allow Cast While Casting (135), Allow Class Ability Procs (416)
 Effects          :
@@ -18587,6 +18587,10 @@ Effects          :
                    Family Flags: 37
 #7 (id=1201823)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
+                   Affected Spells: Water Shield (52127), Water Shield (52128)
+                   Family Flags: 37
+#8 (id=1292216)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+                   Base Value: 800 | Scaled Value: 800 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
                    Family Flags: 37
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
