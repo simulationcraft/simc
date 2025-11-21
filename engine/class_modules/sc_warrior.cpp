@@ -2500,6 +2500,8 @@ struct bloodthirst_t : public warrior_attack_t
     : bloodthirst_t( name, p )
   {
     this->unhinged = unhinged;
+    if ( unhinged )
+      base_multiplier = p->talents.slayer.unhinged->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -2738,6 +2740,8 @@ struct bloodbath_t : public warrior_attack_t
     : bloodbath_t( name, p )
   {
     this->unhinged = unhinged;
+    if ( unhinged )
+      base_multiplier = p->talents.slayer.unhinged->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -2913,6 +2917,8 @@ struct mortal_strike_t : public warrior_attack_t
     : mortal_strike_t( name, p )
   {
     this->unhinged = unhinged;
+    if ( unhinged )
+      base_multiplier = p->talents.slayer.unhinged->effectN( 2 ).percent();
   }
 
   void init() override
@@ -3113,7 +3119,6 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    // Unhinged DOES work w/ Torment and Signet
     if ( p->talents.slayer.unhinged->ok() && p->specialization() == WARRIOR_ARMS )
     {
       mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p, true );
