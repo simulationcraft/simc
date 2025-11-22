@@ -704,7 +704,7 @@ public:
       player_talent_t fight_through_the_flames;
       player_talent_t devastator;
       // Row 4
-      player_talent_t disrupting_shout;
+      player_talent_t disrupting_shout;  // NYI
       player_talent_t strategist;
       player_talent_t devastating_focus;  // NYI
       // Row 5
@@ -802,13 +802,13 @@ public:
       player_talent_t crashing_thunder;
       player_talent_t ground_current;
       player_talent_t strength_of_the_mountain;
-      player_talent_t storm_surge;  // NYI
+      player_talent_t storm_surge;
       player_talent_t thunder_blast;
       player_talent_t storm_bolts;
       player_talent_t storm_shield; // NYI
       player_talent_t keep_your_feet_on_the_ground; // NYI
       player_talent_t steadfast_as_the_peaks;
-      player_talent_t conductivity;  // NYI
+      player_talent_t conductivity;
       player_talent_t flashing_skies;
       player_talent_t snap_induction;
       player_talent_t gathering_clouds;
@@ -3815,6 +3815,10 @@ struct thunder_blast_t : public warrior_attack_t
         p()->buff.severe_thunder->trigger();
       }
     }
+
+    if ( p()->talents.mountain_thane.capacitance->ok() && p()->buff.avatar->up() )
+      p()->buff.avatar->extend_duration_or_trigger( p()->talents.mountain_thane.capacitance->effectN( 1 ).time_value() );
+
   }
 
   void impact( action_state_t* state ) override
