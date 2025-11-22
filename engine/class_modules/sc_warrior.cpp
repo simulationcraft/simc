@@ -270,6 +270,7 @@ public:
     buff_t* brutal_finish;
     buff_t* fierce_followthrough;
     buff_t* opportunist;
+    buff_t* violent_euphoria;
 
     // Mountain Thane
     buff_t* thunder_blast;
@@ -3216,14 +3217,13 @@ struct bladestorm_t : public warrior_attack_t
     p()->buff.bladestorm->expire();
 
     if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
-    {
       p()->buff.imminent_demise->expire();
-    }
 
     if ( p()->talents.slayer.brutal_finish->ok() )
-    {
       p()->buff.brutal_finish->trigger();
-    }
+
+    if ( p()->talents.slayer.violent_euphoria->ok() )
+      p()->buff.violent_euphoria->trigger();
   }
 };
 
@@ -8059,6 +8059,7 @@ void warrior_t::create_buffs()
   buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
   buff.fierce_followthrough = make_buff( this, "fierce_followthrough", find_spell( 458689 ) );
   buff.opportunist          = make_buff( this, "opportunist", find_spell( 456120 ) );
+  buff.violent_euphoria     = make_buff( this, "violent_euphoria", find_spell( 1270731 ) );
 
   // Mountain Thane
   buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
@@ -9236,6 +9237,7 @@ void warrior_t::parse_player_effects()
   // Colossus
 
   // Slayer
+  parse_effects( buff.violent_euphoria );
 
   // Mountain Thane
 }
