@@ -6938,7 +6938,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   if ( name == "berserker_stance" )
     return new berserker_stance_t( this, options_str );
   if ( name == "bladestorm" )
-    return new bladestorm_t( this, options_str, name, specialization() == WARRIOR_FURY ? talents.fury.bladestorm : talents.arms.bladestorm );
+    return new bladestorm_t( this, options_str, name, talents.slayer.unrelenting_onslaught->ok() ? find_spell( 446035 ) : find_spell( 227847 ) );
   if ( name == "bloodthirst" )
     return new bloodthirst_t( this, options_str );
   if ( name == "bloodbath" )
@@ -7951,7 +7951,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202164 )->effectN( 1 ).percent() );
 
   buff.bladestorm =
-      make_buff( this, "bladestorm", specialization() == WARRIOR_FURY ? find_spell( 46924 ) : talents.arms.bladestorm )
+      make_buff( this, "bladestorm", talents.slayer.unrelenting_onslaught->ok() ? find_spell( 446035 ) : find_spell( 227847 ) )
       ->disable_ticking( true )
       ->set_cooldown( timespan_t::zero() );
 
