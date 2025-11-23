@@ -263,6 +263,7 @@ public:
 
     // Colossus
     buff_t* colossal_might;
+    buff_t* cut_to_the_bone;
 
     // Slayer
     buff_t* executioner;
@@ -747,7 +748,7 @@ public:
       player_talent_t tide_of_battle;
       player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
-      player_talent_t cut_to_the_bone;  // NYI
+      player_talent_t cut_to_the_bone;
       player_talent_t practiced_strikes;
       player_talent_t precise_might;
       player_talent_t mountain_of_muscle_and_scars;
@@ -1061,6 +1062,7 @@ public:
       {
         parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ) );
       }
+      parse_effects( p()->buff.cut_to_the_bone );
       // Effect 3 is the auto attack mod
       parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
 
@@ -2936,9 +2938,10 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-    {
       p()->buff.deeper_wounds->trigger();
-    }
+
+    if ( s->result == RESULT_CRIT && p()->talents.colossus.cut_to_the_bone->ok() )
+      p()->buff.cut_to_the_bone->trigger();
   }
 
   bool ready() override
@@ -5791,9 +5794,10 @@ struct shield_slam_t : public warrior_attack_t
     }
 
     if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-    {
       p()->buff.deeper_wounds->trigger();
-    }
+
+    if ( state->result == RESULT_CRIT && p()->talents.colossus.cut_to_the_bone->ok() )
+      p()->buff.cut_to_the_bone->trigger();
   }
 
   bool ready() override
@@ -7853,6 +7857,9 @@ void warrior_t::create_buffs()
   // Colossus
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  buff.cut_to_the_bone      = make_buff( this, "cut_to_the_bone", find_spell( 1270840 ) )
+                                ->set_cooldown( talents.colossus.cut_to_the_bone->internal_cooldown() );
 
   // Slayer
   buff.executioner          = make_buff( this, "executioner", find_spell( 445584 ) )
