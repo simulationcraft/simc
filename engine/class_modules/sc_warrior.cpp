@@ -1057,7 +1057,7 @@ public:
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 7 ) );
 
-      parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
+      parse_effects( p()->buff.bloodcraze );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 10, 11, 12 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -7474,7 +7474,7 @@ void warrior_t::init_spells()
                                      : effect_mask_t( true ) );
 
   register_passive_effect_mask( talents.mountain_thane.crashing_thunder,
-    specialization() == WARRIOR_PROTECTION ? effect_mask_t( true ).disable( 4, 6, 7, 8 )
+    specialization() == WARRIOR_PROTECTION ? effect_mask_t( true ).disable( 5, 6, 7, 8 )
                                            : effect_mask_t( true ) );
 
   register_passive_effect_mask( sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 ),
