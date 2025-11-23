@@ -5305,14 +5305,12 @@ struct dreadnaught_t : warrior_attack_t
 struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
-  double rage_from_battlelord;
   warrior_attack_t* dreadnaught;
   action_t* reap_the_storm;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
-      rage_from_battlelord( p->talents.arms.battlelord->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) ),
       dreadnaught( nullptr ),
       reap_the_storm( nullptr )
   {
@@ -5361,15 +5359,11 @@ struct overpower_t : public warrior_attack_t
     if ( p()->talents.arms.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       if ( !p()->cooldown.mortal_strike->up() )
-      {
         p()->proc.battlelord_wasted->occur();
-      }
       else
-      {
         p()->proc.battlelord->occur();
-      }
+
       p()->cooldown.mortal_strike->reset( true );
-      p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
     }
 
     p()->buff.overpowering_might->expire();
