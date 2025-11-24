@@ -451,14 +451,11 @@ public:
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
-    propagate_const<action_t *> press_the_advantage;
 
     // Windwalker
-    propagate_const<action_t *> dual_threat;
     propagate_const<action_t *> empowered_tiger_lightning;
     propagate_const<action_t *> flurry_of_xuen;
     propagate_const<action_t *> combat_wisdom_eh;
-    propagate_const<action_t *> thunderfist;
 
     // Conduit of the Celestials
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
