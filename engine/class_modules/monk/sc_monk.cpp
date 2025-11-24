@@ -547,8 +547,9 @@ struct shado_over_the_battlefield_t : public monk_spell_t
     : monk_spell_t( player, "flurry_strike_shado_over_the_battlefield",
                     player->talent.shado_pan.flurry_strike_shado_over_the_battlefield )
   {
-    background = dual = true;
-    // TODO: AoE behaviour
+    background = dual   = true;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+    aoe                 = -1;
   }
 };
 };  // namespace
