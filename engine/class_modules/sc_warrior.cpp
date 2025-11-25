@@ -3473,9 +3473,10 @@ struct demolish_damage_t : public warrior_attack_t
     warrior_attack_t::impact( state );
 
     if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->up() )
-    {
       td( state->target )->debuffs_wrecked->trigger( p()->buff.colossal_might->stack() );
-    }
+
+    if ( data().id() == 440888 && p()->talents.colossus.decimator->ok() ) // Third Attack
+      p()->active.deep_wounds_ARMS->execute_on_target( state->target );
   }
 
   void execute() override
