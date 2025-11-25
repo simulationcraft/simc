@@ -606,7 +606,7 @@ public:
       player_talent_t fatality;
       // Row 10
       player_talent_t master_tactician;  // NYI
-      player_talent_t mortal_wounds;  // NYI
+      player_talent_t mortal_wounds;
       player_talent_t avatar;
       // Apex
       player_talent_t master_of_warfare_1;  // NYI
