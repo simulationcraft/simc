@@ -1404,23 +1404,18 @@ public:
       if ( p()->specialization() == WARRIOR_FURY )
       {
         cd_time_reduction /= p()->talents.warrior.anger_management->effectN( 3 ).base_value();
+        p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.recklessness->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
-
       else if ( p()->specialization() == WARRIOR_ARMS )
       {
         if ( ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
           return;
 
         cd_time_reduction /= p()->talents.warrior.anger_management->effectN( 1 ).base_value();
-
+        p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
-
       else if ( p()->specialization() == WARRIOR_PROTECTION )
       {
         cd_time_reduction /= p()->talents.warrior.anger_management->effectN( 2 ).base_value();
