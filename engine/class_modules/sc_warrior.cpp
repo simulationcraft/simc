@@ -210,8 +210,7 @@ public:
   // Active
   struct active_t
   {
-    action_t* deep_wounds_ARMS;
-    action_t* deep_wounds_PROT;
+    action_t* deep_wounds;
     action_t* fatality;
     action_t* tough_as_nails;
     action_t* slayers_strike;
@@ -401,7 +400,6 @@ public:
     const spell_data_t* whirlwind;
 
     // Arms
-    const spell_data_t* deep_wounds_arms;
 
     // Fury
 
@@ -421,6 +419,7 @@ public:
     const spell_data_t* sudden_death_fury;
     const spell_data_t* devastator;
     const spell_data_t* bloodsurge_energize;
+    const spell_data_t* deep_wounds_dot;
 
     // Colossus
     const spell_data_t* wrecked_debuff;
@@ -440,9 +439,9 @@ public:
   // Mastery
   struct mastery_t
   {
-    const spell_data_t* deep_wounds_ARMS;  // Arms
-    const spell_data_t* critical_block;    // Protection
-    const spell_data_t* unshackled_fury;   // Fury
+    const spell_data_t* master_of_arms;  // Arms
+    const spell_data_t* critical_block;  // Protection
+    const spell_data_t* unshackled_fury; // Fury
   } mastery;
 
   // Procs
@@ -466,7 +465,6 @@ public:
     const spell_data_t* arms_warrior_2;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sweeping_strikes;
-    const spell_data_t* deep_wounds_ARMS;
 
     // Fury Spells
     const spell_data_t* fury_warrior;
@@ -485,7 +483,6 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* vanguard;
 
-    const spell_data_t* deep_wounds_PROT;
     const spell_data_t* revenge_trigger;
     const spell_data_t* shield_block_2;
 
@@ -649,7 +646,7 @@ public:
       player_talent_t bloodcraze;
       // Row 7
       player_talent_t ragedrinker;  // NYI
-      player_talent_t deep_wounds;  // NYI
+      player_talent_t deep_wounds;
       player_talent_t recklessness;
       player_talent_t massacre;
       player_talent_t wrath_and_fury;
@@ -807,6 +804,7 @@ public:
       player_talent_t ravager;
       player_talent_t bloodsurge;
       player_talent_t sudden_death;
+      player_talent_t deep_wounds;
     } shared;
 
   } talents;
@@ -1025,6 +1023,8 @@ public:
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
       parse_effects( p()->buff.storm_of_swords );
+      if( p()->main_hand_weapon.type == WEAPON_2H )
+        parse_effects( p()->mastery.master_of_arms );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -1100,11 +1100,6 @@ public:
     // Shared
 
     // Arms
-    // Arms deep wounds spell data contains DF2 2pc bonus, which is disabled/enabled via script.  Stored on effect 4 and 5, so we disable them.
-    parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
-                          p()->spell.deep_wounds_arms, effect_mask_t( true ).disable( 4, 5 ),
-                          p()->mastery.deep_wounds_ARMS );
-
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff );
 
@@ -1665,7 +1660,6 @@ struct devastate_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() )
   {
     weapon        = &( p->main_hand_weapon );
-    impact_action = p->active.deep_wounds_PROT;
     parse_options( options_str );
 
     if ( p->talents.protection.strategist->ok() )
@@ -1709,7 +1703,6 @@ struct devastator_t : warrior_attack_t
       shield_slam_reset( p->talents.protection.devastator->effectN( 2 ).percent() )
   {
     background = true;
-    impact_action = p->active.deep_wounds_PROT;
   }
 
   void init_finished() override
@@ -2793,7 +2786,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
-    impact_action    = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
@@ -2811,7 +2803,6 @@ struct mortal_strike_t : public warrior_attack_t
       unhinged( true )
   {
     background = true;
-    impact_action = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
     cooldown->duration = 0_s;
     if ( p->talents.slayer.reap_the_storm->ok() )
@@ -2942,6 +2933,9 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( s->result == RESULT_CRIT && p()->talents.colossus.cut_to_the_bone->ok() )
       p()->buff.cut_to_the_bone->trigger();
+
+    if ( s->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
+      p()->active.deep_wounds->execute_on_target( s->target );
   }
 
   bool ready() override
@@ -2967,7 +2961,6 @@ struct bladestorm_tick_t : public warrior_attack_t
     background = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      impact_action = p->active.deep_wounds_ARMS;
       // Arms does not generate rage when bladestorming
       energize_amount = 0;
       energize_resource = RESOURCE_NONE;
@@ -3349,11 +3342,9 @@ struct cleave_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    if ( execute_state->n_targets >= 1 )
-    {
-      p()->active.deep_wounds_ARMS->set_target( s->target );
-      p()->active.deep_wounds_ARMS->execute();
-    }
+    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
+      p()->active.deep_wounds->execute_on_target( s->target );
+
     if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
     {  // does this eat RPPM when switching from low -> high health target?
       td( s->target )->debuffs_fatal_mark->trigger();
@@ -3408,7 +3399,6 @@ struct colossus_smash_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
-    impact_action    = p->active.deep_wounds_ARMS;
   }
 
   void impact( action_state_t* s ) override
@@ -3424,30 +3414,12 @@ struct colossus_smash_t : public warrior_attack_t
 
 // Deep Wounds ARMS ==============================================================
 
-struct deep_wounds_ARMS_t : public warrior_attack_t
+struct deep_wounds_t : public warrior_attack_t
 {
-  double bloodsurge_chance, rage_from_bloodsurge;
-  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) ),
-    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+  deep_wounds_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spell.deep_wounds_dot )
   {
     background = tick_may_crit = true;
-    hasted_ticks               = true;
-  }
-};
-
-// Deep Wounds PROT ==============================================================
-
-struct deep_wounds_PROT_t : public warrior_attack_t
-{
-  double bloodsurge_chance, rage_from_bloodsurge;
-  deep_wounds_PROT_t( warrior_t* p )
-    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_PROT->effectN( 1 ).trigger() ),
-    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
-  {
-    background = tick_may_crit = true;
-    hasted_ticks               = true;
+    rolling_periodic           = true;
   }
 };
 
@@ -3476,7 +3448,7 @@ struct demolish_damage_t : public warrior_attack_t
       td( state->target )->debuffs_wrecked->trigger( p()->buff.colossal_might->stack() );
 
     if ( data().id() == 440888 && p()->talents.colossus.decimator->ok() ) // Third Attack
-      p()->active.deep_wounds_ARMS->execute_on_target( state->target );
+      p()->active.deep_wounds->execute_on_target( state->target );
   }
 
   void execute() override
@@ -5487,7 +5459,6 @@ struct revenge_t : public warrior_attack_t
     {
       parse_options( options_str );
       aoe           = -1;
-      impact_action = p->active.deep_wounds_PROT;
 
       if ( p->talents.mountain_thane.lightning_strikes->ok() )
       {
@@ -6913,14 +6884,13 @@ void warrior_t::init_spells()
   spec.warrior_2                = find_spell( 462116 );
 
   // Arms Spells
-  mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
+  mastery.master_of_arms        = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
   spec.arms_warrior_2           = find_spell( 462115 ); // Trinket aura
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
-  spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
-  spell.deep_wounds_arms        = find_spell( 262115 );
+  spell.deep_wounds_dot         = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.sudden_death_arms       = find_spell( 52437 );
 
@@ -6942,7 +6912,6 @@ void warrior_t::init_spells()
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.vanguard                 = find_specialization_spell( "Vanguard" );
-  spec.deep_wounds_PROT         = find_specialization_spell("Deep Wounds", WARRIOR_PROTECTION);
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
@@ -7335,12 +7304,12 @@ void warrior_t::init_spells()
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
+  talents.shared.deep_wounds = find_shared_talent( { &talents.arms.deep_wounds, &talents.fury.deep_wounds, &talents.protection.deep_wounds } );
 
   // Active spells
-  active.deep_wounds_ARMS = nullptr;
-  active.deep_wounds_PROT = nullptr;
-  active.fatality         = nullptr;
-  active.slayers_strike   = nullptr;
+  active.deep_wounds    = nullptr;
+  active.fatality       = nullptr;
+  active.slayers_strike = nullptr;
 
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
@@ -8311,17 +8280,17 @@ void warrior_t::arise()
 
     void execute() override
     {
-      double deep_wounds_targets = 0;
+      double rend_targets = 0;
       for ( auto t : player->sim->target_non_sleeping_list )
       {
         warrior_td_t* td = player->get_target_data( t );
-        if ( t->is_enemy() && td->dots_deep_wounds->is_ticking() )
-          deep_wounds_targets++;
+        if ( t->is_enemy() && td->dots_rend->is_ticking() )
+          rend_targets++;
       }
-      if ( deep_wounds_targets > 0 )
+      if ( rend_targets > 0 )
       {
         double proc_chance = player->talents.shared.bloodsurge->effectN( 1 ).percent();
-        proc_chance *= std::sqrt( 1 / deep_wounds_targets ) * deep_wounds_targets;
+        proc_chance *= std::sqrt( 1 / rend_targets ) * rend_targets;
         if ( rng().roll( proc_chance ) )
         {
           player->resource_gain( RESOURCE_RAGE, player->spell.bloodsurge_energize->effectN( 1 ).resource( RESOURCE_RAGE ), player->gain.bloodsurge );
@@ -8423,10 +8392,8 @@ void warrior_t::create_actions()
     this->rampage_attacks.push_back( fourth );
   }
 
-  if ( spec.deep_wounds_ARMS->ok() )
-    active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
-  if ( spec.deep_wounds_PROT->ok() )
-    active.deep_wounds_PROT = new deep_wounds_PROT_t( this );
+  if ( talents.shared.deep_wounds->ok() || talents.arms.mortal_wounds->ok() || talents.colossus.decimator->ok() )
+    active.deep_wounds = new deep_wounds_t( this );
   if ( talents.arms.fatality->ok() )
     active.fatality = new fatality_t( this );
 
@@ -8770,6 +8737,9 @@ void warrior_t::invalidate_cache( cache_e c )
       parse_player_effects_t::invalidate_cache( CACHE_PARRY );
     }
   }
+  if ( c == CACHE_MASTERY && mastery.master_of_arms->ok() )
+    parse_player_effects_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   if ( c == CACHE_MASTERY && mastery.unshackled_fury->ok() )
   {
     parse_player_effects_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -9003,6 +8973,8 @@ void warrior_t::parse_player_effects()
 
   if ( specialization() == WARRIOR_ARMS )
   {
+    if( p()->main_hand_weapon.type == WEAPON_2H )
+      parse_effects( mastery.master_of_arms );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
