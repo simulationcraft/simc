@@ -294,10 +294,9 @@ public:
     unsigned initial_spellfire_spheres = 5;
     unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
-    double clearcasting_chance = 0.0068;
-    double it_clearcasting_chance = 0.0938;
-    double blast_clearcasting_chance = 0.0938;
-    double blast_it_clearcasting_chance = 0.1618;
+    double clearcasting_chance = 0.0186;
+    double illuminated_thoughts_bonus = 0.0129;
+
   } options;
 
   // Pets
@@ -1724,35 +1723,23 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // TODO: remove me
-      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent(), 100_ms );
-      return;
-      // TODO: Adjust this with the new BLP data
       constexpr int cc_blp_threshold = 13;
-      timespan_t delay = 100_ms;
       // The tooltip chance present on Clearcasting/Illuminated Thoughts is the total expected outcome of Clearcasting applications, not it's random proc chance.
       // Whenever combining both the proc chance and its bad luck protection, the final application rate is equal to its tooltip chance.
+      // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in the base rate being 12% and 15% with Illuminated Thoughts.
       double proc_chance = p()->options.clearcasting_chance; 
       if ( p()->talents.illuminated_thoughts.ok() )
-        proc_chance = p()->options.it_clearcasting_chance;
-      // Arcane Blast has an unmentioned 5% increase in total expected Clearcasting applications -- same BLP threshold, but higher proc chance.
-      if ( id == 30451 )
-      {
-        proc_chance = p()->options.blast_clearcasting_chance;
-        if ( p()->talents.illuminated_thoughts.ok() )
-          proc_chance = p()->options.blast_it_clearcasting_chance;
-      }
+        proc_chance += p()->options.illuminated_thoughts_bonus;
 
-      p()->state.clearcasting_blp_count += 1;
+      p()->state.clearcasting_blp_count++;
       if ( p()->state.clearcasting_blp_count >= cc_blp_threshold )
         proc_chance = 1.0;
-      // Arcane Explosion, if consuming Clearcasting, has the random proc chance occur precisely whenever the Echo is executed.
-      if ( proc_chance != 1.0 && id == 1449 && snapshot_clearcasting )
-        delay = 500_ms;
+      else
+        proc_chance *= p()->state.clearcasting_blp_count;
 
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, delay, background ) )
+        if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
           p()->state.clearcasting_blp_count = 0;
       }
     }
@@ -2501,11 +2488,14 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
   void execute() override
   {
+    triggers.clearcasting = !background;
     if ( orb_mastery && p()->buffs.clearcasting->check() )
     {
       int count = as<int>( p()->talents.orb_mastery->effectN( 1 ).base_value() );
       make_repeating_event( *sim, 150_ms, [ this, t = target ] { orb_mastery->execute_on_target( t ); }, count );
       clearcasting_snapshot = true;
+      // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast -- behaves identically to Barrage with Orb Barrage.
+      triggers.clearcasting = false;
     }
 
     custom_state_spell_t::execute();
@@ -2766,8 +2756,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    // TODO: Can the echo also trigger CC?
-    triggers.clearcasting = true;
+    triggers.clearcasting = !echo;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -5548,9 +5537,7 @@ void mage_t::create_options()
                 return true;
               } ) );
   add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance ) );
-  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
-  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
-  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
+  add_option( opt_float( "mage.illuminated_thoughts_bonus", options.illuminated_thoughts_bonus ) );
   player_t::create_options();
 }
 
