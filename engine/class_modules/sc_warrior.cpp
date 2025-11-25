@@ -3298,7 +3298,7 @@ struct cleave_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
     aoe = -1;
-    reduced_aoe_targets = 5.0;
+    reduced_aoe_targets = p->talents.arms.cleave->effectN( 2 ).base_value();
 
     if ( p->talents.arms.fervor_of_battle->ok() )
     {
