@@ -3918,6 +3918,9 @@ struct execute_damage_t : public warrior_attack_t
           td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
       }
     }
+
+    if ( p()->talents.shared.deep_wounds->ok() )
+      p()->active.deep_wounds->execute_on_target( state->target );
   }
 };
 
@@ -4146,6 +4149,8 @@ struct execute_main_hand_t : public warrior_attack_t
       if ( state->target == p()->target && p()->buff.executioner->up() )
         td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
     }
+    if( p()->talents.shared.deep_wounds->ok() )
+      p()->active.deep_wounds->execute_on_target( state->target );
   }
 };
 
@@ -8973,7 +8978,7 @@ void warrior_t::parse_player_effects()
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    if( p()->main_hand_weapon.type == WEAPON_2H )
+    if( main_hand_weapon.type == WEAPON_2H )
       parse_effects( mastery.master_of_arms );
   }
   else if ( specialization() == WARRIOR_FURY )
