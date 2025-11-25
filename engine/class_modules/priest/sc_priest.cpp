@@ -2178,7 +2178,7 @@ void priest_t::create_cooldowns()
   cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
   cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
-  cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
+  cooldowns.void_volley                   = get_cooldown( "void_volley" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
@@ -2986,8 +2986,8 @@ void priest_t::init_spells()
 
   // PvP Talents
   talents.pvp.mindgames                  = find_spell( 375901 );
-  talents.pvp.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
-  talents.pvp.mindgames_damage_reversal  = find_spell( 323706 );  // TODO: Swap to new DF spells 375902 + 375904
+  talents.pvp.mindgames_healing_reversal = find_spell( 323707 );
+  talents.pvp.mindgames_damage_reversal  = find_spell( 323706 );
 
   // Archon Hero Talents (Holy/Shadow)
   talents.archon.halo                     = HT( "Halo" );

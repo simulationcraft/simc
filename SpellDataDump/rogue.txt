@@ -4289,6 +4289,7 @@ Effects          :
 Description      : Deals Shadow damage to an enemy.
 
 Name             : Weaponmaster (id=193537) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Subtlety [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -4296,12 +4297,15 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 6070: Replicating Shadows (382506 effect#2)
 Internal Cooldown: 0.5 seconds
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Proc cooldown on a per target basis (330), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Proc cooldown on a per target basis (330), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283933)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 15)
+                   Modified By: Replicating Shadows (382506 effect#2)
 #2 (id=1078845)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $?s200758[Gloomblade][Backstab] and Shadowstrike have a $s1% chance to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.
@@ -7071,7 +7075,6 @@ Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Triggered By     : Shuriken Tornado (1264764)
 Family Flags     : 30
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
@@ -7551,6 +7554,7 @@ Effects          :
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282449) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -7559,8 +7563,8 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (382517 effect#3), Deeper Daggers (382517 effect#4), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4), Winning Streak! (1218143 effect#4), Winning Streak! (1218143 effect#5)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Improved Secret Technique (1279444 effect#1)
-Family Flags     : 32, 54
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3), Improved Secret Technique (1279444 effect#1)
+Family Flags     : 32, 54, 122, 123
 Attributes       : No Threat (42), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Ignore Combat Timer (156), Always Cast Log (255), Face Destination (395), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742089)   : School Damage (2): shadow
@@ -12233,7 +12237,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Remaining out of combat for $470677d increases the duration of your next Shadow Dance by ${$470678s1/1000} sec.
 
-Name             : Replicating Shadows [NYI] (id=382506) [Spell Family (8), Passive] 
+Name             : Replicating Shadows (id=382506) [Spell Family (8), Passive] 
+Hotfixed         : Name
 Talent Entry     : Subtlety [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -12245,14 +12250,15 @@ Proc Chance      : 100%
 Proc Flags       : Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Proc cooldown on a per target basis (330), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1013875)  : Apply Aura (6) | Dummy (4)
+#1 (id=1013875)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#2 (id=1013876)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#3 (id=1033367)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#4 (id=1112903)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Affected Spells: Secret Technique (282449), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
+                   Family Flags: 122
+Hotfixed         : Sub Type (4 -> 108), Affects Spells
+#2 (id=1013876)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 6070 (Label) | Target: Self (1)
+                   Affected Spells (Label): Weaponmaster (193537), Shuriken Tornado (1264764), Ancient Arts (1268932)
+Hotfixed         : Sub Type (4 -> 219), Misc Value (0 -> 3), Misc Value 2 (0 -> 6070)
 Description      : Shadow Clones deal $s1% increased damage and your effects that have a chance to create them have $s2% additional chance to occur.
 
 Name             : Shrouded in Darkness (id=382507) [Spell Family (8), Passive] 
@@ -12428,6 +12434,7 @@ Effects          :
 Description      : After Shadow Dance ends, $?s200758[Gloomblade][Backstab] deals an additional $s1% damage as Shadow, fading by ${$s1/$s3}.1% per sec.
 
 Name             : Finality (id=382525) [Spell Family (8), Passive] 
+Hotfixed         : Description
 Talent Entry     : Subtlety [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Rogue
@@ -12444,7 +12451,7 @@ Effects          :
                    Family Flags: 17, 20, 44
 #2 (id=1013912)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Eviscerate, Rupture, and Black Powder have $s1% increased critical strike damage bonus.
+Description      : Eviscerate and Black Powder have $s1% increased critical strike damage bonus.
 
 Name             : Danse Macabre (id=382528) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=10, col=4, max_rank=1, req_points=20]
@@ -18736,13 +18743,14 @@ Lock Appearance:
 
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
-Name             : Clear Current Transmogrifications (id=1247917) 
+Name             : Clear Current Transmogrifications (id=1247917) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -19727,6 +19735,7 @@ Description      : $@spelldesc91023
 Tooltip          : Attacks ignore $w1% of enemy armor.
 
 Name             : Shuriken Tornado (id=1264764) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Subtlety [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -19734,10 +19743,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
+                 : 6070: Replicating Shadows (382506 effect#2)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1276342)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 277925 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 15), Trigger Spell (277925 -> 0)
+                   Modified By: Replicating Shadows (382506 effect#2)
 #2 (id=1276343)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Shuriken Storm has a $s1% chance to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.
@@ -20158,6 +20170,7 @@ Description      : $@spelldesc459488
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Ancient Arts (id=1268932) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Subtlety [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
@@ -20165,10 +20178,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : 6070: Replicating Shadows (382506 effect#2)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280500)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Replicating Shadows (382506 effect#2)
 #2 (id=1280501)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Damaging attacks that expend Shadow Techniques to generate combo points have a $s1% chance per stack expended to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.
@@ -20190,11 +20205,11 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1282156)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
+                   Affected Spells: Secret Technique (282449), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
                    Family Flags: 123
 #3 (id=1282157)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
+                   Affected Spells: Secret Technique (282449), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
                    Family Flags: 123
 Description      : Shadow damage increased by $s2%.
 
@@ -20232,6 +20247,7 @@ Description      : $@spelldesc1268939
 Tooltip          : Your next instant damage finishing move expends Shadow Techniques to fill combo points.
 
 Name             : Eviscerate (id=1269205) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20241,8 +20257,8 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (382517 effect#3), Deeper Daggers (382517 effect#4), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4), Winning Streak! (1218143 effect#4), Winning Streak! (1218143 effect#5)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2, #4), Eviscerate (245691 effect#1), Night's Vengeance (273424 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Finality (382525 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Crescendo of Violence (1259499 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 17, 54, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2, #4), Eviscerate (245691 effect#1), Night's Vengeance (273424 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Finality (382525 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Crescendo of Violence (1259499 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 17, 54, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280916)  : School Damage (2): shadow
@@ -20250,6 +20266,7 @@ Effects          :
 Description      : $@spelldesc196819
 
 Name             : Backstab (id=1269209) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20259,8 +20276,8 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Backstab (245689 effect#1), The First of the Dead (248210 effect#3), Perforate (277720 effect#1), Inevitability (278683 effect#3), Between the Eyes (315341 effects: #2, #3), Improved Backstab (319949 effect#2), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #2, #3), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #2, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Unshakeable Drive (1248775 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 2, 54, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Backstab (245689 effect#1), The First of the Dead (248210 effect#3), Perforate (277720 effect#1), Inevitability (278683 effect#3), Between the Eyes (315341 effects: #2, #3), Improved Backstab (319949 effect#2), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #2, #3), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #2, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Unshakeable Drive (1248775 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 2, 54, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280921)  : School Damage (2): shadow
@@ -20269,6 +20286,7 @@ Description      : $@spelldesc53
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Gloomblade (id=1269214) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20278,8 +20296,8 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Gloomblade (246332 effect#1), The First of the Dead (248210 effect#2), Perforate (277720 effect#1), Inevitability (278683 effect#3), Between the Eyes (315341 effects: #2, #3), Improved Backstab (319949 effect#2), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #1, #3), Deathly Shadows (341202 effects: #1, #2), Deeper Daggers (341550 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Dark Brew (382504 effects: #2, #3), Deeper Daggers (382517 effects: #1, #2), Deeper Daggers (383405 effects: #1, #2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #1, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effects: #2, #3), Unshakeable Drive (1248775 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 54, 109, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Gloomblade (246332 effect#1), The First of the Dead (248210 effect#2), Perforate (277720 effect#1), Inevitability (278683 effect#3), Between the Eyes (315341 effects: #2, #3), Improved Backstab (319949 effect#2), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #1, #3), Deathly Shadows (341202 effects: #1, #2), Deeper Daggers (341550 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Dark Brew (382504 effects: #2, #3), Replicating Shadows (382506 effect#1), Deeper Daggers (382517 effects: #1, #2), Deeper Daggers (383405 effects: #1, #2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #1, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effects: #2, #3), Unshakeable Drive (1248775 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 54, 109, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
@@ -20288,6 +20306,7 @@ Effects          :
 Description      : $@spelldesc200758
 
 Name             : Goremaw's Bite (id=1269217) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20295,8 +20314,8 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Veiltouched (382017 effect#1), Lethality (382238 effect#2), Dark Brew (382504 effect#2), Deeper Daggers (382517 effect#1), Deeper Daggers (383405 effect#1), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effect#2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 54, 67, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Veiltouched (382017 effect#1), Lethality (382238 effect#2), Dark Brew (382504 effect#2), Replicating Shadows (382506 effect#1), Deeper Daggers (382517 effect#1), Deeper Daggers (383405 effect#1), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effect#2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 54, 67, 122, 123
 Attributes       : Is Ability (4), Do Not Sheath (18), Requires Main-Hand Weapon (106), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280937)  : School Damage (2): shadow
@@ -20304,6 +20323,7 @@ Effects          :
 Description      : $@spelldesc426591
 
 Name             : Shadowstrike (id=1269336) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20313,8 +20333,8 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), From the Shadows (184918 effect#1), Shadow Dance (185313 effects: #4, #5, #6, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Shadowstrike (245623 effects: #1, #2), The First of the Dead (248210 effect#1), Inevitability (278683 effect#3), Blade In The Shadows (279752 effect#2), Blade In The Shadows (279754 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #1, #3), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #1, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Unshakeable Drive (1248775 effect#2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 54, 104, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), From the Shadows (184918 effect#1), Shadow Dance (185313 effects: #4, #5, #6, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Shadowstrike (245623 effects: #1, #2), The First of the Dead (248210 effect#1), Inevitability (278683 effect#3), Blade In The Shadows (279752 effect#2), Blade In The Shadows (279754 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #1, #3), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#2), Lethality (382238 effect#2), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #1, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Unshakeable Drive (1248775 effect#2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 54, 104, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1281095)  : School Damage (2): shadow
@@ -20322,6 +20342,7 @@ Effects          :
 Description      : $@spelldesc185438
 
 Name             : Shuriken Storm (id=1269340) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20330,8 +20351,8 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), The Dreadlord's Deceit (228224 effect#1), Between the Eyes (315341 effects: #2, #3), Improved Shuriken Storm (319951 effect#2), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Silent Storm (385727 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Momentum of Despair (457115 effects: #1, #2), Clear the Witnesses (1248793 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3), Clever Combatant (1276679 effect#2)
-Family Flags     : 54, 123, 127
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), The Dreadlord's Deceit (228224 effect#1), Between the Eyes (315341 effects: #2, #3), Improved Shuriken Storm (319951 effect#2), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Replicating Shadows (382506 effect#1), Silent Storm (385727 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Momentum of Despair (457115 effects: #1, #2), Clear the Witnesses (1248793 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Find Weakness (1264521 effect#3), Ancient Arts (1268936 effects: #2, #3), Clever Combatant (1276679 effect#2)
+Family Flags     : 54, 122, 123, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Ignore Combat Timer (156), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1281104)  : School Damage (2): shadow
@@ -20346,6 +20367,7 @@ Description      : $@spelldesc197835
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Shuriken Toss (id=1269343) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20355,8 +20377,8 @@ Velocity         : 35 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Poisoned Edges (409587 effects: #1, #3), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 54, 75, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Symbols of Death (227151 effect#1), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Poisoned Edges (409587 effects: #1, #3), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 54, 75, 122, 123
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Do Not Auto Select Target with Initiates Combat (220), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1281112)  : School Damage (2): shadow
@@ -20365,6 +20387,7 @@ Description      : $@spelldesc114014
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Secret Technique (id=1269560) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20373,8 +20396,8 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3), Improved Secret Technique (1279444 effect#1)
-Family Flags     : 32, 54, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3), Improved Secret Technique (1279444 effect#1)
+Family Flags     : 32, 54, 122, 123
 Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1281469)  : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -20382,6 +20405,7 @@ Effects          :
 Description      : $@spelldesc280719
 
 Name             : Black Powder (id=1269565) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20390,8 +20414,8 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Finality: Black Powder (340603 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Finality (382525 effect#1), Finality: Black Powder (385948 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Masterful Finish (395003 effect#2), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Momentum of Despair (457115 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 44, 54, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Finality: Black Powder (340603 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Finality (382525 effect#1), Finality: Black Powder (385948 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Masterful Finish (395003 effect#2), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Momentum of Despair (457115 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 44, 54, 122, 123
 Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1281473)  : School Damage (2): shadow
@@ -20582,6 +20606,7 @@ Effects          :
 Description      : $@spelldesc114014
 
 Name             : Rupture (id=1270203) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -20596,8 +20621,8 @@ Labels           : 16: Class Spells
                  : 2350
                  : 2865: Indiscriminate Carnage (385747 effect#1), Indiscriminate Carnage (385747 effect#2), Indiscriminate Carnage (385754 effect#1), Indiscriminate Carnage (385754 effect#2)
 Mechanic         : Bleed
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #6), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #7), Shadow Dance (185313 effects: #5, #9), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathmark (360194 effect#2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effects: #1, #2, #3), Finality (382525 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #5), Thrombotic Tincture (458476 effects: #1, #2), Winning Streak! (1218439 effects: #1, #2), Corrupt the Blood (1248785 effect#1), Avulsion (1250358 effect#1), Subtlety Rogue (1256946 effects: #1, #2, #3), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Implacable (1265386 effect#1), Ancient Arts (1268936 effects: #2, #3)
-Family Flags     : 20, 54, 123
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #6), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #7), Shadow Dance (185313 effects: #5, #9), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathmark (360194 effect#2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effects: #1, #2, #3), Replicating Shadows (382506 effect#1), Finality (382525 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #5), Thrombotic Tincture (458476 effects: #1, #2), Winning Streak! (1218439 effects: #1, #2), Corrupt the Blood (1248785 effect#1), Avulsion (1250358 effect#1), Subtlety Rogue (1256946 effects: #1, #2, #3), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Implacable (1265386 effect#1), Ancient Arts (1268936 effects: #2, #3)
+Family Flags     : 20, 54, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Discount Power On Miss (59), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Chain by Most Hit (440)
 Effects          :
 #1 (id=1282110)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
@@ -20652,12 +20677,13 @@ Effects          :
 Description      : $@spelldesc185314
 Tooltip          : Shadow Dance duration increased by ${$w3/1000}.2 sec.
 
-Name             : Clear Transmog Outfit (id=1272615) 
+Name             : Clear Transmog Outfit (id=1272615) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -20912,6 +20938,7 @@ Effects          :
 Description      : $@spelldesc1265863
 
 Name             : Shuriken Storm (desc=Rank 2) (id=1279401) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -20919,7 +20946,7 @@ Spell Level      : 20
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+Attributes       : Passive (6), Only In Spellbook Until Learned (240), Allow Class Ability Procs (416), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=1291884)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)

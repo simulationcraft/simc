@@ -10950,7 +10950,7 @@ Mage
 1242974  Arcane Salvo
 1243307  Aether Attunement
 1243435  Orb Mastery
-1243460 *Arcane Pulse
+1243460  Arcane Pulse
 1243492 *Khadgar's Technique
 1243507  Aegwynn's Technique
 1243542  Overflowing Insight
@@ -18217,7 +18217,7 @@ Rogue
 382503   Quick Decisions
 382504   Dark Brew
 382505   The First Dance
-382506   Replicating Shadows [NYI]
+382506   Replicating Shadows
 382507   Shrouded in Darkness
 382508   Planned Execution
 382509  *Stiletto Staccato

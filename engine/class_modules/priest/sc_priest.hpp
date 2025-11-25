@@ -679,9 +679,9 @@ public:
     propagate_const<cooldown_t*> power_word_shield;
 
     // Shadow
-    propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> maddening_touch_icd;
+    propagate_const<cooldown_t*> void_volley;
 
     // Discipline
     propagate_const<cooldown_t*> penance;
@@ -1538,7 +1538,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         p().trigger_atonement( s, composite_atonement_multiplier( s ) );
       }
 
-      // TODO: need to re-test this logic
       if ( priest().talents.shadow.idol_of_yshaarj.enabled() && !priest().buffs.call_of_the_void->check() &&
            !priest().buffs.overburdened_mind->check() )
       {

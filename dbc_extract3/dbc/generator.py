@@ -1526,6 +1526,7 @@ class SpellDataGenerator(DataGenerator):
          # Midnight 12.X.X
          1229746, # Arcanoweave embellishment buff
          1259130, # Primal Spore Binding embellishment heal
+         1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, # Midnight Food Buffs
         ),
 
         # Warrior:
@@ -2115,6 +2116,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1223801, 0 ),                           # Arcane Rebound
           ( 1217750, 0 ),                           # Master of Flame hidden buff
           ( 1236209, 0 ),                           # Frostfire 4pc Glacial Spike
+          ( 1243460, 0 ),                           # Arcane Pulse Echo
         ),
 
         # Warlock:

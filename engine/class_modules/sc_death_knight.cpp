@@ -1914,7 +1914,6 @@ public:
   void set_runeforges();
   void spell_lookups();
   void set_icds();
-  void apply_effect_modifying_effects();
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
@@ -13655,8 +13654,6 @@ void death_knight_t::init_spells()
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     parse_passive_effects( spell.vampiric_strike_range );
-
-  apply_effect_modifying_effects();
 }
 
 void death_knight_t::spell_lookups()
@@ -15234,10 +15231,6 @@ void death_knight_t::adjust_dynamic_cooldowns()
   player_t::adjust_dynamic_cooldowns();
 
   _runes.update_coefficient();
-}
-
-void death_knight_t::apply_effect_modifying_effects()
-{
 }
 
 void death_knight_t::apply_action_effects( action_t* a, bool pet )

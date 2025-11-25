@@ -887,7 +887,7 @@ struct void_volley_damage_t final : public priest_spell_t
   void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
   }
 
   bool insidious_ire_active() const
@@ -917,7 +917,7 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
     aoe                        = -1;
     radius                     = _radius;
   }
@@ -1604,7 +1604,7 @@ struct horrific_vision_t final : public priest_spell_t
   horrific_vision_t( priest_t& p ) : priest_spell_t( "horrific_vision", p, p.talents.shadow.horrific_vision_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1625,7 +1625,7 @@ struct vision_of_nzoth_t final : public priest_spell_t
   vision_of_nzoth_t( priest_t& p ) : priest_spell_t( "vision_of_nzoth", p, p.talents.shadow.vision_of_nzoth_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1688,6 +1688,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     if ( priest().talents.shadow.crushing_void.enabled() )
     {
+      priest().cooldowns.void_volley->reset( true );
       priest().buffs.crushing_void->trigger();
     }
 
@@ -2441,7 +2442,6 @@ void priest_t::trigger_random_idol( action_state_t* s )
   switch ( chosen_idol )
   {
     case idol_e::YSHAARJ:
-      buffs.call_of_the_void->trigger();
       procs.void_apparition_yshaarj->occur();
       trigger_idol_of_yshaarj();
       break;

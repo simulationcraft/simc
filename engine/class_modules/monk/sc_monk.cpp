@@ -380,43 +380,6 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
-  auto final_cost = base_t::cost();
-
-  if ( current_resource() == RESOURCE_ENERGY )
-  {
-    if ( final_cost > 0 )
-    {
-      if ( p()->talent.shado_pan.flurry_strikes.ok() )
-      {
-        p()->flurry_strikes_energy += std::lround( final_cost );
-
-        int flurry_strikes_threshold = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
-        // TODO: Fix this condition! Mostly NYI on alpha.
-        if ( p()->tier.tww3.spm_4pc->ok() )
-          flurry_strikes_threshold = as<int>( p()->tier.tww3.spm_4pc->effectN( 2 ).base_value() );
-
-        if ( p()->flurry_strikes_energy >= flurry_strikes_threshold )
-        {
-          p()->flurry_strikes_energy -= flurry_strikes_threshold;
-          p()->action.flurry_strikes->execute();
-        }
-      }
-
-      if ( p()->talent.shado_pan.efficient_training.ok() )
-      {
-        // this needs to be rounded to the nearest whole number
-        p()->efficient_training_energy += std::lround( final_cost );
-        if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
-        {
-          // timespan_t cdr =
-          //     timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
-          p()->efficient_training_energy -=
-              as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
-        }
-      }
-    }
-  }
-
   if ( current_resource() == RESOURCE_CHI )
     p()->buff.dance_of_chiji->trigger();
 
@@ -484,35 +447,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
   base_t::impact( s );
 
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-  {
     p()->trigger_empowered_tiger_lightning( s );
-
-    if ( !base_t::result_is_miss( s->result ) && s->result_amount > 0 )
-    {
-      if ( p()->talent.shado_pan.flurry_strikes->ok() )
-      {
-        double damage_contribution = s->result_amount;
-
-        if ( p()->talent.shado_pan.one_versus_many->ok() &&
-             ( base_t::data().id() == 117418 || base_t::data().id() == 121253 ) )
-          damage_contribution *= ( 1.0f + p()->talent.shado_pan.one_versus_many->effectN( 1 ).percent() );
-
-        p()->flurry_strikes_damage += damage_contribution;
-
-        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() *
-                              p()->composite_melee_attack_power() * p()->composite_damage_versatility();
-
-        if ( p()->tier.tww3.spm_4pc->ok() )
-          ap_threshold /= 1.0 + p()->tier.tww3.spm_4pc->effectN( 1 ).percent();
-
-        if ( p()->flurry_strikes_damage >= ap_threshold )
-        {
-          p()->flurry_strikes_damage -= ap_threshold;
-          p()->buff.flurry_charge->trigger();
-        }
-      }
-    }
-  }
 }
 
 template <class Base>
@@ -594,144 +529,140 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
 namespace attacks
 {
-struct flurry_strikes_t : public monk_melee_attack_t
+namespace
 {
-  struct high_impact_t : public monk_spell_t
+struct high_impact_t : public monk_spell_t
+{
+  high_impact_t( monk_t *player )
+    : monk_spell_t( player, "high_impact", player->talent.shado_pan.high_impact_debuff->effectN( 1 ).trigger() )
   {
-    high_impact_t( monk_t *p )
-      : monk_spell_t( p, "high_impact", p->talent.shado_pan.high_impact_debuff->effectN( 1 ).trigger() )  // 451039
-    {
-      aoe        = -1;
-      background = dual = true;
-    }
-  };
+    aoe        = -1;
+    background = dual = true;
+  }
+};
 
-  struct flurry_strike_t : public monk_melee_attack_t
+struct shado_over_the_battlefield_t : public monk_spell_t
+{
+  shado_over_the_battlefield_t( monk_t *player )
+    : monk_spell_t( player, "flurry_strike_shado_over_the_battlefield",
+                    player->talent.shado_pan.flurry_strike_shado_over_the_battlefield )
   {
-    enum wisdom_buff_e
-    {
-      WISDOM_OF_THE_WALL_CRIT,
-      WISDOM_OF_THE_WALL_DODGE,
-      WISDOM_OF_THE_WALL_MASTERY
-    };
+    background = dual   = true;
+    reduced_aoe_targets = player->talent.shado_pan.shado_over_the_battlefield->effectN( 2 ).base_value();
+    aoe                 = -1;
+  }
+};
+};  // namespace
 
-    int flurry_strikes_counter;
-    int flurry_strikes_threshold;
-    shuffled_rng_t *deck;
+flurry_strikes_t::flurry_strike_t::flurry_strike_t( monk_t *player, std::string_view name )
+  : monk_spell_t( player, name, player->talent.shado_pan.flurry_strike )
+{
+  background = dual = true;
+  aoe               = 1;
+}
 
-    /*
-     * [shadow] buff application tends to be a bit late, thus up cannot reliably
-     * detect if the buff is applied, and shadow wotw triggers should occur.
-     *
-     * this serves as an easy check for whether or not shadow was pulled in the
-     * current chain of flurries, without having to refactor everything
-     */
-    bool recent_shadow_trigger;
+void flurry_strikes_t::flurry_strike_t::impact( action_state_t *state )
+{
+  monk_spell_t::impact( state );
 
-    flurry_strike_t( monk_t *p, action_t * )
-      : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
-        flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
-        flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
-        deck( p->get_shuffled_rng(
-            "wisdom_of_the_wall",
-            { { WISDOM_OF_THE_WALL_CRIT, 1 }, { WISDOM_OF_THE_WALL_DODGE, 1 }, { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) ),
-        recent_shadow_trigger( false )
-    {
-      background = dual = true;
-    }
+  if ( auto target_data = p()->get_target_data( state->target ); target_data )
+    target_data->debuff.high_impact->trigger();
+}
 
-    void set_recent_trigger( bool state )
-    {
-      // I really don't like this solution. Using a custom action state would be
-      // more appropriate, but scheduling the execute with an action state that
-      // needs to be copied k times (once for each trigger) sounds scary.
-      if ( flurry_strikes_t *action = debug_cast<flurry_strikes_t *>( p()->action.flurry_strikes ); action )
-        action->strike->recent_shadow_trigger = state;
-      if ( flurry_strikes_t *action = debug_cast<flurry_strikes_t *>( p()->tier.tww3.spm_2pc_flurry_strikes ); action )
-        action->strike->recent_shadow_trigger = state;
-    }
+flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
+  : monk_spell_t( player, "flurry_strikes", player->talent.shado_pan.flurry_strikes ),
+    fallback( !fallback ),
+    high_impact( nullptr ),
+    shado_over_the_battlefield( nullptr )
+{
+  background = dual = true;
 
-    void impact( action_state_t *s ) override
-    {
-      monk_melee_attack_t::impact( s );
+  if ( this->fallback )
+    return;
 
-      if ( last_used + 10 * 150_ms < sim->current_time() )
-        set_recent_trigger( false );
-
-      if ( auto target_data = p()->get_target_data( s->target ); target_data )
-        target_data->debuff.high_impact->trigger();
-    }
-
-    void reset() override
-    {
-      monk_melee_attack_t::reset();
-
-      // this shouldn't get offset, but just in case :)
-      flurry_strikes_counter = p()->user_options.shado_pan_initial_charge_accumulator;
-    }
-  };
-
-  enum flurry_strike_source_e
+  if ( player->talent.shado_pan.high_impact->ok() )
   {
-    FLURRY_DEFAULT,
-    FLURRY_TIER
-  };
-
-  flurry_strike_t *strike;
-  high_impact_t *high_impact;
-  flurry_strike_source_e source;
-
-  flurry_strikes_t( monk_t *p, flurry_strike_source_e source )
-    : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes ), source( source )
-  {
-    background = true;
-
-    strike = new flurry_strike_t( p, this );
-    add_child( strike );
-
-    assert( source != FLURRY_TIER || ( source == FLURRY_TIER && p->sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) ) );
-    if ( source == FLURRY_TIER )
-      strike->base_multiplier *= p->tier.tww3.spm_2pc->effectN( 3 ).percent();
-
-    if ( !p->talent.shado_pan.high_impact->ok() )
-      return;
-
-    high_impact = new high_impact_t( p );
+    high_impact = new high_impact_t( player );
     add_child( high_impact );
-    p->register_on_kill_callback( [ this, p ]( player_t *target ) {
-      if ( p->sim->event_mgr.canceled )
+    player->register_on_kill_callback( [ & ]( player_t *target ) {
+      if ( p()->sim->event_mgr.canceled )
         return;
 
-      if ( auto target_data = p->get_target_data( target ); target_data && target_data->debuff.high_impact->up() )
+      if ( auto target_data = p()->get_target_data( target ); target_data && target_data->debuff.high_impact->up() )
         high_impact->execute_on_target( target );
     } );
   }
 
-  void execute() override
+  if ( player->talent.shado_pan.shado_over_the_battlefield->ok() )
   {
-    bool source_tier    = source == FLURRY_TIER && p()->tier.tww3.spm_2pc_flurry_charge->check();
-    bool source_default = source == FLURRY_DEFAULT && p()->buff.flurry_charge->check();
-
-    int stacks = 0;
-    if ( source_tier )
-      stacks += as<int>( p()->tier.tww3.spm_2pc->effectN( 2 ).base_value() );
-    if ( source_default )
-      stacks += p()->buff.flurry_charge->stack();
-
-    // 150ms of delay between executes has been observed, with some small amount of jitter
-    if ( stacks > 0 && ( source_tier || source_default ) )
-      for ( int charge = 1; charge <= stacks; charge++ )
-        make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
-
-    if ( source_default )
-      p()->buff.flurry_charge->expire();
-
-    if ( source_tier )
-      p()->tier.tww3.spm_2pc_flurry_charge->expire();
-
-    base_t::execute();
+    shado_over_the_battlefield = new shado_over_the_battlefield_t( player );
+    add_child( shado_over_the_battlefield );
   }
-};
+
+  flurry_strike_variants.insert( { FLURRY_STRIKES, new flurry_strike_t( player, "flurry_strike" ) } );
+  if ( player->talent.shado_pan.stand_ready->ok() )
+    flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
+  if ( player->talent.shado_pan.wisdom_of_the_wall->ok() )
+    flurry_strike_variants.insert(
+        { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
+
+  for ( auto &[ key, variant ] : flurry_strike_variants )
+  {
+    add_child( variant );
+
+    switch ( key )
+    {
+      case FLURRY_STRIKES:
+        break;
+      case STAND_READY:
+        if ( const auto &effect = player->talent.shado_pan.stand_ready->effectN( 2 ); effect.ok() )
+          add_parse_entry( variant->da_multiplier_effects )
+              .set_value( effect.percent() - 1.0 )
+              .set_note( "Stand Ready Efficiency Multiplier" )
+              .set_eff( &effect );
+        break;
+      case WISDOM_OF_THE_WALL:
+        break;
+      default:
+        assert( false );
+    }
+  }
+}
+
+void flurry_strikes_t::execute( source_e source )
+{
+  if ( fallback )
+    return;
+
+  int count = 0;
+  switch ( source )
+  {
+    case FLURRY_STRIKES:
+      count = p()->buff.flurry_charge->stack();
+      p()->buff.flurry_charge->expire();
+      break;
+    case STAND_READY:
+      if ( p()->buff.stand_ready->check() )
+        count = p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value();
+      p()->buff.stand_ready->expire();
+      break;
+    case WISDOM_OF_THE_WALL:
+      if ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() )
+        count = p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value();
+      break;
+    default:
+      assert( false );
+  }
+
+  for ( int i = 0; i < count; i++ )
+  {
+    make_event<events::delayed_execute_event_t>( *sim, p(), flurry_strike_variants.at( source ), p()->target,
+                                                 i * 150_ms );
+    make_event<events::delayed_execute_event_t>( *sim, p(), shado_over_the_battlefield, p()->target, i * 150_ms );
+  }
+
+  monk_spell_t::execute();
+}
 
 template <class base_action_t>
 struct overwhelming_force_t : base_action_t
@@ -1152,6 +1083,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( rng().roll( gotd_chance ) )
       gotd->execute_on_target( this->target );
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+      p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
 
     p()->buff.whirling_dragon_punch->trigger();
 
@@ -1586,6 +1520,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    if ( p()->specialization() == MONK_WINDWALKER )
+      p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
+
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
@@ -1695,8 +1632,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    p()->action.flurry_strikes->execute( flurry_strikes_t::FLURRY_STRIKES );
     p()->buff.whirling_dragon_punch->trigger();
-
     p()->buff.tigers_ferocity->trigger();
   }
 
@@ -2049,6 +1986,11 @@ struct melee_t : public monk_melee_attack_t
       if ( p()->buff.thunderfist->up() )
         p()->action.thunderfist->execute_on_target( s->target );
 
+      // TODO: handle flurry charge trigger rate
+      p()->buff.flurry_charge->trigger();
+      if ( p()->talent.shado_pan.one_versus_many->ok() && s->result == RESULT_CRIT )
+        p()->buff.flurry_charge->trigger();
+
       dual_threat_allowed = true;
     }
   }
@@ -2164,6 +2106,7 @@ struct keg_smash_t : monk_melee_attack_t
       p()->proc.salsalabims_strength->occur();
     }
 
+    p()->action.flurry_strikes->execute( flurry_strikes_t::FLURRY_STRIKES );
     p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
 
     timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
@@ -2980,6 +2923,7 @@ public:
 
     monk_spell_t::execute();
 
+    p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
     p()->buff.blackout_combo->expire();
   }
 
@@ -3386,8 +3330,8 @@ struct niuzao_spell_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->pets.niuzao.spawn( p()->talent.brewmaster.invoke_niuzao_the_black_ox->duration(), 1 );
-
     p()->buff.invoke_niuzao->trigger();
+    p()->buff.stand_ready->trigger();
   }
 };
 
@@ -3571,6 +3515,7 @@ struct zenith_t : public monk_spell_t
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
     p()->resource_gain( RESOURCE_CHI, data().effectN( 9 ).base_value(), p()->gain.zenith );
+    p()->buff.stand_ready->trigger();
   }
 };
 }  // namespace spells
@@ -4577,9 +4522,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 monk_t::monk_t( sim_t *sim, std::string_view name, race_e r )
   : base_t( sim, MONK, name, r ),
     action(),
-    efficient_training_energy( 0 ),
-    flurry_strikes_energy( 0 ),
-    flurry_strikes_damage( 0 ),
     buff(),
     gain(),
     proc(),
@@ -5275,26 +5217,29 @@ void monk_t::init_spells()
 
   // monk_t::talent::shado_pan
   {
-    talent.shado_pan.flurry_strikes             = _HT( "Flurry Strikes" );
-    talent.shado_pan.flurry_charge              = find_spell( 451021 );
-    talent.shado_pan.flurry_strikes_hit         = find_spell( 450617 );
-    talent.shado_pan.pride_of_pandaria          = _HT( "Pride of Pandaria" );
-    talent.shado_pan.high_impact                = _HT( "High Impact" );
-    talent.shado_pan.high_impact_debuff         = find_spell( 451037 );
-    talent.shado_pan.veterans_eye               = _HT( "Veteran's Eye" );
-    talent.shado_pan.martial_precision          = _HT( "Martial Precision" );
-    talent.shado_pan.shado_over_the_battlefield = _HT( "Shado Over the Battlefield" );
-    talent.shado_pan.combat_stance              = _HT( "Combat Stance" );
-    talent.shado_pan.initiators_edge            = _HT( "Initiator's Edge" );
-    talent.shado_pan.one_versus_many            = _HT( "One Versus Many" );
-    talent.shado_pan.whirling_steel             = _HT( "Whirling Steel" );
-    talent.shado_pan.predictive_training        = _HT( "Predictive Training" );
-    talent.shado_pan.stand_ready                = _HT( "Stand Ready" );
-    talent.shado_pan.against_all_odds           = _HT( "Against All Odds" );
-    talent.shado_pan.efficient_training         = _HT( "Efficient Training" );
-    talent.shado_pan.vigilant_watch             = _HT( "Vigilant Watch" );
-    talent.shado_pan.weapons_of_the_wall        = _HT( "Weapons of the Wall" );
-    talent.shado_pan.wisdom_of_the_wall         = _HT( "Wisdom of the Wall" );
+    talent.shado_pan.flurry_strikes                           = _HT( "Flurry Strikes" );
+    talent.shado_pan.flurry_charge                            = find_spell( 451021 );
+    talent.shado_pan.flurry_strike                            = find_spell( 450617 );
+    talent.shado_pan.pride_of_pandaria                        = _HT( "Pride of Pandaria" );
+    talent.shado_pan.high_impact                              = _HT( "High Impact" );
+    talent.shado_pan.high_impact_debuff                       = find_spell( 451037 );
+    talent.shado_pan.veterans_eye                             = _HT( "Veteran's Eye" );
+    talent.shado_pan.martial_precision                        = _HT( "Martial Precision" );
+    talent.shado_pan.shado_over_the_battlefield               = _HT( "Shado Over the Battlefield" );
+    talent.shado_pan.flurry_strike_shado_over_the_battlefield = find_spell( 451250 );
+    talent.shado_pan.combat_stance                            = _HT( "Combat Stance" );
+    talent.shado_pan.initiators_edge                          = _HT( "Initiator's Edge" );
+    talent.shado_pan.one_versus_many                          = _HT( "One Versus Many" );
+    talent.shado_pan.whirling_steel                           = _HT( "Whirling Steel" );
+    talent.shado_pan.predictive_training                      = _HT( "Predictive Training" );
+    talent.shado_pan.stand_ready                              = _HT( "Stand Ready" );
+    talent.shado_pan.stand_ready_buff                         = find_spell( 1237196 );
+    talent.shado_pan.stand_ready_driver                       = find_spell( 1237196 );
+    talent.shado_pan.against_all_odds                         = _HT( "Against All Odds" );
+    talent.shado_pan.efficient_training                       = _HT( "Efficient Training" );
+    talent.shado_pan.vigilant_watch                           = _HT( "Vigilant Watch" );
+    talent.shado_pan.weapons_of_the_wall                      = _HT( "Weapons of the Wall" );
+    talent.shado_pan.wisdom_of_the_wall                       = _HT( "Wisdom of the Wall" );
   }
 
   // monk_t::talent::tier
@@ -5406,13 +5351,7 @@ void monk_t::init_background_actions()
     action.strength_of_the_black_ox = actions::spells::strength_of_the_black_ox_t( this );
 
   // Shado-Pan
-  if ( talent.shado_pan.flurry_strikes->ok() )
-    action.flurry_strikes =
-        new actions::attacks::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_DEFAULT );
-
-  if ( sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) )
-    tier.tww3.spm_2pc_flurry_strikes =
-        new actions::attacks::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_TIER );
+  action.flurry_strikes = new actions::attacks::flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -5878,6 +5817,10 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.shado_pan.flurry_strikes->ok(), this, "flurry_charge", talent.shado_pan.flurry_charge )
           ->set_default_value_from_effect( 1 );
 
+  buff.stand_ready =
+      make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
+          ->set_default_value_from_effect( 1 );
+
   // TWW S2 Tier Buffs
   // WW
   tier.tww2.winning_streak =
@@ -6247,6 +6190,15 @@ void monk_t::init_special_effects()
           tier.tww3.moh_2pc_harmonic_surge_buff->trigger();
         } );
   }
+
+  if ( talent.shado_pan.stand_ready->ok() )
+    create_proc_callback( { talent.shado_pan.stand_ready_driver } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.stand_ready->check(); } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          action.flurry_strikes->execute( actions::attacks::flurry_strikes_t::STAND_READY );
+        } );
 
   base_t::init_special_effects();
 }
@@ -6634,9 +6586,6 @@ std::unique_ptr<expr_t> monk_t::create_expression( std::string_view name_str )
       return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
   }
-
-  if ( name_str == "monk.shadopan.energy_accumulator" )
-    return make_ref_expr( "monk.shadopan.energy_accumulator", flurry_strikes_energy );
 
   return base_t::create_expression( name_str );
 }

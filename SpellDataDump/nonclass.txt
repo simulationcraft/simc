@@ -206028,7 +206028,7 @@ Attributes       : Allow Item Spell In PvP (13), Aura Unique (43), Not an Action
 Effects          :
 #1 (id=1154525)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3601 (Label) | Radius: 15 yards | Target: Self (1)
-                   Affected Spells (Label): Well Fed (454137), Twilight-Spiced Grouper (454497), Sweet Eclipse (455290), Well Fed (455369), Well Fed (456406), Well Fed (457049), Well Fed (457284), Well Fed (461845), Well Fed (461853), Well Fed (461854), Well Fed (461855), Well Fed (461856), Well Fed (461857), Well Fed (461858), Well Fed (461859), Well Fed (461860), Well Fed (461861), Well Fed (461922), Well Fed (461924), Well Fed (461925), Well Fed (461927), Well Fed (461937), Well Fed (461939), Well Fed (461940), Well Fed (461943), Well Fed (461945), Well Fed (461946), Well Fed (461947), Well Fed (461948), Well Fed (461949), Well Fed (461957), Well Fed (461960), Hearty Well Fed (462209), Greasy Well Fed (473173)
+                   Affected Spells (Label): Well Fed (454137), Twilight-Spiced Grouper (454497), Sweet Eclipse (455290), Well Fed (455369), Well Fed (456406), Well Fed (457049), Well Fed (457284), Well Fed (461845), Well Fed (461853), Well Fed (461854), Well Fed (461855), Well Fed (461856), Well Fed (461857), Well Fed (461858), Well Fed (461859), Well Fed (461860), Well Fed (461861), Well Fed (461922), Well Fed (461924), Well Fed (461925), Well Fed (461927), Well Fed (461937), Well Fed (461939), Well Fed (461940), Well Fed (461943), Well Fed (461945), Well Fed (461946), Well Fed (461947), Well Fed (461948), Well Fed (461949), Well Fed (461957), Well Fed (461960), Hearty Well Fed (462209), Greasy Well Fed (473173), Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185)
 #2 (id=1154526)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3063 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Flask of Tempered Aggression (431971), Flask of Tempered Swiftness (431972), Flask of Tempered Versatility (431973), Flask of Tempered Mastery (431974), Flask of Alchemical Chaos (432021), Vicious Flask of Classical Spirits (432403), Vicious Flask of Honor (432430), Vicious Flask of the Wrecking Ball (432452), Flask of Saving Graces (432473), Vicious Flask of Manifested Fury (432497)
@@ -226082,7 +226082,7 @@ Labels           : 959
                  : 4370
 Proc Chance      : 101%
 Proc Flags       : Death
-Triggered By     : Refreshment (1219187), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232324), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Hearty Well Fed (1233703), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305)
+Triggered By     : Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Refreshment (1219187), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Well Fed (1233703), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), Retain Item Cast (95), Allow Aura While Dead (116), Do Not Display Range (126), No Cooldown On Tooltip (192), Aura Points On Client (268), Recompute Aura On Level Scale (446), Unknown (467)
 Effects          :
 #1 (id=1204679)  : Apply Aura (6) | Dummy (4)
@@ -226109,6 +226109,154 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Increases stats and grants additional effects depending on the type of Midnight Food consumed.
 Tooltip          : Increases stats and grants additional effects depending on the type of Midnight Food consumed.
+
+Name             : Well Fed (id=1219182) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 3601: Pausing Pylon (453003 effect#1)
+                 : 3708
+                 : 3899
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1204696)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1204697)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1204698)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1204699)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1204700)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1204701)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1204702)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1204703)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1204704)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#10 (id=1204705) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1204706) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste by $s1 for $d.
+Tooltip          : Haste increased by $w9.
+
+Name             : Well Fed (id=1219183) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 3601: Pausing Pylon (453003 effect#1)
+                 : 3708
+                 : 3899
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1204707)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1204708)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1204709)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1204710)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1204711)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1204712)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1204713)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1204714)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1204715)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#10 (id=1204716) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1204717) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1219184) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 3601: Pausing Pylon (453003 effect#1)
+                 : 3708
+                 : 3899
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1204718)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1204719)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1204720)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1204721)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1204722)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1204723)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1204724)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1204725)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1204726)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#10 (id=1204727) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1204728) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Versatility by $s1 for $d.
+Tooltip          : Versatility increased by $w9.
+
+Name             : Well Fed (id=1219185) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 3601: Pausing Pylon (453003 effect#1)
+                 : 3708
+                 : 3899
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1204729)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1204730)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1204731)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1204732)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1204733)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1204734)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1204735)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1204736)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1204737)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#10 (id=1204738) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1204739) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery by $s1 for $d.
+Tooltip          : Mastery increased by $w9.
 
 Name             : Refreshment (id=1219187) 
 School           : Physical
@@ -231033,6 +231181,154 @@ Effects          :
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
+Name             : Well Fed (id=1232086) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224459)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224460)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224461)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224462)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224463)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224464)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224465)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224466)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224467)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#10 (id=1224468) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224469) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1232087) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224470)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224471)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224472)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224473)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224474)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224475)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224476)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224477)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224478)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Hit | Target: Self (1)
+#10 (id=1224479) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224480) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste by $s1 for $d.
+Tooltip          : Haste increased by $w9.
+
+Name             : Well Fed (id=1232089) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224482)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224483)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224484)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224485)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224486)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224487)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224488)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224489)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224490)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#10 (id=1224491) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224492) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery by $s1 for $d.
+Tooltip          : Mastery increased by $w9.
+
+Name             : Well Fed (id=1232091) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224494)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224495)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224496)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224497)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224498)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224499)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224500)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224501)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224502)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#10 (id=1224503) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224504) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Versatility by $s1 for $d.
+Tooltip          : Versatility increased by $w9.
+
 Name             : Fashion Sin (id=1232110) 
 School           : Physical
 Spell Type       : Magic
@@ -231270,6 +231566,236 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc1232259
 
+Name             : Well Fed (id=1232313) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4942
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224848)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224849)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224850)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224851)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224852)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224853)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224854)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224855)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224856)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Haste | Target: Self (1)
+#10 (id=1224857) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224858) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Critical Strike by $s1 for $d.
+Tooltip          : Haste and Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1232316) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4942
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224862)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224863)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224864)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224865)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224866)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224867)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224868)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224869)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224870)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Mastery | Target: Self (1)
+#10 (id=1224871) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224872) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Mastery by $s1 for $d.
+Tooltip          : Haste and Mastery increased by $w9.
+
+Name             : Well Fed (id=1232317) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224873)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224874)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224875)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224876)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224877)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224878)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224879)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224880)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224881)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Vers | Target: Self (1)
+#10 (id=1224882) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224883) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Versatility by $s1 for $d.
+Tooltip          : Haste and Versatility increased by $w9.
+
+Name             : Well Fed (id=1232318) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224884)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224885)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224886)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224887)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224888)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224889)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224890)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224892)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Mastery | Target: Self (1)
+#10 (id=1224893) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224894) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Critical Strike by $s1 for $d.
+Tooltip          : Mastery and Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1232320) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224896)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224897)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224898)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224899)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224900)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224901)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224902)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224903)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224904)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery, Vers | Target: Self (1)
+#10 (id=1224905) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224906) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Versatility by $s1 for $d.
+Tooltip          : Mastery and Versatility  increased by $w9.
+
+Name             : Well Fed (id=1232321) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224907)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224908)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224909)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224910)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224911)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224912)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224913)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224914)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224915)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Vers | Target: Self (1)
+#10 (id=1224916) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224917) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike and Versatility by $s1 for $d.
+Tooltip          : Critical Strike and Versatility  increased by $w9.
+
 Name             : Well Fed (id=1232324) 
 School           : Physical
 Spell Type       : None
@@ -231303,6 +231829,44 @@ Effects          :
 #10 (id=1224932) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1224933) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Tooltip          : Your primary stats have been increased by $w11.
+
+Name             : Well Fed (id=1232325) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1224934)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1224935)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1224936)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1224937)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1224938)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1224939)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1224940)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1224941)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1224942)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1224943) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1224944) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : $@spellicon457049 $@spellname457049  
 If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
@@ -231439,6 +232003,318 @@ Effects          :
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
 Description      : $@spelldesc1269921|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain $1219179s4 of your highest secondary stat for $461960d.
 
+Name             : Well Fed (id=1232490) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225201)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225202)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225203)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225204)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225205)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225206)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225208)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225209)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, RunSpeed | Target: Self (1)
+#10 (id=1225210) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225211) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike and Speed by $s1 for $d.
+Tooltip          : Critical Strike and Speed increased by $w9.
+
+Name             : Well Fed (id=1232491) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225212)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225213)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225214)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225215)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225216)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225217)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225218)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225219)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225220)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Mastery | Target: Self (1)
+#10 (id=1225221) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225222) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Speed by $s1 for $d.
+Tooltip          : Mastery and Speed increased by $w9.
+
+Name             : Well Fed (id=1232492) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225223)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225224)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225225)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225226)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225227)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225228)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225229)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225230)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225231)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Haste | Target: Self (1)
+#10 (id=1225232) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225233) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Versatility and Speed by $s1 for $d.
+Tooltip          : Versatility and Speed increased by $w9.
+
+Name             : Well Fed (id=1232493) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225234)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225235)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225236)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225237)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225238)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225239)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225240)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225241)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225242)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Haste | Target: Self (1)
+#10 (id=1225243) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225244) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Speed by $s1 for $d.
+Tooltip          : Haste and Speed increased by $w9.
+
+Name             : Well Fed (id=1232496) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225247)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225248)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225249)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225250)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225251)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225252)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225253)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225254)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225255)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Avoidance | Target: Self (1)
+#10 (id=1225256) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225257) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike and Avoidance by $s1 for $d.
+Tooltip          : Critical Strike and Avoidance increased by $w9.
+
+Name             : Well Fed (id=1232498) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225259)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225260)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225261)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225262)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225263)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225264)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225265)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225266)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225267)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Avoidance, Mastery | Target: Self (1)
+#10 (id=1225268) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225269) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike and Avoidance by $s1 for $d.
+Tooltip          : Critical Strike and Avoidance increased by $w9.
+
+Name             : Well Fed (id=1232500) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225271)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225272)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225273)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225274)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225275)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225276)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225277)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225278)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225279)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Avoidance | Target: Self (1)
+#10 (id=1225280) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225281) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Avoidance by $s1 for $d.
+Tooltip          : Haste and Avoidance increased by $w9.
+
+Name             : Well Fed (id=1232501) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+                 : 4924
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225282)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225283)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225284)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225285)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225286)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225287)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225288)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225289)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225290)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Avoidance | Target: Self (1)
+#10 (id=1225291) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225292) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Versatility and Avoidance by $s1 for $d.
+Tooltip          : Versatility and Avoidance increased by $w9.
+
 Name             : Pacifist Rig (id=1232541) 
 School           : Shadow
 Spell Type       : None
@@ -231528,6 +232404,120 @@ Effects          :
                    Affected School(s): All
 Description      : $@spelldesc355312
 Tooltip          : $@auracaster's animated remains.
+
+Name             : Well Fed (id=1232582) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225411)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225412)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225413)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225414)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225415)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225416)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225417)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225418)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225419)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1225420) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225421) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Tooltip          : Your primary stats have been increased by $w11.
+
+Name             : Well Fed (id=1232584) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225423)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225424)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225425)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225426)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225427)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225428)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225429)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225430)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225431)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1225432) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225433) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s7 Stamina for $d.
+Tooltip          : Your Stamina has been increased by $w7.
+
+Name             : Well Fed (id=1232585) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1225435)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1225436)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225437)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1225438)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1225439)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1225440)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1225441)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1225442)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1225443)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1225444) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1225445) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Tooltip          : Your primary stats have been increased by $w11.
 
 Name             : Pacifist Rig (id=1232696) 
 School           : Shadow
@@ -232436,6 +233426,348 @@ Description      : Apply Lesser Rune of the Void Ritual to a helm.
 Gain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. 
 
 Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+
+Name             : Well Fed (id=1233400) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226760)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226761)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226762)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226763)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226764)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226765)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226766)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226767)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226768)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Mastery | Target: Self (1)
+#10 (id=1226769) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226770) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Mastery by $s1 for $d.
+Tooltip          : Haste and Mastery increased by $w9.
+
+Name             : Well Fed (id=1233401) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226771)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226772)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226773)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226774)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226775)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226776)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226777)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226778)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226779)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Haste | Target: Self (1)
+#10 (id=1226780) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226781) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Critical Strike by $s1 for $d.
+Tooltip          : Haste and Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1233402) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226782)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226783)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226784)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226785)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226786)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226787)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226788)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226789)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226790)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Vers | Target: Self (1)
+#10 (id=1226791) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226792) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike and Versatility by $s1 for $d.
+Tooltip          : Critical Strike and Versatility  increased by $w9.
+
+Name             : Well Fed (id=1233403) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226793)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226794)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226795)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226796)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226797)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226798)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226799)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226800)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226801)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery, Vers | Target: Self (1)
+#10 (id=1226802) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226803) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Versatility by $s1 for $d.
+Tooltip          : Mastery and Versatility  increased by $w9.
+
+Name             : Well Fed (id=1233404) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226804)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226805)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226806)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226807)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226808)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226809)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226810)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226811)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226812)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Mastery | Target: Self (1)
+#10 (id=1226813) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226814) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Critical Strike by $s1 for $d.
+Tooltip          : Mastery and Critical Strike increased by $w9.
+
+Name             : Well Fed (id=1233405) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226815)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226816)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226817)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226818)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226819)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226820)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226821)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226822)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226823)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Vers | Target: Self (1)
+#10 (id=1226824) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226825) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Haste and Versatility by $s1 for $d.
+Tooltip          : Haste and Versatility increased by $w9.
+
+Name             : Well Fed (id=1233406) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4900
+                 : 4901
+                 : 4905
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226826)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226827)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226828)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226829)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226830)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226831)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226832)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226833)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226834)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery, Vers | Target: Self (1)
+#10 (id=1226835) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226836) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Mastery and Versatility by $s1 for $d.
+Tooltip          : Mastery and Versatility  increased by $w9.
+
+Name             : Well Fed (id=1233407) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226837)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226838)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226839)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226840)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226841)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226842)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226843)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226844)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226845)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1226846) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226847) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Tooltip          : Your primary stats have been increased by $w11.
+
+Name             : Well Fed (id=1233408) 
+School           : Physical
+Spell Type       : None
+Duration         : 1800 seconds
+Labels           : 959
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4897
+                 : 4907
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1226848)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1226849)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1226850)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1226851)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1226852)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1226853)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1226854)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1226855)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1226856)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating:  | Target: Self (1)
+#10 (id=1226857) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1226858) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Tooltip          : Your primary stats have been increased by $w11.
 
 Name             : Durable Information Securing Container (id=1233515) [Passive] 
 School           : Physical
@@ -246756,7 +248088,7 @@ Attributes       : Allow Item Spell In PvP (13), Aura Unique (43), Not an Action
 Effects          :
 #1 (id=1268811)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4376 (Label) | Radius: 15 yards | Target: Self (1)
-                   Affected Spells (Label): Well Fed (1232324), Hearty Well Fed (1233703), Relaxed (1269152)
+                   Affected Spells (Label): Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Well Fed (1233703), Relaxed (1269152)
 #2 (id=1268812)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4876 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Midnight Versatility Flask (1235057), Midnight Mastery Flask (1235108), Midnight Haste Flask (1235110), Midnight Critical Strike Flask (1235111)

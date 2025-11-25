@@ -675,7 +675,7 @@ public:
 
       player_talent_t burning_blades;
       player_talent_t violent_transformation;
-      player_talent_t enduring_torment;  // Partial Implementation (Havoc)
+      player_talent_t enduring_torment;
 
       player_talent_t untethered_fury;
       player_talent_t student_of_suffering;
@@ -2039,7 +2039,7 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within );
+    ab::parse_effects( p()->mastery.monster_within, p()->hero_spec.enduring_torment_buff );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
@@ -6244,9 +6244,9 @@ struct collapsing_star_t : public demon_hunter_spell_t
     {
       double m = base_t::composite_da_multiplier( s );
 
-      if ( s->chain_target != 0 )
+      if ( s->chain_target == 0 )
       {
-        m *= 1.0 - p()->spec.collapsing_star_spell->effectN( 2 ).percent();
+        m *= 1.0 + p()->spec.collapsing_star_spell->effectN( 2 ).percent();
       }
 
       if ( p()->talent.annihilator.otherworldly_focus->ok() )
@@ -6278,6 +6278,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         p()->cooldown.voidblade->adjust( -p()->talent.devourer.voidrush->effectN( 1 ).time_value() );
       }
+
+      if ( p()->talent.devourer.impending_apocalypse->ok() )
+      {
+        p()->buff.impending_apocalypse->trigger();
+      }
     }
   };
 
@@ -6301,11 +6306,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
     p()->buff.collapsing_star_ready->expire();
     p()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
-
-    if ( p()->talent.devourer.impending_apocalypse->ok() )
-    {
-      p()->buff.impending_apocalypse->trigger();
-    }
   }
 
   bool action_ready() override
@@ -8852,11 +8852,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.scarred.monster_rising->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->expire();
     }
-    if ( p()->talent.scarred.enduring_torment->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->expire();
     }
@@ -8988,7 +8988,6 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
     base_t::expire( d );
 
     p()->buff.voidfall_spending->trigger( stacks );
-    p()->buff.voidfall_final_hour->trigger( stacks );
   }
 };
 
