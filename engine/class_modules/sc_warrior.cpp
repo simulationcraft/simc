@@ -5254,10 +5254,14 @@ struct rampage_attack_t : public warrior_attack_t
       p()->first_rampage_attack_missed = false;
 
     // Expire buffs after the fourth attack triggers
+    // Also fire frenzy buff after the 4th attack triggers
     if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
     {
       p()->buff.meat_cleaver->decrement();
       p()->buff.brutal_finish->expire();
+
+      if ( p()->talents.fury.frenzy->ok() )
+        p()->buff.frenzy->trigger();
     }
   }
 
@@ -5314,10 +5318,6 @@ struct rampage_parent_t : public warrior_attack_t
     if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
-    }
-    if ( p()->talents.fury.frenzy->ok() )
-    {
-      p()->buff.frenzy->trigger();
     }
 
     p()->enrage();
@@ -7774,7 +7774,8 @@ void warrior_t::create_buffs()
      ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() )
      ->set_duration( find_spell( 184362 )->duration() );
 
-  buff.frenzy = make_buff( this, "frenzy", find_spell(335082) );
+  buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
+                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
   buff.charge_movement        = make_buff( this, "charge_movement" );
@@ -8978,7 +8979,7 @@ void warrior_t::parse_player_effects()
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    parse_effects( buff.frenzy );
+    parse_effects( buff.frenzy, talents.fury.frenzy );
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
