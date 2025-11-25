@@ -164,6 +164,35 @@ struct conduit_of_the_celestials_container_t
   {
   }
 };
+
+namespace attacks
+{
+struct flurry_strikes_t : public monk_spell_t
+{
+  struct flurry_strike_t : public monk_spell_t
+  {
+    flurry_strike_t( monk_t *player, std::string_view name );
+    void impact( action_state_t *state ) override;
+  };
+
+  enum source_e
+  {
+    NONE,
+    FLURRY_STRIKES,
+    STAND_READY,
+    WISDOM_OF_THE_WALL
+  };
+
+  bool fallback;
+  action_t *high_impact;
+  action_t *shado_over_the_battlefield;
+  std::unordered_map<source_e, flurry_strike_t *> flurry_strike_variants;
+
+  flurry_strikes_t( bool, monk_t * );
+  using monk_spell_t::execute;
+  void execute( source_e );
+};
+}  // namespace attacks
 }  // namespace actions
 
 namespace buffs
@@ -436,14 +465,10 @@ public:
     actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
 
     // Shado-Pan
-    action_t *flurry_strikes;
+    actions::attacks::flurry_strikes_t *flurry_strikes;
   } action;
 
   std::vector<action_t *> combo_strike_actions;
-
-  int efficient_training_energy;
-  int flurry_strikes_energy;
-  double flurry_strikes_damage;
 
   struct
   {
@@ -511,6 +536,7 @@ public:
 
     // Shado-Pan
     propagate_const<buff_t *> flurry_charge;
+    propagate_const<buff_t *> stand_ready;
 
     // TWW1 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
@@ -986,7 +1012,7 @@ public:
     {
       // Row 1
       player_talent_t flurry_strikes;
-      const spell_data_t *flurry_strikes_hit;
+      const spell_data_t *flurry_strike;
       const spell_data_t *flurry_charge;
       // Row 2
       player_talent_t pride_of_pandaria;
@@ -995,6 +1021,7 @@ public:
       player_talent_t veterans_eye;
       player_talent_t martial_precision;
       player_talent_t shado_over_the_battlefield;
+      const spell_data_t *flurry_strike_shado_over_the_battlefield;
       // Row 3
       player_talent_t combat_stance;
       player_talent_t initiators_edge;
@@ -1002,6 +1029,8 @@ public:
       player_talent_t whirling_steel;
       player_talent_t predictive_training;
       player_talent_t stand_ready;
+      const spell_data_t *stand_ready_buff;
+      const spell_data_t *stand_ready_driver;
       // Row 4
       player_talent_t against_all_odds;
       player_talent_t efficient_training;

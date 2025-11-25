@@ -887,7 +887,7 @@ struct void_volley_damage_t final : public priest_spell_t
   void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
   }
 
   bool insidious_ire_active() const
@@ -917,7 +917,7 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
     aoe                        = -1;
     radius                     = _radius;
   }
@@ -1408,67 +1408,30 @@ struct shadow_weaving_t final : public priest_spell_t
 
 // ==========================================================================
 // Tentacle Slam
-// TODO: Refactor this so we can just use reduced_aoe_targets
 // ==========================================================================
 struct tentacle_slam_damage_t final : public priest_spell_t
 {
-  double parent_targets = 1;
-
-  tentacle_slam_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  tentacle_slam_damage_t( priest_t& p, const spell_data_t* s ) : priest_spell_t( "tentacle_slam_damage", p, s )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-  }
-
-  // Hacked in until the base spell covers this
-  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 0.5 );
-  }
-
-  double action_da_multiplier() const override
-  {
-    double m = priest_spell_t::action_da_multiplier();
-
-    double scaled_m = m;
-
-    if ( parent_targets > 5 )
-    {
-      scaled_m *= std::sqrt( 5 / parent_targets );
-      sim->print_debug( "{} {} updates da multiplier: Before: {} After: {} with {} targets from the parent spell.",
-                        *player, *this, m, scaled_m, parent_targets );
-    }
-
-    return scaled_m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( priest().talents.shadow.void_apparitions_3.enabled() )
-    {
-      priest().trigger_random_idol( s );
-    }
+    reduced_aoe_targets        = 5;
+    aoe                        = -1;
   }
 };
 
 struct tentacle_slam_dots_t final : public priest_spell_t
 {
   propagate_const<vampiric_touch_t*> child_vt;
-  double missile_speed;
 
-  tentacle_slam_dots_t( priest_t& p, double _missile_speed, const spell_data_t* s )
+  tentacle_slam_dots_t( priest_t& p, const spell_data_t* s )
     : priest_spell_t( "tentacle_slam_dots", p, s->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true, false ) ),
-      missile_speed( _missile_speed )
+      child_vt( new vampiric_touch_t( priest(), true, false ) )
   {
-    may_miss                     = false;
-    background                   = true;
-    aoe                          = as<int>( s->effectN( 3 ).base_value() );
-    idol_of_nzoth_execute_stacks = 6;
-    child_vt->background         = true;
+    may_miss             = false;
+    background           = true;
+    aoe                  = as<int>( s->effectN( 3 ).base_value() );
+    child_vt->background = true;
   }
 
   std::vector<player_t*>& target_list() const override
@@ -1507,12 +1470,6 @@ struct tentacle_slam_dots_t final : public priest_spell_t
     return tl;
   }
 
-  // Copy travel time from parent spell
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( missile_speed );
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1522,73 +1479,67 @@ struct tentacle_slam_dots_t final : public priest_spell_t
   }
 };
 
-struct tentacle_slam_base_t : public priest_spell_t
+struct tentacle_slam_t final : public priest_spell_t
 {
-  double insanity_gain;
   propagate_const<tentacle_slam_dots_t*> tentacle_slam_dots;
-
-  tentacle_slam_base_t( priest_t& p, util::string_view options_str, std::string_view name, const spell_data_t* s )
-    : priest_spell_t( name, p, s ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      tentacle_slam_dots( new tentacle_slam_dots_t( p, 0.5, s ) )
-  {
-    parse_options( options_str );
-
-    aoe   = -1;
-    range = data().max_range();
-
-    // Assume you are in line of all targets
-    radius = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
-  }
-
-  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
-  // timespan_t travel_time() const override
-  // {
-  //   return timespan_t::from_seconds( data().missile_speed() );
-  // }
-};
-
-struct tentacle_slam_t final : public tentacle_slam_base_t
-{
   propagate_const<tentacle_slam_damage_t*> tentacle_slam_damage;
   propagate_const<shadow_word_madness_t*> child_swm;
 
   tentacle_slam_t( priest_t& p, util::string_view options_str )
-    : tentacle_slam_base_t( p, options_str, "tentacle_slam", p.talents.shadow.tentacle_slam ),
+    : priest_spell_t( "tentacle_slam", p, p.talents.shadow.tentacle_slam ),
       tentacle_slam_damage( nullptr ),
-      child_swm( new shadow_word_madness_t( priest(), false, true ) )
+      tentacle_slam_dots( nullptr ),
+      child_swm( nullptr )
   {
-    tentacle_slam_damage =
-        new tentacle_slam_damage_t( name_str + "_damage", p, priest().talents.shadow.tentacle_slam_damage );
+    parse_options( options_str );
+
+    tentacle_slam_dots   = new tentacle_slam_dots_t( p, p.talents.shadow.tentacle_slam );
+    tentacle_slam_damage = new tentacle_slam_damage_t( p, priest().talents.shadow.tentacle_slam_damage );
+    child_swm            = new shadow_word_madness_t( priest(), false, true );
+
     add_child( tentacle_slam_damage );
-
     child_swm->background = true;
+
+    idol_of_nzoth_impact_stacks = 6;
+    radius                      = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
   }
 
-  void execute() override
+  // TODO: Not found in spelldata, manually tested
+  // Alpha: ~400ms
+  // Beta: ~750ms
+  timespan_t travel_time() const override
   {
-    priest_spell_t::execute();
-
-    tentacle_slam_dots->execute();
-
-    if ( priest().talents.shadow.maddening_tentacles.enabled() )
-    {
-      make_event( sim, 500_ms, [ this ] {
-        child_swm->target = target;
-        child_swm->execute();
-      } );
-    }
+    return timespan_t::from_seconds( 0.5 );
   }
 
+  // Triggers actions that only occur once, not per target hit
   void impact( action_state_t* s ) override
   {
-    if ( tentacle_slam_damage )
+    priest_spell_t::impact( s );
+
+    // DoTs are triggered first so that subsequent actions can apply
+    if ( tentacle_slam_dots )
     {
-      tentacle_slam_damage->parent_targets = s->n_targets;
-      tentacle_slam_damage->schedule_execute();
+      tentacle_slam_dots->execute();
     }
 
-    priest_spell_t::impact( s );
+    // Damage occurs after
+    if ( tentacle_slam_damage )
+    {
+      tentacle_slam_damage->execute();
+    }
+
+    // Happens after DoTs have already been applied and Damage has been done
+    if ( priest().talents.shadow.maddening_tentacles.enabled() && child_swm )
+    {
+      child_swm->target = target;
+      child_swm->execute();
+    }
+
+    if ( priest().talents.shadow.void_apparitions_3.enabled() )
+    {
+      priest().trigger_random_idol( s );
+    }
   }
 };
 
@@ -1604,7 +1555,7 @@ struct horrific_vision_t final : public priest_spell_t
   horrific_vision_t( priest_t& p ) : priest_spell_t( "horrific_vision", p, p.talents.shadow.horrific_vision_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1625,7 +1576,7 @@ struct vision_of_nzoth_t final : public priest_spell_t
   vision_of_nzoth_t( priest_t& p ) : priest_spell_t( "vision_of_nzoth", p, p.talents.shadow.vision_of_nzoth_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1688,6 +1639,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     if ( priest().talents.shadow.crushing_void.enabled() )
     {
+      priest().cooldowns.void_volley->reset( true );
       priest().buffs.crushing_void->trigger();
     }
 
@@ -2206,12 +2158,6 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc )
     return;
   }
 
-  // Idol of Yogg-Saron only triggers for each cast that generates an apparition
-  if ( talents.shadow.idol_of_yoggsaron.enabled() )
-  {
-    buffs.idol_of_yoggsaron->trigger();
-  }
-
   auto has_vt = []( priest_td_t* t ) { return t && t->dots.vampiric_touch->is_ticking(); };
 
   int vts = 0;
@@ -2222,6 +2168,12 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc )
     {
       vts++;
     }
+  }
+
+  // Idol of Yogg-Saron only triggers for each cast that generates an apparition
+  if ( talents.shadow.idol_of_yoggsaron.enabled() && vts > 0 )
+  {
+    buffs.idol_of_yoggsaron->trigger();
   }
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
@@ -2441,7 +2393,6 @@ void priest_t::trigger_random_idol( action_state_t* s )
   switch ( chosen_idol )
   {
     case idol_e::YSHAARJ:
-      buffs.call_of_the_void->trigger();
       procs.void_apparition_yshaarj->occur();
       trigger_idol_of_yshaarj();
       break;

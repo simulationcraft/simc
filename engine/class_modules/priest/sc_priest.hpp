@@ -679,9 +679,9 @@ public:
     propagate_const<cooldown_t*> power_word_shield;
 
     // Shadow
-    propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> maddening_touch_icd;
+    propagate_const<cooldown_t*> void_volley;
 
     // Discipline
     propagate_const<cooldown_t*> penance;
@@ -1456,6 +1456,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool triggers_atonement;
   bool ignores_automatic_mastery;
   int idol_of_nzoth_execute_stacks;
+  int idol_of_nzoth_impact_stacks;
   int idol_of_nzoth_tick_stacks;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
@@ -1464,6 +1465,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       triggers_atonement( false ),
       ignores_automatic_mastery( false ),
       idol_of_nzoth_execute_stacks( 0 ),
+      idol_of_nzoth_impact_stacks( 0 ),
       idol_of_nzoth_tick_stacks( 0 )
   {
     weapon_multiplier = 0.0;
@@ -1538,7 +1540,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         p().trigger_atonement( s, composite_atonement_multiplier( s ) );
       }
 
-      // TODO: need to re-test this logic
       if ( priest().talents.shadow.idol_of_yshaarj.enabled() && !priest().buffs.call_of_the_void->check() &&
            !priest().buffs.overburdened_mind->check() )
       {
@@ -1546,6 +1547,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_idol_of_yshaarj();
         }
+      }
+
+      if ( priest().talents.shadow.idol_of_nzoth.enabled() && idol_of_nzoth_impact_stacks > 0 )
+      {
+        priest().trigger_idol_of_nzoth( target, idol_of_nzoth_impact_stacks );
       }
     }
   }

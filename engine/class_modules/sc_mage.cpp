@@ -296,7 +296,9 @@ public:
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     double clearcasting_chance = 0.0186;
     double illuminated_thoughts_bonus = 0.0129;
-
+    bool fof_requires_freezing = true;
+    bool il_requires_freezing = true;
+    bool il_sort_by_freezing = false;
   } options;
 
   // Pets
@@ -310,6 +312,9 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* salvo_applied;
+    proc_t* salvo_overflow;
+
     proc_t* heating_up_generated;         // Crits without HU/HS
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
@@ -813,8 +818,7 @@ public:
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
   void trigger_icicle( int count = 1 );
-  // TODO: add source tracking
-  void trigger_arcane_salvo( int stacks = 1, double chance = 1.0 );
+  void trigger_arcane_salvo( proc_t* source, int stacks = 1, double chance = 1.0 );
 };
 
 namespace pets {
@@ -1473,6 +1477,8 @@ struct mage_spell_t : public spell_t
   int freezing_targets = -1;
   proc_t* freezing_source = nullptr;
 
+  proc_t* salvo_source = nullptr;
+
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
@@ -1551,6 +1557,9 @@ public:
 
     if ( p()->spec.shatter->ok() )
       freezing_source = p()->get_proc( fmt::format( "Freezing applied ({})", data().name_cstr() ) );
+
+    if ( p()->talents.arcane_salvo.ok() )
+      salvo_source = p()->get_proc( fmt::format( "Arcane Salvo applied ({})", data().name_cstr() ) );
   }
 
   double action_multiplier() const override
@@ -2594,7 +2603,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
     p()->buffs.arcane_salvo->expire();
     if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
-      p()->trigger_arcane_salvo( as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
 
     if ( p()->buffs.arcane_soul->check() )
     {
@@ -2686,7 +2695,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->consume_burden_of_power();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
     p()->trigger_splinter( p()->target );
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
@@ -2795,7 +2804,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_splinter( p()->target ); // Also triggers from echo
     if ( !background )
-      p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
@@ -2905,8 +2914,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::execute();
 
-    p()->trigger_arcane_salvo();
-    p()->trigger_arcane_salvo( as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
+    p()->trigger_arcane_salvo( salvo_source );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
                                p()->talents.focusing_crystal->effectN( 1 ).percent() );
 
     if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
@@ -3884,7 +3893,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
       add_child( duality_pyroblast );
     }
 
-    if ( p->talents.flash_freezeburn.ok() )
+    if ( p->specialization() == MAGE_FROST && p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
   }
 
@@ -3970,7 +3979,6 @@ struct ice_lance_t final : public frost_mage_spell_t
   struct ice_lance_impact_t final : public frost_mage_spell_t
   {
     int freezing_consume;
-    proc_t* polished_focus = nullptr;
 
     ice_lance_impact_t( std::string_view n, mage_t* p ) :
       frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
@@ -3988,14 +3996,6 @@ struct ice_lance_t final : public frost_mage_spell_t
         aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
     }
 
-    void init_finished() override
-    {
-      frost_mage_spell_t::init_finished();
-
-      if ( p()->talents.polished_focus.ok() )
-        polished_focus = p()->get_proc( "Freezing applied (Polished Focus)" );
-    }
-
     void impact( action_state_t* s ) override
     {
       frost_mage_spell_t::impact( s );
@@ -4006,7 +4006,7 @@ struct ice_lance_t final : public frost_mage_spell_t
         if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
           p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
         if ( stacks == freezing_consume )
-          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), polished_focus );
+          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), freezing_source );
       }
     }
 
@@ -4014,12 +4014,30 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       frost_mage_spell_t::available_targets( tl );
 
-      range::erase_remove( tl, [ this ] ( player_t* t )
+      if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
+        return tl.size();
+
+      if ( p()->options.il_requires_freezing )
       {
-        if ( t == target ) return false;
-        if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
-        return true;
-      } );
+        range::erase_remove( tl, [ this ] ( player_t* t )
+        {
+          if ( t == target ) return false;
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
+          return true;
+        } );
+      }
+
+      if ( p()->options.il_sort_by_freezing )
+      {
+        auto value = [ this ] ( player_t* t )
+        {
+          if ( t == target ) return std::numeric_limits<int>::max();
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check();
+          return 0;
+        };
+
+        range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
+      }
 
       return tl.size();
     }
@@ -4373,7 +4391,7 @@ struct duality_glacial_spike_t final : public mage_spell_t
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
 
-    if ( p->talents.flash_freezeburn.ok() )
+    if ( p->specialization() == MAGE_FIRE && p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
   }
 
@@ -5027,7 +5045,7 @@ struct splinter_t final : public mage_spell_t
       controlled_instincts->execute_on_target( s->target, pct * s->result_total );
     }
 
-    p()->trigger_arcane_salvo( as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
                                p()->talents.infused_splinters->effectN( 1 ).percent() );
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
@@ -5538,6 +5556,9 @@ void mage_t::create_options()
               } ) );
   add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance ) );
   add_option( opt_float( "mage.illuminated_thoughts_bonus", options.illuminated_thoughts_bonus ) );
+  add_option( opt_bool( "mage.fof_requires_freezing", options.fof_requires_freezing ) );
+  add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
+  add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   player_t::create_options();
 }
 
@@ -6212,6 +6233,10 @@ void mage_t::init_procs()
 
   switch ( specialization() )
   {
+    case MAGE_ARCANE:
+      procs.salvo_applied  = get_proc( "Arcane Salvo applied" );
+      procs.salvo_overflow = get_proc( "Arcane Salvo overflow" );
+      break;
     case MAGE_FIRE:
       procs.heating_up_generated         = get_proc( "Heating Up generated" );
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
@@ -6296,8 +6321,7 @@ void mage_t::init_finished()
   player_t::init_finished();
 
   // Sort the procs to put the proc sources next to each other.
-  if ( specialization() == MAGE_FROST )
-    range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
+  range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
 }
 
 void mage_t::init_action_list()
@@ -6742,7 +6766,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
 
   // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
   // is currently not the case.
-  if ( stacks == 0 )
+  if ( options.fof_requires_freezing && stacks == 0 )
     return 0;
 
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
@@ -6817,15 +6841,27 @@ void mage_t::trigger_mana_cascade()
   }
 }
 
-void mage_t::trigger_arcane_salvo( int stacks, double chance )
+void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
 {
   if ( !talents.arcane_salvo->ok() || stacks <= 0 )
     return;
 
   if ( rng().roll( chance ) )
   {
-    buffs.arcane_salvo->trigger( stacks );
-    // TODOD: proc_t* stuff
+    auto buff = buffs.arcane_salvo;
+    int old_stacks = buff->check();
+    buff->trigger( stacks );
+    int new_stacks = buff->check();
+
+    assert( source );
+    for ( int i = 0; i < stacks; i++ )
+    {
+      source->occur();
+      procs.salvo_applied->occur();
+    }
+    int overflow = stacks - ( new_stacks - old_stacks );
+    for ( int i = 0; i < overflow; i++ )
+      procs.salvo_overflow->occur();
   }
 }
 

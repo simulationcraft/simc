@@ -675,7 +675,7 @@ public:
 
       player_talent_t burning_blades;
       player_talent_t violent_transformation;
-      player_talent_t enduring_torment;  // Partial Implementation (Havoc)
+      player_talent_t enduring_torment;
 
       player_talent_t untethered_fury;
       player_talent_t student_of_suffering;
@@ -2039,7 +2039,7 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within );
+    ab::parse_effects( p()->mastery.monster_within, p()->hero_spec.enduring_torment_buff );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
@@ -8852,11 +8852,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.scarred.monster_rising->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->expire();
     }
-    if ( p()->talent.scarred.enduring_torment->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->expire();
     }

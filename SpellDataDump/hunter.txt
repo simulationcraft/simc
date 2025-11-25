@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64529 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64611 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical

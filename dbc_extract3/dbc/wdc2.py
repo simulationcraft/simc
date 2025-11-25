@@ -420,7 +420,17 @@ class WDC2Parser(WDC1Parser):
         if end_offset == -1:
             return None
 
-        return self.data[start_offset:end_offset].decode('utf-8')
+        try:
+            return self.data[start_offset:end_offset].decode('utf-8')
+        except UnicodeDecodeError as err:
+            logging.warning(
+                "String @%d for dbc_id=%d field=%d utf-8 decode error: %s",
+                start_offset,
+                dbc_id,
+                field_index,
+                err
+            )
+            return self.data[start_offset : end_offset - 1].decode("utf-8", errors="ignore")
 
     # Compute offset into the file, based on what blocks we have
     def compute_block_offsets(self):
