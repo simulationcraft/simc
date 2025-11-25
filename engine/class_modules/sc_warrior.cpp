@@ -2864,8 +2864,6 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
 
-    p()->buff.overpower->expire();
-
     p()->buff.brutal_finish->expire();
 
     p()->buff.fierce_followthrough->expire();
@@ -3369,7 +3367,6 @@ struct cleave_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
-    p()->buff.overpower->expire();
 
     if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up()  )
     {
@@ -7793,8 +7790,6 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.warrior.last_stand );
 
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
-
-  buff.overpower = make_buff(this, "overpower", talents.arms.overpower);
 
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
