@@ -264,6 +264,8 @@ public:
     // Colossus
     buff_t* colossal_might;
     buff_t* cut_to_the_bone;
+    buff_t* celeritous_conclusion_haste;
+    buff_t* celeritous_conclusion_crit;
 
     // Slayer
     buff_t* executioner;
@@ -1068,6 +1070,7 @@ public:
 
       parse_effects( p()->buff.critical_conclusion );
       parse_effects( p()->buff.deeper_wounds );
+      parse_effects( p()->buff.celeritous_conclusion_crit );
     }
 
     // Slayer
@@ -2877,6 +2880,8 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.fierce_followthrough->expire();
 
     p()->buff.critical_conclusion->expire();
+
+    p()->buff.celeritous_conclusion_crit->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3470,6 +3475,17 @@ struct demolish_damage_t : public warrior_attack_t
     if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->up() )
     {
       td( state->target )->debuffs_wrecked->trigger( p()->buff.colossal_might->stack() );
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if( data().id() == 440888 )
+    {
+      p()->buff.celeritous_conclusion_haste->trigger();
+      p()->buff.celeritous_conclusion_crit->trigger();
     }
   }
 };
@@ -5746,6 +5762,8 @@ struct shield_slam_t : public warrior_attack_t
     }
 
     p()->buff.critical_conclusion->expire();
+
+    p()->buff.celeritous_conclusion_crit->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -7853,6 +7871,9 @@ void warrior_t::create_buffs()
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
+  buff.celeritous_conclusion_haste = make_buff( this, "celeritous_conclusion_haste", find_spell( 1270843 ) );
+  buff.celeritous_conclusion_crit  = make_buff( this, "celeritous_conclusion_crit", find_spell( 1270846 ) );
+
   buff.cut_to_the_bone      = make_buff( this, "cut_to_the_bone", find_spell( 1270840 ) )
                                 ->set_cooldown( talents.colossus.cut_to_the_bone->internal_cooldown() );
 
@@ -8997,6 +9018,7 @@ void warrior_t::parse_player_effects()
   }
 
   // Colossus
+  parse_effects( buff.celeritous_conclusion_haste );
 
   // Slayer
   parse_effects( buff.violent_euphoria );
