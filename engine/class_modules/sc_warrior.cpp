@@ -231,6 +231,7 @@ public:
     buff_t* brace_for_impact;
     buff_t* charge_movement;
     buff_t* collateral_damage;
+    buff_t* champions_spear;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* enrage;
@@ -6197,6 +6198,25 @@ struct wrecking_throw_t : public warrior_attack_t
 
 // Champion's Spear==========================================================
 
+struct champions_leap_t : public warrior_attack_t
+{
+  champions_leap_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "champions_leap", p, p->find_spell( 1271985 ) )
+    {
+      parse_options( options_str );
+      aoe = -1;
+      cooldown->duration = p->find_spell( 1271980 )->cooldown();
+    }
+
+  bool ready() override
+  {
+    if (!p()->buff.champions_spear->up() )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
 struct champions_spear_damage_t : public warrior_attack_t
 {
   double rage_gain;
@@ -6217,6 +6237,7 @@ struct champions_spear_damage_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.champions_spear, this );
+    p()->buff.champions_spear->trigger();
   }
 };
 
@@ -6803,6 +6824,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new shockwave_t( this, options_str );
   if ( name == "slam" )
     return new slam_t( this, options_str );
+  if ( name == "champions_leap" )
+    return new champions_leap_t( this, options_str );
   if ( name == "champions_spear" )
     return new champions_spear_t( this, options_str );
   if ( name == "spell_reflection" )
@@ -7717,6 +7740,8 @@ void warrior_t::create_buffs()
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
       -> set_default_value_from_effect( 1 )
       -> set_max_stack( 99 );
+
+  buff.champions_spear = make_buff( this, "champions_spear", find_spell( 376080 ) );
 
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes->effectN( 2 ).trigger() )
       ->set_cooldown( talents.warrior.wild_strikes->internal_cooldown() )
