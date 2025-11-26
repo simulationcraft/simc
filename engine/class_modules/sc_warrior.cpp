@@ -242,7 +242,6 @@ public:
     buff_t* intervene_movement;
     buff_t* into_the_fray;
     buff_t* last_stand;
-    buff_t* meat_cleaver;
     buff_t* overpower;
     buff_t* ravager;
     buff_t* recklessness;
@@ -350,7 +349,6 @@ public:
     gain_t* critical_block;
     gain_t* execute;
     gain_t* frothing_berserker;
-    gain_t* meat_cleaver;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
@@ -2411,7 +2409,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( !unhinged && p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -2479,7 +2477,7 @@ struct bloodthirst_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( !unhinged )
-      p()->buff.meat_cleaver->decrement();
+      p()->buff.whirlwind->decrement();
 
     if ( execute_state && result_is_hit( execute_state->result ) )
     {
@@ -2643,7 +2641,7 @@ struct bloodbath_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( !unhinged && p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -2717,7 +2715,7 @@ struct bloodbath_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( !unhinged )
-      p()->buff.meat_cleaver->decrement();
+      p()->buff.whirlwind->decrement();
 
     if ( execute_state && result_is_hit( execute_state->result ) )
     {
@@ -3226,7 +3224,7 @@ struct slam_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -3252,7 +3250,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.meat_cleaver->decrement();
+    p()->buff.whirlwind->decrement();
   }
 
   bool ready() override
@@ -3638,7 +3636,7 @@ struct thunder_blast_t : public warrior_attack_t
     {
       if ( p()->talents.fury.improved_whirlwind->ok() )
       {
-        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+        p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
       }
     }
 
@@ -3800,7 +3798,7 @@ struct thunder_clap_t : public warrior_attack_t
     {
       if ( p()->talents.fury.improved_whirlwind->ok() )
       {
-        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+        p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
       }
     }
 
@@ -4114,7 +4112,7 @@ struct execute_main_hand_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4153,7 +4151,7 @@ struct execute_off_hand_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4248,7 +4246,7 @@ struct execute_fury_t : public warrior_attack_t
       // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack->execute();
 
-    p()->buff.meat_cleaver->decrement();
+    p()->buff.whirlwind->decrement();
     if ( p() -> buff.sudden_death -> up() )
     {
       p()->buff.sudden_death->decrement();
@@ -4301,7 +4299,7 @@ struct hamstring_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4311,7 +4309,7 @@ struct hamstring_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.meat_cleaver->decrement();
+    p() -> buff.whirlwind->decrement();
   }
 };
 
@@ -4449,7 +4447,7 @@ struct impending_victory_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4465,7 +4463,7 @@ struct impending_victory_t : public warrior_attack_t
       impending_victory_heal->execute();
     }
 
-    p() -> buff.meat_cleaver -> decrement();
+    p() -> buff.whirlwind -> decrement();
   }
 };
 
@@ -4643,7 +4641,7 @@ struct raging_blow_attack_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4753,7 +4751,7 @@ struct raging_blow_t : public warrior_attack_t
           p()->buff.opportunist->trigger();
       }
     }
-    p()->buff.meat_cleaver->decrement();
+    p()->buff.whirlwind->decrement();
 
     if ( p()->talents.fury.bloodcraze->ok() )
     {
@@ -4831,7 +4829,7 @@ struct crushing_blow_attack_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -4929,7 +4927,7 @@ struct crushing_blow_t : public warrior_attack_t
         p()->buff.opportunist->trigger();
     }
 
-    p()->buff.meat_cleaver->decrement();
+    p()->buff.whirlwind->decrement();
 
     if ( p()->talents.fury.bloodcraze->ok() )
     {
@@ -5242,7 +5240,7 @@ struct rampage_attack_t : public warrior_attack_t
     // Also fire frenzy buff after the 4th attack triggers
     if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
     {
-      p()->buff.meat_cleaver->decrement();
+      p()->buff.whirlwind->decrement();
       p()->buff.brutal_finish->expire();
 
       if ( p()->talents.fury.frenzy->ok() )
@@ -5267,7 +5265,7 @@ struct rampage_attack_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -5664,7 +5662,7 @@ struct shield_slam_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -5711,7 +5709,7 @@ struct shield_slam_t : public warrior_attack_t
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
     }
 
-    p() -> buff.meat_cleaver->decrement();
+    p() -> buff.whirlwind->decrement();
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.shield_slam, this );
 
@@ -5916,7 +5914,7 @@ struct victory_rush_t : public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( p()->buff.whirlwind->check() )
     {
       return aoe_targets + 1;
     }
@@ -5926,7 +5924,7 @@ struct victory_rush_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.meat_cleaver->decrement();
+    p() -> buff.whirlwind->decrement();
   }
 };
 
@@ -6000,7 +5998,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
 
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
     }
 
     mh_first_attack->execute_on_target( target );
@@ -6911,7 +6909,7 @@ void warrior_t::init_spells()
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.bloodbath                = find_spell(335096);
   spec.crushing_blow            = find_spell(335097);
-  spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );
   spell.sudden_death_fury       = find_spell( 280776 );
 
   // Protection Spells
@@ -7799,7 +7797,7 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.warrior.last_stand );
 
-  buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
+  buff.whirlwind = make_buff( this, "whirlwind", spell.whirlwind_buff );
 
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
@@ -7980,7 +7978,6 @@ void warrior_t::init_gains()
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
   gain.endless_rage           = get_gain( "endless_rage" );
   gain.lord_of_war            = get_gain( "lord_of_war" );
-  gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
   gain.ravager                = get_gain( "ravager" );

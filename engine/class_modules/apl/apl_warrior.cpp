@@ -53,10 +53,11 @@ void fury( player_t* p )
   slayer->add_action( "recklessness" );
   slayer->add_action( "avatar" );
   slayer->add_action( "execute,if=buff.sudden_death.remains<2&!variable.execute_phase" );
+  slayer->add_action( "champions_leap,if=!cooldown.bladestorm.remains&(!cooldown.avatar.remains|!cooldown.recklessness.remains|buff.avatar.up|buff.recklessness.up)&buff.enrage.up" );
   slayer->add_action( "champions_spear,if=!cooldown.bladestorm.remains&(!cooldown.avatar.remains|!cooldown.recklessness.remains|buff.avatar.up|buff.recklessness.up)&buff.enrage.up" );
-  slayer->add_action( "odyns_fury,if=active_enemies>1&buff.meat_cleaver.stack=0" );
+  slayer->add_action( "odyns_fury,if=active_enemies>1&buff.whirlwind.stack=0" );
   slayer->add_action( "bladestorm,if=buff.enrage.up&(talent.reckless_abandon&cooldown.avatar.remains>=24|talent.anger_management&cooldown.recklessness.remains>=15&(buff.avatar.up|cooldown.avatar.remains>=8))" );
-  slayer->add_action( "whirlwind,if=active_enemies>=2&talent.meat_cleaver&buff.meat_cleaver.stack=0" );
+  slayer->add_action( "whirlwind,if=active_enemies>=2&talent.improved_whirlwind&buff.whirlwind.stack=0" );
   slayer->add_action( "rampage,if=buff.enrage.remains<gcd" );
   slayer->add_action( "execute,if=buff.sudden_death.stack=2&buff.enrage.up" );
   slayer->add_action( "odyns_fury,if=active_enemies>1" );
@@ -82,9 +83,10 @@ void fury( player_t* p )
   thane->add_action( "recklessness" );
   thane->add_action( "avatar" );
   thane->add_action( "ravager" );
+  thane->add_action( "champions_leap,if=buff.enrage.up" );
   thane->add_action( "champions_spear,if=buff.enrage.up" );
-  thane->add_action( "thunder_clap,if=buff.meat_cleaver.stack=0&talent.meat_cleaver&active_enemies>=2" );
-  thane->add_action( "thunder_blast,if=buff.enrage.up&talent.meat_cleaver" );
+  thane->add_action( "thunder_clap,if=buff.whirlwind.stack=0&talent.improved_whirlwind&active_enemies>=2" );
+  thane->add_action( "thunder_blast,if=buff.enrage.up&talent.improved_whirlwind" );
   thane->add_action( "rampage,if=buff.enrage.down|(talent.bladestorm&cooldown.bladestorm.remains<=gcd)" );
   thane->add_action( "bladestorm,if=buff.enrage.up&talent.unhinged" );
   thane->add_action( "bloodbath" );
@@ -96,8 +98,9 @@ void fury( player_t* p )
   thane->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up" );
   thane->add_action( "raging_blow" );
   thane->add_action( "rampage" );
-  thane->add_action( "thunder_blast,if=!talent.meat_cleaver" );
+  thane->add_action( "thunder_blast,if=!talent.improved_whirlwind" );
   thane->add_action( "odyns_fury,if=buff.enrage.up" );
+  thane->add_action( "champions_leap" );
   thane->add_action( "champions_spear" );
   thane->add_action( "execute" );
   thane->add_action( "wrecking_throw" );
@@ -195,6 +198,7 @@ void arms( player_t* p )
 
   colossus_execute->add_action( "sweeping_strikes,if=active_enemies=2" );
   colossus_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
+  colossus_execute->add_action( "champions_leap" );
   colossus_execute->add_action( "champions_spear" );
   colossus_execute->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd&(cooldown.avatar.remains>14|cooldown.avatar.remains<2)" );
   colossus_execute->add_action( "avatar" );
@@ -212,6 +216,7 @@ void arms( player_t* p )
   colossus_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd&(cooldown.avatar.remains>14|cooldown.avatar.remains<2)" );
   colossus_st->add_action( "avatar,if=raid_event.adds.in>15" );
   colossus_st->add_action( "colossus_smash,if=cooldown.avatar.remains>14" );
+  colossus_st->add_action( "champions_leap" );
   colossus_st->add_action( "champions_spear" );
   colossus_st->add_action( "demolish,if=debuff.colossus_smash.up&buff.colossal_might.up" );
   colossus_st->add_action( "mortal_strike" );
@@ -280,6 +285,7 @@ void arms( player_t* p )
 
   slayer_st->add_action( "rend,if=dot.rend.remains<=gcd" );
   slayer_st->add_action( "avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up" );
+  slayer_st->add_action( "champions_leap,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_st->add_action( "champions_spear,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_st->add_action( "colossus_smash,if=cooldown.avatar.remains>10&(variable.trinket_1_buffs|variable.trinket_2_buffs)|(!variable.trinket_1_buffs&!variable.trinket_2_buffs)" );
@@ -298,6 +304,7 @@ void arms( player_t* p )
   slayer_sweep->add_action( "thunder_clap,if=!dot.rend.remains&!buff.sweeping_strikes.up" );
   slayer_sweep->add_action( "sweeping_strikes" );
   slayer_sweep->add_action( "rend,if=dot.rend.remains<=gcd" );
+  slayer_sweep->add_action( "champions_leap" );
   slayer_sweep->add_action( "champions_spear" );
   slayer_sweep->add_action( "avatar" );
   slayer_sweep->add_action( "colossus_smash,if=buff.sweeping_strikes.up" );
@@ -362,6 +369,7 @@ void protection( player_t* p )
   default_->add_action( "last_stand,if=(target.health.pct>=90&target.health.pct<=20)|talent.bolster.enabled" );
   default_->add_action( "ravager" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
+  default_->add_action( "champions_leap" );
   default_->add_action( "champions_spear" );
   default_->add_action( "thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.stack=2" );
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
