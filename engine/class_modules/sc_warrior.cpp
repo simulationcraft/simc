@@ -2021,38 +2021,22 @@ struct rend_t : public warrior_attack_t
   int aoe_targets;
   rend_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rend", p, p->talents.warrior.rend ),
-      rend_dot( nullptr ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+      rend_dot( nullptr )
   {
     parse_options( options_str );
     tick_may_crit = true;
     hasted_ticks  = true;
     rend_dot      = new rend_dot_t( p );
-    radius = 5;
-    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    radius = 8;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
 
-    rend_dot->set_target( s->target );
-    rend_dot->execute();
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buff.meat_cleaver->check() )
-    {
-      return aoe_targets + 1;
-    }
-    return warrior_attack_t::n_targets();
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    p() -> buff.meat_cleaver->decrement();
+    rend_dot->execute_on_target( s->target );
   }
 
   bool ready() override
