@@ -6210,7 +6210,7 @@ struct champions_leap_t : public warrior_attack_t
 
   bool ready() override
   {
-    if (!p()->buff.champions_spear->up() )
+    if ( !p()->buff.champions_spear->up() )
       return false;
 
     return warrior_attack_t::ready();
