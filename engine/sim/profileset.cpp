@@ -1108,6 +1108,10 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
     profileset.output_data().corruption( buffed_stats.corruption );
     profileset.output_data().corruption_resistance( buffed_stats.corruption_resistance );
   }
+  else if ( option == "talents" )
+  {
+    profileset.output_data().talents_str( player->talents_str );
+  }
 }
 
 sim_control_t* filter_control( const sim_control_t* control )

@@ -2058,19 +2058,7 @@ struct ground_current_t : public warrior_attack_t
     background = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    warrior_attack_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    target_filter_callback = secondary_targets_only();
   }
 };
 
@@ -5568,22 +5556,10 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     aoe = -1;
+    target_filter_callback  = secondary_targets_only();
 
     // this spell has both coefficients in it, force #2
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    warrior_attack_t::available_targets( tl );
-    // Remove our main target from the target list, as aoe hits all other mobs
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
   }
 };
 

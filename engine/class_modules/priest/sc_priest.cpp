@@ -2193,7 +2193,7 @@ void priest_t::create_gains()
 {
   gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
   gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
-  gains.shadowfiend                      = get_gain( "Shadowfiend" );
+  gains.depth_of_shadows                 = get_gain( "Depth of Shadows" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.voidwraith                       = get_gain( "Voidwraith" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );

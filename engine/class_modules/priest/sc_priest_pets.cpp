@@ -430,7 +430,7 @@ struct base_fiend_pet_t : public priest_pet_t
         gains.fiend = o().gains.mindbender;
         break;
       default:
-        gains.fiend = o().gains.shadowfiend;
+        gains.fiend = o().gains.depth_of_shadows;
         break;
     }
   }

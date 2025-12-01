@@ -711,7 +711,7 @@ public:
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> shadowfiend;
+    propagate_const<gain_t*> depth_of_shadows;
     propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
@@ -1456,6 +1456,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool triggers_atonement;
   bool ignores_automatic_mastery;
   int idol_of_nzoth_execute_stacks;
+  int idol_of_nzoth_impact_stacks;
   int idol_of_nzoth_tick_stacks;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
@@ -1464,6 +1465,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       triggers_atonement( false ),
       ignores_automatic_mastery( false ),
       idol_of_nzoth_execute_stacks( 0 ),
+      idol_of_nzoth_impact_stacks( 0 ),
       idol_of_nzoth_tick_stacks( 0 )
   {
     weapon_multiplier = 0.0;
@@ -1545,6 +1547,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_idol_of_yshaarj();
         }
+      }
+
+      if ( priest().talents.shadow.idol_of_nzoth.enabled() && idol_of_nzoth_impact_stacks > 0 )
+      {
+        priest().trigger_idol_of_nzoth( target, idol_of_nzoth_impact_stacks );
       }
     }
   }

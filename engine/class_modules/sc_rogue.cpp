@@ -3980,19 +3980,13 @@ struct blade_flurry_attack_t : public rogue_attack_t
     range = -1.0;
     aoe = static_cast<int>( p->spec.blade_flurry->effectN( 3 ).base_value() +
                             p->talent.outlaw.dancing_steel->effectN( 3 ).base_value() );
+    target_filter_callback = secondary_targets_only();
   }
 
   void init() override
   {
     rogue_attack_t::init();
     snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    rogue_attack_t::available_targets( tl );
-    range::erase_remove( tl, target ); // Cannot hit the primary target
-    return tl.size();
   }
 
   bool procs_poison() const override
@@ -6668,19 +6662,13 @@ struct caustic_spatter_t : public rogue_attack_t
     aoe = -1;
     reduced_aoe_targets = p->spec.caustic_spatter_buff->effectN( 2 ).base_value();
     affected_by.improved_shiv = true; // 2025-08-10 -- Not in any whitelists but logs show it working on secondary targets
+    target_filter_callback = secondary_targets_only();
   }
 
   void init() override
   {
     rogue_attack_t::init();
     snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    rogue_attack_t::available_targets( tl );
-    range::erase_remove( tl, target ); // Cannot hit the primary target
-    return tl.size();
   }
 
   bool procs_poison() const override
@@ -7227,13 +7215,7 @@ struct nimble_flurry_t : public rogue_attack_t
   {
     aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
     affected_by.fazed_damage = true; // 2025-08-11 -- Not in whitelist or spell data
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    rogue_attack_t::available_targets( tl );
-    range::erase_remove( tl, target ); // Cannot hit the primary target
-    return tl.size();
+    target_filter_callback = secondary_targets_only();
   }
 
   // Currently does not trigger on either side, which is likely a bug

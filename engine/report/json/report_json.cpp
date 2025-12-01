@@ -972,6 +972,10 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
     ovr[ "stats" ][ "corruption" ] = output_data.corruption();
     ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
+  if( !output_data.talents_str().empty() )
+  {
+    ovr[ "talents" ] = output_data.talents_str();
+  }
 }
 
 void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )

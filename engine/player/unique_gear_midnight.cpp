@@ -705,7 +705,7 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
       unique_gear_pet_t::demise();
     }
 
-    attack_t* create_auto_attack()
+    attack_t* create_auto_attack() override
     {
       return new lightbloom_lashing_t( this, effect, "lightbloom_lashing", parent_action );
     }
@@ -934,15 +934,14 @@ void plume_of_beloren( special_effect_t& effect )
   auto buff       = create_buff<stat_buff_t>( effect.player, buff_spell )
                   ->set_stat_from_effect_type(
                       A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) / buff_spell->max_stacks() )
-                  ->set_reverse( true );
-
-  buff->set_expire_callback( [ buff, effect ]( buff_t* b, int, timespan_t ) {
-    make_event( *effect.player->sim, 0_ms, [ buff ] { buff->trigger(); } );
-  } );
+                  ->set_reverse( true )
+                  ->set_expire_callback( [ effect ]( buff_t* b, int, timespan_t ) {
+                    make_event( *effect.player->sim, 0_ms, [ b ] { b->trigger(); } );
+                  } );
 
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
 
-  effect.player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+  effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
     if ( c )
       buff->set_reverse( true );
     else

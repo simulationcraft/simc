@@ -6823,19 +6823,8 @@ struct blade_dance_base_t
       aoe                    = ( from_first_blood ) ? 0 : -1;
       reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      demon_hunter_attack_t::available_targets( tl );
-
-      if ( p()->talent.havoc.first_blood->ok() && !from_first_blood )
-      {
-        // Ensure the non-First Blood AoE spell doesn't hit the primary target
-        range::erase_remove( tl, target );
-      }
-
-      return tl.size();
+      if ( p->talent.havoc.first_blood->ok() && !from_first_blood )
+        target_filter_callback = secondary_targets_only();
     }
 
     double action_multiplier() const override

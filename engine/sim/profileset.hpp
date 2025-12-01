@@ -230,6 +230,8 @@ class profile_output_data_t
             m_corruption,
             m_corruption_resistance;
 
+  std::string m_talents_str;
+
 public:
   profile_output_data_t() : m_race ( RACE_NONE )
   { }
@@ -365,6 +367,12 @@ public:
 
   profile_output_data_t& corruption_resistance( double d )
   { m_corruption_resistance = d; return *this; }
+
+  std::string talents_str() const
+  { return m_talents_str; }
+
+  profile_output_data_t& talents_str( const std::string& s )
+  { m_talents_str = s; return *this; }
 };
 
 class profile_set_t
