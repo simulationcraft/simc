@@ -5097,6 +5097,8 @@ struct odyns_fury_t : warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    p()->buff.enrage->trigger();
+
     mh_attack->execute();
     oh_attack->execute();
     mh_attack2->execute();
