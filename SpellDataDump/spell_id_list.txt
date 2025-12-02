@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 11.2.5.63906
+Class Spell ID List, wow build 11.2.7.64704
 
 Death Knight
 3714     Path of Frost
@@ -893,7 +893,7 @@ Death Knight
 319248   Unholy Pact
 319249   Unholy Pact
 319255   Unholy Pact
-319278   Veteran of the Fourth War
+319278  *Veteran of the Fourth War
 321995   Hypothermic Presence
 323710   Abomination Limb
 323798   Abomination Limb
@@ -1051,7 +1051,7 @@ Death Knight
 341724   Rage of the Frozen Champion
 341725   Rage of the Frozen Champion
 343252  *Might of the Frozen Wastes
-343257   Death's Advance
+343257  *Death's Advance
 343294   Soul Reaper
 343295   Soul Reaper
 343713   Rot and Wither
@@ -8686,7 +8686,6 @@ Mage
 135449  *Evocation
 135551  *Throw Glaive
 135967  *Beam Rifle
-136334  *Pyroblast
 136511   Ring of Frost
 137018   Mage
 137019   Fire Mage
@@ -9176,7 +9175,6 @@ Mage
 232770  *Flame Orb
 232771  *Flame Orb
 232772  *Flame Orb
-233226  *Horrific Pursuit
 233582  *Entrenched in Flame
 233667  *Frigid Barrier
 234302  *Temporal Flux
@@ -17362,6 +17360,7 @@ Rogue
 1218439  Winning Streak!
 1219122 *Preemptive Maneuver
 1219264  Cashout!
+1222022 *Self Ultra-Slow
 1224098  Tricks of the Trade
 1225168  Corrupt the Blood
 1235074  Killing Spree
@@ -21043,6 +21042,7 @@ Warlock
 1217786  Channel Demonfire
 1217787  Channel Demonfire
 1217798  Jackpot!
+1218082 *Hype the Band
 1218128  Bloodstone
 1218692  Bloodstones
 1218702 *Create Bloodstone

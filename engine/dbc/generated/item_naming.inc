@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.2.5.63906
-static constexpr std::array<item_name_description_t, 1002> __item_name_description_data { {
+// Item name descriptions, wow build 11.2.7.64704
+static constexpr std::array<item_name_description_t, 1005> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1002,5 +1002,8 @@ static constexpr std::array<item_name_description_t, 1002> __item_name_descripti
   { 14358, "Legion Remix: Infinite Echoes"               },
   { 14359, "Raid"                                        },
   { 14360, "Heroic World Tier"                           },
+  { 14363, "Horde"                                       },
+  { 14364, "Alliance"                                    },
+  { 14366, "Housing Dye Pigment"                         },
 } };
 

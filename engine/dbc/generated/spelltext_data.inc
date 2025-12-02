@@ -1,5 +1,5 @@
-// Spell text, wow build 11.2.5.63906
-static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
+// Spell text, wow build 11.2.7.64704
+static constexpr std::array<spelltext_data_t, 28177> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9901,7 +9901,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {  260231, "$@spelldesc271045", 0, 0 },
   {  260240, "Aimed Shot causes your next $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot to deal $260242s1% more damage, cost $260242s3% less Focus, and have its global cooldown reduced by $260242s6%.\r\n\r\nYour Auto Shot damage is increased by $s2% but the time between your Auto Shots is increased by ${$s1/1000}.1 sec.", 0, 0 },
   {  260241, "When Aimed Shot strikes an enemy affected with your Serpent Sting, it spreads Serpent Sting to $s3 enemies nearby.\r\n\r\nSerpent Sting's damage over time is increased by $s2%.", 0, 0 },
-  {  260242, "$@spelldesc260240", "Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.", 0 },
+  {  260242, "$@spelldesc260240", "Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1%, incurs a $s6% reduced global cooldown, and their Focus cost is reduced by $s3%.", 0 },
   {  260243, "Rain a volley of arrows down over $d, dealing up to ${$260247s1*12} Physical damage to any enemy in the area, and gain the effects of Trick Shots for as long as Volley is active.", "Raining arrows down in the target area.", 0 },
   {  260247, "$@spelldesc260243", 0, 0 },
   {  260248, "You and your pet gain $260249s1% attack speed for every bleeding enemy within $s2 yds.", 0, 0 },
@@ -13947,7 +13947,6 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {  319248, "$@spelldesc319230", "Deals $s1 Fire damage.", 0 },
   {  319249, "$@spelldesc319230", "Deals $s1 Fire damage.", 0 },
   {  319255, "$@spelldesc319230", "Strength increased by $s1%.", 0 },
-  {  319278, "Stamina increased by $s1%.\r\n$?s316714[Damage taken reduced by $s3%.][]", 0, 0 },
   {  319343, "$@spelldesc61882", "Cast time of your next Earthquake reduced by $w1%.\r\nDamage of your next earthquake increased by $w2%.", 0 },
   {  319439, "When you use $s2 different combo point-generating abilities within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1% for their full duration.", 0, 0 },
   {  319454, "Abilities not associated with your specialization are substantially empowered for $d.$?!s137013[\r\n\r\n|cFFFFFFFFBalance:|r Cast time of Balance spells reduced by $s13% and damage increased by $s1%.][]$?!s137011[\r\n\r\n|cFFFFFFFFFeral:|r Gain $s14 Combo Point every $t14 sec while in Cat Form and Physical damage increased by $s4%.][]$?!s137010[\r\n\r\n|cFFFFFFFFGuardian:|r Bear Form gives an additional $s7% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration has ${$s9+1} charges.][]$?!s137012[\r\n\r\n|cFFFFFFFFRestoration:|r Healing increased by $s10%, and mana costs reduced by $s12%.][]", "Abilities not associated with your specialization are substantially empowered.", 0 },
@@ -15809,7 +15808,6 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {  343248, "$?c2[Aimed Shot][Kill Command] has a $?c1[$s2]?c2[$s1][$s3]% chance to grant Deathblow.\r\n\r\n$@spellicon378770 $@spellname378770\r\nThe cooldown of $?a466932[Black Arrow][Kill Shot] is reset. $@spellaura378770", 0, 0 },
   {  343249, "$@spelldesc343250", "Transcendence: Transfer has no cooldown.\r\nVivify's healing is increased by $w3% and you're refunded $m2% of the cost when cast on yourself.", 0 },
   {  343250, "After you use Transcendence: Transfer, you can use Transcendence: Transfer again within $343249d, ignoring its cooldown.\r\n\r\nDuring this time, if you cast Vivify on yourself, its healing is increased by $343249m3% and $343249m2% of its cost is refunded.", 0, 0 },
-  {  343257, "Death's Advance movement speed increased by $s1% and the duration is increased by ${$s2/1000} sec.", 0, "Rank 2" },
   {  343290, "$@spelldesc341824", 0, 0 },
   {  343294, "Strike an enemy for $s1 Shadowfrost damage and afflict the enemy with Soul Reaper. \r\n\r\nAfter $d, if the target is below $s3% health this effect will explode dealing an additional $343295s1 Shadowfrost damage to the target. If the enemy that yields experience or honor dies while afflicted by Soul Reaper, gain Runic Corruption.", "Afflicted by Soul Reaper, if the target is below $s3% health this effect will explode dealing an additional $343295s1 Shadowfrost damage.", 0 },
   {  343295, "$@spelldesc343294", 0, 0 },
@@ -25860,7 +25858,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {  460909, "$@spelldesc421373", 0, 0 },
   {  460927, "$@spelldesc319606", 0, 0 },
   {  460938, "$?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]", 0, 0 },
-  {  461063, "Draws upon your inner energy, restoring ${$m4*$d} health and ${$m4*$d} mana over $d. Must remain seated during contemplation.", "Restores ${$w1/5} health and ${$w2/5} mana per second.", 0 },
+  {  461063, "Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.", "Restores ${$s1}% health and ${$w2/5} mana per second.", 0 },
   {  461130, "$@spelldesc434157", "Your Strength is increased by $w1%.", 0 },
   {  461135, "$@spelldesc49530", 0, 0 },
   {  461145, "Increases your spell damage by $?c1[${$448604s1}.1][${$448604s2}.1]%.", "Spell damage increased by ${$w1}.1%.", 0 },
@@ -26167,7 +26165,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   {  466930, "You attempt to finish off a wounded target, dealing $s1 Shadow damage and $468572o1 Shadow damage over $468572d. Only usable on enemies above $s3% health or below $s2% health.", 0, 0 },
   {  466932, "Your Kill Shot is replaced with Black Arrow.\r\n\r\n$@spellicon466930 $@spellname466930\r\n$@spelldesc466930", 0, 0 },
   {  466990, "$?c1[While Call of the Wild is active][While Trueshot is active], you surrender to darkness, granting you Withering Fire and Deathblow$?c1[ every $466991t4 sec][].\r\n\r\n$@spellicon466991 $@spellname466991\r\nCasting Black Arrow fires a barrage of $s3 additional Black Arrows at nearby targets at $s4% effectiveness, prioritizing enemies that aren't affected by Black Arrow's damage over time effect.", 0, 0 },
-  {  466991, "$@spelldesc466990", "Casting Black Arrow fires a barrage of $466990s3 additional Black Arrows  at nearby targets.", 0 },
+  {  466991, "$@spelldesc466990", "Casting Black Arrow fires a barrage of ${$466990s3+$s1} additional Black Arrows at nearby targets.", 0 },
   {  467024, "Mislaid Curiosities now have a $1214434s1% chance to contain $1214434s2 Kaja'Cola and once per delve Brann now summons a Kaja'6-Pack when creating campfires.\r\n\r\nThere are various Kaja'Cola flavors, and each one has its own effect that applies when collected.\r\n\r\n", 0, "Rank 1/4" },
   {  467026, "Brann has a chance during combat to toss a GMB grenade at an enemy target dealing moderate Nature damage with a $1215588s1% chance to stun for $1215627d. This has a $1215588s2% chance to bounce to a new target.\r\n\r\nThe grenade can safely bounce on party members.", "Brann has a chance during combat to toss a GMB grenade at an enemy target dealing moderate Nature damage with a $1215588w1% chance to stun for $1215627d. This has a $1215588w2% chance to bounce to a new target.\r\n\r\nThe grenade can safely bounce on party members.", "Rank 1/4" },
   {  467029, "Upon entering combat, Brann activates the conversion matrix for $s2 sec. A small percent of all party damage dealt during this time is converted to primary stat and split between party members.\r\n\r\nAfter the conversion matrix powers down, the primary stat buff persists for $s3 sec. This effect cannot occur more than once every $1216075d.", 0, "Rank 1/4" },
@@ -27057,7 +27055,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1217091, "$?pc136599&(a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217103:\r\n\r\n$@spelldesc1217103][]$?pc136599&(a137048|a137028|a137023|a137010|a212613|a137008)[The wraps attune to your specialization granting you $@spellname1217096:\r\n\r\n$@spelldesc1217096][]$?pc136599&!(a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217101:\r\n\r\n$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ethereal energies.]", 0, 0 },
   { 1217096, "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091s8% up to $1217091s3 total damage.\r\n\r\nUpon falling below $1217091s6% health, gain this effect at  ${$1217091s7*100}% effectiveness. This effect may only occur once every $1223611d.", "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091w8% up to $1217091w3 total damage.\r\n\r\nUpon falling below $1217091w6% health, gain this effect at  ${$1217091w7*100}% effectiveness. This effect may only occur once every $1223611d.", 0 },
   { 1217101, "Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091s1 Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.", "Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091w1 Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.", 0 },
-  { 1217103, "Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.", "Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.", 0 },
+  { 1217103, "Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.", "Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.", 0 },
   { 1217116, "$@spelldesc427453", 0, 0 },
   { 1217184, "$@spelldesc466810", 0, 0 },
   { 1217214, "Open your C.H.E.T.T. List.", 0, 0 },
@@ -28037,7 +28035,7 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1242220, "$@spelldesc383860", "Pyroblast and Flamestrike damage increased by $s1%.", 0 },
   { 1242225, "$@spelldesc1233179", "$@spellaura1233181", 0 },
   { 1242247, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1237711[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nCall forth a subjugated infernal dreadlord for $1237711d that periodically strikes enemies with $@spellname1237721. \r\n\r\n$@spellname1237721\r\n$@spelldesc1237721", 0, 0 },
-  { 1242270, "$@spelldesc322740", 0, 0 },
+  { 1242270, "$@spelldesc322740", "Invoke Niuzao, the Black Ox may be cast again to cause a Mighty Stomp", 0 },
   { 1242326, "Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.", 0, 0 },
   { 1242344, "Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.", "Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.", 0 },
   { 1242345, "$@spelldesc1242344", 0, 0 },
@@ -28161,6 +28159,19 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1258587, "You may move while casting. \r\n\r\nWhile standing still in combat, generate a stack of Brewing Storm every $1258589t1 sec, up to $1258591u stacks. \r\n\r\nWhen you move, the Brewing Storm inflicts |CFFffffff$<damageValue>|R per stack, split between nearby enemies.", 0, 0 },
   { 1258591, 0, "Expends on moving to deal damage to nearby enemies.", 0 },
   { 1258593, "$@spelldesc1258587", "$@spelldesc1258587", 0 },
+  { 1258627, "Increases your reputation with the Court of Harvesters by $s1.", 0, 0 },
+  { 1258629, "Increases your reputation with the Wild Hunt by $s1.", 0, 0 },
+  { 1258631, "Increases your reputation with the Undying Army by $s1.", 0, 0 },
+  { 1258633, "Increases your reputation with the Ascended by $s1.", 0, 0 },
+  { 1258634, "Increases your reputation with Ve'nari by $s1.", 0, 0 },
+  { 1258635, "Increases your reputation with the Avowed by $s1.", 0, 0 },
+  { 1258636, "Increases your reputation with the Court of Night by $s1.", 0, 0 },
+  { 1258637, "Increases your reputation with the Ember Court by $s1.", 0, 0 },
+  { 1258642, "Increases your reputation with the Stitchmasters by $s1.", 0, 0 },
+  { 1258645, "Increases your reputation with Marasmius by $s1.", 0, 0 },
+  { 1258648, "Increases your reputation with the Death's Advance by $s1.", 0, 0 },
+  { 1258652, "Increases your reputation with the Archivist's Codex by $s1.", 0, 0 },
+  { 1258653, "Increases your reputation with the Enlightened by $s1.", 0, 0 },
   { 1258768, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
   { 1258769, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
   { 1258770, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
@@ -28168,11 +28179,11 @@ static constexpr std::array<spelltext_data_t, 28166> __spelltext_data { {
   { 1261118, "$@spelldesc1233592", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.5.63906
+// spelltext hotfix entries, wow build 11.2.7.64704
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.2.5.63906
+// Spell description variables, wow build 11.2.7.64704
 static constexpr std::array<spelldesc_vars_data_t, 691> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28867,7 +28878,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __spelldesc_vars_data { 
   { 1258587, "$damageValue=${$1258587s1*($max($AP,$SP)*($1250003w25/100))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.5.63906
+// spelldesc_vars hotfix entries, wow build 11.2.7.64704
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

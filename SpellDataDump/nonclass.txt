@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.5.63906 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.64704 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -39,17 +39,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0.2945652 (coefficient=1.4) | Target: Self (1)
 Description      : Increases Strength by $s1 and does $s2 damage to you every $m2 sec for $d.
 Tooltip          : Increased Strength and periodic damage.
-
-Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
-Race             : Blood Elf (0x200)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=338)      : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x40 | Target: Self (1)
-                   Affected School(s): Arcane
-Description      : Reduces Arcane damage taken by $s1%.
 
 Name             : Tidal Charm (id=835) 
 School           : Nature
@@ -455,20 +444,6 @@ Effects          :
 Description      : Restores ${$s1*$d/5} health over $d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $19709s1 Stamina and Versatility for $19709d.
 Tooltip          : Restores $/5;s1 health per second.
 
-Name             : Touch of the Grave (desc=Racial Passive) (id=5227) [Passive] 
-Race             : Undead (0x10)
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 15 seconds
-Proc Chance      : 20%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Is Ability (4), Passive (6), Allow While Stealthed (37)
-Effects          :
-#1 (id=1863)     : Apply Aura (6) | Proc Trigger Spell (42): Touch of the Grave
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 127802 | Target: Self (1)
-Description      : Your attacks and damaging spells have a chance to drain the target, dealing $<damage> Shadow damage and healing you for the same amount. Additionally, you can breathe underwater indefinitely.
-Variables        : $damage=${$max($AP*1.25,$SPH)*0.25*$pctD*(1+$@versadmg)}
-
 Name             : Lifestone Regeneration (id=5707) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -502,20 +477,6 @@ Attributes       : No Redirection (35), No Reflection (39)
 Effects          :
 #1 (id=2182)     : School Damage (2): fire | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 4.166016 - 6.94336 (coefficient=1.833, delta=0.5) | Radius: 3 yards | Target: at Enemy in Area (16)
-
-Name             : Heroic Presence (desc=Racial Passive) (id=6562) [Passive] 
-Race             : Draenei (0x400)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
-Effects          :
-#1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 957.2424 (coefficient=0.25) | Stat: Str | Target: Self (1)
-#2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 957.2424 (coefficient=0.25) | Stat: Agi | Target: Self (1)
-#3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 957.2424 (coefficient=0.25) | Stat: Int | Target: Self (1)
-Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Elixir of Minor Defense (id=7183) 
 School           : Physical
@@ -709,27 +670,6 @@ Effects          :
 #1 (id=3022)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1023.104 (coefficient=0.4) | Target: Targeted Enemy (6)
 Description      : Does $s1 additional Fire damage to the target.
-
-Name             : Will of the Forsaken (desc=Racial) (id=7744) 
-Race             : Undead (0x10)
-School           : Physical
-Spell Type       : None
-Duration         : 0.1 seconds
-Cooldown         : 120 seconds
-Category         : 1166 (Type 0x0)
-Labels           : 2709
-Category Cooldown: 30 seconds
-Attributes       : Is Ability (4), Immunity Purges Effect (47), No AutoCast (AI) (49), Always Hit (114), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=3062)     : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self (1)
-#2 (id=3063)     : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 10 | Target: Self (1)
-#3 (id=3064)     : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
-#4 (id=200948)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self (1)
-Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Minor Impact (id=7745) 
 School           : Physical
@@ -5793,152 +5733,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1904 | Misc Value 2: 0xb
 Description      : Permanently enchant a two-handed melee weapon to increase Intellect by $ec1. Cannot be applied to items higher than level $ecix.
 
-Name             : War Stomp (desc=Racial) (id=20549) 
-Race             : Tauren (0x20)
-School           : Physical
-Spell Type       : Magic
-Max Targets      : 5
-Cast Time        : 0.5 seconds
-Duration         : 2 seconds
-Cooldown         : 90 seconds
-Proc Chance      : 101%
-Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
-Aura Interrupt   : Leave World (19), Enter World (22)
-Effects          :
-#1 (id=11543)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
-Description      : Stuns up to $i enemies within $A1 yds for $d.
-Tooltip          : Stunned.
-
-Name             : Endurance (desc=Racial Passive) (id=20550) [Passive] 
-Race             : Tauren (0x20)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2890.872 (coefficient=0.755) | Stat: Sta | Target: Self (1)
-Description      : Increases your Stamina by $s1 (scales with level).
-
-Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
-Race             : Tauren (0x20)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11545)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x8 | Target: Self (1)
-                   Affected School(s): Nature
-Description      : Reduces Nature damage taken by $s1%.
-
-Name             : Cultivation (desc=Racial Passive) (id=20552) [Passive] 
-Race             : Tauren (0x20)
-School           : Physical
-Spell Type       : None
-Labels           : 1930
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#2 (id=1039781)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 177
-Description      : Increases your Herbalism Skill by $s1 and Deftness by $s2%. Deftness allows you to gather herbs more quickly.
-
-Name             : Regeneration (desc=Racial Passive) (id=20555) [Passive] 
-Race             : Troll (0x80)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11550)    : Apply Aura (6) | Modify Health Regeneration% (88)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1 | Target: Self (1)
-#2 (id=11551)    : Apply Aura (6) | Combat Health Regen% (116)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1 | Target: Self (1)
-Description      : Health regeneration rate increased by $s1%. $s2% of total Health regeneration may continue during combat.
-
-Name             : Beast Slaying (desc=Racial Passive) (id=20557) [Passive] 
-Race             : Troll (0x80)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11553)    : Apply Aura (6) | Unknown(447)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Misc Value: 1 | Target: Self (1)
-Description      : Experience gains from killing Beasts increased by $s1%.
-
-Name             : Hardiness (desc=Racial Passive) (id=20573) [Passive] 
-Race             : Orc (0x2)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11566)    : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
-Description      : Duration of Stun effects reduced by an additional $s1%.
-
-Name             : Cannibalize (desc=Racial) (id=20577) 
-Race             : Undead (0x10)
-School           : Physical
-Spell Type       : None
-Range            : 5 yards
-GCD              : 1.5 seconds
-Cooldown         : 120 seconds
-Proc Chance      : 100%
-Proc Flags       : Killing Blow
-Attributes       : Is Ability (4), No AutoCast (AI) (49), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83)
-Effects          :
-#1 (id=11571)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Radius: 5 yards
-Description      : When activated, regenerates $20578s1% of total health and mana every $20578t1 sec for $20578d. Only works on Humanoid or Undead corpses within $a1 yds. Any movement, action, or damage taken while Cannibalizing will cancel the effect.
-
-Name             : Cannibalize (id=20578) 
-Race             : Undead (0x10)
-School           : Physical
-Spell Type       : None
-Duration         : 10 seconds
-Attributes       : Is Self Channelled (38), Name in Channel Bar (61)
-Channel Interrupt: Hostile Action Received (1), Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
-Effects          :
-#1 (id=11572)    : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-#2 (id=96840)    : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-Description      : $@spelldesc20577
-Tooltip          : Regenerate $s1% of total health and mana every $t1 seconds.
-
-Name             : Shadow Resistance (desc=Racial Passive) (id=20579) [Passive] 
-Race             : Undead (0x10)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11573)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x20 | Target: Self (1)
-                   Affected School(s): Shadow
-Description      : Reduces Shadow damage taken by $s1%.
-
-Name             : Quickness (desc=Racial Passive) (id=20582) [Passive] 
-Race             : Night Elf (0x8)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11574)    : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1 | Target: Self (1)
-#2 (id=214760)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases your chance to dodge melee and ranged attacks by $s1%, and your movement speed by $s2%.
-
-Name             : Nature Resistance (desc=Racial Passive) (id=20583) [Passive] 
-Race             : Night Elf (0x8)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11576)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x8 | Target: Self (1)
-                   Affected School(s): Nature
-Description      : Reduces Nature damage taken by $s1%.
-
 Name             : Windreaper (id=20586) 
 School           : Nature
 Spell Type       : Magic
@@ -5968,18 +5762,6 @@ Effects          :
 Description      : Increases Stamina by $s3 and reduces physical damage taken by $20590s1 for $d. However, lowers Strength and Agility by $s1 and increases magical damage taken by up to $20590s2.
 Tooltip          : Powerful brew.
 
-Name             : Escape Artist (desc=Racial) (id=20589) 
-Race             : Gnome (0x40)
-School           : Physical
-Spell Type       : None
-Cooldown         : 60 seconds
-Labels           : 612: High Tinker's Expertise (290240 effect#2)
-Attributes       : Is Ability (4), Always Hit (114)
-Effects          :
-#1 (id=11585)    : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Escape the effects of any immobilization or movement speed reduction effect.
-
 Name             : Ragged John's Neverending Cup (id=20590) 
 School           : Physical
 Spell Type       : None
@@ -5992,60 +5774,6 @@ Effects          :
 #2 (id=11587)    : Apply Aura (6) | Damage Taken (14)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-
-Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
-Race             : Gnome (0x40)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11589)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x40 | Target: Self (1)
-                   Affected School(s): Arcane
-Description      : Reduces Arcane damage taken by $s1%.
-
-Name             : Stoneform (desc=Racial) (id=20594) 
-Race             : Dwarf (0x4)
-School           : Physical
-Spell Type       : None
-Cooldown         : 120 seconds
-Category         : 1166 (Type 0x0)
-Labels           : 1387
-Category Cooldown: 30 seconds
-Attributes       : Do Not Log (8), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
-Effects          :
-#1 (id=11591)    : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Target: Self (1)
-#2 (id=11592)    : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
-#3 (id=11593)    : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
-#4 (id=214752)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=214753)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
-Description      : Removes all harmful Poison, Disease, Curse, Magic, and Bleed effects and reduces all physical damage taken by $65116s1% for $65116d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
-
-Name             : Frost Resistance (desc=Racial Passive) (id=20596) [Passive] 
-Race             : Dwarf (0x4)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11595)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x10 | Target: Self (1)
-                   Affected School(s): Frost
-Description      : Reduces Frost damage taken by $s1%.
-
-Name             : The Human Spirit (desc=Racial Passive) (id=20598) [Passive] 
-Race             : Human (0x1)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=11597)    : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 2 | Scaled Value: 2 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
-Description      : You gain $s1% more of all secondary stats (Haste, Critical Strike, Mastery, Versatility) from all sources.
 
 Name             : The Lion Horn of Stormwind (id=20847) [Passive] 
 School           : Physical
@@ -8476,19 +8204,6 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Rec
 Effects          :
 #1 (id=16226)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-
-Name             : Berserking (desc=Racial) (id=26297) 
-Race             : Troll (0x80)
-School           : Physical
-Spell Type       : Magic
-Duration         : 12 seconds
-Cooldown         : 180 seconds
-Attributes       : Is Ability (4), Do Not Sheath (18), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=16247)    : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Increases your haste by $s1% for $d.
-Tooltip          : Haste increased by $s1%.
 
 Name             : Tentacle Call (id=26391) 
 School           : Physical
@@ -19331,39 +19046,6 @@ Effects          :
 Description      : Increases haste by $s1 for $d.
 Tooltip          : Increases haste by $s1.
 
-Name             : Da Voodoo Shuffle (desc=Racial Passive) (id=58943) [Passive] 
-Race             : Troll (0x80)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Do Not Log (8)
-Effects          :
-#1 (id=52339)    : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 11 | Target: Self (1)
-#2 (id=52340)    : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 7 | Target: Self (1)
-Description      : Reduces the duration of all movement impairing effects by $s1%. Trolls be flippin' out mon!
-
-Name             : Shadowmeld (desc=Racial) (id=58984) 
-Race             : Night Elf (0x8)
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Cooldown         : 120 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Is Ability (4), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Skill Increase (36), No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), Fail on all targets immune (85), Can Proc From Procs (122), Allow Proc While Sitting (147), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
-Effects          :
-#1 (id=52402)    : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
-#2 (id=52403)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: at Self (18) -> At Ally in Area (31)
-#3 (id=52404)    : Apply Aura (6) | Stealth (16)
-                   Base Value: 5 | Scaled Value: 405 | Points Per Level: 5 | Target: Self (1)
-Description      : Activate to slip into the shadows, reducing the chance for enemies to detect your presence. Lasts until cancelled or upon moving. Any threat is restored versus enemies still in combat upon cancellation of this effect.
-Tooltip          : Shadowmelded.
-
 Name             : The Darkest Night (id=59043) 
 School           : Shadow
 Spell Type       : Magic
@@ -19377,31 +19059,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4008.927 (coefficient=1.046999) | Rating: Crit | Target: Self (1)
 Description      : You gain an additional $s1 critical strike for $d. This effect stacks up to 3 times.
 Tooltip          : Adds an additional $s1 critical strike.
-
-Name             : Shadow Resistance (desc=Racial Passive) (id=59221) [Passive] 
-Race             : Draenei (0x400)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=52676)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x20 | Target: Self (1)
-                   Affected School(s): Shadow
-Description      : Reduces Shadow damage taken by $s1%.
-
-Name             : Might of the Mountain (desc=Racial Passive) (id=59224) [Passive] 
-Race             : Dwarf (0x4)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6), No Aura Icon (60), No Aura Log (202)
-Effects          :
-#1 (id=52679)    : Apply Player/Pet Aura (202) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
-#2 (id=257022)   : Apply Player/Pet Aura (202) | Modify Crit Damage Done% (163)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Radius: 100 yards | Target: Self (1)
-#3 (id=257023)   : Apply Player/Pet Aura (202) | Modify Critical Heal Bonus (50)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 127 | Target: Self (1)
-Description      : Critical strike damage and healing increased by $s1%.
 
 Name             : Chagrin (id=59345) [Passive, Hidden] 
 School           : Arcane
@@ -19526,22 +19183,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 7129.541 (coefficient=1.862) | SP Coefficient: 1 | Target: Self (1)
 Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
-
-Name             : Will to Survive (desc=Racial) (id=59752) 
-Race             : Human (0x1)
-School           : Physical
-Spell Type       : None
-Duration         : 0.1 seconds
-Cooldown         : 180 seconds
-Category         : 1166 (Type 0x0)
-Category Cooldown: 90 seconds
-Attributes       : No Immunities (29), Immunity Purges Effect (47), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow While Stunned by Stun Mechanic (378)
-Effects          :
-#1 (id=53372)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
-#2 (id=727675)   : Dummy (3)
-                   Base Value: 90 | Scaled Value: 90
-Description      : Removes all stun effects. $?s195710[This effect shares a 90 sec cooldown with other similar effects.][]
 
 Name             : Figurine - Monarch Crab (id=59757) 
 School           : Physical
@@ -22176,22 +21817,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 65024 | Target: Self (1)
 Description      : Your melee and ranged attacks have a chance to increase your critical strike by $60437s1 for $60437d1.
 
-Name             : Stoneform (desc=Racial) (id=65116) 
-Race             : Dwarf (0x4)
-School           : Physical
-Spell Type       : None
-Duration         : 8 seconds
-Labels           : 1387
-Attributes       : Is Ability (4), Do Not Sheath (18)
-Effects          :
-#1 (id=59475)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | SP Coefficient: 1 | Misc Value: 0x1 | Target: Self (1)
-                   Affected School(s): Physical
-#2 (id=102170)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Removes all poison, disease and bleed effects and reduces all physical damage taken by $s1% for $65116d.
-Tooltip          : Physical damage taken reduced by $s1%.
-
 Name             : Well Fed (id=65410) 
 School           : Physical
 Spell Type       : None
@@ -23097,46 +22722,6 @@ Effects          :
 #1 (id=62675)    : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Summons a new Reclaimed Thunderstrike.
-
-Name             : Rocket Barrage (desc=Racial) (id=69041) 
-Race             : Goblin (0x100)
-School           : Fire
-Spell Type       : Magic
-Range            : 30 yards
-GCD              : 1.5 seconds
-Velocity         : 10 yards/sec
-Cooldown         : 90 seconds
-Category         : 1252 (Type 0x0)
-Labels           : 1224
-Category Cooldown: 90 seconds
-Effects          :
-#1 (id=71797)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.429 | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Description      : Launches your belt rockets at an enemy, dealing ${$m1+$PL*2} fire damage.
-
-Name             : Time is Money (desc=Racial Passive) (id=69042) [Passive] 
-Race             : Goblin (0x100)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=71798)    : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Cash in on a $s1% increase to haste.
-
-Name             : Rocket Jump (desc=Racial) (id=69070) 
-Race             : Goblin (0x100)
-School           : Physical
-Spell Type       : None
-GCD              : 1.5 seconds
-Cooldown         : 90 seconds
-Category         : 1252 (Type 0x0)
-Category Cooldown: 90 seconds
-Attributes       : Do Not Sheath (18), No Immunities (29), No Threat (42), No School Immunities (90), Suppress Caster Procs (112), Do Not Display Range (126), Enable Procs from Suppressed Caster Procs (384)
-Effects          :
-#1 (id=71811)    : Directional Knock (138)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 200 | Target: Self (1)
-Description      : Activates your rocket belt to jump forward.  Other effects which slow the rate of falling cannot be used within $79636d after using this ability.
 
 Name             : Gutgore Ripper (id=69180) 
 School           : Shadow
@@ -26012,17 +25597,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 19.83787 (coefficient=0.965) | Rating: Mastery | Trigger Spell: 80497 | Target: Self (1)
 Description      : Increases your Mastery by $s1 for $d.  Battle Elixir.
 Tooltip          : Mastery increased by $w1. Battle Elixir.
-
-Name             : No Feather Fall (id=79636) [Hidden] 
-Race             : Goblin (0x100)
-School           : Frost
-Spell Type       : None
-Duration         : 10 seconds
-Proc Chance      : 101%
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
-Effects          :
-#1 (id=68486)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 
 Name             : Enhanced Agility (id=79639) [Spell Family (13)] 
 School           : Physical
@@ -30009,28 +29583,6 @@ Effects          :
 #2 (id=96710)    : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: mana | Target: Self (1)
 Description      : Releases all mana stored within the doll, causing you to gain that much mana, and all enemies within $a2 yards take 1 point of Arcane damage for each point of mana released.
-
-Name             : Nimble Fingers (desc=Racial Passive) (id=92680) [Passive] 
-Race             : Gnome (0x40)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=96820)    : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Target: Self (1)
-Description      : Haste increased by $s1%.
-
-Name             : Explorer (desc=Racial Passive) (id=92682) [Passive] 
-Race             : Dwarf (0x4)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=96823)    : Apply Aura (6) | Unknown(351)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1 | Misc Value: 82 | Target: Self (1)
-#2 (id=101037)   : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -3500 | Scaled Value: -3500 | Misc Value: 1286 (Category) | Target: Self (1)
-Description      : You find additional fragments when looting archaeological finds and you can survey faster than normal archaeologists.
 
 Name             : Flask of the Winds (id=92725) [Spell Family (13)] 
 School           : Physical
@@ -34330,57 +33882,6 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=116972)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-
-Name             : Epicurean (desc=Racial Passive) (id=107072) [Passive] 
-Race             : Pandaren (0x3800000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=117661)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Your love of food allows you to receive $s1% more of the stats from Well Fed effects.
-
-Name             : Inner Peace (desc=Racial Passive) (id=107074) [Passive] 
-Race             : Pandaren (0x3800000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=117663)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 185 | Target: Self (1)
-Description      : You earn twice as much rested experience.
-
-Name             : Bouncy (desc=Racial Passive) (id=107076) [Passive] 
-Race             : Pandaren (0x3800000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=117666)   : Apply Aura (6) | Reduce Fall Damage% (374)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 185 | Target: Self (1)
-Description      : You take half falling damage.
-
-Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Race             : Pandaren (0x3800000)
-School           : Physical
-Spell Type       : Melee
-Range            : 5 yards
-GCD              : 1 seconds
-Duration         : 4 seconds
-Cooldown         : 120 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
-Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Damage (Script) (27)
-Effects          :
-#1 (id=117669)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Incapacitate | Target: Targeted Enemy (6)
-Description      : Strikes the target with lightning speed, incapacitating them for $d, and turns off your attack.
-Tooltip          : Incapacitated.
 
 Name             : Agile Primal Diamond (id=107753) 
 School           : Physical
@@ -42304,16 +41805,6 @@ Description      : Permanently attaches a specialized folding assembly to a cloa
 
 The cloak can only be used once every three minutes and requires a Pandaria Engineering skill of at least 1 to operate.
 
-Name             : Forward Thrust (id=126408) [Hidden] 
-Race             : Zandalari Troll (0x40000000)
-School           : Physical
-Spell Type       : None
-Triggered By     : Goblin Glider (126389), Pterrordax Swoop (281954), Emergency Rocket Chicken (299099), Experimental Dragon Pack (401367), Reserve Parachute (409838)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Do Not Report Spell Failure (71)
-Effects          :
-#1 (id=160591)   : Knock Back (98)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: -250 | Target: Self (1)
-
 Name             : Breath of the Black Prince (id=126448) 
 School           : Physical
 Spell Type       : None
@@ -43644,18 +43135,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 6875.261 (coefficient=2.688) | Radius: 4 - 5 yards | Target: at Enemy in Area (16)
 Description      : Summon a flaming keg of Alerage's Reserve at the target location, dealing $s2 damage to nearby enemies every $t2 sec for $d.
 Tooltip          : Suffering $s2 fire damage every $t2 sec.
-
-Name             : Touch of the Grave (desc=Racial Passive) (id=127802) 
-Race             : Undead (0x10)
-School           : Shadow
-Spell Type       : Magic
-Range            : 100 yards
-Triggered By     : Touch of the Grave (5227)
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126)
-Effects          :
-#1 (id=162610)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Targeted Enemy (6)
-Description      : $@spelldesc5227
 
 Name             : Painted Turnip (id=127819) 
 School           : Physical
@@ -50528,44 +50007,6 @@ Effects          :
 #1 (id=213295)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Combine ten nuggets into ore.
-
-Name             : Arcane Acuity (desc=Racial Passive) (id=154742) [Passive] 
-Race             : Blood Elf (0x200)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=214749)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
-Description      : Increases critical strike chance by $s1%.
-Tooltip          : Critical strike chance increased by $s1%.
-
-Name             : Brawn (desc=Racial Passive) (id=154743) [Passive] 
-Race             : Tauren (0x20)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Attributes       : Is Ability (4), Passive (6), No Aura Icon (60), No Aura Log (202)
-Effects          :
-#1 (id=214751)   : Apply Player/Pet Aura (202) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
-#2 (id=254405)   : Apply Player/Pet Aura (202) | Modify Crit Damage Done% (163)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Radius: 100 yards | Target: Self (1)
-#3 (id=254406)   : Apply Player/Pet Aura (202) | Modify Critical Heal Bonus (50)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
-Description      : Critical strike damage and healing increased by $s1%.
-
-Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 
-Race             : Night Elf (0x8)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=214758)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Increases your Haste by 1% during the night.
-
-Increases your Critical Strike by 1% during the day.
 
 Name             : Summon Mini Dark Portal (id=154919) 
 School           : Physical
@@ -69341,21 +68782,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 99518 | Misc Value 2: 0xbee | Radius: 8 yards | Target: Front of Self (47)
 Description      : Summon a vision of the green aspect Ysera.
 
-Name             : Honorable Medallion (desc=PvP Talent) (id=195710) 
-Race             : Human, Dwarf, Undead, Dark Iron Dwarf (0x815)
-School           : Physical
-Spell Type       : None
-Duration         : 0.1 seconds
-Cooldown         : 180 seconds
-Category         : 1182 (Type 0x0): Restoration Druid (137012 effect#23), Holy Priest (137031 effect#22), Discipline Priest (137032 effect#25), Restoration Shaman (137039 effect#23), Preservation Evoker (356810 effect#18), Holy Paladin (428076 effect#4), Mistweaver Monk (428200 effect#7)
-Labels           : 118
-Category Cooldown: 180 seconds
-Attributes       : Is Ability (4), No Immunities (29), Immunity Purges Effect (47), No Aura Icon (60), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178)
-Effects          :
-#1 (id=287274)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-Description      : Removes all movement impairing effects and all effects which cause loss of control of your character while in PvP combat.
-
 Name             : Summon Worn Doll (id=195753) 
 School           : Physical
 Spell Type       : None
@@ -76402,6 +75828,19 @@ Description      : $@spelldesc212974
 Tooltip          : Damage dealt increased by $s1%.
 Healing received increased by $s2%.
 
+Name             : Retrieving the Fangs of Ashamane (id=212994) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 300 yards
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=315948)   : Send Event (61)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 51156
+#2 (id=315949)   : Trigger Spell (64): Retrieving the Fangs of Ashamane
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 214714 | Target: Self (1)
+#3 (id=315950)   : Summon Credit Creature (90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 107750 | Target: Self (1)
+
 Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
 School           : Physical
 Spell Type       : None
@@ -77822,6 +77261,17 @@ Effects          :
 Description      : Apply the bandage, restoring $s1% health every $t1 sec. for $d and dealing Holy damage to attackers. Does not work past level $ctrmax2067.
 Tooltip          : Healing every $t1 sec.
 Causes Holy damage to attackers.
+
+Name             : Retrieving the Fangs of Ashamane (id=214714) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 300 yards
+Duration         : 9 seconds
+Triggered By     : Retrieving the Fangs of Ashamane (212994)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=318921)   : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Soul Carver (id=214740) [Spell Family (107), Passive] 
 School           : Physical
@@ -101096,158 +100546,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 69858.85 (coefficient=27.3125) | PvP Coefficient: 0.25 | Radius: 0 - 20 yards | Target: at Target (63) -> at Enemy in Area (16)
 Description      : $@spelldesc253242
 
-Name             : Bull Rush (desc=Racial) (id=255654) 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : None
-Range            : 6 yards
-GCD              : 1.5 seconds
-Duration         : 1 seconds
-Cooldown         : 120 seconds
-Attributes       : No Aura Icon (60), Do Not Display Range (126), Target Must Be Grounded (298), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=477701)   : Apply Aura (6) | Forced Movement (241)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=477806)   : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-#3 (id=477807)   : Apply Aura (6) | Area Trigger (395)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11887 | Target: Self (1)
-#4 (id=706251)   : Apply Aura (6) | Modify Min Speed% (305)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-#5 (id=706253)   : Apply Aura (6) | Use Base Move Speed (191)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-#6 (id=716391)   : Apply Aura (6) | Modify Minimum Speed (437)
-                   Base Value: 21 | Scaled Value: 21 | Target: Self (1)
-Description      : Charge forward for $d, knocking enemies down for $255723d.
-
-Name             : Pride of Ironhorn (desc=Racial Passive) (id=255655) [Passive] 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : None
-Labels           : 1762
-Attributes       : Passive (6)
-Effects          :
-#2 (id=477749)   : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 177 | Target: Self (1)
-Description      : Increases your Mining Skill by $s1 and Deftness by $s2%. Deftness allows you to mine more quickly.
-
-Name             : Waste Not, Want Not (desc=Racial Passive) (id=255656) [Passive] 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 6 seconds
-Proc Chance      : 100%
-Proc Flags       : Looted
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477703)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : You have a chance to loot additional meat and fish. 
-Tooltip          : You have a chance to loot additional meat and fish.
-
-Name             : Mountaineer (desc=Racial Passive) (id=255658) [Passive] 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477705)   : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Increases your Versatility by $s1%.
-
-Name             : Rugged Tenacity (desc=Racial Passive) (id=255659) [Passive] 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Aura Points On Client (268)
-Effects          :
-#1 (id=477706)   : Apply Aura (6) | Damage Taken (14)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-Description      : Reduces damage taken by $<reduction>.
-Tooltip          : Reduces damage taken by $<reduction>.
-Variables        : $reduction=${$STA*0.00045*20}
-
-Name             : Cantrips (desc=Racial) (id=255661) 
-Race             : Nightborne (0x4000000)
-School           : Arcane
-Spell Type       : None
-Cast Time        : 3 seconds
-GCD              : 1.5 seconds
-Duration         : 90 seconds
-Cooldown         : 600 seconds
-Attributes       : Ignore Caster Modifiers (125)
-Effects          :
-#1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
-Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
-
-Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
-Race             : Nightborne (0x4000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477711)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x40 | Target: Self (1)
-                   Affected School(s): Arcane
-Description      : Reduces Arcane damage taken by ${$s1/-1}%.
-
-Name             : Magical Affinity (desc=Racial Passive) (id=255665) [Passive] 
-Race             : Nightborne (0x4000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477712)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7e | Target: Self (1)
-                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Description      : Increases magical damage dealt by $s1%.
-
-Name             : Ethereal Connection (desc=Racial Passive) (id=255667) [Passive] 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477715)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Reduces the cost of Transmogrification by $s1%.
-
-Name             : Chill of Night (desc=Racial Passive) (id=255668) [Passive] 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477716)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x60 | Target: Self (1)
-                   Affected School(s): Arcane, Shadow
-Description      : Reduces Shadow damage taken by $s1%.
-
-Name             : Entropic Embrace (desc=Racial Passive) (id=255669) [Passive] 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Proc Chance      : 100%
-Real PPM         : 1 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Passive (6), Only Proc From Class Abilities (415)
-Effects          :
-#1 (id=477717)   : Apply Aura (6) | Proc Trigger Spell (42): Entropic Embrace
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256374 | Target: Self (1)
-Description      : Your abilities have a chance to empower you with the essence of the Void, causing your damage and healing effects to deal an additional $256374s1% as Shadowfrost for $256374d.
-
-Name             : Preternatural Calm (desc=Racial Passive) (id=255670) [Passive] 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
-Description      : Your spell casts are not delayed by taking damage. 
-
 Name             : Echo of Gorshalach (id=255672) 
 School           : Fire
 Spell Type       : Magic
@@ -101301,21 +100599,6 @@ Effects          :
 #1 (id=477794)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 129063 | Misc Value 2: 0x1033 | Radius: 2 yards | Target: at Radius (73)
 Description      : $@spelldesc253724
-
-Name             : Bull Rush (id=255723) 
-Race             : Highmountain Tauren (0x8000000)
-School           : Physical
-Spell Type       : Melee
-Range            : 100 yards
-Duration         : 1.5 seconds
-Mechanic         : Stun
-Attributes       : Scales w/ Creature Level (19), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Bypass Visibility Check (320)
-Effects          :
-#1 (id=477814)   : Apply Aura (6) | Stun (12)
-                   Base Value: 180 | Scaled Value: 180 (delta=0.1) | Target: Current Target (25)
-#2 (id=477815)   : Knock Back (98)
-                   Base Value: 25 | Scaled Value: 25 (delta=0.2) | Target: Current Target (25)
-Tooltip          : Knocks down, stunning for $d.
 
 Name             : Legion Bombardment (id=255724) 
 School           : Fire
@@ -101962,27 +101245,6 @@ Effects          :
                    Base Value: 55 | Scaled Value: 55 | Target: Self (1)
 Description      : $@spelldesc253724
 
-Name             : Entropic Embrace (id=256374) 
-Race             : Void Elf (0x10000000)
-School           : Shadowfrost
-Spell Type       : None
-Duration         : 12 seconds
-Triggered By     : Entropic Embrace (255669)
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=478878)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-#2 (id=624197)   : Apply Aura (6) | Modify Damage Taken from Spell School (257)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 839 | Target: Self (1)
-#3 (id=1190105)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-#4 (id=1190106)  : Apply Aura (6) | Modify Absorb% Done (421)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $@spelldesc255669
-Tooltip          : Damage and healing increased by $w1%.
-
 Name             : Flames of Ruvaraad (id=256415) 
 School           : Shadowflame
 Spell Type       : Magic
@@ -102370,41 +101632,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc256827
 Tooltip          : Your damaging spells will expend a charge to inflict an additional $257241s1 damage of a random magic school.
-
-Name             : Spatial Rift (desc=Racial) (id=256948) 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Range            : 30 yards
-GCD              : 1 seconds
-Duration         : 8 seconds
-Cooldown         : 180 seconds
-Category         : 1722 (Type 0x0)
-Category Cooldown: 0.75 seconds
-Triggered By     : Spatial Rift (257040)
-Attributes       : Aura Points On Client (268), JumpCharge - no facing control (311), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=479752)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11983 | Target: at Self (18)
-#2 (id=479993)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Spatial Rift overrides Spatial Rift
-                   Base Value: 257040 | Scaled Value: 257040 | Misc Value: 256948 | Target: Self (1)
-Description      : Tear a rift in space. Reactivate this ability to teleport through the rift.
-Tooltip          : Reactivate this ability to teleport through the rift.
-
-Name             : Spatial Rift (desc=Racial) (id=257040) 
-Race             : Void Elf (0x10000000)
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Cooldown         : 0.75 seconds
-Category         : 1722 (Type 0x0)
-Category Cooldown: 0.75 seconds
-Effects          :
-#1 (id=479990)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1) -> at Self (18)
-#2 (id=479996)   : Cancel Aura (164): Spatial Rift
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256948 | Target: Self (1)
-Description      : Rip a hole in space and time, transporting you to the targeted location.
 
 Name             : Mark of the Pantheon (id=257233) [Hidden] 
 School           : Physical
@@ -103911,65 +103138,12 @@ Effects          :
 Description      : Summon an Avatar of Sacrifice to heal by your side while outdoors for $d.
 Tooltip          : An Avatar of Sacrifice is supporting you.
 
-Name             : Entropic Embrace (id=259756) 
-Race             : Void Elf (0x10000000)
-School           : Shadowfrost
-Spell Type       : Magic
-Range            : 100 yards
-Attributes       : No Threat (42), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Treat As Periodic (121), Ignore Caster Damage Modifiers (221)
-Effects          :
-#1 (id=484546)   : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
-Description      : $@spelldesc256374
-
-Name             : Entropic Embrace (id=259760) 
-Race             : Void Elf (0x10000000)
-School           : Shadowfrost
-Spell Type       : Magic
-Range            : 100 yards
-Attributes       : Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Ignore Healing Modifiers (219)
-Effects          :
-#1 (id=484553)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
-Description      : $@spelldesc256374
-
 Name             : SI:7 Intelligence Report (id=260012) 
 School           : None
 Spell Type       : None
 Effects          :
 #1 (id=484947)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 61488 | Target: Self (1)
-
-Name             : Arcane Pulse (desc=Racial) (id=260364) 
-Race             : Nightborne (0x4000000)
-School           : Arcane
-Spell Type       : Magic
-GCD              : 1 seconds
-Cooldown         : 180 seconds
-Labels           : 1224
-Attributes       : No Aura Icon (60), No Aura Log (202), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=485483)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=485732)   : Trigger Spell (64): Arcane Pulse
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 260369 | Target: Self (1)
-Description      : Deals $<damage> Arcane damage to nearby enemies and reduces their movement speed by $260369s1%. Lasts $260369d.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*1.5)}
-
-Name             : Arcane Pulse (id=260369) 
-Race             : Nightborne (0x4000000)
-School           : Arcane
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 8 seconds
-Mechanic         : Snare
-Triggered By     : Arcane Pulse (260364)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268)
-Effects          :
-#1 (id=485491)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 80 | Scaled Value: 80 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
-Description      : Reduces movement speed by $s1%.
-Tooltip          : Reduces movement speed by $w1%.
 
 Name             : Reforming (id=260384) 
 School           : Physical
@@ -105165,98 +104339,6 @@ Effects          :
 #1 (id=709148)   : Apply Aura (6) | Proc Trigger Spell (42): Frost Blast
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 265175 | Target: Self (1)
 Description      : $@spelldesc265175
-
-Name             : Fireblood (desc=Racial) (id=265221) 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Cooldown         : 120 seconds
-Category         : 1166 (Type 0x0)
-Category Cooldown: 30 seconds
-Attributes       : Do Not Log (8), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=709236)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Target: Self (1)
-#2 (id=709237)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
-#3 (id=709238)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
-#4 (id=709239)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-#5 (id=709240)   : Dispel Mechanic (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
-#6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-#7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1914.485 (coefficient=0.5) | Target: Self (1)
-Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
-
-Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6), Aura Points On Client (268)
-Effects          :
-#1 (id=709242)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 10 | Misc Value 2: 565 (Label) | Target: Self (1)
-                   Affected Spells (Label): Masterwork Spiritguard Helm (122592), Masterwork Spiritguard Shoulders (122593), Masterwork Spiritguard Breastplate (122594), Masterwork Spiritguard Gauntlets (122595), Masterwork Spiritguard Legplates (122596), Masterwork Spiritguard Bracers (122597), Masterwork Spiritguard Boots (122598), Masterwork Spiritguard Belt (122599), Contender's Revenant Helm (122616), Contender's Revenant Shoulders (122617), Contender's Revenant Breastplate (122618), Contender's Revenant Gauntlets (122619), Contender's Revenant Legplates (122620), Contender's Revenant Bracers (122621), Contender's Revenant Boots (122622), Contender's Revenant Belt (122623), Contender's Spirit Helm (122624), Contender's Spirit Shoulders (122625), Contender's Spirit Breastplate (122626), Contender's Spirit Gauntlets (122627), Contender's Spirit Legplates (122628), Contender's Spirit Bracers (122629), Contender's Spirit Boots (122630), Contender's Spirit Belt (122631), Living Steel Belt Buckle (122632), Masterwork Lightsteel Shield (122642), Masterwork Spiritguard Shield (122643), Masterwork Forgewire Axe (122644), Masterwork Ghost-Forged Blade (122645), Masterwork Phantasmal Hammer (122646), Masterwork Spiritblade Decimator (122647), Masterwork Ghost Shard (122648), Ghost Reaver's Breastplate (122649), Ghost Reaver's Gauntlets (122650), Living Steel Breastplate (122651), Living Steel Gauntlets (122652), Breastplate of Ancient Steel (122653), Gauntlets of Ancient Steel (122654), Unyielding Bloodplate (126850), Gauntlets of Battle Command (126851), Ornate Battleplate of the Master (126852), Bloodforged Warfists (126853), Chestplate of Limitless Faith (126854), Gauntlets of Unbound Devotion (126855), Ghost Iron Shield Spike (131928), Living Steel Weapon Chain (131929), Lightning Steel Ingot (138646), The Planar Edge, Reborn (138876), Lunar Crescent, Reborn (138877), Drakefist Hammer, Reborn (138882), Thunder, Reborn (138883), Fireguard, Reborn (138888), Lionheart Blade, Reborn (138889), Draenor Blacksmithing (169923), Smoldering Helm (171691), Smoldering Breastplate (171692), Smoldering Greaves (171693), Steelforged Greataxe (171694), Steelforged Saber (171695), Steelforged Dagger (171696), Steelforged Hammer (171697), Steelforged Shield (171698), Truesteel Grinder (171699), Truesteel Pauldrons (171700), Truesteel Helm (171701), Truesteel Greaves (171702), Truesteel Gauntlets (171703), Truesteel Breastplate (171704), Truesteel Armguards (171705), Truesteel Boots (171706), Truesteel Waistguard (171707), Truesteel Essence (171708), Steelforged Essence (171710), Truesteel Reshaper (173355), Secrets of Draenor Blacksmithing (176090), Soul of the Forge (177169), Steelforged Axe (178243), Steelforged Aegis (178245), Riddle of Truesteel (182116), Mighty Steelforged Essence (187490), Mighty Truesteel Essence (187491), Savage Steelforged Essence (187514), Savage Truesteel Essence (187515), Terrorspike (209496), Gleaming Iron Spike (209497), Consecrated Spike (209498), Flamespike (209499), Impressive Steelforged Essence (397853), Remarkable Steelforged Essence (397855), Impressive Truesteel Essence (397856), Remarkable Truesteel Essence (397857), Beledar's Bulwark (450246)
-Description      : Increases Blacksmithing skill by $s2 and Blacksmithing speed by ${$s1/-1}%.
-Tooltip          : Increases Blacksmithing skill by $w2 and Blacksmithing speed by $w1%.
-
-Name             : Dungeon Delver (desc=Racial Passive) (id=265223) [Passive] 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=709243)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#2 (id=724443)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : While indoors, move $s2% faster.
-
-Name             : Forged in Flames (desc=Racial Passive) (id=265224) [Passive] 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=709244)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x1 | Target: Self (1)
-                   Affected School(s): Physical
-Description      : Reduces damage taken from Physical attacks by ${$s1/-1}%.
-
-Name             : Mole Machine (desc=Racial) (id=265225) 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Cast Time        : 5 seconds
-GCD              : 1.5 seconds
-Duration         : 180 seconds
-Cooldown         : 1800 seconds
-Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
-Effects          :
-#1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
-Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
-
-Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
-Race             : Dark Iron Dwarf (0x800)
-School           : Physical
-Spell Type       : None
-Duration         : 8 seconds
-Stacks           : 6 maximum
-Proc Chance      : 101%
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
-Effects          :
-#1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2462.361 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
-#2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2462.361 (coefficient=0.643087) | Stat: Int | Target: Self (1)
-#3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2462.361 (coefficient=0.643087) | Stat: Str | Target: Self (1)
-Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
-Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
 Name             : Shimmering Platinum Warhammer (id=265230) [Passive, Hidden] 
 School           : Physical
@@ -111739,48 +110821,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 281834 | Target: Self (1)
 Description      : $@spelldesc273790
 
-Name             : Open Skies (desc=Racial Passive) (id=273216) [Passive] 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=724659)   : Apply Aura (6) | Increase Mounted Speed% (172)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#2 (id=724660)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Increases mounted speed by $s2%.
-
-Name             : Sympathetic Vigor (desc=Racial Passive) (id=273217) [Passive] 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=724663)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#2 (id=724664)   : Apply Aura (6) | Modify Pet Stat (382)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self (1)
-#3 (id=724665)   : Apply Aura (6) | Modify Pet Stat (382)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 28 | Target: Self (1)
-Description      : Increases pet health by $s1%.
-
-Name             : Savage Blood (desc=Racial Passive) (id=273220) [Passive] 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=724668)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#2 (id=724669)   : Apply Aura (6) | Modify Debuff Duration% (245)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 4 | Target: Self (1)
-#3 (id=724670)   : Apply Aura (6) | Modify Debuff Duration% (245)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2 | Target: Self (1)
-#4 (id=724671)   : Apply Aura (6) | Modify Debuff Duration% (245)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Target: Self (1)
-Description      : Reduces the duration of Poisons, Diseases, and Curses by $s1%.
-
 Name             : Infernal Armor (id=273236) [Spell Family (107), Passive] 
 School           : Physical
 Spell Type       : None
@@ -114482,30 +113522,6 @@ Effects          :
 Description      : $@spelldesc274692
 Tooltip          : Granting nearby allies $w1 Speed.
 
-Name             : Ancestral Call (desc=Racial) (id=274738) 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Duration         : 15 seconds
-Cooldown         : 120 seconds
-Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 6570.512 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
-Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
-
-Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Duration         : 15 seconds
-Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
-Effects          :
-#1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 6570.512 (coefficient=1.716) | Rating: Crit | Target: Self (1)
-Description      : Invoke the spirits of your ancestors, granting you their power.
-Tooltip          : Increases critical strike by $w1.
-
 Name             : Zeal of the Burning Blade (desc=Racial) (id=274740) 
 School           : Physical
 Spell Type       : None
@@ -114516,18 +113532,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 6570.512 (coefficient=1.716) | Rating: Haste | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases haste by $w1.
-
-Name             : Ferocity of the Frostwolf (desc=Racial) (id=274741) 
-Race             : Mag'har Orc (0x2000)
-School           : Physical
-Spell Type       : None
-Duration         : 15 seconds
-Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
-Effects          :
-#1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 6570.512 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
-Description      : Invoke the spirits of your ancestors, granting you their power.
-Tooltip          : Increases mastery by $w1.
 
 Name             : Might of the Blackrock (desc=Racial) (id=274742) 
 School           : Physical
@@ -126288,28 +125292,6 @@ Effects          :
 Description      : Play a tune of the desert, encouraging the small critters of Vol'dun to accompany you for $d. They happily follow you everywhere you go!
 Tooltip          : Creatures of the desert find you enthralling.
 
-Name             : Pterrordax Swoop (desc=Racial) (id=281954) 
-Race             : Zandalari Troll (0x40000000)
-School           : Physical
-Spell Type       : None
-Duration         : 120 seconds
-Cooldown         : 900 seconds
-Attributes       : Allow Item Spell In PvP (13), Not Shapeshifted (16), Not In Arena or Rated Battleground (144), Extra Initial Period (169)
-Aura Interrupt   : Action (2), Under Water (7), Mount (17), Leave World (19), Ground (35)
-Effects          :
-#2 (id=741278)   : Trigger Spell (64): Forward Thrust
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126408 | Target: Self (1)
-#3 (id=741279)   : Apply Aura (6) | Slow Fall (409)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=741280)   : Apply Aura (6) | Force Reaction (139)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1059 | Target: Self (1)
-#5 (id=741281)   : Apply Aura (6) | Force Reaction (139)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1102 | Target: Self (1)
-#6 (id=763194)   : Apply Aura (6) | Mount Cosmetic Mount (487)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 91312 | Target: Self (1)
-Description      : Reduces your falling speed for $d.
-Tooltip          : Falling speed reduced.
-
 Name             : Vanquished Clutches of Yogg-Saron (id=282121) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -128134,31 +127116,6 @@ Effects          :
 #1 (id=750856)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc287707
-
-Name             : Haymaker (desc=Racial) (id=287712) 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : Melee
-Range            : 6 yards
-Cast Time        : 1 seconds
-GCD              : 1.5 seconds
-Duration         : 3 seconds
-Cooldown         : 150 seconds
-Labels           : 292
-                 : 588
-Attributes       : Is Ability (4), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=750857)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=750859)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
-#3 (id=750912)   : Knock Back (98)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Target: Targeted Enemy (6)
-#4 (id=759416)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Wind up, then unleash your might upon your foe, dealing $<damage> Physical damage, stunning for $d, and knocking them back substantially. 
-Tooltip          : Stunned.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
 
 Name             : Surging Shots (id=287715) [Spell Family (9), Hidden] 
 School           : Physical
@@ -131885,20 +130842,6 @@ Effects          :
 Description      : Launches a crystal at your target, dealing $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d. Only in Nazjatar.
 Tooltip          : Dealing $o2 Shadow damage over $d.
 
-Name             : Rime of the Ancient Mariner (desc=Racial Passive) (id=291417) [Passive] 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=757547)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x8 | Target: Self (1)
-                   Affected School(s): Nature
-#2 (id=757548)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x10 | Target: Self (1)
-                   Affected School(s): Frost
-Description      : Reduces Frost and Nature damage taken by $s1%.
-
 Name             : Tossing (id=291514) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -131910,16 +130853,6 @@ Effects          :
 #1 (id=757764)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Nearby Target (38)
 Description      : Tosses a wad of chum into the water. Requires Eel Infested Waters.
-
-Name             : City of Gold (desc=Racial Passive) (id=291619) [Passive] 
-Race             : Zandalari Troll (0x40000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=757969)   : Apply Aura (6) | Unknown(348)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1 | Target: Self (1)
-Description      : Increases gold earned from creatures by $s1%.
 
 Name             : Re-enchanting (id=291620) 
 School           : Physical
@@ -131933,16 +130866,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 282764 | Target: Current Target (25)
 Description      : Consume 1 Veiled Crystal to animate an inert golem.
 
-Name             : Child of the Sea (desc=Racial Passive) (id=291622) [Passive] 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=757974)   : Apply Aura (6) | Unknown(155)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Hold your breath for $s1% longer and swim $s2% faster.
-
 Name             : Tossing (id=291624) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -131953,24 +130876,6 @@ Effects          :
 #1 (id=757980)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Nearby Target (38)
 Description      : Tosses a wad of chum into the water.
-
-Name             : Brush It Off (desc=Racial Passive) (id=291628) [Passive] 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Proc Chance      : 101%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122)
-Effects          :
-#1 (id=757987)   : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=757988)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#3 (id=758244)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -33 | Scaled Value: -33 | Misc Value: 3 | Misc Value 2: 621 (Label) | Target: Self (1)
-                   Affected Spells (Label): Weak Alcohol (11007), Standard Alcohol (11008), Strong Alcohol (11009), Potent Alcohol (11629), Use Filled Brewfest Stein (41921), Use Filled Brewfest Stein (41943), Use Filled Brewfest Stein (41944), Use Filled Brewfest Stein (41945), Use Filled Brewfest Stein (41946), Foaming Rage (47217), Enjoying A Cold One (101582), Drink (105221), Delusional (105225), Banana Infused Rum (125686), Refreshment (148720), Pandaren Brew (149021), Savage Remedy (177154), Pinchwhistle "Nitro Fuel" (179198), DrogLite (203491), Jug of Drog (203501), Drink (236820), Goldtusk Visions (246186), Bilewing Kiss (262960), Goldtusk Visions (263442), Strong Alcohol (279600), Magical Life (288555), Kelp'thar Gas (289209), Strong Alcohol (305431), Strong Alcohol (305432), Weak Alcohol (305433), Potent Alcohol (305434), Potent Alcohol (305435), Standard Alcohol (305436), Standard Alcohol (305438), Ohn Lite Drinking (392343)
-Description      : Increases Versatility by $s1%. When you take damage, heal for $s2% of that amount over $291843d.
 
 Name             : Tossing (id=291784) [Hidden] 
 School           : Physical
@@ -131993,52 +130898,6 @@ Effects          :
 #1 (id=758253)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Nearby Target (38)
 Description      : Tosses a wad of chum into the water.
-
-Name             : Brush It Off (desc=Racial Ability) (id=291843) 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : None
-Duration         : 4 seconds
-Labels           : 292
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow While Invisible (78), Ignore Caster Modifiers (125), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Heal Prediction (280), Allow While Banished Aura State (299), Rolling Periodic (334), Ignore PvP Power (365), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Effects          :
-#1 (id=758327)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc291628
-Tooltip          : Heals for $w1.
-
-Name             : Test Spell (id=291861) 
-Race             : Kul Tiran (0x80000000)
-School           : Physical
-Spell Type       : None
-Duration         : 4 seconds
-Labels           : 292
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow While Invisible (78), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Heal Prediction (280), Allow While Banished Aura State (299), Rolling Periodic (334), Ignore PvP Power (365), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Effects          :
-#1 (id=758355)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc291628
-Tooltip          : Heals for $w1.
-
-Name             : Regeneratin' (desc=Racial) (id=291944) 
-Race             : Zandalari Troll (0x40000000)
-School           : Nature
-Spell Type       : None
-GCD              : 1.5 seconds
-Duration         : 6 seconds
-Cooldown         : 180 seconds
-Labels           : 1224
-Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
-Attributes       : Is Channelled (34), Is Self Channelled (38), Track Target in Channel (46), Require All Targets (58), Name in Channel Bar (61), Ignore Healing Modifiers (219), Reflection Only Defends (253), Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
-Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
-Effects          :
-#1 (id=758464)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 8.25 | Scaled Value: 8.25 | Target: Self (1)
-#2 (id=765150)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
-Description      : Regenerate $s2% of your maximum health over $d, interrupted by direct damage. 
-Tooltip          : Regenerate $s2% of your maximum health over $d, interrupted by direct damage.
 
 Name             : Blood Contract: Bloodshed (id=292012) 
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
@@ -132483,32 +131342,6 @@ Description      : Increases your Haste by $s1%. Lasts $d.
 
 You will become Exhausted and be unable to benefit from Bloodlust, Heroism or Time Warp again for $57723d.
 Tooltip          : Haste increased by $s1%.
-
-Name             : Embrace of the Loa (desc=Racial Passive) (id=292751) [Passive] 
-Race             : Zandalari Troll (0x40000000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6), Aura Points On Client (268)
-Effects          :
-#1 (id=759919)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Choose your Loa.
-
-Name             : Embrace of the Loa (desc=Racial) (id=292752) 
-Race             : Zandalari Troll (0x40000000)
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Cooldown         : 432000 seconds
-Category         : 1841 (Type 0x0)
-Category Cooldown: 432000 seconds
-Attributes       : Is Ability (4), Aura Points On Client (268)
-Effects          :
-#1 (id=759920)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Choose your Loa by making an offering at Loa Shrines around the world. 
-
-Each Loa offers unique powers. Guards in Dazar'alor will tell you where Shrines can be found. 
 
 Name             : A Stitch in Time - Delormi's Synchronous Thread (id=292767) 
 School           : Physical
@@ -151371,93 +150204,6 @@ Effects          :
 Description      : $@spelldesc296036
 Tooltip          : Absorbs $w1 damage.
 
-Name             : Fire Resistance (desc=Racial Passive) (id=312198) [Passive] 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=793653)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x4 | Target: Self (1)
-                   Affected School(s): Fire
-Description      : Reduces Fire damage taken by $s1%.
-
-Name             : Nose For Trouble (desc=Racial Passive) (id=312215) [Passive] 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6), Absorb Cannot Be Ignore (214)
-Effects          :
-#1 (id=793689)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-#2 (id=795885)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
-Description      : When you first take damage from an enemy, reduce that damage by $s2% of your maximum health.
-
-Name             : Make Camp (desc=Racial) (id=312370) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Cast Time        : 5 seconds
-GCD              : 1.5 seconds
-Cooldown         : 600 seconds
-Attributes       : Is Ability (4), Only Outdoors (15)
-Effects          :
-#1 (id=793996)   : Trigger Spell (64): Camp Location
-                   Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 313055 | Target: Self (1)
-#2 (id=799071)   : Trigger Spell (64): Camping
-                   Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 315322 | Target: Self (1)
-Description      : Make a camp at this location. Can only be used outdoors. 
-
-Name             : Return to Camp (desc=Racial) (id=312372) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Cast Time        : 10 seconds
-GCD              : 1.5 seconds
-Duration         : 0.5 seconds
-Cooldown         : 3600 seconds
-Attributes       : Is Ability (4), No AutoCast (AI) (49)
-Effects          :
-#1 (id=793998)   : Teleport to Return Point (13)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 313055 | Target: Self (1) -> at Database Entry in Area (17)
-#2 (id=799073)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=799076)   : Trigger Spell (64): (240188)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 240188 | Target: Self (1)
-Description      : Return to your camp. 
-
-Name             : Bag of Tricks (desc=Racial) (id=312411) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 40 yards
-GCD              : 1.5 seconds
-Cooldown         : 90 seconds
-Labels           : 1224
-Effects          :
-#1 (id=794057)   : Dummy (3)
-                   Base Value: 1000 | Scaled Value: 1000 | Target: Current Target (25)
-Description      : Pull your chosen trick from the bag and use it on target enemy or ally. Enemies take $<damage> damage and are snared by $315084s2% for $315084d, while allies are healed for $<healing> and move $317829s2% faster for $317829d.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*2.52,$AP*2.52)*$pctD*(1+$@versadmg)}
-$healing=${$cond($gt($SP,$AP),$SP*3.78,$AP*3.78)*$pctD*(1+$@versadmg)}
-
-Name             : Rummage Your Bag (desc=Racial) (id=312425) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 40 yards
-Cast Time        : 3 seconds
-GCD              : 1.5 seconds
-Duration         : 300 seconds
-Cooldown         : 300 seconds
-Attributes       : Is Ability (4), No AutoCast (AI) (49)
-Effects          :
-#1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
-Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
-
 Name             : Revel in Violence (id=312643) [Passive] 
 School           : Shadow
 Spell Type       : None
@@ -151695,35 +150441,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Infuse your Heart of Azeroth with The Formless Void.
 
-Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 5 yards
-Cast Time        : 1.5 seconds
-Labels           : 292
-Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=794857)   : Open Lock (33)
-                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 1 | Target: Targeted Item Gameobject (26)
-Description      : Allows opening of locked chests and doors that require a skill level of up to ${$PL*1}.
-
-Name             : Mastercraft (desc=Racial Passive) (id=312896) [Passive] 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=794864)   : Apply Aura (6) | Unknown(281)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
-#2 (id=794865)   : Apply Aura (6) | Unknown(281)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-#3 (id=801605)   : Apply Aura (6) | Unknown(281)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
-#4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
-Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
-
 Name             : Symbiotic Presence (desc=Azerite Essence) (id=312915) 
 School           : Fire
 Spell Type       : None
@@ -151741,19 +150458,6 @@ Effects          :
 Description      : $@spelldesc312771
 Tooltip          : $pri increased by $w1.$?$w2!=0[
 Haste increased by $w2.][]
-
-Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=794897)   : Apply Aura (6) | Proc Trigger Spell (42): Emergency Failsafe
-                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 313010 | Target: Self (1)
-Description      : When you fall below $s1% health, heal for $313010s1% of your maximum health. This effect cannot occur more than once every $313015d.
 
 Name             : Will to Survive (id=312920) 
 School           : Physical
@@ -151785,38 +150489,6 @@ Effects          :
                    Affected Spells (Label): Death Strike (45470), Death Strike (49998)
 Description      : $@spelldesc295164
 Tooltip          : $?a137005[Damage and healing][Duration] of your next $@spelldesc312920 increased by $w1%.
-
-Name             : Combat Analysis (desc=Racial Passive) (id=312923) [Passive] 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 100
-Min Scaling Level: 10
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 153.1588 (coefficient=0.04) | Target: Self (1)
-#2 (id=794930)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#3 (id=795651)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
-Description      : You gather and analyze combat data every $t1 sec, increasing your primary stat by $s1, stacking up to $s3 times. The data decays while out of combat.
-
-Name             : Hyper Organic Light Originator (desc=Racial) (id=312924) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 5 yards
-GCD              : 1.5 seconds
-Duration         : 15 seconds
-Cooldown         : 180 seconds
-Labels           : 292
-Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=794931)   : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
-Description      : Summon Organic Light duplicates to distract your foes for $d.
-Tooltip          : Deploying distractions.
 
 Name             : Perseverance (id=312927) [Passive] 
 School           : Physical
@@ -151859,34 +150531,6 @@ Effects          :
 Description      : $@spelldesc296036
 Tooltip          : Absorbs $w1 damage.
 
-Name             : Emergency Failsafe (id=313010) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Triggered By     : Emergency Failsafe (312916)
-Effects          :
-#1 (id=795076)   : Direct Heal% (136)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-#2 (id=795083)   : Trigger Spell (64): Recently Failed
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 313015 | Target: Self (1)
-Description      : Heal for $s1% of your maximum health.
-
-Name             : Recently Failed (id=313015) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Duration         : 150 seconds
-Labels           : 292
-Triggered By     : Emergency Failsafe (313010)
-Attributes       : Aura Is Debuff (26), No Immunities (29), Hide In Raid Filter (110), Allow Aura While Dead (116), Remove Entering Arena (162), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
-Effects          :
-#1 (id=795081)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : You've recently triggered Emergency Failsafe and cannot benefit from it again.
-Tooltip          : You've recently triggered Emergency Failsafe and cannot benefit from it again.
-
 Name             : Squish (id=313033) 
 School           : Shadow
 Spell Type       : None
@@ -151895,18 +150539,6 @@ Effects          :
 #2 (id=795917)   : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Squish the eye.
-
-Name             : Camp Location (desc=Racial) (id=313055) [Hidden] 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Triggered By     : Make Camp (312370)
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149), Visible only to caster (conversations only) (343), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=795143)   : Apply Aura (6) | Unknown(71)
-                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Description      : Make a camp at this location. Can only be used outdoors. 
 
 Name             : Stoneskin (id=313060) 
 School           : Shadow
@@ -152242,30 +150874,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 161010 | Misc Value 2: 0x12a5 | Radius: 10 yards | Target: at Random (72)
 Description      : $@spelldesc313377
 
-Name             : Combat Analysis (id=313424) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Duration         : 60 seconds
-Labels           : 292
-                 : 374
-                 : 375
-                 : 429
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : No Threat (42), Suppress Caster Procs (112), Suppress Weapon Procs (151), Do Not Display Duration (170), Aura Points On Client (268)
-Effects          :
-#1 (id=795701)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Agi | Target: Self (1)
-#2 (id=795702)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
-#3 (id=795703)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
-#4 (id=795704)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc312923
-Tooltip          : Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][primary stat] is increased by $w4.
-
 Name             : Reality (id=313443) [Hidden] 
 School           : Shadow
 Spell Type       : None
@@ -152326,34 +150934,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 554.0328 (coefficient=0.144695) | Radius: 0 - 10 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Ring the chime while in Bastion to inspire allies within $A1 yards, increasing their movement speed by $s1%.
 Tooltip          : Your movement speed is increased by $w1%.
-
-Name             : Hyper Organic Light Originator (id=313514) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Labels           : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
-Description      : $@spelldesc312924
-Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
-
-Name             : Hyper Organic Light Originator (id=313531) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Labels           : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
-Description      : $@spelldesc312924
-Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Mesmerizing (id=313532) [Passive] 
 School           : Shadow
@@ -152860,24 +151440,6 @@ Effects          :
 #1 (id=797998)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Flames of Fury (id=315084) 
-Race             : Vulpera (0x1000)
-School           : Fire
-Spell Type       : Magic
-Range            : 40 yards
-Velocity         : 20 yards/sec
-Duration         : 4 seconds
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=798571)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1186828)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -80 | Scaled Value: -80 | Mechanic: Snare | Target: Targeted Enemy (6)
-Description      : Blast your enemy with the FLAMES, dealing $<damage> Fire damage. 
-Tooltip          : Movement speed snared by $w2%.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*2.52,$AP*2.52)*$pctD*(1+$@versadmg)}
-$healing=${$cond($gt($SP,$AP),$SP*3.78,$AP*3.78)*$pctD*(1+$@versadmg)}
-
 Name             : Strikethrough (id=315277) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -152917,47 +151479,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x78
 Description      : Add the Corrupted affix to a Mythic Keystone.
 
-Name             : Camping (id=315322) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 20 yards
-Duration         : 300 seconds
-Triggered By     : Make Camp (312370)
-Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
-Aura Interrupt   : Leave World (19), Enter World (22), Login (29)
-Effects          :
-#2 (id=798997)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Camping for 300 seconds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315327 | Target: Self (1)
-#3 (id=799013)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Campfire for 300 seconds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315335 | Target: Self (1)
-#4 (id=799051)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Mount Changer for 300 seconds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315357 | Target: Self (1)
-Description      : Create a campfire where you can cook and rest.
-Tooltip          : Resting.
-
-Name             : Camping (id=315327) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 20 yards
-Duration         : Aura (infinite)
-Triggered By     : Camping (315322)
-Effects          :
-#1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
-
-Name             : Campfire (id=315335) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 20 yards
-Duration         : Aura (infinite)
-Triggered By     : Camping (315322)
-Effects          :
-#1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
-
 Name             : Void Jaunt (id=315344) 
 School           : Physical
 Spell Type       : None
@@ -152967,17 +151488,6 @@ Attributes       : Do Not Log (8), No Threat (42), No Aura Icon (60)
 Effects          :
 #1 (id=799025)   : Apply Aura in Area (27) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18)
-
-Name             : Mount Changer (id=315357) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Range            : 20 yards
-Duration         : Aura (infinite)
-Triggered By     : Camping (315322)
-Effects          :
-#1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Gladiator's Spite (id=315362) 
 School           : Shadow
@@ -153345,17 +151855,6 @@ Effects          :
 #1 (id=799877)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 265.9018 | Scaled Value: 3820.481 (coefficient=0.997783) | Stat: All | Target: Self (1)
 Tooltip          : Primary stat increased by $w1.
-
-Name             : Holy Relic (id=315879) 
-Race             : Vulpera (0x1000)
-School           : Holy
-Spell Type       : Magic
-Range            : 40 yards
-Velocity         : 30 yards/sec
-Effects          :
-#1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6394.402 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
-Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Resolute Courage (id=315993) [Hidden] 
 School           : Fire
@@ -154415,53 +152914,6 @@ Effects          :
 #1 (id=803087)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Give the carrot to your mount, restoring all fatigue.
-
-Name             : Alpaca Saddlebags (desc=Racial Passive) (id=317795) [Passive] 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 35 seconds
-Proc Chance      : 2%
-Proc Flags       : Target Dies
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=803170)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : Increases the size of your backpack by $s1 slots.
-Tooltip          : Increases the size of your backpack by $s1 slots.
-
-Name             : Healing Vial (id=317821) 
-Race             : Vulpera (0x1000)
-School           : Physical
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=803216)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#2 (id=1186825)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
-                   Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
-Description      : $@spelldesc312411
-Tooltip          : Movement speed increased by $w2%.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*2.52,$AP*2.52)*$pctD*(1+$@versadmg)}
-$healing=${$cond($gt($SP,$AP),$SP*3.78,$AP*3.78)*$pctD*(1+$@versadmg)}
-
-Name             : Holy Relic (id=317829) 
-Race             : Vulpera (0x1000)
-School           : Holy
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Triggered By     : Holy Relic (315879)
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=803240)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#2 (id=1186826)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
-                   Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
-Description      : $@spelldesc315879
-Tooltip          : Movement speed increased by $w2%.
 
 Name             : Draconic Empowerment (id=317859) 
 School           : Physical
@@ -159998,7 +158450,7 @@ Category Cooldown: 20 seconds
 Attributes       : Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=823248)   : School Damage (2): shadow | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 174605 (coefficient=68.26477) | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 261907.2 (coefficient=102.3971) | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=873293)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Inflict $s1 Shadow damage split between all nearby enemies, and form a Blood Barrier on yourself. The Blood Barrier absorbs ${$329852s1*(1+$@versadmg)} damage for $329849d.
@@ -160025,7 +158477,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=823260)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 730918.3 (coefficient=285.7649) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1096379 (coefficient=428.6478) | Target: Self (1)
 
 Name             : Shadowgrasp Totem (id=329872) 
 School           : Shadow
@@ -160043,7 +158495,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=823298)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 25533.51 (coefficient=9.982759) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28437.18 (coefficient=11.118) | Target: Self (1)
 #2 (id=823299)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 83083.13 (coefficient=32.48276) | Target: Self (1)
 #3 (id=823300)   : Apply Aura (6) | Dummy (4)
@@ -162711,7 +161163,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=830500)   : Apply Aura (6) | Proc Trigger Spell (42): Gluttonous | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 40835.98 (coefficient=15.96552) | Trigger Spell: 334511 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 61253.46 (coefficient=23.94808) | Trigger Spell: 334511 | Target: Self (1)
 Description      : Taking damage has a high chance to grant you Gluttonous, stacking up to $334511u times.
 
 
@@ -167075,7 +165527,7 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=843518)   : Apply Aura (6) | Damage Shield (15) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 6223.933 (coefficient=2.433352) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9336.053 (coefficient=3.650088) | Target: Self (1)
 #2 (id=843519)   : Trigger Spell (64): Bladedancer's Armor
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 342426 | Target: Self (1)
 Description      : Apply Bladedancer's Armor for $d, increasing your armor by $342426s1 and causing attackers to suffer $s1 Physical damage.
@@ -167122,7 +165574,7 @@ Triggered By     : Splash of Anima-Charged Wind (342427)
 Attributes       : Do Not Display Range (126), AI Face Target (283), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=843525)   : School Damage (2): arcane | Scaling Class: Replace Secondary (-9) | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 78452.71 (coefficient=30.67242) | Radius: 0 - 10 yards | Target: Source (22) -> Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 117678.7 (coefficient=46.00847) | Radius: 0 - 10 yards | Target: Source (22) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc342427
 
 Name             : Lingering Sunmote (id=342432) 
@@ -167153,7 +165605,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=843531)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 189891.7 (coefficient=74.24139) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 284837.6 (coefficient=111.3621) | Target: Self (1)
 
 Name             : Sun's Embrace (id=342435) 
 School           : Holy
@@ -167519,7 +165971,7 @@ Category Cooldown: 20 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845135)   : School Damage (2): shadow | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1261224 (coefficient=493.097) | PvP Coefficient: 0.6 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1891837 (coefficient=739.6456) | PvP Coefficient: 0.6 | Target: Targeted Enemy (6)
 #2 (id=845136)   : Trigger Spell (64): Anima Font
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344414 | Target: at Self (18)
 Description      : Tear the anima from your target dealing $s1 Shadow damage and forming a font of power at your feet, increasing your Intellect by $343397s1 for $343394d while you stand within it. 
@@ -167608,7 +166060,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845148)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 55030.61 (coefficient=21.51515) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82546.03 (coefficient=32.27277) | Target: Self (1)
 
 Name             : Unleash the Bonestorm (id=343411) 
 School           : Physical
@@ -169172,7 +167624,7 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871374)   : Apply Aura (6) | Periodic Trigger Spell (23): Phial of Putrefaction every 5 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4214.942 (coefficient=1.647903) | Trigger Spell: 345464 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6322.621 (coefficient=2.471936) | Trigger Spell: 345464 | Target: Self (1)
 Description      : Every $t1 sec, your next melee ability applies Liquefying Ooze, dealing ${$s1*($345466d/$345466t1)*(1+$@versadmg)} Nature damage over $345466d.
 
 Liquefying Ooze stacks up to $345466u times. Stacking does not refresh the duration.
@@ -169201,7 +167653,7 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871387)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 30428.54 (coefficient=11.89655) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 46164.29 (coefficient=18.04871) | Target: Self (1)
 #2 (id=871426)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Your healing spells have a low chance to create $s2 Fragments of Life near your location for $345496d. Allies who collect a Fragment of Life are healed for $s1, and grant $345502s1 Versatility to your party for $345499d.
@@ -169226,7 +167678,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871407)   : Apply Aura (6) | Proc Trigger Spell (42): Infinitely Divisible Ooze | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 18830.41 (coefficient=7.362069) | Trigger Spell: 345489 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27355.51 (coefficient=10.6951) | Trigger Spell: 345489 | Target: Self (1)
 Description      : Your damaging abilities have a chance to conjure a Frothing Pustule to fight by your side, dealing ${$s1*5} Nature damage to your target.
 
 Name             : Noxious Bolt (id=345495) 
@@ -169406,7 +167858,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871483)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 20119.35 (coefficient=7.866001) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 30179.48 (coefficient=11.79918) | Target: Self (1)
 
 Name             : Empyreal Ordnance (id=345543) [Passive, Hidden] 
 School           : Arcane
@@ -169472,7 +167924,7 @@ Triggered By     : Flayedwing Toxin (345545)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871490)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 19050.91 (coefficient=7.448276) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28576.52 (coefficient=11.17247) | Target: Self (1)
 
 Name             : Spare Meat Hook (id=345548) 
 School           : Physical
@@ -169489,7 +167941,7 @@ Attributes       : Is Channelled (34), DoT Stacking Rule (103), Hide Channel Bar
 Channel Interrupt: Standing (19), Exit Vehicle (40)
 Effects          :
 #1 (id=871491)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 44496.22 (coefficient=17.39655) | PvP Coefficient: 0.4 | Mechanic: Bleed | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 66744.23 (coefficient=26.09479) | PvP Coefficient: 0.4 | Mechanic: Bleed | Target: Targeted Enemy (6)
 #2 (id=871492)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=871493)   : Apply Aura (6) | Area Trigger (395)
@@ -169540,7 +167992,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871498)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 227861.2 (coefficient=89.08621) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 341791.7 (coefficient=133.6293) | Target: Self (1)
 #2 (id=872330)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 113908.6 (coefficient=44.53448) | Target: Self (1)
 
@@ -169554,7 +168006,7 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=871533)   : Apply Aura (6) | Proc Trigger Spell (42): Misbegotten Minion | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 104603.6 (coefficient=40.89655) | Trigger Spell: 346032 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 156904.9 (coefficient=61.34462) | Trigger Spell: 346032 | Target: Self (1)
 #2 (id=871683)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Your damaging spells have a chance to draw a minion from the satchel, sending it running at your target where it explodes, dealing $s1 Shadow damage split between all nearby enemies.
@@ -169650,7 +168102,7 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871762)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 444356.5 (coefficient=173.7287) | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 666534.9 (coefficient=260.5931) | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
 #2 (id=871776)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
@@ -169685,7 +168137,7 @@ Effects          :
 #1 (id=871768)   : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2418.11 (coefficient=0.945401) | Target: Self (1)
 #2 (id=871769)   : School Damage (2): physical | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 62526.48 (coefficient=24.44579) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 78158.21 (coefficient=30.55728) | Target: Targeted Enemy (6)
 #3 (id=871771)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #4 (id=871778)   : Dummy (3)
@@ -169877,7 +168329,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871957)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 131529.4 (coefficient=51.42363) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 197294 (coefficient=77.13545) | Misc Value: 1792 | Target: Self (1)
 
 Name             : Soul Infusion (id=345807) [Passive, Hidden] 
 School           : Shadow
@@ -170002,9 +168454,9 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=872063)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 341234.8 (coefficient=133.4115) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 511852.2 (coefficient=200.1173) | Target: Self (1)
 #2 (id=872064)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 47393.65 (coefficient=18.52935) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 71090.67 (coefficient=27.7941) | Target: Self (1)
 
 Name             : Kevin's Party Supplies (id=345899) 
 School           : Physical
@@ -172150,34 +170602,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
 Description      : $@spelldesc351926
 Tooltip          : Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.
-
-Name             : Hyper Organic Light Originator (id=351978) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Labels           : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
-Description      : $@spelldesc312924
-Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
-
-Name             : Hyper Organic Light Originator (id=351985) 
-Race             : Mechagnome (0x4000)
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Labels           : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
-Description      : $@spelldesc312924
-Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Fraudulent Credentials (id=351986) [Passive] 
 School           : Arcane
@@ -176498,26 +174922,6 @@ Effects          :
 Description      : $@spelldesc355319
 Tooltip          : $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.
 
-Name             : Wing Buffet (desc=Racial) (id=357214) [Spell Family (224)] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : Magic
-GCD              : 1.5 seconds
-Duration         : 4 seconds
-Cooldown         : 180 seconds
-Labels           : 219
-                 : 292
-                 : 588
-                 : 1425: Heavy Wingbeats (368838 effect#1), Natural Weapons (387267 effect#2), Walloping Blow (387341 effect#1), Flow State (390148 effect#8), Time Skip (404977 effect#4), Interwoven Threads (412713 effect#4), Temporal Burst (431698 effect#8), Temporal Cycle (1237269 effect#8)
-Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as Combat Text (213), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=891606)   : Knock Back (98)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
-Description      : With a powerful flap of your wings, knock away enemies in front of you.
-Tooltip          : Movement speed reduced by $s2%.
-
 Name             : A Voice In The Darkness (id=357237) 
 School           : Shadow
 Spell Type       : None
@@ -177557,50 +175961,6 @@ Effects          :
 #1 (id=894170)   : Apply Aura (6) | Periodic Dummy (226): every 60 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
-Name             : Glide (id=358731) [Passive, Hidden] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=894203)   : Apply Aura (6) | Override Keybind (406)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 201 | Target: Self (1)
-
-Name             : Glide (desc=Racial) (id=358733) 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Cooldown         : 1 seconds
-Labels           : 292
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), No Aura Log (202), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Action (2), Under Water (7), Mount (17), Swimming (33), Ground (35)
-Effects          :
-#2 (id=894206)   : Apply Aura (6) | Slow Fall (409)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=894207)   : Trigger Spell (64): Glide
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 358734 | Target: Self (1)
-#4 (id=1014887)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Reduces your falling speed.
-
-You can activate this ability with the jump key while falling.
-Tooltip          : Falling speed reduced.
-
-Name             : Glide (id=358734) [Spell Family (224), Hidden] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Duration         : 120 seconds
-Labels           : 292
-Triggered By     : Glide (358733)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Ground (35)
-Effects          :
-#1 (id=894208)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-
 Name             : Shielding Words (id=358829) 
 School           : Holy
 Spell Type       : None
@@ -178221,21 +176581,6 @@ Effects          :
 Description      : Attune yourself to the energies of the targeted Sepulcher of the First Ones raid boss, increasing your Versatility by $354399s1 when fighting that boss. This effect lasts for an entire week.
 
 You can only use one Vantus Rune per week.
-
-Name             : Familiar Skies (desc=Racial Passive) (id=360009) [Passive] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-                 : 1781
-Attributes       : Passive (6), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=896878)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Familiar Skies
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 366646 | Target: Self (1)
-#2 (id=1032263)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Misc Value 2: 1862 (Label) | Target: Self (1)
-                   Affected Spells (Label): Soar (369536)
-Description      : Soar's cooldown is reduced by 1 min on continents that you have fully explored.
 
 Name             : Cosmic Protoweave (id=360045) [Passive, Hidden] 
 School           : Physical
@@ -180866,17 +179211,6 @@ Description      : $@spelldesc367269
 $@spellaura366333
 Tooltip          : $@spellaura367269
 
-Name             : Awakened (desc=Racial Passive) (id=365575) [Passive] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=906595)   : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Increases your mastery by ${$mas*$s1}.1%.
-
 Name             : Healialic Emanation (id=365602) 
 School           : Physical
 Spell Type       : None
@@ -181338,16 +179672,6 @@ Description      : $@spelldesc366436
 Tooltip          : Effused from $@auracaster.
 Speed increased by $w1.
 
-Name             : Discerning Eye (desc=Racial Passive) (id=366489) [Passive] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=908122)   : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 149 | Target: Self (1)
-Description      : Increases your Perception by 2%. Perception increases your ability to spot rare reagents while gathering.
-
 Name             : Add Keystone Affix: Shrouded (id=366563) 
 School           : Physical
 Spell Type       : None
@@ -181416,20 +179740,6 @@ Effects          :
 #1 (id=908270)   : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc367272
-
-Name             : Familiar Skies (desc=Racial Passive) (id=366646) 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 292
-Triggered By     : Familiar Skies (360009)
-Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Not an Attack (194), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=908359)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc360009
-Tooltip          : Soar's cooldown is reduced by 1 min.
 
 Name             : Pre-Fabricated Assistant (id=366656) [Passive] 
 School           : Physical
@@ -183554,17 +181864,6 @@ Effects          :
 #2 (id=912692)   : Direct Heal% (136)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
-Name             : Visage (desc=Racial Passive) (id=368437) [Passive, Hidden] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Labels           : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
-Effects          :
-#1 (id=912834)   : Apply Aura (6) | Unknown(352)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Enables Dracthyr to switch between Visage and Dracthyr forms.
-
 Name             : Decanter of Untapped Potential (id=368491) 
 School           : Arcane
 Spell Type       : None
@@ -184612,6 +182911,7 @@ Name             : Food (id=369156)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
+Min Scaling Level: 1
 Duration         : 20 seconds
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -189921,31 +188221,6 @@ Effects          :
 Description      : While in combat, you are wrapped in an intense heat which burns nearby foes for $s1 Fire damage split between all nearby enemies every $377075t sec.
 
 Damage is increased for each enemy struck, up to $s2 enemies.
-
-Name             : Principles of Soaring (desc=Racial Passive) (id=381451) [Spell Family (224), Passive] 
-Race             : Dracthyr (0x18000)
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Attributes       : Passive (6), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1012272)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : While Soaring through the air, pointing yourself toward any given direction sends you in that direction.
-
-Pointing yourself downward grants more momentum. Evening out can transfer that momentum forward.
-
-Pointing yourself upward slows you down. When at your slowest, you will start to fall slowly toward the ground, forward and down.
-
-You also gain access to the following abilities:
-
-$@spellicon376743 $@spellname376743
-$@spelldesc376743
-
-$@spellicon376744 $@spellname376744
-$@spelldesc376744
 
 Name             : Erupting Spear Fragment (id=381471) 
 School           : Fire
@@ -227343,71 +225618,6 @@ Smack targets in front of you with a toxic mackerel, poisoning them and inflicti
 
 Poison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.
 
-Name             : Hyper Productive (id=436339) [Passive] 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1127601)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 227 | Target: Self (1)
-#2 (id=1155032)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : Increases Finesse by $s2. Finesse increases the chance of gathering additional materials.
-
-Name             : Titan-Wrought Frame (id=436340) [Passive] 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1127602)  : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self (1)
-Description      : Base armor from equipped items is increased by $s1%.
-
-Name             : Ingest Minerals (id=436341) [Passive] 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1127603)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : You are always Well Fed at an increased level of effectiveness, but cannot consume food. Consuming a Khaz Algar gem changes the benefit granted to you by Well Fed.
-
-Amber: Stamina
-Emerald: Haste
-Onyx: Mastery
-Ruby: Critical Strike
-Sapphire: Versatility
-
-Name             : Azerite Surge (id=436344) 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-GCD              : 0.5 seconds
-Duration         : 2.5 seconds
-Cooldown         : 120 seconds
-Attributes       : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
-Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Action (Delayed) (17)
-Effects          :
-#1 (id=1127608)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | AP Coefficient: 2 | Target: Self (1)
-#2 (id=1148397)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Draw upon your inner strength. Release to invoke the power of Azerite to harm your foes and aid your allies.
-
-Empowering has the following effects:
-
-|cFFFFFFFFI:|r Deals $<damage> Fire damage.
-
-|cFFFFFFFFII:|r Heals allies for $<healing>.
-
-|cFFFFFFFFIII:|r Deals $<spike> additional Fire damage to the highest health enemy.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*2,$AP*2)*$pctD*(1+$@versadmg)}
-$healing=${$cond($gt($SP,$AP),$SP*1,$AP*1)*$pctD*(1+$@versadmg)}
-$spike=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
-
 Name             : Opportunist (id=436462) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -235653,16 +233863,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 425265.7 (coefficient=166.2648) | PvP Coefficient: 0.3 | Radius: 15 yards | Target: Target Reticule: Enemy (129)
 Description      : $@spelldesc448904
 
-Name             : Wide-Eyed Wonder (id=448924) [Passive] 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1147713)  : Apply Aura (6) | Unknown(637)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : When you gain experience for exploring a location, gain $s1% additional exploration experience.
-
 Name             : Vanish Purge (id=449002) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -238366,21 +236566,6 @@ Effects          :
 Description      : $@spelldesc445619
 Tooltip          : Your next $?a137013[$@spellname78674][]$?a137012[$@spellname5176][]$?a396186[$@spellname395160][]$?a356809[$@spellname356995][]$?a356810[$@spellname361469][]$?a137019[$@spellname108853][]$?a137021[$@spellname44425][]$?a137020[$@spellname30455][]$?a137024[$@spellname107428][]$?a137031[$@spellname14914][]$?a137032[$@spellname585][]$?a137033[$@spellname8092][]$?a137040[$@spellname51505][]$?a137039[$@spellname51505][]$?a137046[$@spellname116858][]$?a137043[$@spellname324536][]$?a137044[$@spellname264178][]$?a137029[$@spellname20271][]$?a137047|$?a137034|$?a137023|$?a137025|$?a137014|$?a212611|$?a137005|$?a137010|$?a137011[specialization spell][] will be empowered to deal additional Shadow damage.
 
-Name             : Azerite Surge (id=451897) 
-Race             : Earthen (0x60000)
-School           : Fire
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 292
-Proc Chance      : 101%
-Proc Flags       : Periodic Taken
-Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=1152685)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-Description      : $@spelldesc436344
-
 Name             : Oil of Deep Toxins (id=451901) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -238415,21 +236600,6 @@ Description      : Coat your weapon with an oil made of magically enhanced toxin
 
 Lasts $M2 min.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
-
-Name             : Azerite Surge (id=451903) 
-Race             : Earthen (0x60000)
-School           : Fire
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 292
-Proc Chance      : 101%
-Proc Flags       : Periodic Taken
-Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=1152696)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | AP Coefficient: 1 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Cone to Ally (136)
-Description      : $@spelldesc436344
 
 Name             : Oil of Deep Toxins (id=451904) [Passive, Hidden] 
 School           : Nature
@@ -238731,18 +236901,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 34496 (coefficient=13.4868) | Trigger Spell: 451930 | Target: Self (1)
-
-Name             : Azerite Surge: III (id=451934) 
-Race             : Earthen (0x60000)
-School           : Fire
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 292
-Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=1152743)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-Description      : $@spelldesc436344
 
 Name             : Fishing Journal - Learn - Entry (id=451969) [Hidden] 
 School           : Physical
@@ -246559,18 +244717,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 88.99985 (coefficient=0.034796) | Target: Self (1)
 Description      : $@spelldesc453575
 
-Name             : No Place Like Home (desc=Racial Passive) (id=458619) [Passive] 
-Race             : Human (0x1)
-School           : Physical
-Spell Type       : None
-Attributes       : Is Ability (4), Passive (6)
-Effects          :
-#1 (id=1164720)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2309 (Category) | Target: Self (1)
-#2 (id=1164726)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -300000 | Scaled Value: -300000 | Misc Value: 2309 (Category) | Target: Self (1)
-Description      : Your Hearthstone cooldown is reduced by ${$s2/-60000} min and gains an additional charge.
-
 Name             : Siphoning Stiletto (id=458624) 
 School           : Shadow
 Spell Type       : Magic
@@ -248960,30 +247106,6 @@ Effects          :
 #3 (id=1168996)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 945060 (coefficient=6.3004) | Target: Self (1)
 Description      : $?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]
-
-Name             : Quiet Contemplation (id=461063) 
-Race             : Earthen (0x60000)
-School           : Physical
-Spell Type       : None
-GCD              : 1 seconds
-Duration         : 20 seconds
-Cooldown         : 1 seconds
-Category         : 11 (Type 0x0)
-Labels           : 1331
-Category Cooldown: 1 seconds
-Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
-Aura Interrupt   : Standing (18), Swimming (33)
-Effects          :
-#1 (id=1169179)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.55552 | Target: Self (1)
-#4 (id=1257618)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Draws upon your inner energy, restoring ${$m4*$d} health and ${$m4*$d} mana over $d. Must remain seated during contemplation.
-Tooltip          : Restores ${$w1/5} health and ${$w2/5} mana per second.
 
 Name             : Elemental Focusing Lens (id=461177) [Passive] 
 School           : Physical
@@ -259836,8 +257958,8 @@ Attributes       : No Aura Icon (60), Can Proc From Procs (122), Aura Points On 
 Effects          :
 #1 (id=1200897)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.
-Tooltip          : Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.
+Description      : Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.
+Tooltip          : Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.
 
 Name             : Chromebustible Bomb Suit (id=1217184) 
 School           : Fire
@@ -264490,38 +262612,6 @@ Effects          :
 Description      : $@spelldesc1229193
 Tooltip          : $w1%
 
-Name             : Recuperate (id=1231411) 
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Velocity         : 10 yards/sec
-Duration         : 30 seconds
-Labels           : 4874
-Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
-#2 (id=1223444)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
-#3 (id=1238524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Take a breather, prepare some food and have a meal. Restores ${$1231418s1*$1231418d}% of your maximum health over $1231418d.
-
-Name             : Recuperate (id=1231418) 
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Duration         : 10 seconds
-Labels           : 4874
-Triggered By     : Recuperate (1231411)
-Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Is Channelled (34), Allow While Stealthed (37), Is Self Channelled (38), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), Allow Cast While Channeling (308)
-Aura Interrupt   : Hostile Action Received (0), Damage (1), Moving (3), Under Water (7), Attacking (12), Use Item (13), Mount (17), Enter Combat (28), Falling (32), Jump (37)
-Effects          :
-#1 (id=1223445)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $@spelldesc1231411
-Tooltip          : Restoring $s1% health every sec.
-
 Name             : Disturbed Sands (id=1231664) 
 School           : Physical
 Spell Type       : None
@@ -265148,7 +263238,7 @@ Name             : Tempest Wrath (id=1233181)
 School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
-Duration         : 9 seconds
+Duration         : 12 seconds
 Cooldown         : 60 seconds
 Category         : 2442 (Type 0x0)
 Labels           : 5329
@@ -265162,7 +263252,7 @@ Effects          :
 #1 (id=1226436)  : Apply Aura (6) | Periodic Trigger Spell (23): Tempest Wrath every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1233196 | Target: Self (1)
 #2 (id=1227139)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc1233179
 Tooltip          : $@spellaura1233179
 
@@ -265824,9 +263914,9 @@ Triggered By     : Naran's Everdisc (1234283)
 Attributes       : Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1227736)  : Create Area Trigger (179)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 37614 | Target: at Self (18)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 37614 | Target: at Self (18)
 #2 (id=1265452)  : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 Description      : $?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233775[|CFFff0000$@spelldesc1247808|R
 
 ][]|CFFe6cc80Artifact Ability|R
@@ -266498,7 +264588,7 @@ Spell Type       : None
 Max Targets      : 5
 Duration         : 10 seconds
 Labels           : 4959
-Stacks           : 3 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Visible only to caster (conversations only) (343)
 Effects          :
@@ -269179,7 +267269,7 @@ $@spelldesc1242116
 Name             : Dreamweaving (id=1242115) 
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Triggered By     : Dreamweaving (1242114)
 Attributes       : Suppress Caster Procs (112), Allow Cast While Casting (135), Not Available While Charmed (174), Aura Points On Client (268), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343)
 Effects          :
@@ -269190,7 +267280,7 @@ Name             : Dreamweaving (id=1242116)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Unique (43), Suppress Caster Procs (112), Allow Cast While Casting (135), Not Available While Charmed (174), Aura Points On Client (268), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343)
@@ -269249,7 +267339,7 @@ Name             : Waking Frenzy (id=1242122)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 20 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
@@ -269264,7 +267354,7 @@ Name             : Waking Frenzy (id=1242125)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 12 seconds
+Duration         : 20 seconds
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Triggered By     : Waking Frenzy (1242122)
@@ -269294,7 +267384,7 @@ Variables        : $damageValue=${($max($AP,$SP)*($1250003w13/100))}
 Name             : Growing Tempest (id=1242203) [Hidden] 
 School           : Nature
 Spell Type       : None
-Duration         : 9 seconds
+Duration         : 12 seconds
 Cooldown         : 60 seconds
 Labels           : 4953
 Stacks           : 20 maximum
@@ -269304,7 +267394,7 @@ Effects          :
 #1 (id=1241634)  : Apply Aura (6) | Periodic Trigger Spell (23): Tempest Wrath every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1242225 | Target: Self (1)
 #2 (id=1241635)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2.5 | Scaled Value: 2.5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc1233179
 Tooltip          : Every $t1 sec, inflict $1233196s1 Nature damage to enemies within $1233196A1 yards and increase the damage of Tempest Wrath by $s2%.
 
@@ -269922,7 +268012,6 @@ Description      : $@spelldesc1244402
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Touch of Malice (id=1245385) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -270684,7 +268773,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
+Duration         : 12 seconds
 Cooldown         : 90 seconds
 Category         : 2442 (Type 0x0)
 Labels           : 5513
@@ -270867,7 +268956,7 @@ Description      : $@spelldesc1251666
 Name             : Lightforged (id=1251920) 
 School           : Physical
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 24 seconds
 Triggered By     : Vindicator's Judgment (1251045)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -270883,7 +268972,7 @@ Spell Type       : None
 Attributes       : Passive (6), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Aura Unique Per Caster (189), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1257248)  : Apply Party Aura (35) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spellname1251408 blesses up to $1252191s1 nearby allies to be guarded by val'kyr for $s1 sec.
 
 While guarded, fatal attacks instead are intercepted by the val'kyr and heal the target to their maximum health. Cannot trigger on the same target more often than once per $1252193d.
@@ -270903,7 +268992,7 @@ Name             : Flight of the Val'kyr (id=1252192)
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Triggered By     : Flight of the Val'kyr (1252191), Flight of the Val'kyr (1252516)
 Attributes       : Allow Cast While Dead (23), Allow Dead Target (64), Not In Arena or Rated Battleground (144), Absorb Cannot Be Ignore (214), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
 Effects          :
@@ -271086,13 +269175,13 @@ Name             : Forest's Bloom (id=1257531)
 School           : Physical
 Spell Type       : Magic
 Range            : 150 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1265453)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 3 | Scaled Value: 3 | Target: Targeted Ally (21)
+                   Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
 Description      : Increases attack and casting speed by $s1% for $d.
 Tooltip          : Attack and casting speed increased by $s1%.
 
@@ -271176,6 +269265,123 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc1258587
 Tooltip          : $@spelldesc1258587
+
+Name             : Commendation of the Court of Harvesters (id=1258627) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267390)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Court of Harvesters by $s1.
+
+Name             : Commendation of the Wild Hunt (id=1258629) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267393)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Wild Hunt by $s1.
+
+Name             : Commendation of the Undying Army (id=1258631) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267397)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Undying Army by $s1.
+
+Name             : Commendation of the Ascended (id=1258633) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267403)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Ascended by $s1.
+
+Name             : Commendation of Ve'nari (id=1258634) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267409)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with Ve'nari by $s1.
+
+Name             : Commendation of the Avowed (id=1258635) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267411)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Avowed by $s1.
+
+Name             : Commendation of the Court of Night (id=1258636) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267428)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Court of Night by $s1.
+
+Name             : Commendation of the Ember Court (id=1258637) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267430)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Ember Court by $s1.
+
+Name             : Commendation of the Stitchmasters (id=1258642) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267441)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Stitchmasters by $s1.
+
+Name             : Commendation of Marasmius (id=1258645) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267445)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with Marasmius by $s1.
+
+Name             : Commendation of the Death's Advance (id=1258648) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267449)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Death's Advance by $s1.
+
+Name             : Commendation of the Archivist's Codex (id=1258652) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267454)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Archivist's Codex by $s1.
+
+Name             : Commendation of the Enlightened (id=1258653) 
+School           : None
+Spell Type       : None
+GCD              : 1.5 seconds
+Effects          :
+#2 (id=1267456)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increases your reputation with the Enlightened by $s1.
 
 Name             : Brewing Storm (id=1258768) [Passive, Hidden] 
 School           : Physical
