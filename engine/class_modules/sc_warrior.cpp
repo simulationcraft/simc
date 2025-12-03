@@ -197,7 +197,6 @@ T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entri
 struct warrior_t : public parse_player_effects_t
 {
 public:
-  std::vector<attack_t*> rampage_attacks;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
   int never_surrender_percentage;
@@ -373,7 +372,6 @@ public:
     gain_t* rage_from_damage_taken;
     gain_t* ceannar_rage;
     gain_t* cold_steel_hot_blood;
-    gain_t* valarjar_berserking;
     gain_t* lord_of_war;
     gain_t* simmering_rage;
   } gain;
@@ -821,7 +819,6 @@ public:
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : parse_player_effects_t( sim, WARRIOR, name, r ),
-      rampage_attacks( 0 ),
       first_rampage_attack_missed( false ),
       active(),
       buff(),
@@ -5169,26 +5166,20 @@ struct overpower_t : public warrior_attack_t
 
 // Rampage ================================================================
 
-struct rampage_attack_t : public warrior_attack_t
+struct rampage_attack_base_t : public warrior_attack_t
 {
   int aoe_targets;
-  bool first_attack, valarjar_berserking, simmering_rage;
-  double rage_from_valarjar_berserking;
+  bool first_attack, simmering_rage;
   double hack_and_slash_chance;
-  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, util::string_view name )
+  rampage_attack_base_t( util::string_view name, warrior_t* p, const spell_data_t* rampage )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       first_attack( false ),
-      valarjar_berserking( false ),
       simmering_rage( false ),
-      rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       hack_and_slash_chance( p->talents.fury.hack_and_slash->proc_chance() )
   {
     background = true;
     dual = true;
-    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
-    if ( p->talents.fury.rampage->effectN( 2 ).trigger() == rampage )
-      first_attack = true;
   }
 
   void execute() override
@@ -5199,17 +5190,6 @@ struct rampage_attack_t : public warrior_attack_t
       p()->first_rampage_attack_missed = true;
     else if ( first_attack )
       p()->first_rampage_attack_missed = false;
-
-    // Expire buffs after the fourth attack triggers
-    // Also fire frenzy buff after the 4th attack triggers
-    if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
-    {
-      p()->buff.whirlwind->decrement();
-      p()->buff.brutal_finish->expire();
-
-      if ( p()->talents.fury.frenzy->ok() )
-        p()->buff.frenzy->trigger();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5226,6 +5206,32 @@ struct rampage_attack_t : public warrior_attack_t
       }
     }
   }
+};
+
+struct rampage_attack_t : public rampage_attack_base_t
+{
+  rampage_attack_t( util::string_view name, warrior_t* p, const spell_data_t* rampage )
+    : rampage_attack_base_t( name, p, rampage )
+  {
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    if ( p->talents.fury.rampage->effectN( 2 ).trigger() == rampage )
+      first_attack = true;
+  }
+
+  void execute() override
+  {
+    rampage_attack_base_t::execute();
+    // Expire buffs after the fourth attack triggers
+    // Also fire frenzy buff after the 4th attack triggers
+    if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
+    {
+      p()->buff.whirlwind->decrement();
+      p()->buff.brutal_finish->expire();
+
+      if ( p()->talents.fury.frenzy->ok() )
+        p()->buff.frenzy->trigger();
+    }
+  }
 
   int n_targets() const override
   {
@@ -5237,20 +5243,91 @@ struct rampage_attack_t : public warrior_attack_t
   }
 };
 
+struct rampage_attack_aoe_t : public rampage_attack_base_t
+{
+  rampage_attack_aoe_t( util::string_view name, warrior_t* p, const spell_data_t* rampage )
+    : rampage_attack_base_t( name, p, rampage )
+  {
+    if ( p->talents.fury.rampage->effectN( 6 ).trigger() == rampage )
+      first_attack = true;
+
+    aoe = -1;
+    reduced_aoe_targets = p->talents.fury.rampage->effectN( 10 ).base_value();
+  }
+
+  void execute() override
+  {
+    rampage_attack_base_t::execute();
+    // Expire buffs after the fourth attack triggers
+    // Also fire frenzy buff after the 4th attack triggers
+    if ( p()->talents.fury.rampage->effectN( 9 ).trigger()->id() == data().id() )
+    {
+      p()->buff.whirlwind->decrement();
+      p()->buff.brutal_finish->expire();
+
+      if ( p()->talents.fury.frenzy->ok() )
+        p()->buff.frenzy->trigger();
+    }
+  }
+};
+
 struct rampage_parent_t : public warrior_attack_t
 {
   double cost_rage;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
+  rampage_attack_t* rampage1_oh;
+  rampage_attack_t* rampage2_mh;
+  rampage_attack_t* rampage3_oh;
+  rampage_attack_t* rampage4_mh;
+  rampage_attack_aoe_t* rampage1_aoe_oh;
+  rampage_attack_aoe_t* rampage2_aoe_mh;
+  rampage_attack_aoe_t* rampage3_aoe_oh;
+  rampage_attack_aoe_t* rampage4_aoe_mh;
+
   rampage_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent())
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent()),
+    rampage1_oh( nullptr ),
+    rampage2_mh( nullptr ),
+    rampage3_oh( nullptr ),
+    rampage4_mh( nullptr ),
+    rampage1_aoe_oh( nullptr ),
+    rampage2_aoe_mh( nullptr ),
+    rampage3_aoe_oh( nullptr ),
+    rampage4_aoe_mh( nullptr )
   {
     parse_options( options_str );
-    for ( auto* rampage_attack : p->rampage_attacks )
+
+    rampage1_oh = new rampage_attack_t( "rampage1", p, p->talents.fury.rampage->effectN( 2 ).trigger() );
+    rampage1_oh->weapon = &(p->off_hand_weapon);
+    add_child( rampage1_oh );
+    rampage2_mh = new rampage_attack_t( "rampage2", p, p->talents.fury.rampage->effectN( 3 ).trigger() );
+    rampage2_mh->weapon = &(p->main_hand_weapon);
+    add_child( rampage2_mh );
+    rampage3_oh = new rampage_attack_t( "rampage3", p, p->talents.fury.rampage->effectN( 4 ).trigger() );
+    rampage3_oh->weapon = &(p->off_hand_weapon);
+    add_child( rampage3_oh );
+    rampage4_mh = new rampage_attack_t( "rampage4", p, p->talents.fury.rampage->effectN( 5 ).trigger() );
+    rampage4_mh->weapon = &(p->main_hand_weapon);
+    add_child( rampage4_mh );
+
+    if ( p->talents.fury.rampaging_ruin->ok() )
     {
-      add_child( rampage_attack );
+      // AOE attacks
+      rampage1_aoe_oh = new rampage_attack_aoe_t( "rampage1_aoe", p, p->talents.fury.rampage->effectN( 6 ).trigger() );
+      rampage1_aoe_oh->weapon = &(p->off_hand_weapon);
+      add_child( rampage1_aoe_oh );
+      rampage2_aoe_mh = new rampage_attack_aoe_t( "rampage2_aoe", p, p->talents.fury.rampage->effectN( 7 ).trigger() );
+      rampage2_aoe_mh->weapon = &(p->main_hand_weapon);
+      add_child( rampage2_aoe_mh );
+      rampage3_aoe_oh = new rampage_attack_aoe_t( "rampage3_aoe", p, p->talents.fury.rampage->effectN( 8 ).trigger() );
+      rampage3_aoe_oh->weapon = &(p->off_hand_weapon);
+      add_child( rampage3_aoe_oh );
+      rampage4_aoe_mh = new rampage_attack_aoe_t( "rampage4_aoe", p, p->talents.fury.rampage->effectN( 9 ).trigger() );
+      rampage4_aoe_mh->weapon = &(p->main_hand_weapon);
+      add_child( rampage4_aoe_mh );
     }
     track_cd_waste = false;
 
@@ -5269,10 +5346,20 @@ struct rampage_parent_t : public warrior_attack_t
 
     p()->enrage();
 
-    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[0], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 2 ).misc_value1()) );
-    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[1], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 3 ).misc_value1()) );
-    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[2], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
-    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[3], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
+    if( p()->talents.fury.rampaging_ruin->ok() && p()->buff.whirlwind->up() )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), rampage1_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage2_aoe_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 7 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage3_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 8 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage4_aoe_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 9 ).misc_value1()) );
+    }
+    else
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), rampage1_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 2 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage2_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 3 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage3_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
+      make_event<delayed_execute_event_t>( *sim, p(), rampage4_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
+    }
   }
 
   bool ready() override
@@ -7922,7 +8009,6 @@ void warrior_t::init_gains()
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
   gain.endless_rage           = get_gain( "endless_rage" );
   gain.lord_of_war            = get_gain( "lord_of_war" );
-  gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
   gain.ravager                = get_gain( "ravager" );
   gain.simmering_rage         = get_gain( "simmering_rage" );
@@ -8323,26 +8409,6 @@ struct into_the_fray_callback_t
 
 void warrior_t::create_actions()
 {
-  if ( talents.fury.rampage->ok() )
-  {
-    // rampage now hits 4 times instead of 5 and effect indexes shifted
-    rampage_attack_t* first  = new rampage_attack_t( this, talents.fury.rampage->effectN( 2 ).trigger(), "rampage1" );
-    rampage_attack_t* second = new rampage_attack_t( this, talents.fury.rampage->effectN( 3 ).trigger(), "rampage2" );
-    rampage_attack_t* third  = new rampage_attack_t( this, talents.fury.rampage->effectN( 4 ).trigger(), "rampage3" );
-    rampage_attack_t* fourth = new rampage_attack_t( this, talents.fury.rampage->effectN( 5 ).trigger(), "rampage4" );
-
-    // the order for hits is now OH MH OH MH
-    first->weapon  = &( this->off_hand_weapon );
-    second->weapon = &( this->main_hand_weapon );
-    third->weapon  = &( this->off_hand_weapon );
-    fourth->weapon = &( this->main_hand_weapon );
-
-    this->rampage_attacks.push_back( first );
-    this->rampage_attacks.push_back( second );
-    this->rampage_attacks.push_back( third );
-    this->rampage_attacks.push_back( fourth );
-  }
-
   if ( talents.shared.deep_wounds->ok() || talents.arms.mortal_wounds->ok() || talents.colossus.decimator->ok() )
     active.deep_wounds = new deep_wounds_t( this );
   if ( talents.arms.fatality->ok() )
@@ -8622,7 +8688,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     bool do_not_double_rage = false;
 
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage ||
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.simmering_rage ||
                                   g == gain.frothing_berserker || g == gain.thorims_might );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
