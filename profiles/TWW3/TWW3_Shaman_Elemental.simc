@@ -72,7 +72,7 @@ actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_rema
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.arc_discharge.stack<2&(buff.surge_of_power.up|!talent.surge_of_power)
 actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning,if=active_enemies>=6&buff.surge_of_power.up
-actions.aoe+=/lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
+actions.aoe+=/lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&(maelstrom<variable.mael_cap-15)&buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning,if=buff.storm_frenzy.stack=2&!talent.surge_of_power&maelstrom<variable.mael_cap-(15+buff.stormkeeper.up*spell_targets.chain_lightning*spell_targets.chain_lightning)
 # Use Lava Surge procs to consume fire part of fusion if you can also buff Earthquake with it.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&buff.fusion_of_elements_fire.up&!buff.master_of_the_elements.up&(maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_es.up|!talent.echoes_of_great_sundering))
@@ -98,6 +98,7 @@ actions.aoe+=/earthquake,if=((buff.stormkeeper.up&spell_targets.chain_lightning>
 actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=(buff.stormkeeper.up&active_enemies>=6|buff.tempest.up)&talent.surge_of_power
 actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=(buff.stormkeeper.up&active_enemies>=6|buff.tempest.up)&talent.surge_of_power
 actions.aoe+=/frost_shock,if=buff.icefury_dmg.up&!buff.ascendance.up&!buff.stormkeeper.up&(talent.call_of_the_ancestors|spell_targets.chain_lightning<=3)
+actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
 actions.aoe+=/chain_lightning
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
