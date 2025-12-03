@@ -1031,9 +1031,9 @@ public:
 
       parse_effects( p()->buff.bloodcraze );
 
-      parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 10, 11, 12 ) );
+      parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
-        parse_effects( p()->buff.recklessness, effect_mask_t( false ).enable( 10, 11, 12 ) );
+        parse_effects( p()->buff.recklessness, effect_mask_t( false ).enable( 11, 12, 13 ) );
 
       parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
     }
