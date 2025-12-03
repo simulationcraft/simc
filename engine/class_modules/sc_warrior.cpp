@@ -7930,10 +7930,8 @@ void warrior_t::init_rng()
   rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
   if ( talents.protection.best_served_cold->ok() )
-  {
-    // The 20% benefit when you have best served cold is not in spelldata.  Just in the description of 202560 (Best Served Cold)
-    rppm.revenge->set_modifier( rppm.revenge->get_modifier() + 0.20 );
-  }
+    rppm.revenge->set_modifier( rppm.revenge->get_modifier() + talents.protection.best_served_cold->effectN( 3 ).percent() );
+
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death :
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death :
                                                     talents.protection.sudden_death );
