@@ -3527,7 +3527,6 @@ struct thunder_blast_t : public warrior_attack_t
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  action_t* ignore_pain;
   action_t* ionizing_strike;
   double rend_target_cap;
   double rend_targets_hit;
@@ -3537,7 +3536,6 @@ struct thunder_blast_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
       lightning_strike( nullptr ),
-      ignore_pain( nullptr ),
       ionizing_strike( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
@@ -3569,9 +3567,6 @@ struct thunder_blast_t : public warrior_attack_t
       ionizing_strike = get_action<ionizing_strike_t>( "ionizing_strike", p );
       add_child( ionizing_strike );
     }
-
-    if ( p->talents.protection.violent_outburst->ok() )
-      ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
 
     if ( p->talents.protection.strategist->ok() )
     {
@@ -3610,13 +3605,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
 
     auto total_rage_gain = rage_gain;
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      ignore_pain->execute();
-      p()->buff.violent_outburst->expire();
-      total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
-    }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_blast, this );
 
@@ -3701,7 +3689,6 @@ struct thunder_clap_t : public warrior_attack_t
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  action_t* ignore_pain;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
@@ -3710,7 +3697,6 @@ struct thunder_clap_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
       lightning_strike( nullptr ),
-      ignore_pain( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -3731,11 +3717,6 @@ struct thunder_clap_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_thunder_clap", p );
       add_child( lightning_strike );
-    }
-
-    if ( p->talents.protection.violent_outburst->ok() )
-    {
-      ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
     }
 
     if ( p->talents.protection.strategist->ok() )
@@ -3772,13 +3753,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     auto total_rage_gain = rage_gain;
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      ignore_pain->execute();
-      p()->buff.violent_outburst->expire();
-      total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
-    }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap, this );
 
@@ -5684,7 +5658,7 @@ struct shield_slam_t : public warrior_attack_t
     {
       ignore_pain->execute();
       p()->buff.violent_outburst->expire();
-      total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
+      total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 2 ).percent();
     }
 
     p() -> buff.whirlwind->decrement();
