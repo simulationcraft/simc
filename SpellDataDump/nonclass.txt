@@ -245655,6 +245655,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Triggered By     : Blessing of the Capybara (1252524), Claws of Halazzi (1252814), Jan'alai's Flames (1252817)
 Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1256798)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -245880,6 +245881,66 @@ Effects          :
 #2 (id=1257737)  : Remove Aura (203): Flight of the Val'kyr
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1252192 | Target: Self (1)
 Description      : $@spelldesc1252190
+
+Name             : Blessing of the Capybara (id=1252524) 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Attributes       : Aura Is Buff (140), Aura Points On Client (268)
+Effects          :
+#1 (id=1257750)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+#2 (id=1265626)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1251904
+Tooltip          : Blessed by the Capybara loa, gaining $w1 $pri.
+
+Name             : Claws of Halazzi (id=1252814) 
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Travel Time      : 0.4 seconds
+Attributes       : Aura Is Debuff (26), Missile Speed is Delay (in sec) (292)
+Effects          :
+#1 (id=1258192)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=1265627)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1251904
+
+Name             : Jan'alai's Flames (id=1252817) 
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Travel Time      : 1 seconds
+Attributes       : Missile Speed is Delay (in sec) (292)
+Effects          :
+#1 (id=1258197)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Target (63) -> at Enemy in Area (16)
+#2 (id=1265620)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1251904
+Description      : Scorched by the flames of the dragonhawk loa, Jan'alai.
+Tooltip          : Scorched by the flames of the dragonhawk loa, Jan'alai.
+
+Name             : Akil'zon's Cry of Victory (id=1252818) 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 90
+Duration         : 15 seconds
+Attributes       : Aura Is Buff (140), Aura Points On Client (268)
+Effects          :
+#1 (id=1258198)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 74.62438 (coefficient=0.569302) | Rating: Haste | Target: Self (1)
+#2 (id=1265043)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 5 | Scaled Value: 23.70931 (coefficient=0.180876) | Rating: RunSpeed | Target: Self (1)
+Tooltip          : Akil'zon's Cry of Victory inspires you, increasing your Haste by $w1 and Speed by $w2.
+
+Name             : Nalorakk's Call to War (id=1252832) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Is Buff (140), Extra Initial Period (169)
+Effects          :
+#1 (id=1258231)  : Apply Aura (6) | Periodic Trigger Spell (23): Nalorakk's Call to War every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1257183 | Target: Self (1)
 
 Name             : Echo of Light (id=1252844) [Hidden] 
 School           : Physical
@@ -246987,6 +247048,20 @@ Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 36.80334 (coefficient=0.280769) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
+
+Name             : Nalorakk's Call to War (id=1257183) 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 90
+Duration         : 6 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered By     : Nalorakk's Call to War (1252832)
+Attributes       : Aura Is Buff (140), Aura Points On Client (268)
+Effects          :
+#1 (id=1265057)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 3.711937 (coefficient=0.028318) | Rating: Crit | Target: Self (1)
+Tooltip          : Nalorakk's Call to War spurs you on, increasing your Critical Strike by $w1.
 
 Name             : Forest's Bloom (id=1257531) 
 School           : Physical

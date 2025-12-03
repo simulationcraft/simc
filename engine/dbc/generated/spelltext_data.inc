@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.64611
-static constexpr std::array<spelltext_data_t, 28645> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28649> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27115,9 +27115,12 @@ static constexpr std::array<spelltext_data_t, 28645> __spelltext_data { {
   { 1252431, "$@spelldesc1252373", 0, 0 },
   { 1252433, "Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. \r\n\r\nEnhances your weapons for $187878d, causing Stormstrike and Lava Lash to discharge ${$195592s1*$<CAP>/$AP} Nature damage up to $195592i enemies in front of you. $?s1252373[Multiple applications may overlap.][]", 0, 0 },
   { 1252516, "$@spelldesc1252190", 0, 0 },
+  { 1252524, 0, "Blessed by the Capybara loa, gaining $w1 $pri.", 0 },
   { 1252708, "Raptor Strike increases the damage of Raptor Strike by $259388s1% for $259388d. Multiple applications may overlap.", 0, 0 },
   { 1252738, "Gaining a stack of Mongoose Fury has a $s1% chance to increase the damage of your next Raptor Strike by $1252741s1%.", 0, 0 },
   { 1252741, "$@spelldesc1252738", "Your next Raptor Strike deals $s1% increased damage.", 0 },
+  { 1252817, "Scorched by the flames of the dragonhawk loa, Jan'alai.", "Scorched by the flames of the dragonhawk loa, Jan'alai.", 0 },
+  { 1252818, 0, "Akil'zon's Cry of Victory inspires you, increasing your Haste by $w1 and Speed by $w2.", 0 },
   { 1252841, "Reduces the mana cost of Chain Heal by $s1%.", 0, 0 },
   { 1252871, "Channel the power of the enraged moon to deal $o1 Arcane damage to your target over $d. Casting Mangle extends its duration by ${$s2/1000}.1 sec and generates ${$1253582s1/10} Rage.", "Suffering $w1 Arcane damage each $t1.", 0 },
   { 1252874, "Increases the healing done by $?a455630[Surging Totem by $s1%.][Healing Rain by $s1% and reduces its cast time by ${$s2/-1000}.1 sec.]", 0, 0 },
@@ -27319,6 +27322,7 @@ static constexpr std::array<spelltext_data_t, 28645> __spelltext_data { {
   { 1257011, "Raptor Strike and Boomstick deal $s1% increased critical strike damage.", 0, 0 },
   { 1257052, "Consume the life force of each target afflicted by your damaging periodic effects, dealing ${$1257065s1*(1+ $d/$t1)} Shadowflame damage over $d.\r\n\r\nDamage dealt by Dark Harvest heals you for ${$1257065e1*100}% of damage done.", "Consuming the life force of each target afflicted by your damaging periodic effects, dealing ${$1257065s1*(1+ $d/$t1)} Shadowflame damage over $d.\r\n\r\nDamage dealt by Dark Harvest heals you for ${$1257065e1*100}% of damage done.", 0 },
   { 1257065, "$@spelldesc1257052", 0, 0 },
+  { 1257183, 0, "Nalorakk's Call to War spurs you on, increasing your Critical Strike by $w1.", 0 },
   { 1257343, "Consuming Hot Streak has a $s1% chance to grant you a stack of Fired Up, increasing your Fire damage by $1257350s1% for $1257350d. Multiple applications may overlap.", 0, 0 },
   { 1257348, "Combustion significantly increases your chance of gaining Fired Up, reducing each time you gain Fired Up.\r\n\r\nAdditionally Fired Up now extends Combustion's duration by ${$s2/1000}.1 sec.", 0, 0 },
   { 1257349, "Gaining Fired Up reduces the cooldown of Fire Blast by ${$s1/1000}.1 sec.\r\n\r\nAll Fire damage dealt is increased by $s2%.", 0, 0 },

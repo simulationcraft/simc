@@ -131,6 +131,7 @@ public:
     affected_by_shadow_weaving   = true;
     cooldown                     = p.cooldowns.mind_blast;
     cooldown->hasted             = true;
+    triggers_atonement           = true;
     idol_of_nzoth_execute_stacks = 6;
 
     if ( priest().talents.discipline.expiation.enabled() )
@@ -138,9 +139,6 @@ public:
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
     }
-
-    // Extra charge of Mind Blast
-    triggers_atonement = true;
   }
 
   void execute() override
@@ -274,8 +272,7 @@ public:
     // buffs up. Do this before calling reset as that will also reset the cooldown.
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      cooldown->charges =
-          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 1 ).base_value() );
+      cooldown->charges = data().charges();
     }
 
     priest_spell_t::reset();

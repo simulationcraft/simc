@@ -5458,7 +5458,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
   bool action_ready() override
   {
-    if ( !this->replacement_action )
+    if ( !this->replacement_action || this->cooldown->duration == 0_ms )
       return action_base_t::action_ready();
 
     if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
@@ -5469,7 +5469,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
   void queue_execute( execute_type et ) override
   {
-    if ( !this->replacement_action )
+    if ( !this->replacement_action || this->cooldown->duration == 0_ms )
       return action_base_t::queue_execute( et );
 
     if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )

@@ -896,7 +896,7 @@ public:
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
-  void trigger_icicle( int count = 1 );
+  void trigger_icicle( int count = 1, bool grant_buff = true );
   void trigger_arcane_salvo( proc_t* source, int stacks = 1, double chance = 1.0 );
 };
 
@@ -4704,7 +4704,8 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     if ( p()->talents.glaciate.ok() )
     {
       // Seems to trigger an Icicle each tick
-      p()->trigger_icicle();
+      // TODO: Doesn't trigger the GS buff on its own, needs the natural Icicle regen to happen
+      p()->trigger_icicle( 1, !p()->bugs );
       timespan_t cdr = -p()->talents.glaciate->effectN( 2 ).time_value();
       p()->cooldowns.flurry->adjust( cdr, false );
       p()->cooldowns.frozen_orb->adjust( cdr, false );
@@ -6906,14 +6907,14 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   return shatter_stacks;
 }
 
-void mage_t::trigger_icicle( int count )
+void mage_t::trigger_icicle( int count, bool grant_buff )
 {
   if ( !talents.icicles.ok() || count <= 0 )
     return;
 
   int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
   state.icicles = std::min( state.icicles + count, max_icicles );
-  if ( state.icicles == max_icicles )
+  if ( grant_buff && state.icicles == max_icicles )
     buffs.glacial_spike->trigger();
 }
 

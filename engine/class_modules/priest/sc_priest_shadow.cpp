@@ -1700,12 +1700,8 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
     this->reactable = true;
 
     // Create a stack change callback to adjust the number of Mind Blast charges.
-    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-      if ( cur > old )
-      {
-        priest().cooldowns.mind_blast->reset( true );
-      }
-    } );
+    set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override

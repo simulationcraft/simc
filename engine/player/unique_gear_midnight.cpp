@@ -254,12 +254,22 @@ void potion_of_recklessness( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
-}
+}  // namespace consumables
 
 namespace enchants
 {
+// Powerful Eversong Diamond
+// 1258209 driver
+void powerful_eversong_diamond( special_effect_t& effect )
+{
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
 
+  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    effect.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
+
+  effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
+}  // namespace enchants
 
 namespace embellishments
 {
@@ -308,14 +318,14 @@ void arcanoweave_lining( special_effect_t& effect )
     effect.player->register_precombat_begin( [ insight, uptime_pct ]( player_t* p ) {
       insight->trigger();
 
-      make_repeating_event( p->sim,
-        [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
-        [ insight, p, uptime_pct ] {  // gauss rng uptime check
-          if ( p->rng().roll( uptime_pct ) )
-            insight->trigger();
-          else
-            insight->expire();
-        } );
+      make_repeating_event(
+          p->sim, [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
+          [ insight, p, uptime_pct ] {                                             // gauss rng uptime check
+            if ( p->rng().roll( uptime_pct ) )
+              insight->trigger();
+            else
+              insight->expire();
+          } );
     } );
   }
 }
@@ -335,10 +345,10 @@ void sunfire_silk_lining( special_effect_t& effect )
   }
 
   auto acumen = make_buff<stat_buff_t>( effect.player, "radiant_acumen", effect.trigger()->effectN( 1 ).trigger() )
-    ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
+                    ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
 
   effect.custom_buff = acumen;
-  effect.spell_id = effect.trigger()->id();
+  effect.spell_id    = effect.trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -352,7 +362,7 @@ void sunfire_silk_lining( special_effect_t& effect )
 void devouring_banding( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "devouring banding damage using effect driver value instead of rppm driver value" );
+                             "devouring banding damage using effect driver value instead of rppm driver value" );
   effect.player->sim->error( PLACEHOLDER, "devouring banding buff not doubled with two copies" );
 
   auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
@@ -402,7 +412,7 @@ void devouring_banding( special_effect_t& effect )
       dual = true;
 
       impact_action = create_proc_action<generic_proc_t>( "devouring_bolt", e, data().effectN( 1 ).trigger() );
-      stats = impact_action->stats;  // report the damage only
+      stats         = impact_action->stats;  // report the damage only
     }
   };
 
@@ -426,7 +436,7 @@ void devouring_banding( special_effect_t& effect )
 void blessed_pango_charm( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "blessed pango charm buff using coeff spell value instead of effect driver value" );
+                             "blessed pango charm buff using coeff spell value instead of effect driver value" );
 
   auto stat_amount = effect.player->find_spell( 1259060 )->effectN( 1 ).average( effect );
 
@@ -438,7 +448,7 @@ void blessed_pango_charm( special_effect_t& effect )
   }
 
   auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.trigger() )
-    ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+                     ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   effect.custom_buff = favored;
 
@@ -452,11 +462,11 @@ void blessed_pango_charm( special_effect_t& effect )
 // 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-    "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
+  effect.player->sim->error(
+      PLACEHOLDER, "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
 
   auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
-  auto heal_amount = effect.driver()->effectN( 2 ).average( effect );
+  auto heal_amount   = effect.driver()->effectN( 2 ).average( effect );
 
   if ( auto proc = effect.player->find_action( "primal_spore_explosion" ) )
   {
@@ -477,7 +487,7 @@ void primal_spore_binding( special_effect_t& effect )
   damage->base_dd_max += damage_amount;
 
   auto heal =
-    create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
+      create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
   heal->base_dd_min += heal_amount;
   heal->base_dd_max += heal_amount;
   heal->name_str_reporting = "Heal";
@@ -499,7 +509,7 @@ void primal_spore_binding( special_effect_t& effect )
 void prismatic_focusing_iris( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
+                             "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
   auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
 
@@ -511,7 +521,7 @@ void prismatic_focusing_iris( special_effect_t& effect )
   }
 
   auto damage_spell = effect.trigger()->effectN( 1 ).trigger();
-  auto pct_per_gem = effect.driver()->effectN( 3 ).percent();
+  auto pct_per_gem  = effect.driver()->effectN( 3 ).percent();
 
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
@@ -519,12 +529,187 @@ void prismatic_focusing_iris( special_effect_t& effect )
   dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
-  effect.spell_id = effect.trigger()->id();
+  effect.spell_id       = effect.trigger()->id();
   effect.execute_action = dot;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Thalassian Phoenix Torque
+// 1251815 Driver
+// 1251907 Damage
+// 1251908 Heal
+void thalassian_phoenix_torque( special_effect_t& effect )
+{
+  auto pct_per_gem = effect.driver()->effectN( 2 ).percent();
+
+  auto damage         = create_proc_action<generic_proc_t>( "phoenix_flames", effect, 1251907 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= bandolier_mul( effect.player );
+
+  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames", effect, effect.player->find_spell( 1251908 ) );
+  heal->base_dd_min = heal->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  heal->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+  heal->base_multiplier *= role_mult( effect );
+  heal->base_multiplier *= bandolier_mul( effect.player );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        if ( s->target->is_enemy() )
+          damage->execute_on_target( s->target );
+        else
+          heal->execute_on_target( s->target );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Signet of Azerothian Blessings
+// 1251902 Driver
+// 1252202 Buff
+void signet_of_azerothian_blessings( special_effect_t& effect )
+{
+  auto value = effect.driver()->effectN( 1 ).average( effect );
+  value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
+  value *= bandolier_mul( effect.player );
+
+  auto buff =
+      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings", effect.driver()->effectN( 1 ).trigger() );
+
+  for ( auto stat : secondary_ratings )
+    buff->add_stat( stat, value );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Loa Worshiper's Band
+// 1251904 Driver
+// 1252524 Capybara Buff - Always Available
+// 1257183 Nalorakk Buff - Garnet
+// 1252832 Nalorakk Periodic Trigger - Garnet
+// 1252814 Halazzi Damage - Amethyst
+// 1252817 Janalai Damage - Lapis
+// 1252818 Akilzon Buff - Peridot
+// TODO: Does bandolier do anything special for this?
+void loa_worshipers_band( special_effect_t& effect )
+{
+  enum loa_e : unsigned
+  {
+    LOA_CAPYBARA,
+    LOA_NALORAKK,
+    LOA_HALAZZI,
+    LOA_JANALAI,
+    LOA_AKILZON,
+    LOA_MAX
+  };
+
+  struct loa_worshipers_band_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* capybara;
+    buff_t* nalorakk;
+    action_t* halazzi;
+    action_t* janalai;
+    buff_t* akilzon;
+
+    std::vector<loa_e> loas;
+
+    loa_worshipers_band_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        capybara( nullptr ),
+        nalorakk( nullptr ),
+        halazzi( nullptr ),
+        janalai( nullptr ),
+        akilzon( nullptr ),
+        loas()
+    {
+      // Capybara is always available, even with no gems socketed.
+      loas.push_back( LOA_CAPYBARA );
+      double capy_value = effect.driver()->effectN( 2 ).average( effect );
+      capy_value *= bandolier_mul( effect.player );
+      capybara = make_buff<stat_buff_t>( e.player, "blessing_of_the_capybara", e.player->find_spell( 1252524 ) )
+                     ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ) )
+      {
+        loas.push_back( LOA_NALORAKK );
+        const spell_data_t* nalorakk_spell = e.player->find_spell( 1257183 );
+        double nalo_value = nalorakk_spell->effectN( 1 ).average( e );
+        nalo_value *= bandolier_mul( effect.player );
+        auto nalorakk_stat =
+            make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
+                ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
+        nalorakk =
+            make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
+                ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ) )
+      {
+        loas.push_back( LOA_HALAZZI );
+        double halazzi_value = effect.driver()->effectN( 3 ).average( effect );
+        halazzi_value *= bandolier_mul( effect.player );
+        halazzi              = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
+        halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
+        // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
+      {
+        loas.push_back( LOA_JANALAI );
+        double janalai_value = effect.driver()->effectN( 4 ).average( effect );
+        janalai_value *= bandolier_mul( effect.player );
+        janalai              = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai->base_dd_min = janalai->base_dd_max = janalai_value;
+        janalai->aoe = -1;
+        // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
+      {
+        loas.push_back( LOA_AKILZON );
+        const spell_data_t* akilzon_spell = e.player->find_spell( 1252818 );
+        double akilzon_value              = akilzon_spell->effectN( 1 ).average( e );
+        akilzon_value *= bandolier_mul( effect.player );
+        // Akilzon buff has the values in the buff itself.
+        akilzon = make_buff<stat_buff_t>( e.player, "akilzons_cry_of_victory", akilzon_spell )
+                      ->add_stat_from_effect( 1, akilzon_value );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto loa = rng().range( loas );
+      switch ( loa )
+      {
+        case LOA_CAPYBARA:
+          capybara->trigger();
+          break;
+        case LOA_NALORAKK:
+          nalorakk->trigger();
+          break;
+        case LOA_HALAZZI:
+          halazzi->execute_on_target( s->target );
+          break;
+        case LOA_JANALAI:
+          janalai->execute_on_target( s->target );
+          break;
+        case LOA_AKILZON:
+          akilzon->trigger();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  new loa_worshipers_band_cb_t( effect );
+}
+
+}  // namespace embellishments
 
 namespace trinkets
 {
@@ -997,6 +1182,76 @@ void sealed_chaos_urn( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// Lost Idol of the Hash'ey
+// 1253111 Driver
+// 1266182 Primary
+// 1266184 Secondary (Highest)
+// 1266197 Secondary (Lowest)
+// TODO: Can the different buffs overlap? Or do they expire existing ones?
+void lost_idol_of_the_hashey( special_effect_t& effect )
+{
+  struct lost_idol_of_the_hashey_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* primary;
+    std::unordered_map<stat_e, buff_t*> highest;
+    std::unordered_map<stat_e, buff_t*> lowest;
+
+    lost_idol_of_the_hashey_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), primary( nullptr ), highest(), lowest()
+    {
+      primary = create_buff<stat_buff_t>( e.player, "bear", e.player->find_spell( 1266182 ) )
+                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+
+      create_all_stat_buffs( e, e.player->find_spell( 1266184 ), e.driver()->effectN( 1 ).average( e ),
+                             [ & ]( stat_e s, buff_t* b ) { highest[ s ] = b; } );
+
+      create_all_stat_buffs( e, e.player->find_spell( 1266197 ), e.driver()->effectN( 1 ).average( e ),
+                             [ & ]( stat_e s, buff_t* b ) { lowest[ s ] = b; } );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      int type = rng().range( 0, 3 );
+
+      if ( type == 0 )
+        primary->trigger();
+
+      if ( type == 1 )
+      {
+        for ( auto& stat : secondary_ratings )
+          highest[ stat ]->expire();
+
+        auto stat = util::highest_stat( listener, secondary_ratings );
+        highest[ stat ]->trigger();
+      }
+
+      if ( type == 2 )
+      {
+        for ( auto& stat : secondary_ratings )
+          lowest[ stat ]->expire();
+
+        auto stat = util::lowest_stat( listener, secondary_ratings );
+        lowest[ stat ]->trigger();
+      }
+    }
+  };
+
+  new lost_idol_of_the_hashey_cb_t( effect );
+}
+
+// Withered Saptor's Paw
+// 1253110 Driver
+// 1255226 Buff
+void withered_saptors_paw( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "withered_saptors_paw", effect.player->find_spell( 1255226 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1072,12 +1327,12 @@ void torments_duality( special_effect_t& effect )
 
   new torments_duality_cb_t( effect );
 }
-}
+}  // namespace weapons
 
 namespace armors
 {
 
-}
+}  // namespace armors
 
 namespace sets
 {
@@ -1165,7 +1420,7 @@ void root_wardens_regalia( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
-}
+}  // namespace sets
 
 void register_special_effects()
 {
@@ -1209,6 +1464,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
   // Oils
   // Enchants & gems
+  register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   // Embellishments & Tinkers
   register_special_effect( 1229511, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -1217,6 +1473,9 @@ void register_special_effects()
   register_special_effect( 1244276, embellishments::primal_spore_binding );
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
+  register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
+  register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
+  register_special_effect( 1251904, embellishments::loa_worshipers_band );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
@@ -1234,6 +1493,8 @@ void register_special_effects()
   register_special_effect( { 1260592, 1265809 }, trinkets::plume_of_beloren ); // Radiant and Umbral Plume
   register_special_effect( { 1265806, 1265805 }, DISABLED_EFFECT ); // Radiant and Umbral Plume on use
   register_special_effect( 1253115, trinkets::sealed_chaos_urn );
+  register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
+  register_special_effect( 1253110, trinkets::withered_saptors_paw );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
