@@ -6511,16 +6511,8 @@ struct last_stand_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     if ( p() -> talents.protection.bolster -> ok() )
-    {
-      if ( p()->buff.shield_block->check() )
-      {
-        p()->buff.shield_block->extend_duration( p(), data().duration() );
-      }
-      else
-      {
-        p()->buff.shield_block->trigger( data().duration() ) ;
-      }
-    }
+      p()->buff.shield_wall->extend_duration_or_trigger( p()->talents.protection.bolster->effectN( 2 ).time_value() );
+
     p()->buff.last_stand->trigger();
   }
 };
