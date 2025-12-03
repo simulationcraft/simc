@@ -1061,8 +1061,6 @@ public:
         parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ) );
       }
       parse_effects( p()->buff.cut_to_the_bone );
-      // Effect 3 is the auto attack mod
-      parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
 
       parse_effects( p()->buff.critical_conclusion );
       parse_effects( p()->buff.deeper_wounds );
