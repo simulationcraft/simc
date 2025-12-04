@@ -1164,28 +1164,7 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
 
   print_profilesets_chart( out, sim );
 
-
-  if ( sim.sim_controller_data.size() )
-  {
-    out << "<h3 class=\"toggle\">Profileset Sim Control</h3>\n";
-    out << "<div class=\"toggle-content hide\">\n";
-
-    out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Sim Controllers</strong><ul>\n";
-    for ( const auto& [ key, controller_data ] : sim.sim_controller_data )
-      controller_data.report_html_options( out );
-    out << "</ul></div>\n";
-
-    // report source, location, and reason of interrupt for
-    // all registered profileset sim controllers
-    // TODO: check if any are culled, otherwise omit table
-    out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Interrupted Profilesets</strong><ul>\n";
-    for ( const auto& [ key, controller_data ] : sim.sim_controller_data )
-      if ( controller_data.exit_reasons.size() )
-        controller_data.report_html_profileset( out );
-    out << "</ul></div>\n";
-    out << "</div>";
-  }
-
+  profileset_controller_t::html_report( sim, out );
 
   out << "</div>";
   out << "</div>";

@@ -41,6 +41,7 @@ WINDWALKER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
+#include "sim/sim_controller.hpp"
 
 #include <deque>
 
@@ -5551,10 +5552,28 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
 
 void monk_t::init()
 {
+  auto t_pc  = []( sim_t *sim, unsigned int id ) { return std::make_unique<tier_set_count_t>( sim, id ); };
+  auto t_pcd = []( std::string_view options ) { return std::make_unique<tier_set_count_t::data_t>( options ); };
+  profileset_controller_t::register_controller( "tier", { t_pc, t_pcd } );
+
   base_t::init();
 
-  sim_controller_t::register_sim_controller<min_player_stat_t>( sim, this, STAT_CRIT_RATING, 100.0 );
-  sim_controller_t::register_sim_controller<tier_set_count_t>( sim, this, TWW2, B2 );
+  // if ( !sim->parent )
+  //   sim->profileset_controller_data.emplace_back( "tier", "" );
+  // if ( sim->parent )
+  // {
+  //   for ( auto& pcd : sim->parent->profileset_controller_data )
+  //     pcd.construct_controller( sim );
+  //   for ( auto& pc : sim->profileset_controller )
+  //   {
+  //     auto c_pc = static_cast<tier_set_count_t*>( pc.get() );
+  //     c_pc->target_player = this;
+  //     c_pc->tier = TWW2;
+  //     c_pc->count = B2;
+  //   }
+  // }
+  // sim_controller_t::register_sim_controller<min_player_stat_t>( sim, this, STAT_CRIT_RATING, 100.0 );
+  // sim_controller_t::register_sim_controller<tier_set_count_t>( sim, this, TWW2, B2 );
 }
 
 // monk_t::init_spells ======================================================
