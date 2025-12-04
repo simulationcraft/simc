@@ -1,4 +1,4 @@
-// Active class spells, wow build 12.0.0.64611
+// Active class spells, wow build 12.0.0.64741
 static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
@@ -147,6 +147,7 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  5,    0,   21562,       0, "Power Word: Fortitude"              },
   {  5,  256,     527,  440006, "Purify"                             },
   {  5,  256,   47540,       0, "Penance"                            },
+  {  5,  256,  200829,       0, "Plea"                               },
   {  5,  256,  212036,       0, "Mass Resurrection"                  },
   {  5,  256,  440006,       0, "Purify Disease"                     },
   {  5,  256, 1229376,       0, "Single-Button Assistant"            },
@@ -253,7 +254,6 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  9,  266, 1229376,       0, "Single-Button Assistant"            },
   {  9,  267,     348,     172, "Immolate"                           },
   {  9,  267,   29722,     686, "Incinerate"                         },
-  {  9,  267,  116858,       0, "Chaos Bolt"                         },
   {  9,  267, 1229376,       0, "Single-Button Assistant"            },
   { 10,    0,  100780,       0, "Tiger Palm"                         },
   { 10,    0,  100784,       0, "Blackout Kick"                      },
@@ -354,7 +354,7 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.64611
+// Pet active spells, wow build 12.0.0.64741
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 12.0.0.64611
+// Permanent item enchants, wow build 12.0.0.64741
 static constexpr std::array<permanent_enchant_entry_t, 1065> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -317,8 +317,8 @@ static constexpr std::array<permanent_enchant_entry_t, 1065> __permanent_enchant
   { 8029, 14,  4, 0x00000008, 0x0000001f, "enchant_shoulders__thalassian_recovery" },
   { 7974, 13, 19, 0x20000000, 0x00000628, "enchant_tool__amani_perception"    },
   { 7975, 14, 19, 0x20000000, 0x00000628, "enchant_tool__amani_perception"    },
-  { 7976, 13, 19, 0x20000000, 0x000019d7, "enchant_tool__amani_resourcfulness" },
-  { 7977, 14, 19, 0x20000000, 0x000019d7, "enchant_tool__amani_resourcfulness" },
+  { 7976, 13, 19, 0x20000000, 0x000019d7, "enchant_tool__amani_resourcefulness" },
+  { 7977, 14, 19, 0x20000000, 0x000019d7, "enchant_tool__amani_resourcefulness" },
   { 8002, 13, 19, 0x20000000, 0x00000628, "enchant_tool__haranir_finesse"     },
   { 8003, 14, 19, 0x20000000, 0x00000628, "enchant_tool__haranir_finesse"     },
   { 8004, 13, 19, 0x20000000, 0x000019d7, "enchant_tool__haranir_multicrafting" },

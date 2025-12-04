@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.0.64611
-static constexpr std::array<item_name_description_t, 1028> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.0.64741
+static constexpr std::array<item_name_description_t, 1029> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1028,5 +1028,6 @@ static constexpr std::array<item_name_description_t, 1028> __item_name_descripti
   { 14407, "Epic Crafted"                                },
   { 14408, "Hard"                                        },
   { 14409, "Nightmare"                                   },
+  { 14410, "Tan"                                         },
 } };
 

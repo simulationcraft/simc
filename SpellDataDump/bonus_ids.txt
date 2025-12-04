@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64611 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64741 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -7656,14 +7656,14 @@ bonus_id={ 12642 }, quality={ legendary }, effects={ Temporal Retaliation (id=12
 bonus_id={ 12643 }, quality={ epic }, effects={ Temporal Retaliation (id=1234419, index=0, type=equip) }
 bonus_id={ 12644 }, quality={ rare }, effects={ Temporal Retaliation (id=1234420, index=0, type=equip) }
 bonus_id={ 12645 }, effects={ Temporal Retaliation (id=1234421, index=0, type=equip) }
-bonus_id={ 12646 }, quality={ legendary }, effects={ Storm Surger (id=1234373, index=0, type=equip) }
-bonus_id={ 12647 }, quality={ epic }, effects={ Storm Surger (id=1234374, index=0, type=equip) }
-bonus_id={ 12648 }, quality={ rare }, effects={ Storm Surger (id=1234375, index=0, type=equip) }
-bonus_id={ 12649 }, effects={ Storm Surger (id=1234376, index=0, type=equip) }
-bonus_id={ 12650 }, quality={ legendary }, effects={ Arcane Ward (id=1234368, index=0, type=equip) }
-bonus_id={ 12651 }, quality={ epic }, effects={ Arcane Ward (id=1234369, index=0, type=equip) }
-bonus_id={ 12652 }, quality={ rare }, effects={ Arcane Ward (id=1234370, index=0, type=equip) }
-bonus_id={ 12653 }, effects={ Arcane Ward (id=1234371, index=0, type=equip) }
+bonus_id={ 12646 }, quality={ legendary }, effects={ Unknown Effect (id=212706) }
+bonus_id={ 12647 }, quality={ epic }, effects={ Unknown Effect (id=212704) }
+bonus_id={ 12648 }, quality={ rare }, effects={ Unknown Effect (id=212707) }
+bonus_id={ 12649 }, effects={ Unknown Effect (id=212705) }
+bonus_id={ 12650 }, quality={ legendary }, effects={ Unknown Effect (id=212710) }
+bonus_id={ 12651 }, quality={ epic }, effects={ Unknown Effect (id=212708) }
+bonus_id={ 12652 }, quality={ rare }, effects={ Unknown Effect (id=212711) }
+bonus_id={ 12653 }, effects={ Unknown Effect (id=212709) }
 bonus_id={ 12654 }, quality={ legendary }, effects={ Brewing Storm (id=1258768, index=0, type=equip) }
 bonus_id={ 12655 }, quality={ epic }, effects={ Brewing Storm (id=1258769, index=0, type=equip) }
 bonus_id={ 12656 }, quality={ rare }, effects={ Brewing Storm (id=1258770, index=0, type=equip) }
@@ -7978,15 +7978,15 @@ bonus_id={ 13328 }, quality={ artifact }
 bonus_id={ 13329 }, quality={ artifact }
 bonus_id={ 13330 }, quality={ artifact }
 bonus_id={ 13331 }, quality={ artifact }
-bonus_id={ 13341 }
-bonus_id={ 13342 }
-bonus_id={ 13343 }
-bonus_id={ 13346 }
-bonus_id={ 13347 }
-bonus_id={ 13350 }
-bonus_id={ 13351 }
-bonus_id={ 13354 }
-bonus_id={ 13355 }
+bonus_id={ 13341 }, base_ilevel={ 233 }
+bonus_id={ 13342 }, base_ilevel={ 237 }
+bonus_id={ 13343 }, base_ilevel={ 240 }
+bonus_id={ 13346 }, base_ilevel={ 250 }, req_ilevel={ 90 }
+bonus_id={ 13347 }, base_ilevel={ 253 }, req_ilevel={ 90 }
+bonus_id={ 13350 }, base_ilevel={ 263 }, req_ilevel={ 90 }
+bonus_id={ 13351 }, base_ilevel={ 266 }, req_ilevel={ 90 }
+bonus_id={ 13354 }, base_ilevel={ 276 }, req_ilevel={ 90 }
+bonus_id={ 13355 }, base_ilevel={ 279 }, req_ilevel={ 90 }
 bonus_id={ 13357 }, quality={ epic }
 bonus_id={ 13359 }
 bonus_id={ 13360 }, effects={ Infinite Power (id=1250717, index=0, type=no_delay_use) }
@@ -8073,14 +8073,14 @@ bonus_id={ 13548 }, base_ilevel={ 56 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13549 }, base_ilevel={ 58 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13550 }, base_ilevel={ 60 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13551 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
-bonus_id={ 13556 }, effects={ Cloaker (id=1259648, index=0, type=use) }
+bonus_id={ 13556 }, effects={ HU5H, Nonchalant Pup (id=1259648, index=0, type=use) }
 bonus_id={ 13558 }, base_ilevel={ 66 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13559 }, base_ilevel={ 70 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13560 }, base_ilevel={ 68 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13561 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13562 }, effects={ Griftah's Fool-Proof Embellishing Powder (id=1260254, index=0, type=equip) }
 bonus_id={ 13563 }, base_ilevel={ 201 }, req_ilevel={ 90 }, quality={ uncommon }
-bonus_id={ 13564 }, base_ilevel={ 120 }
+bonus_id={ 13564 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13565 }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13566 }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13567 }, quality={ rare }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
@@ -8135,3 +8135,10 @@ bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
 bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
 bonus_id={ 13642 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
+bonus_id={ 13643 }, desc={ Beginner Crafted }, ilevel={ 1 @plvl 1 - 90 @plvl 90 }
+bonus_id={ 13644 }, base_ilevel={ 201 }, req_ilevel={ 90 }
+bonus_id={ 13645 }, base_ilevel={ 126 }, quality={ rare }
+bonus_id={ 13646 }, base_ilevel={ 133 }, quality={ epic }
+bonus_id={ 13647 }, base_ilevel={ 1 }, quality={ uncommon }
+bonus_id={ 13648 }, base_ilevel={ 126 }, quality={ rare }
+bonus_id={ 13649 }, base_ilevel={ 180 }, req_ilevel={ 81 }, quality={ rare }

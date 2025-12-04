@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.64611
-static constexpr std::array<specialization_spell_entry_t, 611> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.64741
+static constexpr std::array<specialization_spell_entry_t, 613> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -25,6 +25,7 @@ static constexpr std::array<specialization_spell_entry_t, 611> __specialization_
   {  1,   72,    5308, 163201, "Execute"                           , 0 },
   {  1,   72,   46917,      0, "Titan's Grip"                      , 0 },
   {  1,   72,   76856,      0, "Mastery: Unshackled Fury"          , 0 },
+  {  1,   72,   81099,      0, "Titan's Grip: Single-Minded Fury"  , 0 },
   {  1,   72,   86110,      0, "Plate Specialization"              , 0 },
   {  1,   72,  137050,      0, "Fury Warrior"                      , 0 },
   {  1,   72,  162698,      0, "Stat Negation Aura - Strength DPS" , 0 },
@@ -206,6 +207,7 @@ static constexpr std::array<specialization_spell_entry_t, 611> __specialization_
   {  5,  256,  137032,      0, "Discipline Priest"                 , 0 },
   {  5,  256,  162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
   {  5,  256,  197419,      0, "Penance"                           , 0 },
+  {  5,  256,  200829,      0, "Plea"                              , 0 },
   {  5,  256,  212036,      0, "Mass Resurrection"                 , 0 },
   {  5,  256,  271534,      0, "Mastery: Grace"                    , 0 },
   {  5,  256,  440006,      0, "Purify Disease"                    , 0 },
@@ -357,6 +359,7 @@ static constexpr std::array<specialization_spell_entry_t, 611> __specialization_
   {  8,   64, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  8,   64, 1246752,      0, "Mastery: Freeze and Shatter"       , 0 },
   {  8,   64, 1246769,      0, "Shatter"                           , 0 },
+  {  8,   64, 1247775,      0, "Winter's End"                      , 0 },
   {  8,   64, 1256913,      0, "Frost Mage"                        , 0 },
   {  9,  265,   77215,      0, "Mastery: Potent Afflictions"       , 0 },
   {  9,  265,  137043,      0, "Affliction Warlock"                , 0 },
@@ -379,7 +382,6 @@ static constexpr std::array<specialization_spell_entry_t, 611> __specialization_
   {  9,  267,     348,    172, "Immolate"                          , 0 },
   {  9,  267,   29722,    686, "Incinerate"                        , 0 },
   {  9,  267,   77220,      0, "Mastery: Chaotic Energies"         , 0 },
-  {  9,  267,  116858,      0, "Chaos Bolt"                        , 0 },
   {  9,  267,  137046,      0, "Destruction Warlock"               , 0 },
   {  9,  267,  157903,      0, "Warlock"                           , 0 },
   {  9,  267,  162699,      0, "Stat Negation Aura - Intellect DPS", 0 },

@@ -1,5 +1,5 @@
-// Embellishment data, wow build 12.0.0.64611
-static constexpr std::array<embellishment_data_t, 40> __embellishment_data { {
+// Embellishment data, wow build 12.0.0.64741
+static constexpr std::array<embellishment_data_t, 45> __embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
   { "Alchemical Flavor Pocket"                   ,    8174,  147811,  372120 },
@@ -38,7 +38,12 @@ static constexpr std::array<embellishment_data_t, 40> __embellishment_data { {
   { "Blessed Pango Charm"                        ,   12686,  212930, 1244243 },
   { "Primal Spore Binding"                       ,   12687,  212945, 1244276 },
   { "Lucky Keychain"                             ,   12715,  213317, 1246298 },
+  { "Kinetic Ankle Primers"                      ,   12717,  213322, 1246308 },
+  { "B1P, Scorcher of Souls"                     ,   12990,  213453, 1246309 },
+  { "M3DDY, Travel-Sized"                        ,   12991,  213454, 1246312 },
   { "Prismatic Focusing Iris"                    ,   13453,  215077, 1251906 },
   { "Stabilizing Gemstone Bandolier"             ,   13454,  215078, 1251905 },
+  { "HU5H, Nonchalant Pup"                       ,   13556,  224964, 1259648 },
+  { "B0P, Curator of Booms"                      ,   13588,  225886, 1261968 },
 } };
 

@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 12.0.0.64611
-static constexpr std::array<temporary_enchant_entry_t, 108> __temporary_enchant_data { {
+// Temporary item enchants, wow build 12.0.0.64741
+static constexpr std::array<temporary_enchant_entry_t, 111> __temporary_enchant_data { {
   {  2713,  0,   29453, "adamantite_sharpening_stone"  },
   {  2955,  0,   34340, "adamantite_weightstone"       },
   {  7493,  1,  451869, "algari_mana_oil"              },
@@ -23,6 +23,9 @@ static constexpr std::array<temporary_enchant_entry_t, 108> __temporary_enchant_
   {  6529,  1,  386243, "completely_safe_rockets"      },
   {  6530,  2,  386245, "completely_safe_rockets"      },
   {  6531,  3,  386246, "completely_safe_rockets"      },
+  {  8649,  0, 1281332, "conjured_illusory_adornment__blooming_light" },
+  {  8650,  0, 1281333, "conjured_illusory_adornment__natures_embrace" },
+  {  8651,  0, 1281334, "conjured_illusory_adornment__voidtouched" },
   {  3593,  0,   28891, "consecrated_sharpening_stone" },
   {  1643,  0,   16138, "dense_sharpening_stone"       },
   {  1703,  0,   16622, "dense_weightstone"            },
