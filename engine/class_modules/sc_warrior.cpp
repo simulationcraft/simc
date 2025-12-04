@@ -6240,6 +6240,7 @@ struct champions_leap_t : public warrior_attack_t
     {
       parse_options( options_str );
       aoe = -1;
+      reduced_aoe_targets        = 5.0;
       cooldown->duration = p->find_spell( 1271980 )->cooldown();
     }
 
