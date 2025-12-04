@@ -1,4 +1,4 @@
-// Item effects, wow build 11.2.7.64704
+// Item effects, wow build 11.2.7.64743
 static constexpr std::array<item_effect_t, 10290> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -10210,7 +10210,7 @@ static constexpr std::array<item_effect_t, 10290> __item_effect_data { {
   { 211235, 1233262, 242664,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
   { 211236, 1236137, 242664,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 209963, 1234022, 242867,   0,   1,    0,      -1,      -1 }, // Automatic Footbomb Dispenser
-  { 212704, 1234374, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
+  { 212704, 1234372, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
   { 212705, 1234376, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
   { 212706, 1234373, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
   { 212707, 1234375, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
