@@ -503,49 +503,48 @@ public:
       player_talent_t impending_victory;
       player_talent_t heroic_leap;
       player_talent_t crackling_thunder;
-      player_talent_t intervene;
-      player_talent_t interpose;  // NYI
+      player_talent_t storm_bolt;
       // Row 4
+      player_talent_t rend;
       player_talent_t second_wind;
       player_talent_t frothing_berserker;
       player_talent_t bounding_stride;
       player_talent_t pain_and_gain;
-      player_talent_t storm_bolt;
+      player_talent_t intervene;
+      player_talent_t interpose;  // NYI
       // Row 5
-      player_talent_t rend;
+      player_talent_t shockwave;
       player_talent_t overwhelming_rage;
       player_talent_t rallying_cry;
       player_talent_t field_dressing;  // NYI
       player_talent_t spell_reflection;
       // Row 6
-      player_talent_t javelineer;  // NYI
+      player_talent_t wrecking_throw;
+      player_talent_t shattering_throw;
+      player_talent_t rumbling_earth;
       player_talent_t berserker_shout;
       player_talent_t fearless;  // NYI
-      player_talent_t resonant_voice;  // NYI
       player_talent_t intimidating_shout;
       player_talent_t piercing_howl;
       player_talent_t honed_reflexes;
       // Row 7
-      player_talent_t wrecking_throw;
-      player_talent_t shattering_throw;
       player_talent_t armored_to_the_teeth;
       player_talent_t double_time;
       player_talent_t reinforced_plates;
       // Row 8
       player_talent_t barbaric_training;
-      player_talent_t shockwave;
-      player_talent_t retaliation;  // NYI
+      player_talent_t javelineer;  // NYI
+      player_talent_t resonant_voice;  // NYI
       player_talent_t crushing_force;
       // Row 9
       player_talent_t cruel_strikes;
-      player_talent_t rumbling_earth;
       player_talent_t two_handed_weapon_specialization;  // Arms
       player_talent_t dual_wield_specialization;  // Fury
       player_talent_t one_handed_weapon_specialization;  // Prot
       player_talent_t wild_strikes;
       player_talent_t anger_management;
-      player_talent_t last_stand; // MOVED FROM PROTECTION
       player_talent_t champions_spear;
+      player_talent_t stance_mastery;
       player_talent_t battlefield_commander;  // NYI
     } warrior;
 
@@ -685,24 +684,23 @@ public:
       player_talent_t strategist;
       player_talent_t devastating_focus;  // NYI
       // Row 5
-      player_talent_t i_can_do_this_all_day;  // NYI
       player_talent_t brutal_vitality;
       player_talent_t instigate;
       player_talent_t shield_wall;
       player_talent_t bloodsurge;
       player_talent_t best_served_cold;
       // Row 6
-      player_talent_t tough_as_nails;
+      player_talent_t spellbreaker; // NYI
+      player_talent_t hunker_down;  // NYI
       player_talent_t thunderlord;
       player_talent_t defenders_aegis;
       player_talent_t impenetrable_wall;
+      player_talent_t last_stand;
       player_talent_t bloodborne;
       player_talent_t sudden_death;
       player_talent_t punish;
-      player_talent_t spellbreaker; // NYI
-      player_talent_t hunker_down;  // NYI
       // Row 7
-      player_talent_t heavy_handed;
+      player_talent_t tough_as_nails;
       player_talent_t fueled_by_violence;
       player_talent_t enduring_defenses;
       player_talent_t unyielding_stance;
@@ -715,11 +713,11 @@ public:
       player_talent_t enduring_alacrity;
       player_talent_t avatar;
       // Row 9
-      player_talent_t bolster;
+      player_talent_t massacre;
       player_talent_t booming_voice;
       player_talent_t indomitable;
       player_talent_t violent_outburst;
-      player_talent_t massacre;
+      player_talent_t heavy_handed;
       // Row 10
       player_talent_t shield_charge;
       player_talent_t battle_scarred_veteran;
@@ -1025,7 +1023,9 @@ public:
     else if ( p()->specialization() == WARRIOR_FURY )
     {
       parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
-      parse_effects( p()->buff.berserker_stance );
+      parse_effects( p()->buff.berserker_stance, effect_mask_t( true ).disable( 6 ) );
+      if ( p()->talents.warrior.stance_mastery->ok() )
+        parse_effects( p()->buff.berserker_stance, effect_mask_t( false ).enable( 6 ) );
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 7 ) );
 
@@ -6555,28 +6555,6 @@ struct die_by_the_sword_t : public warrior_spell_t
   }
 };
 
-// Last Stand ===============================================================
-
-struct last_stand_t : public warrior_spell_t
-{
-  last_stand_t( warrior_t* p, util::string_view options_str ) : warrior_spell_t( "last_stand", p, p->talents.warrior.last_stand )
-  {
-    parse_options( options_str );
-    range              = -1;
-    cooldown->duration = data().cooldown();
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( p() -> talents.protection.bolster -> ok() )
-      p()->buff.shield_wall->extend_duration_or_trigger( p()->talents.protection.bolster->effectN( 2 ).time_value() );
-
-    p()->buff.last_stand->trigger();
-  }
-};
-
 // Rallying Cry ===============================================================
 
 struct rallying_cry_t : public warrior_spell_t
@@ -6683,6 +6661,8 @@ struct shield_wall_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.shield_wall->trigger( 1, p()->buff.shield_wall->data().effectN( 1 ).percent() );
+    if( p()->talents.protection.last_stand->ok() )
+      p()->buff.last_stand->trigger();
   }
 };
 
@@ -6812,8 +6792,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new impending_victory_t( this, options_str );
   if ( name == "intervene" )
     return new intervene_t( this, options_str );
-  if ( name == "last_stand" )
-    return new last_stand_t( this, options_str );
   if ( name == "mortal_strike" )
     return new mortal_strike_t( this, options_str );
   if ( name == "odyns_fury" )
@@ -6989,49 +6967,49 @@ void warrior_t::init_spells()
   talents.warrior.impending_victory                = find_talent_spell( talent_tree::CLASS, "Impending Victory" );
   talents.warrior.heroic_leap                      = find_talent_spell( talent_tree::CLASS, "Heroic Leap" );
   talents.warrior.crackling_thunder                = find_talent_spell( talent_tree::CLASS, "Crackling Thunder" );
-  talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
-  talents.warrior.interpose                        = find_talent_spell( talent_tree::CLASS, "Interpose" );
+  talents.warrior.storm_bolt                       = find_talent_spell( talent_tree::CLASS, "Storm Bolt" );
   // Row 4
+  talents.warrior.rend                             = find_talent_spell( talent_tree::CLASS, "Rend" );
   talents.warrior.second_wind                      = find_talent_spell( talent_tree::CLASS, "Second Wind" );
   talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker", specialization() );
   talents.warrior.bounding_stride                  = find_talent_spell( talent_tree::CLASS, "Bounding Stride" );
   talents.warrior.pain_and_gain                    = find_talent_spell( talent_tree::CLASS, "Pain and Gain" );
-  talents.warrior.storm_bolt                       = find_talent_spell( talent_tree::CLASS, "Storm Bolt" );
+  talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
+  talents.warrior.interpose                        = find_talent_spell( talent_tree::CLASS, "Interpose" );
   // Row 5
-  talents.warrior.rend                             = find_talent_spell( talent_tree::CLASS, "Rend" );
+  talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
   talents.warrior.overwhelming_rage                = find_talent_spell( talent_tree::CLASS, "Overwhelming Rage" );
   talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
   talents.warrior.field_dressing                   = find_talent_spell( talent_tree::CLASS, "Field Dressing" );
   talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
   // Row 6
-  talents.warrior.javelineer                       = find_talent_spell( talent_tree::CLASS, "Javelineer" );
+  talents.warrior.wrecking_throw                   = find_talent_spell( talent_tree::CLASS, "Wrecking Throw" );
+  talents.warrior.shattering_throw                 = find_talent_spell( talent_tree::CLASS, "Shattering Throw" );
+  talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
   talents.warrior.berserker_shout                  = find_talent_spell( talent_tree::CLASS, "Berserker Shout" );
   talents.warrior.fearless                         = find_talent_spell( talent_tree::CLASS, "Fearless" );
-  talents.warrior.resonant_voice                   = find_talent_spell( talent_tree::CLASS, "Resonant Voice" );
   talents.warrior.intimidating_shout               = find_talent_spell( talent_tree::CLASS, "Intimidating Shout" );
   talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
   talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
   // Row 7
-  talents.warrior.wrecking_throw                   = find_talent_spell( talent_tree::CLASS, "Wrecking Throw" );
-  talents.warrior.shattering_throw                 = find_talent_spell( talent_tree::CLASS, "Shattering Throw" );
   talents.warrior.armored_to_the_teeth             = find_talent_spell( talent_tree::CLASS, "Armored to the Teeth" );
   talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
   talents.warrior.reinforced_plates                = find_talent_spell( talent_tree::CLASS, "Reinforced Plates" );
   // Row 8
   talents.warrior.barbaric_training                = find_talent_spell( talent_tree::CLASS, "Barbaric Training" );
-  talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
-  talents.warrior.retaliation                      = find_talent_spell( talent_tree::CLASS, "Retaliation" );
+  talents.warrior.javelineer                       = find_talent_spell( talent_tree::CLASS, "Javelineer" );
+  talents.warrior.resonant_voice                   = find_talent_spell( talent_tree::CLASS, "Resonant Voice" );
   talents.warrior.crushing_force                   = find_talent_spell( talent_tree::CLASS, "Crushing Force", specialization() );
   // Row 9
   talents.warrior.cruel_strikes                    = find_talent_spell( talent_tree::CLASS, "Cruel Strikes" );
-  talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
   talents.warrior.two_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "Two-Handed Weapon Specialization", specialization() );
   talents.warrior.dual_wield_specialization        = find_talent_spell( talent_tree::CLASS, "Dual Wield Specialization", specialization() );
   talents.warrior.one_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "One-Handed Weapon Specialization", specialization() );
   talents.warrior.wild_strikes                     = find_talent_spell( talent_tree::CLASS, "Wild Strikes" );
+  // Row 10
   talents.warrior.anger_management                 = find_talent_spell( talent_tree::CLASS, "Anger Management", specialization() );
-  talents.warrior.last_stand                       = find_talent_spell( talent_tree::CLASS, "Last Stand" );
   talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
+  talents.warrior.stance_mastery                   = find_talent_spell( talent_tree::CLASS, "Stance Mastery" );
   talents.warrior.battlefield_commander            = find_talent_spell( talent_tree::CLASS, "Battlefield Commander" );
 
   // Arms Talents
@@ -7165,24 +7143,23 @@ void warrior_t::init_spells()
   talents.protection.strategist             = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
   talents.protection.devastating_focus      = find_talent_spell( talent_tree::SPECIALIZATION, "Devastating Focus" );
   // Row 5
-  talents.protection.i_can_do_this_all_day  = find_talent_spell( talent_tree::SPECIALIZATION, "I Can Do This All Day" );
   talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
   talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
   talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
   talents.protection.best_served_cold       = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
   // Row 6
-  talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
+  talents.protection.spellbreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Breaker", WARRIOR_PROTECTION );
+  talents.protection.hunker_down            = find_talent_spell( talent_tree::SPECIALIZATION, "Hunker Down", WARRIOR_PROTECTION );
   talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
   talents.protection.defenders_aegis        = find_talent_spell( talent_tree::SPECIALIZATION, "Defender's Aegis" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
+  talents.protection.last_stand             = find_talent_spell( talent_tree::SPECIALIZATION, "Last Stand", WARRIOR_PROTECTION );
   talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
   talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-  talents.protection.spellbreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Breaker", WARRIOR_PROTECTION );
-  talents.protection.hunker_down            = find_talent_spell( talent_tree::SPECIALIZATION, "Hunker Down", WARRIOR_PROTECTION );
   // Row 7
-  talents.protection.heavy_handed           = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed", WARRIOR_PROTECTION );
+  talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
   talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_PROTECTION );
   talents.protection.enduring_defenses      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
   talents.protection.unyielding_stance      = find_talent_spell( talent_tree::SPECIALIZATION, "Unyielding Stance", WARRIOR_PROTECTION );
@@ -7195,11 +7172,11 @@ void warrior_t::init_spells()
   talents.protection.enduring_alacrity      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Alacrity" );
   talents.protection.avatar                 = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar", WARRIOR_PROTECTION );
   // Row 9
-  talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
+  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
   talents.protection.booming_voice          = find_talent_spell( talent_tree::SPECIALIZATION, "Booming Voice" );
   talents.protection.indomitable            = find_talent_spell( talent_tree::SPECIALIZATION, "Indomitable" );
   talents.protection.violent_outburst       = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
-  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
+  talents.protection.heavy_handed           = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed", WARRIOR_PROTECTION );
   // Row 10
   talents.protection.shield_charge          = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Charge" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
@@ -7362,7 +7339,6 @@ void warrior_t::init_spells()
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
   cooldown.execute                          = get_cooldown( "execute" );
   cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
-  cooldown.last_stand                       = get_cooldown( "last_stand" );
   cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
   cooldown.odyns_fury                       = get_cooldown( "odyns_fury" );
   cooldown.overpower                        = get_cooldown( "overpower" );
@@ -7825,7 +7801,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE );
 
-  buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.warrior.last_stand );
+  buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand->effectN( 1 ).trigger() );
 
   buff.whirlwind = make_buff( this, "whirlwind", spell.whirlwind_buff );
 
@@ -8249,7 +8225,6 @@ void warrior_t::init_blizzard_action_list()
       cooldowns->add_action( "shield_charge" );
       cooldowns->add_action( "avatar" );
       cooldowns->add_action( "shield_block,if=buff.shield_block.remains<=10" );
-      cooldowns->add_action( "last_stand" );
       cooldowns->add_action( "shield_wall" );
       cooldowns->add_action( "ignore_pain,if=rage>=65" );
       break;
@@ -8980,8 +8955,14 @@ double warrior_t::pseudo_random_c_from_p( double p )
 void warrior_t::parse_player_effects()
 {
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
-  parse_effects( buff.battle_stance );
-  parse_effects( buff.defensive_stance );
+  parse_effects( buff.battle_stance, effect_mask_t( true ).disable( 4 ) );
+  if ( talents.warrior.stance_mastery->ok() )
+    parse_effects( buff.battle_stance, effect_mask_t( false ).enable( 4 ) );
+
+  // Stance Mastery for Defensive stance is not working in game as of Dec 04 2025
+  parse_effects( buff.defensive_stance, effect_mask_t( true ).disable( 2, 5, 6 ) );
+  if ( specialization() != WARRIOR_PROTECTION )
+    parse_effects( buff.defensive_stance, effect_mask_t( false ).enable( 2 ) );
 
   parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
 
