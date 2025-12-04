@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64704 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.64743 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical

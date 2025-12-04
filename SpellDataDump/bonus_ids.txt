@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64704 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.64743 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
@@ -7442,7 +7442,7 @@ bonus_id={ 12643 }, quality={ epic }, effects={ Temporal Retaliation (id=1234419
 bonus_id={ 12644 }, quality={ rare }, effects={ Temporal Retaliation (id=1234420, index=0, type=equip) }
 bonus_id={ 12645 }, effects={ Temporal Retaliation (id=1234421, index=0, type=equip) }
 bonus_id={ 12646 }, quality={ legendary }, effects={ Storm Surger (id=1234373, index=0, type=equip) }
-bonus_id={ 12647 }, quality={ epic }, effects={ Storm Surger (id=1234374, index=0, type=equip) }
+bonus_id={ 12647 }, quality={ epic }, effects={ Storm Surger (id=1234372, index=0, type=equip) }
 bonus_id={ 12648 }, quality={ rare }, effects={ Storm Surger (id=1234375, index=0, type=equip) }
 bonus_id={ 12649 }, effects={ Storm Surger (id=1234376, index=0, type=equip) }
 bonus_id={ 12650 }, quality={ legendary }, effects={ Arcane Ward (id=1234368, index=0, type=equip) }

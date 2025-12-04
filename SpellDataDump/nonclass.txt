@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64704 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.64743 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -264766,6 +264766,22 @@ Description      : Grants $s1 additional |4rank:ranks; of $@spellname1242202.
 $@spellicon1242202 $@spellname1242202
 $@spelldesc1242202
 
+Name             : Storm Surger (desc=Legendary) (id=1234372) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 4968
+                 : 4974
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Hide Passive From Tooltip (451)
+Effects          :
+#1 (id=1228716)  : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 133487 | Misc Value 2: 0x1a648 | Target: Self (1)
+#2 (id=1229040)  : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 132266 | Misc Value 2: 0x1a33d | Target: Self (1)
+Description      : Grants $s1 additional |4rank:ranks; of $@spellname1241854.
+
+$@spellicon1241854 $@spellname1241854
+$@spelldesc1241854
+
 Name             : Storm Surger (desc=Epic) (id=1234373) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -264777,22 +264793,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 133487 | Misc Value 2: 0x1a648 | Target: Self (1)
 #2 (id=1229041)  : Apply Aura (6) | Grant Talent (224)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 132266 | Misc Value 2: 0x1a33d | Target: Self (1)
-Description      : Grants $s1 additional |4rank:ranks; of $@spellname1241854.
-
-$@spellicon1241854 $@spellname1241854
-$@spelldesc1241854
-
-Name             : Storm Surger (desc=Rare) (id=1234374) [Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Labels           : 4968
-                 : 4974
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=1228718)  : Apply Aura (6) | Grant Talent (224)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 133487 | Misc Value 2: 0x1a648 | Target: Self (1)
-#2 (id=1229042)  : Apply Aura (6) | Grant Talent (224)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 132266 | Misc Value 2: 0x1a33d | Target: Self (1)
 Description      : Grants $s1 additional |4rank:ranks; of $@spellname1241854.
 
 $@spellicon1241854 $@spellname1241854
