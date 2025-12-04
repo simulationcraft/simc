@@ -634,7 +634,7 @@ public:
       player_talent_t improved_bloodthirst;
       player_talent_t rampage;
       player_talent_t cruelty;
-      player_talent_t rampaging_ruin;  // NYI
+      player_talent_t rampaging_ruin;
       // Row 6
       player_talent_t cold_steel_hot_blood;
       player_talent_t scent_of_blood;  // NYI
