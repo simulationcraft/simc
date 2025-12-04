@@ -1733,7 +1733,7 @@ struct melee_t : public warrior_attack_t
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
       base_rage_generation( 1.75 ),
-      arms_rage_multiplier( 1.0 + p->spec.arms_warrior->effectN( 1 ).percent() ),
+      arms_rage_multiplier( 1.0 + p->spec.arms_warrior->effectN( 7 ).percent() ),
       fury_rage_multiplier( 1.0 + p->spec.fury_warrior->effectN( 6 ).percent() ),
       prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
