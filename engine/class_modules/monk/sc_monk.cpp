@@ -5553,7 +5553,7 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
 void monk_t::init()
 {
   auto t_pc  = []( sim_t *sim, unsigned int id ) { return std::make_unique<tier_set_count_t>( sim, id ); };
-  auto t_pcd = []( std::string_view options ) { return std::make_unique<tier_set_count_t::data_t>( options ); };
+  auto t_pcd = []() { return std::make_unique<tier_set_count_t::data_t>(); };
   profileset_controller_t::register_controller( "tier", { t_pc, t_pcd } );
 
   base_t::init();

@@ -1,5 +1,7 @@
 #include "sim_controller.hpp"
 
+#include "dbc/item_set_bonus.hpp"
+#include "dbc/dbc.hpp"
 #include "player/set_bonus.hpp"
 #include "profileset.hpp"
 #include "sc_enums.hpp"
@@ -106,16 +108,16 @@
 std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory;
 std::atomic_uint profileset_controller_data_wrapper_t::id_generator;
 
-profileset_controller_data_t::profileset_controller_data_t( std::string_view options )
+profileset_controller_data_t::profileset_controller_data_t()
 {
 }
 
 profileset_controller_data_wrapper_t::profileset_controller_data_wrapper_t( std::string key, std::string_view options )
-  : mutex(), id( id_generator++ ), key( key )
+  : mutex(), id( id_generator++ ), key( key ), options( options )
 {
   if ( const auto& value = profileset_controller_t::factory.find( key );
        value != profileset_controller_t::factory.end() )
-    data = value->second.second( options );
+    data = value->second.second();
   assert( data );
 }
 
@@ -124,7 +126,20 @@ void profileset_controller_data_wrapper_t::construct_controller( sim_t* sim )
   if ( const auto& value = profileset_controller_t::factory.find( key );
        value != profileset_controller_t::factory.end() )
   {
-    sim->profileset_controller.emplace_back( value->second.first( sim, id ) );
+    auto controller = value->second.first( sim, id );
+    controller->create_options();
+    opts::parse( sim, "profileset_controller", controller->options, options,
+                  [ this, &sim ]( opts::parse_status status, util::string_view name, util::string_view value ) {
+                    // Fail parsing if strict parsing is used and the option is not found
+                    if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+                      return opts::parse_status::FAILURE;
+                    // .. otherwise, just warn that there's an unknown option
+                    if ( status == opts::parse_status::NOT_FOUND )
+                      sim->error( "Warning: profileset controller '{}' provided unknown option '{}' with value '{}', ignoring.",
+                                  key, name, value );
+                    return status;
+                  } );
+    sim->profileset_controller.emplace_back( std::move( controller ) );
     return;
   }
   assert( false && "No factory fn for key found." );
@@ -219,6 +234,11 @@ void profileset_controller_t::html_report( const sim_t& sim, std::ostream& out )
   out << "</div>";
 }
 
+void profileset_controller_t::add_option( std::unique_ptr<option_t>&& option )
+{
+  options.emplace_back( std::move( option ) );
+}
+
 profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
   : parent( sim->parent ), sim( sim ), id( id )
 {
@@ -261,9 +281,9 @@ const std::string min_player_stat_t::reason() const
 
 bool tier_set_count_t::evaluate_post_init()
 {
-  tier  = TWW2;
-  count = B2;
-  return target_player->sets->has_set_bonus( target_player->specialization(), tier, count );
+  if ( target_player )
+    return target_player->sets->has_set_bonus( target_player->specialization(), tier, count );
+  return true;
 }
 
 const std::string tier_set_count_t::reason() const
@@ -274,18 +294,39 @@ const std::string tier_set_count_t::reason() const
                       static_cast<int>( count ) );
 }
 
-// void tier_set_count_t::create_options()
-// {
-//   add_option( opt_int( "test", test ) );
-// }
-
-// void sim_controller_t::add_option( std::unique_ptr<option_t>&& option )
-// {
-//   auto& scd = sim->parent->sim_controller_data.at( name() );
-//   std::scoped_lock<std::recursive_mutex> L( scd.mutex );
-
-//   scd.options.emplace_back( std::move( option ) );
-// }
+void tier_set_count_t::create_options()
+{
+  add_option( opt_func( "tier", [ this ]( sim_t*, util::string_view, util::string_view value ){
+    auto set_bonuses = item_set_bonus_t::data( target_player ? target_player->dbc->ptr : false );
+    for ( const auto& set_bonus : set_bonuses )
+    {
+      if ( util::str_compare_ci( set_bonus.tier, value ) )
+      {
+        this->tier = static_cast<set_bonus_type_e>( set_bonus.enum_id );
+        return true;
+      }
+    }
+    return false;
+  } ) );
+  add_option( opt_func( "pc", [ this ]( sim_t*, util::string_view, util::string_view value ) {
+    auto bonus_value = util::to_unsigned( value );
+    if ( bonus_value > B_MAX )
+      return false;
+    this->count = static_cast<set_bonus_e>( bonus_value - 1 );
+    return true;
+  } ) );
+  add_option( opt_func( "player", [ this ]( sim_t* sim, util::string_view, util::string_view value ){
+    for ( auto& player : sim->player_list )
+    {
+      if ( util::str_compare_ci( player->name(), value ) )
+      {
+        this->target_player = player;
+        return true;
+      }
+    }
+    return false;
+  } ) );
+}
 
 // void sim_controller_data_wrapper_t::report_json_profileset( js::JsonOutput& output ) const
 // {

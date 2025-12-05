@@ -9,6 +9,13 @@
 #include <mutex>
 #include <atomic>
 
+/*
+ * TODO:
+ *  - intialize contents of factory map
+ *  - implement reporting
+ *  - implement profileset culling specialization
+ */
+
 struct sim_t;
 
 template <typename T>
@@ -39,9 +46,8 @@ struct exit_reason_t
 struct profileset_controller_data_t : private noncopyable
 {
   std::vector<exit_reason_t> exit_reasons;
-  std::vector<std::unique_ptr<option_t>> options;
 
-  profileset_controller_data_t( std::string_view );
+  profileset_controller_data_t();
   virtual ~profileset_controller_data_t() = default;
 
   virtual void report_html_options( std::ostream& ) {}
@@ -54,6 +60,7 @@ struct profileset_controller_data_wrapper_t : private noncopyable
   std::recursive_mutex mutex;
   unsigned int id;
   std::string key;
+  std::string_view options;
   std::unique_ptr<profileset_controller_data_t> data;
 
   profileset_controller_data_wrapper_t( std::string, std::string_view );
@@ -64,7 +71,7 @@ struct profileset_controller_data_wrapper_t : private noncopyable
 struct profileset_controller_t : private noncopyable
 {
   using controller_factory_t = std::function<std::unique_ptr<profileset_controller_t>(sim_t*, unsigned int)>;
-  using data_factory_t = std::function<std::unique_ptr<profileset_controller_data_t>(std::string_view)>;
+  using data_factory_t = std::function<std::unique_ptr<profileset_controller_data_t>()>;
   using factory_fn_pair_t = std::pair<controller_factory_t, data_factory_t>;
 protected:
   friend profileset_controller_data_wrapper_t;
@@ -82,16 +89,17 @@ public:
   sim_t* parent;
   sim_t* sim;
   const unsigned int id;
+  std::vector<std::unique_ptr<option_t>> options;
 
   profileset_controller_t( sim_t*, unsigned int );
   virtual ~profileset_controller_t() = default;
 
   const std::string message( call_point_e );
-  // void add_option( std::unique_ptr<option_t>&& );
+  void add_option( std::unique_ptr<option_t>&& );
 
   virtual const std::string name() const   = 0;
   virtual const std::string reason() const = 0;
-  // virtual void create_options() {}
+  virtual void create_options() {}
   virtual bool evaluate_post_init() {
     return true;
   }
@@ -136,7 +144,6 @@ struct tier_set_count_t : profileset_controller_t
   player_t* target_player;
   set_bonus_type_e tier;
   set_bonus_e count;
-  int test;
 
   tier_set_count_t( sim_t* sim, unsigned int id ) : profileset_controller_t( sim, id )
   {
@@ -147,5 +154,5 @@ struct tier_set_count_t : profileset_controller_t
   }
   bool evaluate_post_init() override;
   const std::string reason() const override;
-  // void create_options() override;
+  void create_options() override;
 };
