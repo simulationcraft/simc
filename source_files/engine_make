@@ -158,12 +158,12 @@ SRC += \
     sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)proc_rng.cpp \
     sim$(PATHSEP)profileset.cpp \
+    sim$(PATHSEP)profileset_controller.cpp \
     sim$(PATHSEP)progress_bar.cpp \
     sim$(PATHSEP)raid_event.cpp \
     sim$(PATHSEP)reforge_plot.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)sim.cpp \
-    sim$(PATHSEP)sim_controller.cpp \
     sim$(PATHSEP)sim_ostream.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
     util$(PATHSEP)cache.cpp \
