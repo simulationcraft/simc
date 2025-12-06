@@ -1,4 +1,4 @@
-#include "profileset_controller.hpp"
+#include "profileset_control.hpp"
 
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
@@ -164,12 +164,12 @@ profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
 const std::string profileset_controller_t::message( call_point_e call_point )
 {
   std::string msg =
-      fmt::format( "Profileset {} was canceled by {} after {}", parent->profilesets->current_profileset_name(), name(),
+      fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}", parent->profilesets->current_profileset_name(), name(),
                    profileset_controller::call_point_string( call_point ) );
   if ( call_point == POST_ITER )
     msg += std::to_string( sim->current_iteration );
 
-  if ( const std::string r = reason(); r != "" )
+  if ( const auto r = reason(); !r.empty()  )
     msg += fmt::format( " because {}.", r );
   else
     msg += ".";

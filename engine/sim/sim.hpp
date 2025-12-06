@@ -12,7 +12,7 @@
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
 #include "sim/option.hpp"
-#include "profileset_controller.hpp"
+#include "profileset_control.hpp"
 #include "sim_ostream.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"

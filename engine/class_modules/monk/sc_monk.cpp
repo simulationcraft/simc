@@ -41,7 +41,7 @@ WINDWALKER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
-#include "sim/sim_controller.hpp"
+#include "sim/profileset_control.hpp"
 
 #include <deque>
 
