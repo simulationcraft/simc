@@ -1037,11 +1037,6 @@ void profileset_json2( const profileset::profilesets_t& profileset, const sim_t&
                        }
                      }
 
-                     // report source, location, and reason of interrupt for
-                     // all registered profileset sim controllers
-                     // for ( const auto& controller: sim.sim_controllers )
-                     //   controller->report_json_profileset( obj );
-
                      // Optional override ouput data
                      if ( !sim.profileset_output_data.empty() )
                      {
@@ -1086,12 +1081,6 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
 
                        obj2[ "iterations" ] = as<uint64_t>( result.iterations() );
                      }
-
-                     // report source, location, and reason of interrupt for
-                     // all registered profileset sim controllers
-                     // for ( const auto& controller: sim.sim_controllers )
-                     //   controller->report_json_profileset( obj );
-
 
                      // Optional override ouput data
                      if ( !sim.profileset_output_data.empty() )
@@ -1280,6 +1269,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   {
     auto profileset_root = root[ "profilesets" ];
     profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
+    profileset_controller::report_json( sim, root );
   }
 
   if ( !sim.plot->dps_plot_stats.empty() )

@@ -11,7 +11,6 @@
 
 /*
  * TODO:
- *  - implement reporting
  *  - implement profileset culling specialization
  */
 
@@ -56,6 +55,8 @@ struct profileset_controller_data_t : private noncopyable
 
   virtual void report_html_options( std::ostream& ) const;
   virtual void report_html_profileset( std::ostream& ) const;
+  virtual void report_json_options( js::JsonOutput& ) const;
+  virtual void report_json_profileset( js::JsonOutput& ) const;
 };
 
 struct profileset_controller_data_wrapper_t : private noncopyable
@@ -131,7 +132,7 @@ namespace profileset_controller
 {
 const std::string call_point_string( call_point_e call_point );
 void report_html( const sim_t&, std::ostream& );
-void report_json();
+void report_json( const sim_t&, js::JsonOutput& output );
 };  // namespace profileset_controller
 
 struct min_player_stat_t : profileset_controller_t

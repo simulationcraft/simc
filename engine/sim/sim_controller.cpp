@@ -6,112 +6,7 @@
 #include "profileset.hpp"
 #include "sc_enums.hpp"
 #include "sim.hpp"
-/*
- * TODO:
- *  - initialize contents of factory map
- *  - pass in option values to pc_t, sim_controller.cpp:21
- *
- * PROCEDURE:
- *  1) register controllers via `profileset_controller_t::register_controller(...)`,
- *     which emplaces controller(s) into the factory map for later construction.
- *  2) parent sim parses options, constructing `pcd_w_t` for each type via factory map.
- *  3) child sim iterates over parent->profileset_controller_data, constructing `pc_t`
- *     for each `pcd_w_t`
- */
 
-/*
- * sim_controller_t:
- *  - scope: profileset
- *  - evaluates whether or not profileset should exit
- *  - reports why an exit occurs
- *  - provides options, as in many cases a custom `sim_controller_data_t` type is
- *    not required for storage reasons
- *
- * sim_controller_data_t
- *  - scope: parent sim
- *  - contains custom data, such as current "winner" for binary controllers
- *    including profileset culling
- *  - contains option values
- *
- * sim_controller_data_wrapper_t
- *  - scope: parent sim
- *  - contains mutex for thread safety when operating on sim_controller_data_t
- *  - contains sim_controller_data_t pointer
- *  - contains exit_reasons ()
- *  - contains registered option definitions
- *
- * data_wrapper_t
- *  - scope: sim_controller_data_t getter
- *  - contains scoped recursive lock on sim_controller_data_t
- *  - contains reference to sim_controller_data_t data
- *
- * notes:
- *
- * profilesets_t objects are configured and init via
- *  - sim_t::execute() > sim_t::iterate() > sim_t::init() > profilesets->initialize( sim )
- *  - profilesets_t::parse( ... ) > m_profilesets.push_back( ... )
- * profilesets_t is executed via
- *  - profilesets->iterate( sim ) > profilesets_t::generate_work( ... )
- * profileset sims/workers are constructed and executed via
- *  - SEQUENTIAL: new sim_t( ... )
- *  - PARALLEL: push_back( new worker_t( profileset_control ) )
- * profileset-creation options are stripped from profileset_control prior to construction
- *  - profilesets_t::create_sim_options, profilesets_t::initialize, filter_control
- *
- * sim where ( !parent ) parses values stored in sim_t::sim_controller_options,
- * static sim_controller_data_t::register([ key, opts ]) -> scd_w_t { key, id, scd_t { parsed_options_values... } }
- * sim where ( parent ) iterates over sim_t::sim_controller_data
- * sim_controller_data_t::register_controller() -> sc_t { id, parsed_options_values... }
- *
- * how can i copy parsed_option_values from scd_t -> sc_t without a type that
- * contains the option_values and without reparsing the options?
- *
- * use atomic incrementing id for scds
- *
- * no storage as a map, as scd id and vector position should be identical
- *
- * move implementation of reporting strictly to scd_t
- *
- * implement reporting under a static member to handle all reporting with minimal
- * implementation in html/json files
- */
-
-// profilesets object is configured/init via sim_t
-// - execute() -:> iterate() -:> init() -:> profilesets->initialize(self)
-// - parse(...) -:> m.profilesets.push_back(...)
-// profilesets are executed via profilesets->iterate(self) -> generate_work(...)
-// profileset sims are created and executed via
-// - profilesets->iterate(self) -:> generate_work(...) -:>
-// - SEQUENTIAL: new sim_t
-// - PARALLEL: push_back new worker_t(pset_data)
-// strip profileset-specific options from opts used to initialize sims
-// profilesets_t::create_sim_options, profilesets_t::initialize, filter_control
-
-/*
- * implementation:
- *  - parent sim parses sim controller instantiation option and child options
- *    - sc_main.cpp:273 arg parse -> sc_main.cpp:287 opt parse and actor creation
- *  - parent sim constructs sim controller data for auto incrementing index id
- *  - as work is created, child option data is copied and sim controller is constructed by iterating over scd vec,
- * passing along id as well
- *
- * NOTES:
- *  - implement sim opts as function options, which induces opt order dependency, no preventing option parse without
- * filtering profileset sim control
- *  - implement sim opts as map list and execute processing in setup or init if sim is parent
- * OTHER CHANGES:
- *  - move exit_reasons and options (?) from data wrapper to data
- *  - provide getters and setters for exit_reasons and options as appropriate
- *  - no key-value pairs, everything should be a vec
- *  - initialize controllers and scd with atomic id generated via scd
- *  - rename to profileset_controller, as they control profilesets not sims per se
- */
-
-/*
- * Global profileset_controller_t factories. If you create a `profileset_controller_t`
- * subtype specific to some context, have that context register it early in sim init
- * via the static function `profileset_controller_t::register_controller`.
- */
 std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory = {
     { "set_bonus_enabled",
       { []( sim_t* sim, unsigned int id ) { return std::make_unique<set_bonus_enabled_t>( sim, id ); },
@@ -149,6 +44,31 @@ void profileset_controller_data_t::report_html_profileset( std::ostream& output 
            << "<td>" << util::encode_html( reason ) << "</td>"
            << "</tr>\n";
     first = false;
+  }
+}
+
+void profileset_controller_data_t::report_json_options( js::JsonOutput& root ) const
+{
+  auto output                            = root.add();
+  auto splits                            = util::string_split( options, "," );
+  output[ "profileset_controller_name" ] = key;
+  for ( const auto& split : splits )
+  {
+    auto subsplit = util::string_split( split, "=" );
+    assert( subsplit.size() == 2 );
+    output[ subsplit[ 0 ] ] = subsplit[ 1 ];
+  }
+}
+
+void profileset_controller_data_t::report_json_profileset( js::JsonOutput& root ) const
+{
+  for ( const auto& [ name, call_point, reason ] : exit_reasons )
+  {
+    auto output                 = root.add();
+    output[ "profileset_name" ] = name;
+    output[ "interrupted_by" ]  = key;
+    output[ "exit_point" ]      = profileset_controller::call_point_string( call_point );
+    output[ "exit_reason" ]     = reason;
   }
 }
 
@@ -335,8 +255,22 @@ void report_html( const sim_t& sim, std::ostream& out )
   out << "</div>";
 }
 
-void report_json()
+void report_json( const sim_t& sim, js::JsonOutput& output )
 {
+  if ( sim.profileset_controller_data.empty() )
+    return;
+
+  auto root = output[ "profileset_controller" ];
+
+  auto exits = root[ "cancelled_profilesets" ].make_array();
+  for ( const auto& datum_wrapper : sim.profileset_controller_data )
+    if ( const auto& datum = datum_wrapper.data; datum )
+      datum->report_json_profileset( exits );
+
+  auto controllers = root[ "enabled_controllers" ].make_array();
+  for ( const auto& datum_wrapper : sim.profileset_controller_data )
+    if ( const auto& datum = datum_wrapper.data; datum )
+      datum->report_json_options( controllers );
 }
 }  // namespace profileset_controller
 
@@ -404,18 +338,3 @@ void set_bonus_enabled_t::create_options()
     return false;
   } ) );
 }
-
-// void sim_controller_data_wrapper_t::report_json_profileset( js::JsonOutput& output ) const
-// {
-//   for ( const exit_reason_t& exit_reason : exit_reasons )
-//   {
-//     output[ "interrupted_by" ] = exit_reason.profileset_name;
-//     output[ "exit_point" ]     = sim_controller_t::call_point_string( exit_reason.exit_point );
-//     output[ "exit_reason" ]    = exit_reason.exit_reason;
-//   }
-// }
-
-// void sim_controller_data_wrapper_t::report_json_options( js::JsonOutput& ) const
-// {
-//   // TODO: implement opt parsing and automatic generation of report json from opts
-// }
