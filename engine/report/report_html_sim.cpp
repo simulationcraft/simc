@@ -1164,7 +1164,7 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
 
   print_profilesets_chart( out, sim );
 
-  profileset_controller_t::html_report( sim, out );
+  profileset_controller::report_html( sim, out );
 
   out << "</div>";
   out << "</div>";

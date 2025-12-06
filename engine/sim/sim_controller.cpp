@@ -1,7 +1,7 @@
 #include "sim_controller.hpp"
 
-#include "dbc/item_set_bonus.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "player/set_bonus.hpp"
 #include "profileset.hpp"
 #include "sc_enums.hpp"
@@ -88,28 +88,68 @@
 // profilesets_t::create_sim_options, profilesets_t::initialize, filter_control
 
 /*
-  * implementation:
-  *  - parent sim parses sim controller instantiation option and child options
-  *    - sc_main.cpp:273 arg parse -> sc_main.cpp:287 opt parse and actor creation
-  *  - parent sim constructs sim controller data for auto incrementing index id
-  *  - as work is created, child option data is copied and sim controller is constructed by iterating over scd vec, passing along id as well
-  *
-  * NOTES:
-  *  - implement sim opts as function options, which induces opt order dependency, no preventing option parse without filtering profileset sim control
-  *  - implement sim opts as map list and execute processing in setup or init if sim is parent
-  * OTHER CHANGES:
-  *  - move exit_reasons and options (?) from data wrapper to data
-  *  - provide getters and setters for exit_reasons and options as appropriate
-  *  - no key-value pairs, everything should be a vec
-  *  - initialize controllers and scd with atomic id generated via scd
-  *  - rename to profileset_controller, as they control profilesets not sims per se
-  */
+ * implementation:
+ *  - parent sim parses sim controller instantiation option and child options
+ *    - sc_main.cpp:273 arg parse -> sc_main.cpp:287 opt parse and actor creation
+ *  - parent sim constructs sim controller data for auto incrementing index id
+ *  - as work is created, child option data is copied and sim controller is constructed by iterating over scd vec,
+ * passing along id as well
+ *
+ * NOTES:
+ *  - implement sim opts as function options, which induces opt order dependency, no preventing option parse without
+ * filtering profileset sim control
+ *  - implement sim opts as map list and execute processing in setup or init if sim is parent
+ * OTHER CHANGES:
+ *  - move exit_reasons and options (?) from data wrapper to data
+ *  - provide getters and setters for exit_reasons and options as appropriate
+ *  - no key-value pairs, everything should be a vec
+ *  - initialize controllers and scd with atomic id generated via scd
+ *  - rename to profileset_controller, as they control profilesets not sims per se
+ */
 
-std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory;
+/*
+ * Global profileset_controller_t factories. If you create a `profileset_controller_t`
+ * subtype specific to some context, have that context register it early in sim init
+ * via the static function `profileset_controller_t::register_controller`.
+ */
+std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory = {
+    { "set_bonus_enabled",
+      { []( sim_t* sim, unsigned int id ) { return std::make_unique<set_bonus_enabled_t>( sim, id ); },
+        []( std::string_view key, std::string_view options ) {
+          return std::make_unique<set_bonus_enabled_t::data_t>( key, options );
+        } } } };
+
 std::atomic_uint profileset_controller_data_wrapper_t::id_generator;
 
-profileset_controller_data_t::profileset_controller_data_t()
+profileset_controller_data_t::profileset_controller_data_t( std::string_view key, std::string_view options )
+  : key( key ), options( options )
 {
+}
+
+void profileset_controller_data_t::report_html_options( std::ostream& output ) const
+{
+  output << "<tr>"
+         << "<td>" << util::encode_html( key ) << "</td>"
+         << "<td class=\"center\">" << exit_reasons.size() << "</td>"
+         << "<td>" << util::encode_html( options ) << "</td>"
+         << "</tr>\n";
+}
+
+void profileset_controller_data_t::report_html_profileset( std::ostream& output ) const
+{
+  bool first = true;
+  output << fmt::format( "<tr><td rowspan=\"{}\" class=\"dark\">{}</td>", exit_reasons.size(),
+                         util::encode_html( key ) );
+  for ( const auto& [ name, call_point, reason ] : exit_reasons )
+  {
+    if ( !first )
+      output << "<tr>";
+    output << "<td class=\"center\">" << util::encode_html( name ) << "</td>"
+           << "<td>" << util::encode_html( profileset_controller::call_point_string( call_point ) ) << "</td>"
+           << "<td>" << util::encode_html( reason ) << "</td>"
+           << "</tr>\n";
+    first = false;
+  }
 }
 
 profileset_controller_data_wrapper_t::profileset_controller_data_wrapper_t( std::string key, std::string_view options )
@@ -117,7 +157,7 @@ profileset_controller_data_wrapper_t::profileset_controller_data_wrapper_t( std:
 {
   if ( const auto& value = profileset_controller_t::factory.find( key );
        value != profileset_controller_t::factory.end() )
-    data = value->second.second();
+    data = value->second.second( key, options );
   assert( data );
 }
 
@@ -129,16 +169,17 @@ void profileset_controller_data_wrapper_t::construct_controller( sim_t* sim )
     auto controller = value->second.first( sim, id );
     controller->create_options();
     opts::parse( sim, "profileset_controller", controller->options, options,
-                  [ this, &sim ]( opts::parse_status status, util::string_view name, util::string_view value ) {
-                    // Fail parsing if strict parsing is used and the option is not found
-                    if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
-                      return opts::parse_status::FAILURE;
-                    // .. otherwise, just warn that there's an unknown option
-                    if ( status == opts::parse_status::NOT_FOUND )
-                      sim->error( "Warning: profileset controller '{}' provided unknown option '{}' with value '{}', ignoring.",
-                                  key, name, value );
-                    return status;
-                  } );
+                 [ this, &sim ]( opts::parse_status status, util::string_view name, util::string_view value ) {
+                   // Fail parsing if strict parsing is used and the option is not found
+                   if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+                     return opts::parse_status::FAILURE;
+                   // .. otherwise, just warn that there's an unknown option
+                   if ( status == opts::parse_status::NOT_FOUND )
+                     sim->error(
+                         "Warning: profileset controller '{}' provided unknown option '{}' with value '{}', ignoring.",
+                         key, name, value );
+                   return status;
+                 } );
     sim->profileset_controller.emplace_back( std::move( controller ) );
     return;
   }
@@ -153,20 +194,6 @@ bool profileset_controller_t::register_controller( std::string key, profileset_c
 bool profileset_controller_t::controller_exists( std::string key )
 {
   return factory.find( key ) != factory.end();
-}
-
-const std::string profileset_controller_t::call_point_string( call_point_e call_point )
-{
-  switch ( call_point )
-  {
-    case POST_INIT:
-      return "simulation initialization";
-    case POST_ITER:
-      return "iteration";
-    default:
-      assert( false );
-      return "no matching call point";
-  }
 }
 
 void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
@@ -203,37 +230,6 @@ void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   sim->interrupt();
 }
 
-void profileset_controller_t::html_report( const sim_t& sim, std::ostream& out )
-{
-  if ( sim.profileset_controller_data.empty() )
-    return;
-
-  out << "<h3 class=\"toggle\">Profileset Sim Control</h3>\n";
-  out << "<div class=\"toggle-content hide\">\n";
-
-  out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Sim Controllers</strong><ul>\n";
-  for ( const auto& controller_data_wrapper : sim.profileset_controller_data )
-    if ( const auto& controller_data = controller_data_wrapper.data; controller_data )
-      controller_data->report_html_options( out );
-  out << "</ul></div>\n";
-
-  // report source, location, and reason of interrupt for
-  // all registered profileset profileset controllers
-  bool has_culled_profileset = range::any_of( sim.profileset_controller_data,
-                                              []( const auto& entry ) { return entry.data->exit_reasons.size(); } );
-
-  if ( has_culled_profileset )
-  {
-    out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Interrupted Profilesets</strong><ul>\n";
-    for ( const auto& controller_data_wrapper : sim.profileset_controller_data )
-      if ( const auto& controller_data = controller_data_wrapper.data;
-           controller_data && controller_data->exit_reasons.size() )
-        controller_data->report_html_profileset( out );
-    out << "</ul></div>\n";
-  }
-  out << "</div>";
-}
-
 void profileset_controller_t::add_option( std::unique_ptr<option_t>&& option )
 {
   options.emplace_back( std::move( option ) );
@@ -249,7 +245,7 @@ const std::string profileset_controller_t::message( call_point_e call_point )
 {
   std::string msg =
       fmt::format( "Profileset {} was canceled by {} after {}", parent->profilesets->current_profileset_name(), name(),
-                   call_point_string( call_point ) );
+                   profileset_controller::call_point_string( call_point ) );
   if ( call_point == POST_ITER )
     msg += std::to_string( sim->current_iteration );
 
@@ -268,6 +264,82 @@ void profileset_controller_t::set_exit_reason( exit_reason_t&& exit_reason )
   pcd[ id ].data->exit_reasons.emplace_back( std::move( exit_reason ) );
 }
 
+namespace
+{
+// how to do this with reference wrapper instead of template?
+template <typename T>
+void report_html_table(
+    std::ostream& out, std::vector<std::string> keys, const std::deque<profileset_controller_data_wrapper_t>& data,
+    T ref, std::function<bool( const std::unique_ptr<profileset_controller_data_t>& )> cond = []( const auto& ) {
+      return true;
+    } )
+{
+  out << "<table class=\"details nowrap\" style=\"width:min-content\">\n"
+      << "<tr>";
+  bool first = true;
+  for ( const auto& key : keys )
+  {
+    out << fmt::format( "<th class=\"small {}\">", first ? "left" : "center" ) << key << "</th>";
+    first = false;
+  }
+  out << "</tr>\n";
+  for ( const auto& datum_wrapper : data )
+    if ( const auto& datum = datum_wrapper.data; datum && cond( datum ) )
+      std::invoke( ref, datum, out );
+  out << "</table>";
+}
+}  // namespace
+
+namespace profileset_controller
+{
+const std::string call_point_string( call_point_e call_point )
+{
+  switch ( call_point )
+  {
+    case POST_INIT:
+      return "simulation initialization";
+    case POST_ITER:
+      return "iteration";
+    default:
+      assert( false );
+      return "no matching call point";
+  }
+}
+
+void report_html( const sim_t& sim, std::ostream& out )
+{
+  if ( sim.profileset_controller_data.empty() )
+    return;
+
+  out << "<h3 class=\"toggle\">Profileset Sim Control</h3>\n";
+  out << "<div class=\"toggle-content hide\">\n";
+
+  out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Profileset Controllers</strong>\n";
+  report_html_table( out, { "Type", "Count", "Options" }, sim.profileset_controller_data,
+                     &profileset_controller_data_t::report_html_options );
+  out << "</div>\n";
+
+  // report source, location, and reason of interrupt for
+  // all registered profileset profileset controllers
+  bool has_culled_profileset = range::any_of( sim.profileset_controller_data,
+                                              []( const auto& datum ) { return datum.data->exit_reasons.size(); } );
+
+  if ( has_culled_profileset )
+  {
+    out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Cancelled Profilesets</strong>\n";
+    report_html_table( out, { "Type", "Profileset Name", "Cancellation Point", "Reason" },
+                       sim.profileset_controller_data, &profileset_controller_data_t::report_html_profileset,
+                       []( const auto& datum ) { return datum->exit_reasons.size(); } );
+    out << "</div>\n";
+  }
+  out << "</div>";
+}
+
+void report_json()
+{
+}
+}  // namespace profileset_controller
+
 bool min_player_stat_t::evaluate_post_init()
 {
   return true;
@@ -279,24 +351,29 @@ const std::string min_player_stat_t::reason() const
                       util::stat_type_string( rating ) );
 }
 
-bool tier_set_count_t::evaluate_post_init()
+bool set_bonus_enabled_t::evaluate_post_init()
 {
   if ( target_player )
     return target_player->sets->has_set_bonus( target_player->specialization(), tier, count );
   return true;
 }
 
-const std::string tier_set_count_t::reason() const
+const std::string set_bonus_enabled_t::reason() const
 {
   // no to string for set bonus tier or count...
   // that should definitely exist :)
-  return fmt::format( "player {} does not have tier {} {} active", target_player->name(), static_cast<int>( tier ),
-                      static_cast<int>( count ) );
+  auto set_bonuses = item_set_bonus_t::data( target_player ? target_player->dbc->ptr : false );
+  std::string tier_name{};
+  for ( const auto& set_bonus : set_bonuses )
+    if ( set_bonus.enum_id == static_cast<unsigned int>( tier ) )
+      tier_name = set_bonus.tier;
+  return fmt::format( "player {} does not have set {} {}pc active", target_player->name(), tier_name,
+                      static_cast<int>( count + 1 ) );
 }
 
-void tier_set_count_t::create_options()
+void set_bonus_enabled_t::create_options()
 {
-  add_option( opt_func( "tier", [ this ]( sim_t*, util::string_view, util::string_view value ){
+  add_option( opt_func( "tier", [ this ]( sim_t*, util::string_view, util::string_view value ) {
     auto set_bonuses = item_set_bonus_t::data( target_player ? target_player->dbc->ptr : false );
     for ( const auto& set_bonus : set_bonuses )
     {
@@ -315,7 +392,7 @@ void tier_set_count_t::create_options()
     this->count = static_cast<set_bonus_e>( bonus_value - 1 );
     return true;
   } ) );
-  add_option( opt_func( "player", [ this ]( sim_t* sim, util::string_view, util::string_view value ){
+  add_option( opt_func( "player", [ this ]( sim_t* sim, util::string_view, util::string_view value ) {
     for ( auto& player : sim->player_list )
     {
       if ( util::str_compare_ci( player->name(), value ) )
@@ -341,23 +418,4 @@ void tier_set_count_t::create_options()
 // void sim_controller_data_wrapper_t::report_json_options( js::JsonOutput& ) const
 // {
 //   // TODO: implement opt parsing and automatic generation of report json from opts
-// }
-
-// void sim_controller_data_wrapper_t::report_html_profileset( std::ostream& output ) const
-// {
-//   for ( const exit_reason_t& exit_reason : exit_reasons )
-//     output << "<li>"
-//           << util::encode_html( exit_reason.profileset_name ) << " "
-//           << util::encode_html( sim_controller_t::call_point_string( exit_reason.exit_point ) ) << " "
-//           << util::encode_html( exit_reason.exit_reason )
-//           << "</li>\n";
-// }
-
-// void sim_controller_data_wrapper_t::report_html_options( std::ostream& output ) const
-// {
-//   output << "<li>"
-//          << util::encode_html( key ) << " ";
-//   for ( const auto& opt : options )
-//     output << fmt::format( "{} ", opt );
-//   output << "</li>\n";
 // }

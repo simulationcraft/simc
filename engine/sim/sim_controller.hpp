@@ -5,13 +5,12 @@
 #include "sc_enums.hpp"
 #include "util/generic.hpp"
 
+#include <atomic>
 #include <functional>
 #include <mutex>
-#include <atomic>
 
 /*
  * TODO:
- *  - intialize contents of factory map
  *  - implement reporting
  *  - implement profileset culling specialization
  */
@@ -23,10 +22,13 @@ struct data_wrapper_t
 {
 private:
   std::scoped_lock<std::recursive_mutex> lock;
+
 public:
   const T& data;
 
-  data_wrapper_t( const T& data, std::recursive_mutex& m ) : lock( m ), data( data ) {}
+  data_wrapper_t( const T& data, std::recursive_mutex& m ) : lock( m ), data( data )
+  {
+  }
 };
 
 enum call_point_e
@@ -45,21 +47,27 @@ struct exit_reason_t
 
 struct profileset_controller_data_t : private noncopyable
 {
+  const std::string key;
+  std::string_view options;
   std::vector<exit_reason_t> exit_reasons;
 
-  profileset_controller_data_t();
+  profileset_controller_data_t( std::string_view, std::string_view );
   virtual ~profileset_controller_data_t() = default;
 
-  virtual void report_html_options( std::ostream& ) {}
-  virtual void report_html_profileset( std::ostream& ) {}
+  virtual void report_html_options( std::ostream& ) const;
+  virtual void report_html_profileset( std::ostream& ) const;
 };
 
 struct profileset_controller_data_wrapper_t : private noncopyable
 {
+private:
   static std::atomic_uint id_generator;
+
+public:
   std::recursive_mutex mutex;
-  unsigned int id;
-  std::string key;
+
+  const unsigned int id;
+  const std::string key;
   std::string_view options;
   std::unique_ptr<profileset_controller_data_t> data;
 
@@ -70,21 +78,21 @@ struct profileset_controller_data_wrapper_t : private noncopyable
 
 struct profileset_controller_t : private noncopyable
 {
-  using controller_factory_t = std::function<std::unique_ptr<profileset_controller_t>(sim_t*, unsigned int)>;
-  using data_factory_t = std::function<std::unique_ptr<profileset_controller_data_t>()>;
+  using controller_factory_t = std::function<std::unique_ptr<profileset_controller_t>( sim_t*, unsigned int )>;
+  using data_factory_t =
+      std::function<std::unique_ptr<profileset_controller_data_t>( std::string_view, std::string_view )>;
   using factory_fn_pair_t = std::pair<controller_factory_t, data_factory_t>;
+
 protected:
   friend profileset_controller_data_wrapper_t;
   static std::unordered_map<std::string, factory_fn_pair_t> factory;
+
 public:
   static bool register_controller( std::string, factory_fn_pair_t&& );
   static bool controller_exists( std::string );
 
   using data_t = profileset_controller_data_t;
-  static const std::string call_point_string( call_point_e call_point );
   static void evaluate( sim_t* sim, call_point_e call_point );
-
-  static void html_report( const sim_t&, std::ostream& );
 
   sim_t* parent;
   sim_t* sim;
@@ -99,11 +107,15 @@ public:
 
   virtual const std::string name() const   = 0;
   virtual const std::string reason() const = 0;
-  virtual void create_options() {}
-  virtual bool evaluate_post_init() {
+  virtual void create_options()
+  {
+  }
+  virtual bool evaluate_post_init()
+  {
     return true;
   }
-  virtual bool evaluate_post_iter() {
+  virtual bool evaluate_post_iter()
+  {
     return true;
   }
 
@@ -114,6 +126,13 @@ protected:
   void set_data( T&& data );
   void set_exit_reason( exit_reason_t&& );
 };
+
+namespace profileset_controller
+{
+const std::string call_point_string( call_point_e call_point );
+void report_html( const sim_t&, std::ostream& );
+void report_json();
+};  // namespace profileset_controller
 
 struct min_player_stat_t : profileset_controller_t
 {
@@ -137,7 +156,7 @@ struct min_player_stat_t : profileset_controller_t
   const std::string reason() const override;
 };
 
-struct tier_set_count_t : profileset_controller_t
+struct set_bonus_enabled_t : profileset_controller_t
 {
   using data_t = profileset_controller_data_t;
 
@@ -145,12 +164,12 @@ struct tier_set_count_t : profileset_controller_t
   set_bonus_type_e tier;
   set_bonus_e count;
 
-  tier_set_count_t( sim_t* sim, unsigned int id ) : profileset_controller_t( sim, id )
+  set_bonus_enabled_t( sim_t* sim, unsigned int id ) : profileset_controller_t( sim, id )
   {
   }
   const std::string name() const override
   {
-    return "tier_set_count";
+    return "set_bonus_enabled";
   }
   bool evaluate_post_init() override;
   const std::string reason() const override;
