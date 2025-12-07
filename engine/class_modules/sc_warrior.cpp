@@ -228,6 +228,7 @@ public:
     buff_t* bloodcraze;
     buff_t* scent_of_blood;
     buff_t* ragedrinker;
+    buff_t* executioners_wrath;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
@@ -659,7 +660,7 @@ public:
       player_talent_t bloodborne;
       player_talent_t surge_of_adrenaline;  // NYI
       // Row 10
-      player_talent_t executioners_wrath;  // NYI
+      player_talent_t executioners_wrath;
       player_talent_t reckless_abandon;
       player_talent_t avatar;
       player_talent_t bladestorm;
@@ -1036,6 +1037,8 @@ public:
       parse_effects( p()->buff.scent_of_blood );
 
       parse_effects( p()->buff.ragedrinker );
+
+      parse_effects( p()->buff.executioners_wrath );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -4254,6 +4257,9 @@ struct execute_fury_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->talents.fury.executioners_wrath->ok() )
+      p()->buff.executioners_wrath->trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7860,6 +7866,8 @@ void warrior_t::create_buffs()
   buff.scent_of_blood = make_buff( this, "scent_of_blood", talents.fury.scent_of_blood->effectN( 1 ).trigger() );
 
   buff.ragedrinker = make_buff( this, "ragedrinker", talents.fury.ragedrinker->effectN( 1 ).trigger() );
+
+  buff.executioners_wrath = make_buff( this, "executioners_wrath", talents.fury.executioners_wrath->effectN( 2 ).trigger() );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
