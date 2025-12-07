@@ -226,6 +226,7 @@ public:
     buff_t* best_served_cold;
     buff_t* bladestorm;
     buff_t* bloodcraze;
+    buff_t* scent_of_blood;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
@@ -636,7 +637,7 @@ public:
       player_talent_t rampaging_ruin;
       // Row 6
       player_talent_t cold_steel_hot_blood;
-      player_talent_t scent_of_blood;  // NYI
+      player_talent_t scent_of_blood;
       player_talent_t kill_or_be_killed;  // NYI
       player_talent_t hack_and_slash;
       player_talent_t bloodcraze;
@@ -1030,6 +1031,8 @@ public:
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 7 ) );
 
       parse_effects( p()->buff.bloodcraze );
+
+      parse_effects( p()->buff.scent_of_blood );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -2491,6 +2494,9 @@ struct bloodthirst_t : public warrior_attack_t
     {
       p()->buff.thunder_blast->trigger();
     }
+
+    if ( p()->buff.scent_of_blood->up() )
+      p()->buff.scent_of_blood->decrement();
   }
 
   bool ready() override
@@ -2719,6 +2725,9 @@ struct bloodbath_t : public warrior_attack_t
     {
       p()->buff.thunder_blast->trigger();
     }
+
+    if ( p()->buff.scent_of_blood->up() )
+      p()->buff.scent_of_blood->decrement();
   }
 
   bool ready() override
@@ -5344,6 +5353,9 @@ struct rampage_parent_t : public warrior_attack_t
 
     p()->enrage();
 
+    if ( p()->talents.fury.scent_of_blood->ok() )
+      p()->buff.scent_of_blood->trigger();
+
     if( p()->talents.fury.rampaging_ruin->ok() && p()->buff.whirlwind->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), rampage1_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1()) );
@@ -7835,6 +7847,8 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
+
+  buff.scent_of_blood = make_buff( this, "scent_of_blood", talents.fury.scent_of_blood->effectN( 1 ).trigger() );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
