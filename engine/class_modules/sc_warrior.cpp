@@ -227,6 +227,7 @@ public:
     buff_t* bladestorm;
     buff_t* bloodcraze;
     buff_t* scent_of_blood;
+    buff_t* ragedrinker;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
@@ -642,7 +643,7 @@ public:
       player_talent_t hack_and_slash;
       player_talent_t bloodcraze;
       // Row 7
-      player_talent_t ragedrinker;  // NYI
+      player_talent_t ragedrinker;
       player_talent_t deep_wounds;
       player_talent_t recklessness;
       player_talent_t massacre;
@@ -1033,6 +1034,8 @@ public:
       parse_effects( p()->buff.bloodcraze );
 
       parse_effects( p()->buff.scent_of_blood );
+
+      parse_effects( p()->buff.ragedrinker );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -2427,7 +2430,7 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound->execute_on_target( s->target );
     }
 
-    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && s->result == RESULT_CRIT &&
          p()->cooldown.cold_steel_hot_blood_icd->up() )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
@@ -2497,6 +2500,13 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->buff.scent_of_blood->up() )
       p()->buff.scent_of_blood->decrement();
+
+    if ( p()->talents.fury.ragedrinker->ok() && execute_state->result == RESULT_CRIT )
+    {
+      p()->buff.ragedrinker->trigger();
+      if ( bloodthirst_heal )
+        bloodthirst_heal->execute();
+    }
   }
 
   bool ready() override
@@ -4632,21 +4642,17 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   action_t* lightning_strike;
-  action_t* reap_the_storm;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   bool opportunist_up;
-  double rage_gain;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->talents.fury.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
-      reap_the_storm( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
-      opportunist_up( false ),
-      rage_gain( 0 )
+      opportunist_up( false )
   {
     parse_options( options_str );
 
@@ -4663,14 +4669,6 @@ struct raging_blow_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_raging_blow", p );
       add_child( lightning_strike );
-    }
-
-    // We add the reap action here purely for the report
-    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
-      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-      add_child( reap_the_storm );
     }
   }
 
@@ -4819,19 +4817,18 @@ struct crushing_blow_t : public warrior_attack_t
 {
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
+  double cd_reset_chance;
+  double wrath_and_fury_reset_chance;
   action_t* lightning_strike;
-  double cd_reset_chance, wrath_and_fury_reset_chance;
   bool opportunist_up;
-  double rage_gain;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
-      lightning_strike( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
-      opportunist_up( false ),
-      rage_gain( 0 )
+      lightning_strike( nullptr ),
+      opportunist_up( false )
   {
     parse_options( options_str );
 
@@ -7849,6 +7846,8 @@ void warrior_t::create_buffs()
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
 
   buff.scent_of_blood = make_buff( this, "scent_of_blood", talents.fury.scent_of_blood->effectN( 1 ).trigger() );
+
+  buff.ragedrinker = make_buff( this, "ragedrinker", talents.fury.ragedrinker->effectN( 1 ).trigger() );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
