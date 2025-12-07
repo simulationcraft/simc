@@ -16,6 +16,13 @@
 
 struct sim_t;
 
+enum call_point_e
+{
+  CALL_POINT_NONE,
+  POST_INIT,
+  POST_ITER
+};
+
 template <typename T>
 struct data_wrapper_t
 {
@@ -28,13 +35,6 @@ public:
   data_wrapper_t( const T& data, std::recursive_mutex& m ) : lock( m ), data( data )
   {
   }
-};
-
-enum call_point_e
-{
-  CALL_POINT_NONE,
-  POST_INIT,
-  POST_ITER
 };
 
 struct exit_reason_t
@@ -133,6 +133,14 @@ namespace profileset_controller
 const std::string call_point_string( call_point_e call_point );
 void report_html( const sim_t&, std::ostream& );
 void report_json( const sim_t&, js::JsonOutput& output );
+
+template <typename T>
+profileset_controller_t::factory_fn_pair_t create_fn_pair()
+{
+  return {
+      []( sim_t* sim, unsigned int id ) { return std::make_unique<T>( sim, id ); },
+      []( std::string_view key, std::string_view options ) { return std::make_unique<typename T::data_t>( key, options ); } };
+}
 };  // namespace profileset_controller
 
 struct min_player_stat_t : profileset_controller_t
@@ -168,6 +176,7 @@ struct set_bonus_enabled_t : profileset_controller_t
   set_bonus_enabled_t( sim_t* sim, unsigned int id ) : profileset_controller_t( sim, id )
   {
   }
+
   const std::string name() const override
   {
     return "set_bonus_enabled";

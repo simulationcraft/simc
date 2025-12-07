@@ -8,11 +8,7 @@
 #include "sim.hpp"
 
 std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory = {
-    { "set_bonus_enabled",
-      { []( sim_t* sim, unsigned int id ) { return std::make_unique<set_bonus_enabled_t>( sim, id ); },
-        []( std::string_view key, std::string_view options ) {
-          return std::make_unique<set_bonus_enabled_t::data_t>( key, options );
-        } } } };
+    { "set_bonus_enabled", profileset_controller::create_fn_pair<set_bonus_enabled_t>() } };
 
 std::atomic_uint profileset_controller_data_wrapper_t::id_generator;
 
@@ -163,13 +159,13 @@ profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
 
 const std::string profileset_controller_t::message( call_point_e call_point )
 {
-  std::string msg =
-      fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}", parent->profilesets->current_profileset_name(), name(),
-                   profileset_controller::call_point_string( call_point ) );
+  std::string msg = fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}",
+                                 parent->profilesets->current_profileset_name(), name(),
+                                 profileset_controller::call_point_string( call_point ) );
   if ( call_point == POST_ITER )
     msg += std::to_string( sim->current_iteration );
 
-  if ( const auto r = reason(); !r.empty()  )
+  if ( const auto r = reason(); !r.empty() )
     msg += fmt::format( " because {}.", r );
   else
     msg += ".";
