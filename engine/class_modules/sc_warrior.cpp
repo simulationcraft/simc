@@ -229,6 +229,7 @@ public:
     buff_t* scent_of_blood;
     buff_t* ragedrinker;
     buff_t* executioners_wrath;
+    buff_t* surge_of_adrenaline;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
@@ -658,7 +659,7 @@ public:
       player_talent_t vicious_contempt;
       player_talent_t odyns_fury;
       player_talent_t bloodborne;
-      player_talent_t surge_of_adrenaline;  // NYI
+      player_talent_t surge_of_adrenaline;
       // Row 10
       player_talent_t executioners_wrath;
       player_talent_t reckless_abandon;
@@ -1039,6 +1040,8 @@ public:
       parse_effects( p()->buff.ragedrinker );
 
       parse_effects( p()->buff.executioners_wrath );
+
+      parse_effects( p()->buff.surge_of_adrenaline );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -4260,6 +4263,8 @@ struct execute_fury_t : public warrior_attack_t
 
     if ( p()->talents.fury.executioners_wrath->ok() )
       p()->buff.executioners_wrath->trigger();
+
+
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4731,6 +4736,9 @@ struct raging_blow_t : public warrior_attack_t
         // cast with opportunist up.
         if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
+
+        if ( p()->talents.fury.surge_of_adrenaline->ok() )
+          p()->buff.surge_of_adrenaline->trigger();
       }
     }
     p()->buff.whirlwind->decrement();
@@ -4906,6 +4914,9 @@ struct crushing_blow_t : public warrior_attack_t
       // cast with opportunist up.
       if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
         p()->buff.opportunist->trigger();
+
+      if ( p()->talents.fury.surge_of_adrenaline->ok() )
+        p()->buff.surge_of_adrenaline->trigger();
     }
 
     p()->buff.whirlwind->decrement();
@@ -7869,6 +7880,9 @@ void warrior_t::create_buffs()
 
   buff.executioners_wrath = make_buff( this, "executioners_wrath", talents.fury.executioners_wrath->effectN( 2 ).trigger() );
 
+  buff.surge_of_adrenaline = make_buff( this, "surge_of_adrenaline", find_spell( 1265560 ) )
+                                          ->set_trigger_spell( talents.fury.surge_of_adrenaline );
+
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
       // As a result, rage tracking is accurate on the buff tooltip, but the number of stacks equals round(value / 2.5)
@@ -8988,12 +9002,14 @@ double warrior_t::pseudo_random_c_from_p( double p )
 void warrior_t::parse_player_effects()
 {
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
+
   parse_effects( buff.battle_stance, effect_mask_t( true ).disable( 4 ) );
   if ( talents.warrior.stance_mastery->ok() )
     parse_effects( buff.battle_stance, effect_mask_t( false ).enable( 4 ) );
 
   // Stance Mastery for Defensive stance is not working in game as of Dec 04 2025
   parse_effects( buff.defensive_stance, effect_mask_t( true ).disable( 2, 5, 6 ) );
+
   if ( specialization() != WARRIOR_PROTECTION )
     parse_effects( buff.defensive_stance, effect_mask_t( false ).enable( 2 ) );
 
@@ -9007,6 +9023,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_FURY )
   {
     parse_effects( buff.frenzy, talents.fury.frenzy );
+    parse_effects( buff.surge_of_adrenaline );
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
