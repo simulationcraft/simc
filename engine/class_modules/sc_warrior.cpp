@@ -230,6 +230,7 @@ public:
     buff_t* ragedrinker;
     buff_t* executioners_wrath;
     buff_t* surge_of_adrenaline;
+    buff_t* bloodborne;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
@@ -1042,6 +1043,8 @@ public:
       parse_effects( p()->buff.executioners_wrath );
 
       parse_effects( p()->buff.surge_of_adrenaline );
+
+      parse_effects( p()->buff.bloodborne );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -2513,6 +2516,9 @@ struct bloodthirst_t : public warrior_attack_t
       if ( bloodthirst_heal )
         bloodthirst_heal->execute();
     }
+
+    if ( p()->talents.fury.bloodborne->ok() )
+      p()->buff.bloodborne->trigger();
   }
 
   bool ready() override
@@ -2756,6 +2762,9 @@ struct bloodbath_t : public warrior_attack_t
       if ( bloodthirst_heal )
         bloodthirst_heal->execute();
     }
+
+    if ( p()->talents.fury.bloodborne->ok() )
+      p()->buff.bloodborne->trigger();
   }
 
   bool ready() override
@@ -7882,6 +7891,9 @@ void warrior_t::create_buffs()
 
   buff.surge_of_adrenaline = make_buff( this, "surge_of_adrenaline", find_spell( 1265560 ) )
                                           ->set_trigger_spell( talents.fury.surge_of_adrenaline );
+
+  buff.bloodborne = make_buff( this, "bloodborne", talents.fury.bloodborne->effectN( 1 ).trigger() )
+                                        ->set_trigger_spell( talents.fury.bloodborne );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
