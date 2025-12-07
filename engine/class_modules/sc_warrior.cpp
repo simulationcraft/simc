@@ -2729,6 +2729,11 @@ struct bloodbath_t : public warrior_attack_t
       }
     }
 
+    if ( p()->buff.enrage->up() )
+    {
+      p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+    }
+
     p()->buff.fierce_followthrough->expire();
 
     if ( p()->talents.mountain_thane.thunder_blast->ok() && rng().roll( p()->talents.mountain_thane.thunder_blast->effectN( 1 ).percent() ) )
@@ -2738,6 +2743,13 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->buff.scent_of_blood->up() )
       p()->buff.scent_of_blood->decrement();
+
+    if ( p()->talents.fury.ragedrinker->ok() && execute_state->result == RESULT_CRIT )
+    {
+      p()->buff.ragedrinker->trigger();
+      if ( bloodthirst_heal )
+        bloodthirst_heal->execute();
+    }
   }
 
   bool ready() override
