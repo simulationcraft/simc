@@ -260,6 +260,9 @@ public:
     buff_t* whirlwind;
     buff_t* wild_strikes;
 
+    // Fury Apex
+    buff_t* berserk;
+
     buff_t* seeing_red;
     buff_t* seeing_red_tracking;
     buff_t* violent_outburst;
@@ -1046,9 +1049,11 @@ public:
 
       parse_effects( p()->buff.bloodborne );
 
-      parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13 ) );
+      parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13, 14, 15 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
         parse_effects( p()->buff.recklessness, effect_mask_t( false ).enable( 11, 12, 13 ) );
+      if ( p()->talents.fury.rampaging_berserker_2->ok() )
+        parse_effects( p()->buff.recklessness, effect_mask_t( false ).enable( 14, 15 ) );
 
       parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
     }
@@ -5228,6 +5233,16 @@ struct rampage_attack_base_t : public warrior_attack_t
     dual = true;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.fury.rampaging_berserker_2->ok() && p()->buff.recklessness->check() )
+      m *= 1.0 + p()->talents.fury.rampaging_berserker_2->effectN( 2 ).percent();
+
+    return m;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5380,6 +5395,16 @@ struct rampage_parent_t : public warrior_attack_t
     rage_from_frothing_berserker = p->talents.warrior.frothing_berserker->effectN( 2 ).percent();
   }
 
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p()->talents.fury.rampaging_berserker_2->ok() && p()->buff.recklessness->check() )
+      c += ( p()->talents.fury.rampaging_berserker_2->effectN( 1 ).base_value() / 10 );
+
+    return c;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5395,9 +5420,13 @@ struct rampage_parent_t : public warrior_attack_t
     if ( p()->talents.fury.scent_of_blood->ok() )
       p()->buff.scent_of_blood->trigger();
 
+    // Berserk triggers after the first hit of rampage lands, so add 1_ms to it
+
     if( p()->talents.fury.rampaging_ruin->ok() && p()->buff.whirlwind->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), rampage1_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1()) );
+      if ( p()->talents.fury.rampaging_berserker_1->ok() )
+        make_event( sim, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1()) + 1_ms, [ this ]() { p()->buff.berserk->trigger(); } );
       make_event<delayed_execute_event_t>( *sim, p(), rampage2_aoe_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 7 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage3_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 8 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage4_aoe_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 9 ).misc_value1()) );
@@ -5405,6 +5434,8 @@ struct rampage_parent_t : public warrior_attack_t
     else
     {
       make_event<delayed_execute_event_t>( *sim, p(), rampage1_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 2 ).misc_value1()) );
+      if ( p()->talents.fury.rampaging_berserker_1->ok() )
+        make_event( sim, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 2 ).misc_value1()) + 1_ms, [ this ]() { p()->buff.berserk->trigger(); } );
       make_event<delayed_execute_event_t>( *sim, p(), rampage2_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 3 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage3_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage4_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
@@ -6664,6 +6695,9 @@ struct recklessness_t : public warrior_spell_t
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
+
+    if ( p()->talents.fury.rampaging_berserker_3->ok() )
+      p()->buff.berserk->trigger( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() );
   }
 };
 
@@ -7910,6 +7944,10 @@ void warrior_t::create_buffs()
   buff.bloodborne = make_buff( this, "bloodborne", talents.fury.bloodborne->effectN( 1 ).trigger() )
                                         ->set_trigger_spell( talents.fury.bloodborne );
 
+  buff.berserk = make_buff( this, "berserk", find_spell( 1269349) )
+                    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                    ->set_trigger_spell( talents.fury.rampaging_berserker_1 );
+
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
       // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
       // As a result, rage tracking is accurate on the buff tooltip, but the number of stacks equals round(value / 2.5)
@@ -9056,6 +9094,8 @@ void warrior_t::parse_player_effects()
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
     if ( talents.fury.powerful_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 5, 6 ) );
+
+    parse_effects( buff.berserk );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
