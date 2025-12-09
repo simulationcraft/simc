@@ -2503,6 +2503,10 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->buff.enrage->up() )
     {
       p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+      // Double the benefit on crit
+      if( execute_state && execute_state->result == RESULT_CRIT )
+        p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+
     }
 
     p()->buff.fierce_followthrough->expire();
@@ -2749,6 +2753,9 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->buff.enrage->up() )
     {
       p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+      // Double the benefit on crit
+      if( execute_state && execute_state->result == RESULT_CRIT )
+        p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
     }
 
     p()->buff.fierce_followthrough->expire();
