@@ -3616,11 +3616,13 @@ struct thunder_blast_t : public warrior_attack_t
     }
   }
 
-  double bonus_da( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
-    double da = warrior_attack_t::bonus_da( s );
-
-    return da;
+    double m = warrior_attack_t::composite_da_multiplier( state );
+    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder->ok() &&
+          p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
+    return m;
   }
 
   void execute() override
@@ -3767,11 +3769,13 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 
-  double bonus_da( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
-    double da = warrior_attack_t::bonus_da( s );
-
-    return da;
+    double m = warrior_attack_t::composite_da_multiplier( state );
+    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder->ok() &&
+          p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
+    return m;
   }
 
   void execute() override
@@ -6022,6 +6026,14 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     background = true;
     aoe = -1;
     reduced_aoe_targets = 5.0;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+    if ( p()->talents.fury.meat_cleaver->ok() && p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
+    return m;
   }
 };
 
