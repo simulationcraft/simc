@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 11.2.7.64704
+Class Spell ID List, wow build 11.2.7.64772
 
 Death Knight
 3714     Path of Frost
@@ -10181,6 +10181,7 @@ Mage
 1247525  Spherical Sorcery
 1247690  Artisanal Blink Trap
 1248491 *Teleport: Black Temple
+1282339 *Portal: Stormwind
 
 Monk
 8647     Mystic Touch
