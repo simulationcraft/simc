@@ -5409,6 +5409,9 @@ struct rampage_parent_t : public warrior_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), rampage3_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage4_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID1, B4 ) )
+      p()->cooldown.odyns_fury->adjust( - p()->sets->set( WARRIOR_FURY, MID1, B4 )->effectN( 1 ).time_value() );
   }
 
   bool ready() override
