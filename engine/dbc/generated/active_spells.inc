@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.0.0.64611
-static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
+// Active class spells, wow build 12.0.1.64889
+static constexpr std::array<active_class_spell_t, 350> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -147,6 +147,7 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  5,    0,   21562,       0, "Power Word: Fortitude"              },
   {  5,  256,     527,  440006, "Purify"                             },
   {  5,  256,   47540,       0, "Penance"                            },
+  {  5,  256,  200829,       0, "Plea"                               },
   {  5,  256,  212036,       0, "Mass Resurrection"                  },
   {  5,  256,  440006,       0, "Purify Disease"                     },
   {  5,  256, 1229376,       0, "Single-Button Assistant"            },
@@ -253,7 +254,6 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  9,  266, 1229376,       0, "Single-Button Assistant"            },
   {  9,  267,     348,     172, "Immolate"                           },
   {  9,  267,   29722,     686, "Incinerate"                         },
-  {  9,  267,  116858,       0, "Chaos Bolt"                         },
   {  9,  267, 1229376,       0, "Single-Button Assistant"            },
   { 10,    0,  100780,       0, "Tiger Palm"                         },
   { 10,    0,  100784,       0, "Blackout Kick"                      },
@@ -314,7 +314,6 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   { 12,    0,  344859,       0, "Demon's Bite"                       },
   { 12,    0,  344862,       0, "Chaos Strike"                       },
   { 12,    0,  344865,       0, "Fel Rush"                           },
-  { 12,  577,  162243,  344859, "Demon's Bite"                       },
   { 12,  577,  162794,  344862, "Chaos Strike"                       },
   { 12,  577,  188499,       0, "Blade Dance"                        },
   { 12,  577,  195072,  344865, "Fel Rush"                           },
@@ -334,7 +333,6 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   { 12, 1480, 1226019,  344862, "Reap"                               },
   { 12, 1480, 1229376,       0, "Single-Button Assistant"            },
   { 12, 1480, 1234796,  344865, "Shift"                              },
-  { 12, 1480, 1251417,  188501, "Spectral Sight"                     },
   { 13,    0,  355913,       0, "Emerald Blossom"                    },
   { 13,    0,  356995,       0, "Disintegrate"                       },
   { 13,    0,  357208,       0, "Fire Breath"                        },
@@ -354,7 +352,7 @@ static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.64611
+// Pet active spells, wow build 12.0.1.64889
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

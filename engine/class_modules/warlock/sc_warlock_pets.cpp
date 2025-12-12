@@ -702,6 +702,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
       aoe = -1;
       ignores_armor = !p->bugs; // TOCHECK: 2025-04-17 This spell currently does not ignore armor (bug?)
       base_dd_min = base_dd_max = 0;
+      target_filter_callback = secondary_targets_only();
     }
 
     void init_finished() override
@@ -712,20 +713,6 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
       if ( !p()->bugs )
         snapshot_flags &= STATE_NO_MULTIPLIER;
 
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      warlock_pet_melee_attack_t::available_targets( tl );
-
-      // Does not hit the main target
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
     }
   };
 
@@ -2632,20 +2619,7 @@ struct soul_swipe_aoe_t : public soul_swipe_base_t
     spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
     aoe                    = -1;
     background             = true;
-  }
-
-  // Doesnt hit the main target, so we need to override this
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    soul_swipe_base_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    target_filter_callback = secondary_targets_only();
   }
 };
 

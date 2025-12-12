@@ -13672,16 +13672,16 @@ void druid_t::parse_assisted_combat_step( const assisted_combat_step_data_t& ste
 parsed_assisted_combat_rule_t druid_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                    const assisted_combat_step_data_t& step ) const
 {
-  if ( ( rule.condition_type == PLAYER_AURA_APPLICATION_GREATER ||
-         rule.condition_type == PLAYER_AURA_APPLICATION_LESS ) &&
+  if ( ( rule.condition_type == AC_PLAYER_AURA_APPLICATION_GREATER ||
+         rule.condition_type == AC_PLAYER_AURA_APPLICATION_LESS ) &&
        ( rule.condition_value_1 == 326053 || rule.condition_value_1 == 326055 ) )
   {
-    auto op = rule.condition_type == PLAYER_AURA_APPLICATION_GREATER ? ">=" : "<=";
+    auto op = rule.condition_type == AC_PLAYER_AURA_APPLICATION_GREATER ? ">=" : "<=";
     auto expr = rule.condition_value_1 == 326053 ? "eclipse.starfire_counter" : "eclipse.wrath_counter";
 
     return { fmt::format( "{}{}{}", expr, op, rule.condition_value_2 ), true };
   }
-  else if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_2 == 252752 )
+  else if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_2 == 252752 )
   {
     auto new_rule = rule;  // make a copy
     new_rule.condition_value_2 = rule.condition_value_1;

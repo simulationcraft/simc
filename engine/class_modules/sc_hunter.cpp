@@ -2820,6 +2820,7 @@ struct beast_cleave_attack_t: public hunter_pet_attack_t<hunter_pet_t>
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    target_filter_callback = secondary_targets_only();
   }
 
   void init() override
@@ -2828,16 +2829,6 @@ struct beast_cleave_attack_t: public hunter_pet_attack_t<hunter_pet_t>
 
     snapshot_flags |= STATE_TGT_MUL_DA;
     snapshot_flags |= STATE_TGT_MUL_PET;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 };
 
@@ -2857,6 +2848,7 @@ struct kill_cleave_t: public hunter_pet_attack_t<hunter_pet_t>
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    target_filter_callback = secondary_targets_only();
   }
 
   void init() override
@@ -2865,16 +2857,6 @@ struct kill_cleave_t: public hunter_pet_attack_t<hunter_pet_t>
 
     snapshot_flags |= STATE_TGT_MUL_DA;
     snapshot_flags |= STATE_TGT_MUL_PET;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 };
 
@@ -3046,15 +3028,7 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
       background = true;
       aoe = -1;
       base_dd_multiplier *= effectiveness;
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const override
-    {
-      hunter_pet_attack_t::available_targets( tl );
-
-      range::erase_remove( tl, target );
-
-      return tl.size();
+      target_filter_callback = secondary_targets_only();
     }
   };
 
@@ -4720,22 +4694,13 @@ struct black_arrow_t final : public kill_shot_base_t
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talents.bleak_powder->effectN( 2 ).base_value();
+      target_filter_callback = secondary_targets_only();
 
       if ( p->talents.umbral_reach.ok() )
       {
         umbral_reach.dot = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
         umbral_reach.targets = as<size_t>( p->talents.umbral_reach->effectN( 2 ).base_value() );
       }
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      hunter_ranged_attack_t::available_targets( tl );
-
-      // Cannot hit the original target.
-      range::erase_remove( tl, target );
-
-      return tl.size();
     }
 
     void impact( action_state_t* s ) override
@@ -4901,16 +4866,8 @@ struct boar_charge_t final : hunter_ranged_attack_t
     {
       background = dual = true;
       aoe = as<int>( data().effectN( 2 ).base_value() );
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const override
-    {
-      hunter_ranged_attack_t::available_targets( tl );
-
       // TODO 31/1/25: currently hits primary target
-      // range::erase_remove( tl, target );
-
-      return tl.size();
+      // target_filter_callback = secondary_targets_only();
     }
 
     void impact( action_state_t* s ) override

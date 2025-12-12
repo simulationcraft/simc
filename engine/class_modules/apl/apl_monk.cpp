@@ -157,11 +157,11 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
                                                                   const assisted_combat_step_data_t& step ) const
 {
   // Assisted Combat APL is partially updated and still includes references to Emperor's Capacitor
-  if ( step.spell_id == 117952 && rule.condition_type == PLAYER_AURA_APPLICATION_GREATER &&
+  if ( step.spell_id == 117952 && rule.condition_type == AC_PLAYER_AURA_APPLICATION_GREATER &&
        rule.condition_value_1 == 393039 && rule.condition_value_2 == 20 && rule.condition_value_3 == 0 )
     return "1";
 
-  if ( step.spell_id == 152175 && rule.condition_type == TARGET_DISTANCE_LESS )
+  if ( step.spell_id == 152175 && rule.condition_type == AC_TARGET_DISTANCE_LESS )
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1           = 10;
@@ -169,18 +169,18 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
     return { base_t::parse_assisted_combat_rule( rule_copy, step ), "Extended range check to 10 yards (from 5)." };
   }
 
-  if ( step.spell_id == 100780 && rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 116768 &&
+  if ( step.spell_id == 100780 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 116768 &&
        rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
     return {
         "buff.combo_breaker.up",
         "The name `Combo Breaker` is used instead of `Blackout Kick` due to standard tokenization rules and clarity.",
         true };
 
-  if ( step.spell_id == 100780 && rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 261916 &&
+  if ( step.spell_id == 100780 && rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 261916 &&
        rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
     return { "1", "Checks for Blackout Kick Rank 2 being known, which is assumed to be true.", true };
 
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
   {
     switch ( rule.condition_value_1 )
     {
@@ -199,7 +199,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
     }
   }
 
-  if ( rule.condition_type == TARGET_COUNT_NEAR_PLAYER_GREATER && rule.condition_value_1 == 1 &&
+  if ( rule.condition_type == AC_TARGET_COUNT_NEAR_PLAYER_GREATER && rule.condition_value_1 == 1 &&
        rule.condition_value_2 == 15 && rule.condition_value_3 == 0 )
     return { "1", "Counts valid targets for action, including player." };
 

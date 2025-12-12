@@ -342,7 +342,7 @@ public:
     buff_t* glaive_flurry;
     buff_t* rending_strike;
     buff_t* warblades_hunger;
-    buff_t* thrill_of_the_fight_attack_speed;
+    buff_t* thrill_of_the_fight_haste;
     buff_t* thrill_of_the_fight_damage;
     buff_t* art_of_the_glaive_first;
     buff_t* art_of_the_glaive_second_rending_strike;
@@ -872,9 +872,7 @@ public:
     const spell_data_t* warblades_hunger_buff;
     const spell_data_t* warblades_hunger_damage;
     const spell_data_t* wounded_quarry_damage;
-    const spell_data_t* thrill_of_the_fight_attack_speed_buff;
-    const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
-    const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
+    const spell_data_t* thrill_of_the_fight_haste_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff;
     double wounded_quarry_proc_rate;
 
@@ -2650,7 +2648,7 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        BASE::p()->buff.thrill_of_the_fight_haste->trigger();
 
         make_event( *BASE::p()->sim, thrill_delay,
                     [ this ] { BASE::p()->buff.thrill_of_the_fight_damage->trigger(); } );
@@ -4687,14 +4685,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  // TODO: 2023-12-19: With the change from 30% to 25% proc chance, AFI seems to no longer be
-  //                   a simple deck of cards system. Need to figure out exactly how it works
-  //                   but until then we use a flat chance from spell data again.
-  double afi_chance;
-
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
-      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -4749,9 +4741,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
-
-    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
-      cooldown->reset( true, 1 );
 
     p()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
   }
@@ -6801,58 +6790,25 @@ struct blade_dance_base_t
     }
   };
 
-  struct blade_dance_damage_t : public demon_hunter_attack_t
+  struct blade_dance_damage_first_blood_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
     bool first_attack;
     bool last_attack;
-    bool from_first_blood;
     unsigned glaive_tempest_targets;
 
-    blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
-                          const spell_data_t* first_blood_override = nullptr )
-      : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
+    blade_dance_damage_first_blood_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
+                                      const spelleffect_data_t& eff )
+      : base_t( n, p, s ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
         first_attack( false ),
-        last_attack( false ),
-        from_first_blood( first_blood_override != nullptr )
+        last_attack( false )
     {
       background = dual      = true;
-      aoe                    = ( from_first_blood ) ? 0 : -1;
-      reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      aoe                    = 0;
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      demon_hunter_attack_t::available_targets( tl );
-
-      if ( p()->talent.havoc.first_blood->ok() && !from_first_blood )
-      {
-        // Ensure the non-First Blood AoE spell doesn't hit the primary target
-        range::erase_remove( tl, target );
-      }
-
-      return tl.size();
-    }
-
-    double action_multiplier() const override
-    {
-      double am = demon_hunter_attack_t::action_multiplier();
-
-      if ( from_first_blood )
-      {
-        am *= 1.0 + p()->talent.havoc.first_blood->effectN( 1 ).percent();
-      }
-
-      return am;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      return demon_hunter_attack_t::composite_da_multiplier( s );
     }
 
     void impact( action_state_t* s ) override
@@ -6880,8 +6836,59 @@ struct blade_dance_base_t
     }
   };
 
+  struct blade_dance_damage_t : public demon_hunter_attack_t
+  {
+    timespan_t delay;
+    action_t* trail_of_ruin_dot;
+    bool first_attack;
+    bool last_attack;
+    unsigned glaive_tempest_targets;
+
+    blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
+                          const spell_data_t* first_blood_override = nullptr )
+      : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
+        delay( timespan_t::from_millis( eff.misc_value1() ) ),
+        trail_of_ruin_dot( nullptr ),
+        first_attack( false ),
+        last_attack( false )
+    {
+      background = dual      = true;
+      aoe                    = -1;
+      reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
+      if ( p->talent.havoc.first_blood->ok() )
+        target_filter_callback = secondary_targets_only();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
+      {
+        p()->active.essence_break_proc->execute_on_target( target );
+      }
+
+      if ( last_attack )
+      {
+        if ( trail_of_ruin_dot )
+        {
+          trail_of_ruin_dot->execute_on_target( s->target );
+        }
+
+        // if First Blood is talented, GT will be triggered by the FB attack
+        if ( p()->talent.havoc.glaive_tempest->ok() && !p()->talent.havoc.first_blood->ok() &&
+             s->n_targets >= glaive_tempest_targets &&
+             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
+        {
+          p()->active.glaive_tempest->execute_on_target( target );
+        }
+      }
+    }
+  };
+
   std::vector<blade_dance_damage_t*> attacks;
-  std::vector<blade_dance_damage_t*> first_blood_attacks;
+  std::vector<blade_dance_damage_first_blood_t*> first_blood_attacks;
   trail_of_ruin_dot_t* trail_of_ruin_dot;
   timespan_t ability_cooldown;
 
@@ -6939,15 +6946,12 @@ struct blade_dance_base_t
     {
       for ( auto& attack : first_blood_attacks )
       {
-        attack->stats = first_blood_attacks.front()->stats;
+        add_child( attack );
       }
-
 
       if ( first_blood_attacks.front() )
       {
         first_blood_attacks.front()->first_attack = true;
-
-        add_child( first_blood_attacks.front() );
       }
 
       if ( first_blood_attacks.back() )
@@ -6990,33 +6994,41 @@ struct blade_dance_base_t
         p()->proc.blade_dance_in_essence_break->occur();
     }
 
-    if ( p()->talent.havoc.screaming_brutality->ok() )
-    {
-      for ( auto& attack : ( p()->talent.havoc.first_blood->ok() ? first_blood_attacks : attacks ) )
-      {
-        double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
-        if ( rng().roll( chance ) )
-        {
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
-                                               target, attack->delay );
-        }
-      }
-    }
-
     // Create Strike Events
-    if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
-    {
-      for ( auto& attack : attacks )
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
-      }
-    }
-
     if ( p()->talent.havoc.first_blood->ok() )
     {
       for ( auto& attack : first_blood_attacks )
       {
         make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
+
+        // TODO: (Topple) Clean up Screaming Brutality
+        if ( p()->talent.havoc.screaming_brutality->ok() )
+        {
+          double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
+          if ( rng().roll( chance ) )
+          {
+            make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
+                                                 target, attack->delay );
+          }
+        }
+      }
+    }
+    if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      for ( auto& attack : attacks )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
+
+        // TODO: (Topple) Clean up Screaming Brutality
+        if ( p()->talent.havoc.screaming_brutality->ok() && !p()->talent.havoc.first_blood->ok() )
+        {
+          double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
+          if ( rng().roll( chance ) )
+          {
+            make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
+                                                 target, attack->delay );
+          }
+        }
       }
     }
 
@@ -7052,14 +7064,14 @@ struct blade_dance_t : public blade_dance_base_t
 
     if ( p->talent.havoc.first_blood->ok() && first_blood_attacks.empty() )
     {
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood", data().effectN( 2 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_2", data().effectN( 3 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_3", data().effectN( 4 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_4", data().effectN( 5 ), p->spec.first_blood_blade_dance_2_damage ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood", p->spec.first_blood_blade_dance_damage, data().effectN( 2 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_2", p->spec.first_blood_blade_dance_damage, data().effectN( 3 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_3", p->spec.first_blood_blade_dance_damage, data().effectN( 4 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_4", p->spec.first_blood_blade_dance_2_damage, data().effectN( 5 ) ) );
     }
 
     if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_blade_dance_throw_glaive )
@@ -7102,14 +7114,14 @@ struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWE
 
     if ( p->talent.havoc.first_blood->ok() && first_blood_attacks.empty() )
     {
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood", data().effectN( 2 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_2", data().effectN( 3 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_3", data().effectN( 4 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_4", data().effectN( 5 ), p->spec.first_blood_death_sweep_2_damage ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood", p->spec.first_blood_death_sweep_damage, data().effectN( 2 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_2", p->spec.first_blood_death_sweep_damage, data().effectN( 3 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_3", p->spec.first_blood_death_sweep_damage, data().effectN( 4 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_4", p->spec.first_blood_death_sweep_2_damage, data().effectN( 5 ) ) );
     }
 
     if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_death_sweep_throw_glaive )
@@ -8149,6 +8161,13 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
     p()->buff.art_of_the_glaive_first->trigger();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    p()->buff.thrill_of_the_fight_damage->expire();
+  }
+
   bool ready() override
   {
     if ( !p()->buff.reavers_glaive->up() )
@@ -8396,6 +8415,7 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe               = -1;
+      reduced_aoe_targets = as<int>(data().effectN( 2 ).base_value());
     }
   };
 
@@ -8805,10 +8825,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( !p()->buff.metamorphosis->up() )
     {
-      p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-      p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
       p()->buff.demonsurge_demonsurge->trigger();
     }
+    p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+    p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
     p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
@@ -9719,10 +9739,10 @@ void demon_hunter_t::create_buffs()
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
   buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff )->set_max_stack( 6 );
-  buff.thrill_of_the_fight_attack_speed =
-      make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
-          ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
-          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.thrill_of_the_fight_haste =
+      make_buff( this, "thrill_of_the_fight_haste", hero_spec.thrill_of_the_fight_haste_buff )
+          ->set_default_value_from_effect_type( A_HASTE_ALL )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.thrill_of_the_fight_damage =
       make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
@@ -10855,37 +10875,30 @@ void demon_hunter_t::init_spells()
   }
 
   // Hero spec background spells
-  hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
-  hero_spec.reavers_mark             = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
-  hero_spec.glaive_flurry            = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
-  hero_spec.rending_strike           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
-  hero_spec.art_of_the_glaive_buff   = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
-  hero_spec.art_of_the_glaive_damage = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
-  hero_spec.warblades_hunger_buff    = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
-  hero_spec.warblades_hunger_damage  = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
-  hero_spec.wounded_quarry_damage    = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
-  hero_spec.thrill_of_the_fight_attack_speed_buff =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
-  hero_spec.thrill_of_the_fight_damage_buff_havoc =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
-  hero_spec.thrill_of_the_fight_damage_buff_vengeance =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 1227062 );
+  hero_spec.reavers_glaive                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
+  hero_spec.reavers_mark                   = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
+  hero_spec.glaive_flurry                  = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
+  hero_spec.rending_strike                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
+  hero_spec.art_of_the_glaive_buff         = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
+  hero_spec.art_of_the_glaive_damage       = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
+  hero_spec.warblades_hunger_buff          = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
+  hero_spec.warblades_hunger_damage        = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
+  hero_spec.wounded_quarry_damage          = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
+  hero_spec.thrill_of_the_fight_haste_buff = talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
+  hero_spec.thrill_of_the_fight_damage_buff = talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
-      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_havoc;
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
       break;
     case DEMON_HUNTER_VENGEANCE:
-      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
       break;
     default:
-      hero_spec.thrill_of_the_fight_damage_buff = spell_data_t::not_found();
-      hero_spec.reavers_glaive_buff             = spell_data_t::not_found();
-      hero_spec.wounded_quarry_proc_rate        = 0;
+      hero_spec.reavers_glaive_buff      = spell_data_t::not_found();
+      hero_spec.wounded_quarry_proc_rate = 0;
       break;
   }
 
@@ -12309,7 +12322,7 @@ void demon_hunter_t::parse_player_effects()
   }
 
   // Aldrachi Reaver
-  parse_effects( buff.thrill_of_the_fight_attack_speed );
+  parse_effects( buff.thrill_of_the_fight_haste );
 
   // Annihilator
   parse_effects( buff.voidfall_building );

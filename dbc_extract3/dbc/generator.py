@@ -1527,6 +1527,7 @@ class SpellDataGenerator(DataGenerator):
          1229746, # Arcanoweave embellishment buff
          1259130, # Primal Spore Binding embellishment heal
          1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, # Midnight Food Buffs
+         1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
         ),
 
         # Warrior:
@@ -1932,8 +1933,9 @@ class SpellDataGenerator(DataGenerator):
           ( 377445, 0 ), # Unholy Aura debuff
           ( 1235391, 0 ), # Dark Transformation player buff
           ( 1250728, 0 ), # Mastery: Dreadblade pet crit buff
+          ( 196910, 0 ), # Raise Skulker
           # The War Within
-          ( 290577, 0 ), # Abomiantion Disease Cloud
+          ( 290577, 5 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
@@ -1986,6 +1988,9 @@ class SpellDataGenerator(DataGenerator):
           ( 1242998, 0 ), # Lesser Ghoul Counter Buff
           ( 1242294, 0 ), # Summon Magus Spell
           ( 1268917, 0 ), # Unholy Aura Mastery Buff
+          ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
+          ( 1277098, 0 ), # Lesser Ghoul
+          ( 1282570, 0 ), # Forbidden Ritual
         ),
 
         # Shaman:

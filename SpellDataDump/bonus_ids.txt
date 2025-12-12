@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64611 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -5692,9 +5692,9 @@ bonus_id={ 10296 }, quality={ rare }
 bonus_id={ 10297 }, quality={ rare }
 bonus_id={ 10298 }, quality={ epic }
 bonus_id={ 10299 }, quality={ epic }
-bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
+bonus_id={ 10300 }, desc={ Vanity Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
-bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
+bonus_id={ 10302 }, desc={ Vanity Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
 bonus_id={ 10303 }, ilevel={ 0 @plvl 0 - 459 @plvl 80 }
 bonus_id={ 10304 }, ilevel={ 0 @plvl 0 - 463 @plvl 80 }
 bonus_id={ 10305 }, recursive_bonus_ids={ 13495 }
@@ -5741,7 +5741,7 @@ bonus_id={ 10345 }, recursive_bonus_ids={ 13500 }
 bonus_id={ 10346 }, recursive_bonus_ids={ 13500 }
 bonus_id={ 10347 }, recursive_bonus_ids={ 13500 }
 bonus_id={ 10348 }, recursive_bonus_ids={ 13500 }
-bonus_id={ 10349 }, base_ilevel={ 564 }, req_ilevel={ 80 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
+bonus_id={ 10349 }, base_ilevel={ 1 }, desc={ Vanity Crafted }, quality={ common }
 bonus_id={ 10350 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10360 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10361 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
@@ -5752,7 +5752,7 @@ bonus_id={ 10365 }, quality={ rare }, ilevel={ 441 @plvl 50 - 541 @plvl 90 }
 bonus_id={ 10366 }, quality={ epic }, ilevel={ 447 @plvl 50 - 539 @plvl 90 }
 bonus_id={ 10367 }, quality={ epic }, ilevel={ 447 @plvl 50 - 545 @plvl 90 }
 bonus_id={ 10381 }, quality={ common }, effects={ Health Brew (id=438407, index=0, type=equip) }
-bonus_id={ 10382 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 10382 }, base_ilevel={ 356 }
 bonus_id={ 10385 }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 10391 }, quality={ common }, effects={ Combo Attack (id=471633, index=0, type=equip) }
 bonus_id={ 10397 }, socket={ 1 }
@@ -7419,8 +7419,6 @@ bonus_id={ 12365 }, socket={ 1 }
 bonus_id={ 12367 }, base_ilevel={ 639 }, quality={ rare }
 bonus_id={ 12371 }, quality={ epic }
 bonus_id={ 12372 }, quality={ epic }
-bonus_id={ 12373 }, ilevel_adjust={ 6 }
-bonus_id={ 12374 }, ilevel_adjust={ 3 }
 bonus_id={ 12375 }, quality={ epic }
 bonus_id={ 12376 }, quality={ epic }
 bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 632 @plvl 80 }
@@ -7656,14 +7654,14 @@ bonus_id={ 12642 }, quality={ legendary }, effects={ Temporal Retaliation (id=12
 bonus_id={ 12643 }, quality={ epic }, effects={ Temporal Retaliation (id=1234419, index=0, type=equip) }
 bonus_id={ 12644 }, quality={ rare }, effects={ Temporal Retaliation (id=1234420, index=0, type=equip) }
 bonus_id={ 12645 }, effects={ Temporal Retaliation (id=1234421, index=0, type=equip) }
-bonus_id={ 12646 }, quality={ legendary }, effects={ Storm Surger (id=1234373, index=0, type=equip) }
-bonus_id={ 12647 }, quality={ epic }, effects={ Storm Surger (id=1234374, index=0, type=equip) }
-bonus_id={ 12648 }, quality={ rare }, effects={ Storm Surger (id=1234375, index=0, type=equip) }
-bonus_id={ 12649 }, effects={ Storm Surger (id=1234376, index=0, type=equip) }
-bonus_id={ 12650 }, quality={ legendary }, effects={ Arcane Ward (id=1234368, index=0, type=equip) }
-bonus_id={ 12651 }, quality={ epic }, effects={ Arcane Ward (id=1234369, index=0, type=equip) }
-bonus_id={ 12652 }, quality={ rare }, effects={ Arcane Ward (id=1234370, index=0, type=equip) }
-bonus_id={ 12653 }, effects={ Arcane Ward (id=1234371, index=0, type=equip) }
+bonus_id={ 12646 }, quality={ legendary }, effects={ Unknown Effect (id=212706) }
+bonus_id={ 12647 }, quality={ epic }, effects={ Unknown Effect (id=212704) }
+bonus_id={ 12648 }, quality={ rare }, effects={ Unknown Effect (id=212707) }
+bonus_id={ 12649 }, effects={ Unknown Effect (id=212705) }
+bonus_id={ 12650 }, quality={ legendary }, effects={ Unknown Effect (id=212710) }
+bonus_id={ 12651 }, quality={ epic }, effects={ Unknown Effect (id=212708) }
+bonus_id={ 12652 }, quality={ rare }, effects={ Unknown Effect (id=212711) }
+bonus_id={ 12653 }, effects={ Unknown Effect (id=212709) }
 bonus_id={ 12654 }, quality={ legendary }, effects={ Brewing Storm (id=1258768, index=0, type=equip) }
 bonus_id={ 12655 }, quality={ epic }, effects={ Brewing Storm (id=1258769, index=0, type=equip) }
 bonus_id={ 12656 }, quality={ rare }, effects={ Brewing Storm (id=1258770, index=0, type=equip) }
@@ -7686,7 +7684,7 @@ bonus_id={ 12682 }, desc={ Rank 1/4 }, quality={ uncommon }, effects={ Adding (i
 bonus_id={ 12683 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474616, index=0, type=use) }
 bonus_id={ 12684 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474617, index=0, type=use) }
 bonus_id={ 12685 }, effects={ Devouring Banding (id=1244238, index=0, type=equip) }
-bonus_id={ 12686 }, effects={ Blessed Pango Charm (id=1244243, index=0, type=equip) }
+bonus_id={ 12686 }, effects={ Blessed Pango Charm (id=1259060, index=0, type=equip) }
 bonus_id={ 12687 }, effects={ Primal Spore Binding (id=1244276, index=0, type=equip) }
 bonus_id={ 12692 }, effects={ Rot (id=1245055, index=0, type=equip) }
 bonus_id={ 12693 }, effects={ Hunt (id=1245054, index=0, type=equip) }
@@ -7719,14 +7717,14 @@ bonus_id={ 12769 }, base_ilevel={ 220 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 12770 }, base_ilevel={ 224 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 12771 }, base_ilevel={ 227 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 12772 }, base_ilevel={ 230 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 12773 }, base_ilevel={ 233 }, quality={ rare }
-bonus_id={ 12774 }, base_ilevel={ 237 }, quality={ rare }
-bonus_id={ 12775 }, base_ilevel={ 240 }, quality={ rare }
-bonus_id={ 12776 }, base_ilevel={ 243 }, quality={ rare }
-bonus_id={ 12777 }, base_ilevel={ 233 }, quality={ epic }
-bonus_id={ 12778 }, base_ilevel={ 237 }, quality={ epic }
-bonus_id={ 12779 }, base_ilevel={ 240 }, quality={ epic }
-bonus_id={ 12780 }, base_ilevel={ 243 }, quality={ epic }
+bonus_id={ 12773 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12774 }, base_ilevel={ 237 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12775 }, base_ilevel={ 240 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12776 }, base_ilevel={ 243 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12777 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12778 }, base_ilevel={ 237 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12779 }, base_ilevel={ 240 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12780 }, base_ilevel={ 243 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12781 }, base_ilevel={ 246 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12782 }, base_ilevel={ 250 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12783 }, base_ilevel={ 253 }, req_ilevel={ 90 }, quality={ epic }
@@ -7978,15 +7976,15 @@ bonus_id={ 13328 }, quality={ artifact }
 bonus_id={ 13329 }, quality={ artifact }
 bonus_id={ 13330 }, quality={ artifact }
 bonus_id={ 13331 }, quality={ artifact }
-bonus_id={ 13341 }
-bonus_id={ 13342 }
-bonus_id={ 13343 }
-bonus_id={ 13346 }
-bonus_id={ 13347 }
-bonus_id={ 13350 }
-bonus_id={ 13351 }
-bonus_id={ 13354 }
-bonus_id={ 13355 }
+bonus_id={ 13341 }, base_ilevel={ 233 }, req_ilevel={ 90 }
+bonus_id={ 13342 }, base_ilevel={ 237 }, req_ilevel={ 90 }
+bonus_id={ 13343 }, base_ilevel={ 240 }, req_ilevel={ 90 }
+bonus_id={ 13346 }, base_ilevel={ 250 }, req_ilevel={ 90 }
+bonus_id={ 13347 }, base_ilevel={ 253 }, req_ilevel={ 90 }
+bonus_id={ 13350 }, base_ilevel={ 263 }, req_ilevel={ 90 }
+bonus_id={ 13351 }, base_ilevel={ 266 }, req_ilevel={ 90 }
+bonus_id={ 13354 }, base_ilevel={ 276 }, req_ilevel={ 90 }
+bonus_id={ 13355 }, base_ilevel={ 279 }, req_ilevel={ 90 }
 bonus_id={ 13357 }, quality={ epic }
 bonus_id={ 13359 }
 bonus_id={ 13360 }, effects={ Infinite Power (id=1250717, index=0, type=no_delay_use) }
@@ -8004,8 +8002,6 @@ bonus_id={ 13445 }, quality={ epic }
 bonus_id={ 13446 }, quality={ epic }
 bonus_id={ 13453 }, effects={ Prismatic Focusing Iris (id=1251906, index=0, type=equip) }
 bonus_id={ 13454 }, effects={ Stabilizing Gemstone Bandolier (id=1251905, index=0, type=equip) }
-bonus_id={ 13468 }, ilevel_adjust={ 7 }
-bonus_id={ 13469 }, ilevel_adjust={ 3 }
 bonus_id={ 13470 }, base_ilevel={ 78 }, req_ilevel={ 70 }, desc={ Raid Finder }, quality={ epic }
 bonus_id={ 13471 }, base_ilevel={ 79 }, req_ilevel={ 70 }, quality={ epic }
 bonus_id={ 13472 }, base_ilevel={ 80 }, req_ilevel={ 70 }, desc={ Heroic }, quality={ epic }
@@ -8073,14 +8069,14 @@ bonus_id={ 13548 }, base_ilevel={ 56 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13549 }, base_ilevel={ 58 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13550 }, base_ilevel={ 60 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13551 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
-bonus_id={ 13556 }, effects={ Cloaker (id=1259648, index=0, type=use) }
+bonus_id={ 13556 }, effects={ HU5H, Nonchalant Pup (id=1259648, index=0, type=use) }
 bonus_id={ 13558 }, base_ilevel={ 66 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13559 }, base_ilevel={ 70 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13560 }, base_ilevel={ 68 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13561 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13562 }, effects={ Griftah's Fool-Proof Embellishing Powder (id=1260254, index=0, type=equip) }
 bonus_id={ 13563 }, base_ilevel={ 201 }, req_ilevel={ 90 }, quality={ uncommon }
-bonus_id={ 13564 }, base_ilevel={ 120 }
+bonus_id={ 13564 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13565 }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13566 }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13567 }, quality={ rare }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
@@ -8091,7 +8087,6 @@ bonus_id={ 13571 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 13572 }, ilevel={ 1 @plvl 1 - 655 @plvl 80 }
 bonus_id={ 13573 }, base_ilevel={ 120 }
 bonus_id={ 13576 }, socket={ 1 }
-bonus_id={ 13579 }, socket={ 2 }
 bonus_id={ 13580 }, ilevel={ 15 @plvl 10 - 226 @plvl 90 }
 bonus_id={ 13581 }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13582 }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
@@ -8129,9 +8124,16 @@ bonus_id={ 13622 }, base_ilevel={ 272 }, req_ilevel={ 90 }
 bonus_id={ 13623 }, base_ilevel={ 220 }, req_ilevel={ 90 }
 bonus_id={ 13629 }, base_ilevel={ 217 }, req_ilevel={ 90 }
 bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
-bonus_id={ 13635 }, ilevel={ 70 @plvl 70 - 130 @plvl 130 }
+bonus_id={ 13635 }, base_ilevel={ 1 }
 bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
 bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
 bonus_id={ 13642 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
+bonus_id={ 13643 }, desc={ Vanity Crafted }, ilevel={ 1 @plvl 1 - 90 @plvl 90 }
+bonus_id={ 13644 }, base_ilevel={ 201 }, req_ilevel={ 90 }
+bonus_id={ 13645 }, base_ilevel={ 126 }, quality={ rare }
+bonus_id={ 13646 }, base_ilevel={ 133 }, quality={ epic }
+bonus_id={ 13647 }, base_ilevel={ 1 }, quality={ uncommon }
+bonus_id={ 13648 }, base_ilevel={ 126 }, quality={ rare }
+bonus_id={ 13649 }, base_ilevel={ 180 }, req_ilevel={ 81 }, quality={ rare }

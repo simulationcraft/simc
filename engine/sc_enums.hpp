@@ -804,6 +804,7 @@ const unsigned MIN_SEASON = 1;
 enum set_bonus_e
 {
   B_NONE = -1,
+  B1     = 0,
   B2     = 1,
   B3     = 2,
   B4     = 3,

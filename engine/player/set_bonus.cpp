@@ -44,6 +44,11 @@ set_bonus_t::set_bonus_t( player_t* player )
     // Ensure Blizzard does not go crazy and add set bonuses past 8 item requirement
     assert( bonus.bonus <= B_MAX );
 
+    // Thresholds can be set to 0, which enables the set when only a single item is equipped.
+    // Normally indices are [# of threshold - 1] corresponding to set_bonus_e enum,
+    // but for 0 we directly set to 0 for set_bonus_e::B1(0)
+    auto threshold = bonus.bonus == 0 ? 0 : bonus.bonus - 1;
+
     // T17 onwards and PVP, new world, spec specific set bonuses. Overrides are
     // going to be provided by the new set_bonus= option, so no need to
     // translate anything from the old set bonus options.
@@ -55,12 +60,12 @@ set_bonus_t::set_bonus_t( player_t* player )
       {
         // Don't allow generic set bonus to override spec specific one, if it exists. The exporter
         // should export data so that this will never happen, but be extra careful.
-        if ( set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus.bonus - 1 ].bonus )
+        if ( set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ threshold ].bonus )
         {
           continue;
         }
 
-        set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus.bonus - 1 ].bonus = &bonus;
+        set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ threshold ].bonus = &bonus;
       }
     }
     // Note, spec and hero tree specific set bonuses are allowed to override "generic" bonuses (bonus.spec == -1 &&
@@ -68,7 +73,7 @@ set_bonus_t::set_bonus_t( player_t* player )
     else
     {
       assert( bonus.spec > 0 || bonus.trait_sub_tree > 0 );
-      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus ) ][ bonus.bonus - 1 ].bonus = &bonus;
+      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus ) ][ threshold ].bonus = &bonus;
     }
   }
 }
@@ -363,7 +368,9 @@ void set_bonus_t::enable_all_sets()
 
     if ( has_class && has_spec && has_trait_sub_tree )
     {
-      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus ) ][ bonus.bonus - 1 ].overridden = 1;
+      auto threshold = bonus.bonus == 0 ? 0 : bonus.bonus - 1;
+
+      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus ) ][ threshold ].overridden = 1;
     }
   }
 }

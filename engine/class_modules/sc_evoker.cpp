@@ -8257,42 +8257,42 @@ parsed_assisted_combat_rule_t evoker_t::parse_assisted_combat_rule( const assist
                                                                     const assisted_combat_step_data_t& step ) const
 {
   // Blistering scales checks if it is up
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 1245013 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 1245013 )
   {
     return { "!evoker.scales_up" };
   }
   // Blistering scales checks if it is up
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 1245013 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1245013 )
   {
     return { "evoker.scales_up" };
   }
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 436336 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 436336 )
   {
     return { "buff.mass_disintegrate_stacks.up" };
   }
-  if ( rule.condition_type == AURA_ON_TARGET && rule.condition_value_1 == 361500 )
+  if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == 361500 )
   {
     return { "dot.living_flame_damage.ticking" };
   }
-  if ( rule.condition_type == AURA_MISSING_TARGET && rule.condition_value_1 == 361500 )
+  if ( rule.condition_type == AC_AURA_MISSING_TARGET && rule.condition_value_1 == 361500 )
   {
     return { "!dot.living_flame_damage.ticking" };
   }
-  if ( rule.condition_type == AURA_ON_TARGET && rule.condition_value_1 == 357209 )
+  if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == 357209 )
   {
     return { "dot.fire_breath_damage.ticking" };
   }
-  if ( rule.condition_type == AURA_MISSING_TARGET && rule.condition_value_1 == 357209 )
+  if ( rule.condition_type == AC_AURA_MISSING_TARGET && rule.condition_value_1 == 357209 )
   {
     return { "!dot.fire_breath_damage.ticking" };
   }
 
-  //if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
+  //if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
   //{
   //  return { "" };
   //}
   //  
-  //if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 410089 )
+  //if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 410089 )
   //{
   //  return { "" };
   //}
@@ -8312,7 +8312,7 @@ void evoker_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
-    if ( rule.condition_type == COOLDOWN_ALLOW_CASTING_SUCCESS )
+    if ( rule.condition_type == AC_COOLDOWN_ALLOW_CASTING_SUCCESS )
       cooldown_allow_casting_success = true;
 
     parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );

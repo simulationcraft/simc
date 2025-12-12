@@ -4476,20 +4476,7 @@ using namespace helpers;
       may_miss               = false;
       spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
       aoe                    = -1;
-    }
-
-    // Doesnt hit the main target, so we need to override this
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      eye_blast_base_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback = secondary_targets_only();
     }
   };
 
