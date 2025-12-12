@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64772 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.64877 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
