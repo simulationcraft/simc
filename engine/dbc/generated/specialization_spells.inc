@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.64741
-static constexpr std::array<specialization_spell_entry_t, 613> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.1.64889
+static constexpr std::array<specialization_spell_entry_t, 612> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -515,7 +515,6 @@ static constexpr std::array<specialization_spell_entry_t, 613> __specialization_
   { 11,  105, 1229376,      0, "Single-Button Assistant"           , 0 },
   { 11,  105, 1256995,      0, "Restoration Druid"                 , 0 },
   { 11, 1447,  417382,      0, "Initial Druid"                     , 0 },
-  { 12,  577,  162243, 344859, "Demon's Bite"                      , 0 },
   { 12,  577,  162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   { 12,  577,  162794, 344862, "Chaos Strike"                      , 0 },
   { 12,  577,  178940,      0, "Shattered Souls"                   , 0 },

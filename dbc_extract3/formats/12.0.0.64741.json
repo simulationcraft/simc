@@ -1547,7 +1547,7 @@
   "SpellAuraOptions": {
     "parent": "SpellName",
     "fields": [
-      { "data_type": "b", "field": "unk_1" },
+      { "data_type": "h", "field": "difficulty_id" },
       { "data_type": "h", "field": "stack_amount" },
       { "data_type": "I", "field": "internal_cooldown" },
       { "data_type": "b", "field": "proc_chance" },

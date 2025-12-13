@@ -1,4 +1,4 @@
-// Embellishment data, wow build 12.0.0.64741
+// Embellishment data, wow build 12.0.1.64889
 static constexpr std::array<embellishment_data_t, 45> __embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
@@ -35,7 +35,7 @@ static constexpr std::array<embellishment_data_t, 45> __embellishment_data { {
   { "Arcanoweave Lining"                         ,   12384,  208649, 1229511 },
   { "Sunfire Silk Lining"                        ,   12385,  208662, 1241711 },
   { "Devouring Banding"                          ,   12685,  212929, 1244238 },
-  { "Blessed Pango Charm"                        ,   12686,  212930, 1244243 },
+  { "Blessed Pango Charm"                        ,   12686,  212930, 1259060 },
   { "Primal Spore Binding"                       ,   12687,  212945, 1244276 },
   { "Lucky Keychain"                             ,   12715,  213317, 1246298 },
   { "Kinetic Ankle Primers"                      ,   12717,  213322, 1246308 },

@@ -142,9 +142,6 @@ public:
 
     action_t* background_avenging_wrath;
     action_t* background_crusade;
-
-    action_t* glory_of_the_vanguard;
-    action_t* blaze_of_glory;
   } active;
 
   // Buffs
@@ -158,6 +155,7 @@ public:
     buff_t* devotion_aura;
     buff_t* blessing_of_protection;
     buff_t* faiths_armor;
+    buff_t* hammer_of_wrath;
 
     // Holy
     buff_t* divine_protection;
@@ -1158,7 +1156,7 @@ public:
       this->affected_by.blades_of_light = false;
     }
 
-    if ( this->data().ok() )
+    if ( this->data().ok() && p->specialization() == PALADIN_RETRIBUTION )
     {
       p->apply_action_effects( this );
     }
@@ -1223,16 +1221,12 @@ public:
       if ( p()->buffs.lightsmith.masterwork_weapon->up() )
       {
         p()->buffs.lightsmith.masterwork_weapon->decrement();
-        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Weapon does nothing
-        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_weapon->up() )
-          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
       }
       if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
       {
         p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Bulwark does nothing
-        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_bulwark->up() )
-          p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
       }
     }
 
@@ -1715,23 +1709,12 @@ struct hammer_and_anvil_t : public paladin_spell_t
 struct judgment_base_t : public paladin_melee_attack_t
 {
   hammer_and_anvil_t* hammer_and_anvil;
-  bool is_how;
   int judge_holy_power;
   int sw_holy_power;
   judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;
   void execute();
 };
-
-struct judgment_t : public judgment_base_t
-{
-  judgment_t( paladin_t* p, util::string_view options_str );
-
-  proc_types proc_type() const override;
-  void execute() override;
-  bool target_ready( player_t* candidate_target ) override;
-};
-
 struct hammer_of_wrath_t : public judgment_base_t
 {
 private:
@@ -1739,10 +1722,19 @@ private:
 
 public:
   hammer_of_wrath_t( paladin_t* p, util::string_view name, double mul = 1.0 );
-  bool target_ready( player_t* candidate_target ) override;
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
 };
+
+struct judgment_t : public judgment_base_t
+{
+  hammer_of_wrath_t* hammer_of_wrath;
+  judgment_t( paladin_t* p, util::string_view options_str );
+
+  proc_types proc_type() const override;
+  void execute() override;
+};
+
 
 struct shield_of_the_righteous_buff_t : public buff_t
 {

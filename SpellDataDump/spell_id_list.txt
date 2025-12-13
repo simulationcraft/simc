@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.64741
+Class Spell ID List, wow build 12.0.1.64889
 
 Death Knight
 3714     Path of Frost
@@ -407,7 +407,7 @@ Death Knight
 196771   Remorseless Winter
 196780   Outbreak
 196782   Outbreak
-196910  *Raise Skulker
+196910   Raise Skulker
 197019  *Lil' Stinker
 197028  *Lil' Stinker
 197083  *Feast of the Soul
@@ -1625,8 +1625,8 @@ Death Knight
 1242283 *Reanimation
 1242289 *Reawakening
 1242294  Army of the Damned
-1242561  Rapid Variant
-1242564  Rapid Variant
+1242561  Scythe of Decay
+1242564  Dread Plague
 1242597 *Blighted
 1242601 *Festering Corruption
 1242604  Scourging
@@ -1640,7 +1640,7 @@ Death Knight
 1244030 *Putrefy
 1244158  March of Madness
 1244347  Disease Cloud
-1244516  Forbidden Knowledge
+1244516 *Forbidden Knowledge
 1244519  Reaping
 1244900 *Unholy Aura
 1245427 *[NYI] New Talent Pending
@@ -1657,7 +1657,7 @@ Death Knight
 1255830  Lesser Ghoul
 1256565  Forbidden Knowledge
 1256566  Forbidden Knowledge
-1256576  Forbidden Knowledge
+1256576  Forbidden Sacrifice
 1256813  Reanimation
 1256884 *Chains of Ice
 1256915  Frost Death Knight
@@ -1738,15 +1738,20 @@ Death Knight
 1271975  Pestilence
 1272116  Pestilence
 1277016  Putrefy
-1277098 *Lesser Ghoul
+1277098  Lesser Ghoul
 1277365  Blood Bond
-1278150 *Sweeping Claws
+1278150  Sweeping Claws
 1278154  Necromancer's Cunning
 1279633  Bloody Reflection
 1279656  Bloody Reflection
 1280645  Ruptured Viscera
 1280658  Inevitable
 1281529 *Stitchmaster
+1282535  Lesser Ghoul
+1282554 *Superstrain
+1282564 *Death and Decay
+1282565  Scythe of Decay
+1282570  Forbidden Ritual
 
 Demon Hunter
 1490     Chaos Brand
@@ -8554,7 +8559,6 @@ Hunter
 1236373  Hunter Pack Leader 11.2 Class Set 4pc
 1236374  Hunter Sentinel 11.2 Class Set 2pc
 1236375  Hunter Sentinel 11.2 Class Set 4pc
-1236557 *Dark Minion
 1236564  Grizzled Fur
 1236565  Hasted Hooves
 1236566  Sharpened Fangs
@@ -8697,7 +8701,7 @@ Hunter
 1264949  Moonlight Chakram
 1265044  Jagged Wounds
 1265051  Thrill of the Hunt
-1265052  Hunter's Prey
+1265052  Heart of the Pack
 1265063  Bloody Frenzy
 1266069  Stalk and Strike
 1266081  Moonlight Chakram
@@ -8746,6 +8750,10 @@ Hunter
 1279347  Quick Draw
 1280140  Tip of the Spear
 1281527  Nature's Ally
+1282474  Nature's Ally
+1282660  Barbed Shot
+1282710  Serpentine Strikes
+1282747  Heart of the Pack
 
 Mage
 66       Invisibility
@@ -10824,7 +10832,6 @@ Mage
 458411   Spellfrost Teachings
 458437   Inspired Intellect
 458513  *Gravity Lapse
-458666   Frostfire Empowerment
 458910   Molten Fury
 458964   Heat Shimmer
 460392  *Polymorph
@@ -11075,6 +11082,7 @@ Mage
 1280779  Glacial Chill
 1280780  Glacial Shatter
 1281638  White Out
+1282339 *Portal: Stormwind
 
 Monk
 8647     Mystic Touch
@@ -12800,7 +12808,7 @@ Monk
 1249758  Combo Strikes: Fists of Fury
 1249759  Combo Strikes: Slicing Winds
 1249762  Combo Strikes: Storm, Earth, and Fire
-1249763  Combo Strikes: Weapons of Order
+1249763  Combo Strikes: Zenith
 1249764  Combo Strikes: Crackling Jade Lightning
 1249765  Combo Strikes: Whirling Dragon Punch
 1249766  Combo Strikes: Strike of the Windlord
@@ -14063,7 +14071,7 @@ Paladin
 279387   Inspiring Vanguard
 279406   Breaking Dawn
 280189   Gallant Steed
-280373   Redoubt [NYI]
+280373   Redoubt
 280375   Redoubt
 281178  *Blade of Wrath
 281291   Pillars of Inmost Ligiht
@@ -15017,7 +15025,7 @@ Paladin
 1246142  Valiant Crusade
 1246488  Sweeping Verdict
 1246643  Hammer of Light
-1249130 *Trampling Charge
+1249130 *Elekk Charge
 1253174  Judge, Jury and Executioner
 1253175  Judge, Jury and Executioner
 1253598  Crusade
@@ -15114,7 +15122,7 @@ Priest
 6788     Weakened Soul
 8092     Mind Blast
 8122     Psychic Scream
-9484     Shackle Undead
+9484     Shackle Horror
 10060    Power Infusion
 14816   *Empathy
 14909   *Searing Light
@@ -15693,7 +15701,7 @@ Priest
 193065   Protective Light
 193134   Castigation
 193155   Enlightenment
-193157   Benediction
+193157   Light's Resurgence
 193173  *Mania
 193195  *Fortress of the Mind
 193371  *Call to the Void
@@ -16971,7 +16979,7 @@ Priest
 1246549  Lightburst
 1246652 *Dream Burst
 1246768  Power Word: Shield
-1246798 *Prompt Prognosis
+1246798  Prompt Prognosis
 1246799  Prompt Prognosis
 1246802  Piety
 1246965 *Psychic Shroud
@@ -18150,7 +18158,7 @@ Rogue
 375916  *Echoing Reprimand
 378427   Nimble Fingers
 378436   Master Poisoner
-378803   Rushed Setup
+378803  *Rushed Setup
 378807   Shadowrunner
 378813   Fleet Footed
 378996   Recuperator
@@ -18442,7 +18450,7 @@ Rogue
 454434  *Inevitable End
 454435   Destiny Defined
 455072   Rapid Injection
-455131   Shadowheart
+455131  *Shadowheart
 455143   Acrobatic Strikes
 455144   Acrobatic Strikes
 455352  *Serrated Bone Spikes
@@ -18638,10 +18646,10 @@ Rogue
 1265931  Palmed Bullets
 1265935  Gravedigger
 1265952  Potent Powder
-1267182 *Toxic Stiletto
-1267210 *Quick Fingers
-1267216 *Deep Cuts
-1267220 *Danger Sense
+1267182  Toxic Stiletto
+1267210  Quick Fingers
+1267216  Deep Cuts
+1267220  Danger Sense
 1268932  Ancient Arts
 1268936  Ancient Arts
 1268939  Ancient Arts
@@ -20644,7 +20652,7 @@ Shaman
 1260666  Fire Nova
 1260667  Elementalist
 1260874  Primal Catalyst
-1260880  Elemental Overflow
+1260880  Primal Catalyst
 1262635  Thunder Capacitor
 1262713  Storm Unleashed
 1262761  Storm Unleashed
@@ -20950,9 +20958,6 @@ Warlock
 82811   *Corrupted Dreams
 85692    Doom Bolt
 86040    Hand of Gul'dan
-86121   *Soul Swap
-86211   *Soul Swap
-86213   *Soul Swap Exhale
 86722   *Taunt
 87204    Sin and Punishment
 87480   *Hellfire
@@ -22653,6 +22658,14 @@ Warlock
 1281511  To Hell and Back
 1281512  Unstable Soul
 1281559  Hellbent Commander
+1282501  Dominion of Argus: Lady Sacrolash
+1282502  Dominion of Argus: Grand Warlock Alythess
+1282507 *Shadow Nova
+1282533 *Blaze
+1282534 *Blaze
+1282536 *Fixate
+1282748 *Blaze
+1282757 *Shadow Nova
 
 Warrior
 71       Vanguard
@@ -24495,5 +24508,4 @@ Warrior
 1277297  Ignore Pain
 1277983  Devastating Focus
 1278009  Phalanx
-1278016  Rampaging Berserker
 1280961  Stance Mastery

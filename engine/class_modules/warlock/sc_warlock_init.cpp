@@ -1252,10 +1252,10 @@ namespace warlock
   parsed_assisted_combat_rule_t warlock_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                        const assisted_combat_step_data_t& step ) const
   {
-    if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 335052 )
+    if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 335052 )
       return { "1", "Condition discarded as it checks for PvP talent." };
 
-    if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 335052 )
+    if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 335052 )
       return { "0", "Condition discarded as it checks for PvP talent." };
 
     return player_t::parse_assisted_combat_rule( rule, step );

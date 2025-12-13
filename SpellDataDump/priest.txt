@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64741 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -49,15 +49,16 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
 Stance Mask      : 0x88000000
-Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #9, #14), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
+Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
 Family Flags     : 6, 126
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.46 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60928 | PvP Coefficient: 1.46 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (0.32 -> 0.60928)
 #2 (id=256131)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
                    Modified By: Renewed Faith (341997 effect#1)
 Description      : Fill the target with faith in the light, healing for $o1 over $d.
@@ -149,12 +150,12 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #15), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=236)      : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.987 | Target: Targeted Enemy (6)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
@@ -204,7 +205,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2)
 Family Flags     : 15, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (454)
 Effects          :
@@ -244,7 +245,8 @@ Effects          :
 #1 (id=243)      : Trigger Spell (64): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Targeted Ally (21)
 #2 (id=105332)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.16734 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.78742 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+Hotfixed         : SP Coefficient (5.16734 -> 5.78742)
 #3 (id=1207850)  : None (0)
                    Base Value: 5 | Scaled Value: 5
 Description      : A powerful prayer that heals your target and ${$s3-1} injured allies within $A2 yards for $s2.
@@ -264,7 +266,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 991
-                 : 3289: False Autonomy (1250806 effect#1)
+                 : 3289
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
@@ -334,7 +336,8 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 15.9593 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 17.8744 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (15.9593 -> 17.874399)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.
@@ -384,7 +387,7 @@ Labels           : 16: Class Spells
                  : 889
                  : 954
 Stance Mask      : 0x88000000
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
 Triggered By     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -524,7 +527,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 4040: Shadow Priest (137033 effect#13)
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #15), Shadow Priest (137033 effects: #1, #2, #6, #12), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Talbadar's Stratagem (342416 effect#1), Inner Shadow (355898 effects: #1, #4), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effect#1), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Shattered Psyche (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1), Shadow Tap (1235211 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #4), Overwhelming Shadows (1266883 effect#2)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #15), Shadow Priest (137033 effects: #1, #2, #6, #12), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Talbadar's Stratagem (342416 effect#1), Inner Shadow (355898 effects: #1, #4), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effect#1), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Shattered Psyche (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1), Shadow Tap (1235211 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #4), Overwhelming Shadows (1266883 effect#2)
 Family Flags     : 13, 72
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
@@ -571,7 +574,7 @@ Effects          :
 Description      : Lets out a psychic scream, causing all enemies within $A1 yards to flee, disorienting them for $d. Damage may interrupt the effect.
 Tooltip          : Disoriented.
 
-Name             : Shackle Undead (id=9484) [Spell Family (6)] 
+Name             : Shackle Horror (id=9484) [Spell Family (6)] 
 Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
@@ -595,7 +598,7 @@ Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=4041)     : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Targeted Enemy (6)
-Description      : Shackles the target undead enemy for $d, preventing all actions and movement. Damage will cancel the effect. Limit 1.
+Description      : Shackles an aberration or undead enemy for $d, preventing all actions and movement. Damage will cancel the effect. Limit 1.
 Tooltip          : Shackled.
 
 Name             : Power Infusion (id=10060) [Spell Family (6)] 
@@ -1270,7 +1273,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #12), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3), Realized Potential (1272326 effect#3)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #11), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3), Realized Potential (1272326 effect#3)
 Family Flags     : 33, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -1347,7 +1350,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (12 seconds cooldown)
-Category         : 1181 (Type 0x1): Holy Priest (137031 effect#10), Epiphany (414556 effect#1), Epiphany (414556 effect#2), Waste No Time (440681 effect#1), Guiding Light (1248423 effect#2)
+Category         : 1181 (Type 0x1): Holy Priest (137031 effect#9), Epiphany (414556 effect#1), Epiphany (414556 effect#2), Waste No Time (440681 effect#1), Guiding Light (1248423 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1376,7 +1379,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #15), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preventive Measures (440662 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #10), Angelic Touch (1250565 effect#1), Radiant Plea (1250684 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #13), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preventive Measures (440662 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #10), Angelic Touch (1250565 effect#1), Radiant Plea (1250684 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
 Family Flags     : 117, 126
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -1475,7 +1478,8 @@ Family Flags     : 28, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.47412 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.01101 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Ally in Area (31)
+Hotfixed         : SP Coefficient (4.47412 -> 5.01101)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=709475)   : Dummy (3)
@@ -1593,7 +1597,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Holy Priest (137031 effect#11), Discipline Priest (137032 effect#9)
+Affecting Spells : Holy Priest (137031 effect#10), Discipline Priest (137032 effect#9)
 Family Flags     : 111
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -1726,7 +1730,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Triggered By     : Penance (47758)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -2542,11 +2546,11 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Au
 Effects          :
 #1 (id=68778)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
 #2 (id=255808)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=1294441)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
@@ -2904,12 +2908,14 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+                 : 6250: Realized Potential (1272326 effect#2)
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=120560)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Realized Potential (1272326 effect#2)
 Description      : Your healing spells and Smite have a $s1% chance to make your next Flash Heal$?a1247178[ or Prayer of Healing][] instant and cost $?a137030[$114255s4]?a137031[$114255s2][$114255s3]% less mana. Stacks to $114255u.
 
 Name             : Spirit Shell (id=109964) [Spell Family (6)] 
@@ -3034,10 +3040,8 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Can Proc From Procs (122), Aura Never Bounces (148), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127393)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#3 (id=127394)   : None (0)
-                   Base Value: 90 | Scaled Value: 90
 Description      : $@spelldesc108945
 Tooltip          : Absorbs $w1 damage.
 
@@ -3065,16 +3069,16 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 3625: Empowered Surges (453799 effect#1), Realized Potential (1272326 effect#2)
+                 : 3625: Empowered Surges (453799 effect#1)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : No Threat (42), Not In Spellbook (143), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=127455)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Shadow Mend (187464), Benediction (1262763)
                    Family Flags: 11, 52
-                   Modified By: Realized Potential (1272326 effect#2)
 #2 (id=156626)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
@@ -3105,9 +3109,10 @@ Effects          :
 #9 (id=1254844)  : Apply Aura (6) | Set Action Button Spell Count (408): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 596 | Target: Self (1)
 #10 (id=1286984) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
+Hotfixed         : Base Value (15 -> 5)
 #11 (id=1293167) : Apply Aura (6) | Set Action Button Spell Count (408): Shadow Mend
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186263 | Target: Self (1)
 Description      : $@spelldesc109186
@@ -3282,7 +3287,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 2932: Holy Priest (137031 effect#18), Shadow Priest (137033 effect#24)
+                 : 2932: Holy Priest (137031 effect#16), Shadow Priest (137033 effect#24)
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Energy Compression (449874 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
 Family Flags     : 97, 126
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Do Not Display Range (126), Not On AOE Immune (127), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -3299,7 +3304,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 4003: Holy Priest (137031 effect#19), Shadow Priest (137033 effect#19)
+                 : 4003: Holy Priest (137031 effect#17), Shadow Priest (137033 effect#19)
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Energy Compression (449874 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 72, 97
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Do Not Display Range (126), Not On AOE Immune (127), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
@@ -3439,7 +3444,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1), Occultist (1250293 effects: #1, #2)
 Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
@@ -3618,7 +3623,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #13), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Inner Light (355897 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Phantom Reach (459559 effect#2), Holy Priest (1238052 effects: #4, #5), Lightburst (1246549 effects: #1, #3), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #12), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Inner Light (355897 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Phantom Reach (459559 effect#2), Holy Priest (1238052 effects: #4, #5), Lightburst (1246549 effects: #1, #3), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 49, 72
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow Class Ability Procs (416)
 Effects          :
@@ -3660,11 +3665,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -5 | Scaled Value: -5 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 24 | Target: Self (1)
@@ -3684,47 +3689,48 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #8 (id=871791)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#9 (id=914764)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 12000 | Scaled Value: 12000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Renew (139)
-                   Family Flags: 6
-#10 (id=914765)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+#9 (id=914764)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1181 (Category) | Target: Self (1)
                    Affected Spells (Category): Prayer of Mending (33076)
-#11 (id=1032422) : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+Hotfixed         : Sub Type (107 -> 457), Base Value (12000 -> 0), Misc Value (11 -> 1181), Affects Spells
+#10 (id=914765)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242), Focused Will (426401)
                    Family Flags: 111
-#12 (id=1032423) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Sub Type (457 -> 107), Base Value (0 -> 1), Misc Value (1181 -> 37), Affects Spells
+#11 (id=1032422) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 57 | Scaled Value: 57 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
-#13 (id=1035936) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Sub Type (107 -> 108), Base Value (1 -> 57), Misc Value (37 -> 0), Affects Spells
+#12 (id=1032423) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
                    Affected Spells: Holy Nova (132157)
                    Family Flags: 49
-#14 (id=1039629) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139)
-                   Family Flags: 6
-#15 (id=1040387) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Base Value (57 -> 104), Affects Spells
+#13 (id=1035936) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-#16 (id=1040388) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
+Hotfixed         : Base Value (104 -> 16), Affects Spells
+#14 (id=1039629) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 48 | Scaled Value: 48 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
-#17 (id=1074585) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Base Value (70 -> 48), Misc Value (22 -> 0), Affects Spells
+#15 (id=1040387) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 191 | Scaled Value: 191 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
-#18 (id=1079592) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 47 | Scaled Value: 47 | Misc Value 2: 2932 (Label) | Target: Self (1)
+Hotfixed         : Base Value (16 -> 191), Affects Spells
+#16 (id=1040388) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value 2: 2932 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120692)
-#19 (id=1081584) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+Hotfixed         : Sub Type (108 -> 218), Base Value (32 -> 18), Misc Value 2 (0 -> 2932), Affects Spells
+#17 (id=1074585) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 57 | Scaled Value: 57 | Misc Value 2: 4003 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120696), Halo (390964)
+Hotfixed         : Sub Type (108 -> 218), Base Value (191 -> 57), Misc Value 2 (0 -> 4003), Affects Spells
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -3738,11 +3744,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
@@ -4296,7 +4302,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
 Stance Mask      : 0x08000000
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #4), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Temporal Shift (225769 effect#2), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Measured Contemplation (341824 effect#1), Manifested Twilight (363943 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #4), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Temporal Shift (225769 effect#2), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Measured Contemplation (341824 effect#1), Manifested Twilight (363943 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Occultist (1250293 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
 Triggered By     : Surge of Light (114255), Shadow Mend (1252217)
 Family Flags     : 52, 126
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -4363,7 +4369,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Blaze of Light (215768 effect#1), Contemptuous Homily (278629 effect#2), Light Weaving (394609 effect#1), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1)
+Affecting Spells : Blaze of Light (215768 effect#1), Contemptuous Homily (278629 effect#2), Light Weaving (394609 effect#1), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Purge the Wicked (1250218 effect#1)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -4384,7 +4390,7 @@ Labels           : 16: Class Spells
                  : 1218
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Surge of Light (114255 effects: #1, #4), Temporal Shift (225769 effect#2), Depth of the Shadows (275544 effect#1), Measured Contemplation (341824 effect#1), Manifested Twilight (363943 effects: #1, #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
+Affecting Spells : Surge of Light (114255 effects: #1, #4), Temporal Shift (225769 effect#2), Depth of the Shadows (275544 effect#1), Measured Contemplation (341824 effect#1), Manifested Twilight (363943 effects: #1, #2, #3), Occultist (1250293 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
 Family Flags     : 52
 Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No Aura Cancel (31), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave Combat (31)
@@ -4460,7 +4466,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Resource: mana | Target: Self (1)
 Description      : You regenerate mana $s1% faster.
 
-Name             : Benediction (id=193157) [Spell Family (6), Passive, Hidden] 
+Name             : Light's Resurgence (id=193157) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
@@ -5115,7 +5121,7 @@ Labels           : 16: Class Spells
                  : 4779: Subservient Shadows (1228516 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1), Occultist (1250293 effects: #1, #2)
 Triggered By     : Mindbender (1230339)
 Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
@@ -5155,12 +5161,12 @@ Effects          :
                    Family Flags: 9, 12
 #3 (id=476562)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
                    Modified By: Perfected Form (453917 effect#3), Divinity (1215241 effect#1)
 #4 (id=476563)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
                    Modified By: Perfected Form (453917 effect#4), Divinity (1215241 effect#2)
 #5 (id=1156166)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -5292,7 +5298,7 @@ Family Flags     : 8
 Attributes       : Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295730)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.4 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 2.4 | Target: Targeted Ally (21)
 Description      : A quick, efficient plea to heal an ally for $s1.
 
 Name             : Purge the Wicked (id=204197) [Spell Family (6), Passive] 
@@ -5393,7 +5399,8 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 3289: False Autonomy (1250806 effect#1)
+                 : 3289
+                 : 6260
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
@@ -7490,6 +7497,7 @@ Effects          :
 Description      : $@spelldesc262484
 
 Name             : Void Torrent (id=263165) [Spell Family (6)] 
+Hotfixed         : Cooldown (45000 -> 30000)
 Talent Entry     : Voidweaver (Shadow) [free=(Shadow), tree=hero, row=1, col=1, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
@@ -7497,7 +7505,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Cooldown         : 45 seconds
+Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -8421,11 +8429,11 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=739969)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
 #2 (id=739970)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
 Description      : Increases healing done by $s1%.
 
@@ -8439,7 +8447,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=739971)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47540), Penance (47750), Divine Hymn (64843), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400169), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Power Word: Shield (1246768), Ultimate Serenity (1250581), Void Shield (1253593), Benediction (1262763)
+                   Affected Spells: Power Word: Shield (17), Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47540), Penance (47750), Divine Hymn (64843), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400169), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Power Word: Shield (1246768), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Void Shield (1253593), Benediction (1262763)
                    Family Flags: 0, 37, 54, 55, 99, 126
 Description      : Reduces the cost of your healing spells by $s1%.
 
@@ -8509,12 +8517,12 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Targeted Ally (21)
 #2 (id=742648)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
                    Modified By: Lenience (238063 effect#1)
 #3 (id=742649)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #4 (id=742650)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -10356,7 +10364,7 @@ Name             : Painbreaker Psalm (id=336167) [Spell Family (6)]
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Affecting Spells : Holy Priest (137031 effect#12), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Shadow Priest (1256905 effect#3), Realized Potential (1272326 effect#3)
+Affecting Spells : Holy Priest (137031 effect#11), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Occultist (1250293 effects: #1, #2), Shadow Priest (1256905 effect#3), Realized Potential (1272326 effect#3)
 Family Flags     : 33
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221)
 Effects          :
@@ -12271,7 +12279,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Triggered By     : Dark Reprimand (373129)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -12565,7 +12573,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2616: Shadow Priest (137033 effect#18)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #16), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #16), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 23, 72
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
@@ -12615,7 +12623,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2326: Inescapable Torment (373427 effect#3)
                  : 2616: Shadow Priest (137033 effect#18)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #16), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #16), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Triggered By     : Inescapable Torment (373441)
 Family Flags     : 23, 72
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Limit N (165), Allow Class Ability Procs (416)
@@ -13606,7 +13614,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 4003: Holy Priest (137031 effect#19), Shadow Priest (137033 effect#19)
+                 : 4003: Holy Priest (137031 effect#17), Shadow Priest (137033 effect#19)
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Energy Compression (449874 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 72, 97
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Do Not Display Range (126), Not On AOE Immune (127), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
@@ -13715,12 +13723,12 @@ Aura Interrupt   : Login (29), Change Talent (46)
 Effects          :
 #1 (id=1028180)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
                    Modified By: Twist of Fate (390972 effect#1)
 #2 (id=1028181)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
                    Modified By: Twist of Fate (390972 effect#2)
 Description      : $@spelldesc390972
@@ -15212,11 +15220,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1085337)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
 #2 (id=1091812)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=1168766)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 24 | Target: Self (1)
@@ -15276,11 +15284,11 @@ Effects          :
                    Family Flags: 72
 #3 (id=1088595)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #4 (id=1088596)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #5 (id=1088597)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15370,7 +15378,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -15588,7 +15596,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 954
                  : 2952: Shadow Covenant (322105 effect#6)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #15), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
@@ -15607,7 +15615,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Holy Priest (137031 effect#11), Discipline Priest (137032 effect#9)
+Affecting Spells : Holy Priest (137031 effect#10), Discipline Priest (137032 effect#9)
 Family Flags     : 111
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -16418,7 +16426,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5, #14), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #15), Discipline Priest (137032 effects: #4, #5, #14), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Occultist (1250293 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -16524,7 +16532,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #14, #15), Shadow Priest (137033 effects: #1, #2, #6, #12, #14), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Talbadar's Stratagem (342416 effect#1), Inner Shadow (355898 effects: #1, #4), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effect#1), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Shattered Psyche (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1), Shadow Tap (1235211 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2, #4), Overwhelming Shadows (1266883 effect#2)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #14, #15), Shadow Priest (137033 effects: #1, #2, #6, #12, #14), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Talbadar's Stratagem (342416 effect#1), Inner Shadow (355898 effects: #1, #4), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effect#1), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Shattered Psyche (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1), Shadow Tap (1235211 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2, #4), Overwhelming Shadows (1266883 effect#2)
 Family Flags     : 13, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -17148,8 +17156,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1155842)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
                    Affected Spells (Label): Surge of Light (114255)
+Hotfixed         : Base Value (15 -> 5)
 #2 (id=1155843)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Misc Value 2: 3626 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Flay: Insanity (391403)
@@ -17213,7 +17222,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1155949)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Ally (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=1236995)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -18142,11 +18151,11 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1200145)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=1200146)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 Description      : $@spelldesc1215623
 Tooltip          : Healing increased by ${$W1}.1%.
@@ -18182,7 +18191,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Dark Ascension (391109 effect#1), Descending Darkness (1242666 effect#1)
+Affecting Spells : Dark Ascension (391109 effect#1), Descending Darkness (1242666 effect#1), Crushing Void (1279354 effect#2)
 Family Flags     : 31
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -18208,7 +18217,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Descending Darkness (1242666 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Descending Darkness (1242666 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Crushing Void (1279354 effect#2)
 Family Flags     : 31, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -18275,7 +18284,7 @@ Labels           : 16: Class Spells
                  : 4779: Subservient Shadows (1228516 effect#2)
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1), Occultist (1250293 effects: #1, #2)
 Family Flags     : 19
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
@@ -18404,7 +18413,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -18421,7 +18430,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Priest Voidweaver 11.2 Class Set 2pc (1236396 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -18687,11 +18696,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1235032)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=1235033)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=1235034)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Absorb Amount (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
@@ -19114,6 +19123,23 @@ Effects          :
 Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
+Name             : Prompt Prognosis (id=1246798) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Stance Mask      : 0x80000000
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3)
+Family Flags     : 126
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1248558)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.4 | Target: Targeted Ally (21)
+Description      : Casting Prayer of Mending heals your target for $s1.
+
 Name             : Prompt Prognosis (id=1246799) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
@@ -19130,7 +19156,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1248560)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : $?a137032[The first bolt of each Penance cast damages or heals for $s1% more.][$@spelldesc1239608]
+Description      : $?a137032[The first bolt of each Penance cast damages or heals for $s1% more.][$@spelldesc1246798]
 
 Name             : Piety (id=1246802) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
@@ -19212,7 +19238,7 @@ Cooldown         : 3 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1249963)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Transmogrify the appearance of your weapons and armor|r
 
 Lock Appearance:
@@ -19229,7 +19255,7 @@ GCD              : 1.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
 
 |cnWHITE_FONT_COLOR:Lock Appearance:|r
@@ -19317,9 +19343,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1254213)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x2 | Target: Self (1)
-                   Affected School(s): Holy
+#1 (id=1254213)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215), Penance (1232571), Dark Reprimand (1232592)
+                   Family Flags: 7, 47, 49
 Description      : Holy damage increased by $s1%.
 
 Name             : Occultist (id=1250293) [Spell Family (6), Passive, Hidden] 
@@ -19332,12 +19359,14 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1254337)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x20 | Target: Self (1)
-                   Affected School(s): Shadow
-#2 (id=1257303)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x20 | Target: Self (1)
-                   Affected School(s): Shadow
+#1 (id=1254337)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Void Blast (450215), Void Blast (450983), Mindbender (1230339), Shadowfiend (1280172)
+                   Family Flags: 13, 15, 19, 23, 33, 40, 52, 57
+#2 (id=1257303)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Void Blast (450215), Void Blast (450983), Mindbender (1230339), Shadowfiend (1280172)
+                   Family Flags: 13, 15, 19, 23, 33, 40, 52, 57
 Description      : Shadow damage and healing done increased by $s1%.
 
 Name             : Spectral Illusion (id=1250378) [Spell Family (6), Passive, Hidden] 
@@ -19435,7 +19464,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1254682)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=1254683)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75 | Target: Self (1)
@@ -19504,9 +19533,8 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1255054)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 15000 | Scaled Value: 15000 | Misc Value: 1 | Misc Value 2: 3289 (Label) | Target: Self (1)
-                   Affected Spells (Label): Mind Control (605), Dominate Mind (205364)
+#1 (id=1255054)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15000 | Scaled Value: 15000 | Target: Self (1)
 Description      : Increases the duration of Mind Control and Dominate Mind against enemy creatures by ${$s1/1000} sec.
 
 Name             : Spiritual Guidance (id=1250818) [Spell Family (6), Passive, Hidden] 
@@ -19519,7 +19547,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1255072)  : Apply Aura (6) | Modify Base Attribute% (80)
+#1 (id=1255072)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1%.
 
@@ -19533,7 +19561,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1255075)  : Apply Aura (6) | Modify Base Attribute% (80)
+#1 (id=1255075)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 4 | Scaled Value: 4 | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1%.
 
@@ -19603,11 +19631,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1255457)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
 #2 (id=1255458)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
 #3 (id=1255562)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 24 | Target: Self (1)
@@ -19852,11 +19880,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1264654)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=1264803)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=1264804)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Absorb Amount (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
@@ -19954,10 +19982,10 @@ Description      : Prayer of Mending healing has a chance to upgrade your next F
 
 Name             : Benediction (id=1262758) [Spell Family (6), Passive] 
 Talent Entry     : Holy [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(25, 50)]
+                 : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
-                 : Effect#4 [op=set, values=(5, 10)]
+                 : Effect#4 [op=set, values=(6, 12)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19972,17 +20000,20 @@ Effects          :
                    Affected Spells: Cosmic Ripple (243241)
                    Family Flags: 93
 #2 (id=1286808)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+Hotfixed         : Base Value (5 -> 6)
 #3 (id=1286809)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+Hotfixed         : Base Value (5 -> 6)
 #4 (id=1293197)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
+Hotfixed         : Base Value (5 -> 6)
 Description      : Cosmic Ripple healing increased by $s1%.
 
 All healing done increased by $s2%.
@@ -20024,7 +20055,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x88000000
 Proc Flags       : Magic Heal
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
 Family Flags     : 11, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -20433,8 +20464,8 @@ Effects          :
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
 #2 (id=1285512)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 3625 (Label) | Target: Self (1)
-                   Affected Spells (Label): Surge of Light (114255)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 6250 (Label) | Target: Self (1)
+                   Affected Spells (Label): Surge of Light (109186)
 #3 (id=1285513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
@@ -20573,8 +20604,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Void Volley (1242173), Void Volley (1242189)
                    Family Flags: 41
-#2 (id=1291806)  : Apply Aura (6) | Dummy (4)
+#2 (id=1291806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Affected Spells: Tentacle Slam (1227280), Tentacle Slam (1227621)
+                   Family Flags: 31
 #3 (id=1291807)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Tentacle Slam deals $s2% increased damage and Void Volley deals $s1% increased damage.
@@ -20667,8 +20700,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1292925)  : Apply Aura (6) | Dummy (4)
@@ -20690,7 +20721,7 @@ Labels           : 16: Class Spells
                  : 4749
                  : 4779: Subservient Shadows (1228516 effect#2)
 Stance Mask      : 0x08000000
-Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Shadowflame Prism (336143 effect#1), Dark Ascension (391109 effect#1), Occultist (1250293 effects: #1, #2)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :

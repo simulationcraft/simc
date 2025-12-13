@@ -278,6 +278,9 @@ void avenging_wrath_t::execute()
 
   if ( p()->talents.empyrean_legacy->ok() )
     p()->buffs.empyrean_legacy->trigger();
+
+  if ( p()->talents.hammer_of_wrath->ok() )
+    p()->buffs.hammer_of_wrath->trigger();
 }
 
 // Consecration =============================================================
@@ -396,16 +399,16 @@ struct consecration_t : public paladin_spell_t
     add_child( damage_tick );
     if ( p->talents.lightsmith.divine_guidance->ok() )
     {
-      dg_damage = new divine_guidance_damage_t( "consecration_divine_guidance", p );
-      dg_heal   = new divine_guidance_heal_t( "consecration_divine_guidance_heal", p );
+      dg_damage = new divine_guidance_damage_t( "divine_guidance", p );
+      dg_heal   = new divine_guidance_heal_t( "divine_guidance_heal", p );
       add_child( dg_damage );
       // Maybe later: Heal?
     }
   }
 
   consecration_t( paladin_t* p, util::string_view source_name, consecration_source source )
-    : paladin_spell_t( std::string(source_name) + "_consecration", p, p->find_spell( 26573 ) ),
-      damage_tick( new consecration_tick_t( std::string(source_name) + "_consecration_tick", p ) ),
+    : paladin_spell_t( "consecration" + std::string( source_name ), p, p->find_spell( 26573 ) ),
+      damage_tick( new consecration_tick_t( "consecration_tick_" + std::string( source_name ), p ) ),
       source_type( source ),
       dg_damage( nullptr ),
       dg_heal( nullptr ),
@@ -417,13 +420,6 @@ struct consecration_t : public paladin_spell_t
     cooldown->duration = 0_ms;
 
     add_child( damage_tick );
-    if ( p->talents.lightsmith.divine_guidance->ok() )
-    {
-      dg_damage = new divine_guidance_damage_t( std::string(source_name) + "_divine_guidance", p );
-      dg_heal   = new divine_guidance_heal_t( std::string(source_name) + "_divine_guidance_heal", p );
-      add_child( dg_damage );
-      // Maybe later: Heal?
-    }
   }
 
   void init_finished() override
@@ -1369,7 +1365,6 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
 judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
   : paladin_melee_attack_t( name, p, s ),
     hammer_and_anvil( nullptr ),
-    is_how( false ),
     judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
@@ -1426,7 +1421,8 @@ void judgment_base_t::impact(action_state_t* s)
   trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
 }
 
-judgment_t::judgment_t( paladin_t* p, util::string_view options_str ) : judgment_base_t( p, "judgment", options_str, p->find_class_spell( "Judgment" ) )
+judgment_t::judgment_t( paladin_t* p, util::string_view options_str )
+  : judgment_base_t( p, "judgment", options_str, p->find_class_spell( "Judgment" ) ), hammer_of_wrath( nullptr )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
@@ -1441,6 +1437,12 @@ judgment_t::judgment_t( paladin_t* p, util::string_view options_str ) : judgment
     p->cooldowns.judgment = cooldown;
   else
     cooldown = p->cooldowns.judgment;
+
+  if ( p->talents.hammer_of_wrath->ok() )
+  {
+    hammer_of_wrath = new hammer_of_wrath_t( p, options_str );
+    add_child( hammer_of_wrath );
+  }
 }
 
 proc_types judgment_t::proc_type() const
@@ -1448,18 +1450,14 @@ proc_types judgment_t::proc_type() const
   return PROC1_MELEE_ABILITY;
 }
 
-bool judgment_t::target_ready( player_t* candidate_target )
-{
-  if ( !background && p()->get_how_availability() )
-  {
-    return false;
-  }
-
-  return judgment_base_t::target_ready( candidate_target );
-}
-
 void judgment_t::execute()
 {
+  if ( p()->buffs.hammer_of_wrath->up() )
+  {
+    hammer_of_wrath->execute_on_target( target );
+    stats->add_execute( 0_ms, target );
+    return;
+  }
   judgment_base_t::execute();
 
   if ( p()->talents.templar.sanctification->ok() )
@@ -1478,7 +1476,6 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_st
     echo( nullptr )
 {
   parse_options( options_str );
-  is_how = true;
   base_multiplier *= mul;
   if ( p->talents.adjudication->ok() )
   {
@@ -1498,7 +1495,6 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_st
     echo->crit_bonus_multiplier   = crit_bonus_multiplier;
     echo->triggers_higher_calling = true;
     echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
-    echo->is_how = true;
   }
   if (p->specialization() == PALADIN_PROTECTION)
   {
@@ -1507,16 +1503,6 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_st
     else
       cooldown = p->cooldowns.judgment;
   }
-}
-
-bool hammer_of_wrath_t::target_ready( player_t* candidate_target )
-{
-  if ( !background && !p()->get_how_availability() )
-  {
-    return false;
-  }
-
-  return judgment_base_t::target_ready( candidate_target );
 }
 
 void hammer_of_wrath_t::impact( action_state_t* s )
@@ -1583,6 +1569,14 @@ struct divine_toll_t : public paladin_spell_t
 
     add_child( p->active.divine_toll );
     add_child( p->active.divine_resonance );
+    if ( p->talents.templar.divine_exaction->ok() )
+    {
+      add_child( p->specialization() == PALADIN_PROTECTION ? p->active.divine_exaction_prot : p->active.divine_exaction_ret);
+    }
+    if (p->talents.templar.divine_hammer->ok())
+    {
+      add_child( p->active.divine_hammer_tick );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1983,7 +1977,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 struct empyrean_hammer_wd_t : public paladin_spell_t
 {
   empyrean_hammer_wd_t( paladin_t* p )
-    : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
+    : paladin_spell_t( "empyrean_hammer_wd", p, p->spells.templar.empyrean_hammer_wd )
   {
     background             = true;
     may_crit               = false;
@@ -2596,8 +2590,18 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       may_miss                     = false;
     }
   };
+  struct blaze_of_glory_t : public paladin_spell_t
+  {
+    blaze_of_glory_t( paladin_t* p ) : paladin_spell_t( "blaze_of_glory", p, p->spells.blaze_of_glory )
+    {
+      background             = true;
+      aoe                    = p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value();
+      target_filter_callback = secondary_targets_only();
+    }
+  };
 
   forges_reckoning_t* forges_reckoning;
+  blaze_of_glory_t* blaze_of_glory;
   shield_of_the_righteous_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous ), forges_reckoning( nullptr )
   {
@@ -2622,7 +2626,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     if (p->talents.glory_of_the_vanguard_3->ok())
     {
-      add_child( p->active.blaze_of_glory );
+      blaze_of_glory = new blaze_of_glory_t( p );
+      add_child( blaze_of_glory );
     }
   }
 
@@ -2653,7 +2658,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     if (p()->buffs.valor->up())
     {
-      p()->active.blaze_of_glory->execute_on_target( execute_state->target );
+      blaze_of_glory->execute_on_target( target );
       p()->buffs.valor->expire();
     }
     if (p()->sets->has_set_bonus(PALADIN_PROTECTION, MID1, B4))
@@ -3139,7 +3144,7 @@ void paladin_t::create_actions()
   }
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
-  active.hammer_of_light_cons = new consecration_t( this, "hammer_of_light", HAMMER_OF_LIGHT );
+  active.hammer_of_light_cons = new consecration_t( this, "hol", HAMMER_OF_LIGHT );
 
   player_t::create_actions();
 }
@@ -3189,7 +3194,7 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
   if ( name == "lay_on_hands" )
     return new lay_on_hands_t( this, options_str );
   if ( name == "hammer_of_wrath" )
-    return new hammer_of_wrath_t( this, options_str );
+    return new judgment_t( this, options_str );
   if ( name == "judgment" )
     return new judgment_t( this, options_str );
   if ( name == "devotion_aura" )
@@ -3371,20 +3376,22 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath = make_buff( this, "avenging_wrath", spells.avenging_wrath )
-    ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->add_invalidate( CACHE_MASTERY )
-    ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-      if (sets->has_set_bonus(HERO_HERALD_OF_THE_SUN, TWW3, B2))
-      {
-        // 5s with Radiant Glory, 10s without
-        buffs.herald_of_the_sun.solar_wrath->trigger(
-            sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
-            ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
-                                        : 0_ms ) );
-      }
-    } );
+                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->add_invalidate( CACHE_CRIT_CHANCE )
+                             ->add_invalidate( CACHE_MASTERY )
+                             ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+                               buffs.hammer_of_wrath->expire();
+                               if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
+                               {
+                                 // 5s with Radiant Glory, 10s without
+                                 buffs.herald_of_the_sun.solar_wrath->trigger(
+                                     sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+                                     ( talents.radiant_glory->ok()
+                                           ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+                                           : 0_ms ) );
+                               }
+                             } );
 
   if ( talents.crusade->ok() )
   {
@@ -3417,6 +3424,8 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->set_target( this->target );
             this->active.divine_resonance->schedule_execute();
           } );
+
+  buffs.hammer_of_wrath = make_buff( this, "hammer_of_wrath", find_spell( 1277026 ) );
 
   buffs.lightsmith.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
                                       ->set_cooldown( 0_s )
@@ -3729,13 +3738,13 @@ void paladin_t::init_action_list()
 parsed_assisted_combat_rule_t paladin_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                      const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 188370 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 188370 )
     return { "!consecration.up", true };
 
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 427441 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 427441 )
     return { "(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
 
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 427441 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 427441 )
     return { "!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
 
   if ( step.spell_id == 53600 )

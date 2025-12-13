@@ -10170,7 +10170,7 @@ std::vector<std::string> rogue_t::action_names_from_spell_id( unsigned int spell
 parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                    const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AURA_MISSING_PLAYER )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER )
   {
     switch ( rule.condition_value_1 )
     {
@@ -10189,27 +10189,27 @@ parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assiste
     }
   }
 
-  if ( rule.condition_type == TARGET_COUNT_NEAR_TARGET_GREATER ||
-       rule.condition_type == TARGET_COUNT_NEAR_PLAYER_GREATER )
+  if ( rule.condition_type == AC_TARGET_COUNT_NEAR_TARGET_GREATER ||
+       rule.condition_type == AC_TARGET_COUNT_NEAR_PLAYER_GREATER )
     return fmt::format( "active_enemies>={}", rule.condition_value_1 );
 
-  if ( rule.condition_type == COMBO_POINTS_GREATER )
+  if ( rule.condition_type == AC_COMBO_POINTS_GREATER )
     return fmt::format( "effective_combo_points>={}", rule.condition_value_1 );
 
-  if ( rule.condition_type == COMBO_POINTS_LESS )
+  if ( rule.condition_type == AC_COMBO_POINTS_LESS )
     return fmt::format( "effective_combo_points<={}", rule.condition_value_1 );
 
   // Stealth + Vanish checks
-  if ( rule.condition_type == AURA_ON_PLAYER && ( rule.condition_value_1 == 1784 || rule.condition_value_1 == 115191 || rule.condition_value_1 == 11327 ) )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && ( rule.condition_value_1 == 1784 || rule.condition_value_1 == 115191 || rule.condition_value_1 == 11327 ) )
     return { "stealthed.basic", "Generic stealth check replacement expression for multiple buff checks", true, false };
 
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 51667 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 51667 )
     return { "1", "Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly true." };
 
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 51667 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 51667 )
     return { "0", "Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly false." };
 
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 462128 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 462128 )
     return "action.coup_de_grace.ready";
 
   return player_t::parse_assisted_combat_rule( rule, step );

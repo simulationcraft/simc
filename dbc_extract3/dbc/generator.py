@@ -1933,8 +1933,9 @@ class SpellDataGenerator(DataGenerator):
           ( 377445, 0 ), # Unholy Aura debuff
           ( 1235391, 0 ), # Dark Transformation player buff
           ( 1250728, 0 ), # Mastery: Dreadblade pet crit buff
+          ( 196910, 0 ), # Raise Skulker
           # The War Within
-          ( 290577, 0 ), # Abomiantion Disease Cloud
+          ( 290577, 5 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
@@ -1987,6 +1988,9 @@ class SpellDataGenerator(DataGenerator):
           ( 1242998, 0 ), # Lesser Ghoul Counter Buff
           ( 1242294, 0 ), # Summon Magus Spell
           ( 1268917, 0 ), # Unholy Aura Mastery Buff
+          ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
+          ( 1277098, 0 ), # Lesser Ghoul
+          ( 1282570, 0 ), # Forbidden Ritual
         ),
 
         # Shaman:

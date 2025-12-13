@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64741 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -967,7 +967,7 @@ Family Flags     : 10, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Aura Log (202), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: chi | Target: Self (1)
                    Modified By: Windwalker Monk (1258122 effect#1)
@@ -1486,7 +1486,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 1
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Reflection (39), Do Not Reset Combat Timers (81), Heal Prediction (280), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Reflection (39), Do Not Reset Combat Timers (81), Not In Spellbook (143), Heal Prediction (280), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128771)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | Target: Current Target (25)
@@ -1549,7 +1549,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365 (Category) | Target: Self (1)
@@ -2980,7 +2980,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2925
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Brewmaster Monk (137023 effect#2), Blackout Combo (228563 effects: #2, #5), Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1), Breath of the Cosmos (364415 effect#1), Dragonfire Brew (383994 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Brewmaster Monk (1256978 effect#2), Monk Brewmaster 12.0 Class Set 2pc (1264838 effect#3)
 Family Flags     : 125
@@ -3285,7 +3285,7 @@ Spell Level      : 38
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 15 | Target: Self (1)
@@ -3902,7 +3902,7 @@ Effects          :
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
                    Family Flags: 58, 89
 #9 (id=260840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 370 | Scaled Value: 370 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
 #10 (id=260841)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3992,7 +3992,7 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #13 (id=260834)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 297 | Scaled Value: 297 | PvP Coefficient: 0.325
+                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 0.325
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
 #14 (id=260835)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4057,7 +4057,7 @@ Effects          :
                    Affected Spells: Chi Wave (132466), Chi Wave (132467)
                    Family Flags: 27
 #13 (id=739336)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 226 | Scaled Value: 226 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
 #14 (id=739337)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -9485,7 +9485,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Affecting Spells : Fortifying Brew (120954 effect#5), High Tolerance (196737 effect#2)
 Family Flags     : 34
-Attributes       : Passive (6), Unknown (454)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Unknown (454)
 Effects          :
 #1 (id=810265)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -9514,17 +9514,15 @@ Family Flags     : 53, 75
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=810869)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 22.68 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=834949)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Vivify (116670), Healing Sphere (163212), Expel Harm (322101), Expel Harm (451968), Niuzao's Resolve (1241109)
                    Family Flags: 17, 26, 42, 95
-Description      : A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.
+Description      : A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.$?$w2>0[
 Your self-healing increased by $w2%.][]
-Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
-
 
 Name             : Spinning Crane Kick (desc=Rank 2) (id=322700) [Spell Family (53), Passive] 
 Class            : Monk
@@ -9533,7 +9531,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Log on Learn (355), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=811130)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -10617,7 +10615,6 @@ Description      : $@spelldesc337334
 Tooltip          : Unable to gain Keefer's Skyreach from attacking this target for $d.
 
 Name             : Chi Explosion (id=337342) [Spell Family (53)] 
-Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Labels           : 931
@@ -10722,7 +10719,6 @@ Description      : $@spelldesc337481
 Tooltip          : Rising Sun Kick critical strike chance increased by $w1%.
 
 Name             : Jade Ignition (id=337483) [Spell Family (53), Passive] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Max Aura Level   : 60
@@ -10769,7 +10765,6 @@ Effects          :
 Description      : Tiger Palm has a $s1% chance to deal $s2% of normal damage and reduce the remaining cooldown of your Brews by ${$s3/1000} additional sec.
 
 Name             : Chi Energy (id=337571) [Spell Family (53)] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 45 seconds
@@ -13213,7 +13208,7 @@ Tooltip          : Absorb amount of your next Life Cocoon is increased by $s1%.
 
 Name             : Secret Infusion (id=388491) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(4, 4)]
+                 : Effect#1 [op=mul, values=(1, 2)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13224,7 +13219,7 @@ Triggered By     : Secret Infusion (388497), Secret Infusion (388498), Secret In
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1024208)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Secret Infusion
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 388496 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Trigger Spell: 388496 | Target: Self (1)
 #2 (id=1034116)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1.25 | Scaled Value: 1.25 | Target: Self (1)
 Description      : After using Thunder Focus Tea, your next spell gives $s1% of a stat. Only one stat increase may be active at once:
@@ -13441,7 +13436,7 @@ Effects          :
 #2 (id=1024308)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1933 (Category) | Target: Self (1)
                    Affected Spells (Category): Revival (115310), Restoral (388615)
-Description      : The cooldown of $?s388615[Restoral][Revival] by is reduced by ${$s2/-1000} sec and $?s388615[Restoral][Revival] healing increased by $s1%.
+Description      : The cooldown of $?s388615[Restoral][Revival] is reduced by ${$s2/-1000} sec and $?s388615[Restoral][Revival] healing increased by $s1%.
 
 Name             : Uplifted Spirits (id=388555) [Spell Family (53)] 
 Class            : Monk
@@ -14274,11 +14269,11 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Magic Hostile Spell
+Proc Flags       : Generic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1031594)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 393057 | Target: Self (1)
+#1 (id=1031594)  : Apply Aura (6) | Proc Trigger Spell (42): Chi Explosion
+                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 393056 | Target: Self (1)
 #2 (id=1031595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1164132)  : Apply Aura (6) | Dummy (4)
@@ -14526,6 +14521,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 22: Monk Spells
 Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1)
+Triggered By     : Jade Ignition (392979)
 Family Flags     : 103
 Attributes       : No Threat (42), Do Not Reset Combat Timers (81), Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
@@ -14534,7 +14530,6 @@ Effects          :
 Description      : $@spelldesc392979
 
 Name             : Chi Energy (id=393057) [Spell Family (53)] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 45 seconds
@@ -14542,7 +14537,6 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
 Stacks           : 30 maximum
 Proc Chance      : 101%
-Triggered By     : Jade Ignition (392979)
 Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=1031744)  : Apply Aura (6) | Dummy (4)
@@ -15280,7 +15274,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Generic Hostile Spell
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1045829)  : Apply Aura (6) | Dummy (4)
@@ -15638,7 +15632,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2917: Windwalker Monk (1258122 effect#11), Windwalker Monk (1258122 effect#12)
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1082937)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15656,7 +15650,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1082939)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16140,7 +16134,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1120519)  : Apply Aura (6) | Periodic Trigger Spell (23): Dance of the Wind every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432180 | Target: Self (1)
@@ -17218,7 +17212,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1148858)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 2 | Misc Value: 1365 (Category) | Target: Self (1)
@@ -17288,7 +17282,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1149958)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -17333,7 +17327,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150175)  : Apply Aura (6) | Proc Trigger Spell (42): Crashing Momentum
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 450334 | Target: Self (1)
@@ -17390,7 +17384,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150261)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17410,7 +17404,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150317)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7e | Target: Self (1)
@@ -17437,7 +17431,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150320)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1 | Target: Self (1)
@@ -17458,7 +17452,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150327)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -17472,7 +17466,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150350)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
@@ -17491,7 +17485,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150432)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 11 | Target: Self (1)
@@ -17508,7 +17502,7 @@ Labels           : 16: Class Spells
                  : 3600: Path of Resurgence (451084 effect#1), Path of Resurgence (451084 effect#2), Path of Resurgence (451084 effect#3), Path of Resurgence (451084 effect#4)
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful, Unknown 38
-Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150447)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
@@ -17544,7 +17538,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150470)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
@@ -17568,7 +17562,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Target: Self (1)
@@ -17622,7 +17616,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3536
                  : 4179
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150502)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17632,7 +17626,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : When Aspect of Harmony $?a450870[deals damage or heals]?a137023[deals damage][heals], it has a chance to spread to a nearby $?a450870[target]?a137023[enemy][ally]. When you directly $?a450870[attack or heal]?a137023[attack][heal] an affected target, it has a chance to intensify, withdrawing additional vitality to increase its effect by up to $450508s9%.
 
-$?a137023[Keg Smash][Vivify] no longer contributes vitality, instead drawing on available vitality to  $?a137023[damage][healing] done by up to $s2%. Vitality stored by other abilities is increased by $s3%.
+$?a137023[Keg Smash][Vivify] no longer contributes vitality, instead drawing on available vitality to increase $?a137023[damage][healing] done by up to $s2%. Vitality stored by other abilities is increased by $s3%.
 
 Name             : Aspect of Harmony (id=450531) [Spell Family (53)] 
 Class            : Monk
@@ -17677,7 +17671,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150539)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17738,7 +17732,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150561)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Flow of Chi
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 1 | Trigger Spell: 450581 | Target: Self (1)
@@ -17872,7 +17866,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150600)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17908,7 +17902,7 @@ Labels           : 16: Class Spells
                  : 5097: Invoke Niuzao, the Black Ox (132578 effect#7), Invoke Niuzao, the Black Ox (132578 effect#8), Zenith (1249625 effect#5), Zenith (1249625 effect#6), Zenith (1249625 effect#11), Zenith (1249625 effect#12)
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : Passive (6), Not Shapeshifted (16), No Threat (42), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Passive (6), Not Shapeshifted (16), No Threat (42), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1150629)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -17952,7 +17946,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 30 seconds
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150639)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17982,7 +17976,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150656)  : Apply Aura (6) | Dummy (4)
                    Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
@@ -17998,7 +17992,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150672)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
@@ -18133,7 +18127,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Rolling Periodic (334)
+Attributes       : Passive (6), Not In Spellbook (143), Rolling Periodic (334), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151062)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18149,7 +18143,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151065)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
@@ -18166,14 +18160,14 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 4194: Brewmaster Monk (1258153 effect#16)
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151074)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
                    Family Flags: 27, 38, 58
                    Modified By: Brewmaster Monk (1258153 effect#16)
-Description      : Chi Burst and Chi Wave deal $s1% increased damage and healing.
+Description      : $?c1[Chi Burst and Chi Wave deal][Chi Wave deals] $s1% increased damage and healing.
 
 Name             : Balanced Stratagem (id=450889) [Spell Family (53), Passive] 
 Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
@@ -18186,7 +18180,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful, Unknown 38
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151110)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18200,7 +18194,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151116)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2294 (Category) | Target: Self (1)
@@ -18221,7 +18215,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151151)  : Apply Aura (6) | Proc Trigger Spell (42): Path of Resurgence
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451084 | Target: Self (1)
@@ -18235,7 +18229,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151234)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -18249,7 +18243,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151259)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Misc Value 2: 3560 (Label) | Target: Self (1)
@@ -18264,7 +18258,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151262)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18278,7 +18272,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151268)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 4 | Scaled Value: 4 | Stat: Agi | Target: Self (1)
@@ -18292,7 +18286,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151269)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -18306,7 +18300,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151270)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -18332,7 +18326,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5146: Windwalker Monk (1258122 effect#16), Windwalker Monk (1258122 effect#17)
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -18368,7 +18362,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151272)  : Apply Aura (6) | Modify Target Armor% (280)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
@@ -18385,7 +18379,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 180 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151273)  : Apply Aura (6) | Proc Trigger Spell (42): Whirling Steel
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 451214 | Target: Self (1)
@@ -18403,7 +18397,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151274)  : Apply Aura (6) | Proc Trigger Spell (42): Predictive Training
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451230 | Target: Self (1)
@@ -18417,7 +18411,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151275)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Target: Self (1)
@@ -18433,7 +18427,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Aura Points On Client (268)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151321)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
@@ -18472,7 +18466,7 @@ Labels           : 16: Class Spells
                  : 4196: Mistweaver Monk (1258138 effect#20), Brewmaster Monk (1258153 effect#15)
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151334)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -18489,7 +18483,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151343)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -18504,7 +18498,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151354)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
@@ -18556,7 +18550,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151360)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | Target: Self (1)
@@ -18572,7 +18566,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Generic Heal, Magic Heal
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151363)  : Apply Aura (6) | Proc Trigger Spell (42): Roar from the Heavens
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452701 | Target: Self (1)
@@ -19526,7 +19520,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
-Attributes       : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1157053)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 15 | Target: Self (1)
@@ -19540,7 +19534,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1157059)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -19702,7 +19696,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3670
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1158212)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
@@ -19735,7 +19729,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1158360)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Elixir of Determination
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Trigger Spell: 455179 | Target: Self (1)
@@ -21374,7 +21368,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239880)  : Apply Aura (6) | Dummy (4)
@@ -21409,7 +21403,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239954)  : Apply Aura (6) | Dummy (4)
@@ -21550,7 +21544,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1243399)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -21565,7 +21559,7 @@ Cooldown         : 3 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1249963)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Transmogrify the appearance of your weapons and armor|r
 
 Lock Appearance:
@@ -21582,7 +21576,7 @@ GCD              : 1.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
 
 |cnWHITE_FONT_COLOR:Lock Appearance:|r
@@ -21872,7 +21866,7 @@ Effects          :
 Description      : Chi costs are reduced by $s7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s3/1000} sec for $d.
 
 Activating Zenith resets the remaining cooldown on Rising Sun Kick and grants $s9 Chi.
-Tooltip          : Chi costs are reduced by $w7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$w3/1000} sec.$?w1>0[
+Tooltip          : Chi costs are reduced by $w7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$w3/1000} sec.$?$w1>0[
 
 Critical strike chance increased by $w1%.][]
 
@@ -21981,7 +21975,7 @@ Effects          :
 Description      : Your last ability to trigger Mastery: Combo Strikes was Storm, Earth, and Fire.
 Tooltip          : Your last ability to trigger Mastery: Combo Strikes was Storm, Earth, and Fire.
 
-Name             : Combo Strikes: Weapons of Order (id=1249763) [Spell Family (53)] 
+Name             : Combo Strikes: Zenith (id=1249763) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21993,8 +21987,8 @@ Attributes       : Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1253505)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your last ability to trigger Mastery: Combo Strikes was Weapons of Order.
-Tooltip          : Your last ability to trigger Mastery: Combo Strikes was Weapons of Order.
+Description      : Your last ability to trigger Mastery: Combo Strikes was Zenith.
+Tooltip          : Your last ability to trigger Mastery: Combo Strikes was Zenith.
 
 Name             : Combo Strikes: Crackling Jade Lightning (id=1249764) [Spell Family (53)] 
 Class            : Monk
@@ -22660,7 +22654,7 @@ Effects          :
 #1 (id=1271571)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 1249625 | Target: Self (1)
 Description      : $@spelldesc1261703
-Tooltip          : Your critical strike chance is increased by $w1% during your next Weapons of Order.
+Tooltip          : Your critical strike chance is increased by $w1% during your next Zenith.
 
 Name             : Tigereye Brew (id=1261844) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Windwalker [tree=spec, row=9, col=1, max_rank=2, req_points=20]
@@ -22803,7 +22797,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1272504)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 19 | Target: Self (1)
@@ -23083,7 +23077,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal
-Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1273952)  : Apply Aura (6) | Proc Trigger Spell (42): Swift as a Coursing River
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1263345 | Target: Self (1)
@@ -23326,10 +23320,10 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5829
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1276450)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 0.5 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767)
                    Family Flags: 118, 122
 Description      : The cooldowns of Strike of the Windlord and Whirling Dragon Punch are reduced by ${$s1/-1000} sec. 
@@ -23344,7 +23338,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 20%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1276915)  : Apply Aura (6) | Proc Trigger Spell (42): Empty Barrel
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1265307 | Target: Self (1)
@@ -23378,7 +23372,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1276930)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 5841 (Label) | Target: Self (1)
@@ -23422,7 +23416,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3670
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1276935)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -24058,7 +24052,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1286132)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)

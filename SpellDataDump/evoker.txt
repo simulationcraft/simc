@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64741 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -2460,7 +2460,7 @@ Labels           : 16: Class Spells
                  : 1466: Green Evoker Spells
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6, #21), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ouroboros (387350 effect#1), Augmentation Evoker (396186 effects: #5, #6, #15), Dream of Spring (414969 effect#4), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
 Family Flags     : 1, 38, 49
-Attributes       : Allow While Mounted (24), Allow While Stealthed (37), Not a Proc (105), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), Not a Proc (105), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889395)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.8 | Radius: 12 yards | Target: At Ally in Area (31)
@@ -2807,6 +2807,8 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5851 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+#2 (id=1297002)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
@@ -2905,7 +2907,7 @@ Proc Flags       : Periodic Taken
 Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
 Triggered By     : Full Belly (377087)
 Family Flags     : 0, 35
-Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+Attributes       : Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=891597)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.63409 | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
@@ -3384,7 +3386,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2, #3)
+Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2)
 Triggered By     : Emerald Trance (424402)
 Family Flags     : 43
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -4164,6 +4166,7 @@ Class            : Evoker
 School           : Firestorm
 Spell Type       : None
 Spell Level      : 60
+Range            : 30 yards
 Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
@@ -4183,15 +4186,15 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset coo
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Targeted Ally (21) -> Self (1)
                    Affected School(s): All
                    Modified By: Hardened Scales (441180 effect#1)
 #2 (id=903601)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Targeted Ally (21) -> Self (1)
 #3 (id=1015125)  : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Targeted Ally (21) -> Self (1)
 #4 (id=1015126)  : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Targeted Ally (21) -> Self (1)
 Description      : Reinforce your scales, reducing damage taken by $s1%. Lasts $d.
 Tooltip          : Damage taken reduced by $w1%.$?$w2=1[
 Immune to interrupt and silence effects.][]
@@ -4403,7 +4406,6 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Helpful Periodic Taken
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Grace Period (376239 effect#1), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Time Bender (394544 effect#1), Augmentation Evoker (396186 effects: #5, #6), Evoker Preservation 11.0 Class Set 2pc (453673 effect#1), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Tempo Charged (1237978 effects: #1, #2), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
-Triggered By     : Merithra's Blessing (1256581)
 Family Flags     : 1, 8
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -4845,7 +4847,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2, #3)
+Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2)
 Triggered By     : Essence Rush (409899)
 Family Flags     : 43
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -6100,7 +6102,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2), Tempo Charged (1237978 effects: #1, #3)
+                 : 6229: Tempo Charged (1237978 effect#3)
+Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2), Tempo Charged (1237978 effect#1)
 Family Flags     : 2, 45
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), Spell Haste Affects Periodic (173), Haste Affects Duration (273)
 Effects          :
@@ -6108,9 +6111,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 25294 | Target: Front of Self (47)
 #2 (id=1044076)  : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Modified By: Tempo Charged (1237978 effect#3)
 #3 (id=1179965)  : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34997 | Target: Front of Self (47)
-Description      : Send forward a vortex of temporal energy, absorbing $373862s1 damage on you and any allies in its path. Absorption is reduced beyond $s2 targets.
+Description      : Send forward a vortex of temporal energy, absorbing $<shield> damage on you and any allies in its path. Absorption is reduced beyond $s2 targets.
 Variables        : $shield=${$SP*$s2*(1+$@versadmg)}
 
 Name             : Temporal Anomaly (desc=Bronze) (id=373862) [Spell Family (224)] 
@@ -6123,14 +6127,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #12), Initial Evoker (356816 effects: #5, #6), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Nozdormu Adept (431715 effects: #1, #2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Tempo Charged (1237978 effects: #1, #3), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
+Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #12), Initial Evoker (356816 effects: #5, #6), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Nozdormu Adept (431715 effects: #1, #2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Tempo Charged (1237978 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
 Family Flags     : 1, 45
 Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=999378)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
-Hotfixed         : SP Coefficient (6 -> 0)
 Description      : $@spelldesc373861
 Tooltip          : Absorbing $w1 damage.
 
@@ -6244,7 +6247,7 @@ Family Flags     : 42, 67
 Attributes       : Passive (6), Not Shapeshifted (16), Do Not Display Range (126), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000163)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Obsidian Scales surrounds you with a Renewing Blaze, causing $s1% of the damage it reduced to be healed back over $374349d.
 
 Name             : Renewing Blaze (desc=Red) (id=374349) [Spell Family (224)] 
@@ -8604,7 +8607,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Affecting Spells : Essence Attunement (375722 effect#1), Mastery: Timewalker (406380 effect#2), Ignition Rush (408775 effects: #1, #2, #3)
+Affecting Spells : Essence Attunement (375722 effect#1), Mastery: Timewalker (406380 effect#2), Ignition Rush (408775 effects: #1, #2)
 Family Flags     : 43, 67
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38)
@@ -8631,7 +8634,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
-                   Modified By: Ignition Rush (408775 effect#3)
 Description      : $@spelldesc396187
 Tooltip          : Your next Eruption $?s414969[or Emerald Blossom ][]costs no Essence.
 
@@ -10319,10 +10321,8 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Essence Burst (359618), Essence Burst (369299), Essence Burst (392268), Essence Burst (417402)
                    Family Flags: 43
-#3 (id=1255225)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 33 | Target: Self (1)
-                   Affected Spells: Essence Burst (359618), Essence Burst (369299), Essence Burst (392268), Essence Burst (417402)
-                   Family Flags: 43
+#3 (id=1255225)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Essence Burst reduces the cast time of Eruption by $s1% and increases its damage by $s3%.
 
 Name             : Motes of Possibility (id=409267) [Spell Family (224), Passive] 
@@ -10334,7 +10334,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 25%
-Proc Flags       : Magic Heal, Magic Hostile Spell
+Proc Flags       : Magic Hostile Spell
 Affecting Spells : Clairvoyant (1250914 effects: #1, #2)
 Family Flags     : 84
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
@@ -11616,7 +11616,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2, #3)
+Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2)
 Family Flags     : 43
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -12095,12 +12095,12 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 24 seconds
-Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Aura Icon Only For Caster (Limit 10) (212), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1118749)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 1.134 | Scaled Value: 1.134 (delta=0.05) | PvP Coefficient: 0 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 1.5 | Scaled Value: 1.5 (delta=0.05) | PvP Coefficient: 0 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 #2 (id=1118750)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0.274 | Scaled Value: 0.274 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0.34 | Scaled Value: 0.34 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
 
@@ -13765,7 +13765,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1174085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Renewing Blaze also applies to your target or $s1 nearby injured $Lally:allies; at $s2% value.
+Description      : Obsidian Scales also applies to your target or $s1 nearby injured $Lally:allies; at $s2% value.
 
 Name             : Lifecinders (desc=Red) (id=444323) [Spell Family (224)] 
 Class            : Evoker
@@ -13876,7 +13876,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 3022
-Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312)
+Attributes       : Allow Cast While Dead (23), Allow Cast While Casting (135), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=1142384)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -15258,10 +15258,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rewind (363534), Reversion (366155), Reversion (367364)
                    Family Flags: 8, 29
-#3 (id=1294408)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
-                   Affected Spells: Temporal Anomaly (373861), Temporal Anomaly (373862)
-                   Family Flags: 45
+#3 (id=1294408)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Misc Value 2: 6229 (Label) | Target: Self (1)
+                   Affected Spells (Label): Temporal Anomaly (373861)
 Description      : Bronze healing and absorption increased by $s1%.
 
 Name             : Delay Harm (id=1239574) [Spell Family (224)] 
@@ -15428,7 +15427,7 @@ Cooldown         : 3 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1249963)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Transmogrify the appearance of your weapons and armor|r
 
 Lock Appearance:
@@ -15461,7 +15460,7 @@ GCD              : 1.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1 | Target: Self (1)
 Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their original appearance|r
 
 |cnWHITE_FONT_COLOR:Lock Appearance:|r
@@ -15477,8 +15476,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Proc Chance      : 25%
-Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1255209)  : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
@@ -15520,7 +15517,6 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
 Triggered By     : Merithra's Blessing (1256577)
 Attributes       : Spellcast Override In Spellbook (310)
 Effects          :
@@ -15547,8 +15543,8 @@ Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evo
 Family Flags     : 1, 85
 Attributes       : Allow Cast While Dead (23), Bouncy Chain Missiles (146), Treat as Area Effect (175), Not On Trivial (182), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
-#1 (id=1264151)  : Trigger Spell (64): Reversion
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 366155 | Target: Chain Heal Ally (45)
+#1 (id=1264151)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Chain Heal Ally (45)
 #2 (id=1264152)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Chain Heal Ally (45)
 #3 (id=1264164)  : Dummy (3)
@@ -16241,6 +16237,7 @@ Velocity         : 42 yards/sec
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
+                 : 1464: Red Evoker Spells
                  : 5865: Fire Torrent (1265992 effect#1)
                  : 6112: Devastation Evoker (356809 effect#31)
 Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
@@ -16260,6 +16257,7 @@ Velocity         : 42 yards/sec
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
+                 : 1464: Red Evoker Spells
                  : 5865: Fire Torrent (1265992 effect#1)
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
 Family Flags     : 1
@@ -16354,7 +16352,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280068)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Glide speed and height increased by $s1%.
 
 Name             : Improved Defy Fate (id=1268881) [Spell Family (224), Passive] 

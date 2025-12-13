@@ -390,7 +390,7 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( priest_t* owner, util::string_view name, enum fiend_type type )
-    : priest_pet_t( owner->sim, *owner, name ),
+    : priest_pet_t( owner->sim, *owner, name, true ),
       inescapable_torment( nullptr ),
       gains(),
       fiend_type( type ),
@@ -430,7 +430,7 @@ struct base_fiend_pet_t : public priest_pet_t
         gains.fiend = o().gains.mindbender;
         break;
       default:
-        gains.fiend = o().gains.depth_of_shadows;
+        gains.fiend = o().gains.shadowfiend;
         break;
     }
   }
@@ -446,11 +446,19 @@ struct base_fiend_pet_t : public priest_pet_t
   void arise() override
   {
     priest_pet_t::arise();
+
+    if ( o().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      o().buffs.idol_of_yshaarj->trigger();
+    }
   }
 
   void demise() override
   {
     priest_pet_t::demise();
+
+    // Always check expire, even without the talent, in case of void apparitions
+    o().idol_of_yshaarj_check_and_expire();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -577,8 +585,9 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-      power_leech_mana(
-          o().specialization() == PRIEST_SHADOW ? 0.0 : o().talents.shared.shadowfiend->effectN( 4 ).percent() / 10 )
+      power_leech_mana( o().specialization() == PRIEST_SHADOW
+                            ? 0.0
+                            : o().find_spell( 343727 )->effectN( 1 ).resource( RESOURCE_MANA ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -596,7 +605,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.shared.depth_of_shadows.enabled() )
+    if ( o().talents.shared.shadowfiend.enabled() )
     {
       return power_leech_insanity;
     }
@@ -620,13 +629,14 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
                                                               : o().find_spell( 123051 )->effectN( 1 ).percent() / 100 )
   {
-    direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    direct_power_mod = 0.88;
 
     // Empirically tested to match 3/10/2023, actual value not available in spell data
     if ( owner->specialization() == PRIEST_DISCIPLINE )
     {
       direct_power_mod = 0.3;
     }
+
     npc_id = 62982;
 
     main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
@@ -737,7 +747,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      if ( p().o().talents.shared.depth_of_shadows.enabled() || p().o().talents.shared.mindbender.enabled() )
+      if ( p().o().talents.shared.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -1142,7 +1152,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
 
   auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
 
-  if ( talents.shared.depth_of_shadows.enabled() && pets.shadowfiend.n_active_pets() > 0 )
+  if ( talents.shared.shadowfiend.enabled() && pets.shadowfiend.n_active_pets() > 0 )
   {
     for ( auto a_pet : pets.shadowfiend )
     {
@@ -1169,6 +1179,26 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
       auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
       pet->inescapable_torment->trigger( target, echo, mod );
+    }
+  }
+}
+
+// Before we remove the haste buff ensure no other pets are active
+void priest_t::idol_of_yshaarj_check_and_expire()
+{
+  // Don't condition this on the talent in case it is triggered from tentacle slam
+  if ( buffs.idol_of_yshaarj->check() )
+  {
+    auto shadowfiend_pets = pets.shadowfiend.n_active_pets();
+    auto mindbender_pets  = pets.mindbender.n_active_pets();
+    auto voidwraith_pets  = pets.voidwraith.n_active_pets();
+
+    sim->print_debug( "checking idol_of_yshaarj status, shadowfiend: {}, mindbender: {}, voidwraith: {}",
+                      shadowfiend_pets, mindbender_pets, voidwraith_pets );
+
+    if ( shadowfiend_pets + mindbender_pets + voidwraith_pets == 0 )
+    {
+      buffs.idol_of_yshaarj->expire();
     }
   }
 }
@@ -1200,7 +1230,7 @@ void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 
-  auto shadowfiend_spell = p.find_spell( 34433 );
+  auto shadowfiend_spell = p.find_spell( 1280172 );
   shadowfiend.set_default_duration( shadowfiend_spell->duration() );
 
   auto mindbender_spell = p.find_spell( 200174 );

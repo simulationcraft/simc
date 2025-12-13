@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 12.0.0.64741
+// Item enchantment data, wow build 12.0.1.64889
 static constexpr std::array<item_enchantment_data_t, 5329> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
@@ -4983,9 +4983,9 @@ static constexpr std::array<item_enchantment_data_t, 5329> __spell_item_ench_dat
   { 7478,      0, -7,   0,  70, 70, 180,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448332,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Cursed Mastery |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7479,      0, -7,   0,  70, 70, 180,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448333,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Cursed Mastery |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7490,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 450401,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Fishing Lure (+$450402s1 Fishing Skill)" },
-  { 7493,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.4125f,  0.4125f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7494,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.4654f,  0.4654f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7495,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.5118f,  0.5118f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7493,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.1669f,  0.1669f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7494,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.2337f,  0.2337f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 7495,      0, -7,   0,  70, 70, 180,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.3005f,  0.3005f,  0.0000f },       0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7496,      0,  0,   0,  70, 70, 180,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451904,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7497,      0,  0,   0,  70, 70, 180,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451909,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7498,      0,  0,   0,  70, 70, 180,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451912,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
@@ -5196,8 +5196,8 @@ static constexpr std::array<item_enchantment_data_t, 5329> __spell_item_ench_dat
   { 8045,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236744,      0,      0 }, {  0.3529f,  0.0000f,  0.0000f },       0, "Illusory Adornment - Nature's Embrace |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 8046,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236745,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Illusory Adornment - Voidtouched |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
   { 8047,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236745,      0,      0 }, {  0.3529f,  0.0000f,  0.0000f },       0, "Illusory Adornment - Voidtouched |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
-  { 8051,      0, -7,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.0992f,  0.0992f,  0.0000f },       0, "Thalassian Phoenix Oil |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
-  { 8052,      0, -7,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.1221f,  0.1221f,  0.0000f },       0, "Thalassian Phoenix Oil |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
+  { 8051,      0, -7,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.3865f,  0.3865f,  0.0000f },       0, "Thalassian Phoenix Oil |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
+  { 8052,      0, -7,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.4757f,  0.4757f,  0.0000f },       0, "Thalassian Phoenix Oil |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 8053,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 1237014,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Oil of Dawn |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
   { 8054,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 1237016,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Oil of Dawn |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 8055,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 1237009,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Smuggler's Enchanted Edge |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },

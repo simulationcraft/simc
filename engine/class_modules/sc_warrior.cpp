@@ -8358,7 +8358,7 @@ parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assis
 {
   // Blizz uses 5 in their apl, making the condition <5, however, this should be <6 to align with
   // distance targeting, as well, this makes it work correctly in simc
-  if ( rule.condition_type == TARGET_DISTANCE_LESS && rule.condition_value_1 == 5 )
+  if ( rule.condition_type == AC_TARGET_DISTANCE_LESS && rule.condition_value_1 == 5 )
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1 = 6;

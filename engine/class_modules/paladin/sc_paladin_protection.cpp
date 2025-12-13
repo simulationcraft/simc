@@ -99,6 +99,18 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
   };
 
+  struct glory_of_the_vanguard_t : public paladin_spell_t
+  {
+    glory_of_the_vanguard_t( util::string_view n, paladin_t* p )
+      : paladin_spell_t( n, p, p->spells.glory_of_the_vanguard )
+    {
+      background = true;
+      // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
+      // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
+      aoe = -1;
+    }
+  };
+
   struct refining_fire_dot_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
   {
     using base_t = residual_action::residual_periodic_action_t<paladin_spell_t>;
@@ -122,11 +134,13 @@ struct avengers_shield_base_t : public paladin_spell_t
   tyrs_enforcer_t* tyrs_enforcer;
   refining_fire_dot_t* refining_fire_dot;
   consecration_tick_t* consecration_tick;
+  glory_of_the_vanguard_t* glory_of_the_vanguard;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str, double mul = 1.0 )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
       tyrs_enforcer( nullptr ),
       refining_fire_dot( nullptr ),
-      consecration_tick( nullptr )
+      consecration_tick( nullptr ),
+      glory_of_the_vanguard( nullptr )
   {
     parse_options( options_str );
     if ( !p->has_shield_equipped() )
@@ -137,18 +151,27 @@ struct avengers_shield_base_t : public paladin_spell_t
     may_crit = true;
     base_multiplier *= mul;
 
+    std::string fullname = std::string( n );
+    std::string abbrev   = fullname != "avengers_shield" ? fullname.substr( fullname.size() - 3 ) : "";
+
     if ( p->talents.tyrs_enforcer->ok() )
     {
-      tyrs_enforcer = new tyrs_enforcer_t( "tyrs_enforcer" + std::string( n ), p );
+      tyrs_enforcer = new tyrs_enforcer_t( "tyrs_enforcer_as" + abbrev, p );
       add_child( tyrs_enforcer );
     }
     if ( p->talents.refining_fire->ok() )
     {
       refining_fire_dot = new refining_fire_dot_t( p );
     }
-    if (p->talents.searing_sunlight->ok())
+    if ( p->talents.searing_sunlight->ok() )
     {
-      consecration_tick = new consecration_tick_t( "consecration_searing_sunlight", p );
+      consecration_tick = new consecration_tick_t( "ss_as" + abbrev, p );
+      add_child( consecration_tick );
+    }
+    if (p->talents.glory_of_the_vanguard_1->ok())
+    {
+      glory_of_the_vanguard = new glory_of_the_vanguard_t( "glory_of_the_vanguard_as" + abbrev, p );
+      add_child( glory_of_the_vanguard );
     }
   }
 
@@ -185,9 +208,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     if ( p()->talents.refining_fire->ok() )
     {
       double damage = s-> result_amount;
-      // 27.11.25 Fluttershy - Currently Refining Fire ticks for 100% damage over 5s, instead of 20% (So 20% per tick)
-      if ( !p()->bugs )
-        damage *= p()->talents.refining_fire->effectN( 1 ).percent();
+      damage *= p()->talents.refining_fire->effectN( 1 ).percent();
       residual_action::trigger( refining_fire_dot, s->target, damage );
     }
   }
@@ -229,15 +250,15 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
     if ( p()->talents.searing_sunlight->ok() && p()->all_active_consecrations.size() > 0 )
     {
-      consecration_tick->execute_on_target( execute_state->target );
+      consecration_tick->execute_on_target( target );
     }
-    bool isApex3 = p()->buffs.avenging_wrath->up() && p()->talents.glory_of_the_vanguard_3->ok();
+    bool isApex3 = p()->wings_up() && p()->talents.glory_of_the_vanguard_3->ok();
     if ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3)
     {
       if (!isApex3)
         p()->buffs.vanguard->decrement();
 
-      p()->active.glory_of_the_vanguard->execute();
+      glory_of_the_vanguard->execute_on_target( target );
       if (p()->talents.glory_of_the_vanguard_2->ok())
       {
         p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
@@ -285,15 +306,6 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
   {
     background = true;
   }
-  void execute() override
-  {
-    avengers_shield_base_t::execute();
-    // 27.11.25 Fluttershy - Each Divine Resonance Tick currently triggers Divine Hammer
-    if (p()->bugs && p()->talents.templar.divine_hammer->ok())
-    {
-      p()->buffs.templar.divine_hammer->trigger();
-    }
-  }
 };
 
 // This struct is solely for all Avenger's Shield which are self cast.
@@ -309,7 +321,7 @@ struct avengers_shield_t : public avengers_shield_base_t
 struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
 {
   avengers_shield_divine_exaction_t(paladin_t* p)
-    : avengers_shield_base_t( "avengers_shield_divine_exaction", p, "",
+    : avengers_shield_base_t( "avengers_shield_de", p, "",
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
@@ -666,6 +678,8 @@ struct sentinel_t : public paladin_spell_t
 
     if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
       p()->buffs.lightsmith.blessing_of_the_forge->execute();
+
+    p()->buffs.hammer_of_wrath->trigger();
   }
 };
 
@@ -679,6 +693,7 @@ void buffs::sentinel_buff_t::expire_override( int expiration_stacks, timespan_t 
     p->buffs.sentinel_decay->expire();
   }
   p->adjust_health_percent();
+  p->buffs.hammer_of_wrath->expire();
 }
 
 
@@ -880,27 +895,6 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
   }
 }
 
-struct glory_of_the_vanguard_t : public paladin_spell_t
-{
-  glory_of_the_vanguard_t( paladin_t* p )
-    : paladin_spell_t( "glory_of_the_vanguard", p, p->spells.glory_of_the_vanguard )
-  {
-    background = true;
-    // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
-    // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
-    aoe = -1;
-  }
-};
-struct blaze_of_glory_t : public paladin_spell_t
-{
-  blaze_of_glory_t( paladin_t* p ) : paladin_spell_t( "blaze_of_glory", p, p->spells.blaze_of_glory )
-  {
-    background             = true;
-    aoe                    = p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value();
-    target_filter_callback = secondary_targets_only();
-  }
-};
-
 void paladin_t::adjust_health_percent( )
 {
   double oh             = resources.current[ RESOURCE_HEALTH ];
@@ -918,8 +912,6 @@ void paladin_t::create_prot_actions()
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance      = new avengers_shield_dr_t( this );
   active.divine_exaction_prot  = new avengers_shield_divine_exaction_t( this );
-  active.glory_of_the_vanguard = new glory_of_the_vanguard_t( this );
-  active.blaze_of_glory        = new blaze_of_glory_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )

@@ -1,5 +1,5 @@
-// Set bonus data, wow build 12.0.0.64741
-static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
+// Set bonus data, wow build 12.0.1.64889
+static constexpr std::array<item_set_bonus_t, 1036> __set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   73,        -1,  364002, { 188942, 188941, 188940, 188938, 188937,  0 } },
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   71,        -1,  364553, { 188942, 188941, 188940, 188938, 188937,  0 } },
@@ -981,6 +981,20 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Torment's Duality"                         , "torments_duality"            ,     "MID_TD",     21,  1970,   2,  11,   -1,        -1, 1253358, { 251884, 251885,  0 } },
   { "Torment's Duality"                         , "torments_duality"            ,     "MID_TD",     21,  1970,   2,  12,   -1,        -1, 1253358, { 251884, 251885,  0 } },
   { "Torment's Duality"                         , "torments_duality"            ,     "MID_TD",     21,  1970,   2,  13,   -1,        -1, 1253358, { 251884, 251885,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   1,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   2,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   3,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   4,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   5,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   6,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   7,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   8,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,   9,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,  10,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,  11,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,  12,   -1,        -1, 1281574, { 251093, 251217,  0 } },
+  { "Voidlight Bindings"                        , "voidlight_bindings"          ,     "MID_VB",     22,  1971,   0,  13,   -1,        -1, 1281574, { 251093, 251217,  0 } },
   { "Rage of the Night Ender"                   , "midnight_season_1"           ,       "MID1",     23,  1990,   2,   1,   71,        -1, 1264875, { 249955, 249953, 249952, 249951, 249950,  0 } },
   { "Rage of the Night Ender"                   , "midnight_season_1"           ,       "MID1",     23,  1990,   2,   1,   72,        -1, 1264877, { 249955, 249953, 249952, 249951, 249950,  0 } },
   { "Rage of the Night Ender"                   , "midnight_season_1"           ,       "MID1",     23,  1990,   2,   1,   73,        -1, 1264879, { 249955, 249953, 249952, 249951, 249950,  0 } },
@@ -988,7 +1002,6 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Rage of the Night Ender"                   , "midnight_season_1"           ,       "MID1",     23,  1990,   4,   1,   72,        -1, 1264878, { 249955, 249953, 249952, 249951, 249950,  0 } },
   { "Rage of the Night Ender"                   , "midnight_season_1"           ,       "MID1",     23,  1990,   4,   1,   73,        -1, 1264880, { 249955, 249953, 249952, 249951, 249950,  0 } },
   { "Luminant Verdict's Vestments"              , "midnight_season_1"           ,       "MID1",     23,  1985,   2,   2,   65,        -1, 1264844, { 249964, 249962, 249961, 249960, 249959,  0 } },
-  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Luminant Verdict's Vestments"              , "midnight_season_1"           ,       "MID1",     23,  1985,   2,   2,   66,        -1, 1264846, { 249964, 249962, 249961, 249960, 249959,  0 } },
   { "Luminant Verdict's Vestments"              , "midnight_season_1"           ,       "MID1",     23,  1985,   2,   2,   70,        -1, 1264848, { 249964, 249962, 249961, 249960, 249959,  0 } },
   { "Luminant Verdict's Vestments"              , "midnight_season_1"           ,       "MID1",     23,  1985,   4,   2,   65,        -1, 1264845, { 249964, 249962, 249961, 249960, 249959,  0 } },
@@ -1001,6 +1014,7 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Primal Sentry's Camouflage"                , "midnight_season_1"           ,       "MID1",     23,  1982,   4,   3,  254,        -1, 1264829, { 249991, 249989, 249988, 249987, 249986,  0 } },
   { "Primal Sentry's Camouflage"                , "midnight_season_1"           ,       "MID1",     23,  1982,   4,   3,  255,        -1, 1264831, { 249991, 249989, 249988, 249987, 249986,  0 } },
   { "Motley of the Grim Jest"                   , "midnight_season_1"           ,       "MID1",     23,  1987,   2,   4,  259,        -1, 1264856, { 250009, 250007, 250006, 250005, 250004,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Motley of the Grim Jest"                   , "midnight_season_1"           ,       "MID1",     23,  1987,   2,   4,  260,        -1, 1264858, { 250009, 250007, 250006, 250005, 250004,  0 } },
   { "Motley of the Grim Jest"                   , "midnight_season_1"           ,       "MID1",     23,  1987,   2,   4,  261,        -1, 1264860, { 250009, 250007, 250006, 250005, 250004,  0 } },
   { "Motley of the Grim Jest"                   , "midnight_season_1"           ,       "MID1",     23,  1987,   4,   4,  259,        -1, 1264857, { 250009, 250007, 250006, 250005, 250004,  0 } },
@@ -1014,7 +1028,6 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Blind Oath's Burden"                       , "midnight_season_1"           ,       "MID1",     23,  1986,   4,   5,  258,        -1, 1264855, { 250052, 250051, 250050, 250054, 250049,  0 } },
   { "Relentless Rider's Lament"                 , "midnight_season_1"           ,       "MID1",     23,  1978,   2,   6,  250,        -1, 1264799, { 249973, 249971, 249970, 249969, 249968,  0 } },
   { "Relentless Rider's Lament"                 , "midnight_season_1"           ,       "MID1",     23,  1978,   2,   6,  251,        -1, 1264801, { 249973, 249971, 249970, 249969, 249968,  0 } },
-  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Relentless Rider's Lament"                 , "midnight_season_1"           ,       "MID1",     23,  1978,   2,   6,  252,        -1, 1264803, { 249973, 249971, 249970, 249969, 249968,  0 } },
   { "Relentless Rider's Lament"                 , "midnight_season_1"           ,       "MID1",     23,  1978,   4,   6,  250,        -1, 1264800, { 249973, 249971, 249970, 249969, 249968,  0 } },
   { "Relentless Rider's Lament"                 , "midnight_season_1"           ,       "MID1",     23,  1978,   4,   6,  251,        -1, 1264802, { 249973, 249971, 249970, 249969, 249968,  0 } },
@@ -1027,6 +1040,7 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Mantle of the Primal Core"                 , "midnight_season_1"           ,       "MID1",     23,  1988,   4,   7,  264,        -1, 1264867, { 249982, 249980, 249979, 249978, 249977,  0 } },
   { "Voidbreaker's Accordance"                  , "midnight_season_1"           ,       "MID1",     23,  1983,   2,   8,   62,        -1, 1264832, { 250063, 250061, 250060, 250059, 250058,  0 } },
   { "Voidbreaker's Accordance"                  , "midnight_season_1"           ,       "MID1",     23,  1983,   2,   8,   63,        -1, 1264834, { 250063, 250061, 250060, 250059, 250058,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Voidbreaker's Accordance"                  , "midnight_season_1"           ,       "MID1",     23,  1983,   2,   8,   64,        -1, 1264836, { 250063, 250061, 250060, 250059, 250058,  0 } },
   { "Voidbreaker's Accordance"                  , "midnight_season_1"           ,       "MID1",     23,  1983,   4,   8,   62,        -1, 1264833, { 250063, 250061, 250060, 250059, 250058,  0 } },
   { "Voidbreaker's Accordance"                  , "midnight_season_1"           ,       "MID1",     23,  1983,   4,   8,   63,        -1, 1264835, { 250063, 250061, 250060, 250059, 250058,  0 } },
@@ -1040,7 +1054,6 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   2,  10,  268,        -1, 1264838, { 250018, 250016, 250015, 250014, 250013,  0 } },
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   2,  10,  270,        -1, 1264840, { 250018, 250016, 250015, 250014, 250013,  0 } },
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   2,  10,  269,        -1, 1264842, { 250018, 250016, 250015, 250014, 250013,  0 } },
-  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   4,  10,  268,        -1, 1264839, { 250018, 250016, 250015, 250014, 250013,  0 } },
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   4,  10,  270,        -1, 1264841, { 250018, 250016, 250015, 250014, 250013,  0 } },
   { "Way of Ra-den's Chosen"                    , "midnight_season_1"           ,       "MID1",     23,  1984,   4,  10,  269,        -1, 1264843, { 250018, 250016, 250015, 250014, 250013,  0 } },
@@ -1053,6 +1066,7 @@ static constexpr std::array<item_set_bonus_t, 1023> __set_bonus_data { {
   { "Sprouts of the Luminous Bloom"             , "midnight_season_1"           ,       "MID1",     23,  1980,   4,  11,  104,        -1, 1264816, { 250027, 250025, 250024, 250023, 250022,  0 } },
   { "Sprouts of the Luminous Bloom"             , "midnight_season_1"           ,       "MID1",     23,  1980,   4,  11,  105,        -1, 1264818, { 250027, 250025, 250024, 250023, 250022,  0 } },
   { "Devouring Reaver's Sheathe"                , "midnight_season_1"           ,       "MID1",     23,  1979,   2,  12, 1480,        -1, 1264881, { 250036, 250034, 250033, 250032, 250031,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Devouring Reaver's Sheathe"                , "midnight_season_1"           ,       "MID1",     23,  1979,   2,  12,  577,        -1, 1264805, { 250036, 250034, 250033, 250032, 250031,  0 } },
   { "Devouring Reaver's Sheathe"                , "midnight_season_1"           ,       "MID1",     23,  1979,   2,  12,  581,        -1, 1264808, { 250036, 250034, 250033, 250032, 250031,  0 } },
   { "Devouring Reaver's Sheathe"                , "midnight_season_1"           ,       "MID1",     23,  1979,   4,  12, 1480,        -1, 1264882, { 250036, 250034, 250033, 250032, 250031,  0 } },
