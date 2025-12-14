@@ -1997,9 +1997,8 @@ struct auto_attack_t : public monk_melee_attack_t
   {
     struct damage_t : public monk_spell_t
     {
-      damage_t( monk_t *player, weapon_t *weapon )
-        : monk_spell_t( player, fmt::format( "thunderfist_{}", util::slot_type_string( weapon->slot ) ),
-                        player->talent.windwalker.thunderfist_buff->effectN( 1 ).trigger() )
+      damage_t( monk_t *player )
+        : monk_spell_t( player, "thunderfist", player->talent.windwalker.thunderfist_buff->effectN( 1 ).trigger() )
       {
         background = dual = true;
         may_miss          = false;
@@ -2015,8 +2014,20 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !player->talent.windwalker.thunderfist->ok() )
         return;
 
-      damage = new damage_t( player, weapon );
-      TBase::add_child( damage );
+      if ( action_t *tf = player->find_action( "thunderfist" ); tf )
+        damage = tf;
+      else
+        damage = new damage_t( player );
+    }
+
+    void init() override
+    {
+      TBase::init();
+
+      if ( action_t *wdp = player->find_action( "whirling_dragon_punch" ); wdp )
+        wdp->add_child( damage );
+      else if ( action_t *sotwl = player->find_action( "strike_of_the_windlord" ); sotwl )
+        sotwl->add_child( damage );
     }
 
     void impact( action_state_t *state ) override
