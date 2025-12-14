@@ -2023,11 +2023,11 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       TBase::impact( state );
 
-      if ( !damage || !result_is_hit( state->result ) || !p()->buff.thunderfist->up() )
+      if ( !damage || !result_is_hit( state->result ) || !TBase::p()->buff.thunderfist->up() )
         return;
 
       damage->execute_on_target( state->target );
-      p()->buff.thunderfist->decrement();
+      TBase::p()->buff.thunderfist->decrement();
     }
   };
 
