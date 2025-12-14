@@ -643,12 +643,12 @@ void flurry_strikes_t::execute( source_e source )
       break;
     case STAND_READY:
       if ( p()->buff.stand_ready->check() )
-        count = p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value();
+        count = as<int>( p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value() );
       p()->buff.stand_ready->expire();
       break;
     case WISDOM_OF_THE_WALL:
       if ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() )
-        count = p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value();
+        count = as<int>( p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() );
       break;
     default:
       assert( false );
@@ -1985,8 +1985,9 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !damage || !result_is_hit( state->result ) )
         return;
 
-      p()->buff.press_the_advantage->trigger();
-      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.press_the_advantage->effectN( 2 ).time_value() );
+      TBase::p()->buff.press_the_advantage->trigger();
+      TBase::p()->baseline.brewmaster.brews.adjust(
+          TBase::p()->talent.brewmaster.press_the_advantage->effectN( 2 ).time_value() );
       damage->execute_on_target( state->target );
     }
   };
