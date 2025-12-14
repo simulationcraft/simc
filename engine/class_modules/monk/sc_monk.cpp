@@ -1884,49 +1884,69 @@ struct auto_attack_t : public monk_melee_attack_t
   {
     struct damage_t : public monk_spell_t
     {
-      damage_t( monk_t *player ) : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage )
+      bool allowed;
+      bool triggered;
+      double chance;
+
+      damage_t( monk_t *player )
+        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
+        may_miss                  = false;
+
+        chance = p()->talent.windwalker.dual_threat->effectN( 1 ).percent();
+      }
+
+      void reset() override
+      {
+        monk_spell_t::reset();
+        allowed = false;
+      }
+
+      void execute() override
+      {
+        if ( allowed && p()->rng().roll( chance ) )
+        {
+          monk_spell_t::execute();
+          allowed   = false;
+          triggered = true;
+        }
+        else
+          allowed = true;
       }
     };
 
-    action_t *damage;
+    damage_t *damage;
     bool allowed;
 
     template <typename... Args>
-    dual_threat_t( monk_t *player, Args &&...args )
-      : TBase( player, std::forward<Args>( args )... ), damage( nullptr ), allowed( false )
+    dual_threat_t( monk_t *player, weapon_t *weapon, Args &&...args )
+      : TBase( player, weapon, std::forward<Args>( args )... ), damage( nullptr ), allowed( false )
     {
       if ( !player->talent.windwalker.dual_threat->ok() )
         return;
 
-      damage = new damage_t( player );
-      TBase::add_child( damage );
-    }
+      if ( action_t *dt = player->find_action( "dual_threat" ); dt )
+        damage = debug_cast<damage_t *>( dt );
+      else
+        damage = new damage_t( player );
 
-    void reset() override
-    {
-      TBase::reset();
-      allowed = false;
+      if ( action_t *aa = player->find_action( "auto_attack" ); aa )
+        aa->add_child( damage );
     }
 
     void impact( action_state_t *state ) override
     {
-      if ( damage )
+      // TODO: check if DT has any impact on melee success rate
+      if ( damage && result_is_hit( state->result ) )
       {
-        bool triggered_this_impact = false;
-
-        if ( allowed && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
+        damage->execute_on_target( state->target );
+        if ( damage->triggered )
         {
-          triggered_this_impact = true;
-          state->result_total   = 0;
-          damage->execute_on_target( state->target );
-          allowed = false;
+          damage->triggered = false;
+          return;
         }
-
-        if ( !triggered_this_impact && result_is_hit( state->result ) )
-          allowed = true;
       }
 
       TBase::impact( state );
@@ -1976,22 +1996,25 @@ struct auto_attack_t : public monk_melee_attack_t
   {
     struct damage_t : public monk_spell_t
     {
-      damage_t( monk_t *player )
-        : monk_spell_t( player, "thunderfist", player->talent.windwalker.thunderfist_buff->effectN( 1 ).trigger() )
+      damage_t( monk_t *player, weapon_t *weapon )
+        : monk_spell_t( player, fmt::format( "thunderfist_{}", util::slot_type_string( weapon->slot ) ),
+                        player->talent.windwalker.thunderfist_buff->effectN( 1 ).trigger() )
       {
         background = dual = true;
+        may_miss          = false;
       }
     };
 
     action_t *damage;
 
     template <typename... Args>
-    thunderfist_t( monk_t *player, Args &&...args ) : TBase( player, std::forward<Args>( args )... )
+    thunderfist_t( monk_t *player, weapon_t *weapon, Args &&...args )
+      : TBase( player, weapon, std::forward<Args>( args )... )
     {
       if ( !player->talent.windwalker.thunderfist->ok() )
         return;
 
-      damage = new damage_t( player );
+      damage = new damage_t( player, weapon );
       TBase::add_child( damage );
     }
 
@@ -2077,7 +2100,8 @@ struct auto_attack_t : public monk_melee_attack_t
 
   int sync_weapons;
 
-  auto_attack_t( monk_t *player, std::string_view options_str ) : monk_melee_attack_t( player, "auto_attack" )
+  auto_attack_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "auto_attack" ), sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
