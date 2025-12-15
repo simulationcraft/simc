@@ -511,6 +511,7 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
+    propagate_const<buff_t *> rushing_wind_kick;
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
@@ -892,6 +893,8 @@ public:
       const spell_data_t *memory_of_the_monastery_buff;
       // Row 9
       player_talent_t rushing_wind_kick;
+      const spell_data_t *rushing_wind_kick_buff;
+      const spell_data_t *rushing_wind_kick_damage;
       player_talent_t xuens_battlegear;
       player_talent_t thunderfist;
       const spell_data_t *thunderfist_buff;
@@ -903,6 +906,7 @@ public:
       const spell_data_t *jadefire_stomp_damage;
       // Row 10
       player_talent_t skyfire_heel;
+      const spell_data_t *skyfire_heel_damage;
       player_talent_t harmonic_combo;
       player_talent_t flurry_of_xuen;
       const spell_data_t *flurry_of_xuen_driver;

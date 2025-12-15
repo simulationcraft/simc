@@ -908,28 +908,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   }
 };
 
-struct glory_of_the_dawn_t : public monk_melee_attack_t
-{
-  glory_of_the_dawn_t( monk_t *p, const std::string &name )
-    : monk_melee_attack_t( p, name, p->talent.windwalker.glory_of_the_dawn_damage )
-  {
-    background = true;
-    ww_mastery = true;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-    {
-      p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
-                                           true );
-      p()->proc.xuens_battlegear_reduction->occur();
-    }
-  }
-};
-
 template <class base_action_t>
 struct press_the_advantage_t : base_action_t
 {
@@ -1019,57 +997,177 @@ struct press_the_advantage_t : base_action_t
   }
 };
 
-struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
+struct rising_sun_kick_t : monk_melee_attack_t
 {
-  rising_sun_kick_dmg_t( monk_t *p, std::string_view /* options_str */,
-                         std::string_view name = "rising_sun_kick_damage" )
-    : base_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
+  struct base_damage_t : monk_melee_attack_t
   {
-    ww_mastery = true;
-
-    ap_type    = attack_power_type::WEAPON_BOTH;
-    background = dual = true;
-    may_crit          = true;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    base_t::impact( s );
-
-    if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+    base_damage_t( monk_t *player, std::string_view name, const spell_data_t *spell )
+      : monk_melee_attack_t( player, name, spell )
     {
-      p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
-                                           true );
-      p()->proc.xuens_battlegear_reduction->occur();
+      ww_mastery = true;
+      background = dual = true;
     }
 
-    if ( p()->baseline.windwalker.combat_conditioning->ok() )
-      s->target->debuffs.mortal_wounds->trigger();
-  }
-};
+    void impact( action_state_t *state ) override
+    {
+      monk_melee_attack_t::impact( state );
 
-struct rising_sun_kick_t : public monk_melee_attack_t
-{
-  glory_of_the_dawn_t *gotd;
+      if ( p()->baseline.windwalker.combat_conditioning->ok() )
+        state->target->debuffs.mortal_wounds->trigger();
 
-  rising_sun_kick_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick )
+      if ( !state->chain_target && state->result == RESULT_CRIT && p()->talent.windwalker.xuens_battlegear->ok() )
+      {
+        timespan_t value = -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value();
+        p()->cooldown.fists_of_fury->adjust( value, true );
+        p()->proc.xuens_battlegear_reduction->occur();
+      }
+    }
+  };
+
+  template <typename TBase>
+  struct glory_of_the_dawn_t : TBase
+  {
+    struct damage_t : base_damage_t
+    {
+      damage_t( monk_t *player, std::string_view parent_name )
+        : base_damage_t( player, fmt::format( "glory_of_the_dawn_{}", parent_name ),
+                         player->talent.windwalker.glory_of_the_dawn_damage )
+      {
+      }
+    };
+
+    action_t *damage;
+
+    template <typename... Args>
+    glory_of_the_dawn_t( monk_t *player, Args &&...args )
+      : TBase( player, std::forward<Args>( args )... ), damage( nullptr )
+    {
+      if ( !player->talent.windwalker.glory_of_the_dawn->ok() )
+        return;
+
+      damage = new damage_t( player, TBase::name() );
+      TBase::add_child( damage );
+    }
+
+    void execute() override
+    {
+      TBase::execute();
+
+      if ( !damage )
+        return;
+
+      // TODO: Is this the correct way to get character sheet haste %?
+      double chance = TBase::p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
+                      ( 1.0 / TBase::p()->composite_spell_haste() - 1.0 );
+      if ( TBase::rng().roll( chance ) )
+        damage->execute();
+    }
+  };
+
+  template <typename TBase>
+  struct skyfire_heel_t : TBase
+  {
+    struct damage_t : monk_melee_attack_t
+    {
+      damage_t( monk_t *player, std::string_view parent_name )
+        : monk_melee_attack_t( player, fmt::format( "skyfire_heel_{}", parent_name ),
+                               player->talent.windwalker.skyfire_heel_damage )
+      {
+        aoe = -1;
+        // TODO: verify this works with overridden base_dd_x
+        reduced_aoe_targets = player->talent.windwalker.skyfire_heel->effectN( 2 ).base_value();
+
+        background = dual = true;
+      }
+    };
+
+    action_t *damage;
+
+    template <typename... Args>
+    skyfire_heel_t( monk_t *player, Args &&...args ) : TBase( player, std::forward<Args>( args )... ), damage( nullptr )
+    {
+      if ( !player->talent.windwalker.skyfire_heel->ok() )
+        return;
+
+      damage = new damage_t( player, TBase::name() );
+      TBase::add_child( damage );
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      TBase::impact( state );
+
+      if ( !damage )
+        return;
+
+      double value        = state->result_amount * TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent();
+      damage->base_dd_min = damage->base_dd_max = value;
+      damage->execute_on_target( state->target );
+    }
+  };
+
+  using combined_type_t = glory_of_the_dawn_t<skyfire_heel_t<base_damage_t>>;
+
+  struct damage_t : combined_type_t
+  {
+    damage_t( monk_t *player )
+      : combined_type_t( player, "rising_sun_kick_damage", player->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
+    {
+    }
+  };
+
+  struct rushing_wind_kick_t : combined_type_t
+  {
+    int target_count_max;
+    double target_count_coefficient;
+
+    rushing_wind_kick_t( monk_t *player )
+      : combined_type_t( player, "rushing_wind_kick", player->talent.windwalker.rushing_wind_kick_damage ),
+        target_count_max( 5 ),
+        target_count_coefficient( 0.06 )
+    {
+      aoe              = -1;
+      split_aoe_damage = true;
+
+      add_parse_entry( da_multiplier_effects )
+          .set_func( []() { return false; } )
+          .set_value( target_count_coefficient )
+          .set_note( "Target-count AoE Scaling" );
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double mult = 1.0 + std::min( state->n_targets, 5u ) * target_count_coefficient;
+      return combined_type_t::composite_aoe_multiplier( state ) * mult;
+    }
+
+    void execute() override
+    {
+      base_damage_t::execute();
+
+      p()->buff.rushing_wind_kick->expire();
+    }
+  };
+
+  action_t *rising_sun_kick;
+  action_t *rushing_wind_kick;
+
+  rising_sun_kick_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "rising_sun_kick", player->talent.monk.rising_sun_kick ),
+      rising_sun_kick( new damage_t( player ) ),
+      rushing_wind_kick( nullptr )
   {
     parse_options( options_str );
 
     may_combo_strike = true;
-    ap_type          = attack_power_type::NONE;
     cast_during_sck  = true;
 
-    attack_power_mod.direct = 0;
+    add_child( rising_sun_kick );
 
-    execute_action = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
-    add_child( execute_action );
-
-    if ( p->talent.windwalker.glory_of_the_dawn->ok() )
+    if ( player->talent.windwalker.rushing_wind_kick->ok() )
     {
-      gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
-      add_child( gotd );
+      rushing_wind_kick = new rushing_wind_kick_t( player );
+      add_child( rushing_wind_kick );
     }
   }
 
@@ -1077,21 +1175,16 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    // TODO: Is this the correct way to get character sheet haste %?
-    auto gotd_chance = p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
-                       ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 );
-
-    if ( rng().roll( gotd_chance ) )
-      gotd->execute_on_target( this->target );
+    // if ( p()->buff.rushing_wind_kick->up() )
+    if ( p()->rng().roll( 0.5 ) )
+      rushing_wind_kick->execute_on_target( target );
+    else
+      rising_sun_kick->execute_on_target( target );
 
     if ( p()->specialization() == MONK_WINDWALKER )
       p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
-
     p()->buff.whirling_dragon_punch->trigger();
-
     p()->action.chi_wave->execute();
-
-    p()->buff.tigers_ferocity->trigger();
   }
 };
 
@@ -5195,6 +5288,8 @@ void monk_t::init_spells()
     talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
     talent.windwalker.memory_of_the_monastery_buff   = find_spell( 454970 );
     talent.windwalker.rushing_wind_kick              = _ST( "Rushing Wind Kick" );
+    talent.windwalker.rushing_wind_kick_buff         = find_spell( 1250554 );
+    talent.windwalker.rushing_wind_kick_damage       = find_spell( 468179 );
     talent.windwalker.xuens_battlegear               = _ST( "Xuen's Battlegear" );
     talent.windwalker.thunderfist                    = _ST( "Thunderfist" );
     talent.windwalker.thunderfist_buff               = find_spell( 393565 );
@@ -5204,6 +5299,7 @@ void monk_t::init_spells()
     talent.windwalker.jadefire_stomp                 = _ST( "Jadefire Stomp" );
     talent.windwalker.jadefire_stomp_damage          = find_spell( 388207 );
     talent.windwalker.skyfire_heel                   = _ST( "Skyfire Heel" );
+    talent.windwalker.skyfire_heel_damage            = find_spell( 1248712 );
     talent.windwalker.harmonic_combo                 = _ST( "Harmonic Combo" );
     talent.windwalker.flurry_of_xuen                 = _ST( "Flurry of Xuen" );
     talent.windwalker.flurry_of_xuen_driver          = find_spell( 452117 );
@@ -5776,6 +5872,9 @@ void monk_t::create_buffs()
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith );
+
+  buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
+                                               talent.windwalker.rushing_wind_kick_buff );
 
   // Conduit of the Celestials
   buff.celestial_conduit =
