@@ -2008,8 +2008,7 @@ struct auto_attack_t : public monk_melee_attack_t
     action_t *damage;
 
     template <typename... Args>
-    thunderfist_t( monk_t *player, weapon_t *weapon, Args &&...args )
-      : TBase( player, weapon, std::forward<Args>( args )... )
+    thunderfist_t( monk_t *player, Args &&...args ) : TBase( player, std::forward<Args>( args )... )
     {
       if ( !player->talent.windwalker.thunderfist->ok() )
         return;
