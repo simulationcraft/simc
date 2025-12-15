@@ -843,7 +843,6 @@ public:
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
     propagate_const<buff_t*> visceral_strength;
-    propagate_const<buff_t*> visceral_strength_unholy;
 
     // Deathbringer
     propagate_const<buff_t*> bind_in_darkness;
@@ -1546,7 +1545,6 @@ public:
     const spell_data_t* vampiric_strike_range;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
-    const spell_data_t* visceral_strength_unholy_buff;
     const spell_data_t* bloodsoaked_ground_buff;
     const spell_data_t* transfusion_buff;
     const spell_data_t* desecrate_damage;
@@ -8187,10 +8185,6 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
-
-    if ( p()->talent.sanlayn.visceral_strength->ok() &&
-         execute_state->n_targets >= p()->talent.sanlayn.visceral_strength->effectN( 2 ).base_value() )
-      p()->buffs.bone_shield->trigger( as<int>( p()->talent.sanlayn.visceral_strength->effectN( 3 ).base_value() ) );
   }
 
   void impact( action_state_t* state ) override
@@ -8633,12 +8627,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
     if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up() )
     {
       p()->buffs.crimson_scourge->decrement();
+
       if ( p()->talent.blood.perseverance_of_the_ebon_blade.ok() )
         p()->buffs.perseverance_of_the_ebon_blade->trigger();
+
       if ( p()->talent.sanlayn.visceral_strength )
-      {
         p()->buffs.visceral_strength->trigger();
-      }
     }
 
     make_event<ground_aoe_event_t>(
@@ -10849,21 +10843,6 @@ struct outbreak_t final : public death_knight_spell_t
 
     if ( p->talent.unholy.pestilence.ok() )
       set_replacement_action( new pestilence_t( "pestilence", p ), p->buffs.pestilence );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p()->buffs.visceral_strength_unholy->check() )
-    {
-      p()->last_cast_rp_spender->execute_on_target( target );
-      if ( p()->last_cast_rp_spender == p()->background_actions.death_coil_damage )
-        p()->procs.coil_vs->occur();
-      else
-        p()->procs.epi_vs->occur();
-      p()->buffs.visceral_strength_unholy->expire();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -14115,8 +14094,6 @@ void death_knight_t::spell_lookups()
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
-  spell.visceral_strength_unholy_buff = conditional_spell_lookup(
-      talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, 1234532 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
   spell.transfusion_buff        = conditional_spell_lookup( talent.sanlayn.transfusion.ok(), 1265577 );
   spell.desecrate_damage        = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
@@ -14594,10 +14571,6 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->add_invalidate( CACHE_STRENGTH )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
-
-  buffs.visceral_strength_unholy =
-      make_fallback( talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, this,
-                     "visceral_strength_unholy", spell.visceral_strength_unholy_buff );
 
   buffs.bloodsoaked_ground = make_fallback( talent.sanlayn.bloodsoaked_ground.ok(), this, "bloodsoaked_ground",
                                             spell.bloodsoaked_ground_buff );
@@ -15297,8 +15270,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     buffs.bone_shield->decrement();
   }
   cooldown.bone_shield_icd->start();
-
-  cooldown.dancing_rune_weapon->adjust( talent.blood.insatiable_blade->effectN( 1 ).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e, result_amount_type, action_state_t* s )
@@ -15594,7 +15565,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.a_feast_of_souls );
         break;
       case HERO_SANLAYN:
-        action->parse_effects( buffs.visceral_strength_unholy );
         action->parse_effects( buffs.essence_of_the_blood_queen, [ & ]( double v ) {
           if ( buffs.gift_of_the_sanlayn->check() )
             v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
