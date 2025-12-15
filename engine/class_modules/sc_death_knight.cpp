@@ -7601,8 +7601,6 @@ struct exterminate_t final : public death_knight_spell_t
       empowered--;
     }
 
-
-
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
 
