@@ -14610,8 +14610,6 @@ void death_knight_t::create_buffs()
             // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
             ->set_cooldown( 0_ms );
 
-
-
     buffs.bloodied_blade_stacks =
         make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
             ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).percent() * 0.1 )
