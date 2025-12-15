@@ -2024,9 +2024,9 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       TBase::init();
 
-      if ( action_t *wdp = player->find_action( "whirling_dragon_punch" ); wdp )
+      if ( action_t *wdp = TBase::p()->find_action( "whirling_dragon_punch" ); wdp )
         wdp->add_child( damage );
-      else if ( action_t *sotwl = player->find_action( "strike_of_the_windlord" ); sotwl )
+      else if ( action_t *sotwl = TBase::p()->find_action( "strike_of_the_windlord" ); sotwl )
         sotwl->add_child( damage );
     }
 
