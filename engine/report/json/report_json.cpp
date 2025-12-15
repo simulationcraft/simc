@@ -1022,6 +1022,19 @@ void profileset_json2( const profileset::profilesets_t& profileset, const sim_t&
 
                      obj[ "iterations" ] = as<uint64_t>( result.iterations() );
 
+                     if ( sim.profileset_cull.enabled )
+                     {
+                       if ( profileset->culled() )
+                       {
+                         obj[ "culled" ] = true;
+                         obj[ "culled_reason" ] = profileset->culled_reason();
+                         obj[ "culled_iterations" ] = profileset->culled_iterations();
+                         obj[ "culled_mean" ] = profileset->culled_mean();
+                         obj[ "culled_error" ] = profileset->culled_error();
+                         obj[ "culled_error_type" ] = profileset->culled_error_type_cstr();
+                       }
+                     }
+
                      if ( profileset->results() > 1 )
                      {
                        auto results2 = obj[ "additional_metrics" ].make_array();
@@ -1067,6 +1080,20 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
                      auto&& obj = results.add();
                      obj[ "name" ] = profileset->name();
                      auto results_obj = obj[ "metrics" ].make_array();
+
+                     // Profileset culling metadata at profileset level
+                     if ( sim.profileset_cull.enabled )
+                     {
+                       if ( profileset->culled() )
+                       {
+                         obj[ "culled" ] = true;
+                         obj[ "culled_reason" ] = profileset->culled_reason();
+                         obj[ "culled_iterations" ] = profileset->culled_iterations();
+                         obj[ "culled_mean" ] = profileset->culled_mean();
+                         obj[ "culled_error" ] = profileset->culled_error();
+                         obj[ "culled_error_type" ] = profileset->culled_error_type_cstr();
+                       }
+                     }
 
                      for ( size_t midx = 0; midx < sim.profileset_metric.size(); ++midx )
                      {
@@ -1231,6 +1258,19 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "profileset_metric" ] = util::scale_metric_type_abbrev( sim.profileset_metric.front() );
   options_root[ "profileset_multiactor_base_name" ] = sim.profileset_multiactor_base_name;
 
+  if ( sim.profileset_cull.enabled )
+  {
+    auto cull = options_root[ "profileset_cull" ];
+    cull[ "enabled" ] = true;
+    cull[ "method" ] = sim.profileset_cull.method_name();
+    cull[ "min_iterations" ] = sim.profileset_cull.min_iterations;
+    if ( sim.profileset_cull.uses_alpha() )
+      cull[ "alpha" ] = sim.profileset_cull.alpha;
+    else
+      cull[ "margin" ] = sim.profileset_cull.margin;
+    cull[ "metric" ] = util::scale_metric_type_abbrev( sim.profileset_cull.metric );
+  }
+
   to_json( options_root[ "dbc" ], *sim.dbc );
 
   if ( sim.scaling->calculate_scale_factors )
@@ -1307,6 +1347,26 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   add_non_zero( stats_root, "total_dmg", sim.total_dmg );
   add_non_zero( stats_root, "total_heal", sim.total_heal );
   add_non_zero( stats_root, "total_absorb", sim.total_absorb );
+
+  if ( sim.profileset_cull.enabled )
+  {
+    const std::string best_name = sim.profileset_cull.best_name.empty()
+                                    ? sim.profileset_multiactor_base_name
+                                    : sim.profileset_cull.best_name;
+
+    auto cull_stats = stats_root[ "profileset_cull" ];
+    cull_stats[ "method" ] = sim.profileset_cull.method_name();
+    cull_stats[ "metric" ] = util::scale_metric_type_abbrev( sim.profileset_cull.metric );
+    
+    add_non_zero( cull_stats, "best_name", best_name );
+
+    if ( sim.profileset_cull.baseline_seeded )
+    {
+      cull_stats[ "best_error" ] = sim.profileset_cull.best_error;
+      cull_stats[ "best_iterations" ] = sim.profileset_cull.best_iterations;
+      cull_stats[ "best_mean" ] = sim.profileset_cull.best_mean;
+    }
+  }
 
   if ( sim.report_details != 0 )
   {

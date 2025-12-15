@@ -384,6 +384,19 @@ class profile_set_t
   std::vector<profile_result_t>          m_results;
   std::unique_ptr<profile_output_data_t> m_output_data;
 
+  // Culled metadata (set when profileset culling terminates a run early)
+  bool                                   m_culled = false;
+  std::string                            m_culled_reason;
+  uint64_t                               m_culled_iterations = 0;
+  double                                 m_culled_mean = 0.0;
+  double                                 m_culled_error = 0.0;
+  // CI half-width or standard error depending on cull method
+
+public:
+  enum class cull_error_type_e { NONE = 0, CI_HALF_WIDTH, STANDARD_ERROR };
+private:
+  cull_error_type_e                      m_culled_error_type = cull_error_type_e::NONE;
+
 public:
   profile_set_t( std::string name, sim_control_t* opts, bool has_output );
 
@@ -414,6 +427,35 @@ public:
     }
 
     return *m_output_data;
+  }
+
+  // Culled metadata accessors
+  bool culled() const { return m_culled; }
+  const std::string& culled_reason() const { return m_culled_reason; }
+  uint64_t culled_iterations() const { return m_culled_iterations; }
+  double culled_mean() const { return m_culled_mean; }
+  double culled_error() const { return m_culled_error; }
+  profile_set_t::cull_error_type_e culled_error_type() const { return m_culled_error_type; }
+  const char* culled_error_type_cstr() const {
+    switch ( m_culled_error_type ) {
+      case profile_set_t::cull_error_type_e::CI_HALF_WIDTH: return "ci_half_width";
+      case profile_set_t::cull_error_type_e::STANDARD_ERROR: return "standard_error";
+      default: return "none";
+    }
+  }
+  void set_culled( bool culled,
+                   std::string reason,
+                   uint64_t iterations,
+                   double mean,
+                   double error,
+                   profile_set_t::cull_error_type_e etype )
+  {
+    m_culled = culled;
+    m_culled_reason = std::move( reason );
+    m_culled_iterations = iterations;
+    m_culled_mean = mean;
+    m_culled_error = error;
+    m_culled_error_type = etype;
   }
 };
 

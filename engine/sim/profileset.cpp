@@ -110,6 +110,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   // Reset random seed for the profileset sims
   profile_sim -> seed = 0;
   profile_sim -> profileset_enabled = true;
+  profile_sim -> profileset_current_name = set.name();
   profile_sim -> report_details = 0;
   if ( parent -> profileset_work_threads > 0 )
   {
@@ -156,6 +157,22 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
       .stddev( data.std_dev )
       .mean_stddev( data.mean_std_dev )
       .iterations( progress.current_iterations );
+
+    // If culled, persist snapshot information for JSON/HTML reporting on primary metric only
+    if ( profile_sim->culled && metric == parent->profileset_metric.front() )
+    {
+    // error to record depends on method: CI mode wants half-width, t-test wants SE
+      auto etype = ( parent->profileset_cull.prefers_standard_error() ) ?
+        profileset::profile_set_t::cull_error_type_e::STANDARD_ERROR :
+        profileset::profile_set_t::cull_error_type_e::CI_HALF_WIDTH;
+      double err_val = parent->profileset_cull.select_error(data.mean_std_dev * parent->confidence_estimator, data.mean_std_dev / sqrt(parent->iterations) );
+      set.set_culled( true,
+                      profile_sim->culled_reason,
+                      progress.current_iterations,
+                      data.mean,
+                      err_val,
+                      etype );
+    }
   } );
 
   if ( ! parent -> profileset_output_data.empty() )
@@ -174,6 +191,11 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   parent -> event_mgr.total_events_processed += profile_sim -> event_mgr.total_events_processed;
 
   set.cleanup_options();
+
+  if ( profile_sim->culled )
+  {
+    fmt::print( stderr, "\nProfileset '{}' culled: {}\n", set.name(), profile_sim->culled_reason );
+  }
 }
 
 // Figure out if the option defines new actor(s) with their own scope

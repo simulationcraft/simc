@@ -362,6 +362,10 @@ int sim_t::main( const std::vector<std::string>& args )
         plot->analyze();
         reforge_plot->analyze();
 
+        if ( profileset_cull.enabled ) {
+          seed_profileset_cull_from_baseline();
+        }
+
         if ( canceled == 0 && !profilesets->iterate( this ) )
           canceled = true;
         else

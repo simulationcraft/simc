@@ -2112,8 +2112,12 @@ void sim_t::datacollection_end()
 void sim_t::analyze_error()
 {
   if ( thread_index != 0 ) return;
-  if ( target_error <= 0 ) return;
   if ( current_iteration < 1 ) return;
+
+  // We want analyze_error to run either for normal target_error handling OR for profileset culling elimination logic
+  bool need_precision_handling = target_error > 0;
+  bool need_culling = ( parent && parent->profileset_cull.enabled && profileset_enabled );
+  if ( !need_precision_handling && !need_culling ) return;
 
   work_queue -> lock();
 
@@ -2137,6 +2141,7 @@ void sim_t::analyze_error()
 
   double mean_total=0;
   int mean_count=0;
+  double current_standard_error = 0.0;
 
   current_error = 0;
 
@@ -2154,7 +2159,9 @@ void sim_t::analyze_error()
       current_mean = cd.target_metric.mean();
       if ( current_mean != 0 )
       {
-        current_error = sim_t::distribution_mean_error( *this, cd.target_metric ) / current_mean;
+        double mean_error = sim_t::distribution_mean_error( *this, cd.target_metric );
+        current_error = mean_error / current_mean;
+        current_standard_error = cd.target_metric.std_dev / sqrt(cd.target_metric.count());
       }
     }
   }
@@ -2210,7 +2217,7 @@ void sim_t::analyze_error()
 
   current_error *= 100;
 
-  if ( current_error > 0 )
+  if ( need_precision_handling && current_error > 0 )
   {
     if ( current_error < target_error )
     {
@@ -2232,6 +2239,82 @@ void sim_t::analyze_error()
         range::for_each( children, [ projected_iterations ]( sim_t* c ) {
           c -> work_queue -> project( projected_iterations );
         } );
+      }
+    }
+  }
+
+  if ( need_culling && current_mean > 0 )
+  {
+    auto &s = parent->profileset_cull;
+    // Convert relative percent error to absolute half-width
+    double abs_error = ( current_error / 100.0 ) * current_mean; 
+ 
+    // ensure enough iterations
+    if ( n_iterations >= s.min_iterations )
+    {
+      AUTO_LOCK( s.mtx );
+      // If no best yet, only promote if baseline hasn't been seeded
+      // (i.e., fallback to old behavior only if baseline seeding fails)
+      if ( s.best_name.empty() && !s.baseline_seeded )
+      {
+        s.best_name = profileset_current_name;
+        s.best_mean = current_mean;
+        s.best_error = s.select_error( abs_error, current_standard_error );
+        s.best_iterations = n_iterations;
+
+        fmt::print( stderr, "\nprofileset_cull: initial best '{}' mean={:.2f} err={:.4f} ({:.3f}% rel) iters={}\n", s.best_name, s.best_mean, s.best_error, current_error, s.best_iterations );
+      }
+      else
+      {
+        if ( profileset_current_name == s.best_name )
+        {
+          // Update best uncertainty window if shrunk
+            if ( s.select_error( abs_error, current_standard_error ) < s.best_error )
+            {
+              s.best_error = s.select_error( abs_error, current_standard_error );
+              s.best_mean = current_mean; 
+              s.best_iterations = n_iterations;
+            }
+        }
+        else
+        {
+          // Candidate: test elimination vs current best using current method
+          double error_for_method = s.select_error( abs_error, current_standard_error );
+          if ( s.should_cull( current_mean, error_for_method, n_iterations, s.best_mean, s.best_error ) )
+          {
+            culled = true;
+            // Use a friendly label for baseline if best_name is empty
+            const std::string& best_label = s.best_name.empty() ? parent->profileset_multiactor_base_name : s.best_name;
+            culled_reason = fmt::format( "profileset_cull: eliminated vs '{}' using {}", best_label, s.method_name() );
+            if ( s.verbose >= 1 )
+            {
+              fmt::print( stderr, "\n{}\n", culled_reason );
+            }
+            interrupt();
+            work_queue -> unlock();
+            return; 
+          }
+          // Promotion check if candidate clearly better
+          bool promote = s.should_promote( current_mean,
+                                           s.select_error( abs_error, current_standard_error ),
+                                           n_iterations,
+                                           s.best_mean,
+                                           s.best_error );
+
+          if ( promote )
+          {
+            s.best_name       = profileset_current_name;
+            s.best_mean       = current_mean;
+            s.best_error      = s.select_error( abs_error, current_standard_error );
+            s.best_iterations = n_iterations;
+            if ( s.verbose >= 1 )
+            {
+              fmt::print( stderr,
+                          "\nprofileset_cull: new best '{}' mean={:.2f} error={:.4f} iters={}\n",
+                          s.best_name, s.best_mean, s.best_error, s.best_iterations );
+            }
+          }
+        }
       }
     }
   }
@@ -3040,6 +3123,172 @@ void sim_t::analyze_iteration_data()
   range::sort( high_iteration_data, iteration_data_cmp );
 }
 
+// --- profileset_cull_state_t helpers (concrete methods, no strategy classes) ---
+
+double sim_t::profileset_cull_state_t::z_critical_one_sided() const
+{
+  if ( alpha <= 0.001 ) return 3.09;   // z_0.001
+  if ( alpha <= 0.005 ) return 2.58;   // z_0.005
+  if ( alpha <= 0.01  ) return 2.33;   // z_0.01
+  if ( alpha <= 0.05  ) return 1.64;   // z_0.05
+  return 1.28;                         // z_0.10
+}
+
+bool sim_t::profileset_cull_state_t::ttest_is_significant( double candidate_mean, double candidate_se,
+                                                           int candidate_iterations, double best_mean_val,
+                                                           double best_se, ttest_direction dir ) const
+{
+  // Require enough iterations for normal approximation
+  if ( candidate_iterations < 30 || best_iterations < 30 )
+  {
+    if ( verbose >= 2 )
+    {
+      fmt::print( stderr, "profileset_cull: TTEST {}=NO | insufficient iterations (cand={}, best={}, need >= 30)\n",
+                  ( dir == ttest_direction::BETTER ? "better" : "worse" ), candidate_iterations, best_iterations );
+    }
+    return false;
+  }
+
+  const double pooled_se = std::sqrt( candidate_se * candidate_se + best_se * best_se );
+  if ( pooled_se <= 0 )
+  {
+    if ( verbose >= 2 )
+    {
+      fmt::print( stderr, "profileset_cull: TTEST {}=NO | pooled_se <= 0 ({:.6f})\n",
+                  ( dir == ttest_direction::BETTER ? "better" : "worse" ), pooled_se );
+    }
+    return false;
+  }
+  const double t_stat = ( candidate_mean - best_mean_val ) / pooled_se;
+  const double tcrit  = z_critical_one_sided();
+  if ( dir == ttest_direction::WORSE )
+    return t_stat < -tcrit;  // one-sided lower tail
+  else
+    return t_stat > tcrit;   // one-sided upper tail
+}
+
+bool sim_t::profileset_cull_state_t::should_cull( double candidate_mean, double candidate_error_ci_or_se,
+                                                  int candidate_iterations, double best_mean_val,
+                                                  double best_error_val ) const
+{
+  if ( candidate_iterations < min_iterations )
+  {
+    if ( verbose >= 2 )
+    {
+      fmt::print( stderr,
+                  "profileset_cull: should_cull=NO (candidate_iterations={}, min_iterations={})\n",
+                   candidate_iterations, min_iterations );
+    }
+    return false;
+  }
+
+  if ( method == CI_OVERLAP )
+  {
+    double safety          = margin > 0 ? margin * best_mean_val : 0.0;
+    double candidate_upper = candidate_mean + candidate_error_ci_or_se;
+    double best_lower      = best_mean_val - best_error_val;
+    bool result            = candidate_upper + safety < best_lower;
+
+    if ( verbose >= 2 )
+    {
+      fmt::print( stderr,
+                  "profileset_cull: should_cull={} | method=CI_OVERLAP | cand_mean={:.2f} cand_err={:.4f} cand_upper={:.2f} | best_mean={:.2f} best_err={:.4f} best_lower={:.2f} | safety={:.4f} | test: {:.2f} < {:.2f}\n",
+                  result ? "YES" : "NO", candidate_mean, candidate_error_ci_or_se, candidate_upper, best_mean_val, best_error_val,
+                  best_lower, safety, candidate_upper + safety, best_lower );
+      if ( result )
+      {
+        double candidate_lower = candidate_mean - candidate_error_ci_or_se;
+        double best_upper      = best_mean_val + best_error_val;
+        fmt::print( stderr,
+                    "\nprofileset_cull: compare CI cand='{}' [{:.2f},{:.2f}] vs best='{}' [{:.2f},{:.2f}] | culling=YES\n",
+                    best_name.empty() ? "candidate" : "candidate",
+                    candidate_lower, candidate_upper,
+                    best_name.empty() ? "best" : best_name,
+                    best_lower, best_upper );
+      }
+    }
+
+    return result;
+  }
+  else // T_TEST
+  {
+    // candidate_error_ci_or_se is standard error in T_TEST mode
+    bool result = ttest_is_significant( candidate_mean, candidate_error_ci_or_se, candidate_iterations, best_mean_val, best_error_val,
+                                 ttest_direction::WORSE );
+    if ( verbose >= 2 && result )
+    {
+      fmt::print( stderr,
+                  "\nprofileset_cull: compare TTEST cand='{}' mean={:.2f} se={:.4f} vs best='{}' mean={:.2f} se={:.4f} | culling=YES\n",
+                  best_name.empty() ? "candidate" : "candidate",
+                  candidate_mean, candidate_error_ci_or_se,
+                  best_name.empty() ? "best" : best_name,
+                  best_mean_val, best_error_val );
+    }
+    return result;
+  }
+}
+
+bool sim_t::profileset_cull_state_t::should_promote( double candidate_mean, double candidate_error_ci_or_se,
+                                                     int candidate_iterations, double best_mean_val,
+                                                     double best_error_val ) const
+{
+  if ( method == CI_OVERLAP )
+  {
+    return ( candidate_mean - candidate_error_ci_or_se ) > ( best_mean_val + best_error_val );
+  }
+  else // T_TEST
+  {
+    return ttest_is_significant( candidate_mean, candidate_error_ci_or_se, candidate_iterations, best_mean_val, best_error_val,
+                                 ttest_direction::BETTER );
+  }
+}
+
+// sim_t::seed_profileset_cull_from_baseline ============================
+
+void sim_t::seed_profileset_cull_from_baseline()
+{
+  // Only seed if culling is enabled and we haven't seeded already
+  if ( !profileset_cull.enabled || profileset_cull.baseline_seeded )
+    return;
+    
+  // Only the parent (baseline) sim should seed
+  if ( parent || profileset_enabled )
+    return;
+    
+  // Get the baseline player for the chosen metric
+  if ( player_no_pet_list.empty() || profileset_report_player_index >= player_no_pet_list.size() )
+    return;
+    
+  const auto baseline_player = player_no_pet_list[ profileset_report_player_index ];
+  
+  // Get baseline statistics for the culling metric
+  auto baseline_data = profileset::metric_data( baseline_player, profileset_cull.metric );
+  
+  // Calculate absolute error (half-width) from relative error
+  double relative_error = baseline_data.mean_std_dev / baseline_data.mean;
+  double absolute_error = relative_error * baseline_data.mean;
+  
+  // Get iterations from current simulation progress
+  auto current_progress = progress();
+  
+  // Seed the culling state with baseline values
+  {
+    std::lock_guard<mutex_t> lock( profileset_cull.mtx );
+        
+    profileset_cull.best_name = "";
+    profileset_cull.best_mean = baseline_data.mean;
+    profileset_cull.best_error = profileset_cull.select_error( absolute_error, baseline_data.mean_std_dev );
+    profileset_cull.best_iterations = current_progress.current_iterations;
+    profileset_cull.baseline_seeded = true;
+    
+    if ( profileset_cull.verbose >= 1 )
+    {
+      fmt::print( stderr, "\nprofileset_cull: baseline seeded '{}' mean={:.2f} err={:.4f} ({:.3f}% rel) iters={}\n", 
+        profileset_multiactor_base_name, profileset_cull.best_mean, profileset_cull.best_error, relative_error * 100.0, 
+        profileset_cull.best_iterations);
+    }
+  }
+}
 
 // sim_t::iterate ===========================================================
 
@@ -3774,6 +4023,29 @@ void sim_t::create_options()
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
+  // Profileset culling (early elimination) options
+  add_option( opt_bool( "profileset_cull", profileset_cull.enabled ) );
+  add_option( opt_func( "profileset_cull_method", []( sim_t* sim, util::string_view, util::string_view value ) {
+    auto m = sim_t::profileset_cull_state_t::parse_method( value );
+    if ( m >= sim_t::profileset_cull_state_t::METHOD_MAX )
+    {
+      sim->error( "Invalid profileset_cull_method '{}' , valid options: ci, t_test", value );
+      return false;
+    }
+    sim->profileset_cull.method = m;
+    return true;
+  } ) );
+  add_option( opt_string( "profileset_cull_metric", profileset_cull.cull_metric_str ) );
+  add_option( opt_func( "profileset_cull_min_iterations", []( sim_t* sim, util::string_view, util::string_view value ) {
+    unsigned val = std::stoul( std::string( value ) );
+    if ( val < 30 && sim->profileset_cull.method == sim_t::profileset_cull_state_t::T_TEST ) {
+      sim->error( "profileset_cull_min_iterations={} is too low for reliable t-test (need >= 30 for normal approximation)", val );
+    }
+    sim->profileset_cull.min_iterations = val;
+    return true;
+  } ) );
+  add_option( opt_float( "profileset_cull_alpha", profileset_cull.alpha ) );
+  add_option( opt_int( "profileset_cull_verbose", profileset_cull.verbose ) );
   // Misc
   add_option( opt_list( "party", party_encoding ) );
   add_option( opt_func( "active", parse_active ) );
@@ -4237,6 +4509,38 @@ void sim_t::setup( sim_control_t* c )
 
   if ( player_list.empty() && spell_query == nullptr && !display_bonus_ids && display_build <= 1 )
     throw sc_runtime_error( "Nothing to sim!" );
+
+  // Finalize profileset_cull configuration on parent sim only
+  if ( !parent && profileset_cull.enabled )
+  {
+    // Determine metric
+    if ( !profileset_cull.cull_metric_str.empty() )
+    {
+      auto m = util::parse_scale_metric( profileset_cull.cull_metric_str );
+      if ( m == SCALE_METRIC_NONE )
+      {
+        error( "profileset_cull: unknown metric '{}' disabling feature", profileset_cull.cull_metric_str );
+        profileset_cull.enabled = false;
+      }
+      else
+      {
+        profileset_cull.metric = m;
+      }
+    }
+    else
+    {
+      // If only one profileset metric specified, use it; otherwise require explicit option
+      if ( profileset_metric.size() == 1 )
+      {
+        profileset_cull.metric = profileset_metric.front();
+      }
+      else
+      {
+        error( "profileset_cull: multiple profileset metrics active, specify profileset_cull_metric=... disabling feature" );
+        profileset_cull.enabled = false;
+      }
+    }
+  }
 
   range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
