@@ -776,6 +776,8 @@ public:
     absorb_buff_t* blood_shield;
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
+    propagate_const<buff_t*> boiling_point;
+    propagate_const<buff_t*> boiling_point_echo;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
@@ -904,6 +906,7 @@ public:
 
     // Blood
     action_t* heart_strike_bloodied_blade;
+    action_t* blood_boil_boiling_point;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -1401,6 +1404,8 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
+    const spell_data_t* boiling_point_buff;
+    const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
@@ -8180,18 +8185,34 @@ struct blood_boil_t final : public death_knight_spell_t
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
   }
 
+  blood_boil_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->talent.blood.blood_boil )
+    {
+      aoe           = -1;
+      background    = true;
+      cooldown->duration = 0_ms;
+      impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    }
+
   void execute() override
   {
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
+
+    if ( p()->buffs.boiling_point->up() )
+    {
+      p()->buffs.boiling_point->expire();
+      p()->buffs.boiling_point_echo->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
-    p()->buffs.hemostasis->trigger();
+    if( !background )
+      p()->buffs.hemostasis->trigger();
   }
 };
 
@@ -10034,11 +10055,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
+      boiling_point_proc_attempts( 0 )
   {
     aoe             = 2;
     weapon          = &( p->main_hand_weapon );
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
+
+    if ( p->talent.blood.boiling_point.ok() )
+      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
   }
 
   int n_targets() const override
@@ -10058,6 +10083,12 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
+
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
+    {
+      p()->buffs.boiling_point->trigger();
+      boiling_point_proc_attempts = 0;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -10089,6 +10120,8 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 private:
   propagate_const<action_t*> leeching_strike;
   double heartbreaker_rp_gen;
+  double boiling_point_proc_chance;
+  int boiling_point_proc_attempts;
 };
 
 struct vampiric_strike_blood_t : public heart_strike_base_t
@@ -12834,7 +12867,8 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-
+    if ( talent.blood.boiling_point->ok() )
+      background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
   }
 
   // Unholy
@@ -13929,6 +13963,8 @@ void death_knight_t::spell_lookups()
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
+  spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
@@ -14561,6 +14597,12 @@ void death_knight_t::create_buffs()
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.blood_shield = make_buff<blood_shield_buff_t>( this );
+
+    buffs.boiling_point = make_buff( this, "boiling_point", spell.boiling_point_buff );
+    buffs.boiling_point_echo = make_buff( this, "boiling_point_echo", spell.boiling_point_echo_buff )
+              ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        background_actions.blood_boil_boiling_point->execute();
+              } );
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
@@ -15498,6 +15540,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       if ( !pet )
         action->parse_effects( buffs.coagulopathy );
       action->parse_effects( buffs.blood_shield );
+      action->parse_effects( buffs.boiling_point );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
