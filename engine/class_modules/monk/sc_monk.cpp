@@ -118,10 +118,18 @@ void monk_action_t<Base>::apply_buff_effects()
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
+      const std::array<unsigned, 3> rsk_ids = { p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
+                                                p()->talent.windwalker.rushing_wind_kick_damage->id(),
+                                                p()->talent.windwalker.glory_of_the_dawn_damage->id() };
+
+      double value = effect.mastery_value();
+      if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
+        value *= p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
+
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
           .set_func( [ & ] { return ww_mastery; } )
-          .set_value( effect.mastery_value() )
+          .set_value( value )
           .set_mastery( true )
           .set_eff( &effect );
     };
