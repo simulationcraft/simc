@@ -8919,6 +8919,10 @@ struct death_strike_heal_t final : public death_knight_heal_t
 
   void impact( action_state_t* state ) override
   {
+    trigger_blood_shield( state );
+
+    p()->buffs.voracious->trigger();
+
     death_knight_heal_t::impact( state );
 
     auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
@@ -8927,8 +8931,6 @@ struct death_strike_heal_t final : public death_knight_heal_t
     // Reset timer if we healed for more than a min heal
     if ( min_heal < cur_heal )
       last_buff_consumption = sim->current_time();
-
-    trigger_blood_shield( state );
   }
 
 private:
@@ -8984,21 +8986,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets
-    // applied before DS damage is calculated. So we apply the modifier here, but only if bloodshield is not up, to
-    // avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
-    if ( p()->talent.blood.bloodshot.ok() && !p()->buffs.blood_shield->up() )
-    {
-      m *= 1.0 + p()->spell.blood_shield->effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
@@ -9037,8 +9024,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    p()->buffs.voracious->trigger();
-
     death_knight_melee_attack_t::execute();
 
     if ( oh_attack )
@@ -15503,6 +15488,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
       if ( !pet )
         action->parse_effects( buffs.coagulopathy );
+      action->parse_effects( buffs.blood_shield );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
@@ -15648,7 +15634,6 @@ void death_knight_t::parse_player_effects()
   {
     case DEATH_KNIGHT_BLOOD:
       parse_effects( mastery.blood_shield );
-      parse_effects( buffs.blood_shield );
       parse_effects( buffs.voracious );
       parse_effects( buffs.dancing_rune_weapon );
       parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
