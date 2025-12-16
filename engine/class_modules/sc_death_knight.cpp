@@ -663,6 +663,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
+    propagate_const<buff_t*> tightening_grasp;
 
     // Frost
     propagate_const<buff_t*> everfrost;
@@ -1413,6 +1414,7 @@ public:
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
+    const spell_data_t* tightening_grasp_debuff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
@@ -10034,6 +10036,15 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    auto td = get_td( state->target );
+    if ( td )
+      td->debuff.tightening_grasp->trigger();
+  }
 };
 
 // Heart Strike =============================================================
@@ -13970,6 +13981,7 @@ void death_knight_t::spell_lookups()
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.tightening_grasp_debuff     = conditional_spell_lookup( talent.blood.gorefiends_grasp.ok(), 374776 );
   spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
@@ -14381,6 +14393,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value_from_effect( 1 );
 
   // Blood
+  debuff.tightening_grasp = make_debuff( p.talent.blood.gorefiends_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff );
 
   // Frost
   debuff.everfrost =

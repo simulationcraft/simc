@@ -130,6 +130,7 @@ void blood( player_t* p )
   default_->add_action( "fireblood,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "vampiric_blood,if=!buff.vampiric_blood.up" );
+  default_->add_action( "gorefiends_grasp" );
   default_->add_action( "call_action_list,name=high_prio_actions" );
   default_->add_action( "run_action_list,name=deathbringer,if=hero_tree.deathbringer" );
   default_->add_action( "run_action_list,name=san_drw,if=hero_tree.sanlayn&buff.dancing_rune_weapon.up" );
