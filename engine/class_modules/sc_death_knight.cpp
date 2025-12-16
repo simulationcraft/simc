@@ -7281,6 +7281,13 @@ struct dread_plague_t final : public death_knight_disease_t
       p()->pet_summon.fk_ghoul->execute();
   }
 
+  void reset() override
+  {
+    death_knight_disease_t::reset();
+
+    ticks_since_last_proc = 0;
+  }
+
 private:
   double sd_chance;
   int ticks_since_last_proc;
@@ -10126,6 +10133,13 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     {
       p()->trigger_infliction_of_sorrow( state->target, this->data().id() == p()->spell.vampiric_strike->id() );
     }
+  }
+
+  void reset() override
+  {
+    death_knight_melee_attack_t::reset();
+
+    boiling_point_proc_attempts = 0;
   }
 
 private:
