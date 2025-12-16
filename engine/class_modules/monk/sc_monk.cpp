@@ -124,8 +124,7 @@ void monk_action_t<Base>::apply_buff_effects()
 
       double value = effect.mastery_value();
       if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
-        value *= p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
-
+        value *= 1.0 + p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
           .set_func( [ & ] { return ww_mastery; } )
