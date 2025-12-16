@@ -1006,6 +1006,13 @@ struct rising_sun_kick_t : monk_melee_attack_t
     {
       ww_mastery = true;
       background = dual = true;
+
+      if ( const auto &effect = player->talent.windwalker.skyfire_heel_buff->effectN( 1 );
+           player->talent.windwalker.skyfire_heel->ok() )
+        add_parse_entry( crit_chance_effects )
+            .set_value( effect.percent() )
+            .set_value_func( [ ae = player->sim->active_enemies ]( double base ) { return base * ae; } )
+            .set_note( "Nearby Enemy Scaling" );
     }
 
     void impact( action_state_t *state ) override
@@ -1143,7 +1150,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
 
     void execute() override
     {
-      base_damage_t::execute();
+      combined_type_t::execute();
 
       p()->buff.rushing_wind_kick->expire();
     }
@@ -1175,8 +1182,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    // if ( p()->buff.rushing_wind_kick->up() )
-    if ( p()->rng().roll( 0.5 ) )
+    if ( p()->buff.rushing_wind_kick->up() )
       rushing_wind_kick->execute_on_target( target );
     else
       rising_sun_kick->execute_on_target( target );
@@ -1403,6 +1409,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( p()->buff.combo_breaker->up() )
     {
+      if ( p()->rng().roll( p()->talent.windwalker.rushing_wind_kick->effectN( 1 ).percent() ) )
+        p()->buff.rushing_wind_kick->trigger();
+
       if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
         p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
                             p()->gain.energy_burst );
@@ -5300,6 +5309,7 @@ void monk_t::init_spells()
     talent.windwalker.jadefire_stomp_damage          = find_spell( 388207 );
     talent.windwalker.skyfire_heel                   = _ST( "Skyfire Heel" );
     talent.windwalker.skyfire_heel_damage            = find_spell( 1248712 );
+    talent.windwalker.skyfire_heel_buff              = find_spell( 1248705 );
     talent.windwalker.harmonic_combo                 = _ST( "Harmonic Combo" );
     talent.windwalker.flurry_of_xuen                 = _ST( "Flurry of Xuen" );
     talent.windwalker.flurry_of_xuen_driver          = find_spell( 452117 );

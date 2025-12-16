@@ -907,6 +907,7 @@ public:
       // Row 10
       player_talent_t skyfire_heel;
       const spell_data_t *skyfire_heel_damage;
+      const spell_data_t *skyfire_heel_buff;
       player_talent_t harmonic_combo;
       player_talent_t flurry_of_xuen;
       const spell_data_t *flurry_of_xuen_driver;
