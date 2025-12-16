@@ -4019,6 +4019,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
+      // In simc, chain multiplier will reduce the damage per target hit, however in game
+      // this affect seems to be a constant reduction across all secondary targets
+      chain_multiplier = 1.0;
+      base_aoe_multiplier = p->dk()->talent.death_strike->effectN( 1 ).chain_multiplier();
     }
   };
 
@@ -8963,6 +8967,11 @@ struct death_strike_t final : public death_knight_melee_attack_t
     may_parry = false;
 
     weapon = &( p->main_hand_weapon );
+
+    // In simc, chain multiplier will reduce the damage per target hit, however in game
+    // this affect seems to be a constant reduction across all secondary targets
+    chain_multiplier = 1.0;
+    base_aoe_multiplier = p->talent.death_strike->effectN( 1 ).chain_multiplier();
 
     if ( p->dual_wield() )
     {
