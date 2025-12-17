@@ -1023,7 +1023,8 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_value_func( [ &ae = player->sim->active_enemies, max_count ]( double base ) {
               return base * std::min( ae, max_count );
             } )
-            .set_note( "Nearby Enemy Scaling" );
+            .set_note( "Nearby Enemy Scaling" )
+            .set_eff( &effect );
       }
     }
 
@@ -1684,7 +1685,8 @@ struct fists_of_fury_t : monk_melee_attack_t
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
           .set_func( [] { return false; } )
-          .set_note( "Secondary Target Damage Modifier" );
+          .set_note( "Secondary Target Damage Modifier" )
+          .set_eff( &player->talent.windwalker.fists_of_fury->effectN( 6 ) );
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -3100,7 +3102,7 @@ public:
     if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
           .set_value_func(
-              [ = ]( double value ) { return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
+              [ this ]( double value ) { return 1.0 + p()->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
           .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
           .set_eff( &effect );
 
