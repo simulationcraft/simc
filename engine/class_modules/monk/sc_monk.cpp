@@ -1747,10 +1747,13 @@ struct fists_of_fury_t : monk_melee_attack_t
     parse_options( options_str );
 
     may_combo_strike        = true;
-    base_tick_time          = dot_duration / 4;
     attack_power_mod.direct = 0;
 
-    tick_action = new tick_t( player );
+    // expected base tick time is always 1_s
+    // default: 5 ticks over 4s w/ tick 0, 4 / 4 = 1
+    // crashing fists: 6 ticks over 5s w/ tick0, 5 / 5 = 1
+    base_tick_time = 1_s;
+    tick_action    = new tick_t( player );
 
     if ( player->talent.windwalker.jadefire_stomp->ok() )
     {
