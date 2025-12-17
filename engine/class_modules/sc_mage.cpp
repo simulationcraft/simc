@@ -356,10 +356,7 @@ public:
     unsigned initial_spellfire_spheres = 5;
     unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
-    double clearcasting_chance = 0.0068;
-    double it_clearcasting_chance = 0.0938;
-    double blast_clearcasting_chance = 0.0938;
-    double blast_it_clearcasting_chance = 0.1618;
+    int clearcasting_blp_threshold = -1;
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -1827,26 +1824,28 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // TODO: remove me
-      double chance = p()->spec.clearcasting->effectN( 2 ).percent();
-      chance += p()->talents.illuminated_thoughts->effectN( 1 ).percent();
-      chance += p()->talents.archmages_wrath->effectN( 3 ).percent();
-      p()->trigger_clearcasting( chance, 100_ms );
-      return;
-      // TODO: Adjust this with the new BLP data
-      constexpr int cc_blp_threshold = 13;
       // The tooltip chance present on Clearcasting/Illuminated Thoughts is the total expected outcome of Clearcasting applications, not it's random proc chance.
       // Whenever combining both the proc chance and its bad luck protection, the final application rate is equal to its tooltip chance.
       // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in the base rate being 12% and 15% with Illuminated Thoughts.
-      double proc_chance = p()->options.clearcasting_chance; 
-      if ( p()->talents.illuminated_thoughts.ok() )
-        proc_chance += p()->options.illuminated_thoughts_bonus;
+      // The quadratic expression is an approximation based upon what was visible in-game, tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
+      // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random proc chance needed with a BLP of 13 to match expected total.
+      double proc_chance = p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
+      proc_chance = ( 0.41342 * ( proc_chance * proc_chance ) ) + ( 0.325242 * proc_chance ) - 0.0264015;
 
+      // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed. We're unsure whether or not the random proc chance was increased to match the expected rate.
+      // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath), 
+      // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal) matches the ~11.35% expected total seen in-game.
+      // However, it's hard to tell with IT and/or AW talented as their initial proc chances being higher leads to less deviation from the 15% total.
+      // For the moment, the equation above is accurate enough for pretty much 99% of purposes, the result is losing around 40 total applications out of thousands -- totally inconsequential.
+      // We just need more data -- specifically for IT/AW -- which takes a bunch of time.
       p()->state.clearcasting_blp_count++;
-      if ( p()->state.clearcasting_blp_count >= cc_blp_threshold )
+      if ( p()->state.clearcasting_blp_count == p()->options.clearcasting_blp_threshold )
         proc_chance = 1.0;
       else
         proc_chance *= p()->state.clearcasting_blp_count;
+
+      sim->print_debug("Clearcasting's random proc chance is {}% with a BLP count of {}/{}", 
+        proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
 
       if ( proc_chance == 1.0 || !background )
       {
@@ -5493,10 +5492,7 @@ void mage_t::create_options()
                   throw std::invalid_argument( "valid options are 'default', 'st', and 'aoe'." );
                 return true;
               } ) );
-  add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance ) );
-  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
-  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
-  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
+  add_option( opt_int( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
