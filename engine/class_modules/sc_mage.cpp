@@ -1817,15 +1817,12 @@ public:
   {
     spell_t::execute();
 
-    bool snapshot_clearcasting = p()->buffs.clearcasting->check();
     // Make sure we remove all cost reduction buffs before we trigger new ones.
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // The tooltip chance present on Clearcasting/Illuminated Thoughts is the total expected outcome of Clearcasting applications, not it's random proc chance.
-      // Whenever combining both the proc chance and its bad luck protection, the final application rate is equal to its tooltip chance.
       // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in the base rate being 12% and 15% with Illuminated Thoughts.
       // The quadratic expression is an approximation based upon what was visible in-game, tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
       // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random proc chance needed with a BLP of 13 to match expected total.
