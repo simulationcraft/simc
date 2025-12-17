@@ -870,7 +870,9 @@ public:
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
+    cooldown_t* blood_boil;
     cooldown_t* consumption;
+    cooldown_t* plague_infusion_icd;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
     // Frost
@@ -1852,7 +1854,9 @@ public:
 
     // Blood
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
+    cooldown.blood_boil          = get_cooldown( "blood_boil" );
     cooldown.consumption         = get_cooldown( "consumption" );
+    cooldown.plague_infusion_icd = get_cooldown( "plague_infusion_icd" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
@@ -7169,6 +7173,16 @@ struct blood_plague_t final : public death_knight_disease_t
       heal->base_dd_min = heal->base_dd_max =
           d->state->result_amount * ( 1.0 + p()->talent.blood.rapid_decomposition->effectN( 3 ).percent() );
       heal->execute();
+    }
+
+    // Plague Infusion: Reduce Blood Boil CD on crit
+    if ( d->state->result == RESULT_CRIT && p()->talent.blood.plague_infusion.ok() )
+    {
+      if ( p()->cooldown.plague_infusion_icd->up() )
+      {
+        p()->cooldown.blood_boil->adjust( p()->talent.blood.plague_infusion->effectN( 1 ).time_value() );
+        p()->cooldown.plague_infusion_icd->start();
+      }
     }
   }
 
@@ -14228,6 +14242,9 @@ void death_knight_t::set_icds()
 {
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
+
+  if ( talent.blood.plague_infusion.ok() )
+    cooldown.plague_infusion_icd->duration = talent.blood.plague_infusion->internal_cooldown();
 
   if ( talent.frost.enduring_strength.ok() )
     cooldown.enduring_strength_icd->duration = spell.enduring_strength_cooldown->internal_cooldown();
