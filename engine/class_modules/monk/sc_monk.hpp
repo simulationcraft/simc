@@ -831,7 +831,6 @@ public:
     {
       // Row 1
       player_talent_t fists_of_fury;
-      const spell_data_t *fists_of_fury_tick;
       // Row 2
       player_talent_t momentum_boost;
       const spell_data_t *momentum_boost_speed;
@@ -904,6 +903,7 @@ public:
       const spell_data_t *slicing_winds_damage;
       player_talent_t jadefire_stomp;
       const spell_data_t *jadefire_stomp_damage;
+      const spell_data_t *jadefire_stomp_targeting;
       // Row 10
       player_talent_t skyfire_heel;
       const spell_data_t *skyfire_heel_damage;

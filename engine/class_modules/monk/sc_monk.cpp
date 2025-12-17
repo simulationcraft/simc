@@ -159,15 +159,15 @@ void monk_action_t<Base>::apply_buff_effects()
   // Shado-Pan
 
   // TWW S1 Set Effects
-  parse_effects(
-      p()->buff.tiger_strikes,
-      affect_list_t( 1 ).add_spell(
-          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.fists_of_fury_tick->id(), p()->talent.windwalker.whirling_dragon_punch_aoe_tick->id(),
-          p()->talent.windwalker.whirling_dragon_punch_st_tick->id(),
-          p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
-          p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
-          ) );
+  parse_effects( p()->buff.tiger_strikes,
+                 affect_list_t( 1 ).add_spell(
+                     p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(),
+                     p()->talent.windwalker.fists_of_fury->effectN( 3 ).trigger()->id(),
+                     p()->talent.windwalker.whirling_dragon_punch_aoe_tick->id(),
+                     p()->talent.windwalker.whirling_dragon_punch_st_tick->id(),
+                     p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
+                     p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
+                     ) );
   parse_effects( p()->buff.tigers_ferocity );
   parse_effects( p()->buff.flow_of_battle_damage );
 
@@ -1016,10 +1016,15 @@ struct rising_sun_kick_t : monk_melee_attack_t
 
       if ( const auto &effect = player->talent.windwalker.skyfire_heel_buff->effectN( 1 );
            player->talent.windwalker.skyfire_heel->ok() )
+      {
+        int max_count = as<int>( player->talent.windwalker.skyfire_heel->effectN( 3 ).base_value() );
         add_parse_entry( crit_chance_effects )
             .set_value( effect.percent() )
-            .set_value_func( [ ae = player->sim->active_enemies ]( double base ) { return base * ae; } )
+            .set_value_func( [ &ae = player->sim->active_enemies, max_count ]( double base ) {
+              return base * std::min( ae, max_count );
+            } )
             .set_note( "Nearby Enemy Scaling" );
+      }
     }
 
     void impact( action_state_t *state ) override
@@ -1655,78 +1660,101 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   }
 };
 
-struct fists_of_fury_tick_t : public monk_melee_attack_t
+struct fists_of_fury_t : monk_melee_attack_t
 {
-  fists_of_fury_tick_t( monk_t *player, std::string_view name )
-    : monk_melee_attack_t( player, name, player->talent.windwalker.fists_of_fury_tick )
+  struct tick_t : monk_melee_attack_t
   {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = player->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
-    full_amount_targets = 1;
-    ww_mastery          = true;
+    tick_t( monk_t *player )
+      : monk_melee_attack_t( player, "fists_of_fury_damage",
+                             player->talent.windwalker.fists_of_fury->effectN( 3 ).trigger() )
+    {
+      background = dual   = true;
+      aoe                 = -1;
+      full_amount_targets = 1;
+      reduced_aoe_targets = player->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
+      ww_mastery          = true;
 
-    base_costs[ RESOURCE_CHI ] = 0;
-    dot_duration               = timespan_t::zero();
-    trigger_gcd                = timespan_t::zero();
+      parse_effects( player->buff.momentum_boost_damage );
+      if ( const auto &effect = player->talent.windwalker.momentum_boost->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_value_func(
+                [ & ]( double ) { return ( 1.0 / p()->composite_melee_haste() - 1.0 ) * effect.percent(); } )
+            .set_eff( &effect );
 
-    parse_effects( player->buff.momentum_boost_damage );
-    if ( const auto &effect = player->tier.tww2.ww_4pc_cashout->effectN( 1 );
-         effect.ok() && player->tier.tww2.ww_4pc->ok() )
       add_parse_entry( da_multiplier_effects )
-          .set_buff( player->tier.tww2.cashout )
-          .set_value( effect.percent() )
-          .set_eff( &effect );
+          .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
+          .set_func( [] { return false; } )
+          .set_note( "Secondary Target Damage Modifier" );
+    }
 
-    if ( const auto &effect = player->talent.windwalker.momentum_boost->effectN( 1 ); effect.ok() )
-      add_parse_entry( da_multiplier_effects )
-          .set_value_func( [ & ]( double ) { return ( 1.0 / p()->composite_melee_haste() - 1.0 ) * effect.percent(); } )
-          .set_eff( &effect );
-  }
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-  double composite_target_multiplier( player_t *target ) const override
+      if ( state->chain_target )
+        cam *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
+
+      return cam;
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      monk_melee_attack_t::impact( state );
+
+      p()->buff.momentum_boost_damage->trigger();
+    }
+  };
+
+  struct jadefire_stomp_t : monk_melee_attack_t
   {
-    double m = monk_melee_attack_t::composite_target_multiplier( target );
+    jadefire_stomp_t( monk_t *player )
+      : monk_melee_attack_t( player, "jadefire_stomp", player->talent.windwalker.jadefire_stomp_damage )
+    {
+      aoe        = player->talent.windwalker.jadefire_stomp_targeting->effectN( 1 ).base_value();
+      background = dual = true;
+      ww_mastery        = true;
 
-    if ( target != p()->target )
-      m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
+      if ( const auto &effect = player->talent.windwalker.path_of_jade->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_value( effect.percent() )
+            .set_func( [] { return false; } )
+            .set_note( "Per-Target Increase" )
+            .set_eff( &effect );
+    }
 
-    return m;
-  }
+    double composite_aoe_multiplier( const action_state_t *state ) const
+    {
+      double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
+      if ( p()->talent.windwalker.path_of_jade->ok() )
+      {
+        double count =
+            std::min( p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value(), as<double>( state->n_targets ) );
+        cam *= 1.0 + count * p()->talent.windwalker.path_of_jade->effectN( 1 ).percent();
+      }
 
-    p()->buff.chi_energy->trigger();
-    p()->buff.momentum_boost_damage->trigger();
-  }
-};
+      return cam;
+    }
+  };
 
-struct fists_of_fury_t : public monk_melee_attack_t
-{
-  fists_of_fury_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "fists_of_fury", p->talent.windwalker.fists_of_fury )
+  action_t *jadefire_stomp;
+
+  fists_of_fury_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "fists_of_fury", player->talent.windwalker.fists_of_fury ), jadefire_stomp( nullptr )
   {
     parse_options( options_str );
 
-    cooldown         = p->cooldown.fists_of_fury;
-    may_combo_strike = true;
-
-    channeled = tick_zero = true;
-    interrupt_auto_attack = true;
-
+    may_combo_strike        = true;
+    base_tick_time          = dot_duration / 4;
     attack_power_mod.direct = 0;
-    weapon_power_mod        = 0;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    tick_action = new tick_t( player );
 
-    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-    base_tick_time = dot_duration / 4;
-
-    ability_lag = p->world_lag;
-
-    tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+    if ( player->talent.windwalker.jadefire_stomp->ok() )
+    {
+      jadefire_stomp = new jadefire_stomp_t( player );
+      add_child( jadefire_stomp );
+    }
   }
 
   bool usable_moving() const override
@@ -1736,30 +1764,25 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->tier.tww2.ww_4pc->ok() )
-      p()->tier.tww2.winning_streak->trigger();
-
     monk_melee_attack_t::execute();
 
     p()->action.flurry_strikes->execute( flurry_strikes_t::FLURRY_STRIKES );
     p()->buff.whirling_dragon_punch->trigger();
-    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
 
+    if ( jadefire_stomp )
+      jadefire_stomp->execute();
+
+    // TODO: is there a better way to do this?
     // Delay the expiration of the buffs until after the tick action happens.
     // Otherwise things trigger before the tick action happens; which is not intended.
     make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
-      p()->tier.tww2.cashout->expire();
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
-
-      // TODO: Make sure this doesn't happen if FoF is cancelled.
-      if ( p()->tier.tww2.ww_4pc->ok() )
-        p()->tier.tww2.winning_streak->trigger();
     } );
   }
 };
@@ -3634,55 +3657,6 @@ struct celestial_conduit_t : public monk_spell_t
   }
 };
 
-struct jadefire_stomp_damage_t : public monk_spell_t
-{
-  jadefire_stomp_damage_t( monk_t *p )
-    : monk_spell_t( p, "jadefire_stomp_dmg", p->talent.windwalker.jadefire_stomp_damage )
-  {
-    background = true;
-    ww_mastery = true;
-
-    attack_power_mod.direct = p->talent.windwalker.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
-    spell_power_mod.direct  = 0;
-  }
-
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double cam = monk_spell_t::composite_aoe_multiplier( state );
-
-    if ( p()->talent.windwalker.path_of_jade->ok() && state->n_targets > 0 )
-      cam *=
-          1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
-                std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
-
-    return cam;
-  }
-};
-
-struct jadefire_stomp_t : public monk_spell_t
-{
-  jadefire_stomp_damage_t *damage;
-  jadefire_stomp_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "jadefire_stomp", p->talent.windwalker.jadefire_stomp )
-  {
-    parse_options( options_str );
-    may_combo_strike = true;
-    cast_during_sck  = true;
-
-    damage = new jadefire_stomp_damage_t( p );
-    aoe    = as<int>( data().effectN( 1 ).base_value() );
-
-    add_child( damage );
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_spell_t::impact( s );
-
-    damage->execute_on_target( s->target );
-  }
-};
-
 struct zenith_t : public monk_spell_t
 {
   zenith_t( monk_t *player, std::string_view options_str )
@@ -5249,7 +5223,6 @@ void monk_t::init_spells()
   // monk_t::talent::windwalker
   {
     talent.windwalker.fists_of_fury                   = _ST( "Fists of Fury" );
-    talent.windwalker.fists_of_fury_tick              = find_spell( 117418 );
     talent.windwalker.momentum_boost                  = _ST( "Momentum Boost" );
     talent.windwalker.momentum_boost_speed            = find_spell( 451298 );
     talent.windwalker.combat_wisdom                   = _ST( "Combat Wisdom" );
@@ -5313,7 +5286,8 @@ void monk_t::init_spells()
     talent.windwalker.slicing_winds                  = _ST( "Slicing Winds" );
     talent.windwalker.slicing_winds_damage           = find_spell( 1217411 );
     talent.windwalker.jadefire_stomp                 = _ST( "Jadefire Stomp" );
-    talent.windwalker.jadefire_stomp_damage          = find_spell( 388207 );
+    talent.windwalker.jadefire_stomp_damage          = find_spell( 1248815 );
+    talent.windwalker.jadefire_stomp_targeting       = find_spell( 1248812 );
     talent.windwalker.skyfire_heel                   = _ST( "Skyfire Heel" );
     talent.windwalker.skyfire_heel_damage            = find_spell( 1248712 );
     talent.windwalker.skyfire_heel_buff              = find_spell( 1248705 );
