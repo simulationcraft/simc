@@ -1221,16 +1221,12 @@ public:
       if ( p()->buffs.lightsmith.masterwork_weapon->up() )
       {
         p()->buffs.lightsmith.masterwork_weapon->decrement();
-        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Weapon does nothing
-        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_weapon->up() )
-          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
       }
       if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
       {
         p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Bulwark does nothing
-        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_bulwark->up() )
-          p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
       }
     }
 

@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.1.64889
-static constexpr std::array<specialization_spell_entry_t, 612> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.1.64914
+static constexpr std::array<specialization_spell_entry_t, 610> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -436,11 +436,9 @@ static constexpr std::array<specialization_spell_entry_t, 612> __specialization_
   { 10,  269,  124146,      0, "Dual Wield"                        , 0 },
   { 10,  269,  128595,      0, "Combat Conditioning"               , 0 },
   { 10,  269,  137025,      0, "Windwalker Monk"                   , 0 },
-  { 10,  269,  137384,      0, "Combo Breaker"                     , 0 },
   { 10,  269,  157445,      0, "Critical Strikes"                  , 0 },
   { 10,  269,  162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   { 10,  269,  261916,      0, "Blackout Kick"                     , "Rank 2" },
-  { 10,  269,  261917,      0, "Sharp Reflexes"                    , 0 },
   { 10,  269,  322719,      0, "Afterlife"                         , "Rank 2" },
   { 10,  269,  323999,      0, "Empowered Tiger Lightning"         , 0 },
   { 10,  269,  325215,      0, "Touch of Death"                    , "Rank 3" },

@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.64889
+Class Spell ID List, wow build 12.0.1.64914
 
 Death Knight
 3714     Path of Frost
@@ -3220,6 +3220,7 @@ Demon Hunter
 1277769  Rolling Torment
 1279200  Eradicate
 1279247  Harness the Cosmos
+1283344  Reaver's Glaive
 
 Druid
 99       Incapacitating Roar
@@ -24004,7 +24005,7 @@ Warrior
 383704   Fatal Mark
 383706   Fatal Mark
 383848   Frenzied Enrage
-383852   Improved Bloodthirst
+383852   Spite
 383854   Improved Raging Blow
 383856  *Improved Rampage
 383873   Hack and Slash

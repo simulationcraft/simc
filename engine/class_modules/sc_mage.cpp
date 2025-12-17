@@ -845,6 +845,7 @@ public:
   double resource_regen_per_second( resource_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   void arise() override;
@@ -1401,6 +1402,7 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
+    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1408,8 +1410,6 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    // TODO: This *should* be affected by Touch of the Archmage and provide 25%, but
-    // it currently doesn't seem to work ingame.
     double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
     p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
     if ( p->talents.touch_of_the_archmage_3.ok() )
@@ -1755,6 +1755,7 @@ public:
       parse_effect_data( eff );
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+    rolling_periodic = spell->flags( SX_ROLLING_PERIODIC );
 
     affected_by.freeze_and_shatter_1 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 2 ) );
@@ -2691,12 +2692,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     p()->buffs.arcane_charge->expire();
     int salvo = p()->buffs.arcane_salvo->check();
-    if ( salvo && p()->talents.force_of_will.ok() )
-    {
-      // TODO: Force of Will seems to conjure one additional splinter if at
-      // least one stack of Arcane Salvo is present
-      p()->trigger_splinter( target, 1 + salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
-    }
+    if ( p()->talents.force_of_will.ok() )
+      p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
     p()->buffs.arcane_salvo->expire();
     if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
@@ -3187,7 +3184,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     double max_mana_mult = data().effectN( 2 ).base_value();
-    // TODO: Doesn't seem to work ingame, best guess at how it should work
     max_mana_mult *= 1.0 + p()->talents.mana_bomb->effectN( 1 ).percent();
     am *= 1.0 + p()->resources.pct( RESOURCE_MANA ) * ( max_mana_mult - 1.0 );
 
@@ -4012,7 +4008,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
       freezing_stacks = 0;
 
     chain_multiplier = 1.0; // The spell data value isn't used
-    // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
 
     if ( p->talents.duality.ok() )
     {
@@ -4214,11 +4209,9 @@ struct ice_lance_t final : public frost_mage_spell_t
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      // TODO: The old Polished Focus effect (1 Freezing refund on max consume) still somehow
-      // seems to be around. Definitely a bug.
-
       if ( stacks >= 1 )
       {
+        // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
         timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
         whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
         p()->cooldowns.frozen_orb->adjust( -whiteout );
@@ -4555,7 +4548,6 @@ struct mirror_image_t final : public mage_spell_t
 struct duality_glacial_spike_t final : public mage_spell_t
 {
   // TODO: Still seems to be using the old TWW set bonus GS
-  // TODO: Also affected by Flash Freezeburn
   duality_glacial_spike_t( std::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 1236209 ) )
   {
@@ -4563,18 +4555,6 @@ struct duality_glacial_spike_t final : public mage_spell_t
     background = proc = true;
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
-
-    if ( p->specialization() == MAGE_FIRE && p->talents.flash_freezeburn.ok() )
-      add_child( p->action.flash_freezeburn );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    mage_spell_t::impact( s );
-
-    // TODO: This is probably a bug
-    if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
-      p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
   }
 };
 
@@ -4874,9 +4854,9 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      const auto& td = get_td( s->target )->debuffs;
-      td.touch_of_the_magi->expire();
-      td.touch_of_the_magi->trigger();
+      auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
+      debuff->expire();
+      debuff->trigger();
     }
   }
 
@@ -5299,7 +5279,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
                                      ->set_expire_callback( [ mage ] ( buff_t* b, int stacks, timespan_t duration )
                                        {
-                                         // TODO: This currently doesn't work ingame
                                          if ( auto a = mage->action.winters_end; a && b->player->is_sleeping() && !b->sim->event_mgr.canceled )
                                          {
                                            double old_mult = a->base_multiplier;
@@ -6444,6 +6423,20 @@ double mage_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double mage_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( auto td = find_target_data( target ) )
+  {
+    auto totm = td->debuffs.touch_of_the_magi;
+    if ( totm->check() && totm->has_common_school( school ) )
+      m *= 1.0 + totm->data().effectN( 2 ).percent();
+  }
+
+  return m;
+}
+
 double mage_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double mul = player_t::composite_attribute_multiplier( attr );
@@ -6939,6 +6932,11 @@ void mage_t::trigger_splinter( player_t* target, int count )
   if ( count < 0 )
     count = 1; // TODO: Effect 2 of Splintering Sorcery? Unclear
 
+  // When multiple splinters trigger at once, they launch in a staggered fashion with
+  // about 100 ms between each.
+  constexpr timespan_t splinter_delay = 100_ms;
+  timespan_t total_delay = 0_ms;
+
   double chance = talents.splinterstorm->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
   {
@@ -6952,7 +6950,8 @@ void mage_t::trigger_splinter( player_t* target, int count )
     int per_conjure = ( buffs.splinterstorm->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
-      make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
+      make_event( *sim, total_delay, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
+      total_delay += splinter_delay;
     }
   }
 

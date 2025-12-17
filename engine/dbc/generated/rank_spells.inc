@@ -1,4 +1,4 @@
-// Rank class spells, wow build 12.0.1.64889
+// Rank class spells, wow build 12.0.1.64914
 static constexpr std::array<rank_class_spell_t, 42> __rank_spells_data { {
   {  1,    0,  319158,       0, "Victory Rush"                      , "Rank 2" },
   {  2,    0,  327977,       0, "Judgment"                          , "Rank 2" },

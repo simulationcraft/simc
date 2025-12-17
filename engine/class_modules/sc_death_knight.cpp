@@ -185,7 +185,8 @@ enum lesser_ghoul_e
   LESSER_ARMY_OF_THE_DEAD,
   LESSER_FESTERING_STRIKE,
   LESSER_PUTREFY,
-  LESSER_FORBIDDEN_KNOWLEDGE
+  LESSER_FORBIDDEN_KNOWLEDGE,
+  LESSER_SOUL_REAPER,
 };
 
 enum magus_of_the_dead_e
@@ -193,6 +194,14 @@ enum magus_of_the_dead_e
   MAGUS_DARK_TRANSFORMATION,
   MAGUS_ARMY_OF_THE_DEAD,
   MAGUS_REANIMATION,
+};
+
+enum putrefy_source_e
+{
+  PUTREFY_SOURCE_NONE,
+  PUTREFY_SOURCE_PUTREFY,
+  PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE,
+  PUTREFY_SOURCE_SOUL_REAPER
 };
 
 enum rider_of_the_apocalypse_e
@@ -654,6 +663,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
+    propagate_const<buff_t*> tightening_grasp;
 
     // Frost
     propagate_const<buff_t*> everfrost;
@@ -727,9 +737,8 @@ struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
-  ground_aoe_event_t* active_dnd;
+  std::vector<ground_aoe_event_t*> active_dnds;
   event_t* runic_power_decay;
-  action_t* last_cast_rp_spender;
 
   // Expression warnings
   // for old dot.death_and_decay.x expressions
@@ -744,6 +753,7 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
+  unsigned int magus_active;         // Number of active Magus of the Dead pets
 
   std::vector<player_t*> undeath_tl;
 
@@ -767,8 +777,9 @@ public:
     absorb_buff_t* blood_shield;
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
+    propagate_const<buff_t*> boiling_point;
+    propagate_const<buff_t*> boiling_point_echo;
     buff_t* bone_shield;
-    propagate_const<buff_t*> bonestorm;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
@@ -834,7 +845,6 @@ public:
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
     propagate_const<buff_t*> visceral_strength;
-    propagate_const<buff_t*> visceral_strength_unholy;
 
     // Deathbringer
     propagate_const<buff_t*> bind_in_darkness;
@@ -896,14 +906,15 @@ public:
     action_t* the_blood_is_life;
 
     // Blood
-    propagate_const<action_t*> bonestorm_tick;
     action_t* heart_strike_bloodied_blade;
+    action_t* blood_boil_boiling_point;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
     action_t* wave_of_souls;
     action_t* soul_rupture;
     action_t* exterminate;
+    action_t* exterminate_aoe;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -914,7 +925,6 @@ public:
     action_t* frost_strike_sb_offhand;
     propagate_const<action_t*> icy_death_torrent_damage;
     action_t* hyperpyrexia_damage;
-    propagate_const<action_t*> frostscythe_proc;
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
     propagate_const<action_t*> frozen_dominion_remorseless_winter;
@@ -938,6 +948,11 @@ public:
     propagate_const<action_t*> dread_plague;
     propagate_const<action_t*> putrefy;
     propagate_const<action_t*> putrefy_aoe;
+    propagate_const<action_t*> putrefy_sr;
+    propagate_const<action_t*> putrefy_sr_st;
+    propagate_const<action_t*> putrefy_sr_aoe;
+    propagate_const<action_t*> putrefy_fk_st;
+    propagate_const<action_t*> putrefy_fk_aoe;
     propagate_const<action_t*> dread_plague_death;
   } background_actions;
 
@@ -962,6 +977,7 @@ public:
     propagate_const<action_t*> db_ghoul_epi;
     propagate_const<action_t*> putrefy_ghoul;
     propagate_const<action_t*> fk_ghoul;
+    propagate_const<action_t*> sr_ghoul;
     propagate_const<action_t*> reanimation_magus;
     propagate_const<action_t*> army_magus;
     propagate_const<action_t*> raise_skulker;
@@ -986,7 +1002,6 @@ public:
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
-    propagate_const<gain_t*> bonestorm;
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
@@ -1338,7 +1353,7 @@ public:
       player_talent_t reapers_onslaught;
       player_talent_t deaths_messenger;
       player_talent_t expelling_shield;  // NYI
-      player_talent_t echoing_fury;      // NYI
+      player_talent_t echoing_fury;      
       player_talent_t exterminate;
     } deathbringer;
 
@@ -1390,19 +1405,19 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
+    const spell_data_t* boiling_point_buff;
+    const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
-    const spell_data_t* bonestorm;
-    const spell_data_t* bonestorm_damage;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
+    const spell_data_t* tightening_grasp_debuff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
-    const spell_data_t* bonestorm_heal;
     const spell_data_t* dancing_rune_weapon_buff;
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
@@ -1503,6 +1518,7 @@ public:
     const spell_data_t* summon_abomination;
     const spell_data_t* summon_army_ghoul;
     const spell_data_t* summon_lesser_ghoul;
+    const spell_data_t* summon_putrefy_ghoul;
     const spell_data_t* summon_magus;
     const spell_data_t* summon_reanimation_magus;
     const spell_data_t* raise_skulker;
@@ -1535,7 +1551,6 @@ public:
     const spell_data_t* vampiric_strike_range;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
-    const spell_data_t* visceral_strength_unholy_buff;
     const spell_data_t* bloodsoaked_ground_buff;
     const spell_data_t* transfusion_buff;
     const spell_data_t* desecrate_damage;
@@ -1767,6 +1782,7 @@ public:
   {
     std::unique_ptr<extended_sample_data_t> lesser_ghoul_duration;
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_active;
+    std::unique_ptr<extended_sample_data_t> magus_active;
   } sample_data;
 
   // Death Knight Options
@@ -1774,7 +1790,6 @@ public:
   {
     bool disable_aotd                     = false;
     bool split_ghoul_regen                = false;
-    bool split_obliterate_schools         = true;
     double ams_absorb_percent             = 0;
     bool individual_pet_reporting         = false;
     bool amz_specified                    = false;
@@ -1797,15 +1812,15 @@ public:
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
-      active_dnd( nullptr ),
+      active_dnds(),
       runic_power_decay( nullptr ),
-      last_cast_rp_spender( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
       soul_reaper_castable( false ),
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
+      magus_active( 0 ),
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -1967,7 +1982,7 @@ public:
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  double psuedo_random_p_from_c( double c );
+  double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
@@ -2486,9 +2501,9 @@ struct death_knight_pet_t : public pet_t
   buff_t* grave_mastery;
   buff_t* mastery_dreadblade_crit;
 
-  death_knight_pet_t( death_knight_t* player, std::string_view name, bool guardian = true, bool auto_attack = true,
+  death_knight_pet_t( death_knight_t* player, std::string_view name, pet_e type = PET_DEATH_KNIGHT, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
-    : pet_t( player->sim, player, name, guardian, dynamic ),
+    : pet_t( player->sim, player, name, type, guardian, dynamic ),
       use_auto_attack( auto_attack ),
       precombat_spawn( false ),
       affected_by_commander_of_the_dead( false ),
@@ -3017,29 +3032,17 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  timespan_t stun_duration;
   double spawn_distance;
   double spawn_radius;
-  base_ghoul_pet_t( death_knight_t* owner, std::string_view name, bool guardian = false, bool dynamic = true )
-    : death_knight_pet_t( owner, name, guardian, true, dynamic ),
-      stun_duration( 4.5_s ),
+
+  base_ghoul_pet_t( death_knight_t* owner, std::string_view name, pet_e type, bool guardian = false, bool dynamic = true )
+    : death_knight_pet_t( owner, name, type, guardian, true, dynamic ),
       spawn_distance( 0 ),
       spawn_radius( 0 )
   {
     main_hand_weapon.swing_time = 2.0_s;
     main_hand_weapon.type       = WEAPON_BEAST;
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
-  }
-
-  void init_finished() override
-  {
-    death_knight_pet_t::init_finished();
-    buffs.stunned->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
-      if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
-      {
-        trigger_pet_movement( spawn_distance );
-      }
-    } );
   }
 
   attack_t* create_main_hand_auto_attack() override
@@ -3079,24 +3082,23 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     if ( buffs.stunned->check() )
       return buffs.stunned->remains();
 
-    // Very Dirty optimization for 0 energy cost actions the ghouls can execute.
-    // Without the resource threshold checks here, things get very slow as its returning
-    // death_knight_pet_t::available(), running all ghoul APLs every 100ms
-    if ( resource_thresholds.empty() && !in_gcd() )
-      return death_knight_pet_t::available();
-
-    if ( resource_thresholds.empty() && in_gcd() )
+    if ( in_gcd() )
       return sim->current_time() - gcd_ready;
 
-    double energy = resources.current[ RESOURCE_ENERGY ];
+    if ( primary_resource() == RESOURCE_ENERGY )
+    {
+      double energy = resources.current[ RESOURCE_ENERGY ];
 
-    if ( energy >= resource_thresholds.front() )
-      return death_knight_pet_t::available();
+      if ( energy >= resource_thresholds.front() )
+        return death_knight_pet_t::available();
 
-    timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
-                                                        resource_regen_per_second( RESOURCE_ENERGY ) );
+      timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
+                                                          resource_regen_per_second( RESOURCE_ENERGY ) );
 
-    return std::max( time_to_next, death_knight_pet_t::available() );
+      return std::max( time_to_next, death_knight_pet_t::available() );
+    }
+
+    return death_knight_pet_t::available();
   }
 };
 
@@ -3194,6 +3196,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       aoe                     = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
+      base_costs[ RESOURCE_ENERGY ] = 0;
     }
   };
 
@@ -3236,7 +3239,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
+  ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
@@ -3431,6 +3434,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       aoe                     = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
+      base_costs[ RESOURCE_ENERGY ] = 0;
     }
   };
 
@@ -3443,7 +3447,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
-      base_costs[ RESOURCE_ENERGY ] = 0;
     }
 
     bool ready() override
@@ -3483,16 +3486,23 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
-    : base_ghoul_pet_t( owner, name, true )
+    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true )
   {
+    resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
   }
 
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
+  }
+
   void init_base_stats() override
   {
-    base_ghoul_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.3875;
+    // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
+    death_knight_pet_t::init_base_stats();
+    owner_coeff.ap_from_ap = 0.31;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 2;  // Not in data, testing suggests its 2x base lesser ghoul inheritence
   }
@@ -3500,7 +3510,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void arise() override
   {
     if ( dk()->talent.unholy.commander_of_the_dead.ok() )
-      dk()->sample_data.lesser_ghoul_duration->add( this->duration.total_seconds() );
+      dk()->sample_data.lesser_ghoul_duration->add( duration.total_seconds() );
 
     base_ghoul_pet_t::arise();
 
@@ -3520,7 +3530,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     base_ghoul_pet_t::demise();
 
-    dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
+    if ( !sim->event_mgr.canceled )
+      dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
   }
 
   void dismiss( bool expired = false ) override
@@ -3531,13 +3542,21 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::dismiss( expired );
   }
 
-  void putrefy_ghoul( bool log = true )
+  void putrefy_ghoul( putrefy_source_e source )
   {
-    make_event( *sim, rng().range( 1_ms, 100_ms ), [ & ]() {
-      dk()->background_actions.putrefy->execute_on_target( this->target );
+    make_event( *sim, rng().range( 1_ms, 100_ms ), [ &, source ]() {
+      if ( source == PUTREFY_SOURCE_SOUL_REAPER )
+        dk()->background_actions.putrefy_sr_st->execute_on_target( dk()->target );
+      else if ( source == PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE )
+        dk()->background_actions.putrefy_fk_st->execute_on_target( dk()->target );
+      else
+        dk()->background_actions.putrefy->execute_on_target( dk()->target );
 
       if ( dk()->pets.ghoul_pet.active_pet() )
         dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
+
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
+        dk()->buffs.blighted->trigger();
 
       dismiss( false );
 
@@ -3583,6 +3602,12 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     this->uptimes.primary_resource_cap = dk()->find_pet( name_str )->uptimes.primary_resource_cap;
   }
 
+  void init_finished() override
+  {
+    base_ghoul_pet_t::init_finished();
+    transfusion->set_quiet( true );
+  }
+
   double composite_player_multiplier( school_e school ) const override
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( school );
@@ -3623,7 +3648,7 @@ private:
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   gargoyle_pet_t( death_knight_t* owner )
-    : death_knight_pet_t( owner, "gargoyle", true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
+    : death_knight_pet_t( owner, "gargoyle", PET_GARGOYOLE, true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3746,7 +3771,7 @@ public:
 
 struct risen_skulker_pet_t : public death_knight_pet_t
 {
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false, false )
+  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", PET_RISEN_SKULKER, true, false, false )
   {
     resource_regeneration       = regen_type::DISABLED;
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
@@ -4000,6 +4025,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
+      // In simc, chain multiplier will reduce the damage per target hit, however in game
+      // this affect seems to be a constant reduction across all secondary targets
+      chain_multiplier = 1.0;
+      base_aoe_multiplier = p->dk()->talent.death_strike->effectN( 1 ).chain_multiplier();
     }
   };
 
@@ -4080,7 +4109,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, std::string_view drw_name = "dancing_rune_weapon" )
-    : death_knight_pet_t( owner, drw_name, true, false ), ability()
+    : death_knight_pet_t( owner, drw_name, PET_DANCING_RUNE_WEAPON, true, false ), ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner->main_hand_weapon.type;
@@ -4184,7 +4213,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
 struct bloodworm_pet_t : public death_knight_pet_t
 {
-  bloodworm_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "bloodworm", true, true )
+  bloodworm_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "bloodworm", PET_BLOODWORMS, true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
@@ -4259,7 +4288,7 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   magus_pet_t( death_knight_t* owner, std::string_view name = "dt_magus" )
-    : death_knight_pet_t( owner, name, true, false )
+    : death_knight_pet_t( owner, name, PET_MAGUS_OF_THE_DEAD, true, false )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -4285,6 +4314,9 @@ struct magus_pet_t : public death_knight_pet_t
     dk()->buffs.unholy_aura_haste->trigger();
     if ( dk()->talent.unholy.forbidden_knowledge_3.ok() )
       dk()->buffs.forbidden_ritual->trigger();
+
+    dk()->magus_active++;
+    dk()->sample_data.magus_active->add( dk()->magus_active );
   }
 
   void demise() override
@@ -4293,6 +4325,12 @@ struct magus_pet_t : public death_knight_pet_t
     dk()->buffs.unholy_aura_haste->decrement();
     if ( dk()->talent.unholy.forbidden_knowledge_3.ok() )
       dk()->buffs.forbidden_ritual->decrement();
+
+    if ( !dk()->sim->event_mgr.canceled )
+    {
+      dk()->magus_active--;
+      dk()->sample_data.magus_active->add( dk()->magus_active );
+    }
   }
 
   void init_action_list() override
@@ -4356,7 +4394,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     }
   };
 
-  blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", true, true ), accumulator( 0 )
+  blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", PET_BLOOD_BEAST, true, true ), accumulator( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1_s;
@@ -4472,8 +4510,8 @@ struct horseman_pet_t : public death_knight_pet_t
     }
   };
 
-  horseman_pet_t( death_knight_t* owner, std::string_view name, bool guardian = true, bool dynamic = false )
-    : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
+  horseman_pet_t( death_knight_t* owner, std::string_view name, pet_e type, bool guardian = true, bool dynamic = false )
+    : death_knight_pet_t( owner, name, type, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type     = WEAPON_BEAST_2H;
     owner_coeff.ap_from_ap    = 0.935;
@@ -4495,14 +4533,16 @@ struct horseman_pet_t : public death_knight_pet_t
     death_knight_pet_t::demise();
     rp_spent     = 0;
     current_pool = 0;
-    dk()->active_riders--;
+    if ( !dk()->sim->event_mgr.canceled )
+      dk()->active_riders--;
   }
 
   void reset() override
   {
     death_knight_pet_t::reset();
-    rp_spent     = 0;
-    current_pool = 0;
+    rp_spent            = 0;
+    current_pool        = 0;
+    dk()->active_riders = 0;
   }
 
   resource_e primary_resource() const override
@@ -4557,6 +4597,33 @@ struct mograine_pet_t final : public horseman_pet_t
     {
       background = true;
       aoe        = -1;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      horseman_spell_t::impact( s );
+      death_knight_td_t* td = dk()->get_target_data( s->target );
+      timespan_t dur        = dk()->talent.rider.riders_champion->effectN( 2 ).time_value();
+      std::vector<dot_t*> dots;
+      switch ( dk()->specialization() )
+      {
+        case DEATH_KNIGHT_UNHOLY:
+          if ( td->dot.virulent_plague->is_ticking() )
+            dots.push_back( td->dot.virulent_plague );
+          if ( td->dot.dread_plague->is_ticking() )
+            dots.push_back( td->dot.dread_plague );
+          break;
+        case DEATH_KNIGHT_FROST:
+          if ( td->dot.frost_fever->is_ticking() )
+            dots.push_back( td->dot.frost_fever );
+          break;
+        default:
+          break;
+      }
+
+      if ( !dots.empty() )
+        for ( auto& dot : dots )
+          dot->adjust_duration( dur );
     }
   };
 
@@ -4620,7 +4687,7 @@ struct mograine_pet_t final : public horseman_pet_t
     dnd_aura = make_buff<dnd_aura_t>( this );
   }
 
-  mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
+  mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine", PET_MOGRAINE )
   {
     npc_id                      = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -4792,7 +4859,7 @@ struct whitemane_pet_t final : public horseman_pet_t
     }
   };
 
-  whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane" )
+  whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane", PET_WHITEMANE )
   {
     npc_id                      = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -4913,7 +4980,7 @@ struct trollbane_pet_t final : public horseman_pet_t
     }
   };
 
-  trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
+  trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane", PET_TROLLBANE )
   {
     npc_id                      = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -4956,7 +5023,7 @@ public:
 // ==========================================================================
 struct nazgrim_pet_t final : public horseman_pet_t
 {
-  nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
+  nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim", PET_NAZGRIM )
   {
     npc_id                      = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -5052,7 +5119,7 @@ struct abomination_pet_t : public death_knight_pet_t
     abomination_pet_t* pet;
   };
 
-  abomination_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "abomination" )
+  abomination_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "abomination", PET_ABOMINATION )
   {
     npc_id                            = owner->spell.summon_abomination->effectN( 1 ).misc_value1();
     main_hand_weapon.type             = WEAPON_BEAST;
@@ -5182,20 +5249,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       affected_by{}
   {
     this->may_glance = false;
-    if ( this->cooldown->duration > 0_s )
-    {
-      this->track_cd_waste = true;
-    }
-
-    if ( !this->data().flags( spell_attribute::SX_CANNOT_CRIT ) && this->harmful )
-    {
-      this->may_crit = true;
-    }
-
-    if ( this->data().flags( spell_attribute::SX_TICK_MAY_CRIT ) )
-    {
-      this->tick_may_crit = true;
-    }
+    this->track_cd_waste = this->cooldown->duration > 0_s;
+    this->may_crit = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
+    this->tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
+    this->rolling_periodic = this->data().flags( spell_attribute::SX_ROLLING_PERIODIC );
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
@@ -5979,23 +6036,21 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     : death_knight_summon_spell_t( n, p, s ), source( type )
   {
     background = true;
-  }
-
-  void set_putrefy_instantly( bool v )
-  {
-    putrefy_instantly = v;
+    set_duration( data().duration() );
+    putrefy_instantly = s == p->spell.summon_putrefy_ghoul;
   }
 
   void execute() override
   {
     death_knight_summon_spell_t::execute();
     if ( source != LESSER_ARMY_OF_THE_DEAD )
-      set_duration( p()->spell.summon_lesser_ghoul->duration() );
+      set_duration( data().duration() );
 
     if ( p()->talent.unholy.commander_of_the_dead.ok() )
       duration *=
           1.0 + ( p()->cache.mastery() / 100 ) * p()->talent.unholy.commander_of_the_dead->effectN( 1 ).percent();
 
+    putrefy_source_e putrefy_source = PUTREFY_SOURCE_NONE;
     switch ( source )
     {
       case lesser_ghoul_e::LESSER_DOOMED_BIDDING_COIL:
@@ -6014,18 +6069,22 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
         p()->pets.lesser_ghoul_army.spawn( duration );
         p()->procs.lesser_ghoul_army->occur();
         break;
-      case lesser_ghoul_e::LESSER_PUTREFY:
-        putrefy_instantly = true;
+      case lesser_ghoul_e::LESSER_SOUL_REAPER:
         p()->pets.lesser_ghoul_putrefy.spawn( duration );
+        putrefy_source = PUTREFY_SOURCE_SOUL_REAPER;
+        break;
+      case lesser_ghoul_e::LESSER_PUTREFY:
+        p()->pets.lesser_ghoul_putrefy.spawn( duration );
+        putrefy_source = PUTREFY_SOURCE_PUTREFY;
         break;
       case lesser_ghoul_e::LESSER_FORBIDDEN_KNOWLEDGE:
-        putrefy_instantly = true;
-        p()->pets.lesser_ghoul_fk.spawn();
+        p()->pets.lesser_ghoul_fk.spawn( duration );
+        putrefy_source = PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE;
         break;
     }
 
     if ( putrefy_instantly )
-      p()->active_lesser_ghouls.back()->putrefy_ghoul( false );
+      p()->active_lesser_ghouls.back()->putrefy_ghoul( putrefy_source );
   }
 
 private:
@@ -6965,7 +7024,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->active_dnd )
+      if ( get_td( s->target )->dot.blood_plague->is_ticking() && p()->active_dnds.empty() )
       {
         if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->trigger() )
         {
@@ -7151,11 +7210,6 @@ struct dread_plague_erupt_t final : public death_knight_spell_t
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
-    if ( p->talent.unholy.superstrain.ok() )
-    {
-      aoe              = 2;
-      chain_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
-    }
   }
 };
 
@@ -7165,7 +7219,8 @@ struct dread_plague_t final : public death_knight_disease_t
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
       sd_chance( 0 ),
       ticks_since_last_proc( 0 ),
-      last_target( nullptr )
+      last_target( nullptr ),
+      erupt( nullptr )
   {
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
@@ -7174,8 +7229,24 @@ struct dread_plague_t final : public death_knight_disease_t
     add_child( p->background_actions.dread_plague_death );
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
-    {
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+
+    if ( p->talent.unholy.superstrain.ok() )
+    {
+      erupt                  = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
+      erupt->base_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
+      erupt->target_filter_callback = secondary_targets_only();
+      add_child( erupt );
+    }
+  }
+
+  void init_finished() override
+  {
+    death_knight_disease_t::init_finished();
+    if ( p()->talent.unholy.forbidden_knowledge_3.ok() )
+    {
+      add_child( p()->background_actions.putrefy_fk_st );
+      add_child( p()->background_actions.putrefy_fk_aoe );
     }
   }
 
@@ -7209,19 +7280,35 @@ struct dread_plague_t final : public death_knight_disease_t
     // for the time being. TODO: Test for longer... far longer
     if ( p()->talent.unholy.superstrain.ok() &&
          rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+    {
       p()->resource_gain( RESOURCE_RUNIC_POWER,
                           p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                           p()->gains.superstrain, this );
+
+      if ( p()->sim->target_non_sleeping_list.size() > 1 )
+      {
+        auto target = rng().range( erupt->target_list() );
+        erupt->execute_on_target( target, d->state->result_raw );
+      }
+    }
 
     if ( p()->talent.unholy.forbidden_knowledge_3.ok() &&
          rng().roll( p()->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) )
       p()->pet_summon.fk_ghoul->execute();
   }
 
+  void reset() override
+  {
+    death_knight_disease_t::reset();
+
+    ticks_since_last_proc = 0;
+  }
+
 private:
   double sd_chance;
   int ticks_since_last_proc;
   player_t* last_target;
+  action_t* erupt;
 };
 
 // Frost Fever =======================================================
@@ -7272,7 +7359,6 @@ struct infected_claws_t final : public death_knight_disease_t
   infected_claws_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.infected_claws_dot )
   {
-    rolling_periodic = true;
   }
 };
 
@@ -7499,7 +7585,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     if ( empowered )
-      empowered = false;
+      empowered--;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7516,7 +7602,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   }
 
 public:
-  bool empowered;
+  int empowered;
 };
 
 struct exterminate_t final : public death_knight_spell_t
@@ -7543,14 +7629,8 @@ struct exterminate_t final : public death_knight_spell_t
     }
     if ( empowered )
     {
-      empowered                                               = false;
-      debug_cast<exterminate_aoe_t*>( second_hit )->empowered = true;
+      empowered--;
     }
-
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD &&
-         rng().roll( p()->talent.deathbringer.exterminate->effectN( 6 ).percent() ) )
-      p()->buffs.bonestorm->extend_duration_or_trigger(
-          p()->talent.deathbringer.exterminate->effectN( 7 ).time_value() );
 
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
@@ -7568,11 +7648,9 @@ struct exterminate_t final : public death_knight_spell_t
     return m;
   }
 
-private:
-  action_t* second_hit;
-
 public:
-  bool empowered;
+  int empowered;
+  action_t* second_hit;
 };
 
 struct reapers_mark_explosion_t final : public death_knight_spell_t
@@ -7628,10 +7706,6 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
       p()->buffs.exterminate->trigger( exterminate_stacks );
     }
 
-    // if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
-    //{
-    //   p()->buffs.empowered_soul->trigger();
-    // }
   }
 
   void impact( action_state_t* state ) override
@@ -7812,15 +7886,8 @@ struct reapers_mark_t final : public death_knight_spell_t
             1 );
       } );
     }
-
-    if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
-    {
-      const int stacks = p()->specialization() == DEATH_KNIGHT_FROST
-                             ? as<int>( p()->talent.deathbringer.echoing_fury->effectN( 1 ).base_value() )
-                             : as<int>( p()->talent.deathbringer.echoing_fury->effectN( 4 ).base_value() );
-      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = true;
-      p()->buffs.exterminate->trigger( stacks );
-    }
+    if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() )
+      p()->buffs.bonegrinder_frost->trigger( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) );
   }
 };
 
@@ -7849,8 +7916,9 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      add_child( p->background_actions.the_blood_is_life );
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) );
+      add_child( p->pet_summon.blood_beast );
+      p->pet_summon.blood_beast->add_child( p->background_actions.the_blood_is_life );
     }
   }
 
@@ -7940,7 +8008,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
   army_of_the_dead_t( death_knight_t* p, std::string_view options_str )
     : death_knight_summon_spell_t( "army_of_the_dead", p, p->talent.unholy.army_of_the_dead ),
       precombat_time( 2.0 ),
-      summon_duration( p->spell.summon_lesser_ghoul->duration() ),
+      summon_duration( p->spell.summon_army_ghoul->duration() ),
       summon_abomination( nullptr ),
       abomination_duration( 0_s ),
       summon_gargoyle( nullptr ),
@@ -7983,7 +8051,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       summon_magus = get_action<summon_magus_t>( "magus_of_the_dead", p, p->spell.summon_magus,
                                                  magus_of_the_dead_e::MAGUS_ARMY_OF_THE_DEAD );
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( summon_magus ) );
-      magus_duration = p->spell.summon_magus->duration();
+      magus_duration = p->talent.unholy.magus_of_the_dead->effectN( 1 ).time_value();
       add_child( summon_magus );
     }
   }
@@ -8141,22 +8209,34 @@ struct blood_boil_t final : public death_knight_spell_t
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
   }
 
+  blood_boil_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->talent.blood.blood_boil )
+    {
+      aoe           = -1;
+      background    = true;
+      cooldown->duration = 0_ms;
+      impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    }
+
   void execute() override
   {
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
 
-    if ( p()->talent.sanlayn.visceral_strength->ok() &&
-         execute_state->n_targets >= p()->talent.sanlayn.visceral_strength->effectN( 2 ).base_value() )
-      p()->buffs.bone_shield->trigger( as<int>( p()->talent.sanlayn.visceral_strength->effectN( 3 ).base_value() ) );
+    if ( p()->buffs.boiling_point->up() )
+    {
+      p()->buffs.boiling_point->expire();
+      p()->buffs.boiling_point_echo->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
-    p()->buffs.hemostasis->trigger();
+    if( !background )
+      p()->buffs.hemostasis->trigger();
   }
 };
 
@@ -8210,106 +8290,12 @@ struct the_blood_is_life_t : public death_knight_spell_t
   }
 };
 
-// Bonestorm ================================================================
 
-struct bonestorm_heal_t : public death_knight_heal_t
-{
-  bonestorm_heal_t( std::string_view name, death_knight_t* p ) : death_knight_heal_t( name, p, p->spell.bonestorm_heal )
-  {
-    background = true;
-    target     = p;
-  }
-};
 
-struct bonestorm_tick_t final : public death_knight_melee_attack_t
-{
-  bonestorm_tick_t( std::string_view name, death_knight_t* p )
-    : death_knight_melee_attack_t( name, p, p->spell.bonestorm_damage ),
-      heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ),
-      heal_count( 0 ),
-      max_heals( p->spell.bonestorm->effectN( 4 ).base_value() )
-  {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-    weapon              = &( player->main_hand_weapon );
-  }
 
-  void execute() override
-  {
-    heal_count = 0;
-    death_knight_melee_attack_t::execute();
 
-    p()->buffs.bone_shield->trigger();
 
-    if ( p()->talent.icy_talons.ok() )
-    {
-      p()->buffs.icy_talons->trigger();
-    }
-  }
 
-  void impact( action_state_t* state ) override
-  {
-    death_knight_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      // Healing is limited at 5 occurances per tick, regardless of enemies hit
-      if ( heal_count < max_heals )
-      {
-        heal->execute();
-        heal_count++;
-      }
-    }
-  }
-
-private:
-  propagate_const<action_t*> heal;
-  int heal_count;
-  double max_heals;
-};
-
-struct bonestorm_t final : public death_knight_spell_t
-{
-  bonestorm_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "bonestorm", p, p->spell.bonestorm ), max_charges( 0 )
-  {
-    parse_options( options_str );
-    hasted_ticks = false;
-    max_charges  = data().effectN( 4 ).base_value();
-
-    add_child( get_action<bonestorm_tick_t>( "bonestorm_damage", p ) );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    int charges = std::min( p()->buffs.bone_shield->check(), as<int>( max_charges ) );
-    p()->buffs.bone_shield->decrement( charges );
-
-    if ( charges > 0 )
-    {
-      if ( p()->talent.blood.insatiable_blade->ok() )
-        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                                   charges );
-
-      p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
-      p()->buffs.bonestorm->extend_duration_or_trigger( p()->spell.bonestorm->duration() * charges );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buffs.bone_shield->check() )
-      return false;
-
-    return death_knight_spell_t::ready();
-  }
-
-private:
-  double max_charges;
-};
 
 // Breath of Sindragosa =====================================================
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
@@ -8579,18 +8565,18 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     // TODO: Double Check proc mechanics
-    if ( p()->talent.sanlayn.desecrate.ok() && p()->active_dnd &&
+    if ( p()->talent.sanlayn.desecrate.ok() && !p()->active_dnds.empty() &&
          rng().roll( p()->talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
     {
-      timespan_t remaining_time = p()->active_dnd->remains();
+      timespan_t remaining_time = p()->active_dnds.front()->remains();
       double ticks_left         = remaining_time.total_seconds();
       desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
       des->ticks_remain         = ticks_left;
       desecrate->execute();
 
       make_event( *sim, 1_ms, [ & ]() {
-        if ( p()->active_dnd )
-          event_t::cancel( p()->active_dnd );
+        if ( p()->active_dnds.front() )
+          event_t::cancel( p()->active_dnds.front() );
       } );
 
       // Retrigger the buff since the event destruction expires it
@@ -8686,12 +8672,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
     if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up() )
     {
       p()->buffs.crimson_scourge->decrement();
+
       if ( p()->talent.blood.perseverance_of_the_ebon_blade.ok() )
         p()->buffs.perseverance_of_the_ebon_blade->trigger();
+
       if ( p()->talent.sanlayn.visceral_strength )
-      {
         p()->buffs.visceral_strength->trigger();
-      }
     }
 
     make_event<ground_aoe_event_t>(
@@ -8708,7 +8694,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_dnd = event;
+                  p()->active_dnds.push_back( event );
                   break;
                 case ground_aoe_params_t::EVENT_STARTED:
                   p()->buffs.death_and_decay->trigger();
@@ -8717,7 +8703,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
                   p()->buffs.death_and_decay->expire( 4_s );
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p()->active_dnd = nullptr;
+                  range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
                   break;
                 default:
                   break;
@@ -8790,7 +8776,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
 struct death_coil_damage_base_t : public death_knight_spell_t
 {
   death_coil_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
-    : death_knight_spell_t( name, p, s ), sudden_doom( false ), cod_mod( 0.0 ), reaping_hp( 0.0 ), reaping_mod( 0.0 )
+    : death_knight_spell_t( name, p, s ), triggers_effects( true ), sudden_doom( false ), cod_mod( 0.0 ), reaping_hp( 0.0 ), reaping_mod( 0.0 )
   {
     if ( p->talent.unholy.coil_of_devastation.ok() )
       cod_mod = p->talent.unholy.coil_of_devastation->effectN( 1 ).percent();
@@ -8800,19 +8786,6 @@ struct death_coil_damage_base_t : public death_knight_spell_t
       reaping_hp  = p->talent.unholy.reaping->effectN( 2 ).base_value();
       reaping_mod = p->talent.unholy.reaping->effectN( 1 ).percent();
     }
-  }
-
-  std::vector<player_t*>& target_list() const override
-  {
-    std::vector<player_t*>& current_targets = death_knight_spell_t::target_list();
-    // Don't bother ordering the list if all the valid targets will be hit
-    if ( current_targets.size() <= as<size_t>( n_targets() ) )
-      return current_targets;
-
-    // first target, the action target, needs to be left in place
-    rng().shuffle( current_targets.begin() + 1, current_targets.end() );
-
-    return current_targets;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -8831,7 +8804,8 @@ struct death_coil_damage_base_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p()->unholy_rp_execute_effects( sudden_doom, true );
+    if ( triggers_effects )
+      p()->unholy_rp_execute_effects( sudden_doom, true );
   }
 
   void impact( action_state_t* state ) override
@@ -8842,9 +8816,12 @@ struct death_coil_damage_base_t : public death_knight_spell_t
       residual_action::trigger( p()->background_actions.coil_of_devastation, state->target,
                                 state->result_amount * cod_mod );
 
-    p()->unholy_rp_impact_effects( state, sudden_doom, true );
+    if( triggers_effects )
+      p()->unholy_rp_impact_effects( state, sudden_doom, true );
   }
 
+public:
+  bool triggers_effects;
 private:
   bool sudden_doom;
   double cod_mod;
@@ -8862,14 +8839,15 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   }
 };
 
-struct necrotic_coil_shadowstrike_t final : public death_knight_spell_t
+struct necrotic_coil_shadowstrike_t final : public death_coil_damage_base_t
 {
   necrotic_coil_shadowstrike_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
+    : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_physical )
   {
-    background     = true;
-    aoe            = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
-    execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    background       = true;
+    aoe              = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    execute_action   = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    triggers_effects = false;
   }
 };
 
@@ -8886,13 +8864,6 @@ struct death_coil_base_t : public death_knight_spell_t
 {
   death_coil_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s ) : death_knight_spell_t( n, p, s )
   {
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->last_cast_rp_spender = p()->background_actions.death_coil_damage;
   }
 };
 
@@ -8997,6 +8968,10 @@ struct death_strike_heal_t final : public death_knight_heal_t
 
   void impact( action_state_t* state ) override
   {
+    trigger_blood_shield( state );
+
+    p()->buffs.voracious->trigger();
+
     death_knight_heal_t::impact( state );
 
     auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
@@ -9005,8 +8980,6 @@ struct death_strike_heal_t final : public death_knight_heal_t
     // Reset timer if we healed for more than a min heal
     if ( min_heal < cur_heal )
       last_buff_consumption = sim->current_time();
-
-    trigger_blood_shield( state );
   }
 
 private:
@@ -9040,6 +9013,11 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
     weapon = &( p->main_hand_weapon );
 
+    // In simc, chain multiplier will reduce the damage per target hit, however in game
+    // this affect seems to be a constant reduction across all secondary targets
+    chain_multiplier = 1.0;
+    base_aoe_multiplier = p->talent.death_strike->effectN( 1 ).chain_multiplier();
+
     if ( p->dual_wield() )
     {
       oh_attack = get_action<death_strike_offhand_t>( "death_strike_offhand", p );
@@ -9060,21 +9038,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets
-    // applied before DS damage is calculated. So we apply the modifier here, but only if bloodshield is not up, to
-    // avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
-    if ( p()->talent.blood.bloodshot.ok() && !p()->buffs.blood_shield->up() )
-    {
-      m *= 1.0 + p()->spell.blood_shield->effectN( 2 ).percent();
-    }
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -9115,8 +9078,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    p()->buffs.voracious->trigger();
-
     death_knight_melee_attack_t::execute();
 
     if ( oh_attack )
@@ -9294,7 +9255,6 @@ struct epidemic_base_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p()->last_cast_rp_spender = p()->background_actions.epidemic_main;
     p()->unholy_rp_execute_effects( sd );
   }
 
@@ -9409,7 +9369,7 @@ struct festering_scythe_t final : public festering_base_t
                 switch ( type )
                 {
                   case ground_aoe_params_t::EVENT_CREATED:
-                    p()->active_dnd = event;
+                    p()->active_dnds.push_back( event );
                     break;
                   case ground_aoe_params_t::EVENT_STARTED:
                     p()->buffs.death_and_decay->trigger();
@@ -9418,7 +9378,7 @@ struct festering_scythe_t final : public festering_base_t
                     p()->buffs.death_and_decay->expire( 4_s );
                     break;
                   case ground_aoe_params_t::EVENT_DESTRUCTED:
-                    p()->active_dnd = nullptr;
+                    range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
                     break;
                   default:
                     break;
@@ -9517,16 +9477,6 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     }
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) && t == target )
-      m *= 1.0 + p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 4 ).percent();
-
-    return m;
-  }
-
 private:
   propagate_const<action_t*> inexorable_assault;
 };
@@ -9560,8 +9510,7 @@ struct frostscythe_t : public frostscythe_base_t
       p()->buffs.empower_rune_weapon->expire();
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
+    if ( p()->talent.rider.let_terror_reign->ok() && p()->pets.trollbane.active_pet() != nullptr )
       // 11.2 TODO check delays again between patch launch and season launch
       make_event<delayed_execute_event_t>( *sim, p(), p()->pets.trollbane.active_pet()->frostscythe,
                                            execute_state->target, p()->rng().gauss( 200_ms, 50_ms ) );
@@ -9576,33 +9525,6 @@ struct frostscythe_t : public frostscythe_base_t
 
 private:
   propagate_const<action_t*> aa_action;
-};
-
-struct frostscythe_proc_t : public frostscythe_base_t
-{
-  frostscythe_proc_t( util::string_view n, death_knight_t* p ) : frostscythe_base_t( n, p, p->find_spell( 207230 ) )
-  {
-    background         = true;
-    base_multiplier    = p->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 1 ).percent();
-    cooldown->duration = 0_ms;  // Override Spell data as this is a proc
-  }
-
-  void init_finished() override
-  {
-    frostscythe_base_t::init_finished();
-    // Override this here so our auto parsing doesn't mess with it
-    // PTR TODO: Might need to be removed once testing is possible, this assumes it can't
-    // proc effects based off rune spending
-    base_costs[ RESOURCE_RUNE ] = 0;
-    // Also assume it doesnt generate runic power.
-    energize_amount = 0;
-  }
-
-  double cost() const override
-  {
-    // Procs are free
-    return 0;
-  }
 };
 
 // Frostwyrm's Fury =========================================================
@@ -9653,8 +9575,11 @@ struct fwf_action_base_t : public death_knight_spell_t
     if ( p()->talent.rider.apocalypse_now.ok() )
       p()->summon_rider( rider_dur, rider_of_the_apocalypse_e::ALL_RIDERS );
 
-    if ( p()->talent.deathbringer.echoing_fury.ok() )
-      p()->buffs.exterminate->trigger( as<int>( exterm_stacks ) );
+    if ( p()->talent.deathbringer.echoing_fury.ok() ) {
+      p()->buffs.exterminate->trigger( exterm_stacks );
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = exterm_stacks;
+      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
+    }      
 
     if ( p()->talent.frost.chosen_of_frostbrood_1.ok() )
     {
@@ -9672,7 +9597,7 @@ struct fwf_action_base_t : public death_knight_spell_t
 
 public:
   timespan_t rider_dur;
-  double exterm_stacks;
+  int exterm_stacks;
   double haste_val;
   timespan_t pillar_extension;
   action_t* fwf_damage;
@@ -9687,7 +9612,7 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
     fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_recall", p, p->spell.frostwyrms_fury_damage );
     fwf_damage->base_multiplier = chosen_mult;
     rider_dur *= chosen_mult;
-    exterm_stacks *= chosen_mult;
+    exterm_stacks = as<int>(chosen_mult * exterm_stacks);
     haste_val *= chosen_mult;
     pillar_extension *= chosen_mult;
   }
@@ -9821,6 +9746,13 @@ struct frostbane_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
+
     // 11.2 TODO drive the delays from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
@@ -9900,18 +9832,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
   {
     const auto td = get_td( target );
 
-    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
-    // additional stacks til after the FS is resolved
-    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
-    // damage, expire IO
-
-    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
-    // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
-    }
-
     if ( td->debuff.frostreaper->up() )
     {
       frostreaper->execute_on_target( target );
@@ -9934,6 +9854,18 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     }
 
     death_knight_melee_attack_t::execute();
+
+    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
+    // additional stacks til after the FS is resolved
+    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
+    // damage, expire IO
+
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
 
     if ( hit_any_target )
     {
@@ -10066,18 +9998,20 @@ private:
 struct glacial_advance_t final : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "glacial_advance", p, p->spec.glacial_advance )
+    : death_knight_spell_t( "glacial_advance", p, p->spec.glacial_advance ),
+      damage_action( get_action<glacial_advance_damage_t>( "glacial_advance_damage", p ) )
   {
     parse_options( options_str );
 
     weapon = &( p->main_hand_weapon );
 
-    execute_action = get_action<glacial_advance_damage_t>( "glacial_advance_damage", p );
-    add_child( execute_action );
+    add_child( damage_action );
   }
 
   void execute() override
   {
+    death_knight_spell_t::execute();
+
     // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
     // additional stacks til after the FS is resolved
     // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
@@ -10090,7 +10024,8 @@ struct glacial_advance_t final : public death_knight_spell_t
       p()->buffs.icy_onslaught->trigger();
     }
 
-    death_knight_spell_t::execute();
+    // 12.0 TODO drive the delay from likely misc values
+    make_event<delayed_execute_event_t>( *sim, p(), damage_action, execute_state->target, 100_ms );
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
@@ -10107,6 +10042,9 @@ struct glacial_advance_t final : public death_knight_spell_t
 
     p()->buffs.rime->trigger();
   }
+
+  private:
+  action_t* damage_action;
 };
 
 // Gorefiend's Grasp ========================================================
@@ -10118,6 +10056,15 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    auto td = get_td( state->target );
+    if ( td )
+      td->debuff.tightening_grasp->trigger();
   }
 };
 
@@ -10140,11 +10087,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
+      boiling_point_proc_attempts( 0 )
   {
     aoe             = 2;
     weapon          = &( p->main_hand_weapon );
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
+
+    if ( p->talent.blood.boiling_point.ok() )
+      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
   }
 
   int n_targets() const override
@@ -10164,6 +10115,12 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
+
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
+    {
+      p()->buffs.boiling_point->trigger();
+      boiling_point_proc_attempts = 0;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -10192,9 +10149,18 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     }
   }
 
+  void reset() override
+  {
+    death_knight_melee_attack_t::reset();
+
+    boiling_point_proc_attempts = 0;
+  }
+
 private:
   propagate_const<action_t*> leeching_strike;
   double heartbreaker_rp_gen;
+  double boiling_point_proc_chance;
+  int boiling_point_proc_attempts;
 };
 
 struct vampiric_strike_blood_t : public heart_strike_base_t
@@ -10636,9 +10602,9 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
-    // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied
-    // automatically.
-    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
+    // The phsyical portion of Obliterate does not list Frozen Heart in it's list of affecting spells so needs manual intervention when frostreaper applies.
+    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST &&
+         !data().affected_by( p()->mastery.frozen_heart ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -10655,11 +10621,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
-    }
-    if ( !p()->bugs && p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         td->debuff.chains_of_ice_trollbane_slow->check() )
-    {
-      m *= 1.0 + p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 )->effectN( 4 ).percent();
     }
 
     return m;
@@ -10753,6 +10714,9 @@ struct obliterate_t final : public death_knight_melee_attack_t
     const spell_data_t* mh_data =
         p->main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
+    const spell_data_t* frost_mh_data =
+        p->main_hand_weapon.group() == WEAPON_2H ? data().effectN( 9 ).trigger() : data().effectN( 7 ).trigger();
+
     // Misc_value1 contains the delay in milliseconds for the spells being executed
     mh_delay = timespan_t::from_millis( as<int>( p->main_hand_weapon.group() == WEAPON_2H
                                                      ? data().effectN( 4 ).misc_value1()
@@ -10768,12 +10732,19 @@ struct obliterate_t final : public death_knight_melee_attack_t
     mh = new obliterate_strike_t( p, "obliterate", &( p->main_hand_weapon ), mh_data );
     add_child( mh );
 
+    frost_mh = new obliterate_strike_t( p, "obliterate_frost", &( p->main_hand_weapon ), frost_mh_data );
+    add_child( frost_mh );
+
     if ( p->off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new obliterate_strike_t( p, "obliterate_offhand", &( p->off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
+
+      frost_oh = new obliterate_strike_t( p, "obliterate_offhand_frost", &( p->off_hand_weapon ),
+                                          data().effectN( 8 ).trigger() );
+      add_child( frost_oh );
     }
-    if ( p->options.split_obliterate_schools && p->spec.frostreaper->ok() )
+    if ( p->spec.frostreaper->ok() )
     {
       km_mh         = new obliterate_strike_t( p, "obliterate_km", &( p->main_hand_weapon ), mh_data );
       km_mh->school = SCHOOL_FROST;
@@ -10801,9 +10772,13 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_mh : mh,
                                            execute_state->target, mh_delay );
+      make_event<delayed_execute_event_t>( *sim, p(), frost_mh, execute_state->target, mh_delay );
       if ( oh )
+      {
         make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_oh : oh,
                                              execute_state->target, oh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), frost_oh, execute_state->target, oh_delay );
+      }
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -10813,8 +10788,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
                                            500_ms );
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
+    if ( p()->talent.rider.let_terror_reign->ok() && p()->pets.trollbane.active_pet() != nullptr )
     {
       p()->pets.trollbane.active_pet()->obliterate->consumed_km = p()->buffs.killing_machine->up();
       p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
@@ -10838,7 +10812,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
   }
 
 private:
-  obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
+  obliterate_strike_t *mh, *oh, *km_mh, *km_oh, *frost_mh, *frost_oh;
   timespan_t mh_delay;
   timespan_t oh_delay;
   timespan_t total_delay;
@@ -10933,21 +10907,6 @@ struct outbreak_t final : public death_knight_spell_t
       set_replacement_action( new pestilence_t( "pestilence", p ), p->buffs.pestilence );
   }
 
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p()->buffs.visceral_strength_unholy->check() )
-    {
-      p()->last_cast_rp_spender->execute_on_target( target );
-      if ( p()->last_cast_rp_spender == p()->background_actions.death_coil_damage )
-        p()->procs.coil_vs->occur();
-      else
-        p()->procs.epi_vs->occur();
-      p()->buffs.visceral_strength_unholy->expire();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
@@ -10993,16 +10952,18 @@ struct putrefy_aoe_t final : public death_knight_spell_t
   putrefy_aoe_t( std::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.putrefy_aoe ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
-    aoe                = -1;
-    radius             = data().effectN( 1 ).radius_max();
-    background         = true;
-    name_str_reporting = "aoe";
+    aoe        = -1;
+    radius     = data().effectN( 1 ).radius_max();
+    background = true;
     if ( p->talent.unholy.blightburst.ok() )
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
-      add_child( p->background_actions.virulent_plague_erupt_bb );
-      add_child( p->background_actions.dread_plague_erupt_bb );
+      if ( n == "putrefy_aoe" )
+      {
+        add_child( p->background_actions.virulent_plague_erupt_bb );
+        add_child( p->background_actions.dread_plague_erupt_bb );
+      }
     }
   }
 
@@ -11047,8 +11008,12 @@ struct putrefy_st_t final : public death_knight_spell_t
   {
     background         = true;
     cooldown->duration = 0_ms;
-    execute_action     = p->background_actions.putrefy_aoe;
-    name_str_reporting = "st";
+    if ( n == "putrefy_sr_st" )
+      execute_action = p->background_actions.putrefy_sr_aoe;
+    else if ( n == "putrefy_fk_st" )
+      execute_action = p->background_actions.putrefy_fk_aoe;
+    else
+      execute_action = p->background_actions.putrefy_aoe;
   }
 };
 
@@ -11067,7 +11032,7 @@ struct putrefy_t final : public death_knight_spell_t
       add_child( p->background_actions.dread_plague );
     }
 
-    p->cooldown.putrefy = cooldown;
+    cooldown = p->cooldown.putrefy;
 
     if ( p->talent.unholy.reanimation.ok() )
     {
@@ -11085,10 +11050,32 @@ struct putrefy_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
-      p()->buffs.blighted->trigger();
-
     p()->pet_summon.putrefy_ghoul->execute();
+  }
+};
+
+struct putrefy_sr_t : public death_knight_spell_t
+{
+  putrefy_sr_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->talent.unholy.putrefy )
+  {
+    background                  = true;
+    cooldown                    = p->cooldown.putrefy;
+    base_costs[ RESOURCE_RUNE ] = 0;
+    energize_amount             = 0;
+    add_child( p->background_actions.putrefy_sr_aoe );
+    add_child( p->background_actions.putrefy_sr_st );
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->pet_summon.sr_ghoul->execute();
   }
 };
 
@@ -11358,6 +11345,17 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     return m;
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double amount = death_knight_melee_attack_t::composite_energize_amount( s );
+
+    // Unlike most things that make abilities cost 0 runes, Blightd prevents runic power from being generated.
+    if ( p()->buffs.blighted->check() )
+      amount *= 0;
+
+    return amount;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -11486,12 +11484,15 @@ struct soul_reaper_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     p->cooldown.soul_reaper = cooldown;
+    add_child( p->background_actions.putrefy_sr );
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
     p()->soul_reaper_castable = false;
+    if ( p()->cooldown.putrefy->current_charge >= 1 )
+      p()->background_actions.putrefy_sr->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -11965,7 +11966,6 @@ void death_knight_t::create_options()
 
   add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
-  add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
@@ -11995,6 +11995,7 @@ void death_knight_t::merge( player_t& other )
     sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
 
   sample_data.lesser_ghouls_active->merge( *dk.sample_data.lesser_ghouls_active );
+  sample_data.magus_active->merge( *dk.sample_data.magus_active );
 }
 
 std::string death_knight_t::create_profile( save_e type )
@@ -12041,6 +12042,7 @@ void death_knight_t::analyze( sim_t& s )
     sample_data.lesser_ghoul_duration->analyze();
 
   sample_data.lesser_ghouls_active->analyze();
+  sample_data.magus_active->analyze();
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -12048,10 +12050,10 @@ bool death_knight_t::in_death_and_decay() const
   if ( talent.rider.mograines_might.ok() && buffs.mograines_might->check() )
     return true;
 
-  if ( !sim->distance_targeting_enabled || !active_dnd )
-    return active_dnd != nullptr;
+  if ( !sim->distance_targeting_enabled || active_dnds.empty() )
+    return !active_dnds.empty();
 
-  return get_ground_aoe_distance( *active_dnd->pulse_state ) <= active_dnd->pulse_state->action->radius;
+  return get_ground_aoe_distance( *active_dnds.front()->pulse_state ) <= active_dnds.front()->pulse_state->action->radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -12645,7 +12647,7 @@ void death_knight_t::trigger_drw_action( drw_actions_e action )
   drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
 }
 
-double death_knight_t::psuedo_random_p_from_c( double c )
+double death_knight_t::pseudo_random_p_from_c( double c )
 {
   if ( c <= 0 )
     return 0.0;
@@ -12678,7 +12680,7 @@ double death_knight_t::pseudo_random_c_from_p( double p )
   while ( true )
   {
     c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = psuedo_random_p_from_c( c_mid );
+    p1    = pseudo_random_p_from_c( c_mid );
     if ( std::abs( p1 - p2 ) <= 0 )
       break;
 
@@ -12812,7 +12814,6 @@ void death_knight_t::set_runeforges()
 void death_knight_t::create_actions()
 {
   background_actions.death_coil_damage = get_action<death_coil_damage_t>( "death_coil_damage", this );
-  last_cast_rp_spender                 = background_actions.death_coil_damage;
 
   // Runeforges
   if ( has_runeforge( RUNEFORGE_APOCALYPSE ) )
@@ -12875,7 +12876,7 @@ void death_knight_t::create_actions()
   if ( talent.sanlayn.the_blood_is_life.ok() )
   {
     background_actions.the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
-    pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast_summon", this );
+    pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast", this );
   }
 
   // Deathbringer
@@ -12895,6 +12896,10 @@ void death_knight_t::create_actions()
   {
     background_actions.exterminate = get_action<exterminate_t>( "exterminate", this );
   }
+  if ( talent.deathbringer.exterminate.ok() )
+  {
+    background_actions.exterminate_aoe = get_action<exterminate_aoe_t>( "exterminate_second_hit", this );
+  }
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -12908,10 +12913,8 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-    if ( talent.deathbringer.exterminate.ok() )
-    {
-      background_actions.bonestorm_tick = get_action<bonestorm_tick_t>( "bonestorm_damage", this );
-    }
+    if ( talent.blood.boiling_point->ok() )
+      background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
   }
 
   // Unholy
@@ -12957,13 +12960,12 @@ void death_knight_t::create_actions()
     {
       background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
       background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
-      if ( talent.unholy.necromancers_cunning.ok() )
-        pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_lesser_ghoul,
-                                                                      lesser_ghoul_e::LESSER_PUTREFY );
+      pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
+                                                                    lesser_ghoul_e::LESSER_PUTREFY );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
-      pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_lesser_ghoul,
+      pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
 
     if ( talent.unholy.infected_claws.ok() )
@@ -12987,9 +12989,24 @@ void death_knight_t::create_actions()
     if ( talent.unholy.all_will_serve.ok() )
       pet_summon.raise_skulker = get_action<raise_skulker_t>( "raise_skulker", this );
 
-    if ( talent.unholy.forbidden_knowledge_2.ok() )
-      pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_lesser_ghoul,
+    if ( talent.unholy.forbidden_knowledge_3.ok() )
+    {
+      background_actions.putrefy_fk_aoe                  = get_action<putrefy_aoe_t>( "putrefy_fk_aoe", this );
+      background_actions.putrefy_fk_st                   = get_action<putrefy_st_t>( "putrefy_fk_st", this );
+      background_actions.putrefy_fk_st->base_multiplier  = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+      background_actions.putrefy_fk_aoe->base_multiplier = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+      pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_FORBIDDEN_KNOWLEDGE );
+    }
+
+    if ( talent.unholy.soul_reaper.ok() )
+    {
+      background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this );
+      background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this );
+      background_actions.putrefy_sr     = get_action<putrefy_sr_t>( "putrefy_sr", this );
+      pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_putrefy_ghoul,
+                                                               lesser_ghoul_e::LESSER_SOUL_REAPER );
+    }
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -13060,11 +13077,6 @@ void death_knight_t::create_actions()
     if ( talent.frost.frostbane.ok() )
     {
       background_actions.frostbane_strike = get_action<frostbane_strike_t>( "frostbane", this );
-    }
-
-    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
-    {
-      background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
     }
 
     if ( talent.frost.arctic_assault.ok() )
@@ -13310,14 +13322,15 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     // Returns true if there's an active dnd
     if ( util::str_compare_ci( splits[ 1 ], "ticking" ) || util::str_compare_ci( splits[ 1 ], "up" ) )
     {
-      return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnd ? 1 : 0; } );
+      return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnds.empty() ? 0 : 1; });
     }
 
     // Returns the remaining value on the active dnd, or 0 if there's no dnd
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
-      return make_fn_expr( "dnd_remains",
-                           [ this ]() { return active_dnd ? active_dnd->remaining_time().total_seconds() : 0; } );
+      return make_fn_expr( "dnd_remains", [ this ]() {
+        return active_dnds.empty() ? 0 : active_dnds.front()->remaining_time().total_seconds();
+      } );
     }
 
     // Returns true if there's an active dnd AND the player is inside it
@@ -13330,7 +13343,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "active_remains" ) )
     {
       return make_fn_expr( "dnd_active_remains", [ this ]() {
-        return in_death_and_decay() ? active_dnd->remaining_time().total_seconds() : 0;
+        return in_death_and_decay() ? active_dnds.front()->remaining_time().total_seconds() : 0;
       } );
     }
 
@@ -13977,7 +13990,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.apocalypse_pestilence_damage =
       conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
   runeforge_spell.razorice_damage       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 50401 );
-  runeforge_spell.razorice_debuff       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
+  runeforge_spell.razorice_debuff       = conditional_spell_lookup( spec.glacial_advance->ok() || has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
   runeforge_spell.sanguination_cooldown = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
   runeforge_spell.sanguination_heal     = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
   runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
@@ -13996,14 +14009,14 @@ void death_knight_t::spell_lookups()
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
+  spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
-  spell.bonestorm                   = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 194844 );
-  spell.bonestorm_damage            = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 196528 );
-  spell.bonestorm_heal              = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 196545 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.tightening_grasp_debuff     = conditional_spell_lookup( talent.blood.gorefiends_grasp.ok(), 374776 );
   spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
@@ -14111,6 +14124,7 @@ void death_knight_t::spell_lookups()
   spell.summon_abomination       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 288853 );
   spell.summon_army_ghoul        = conditional_spell_lookup( talent.unholy.army_of_the_dead.ok(), 1282535 );
   spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
+  spell.summon_putrefy_ghoul     = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1277098 );
   spell.summon_magus             = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 317776 );
   spell.summon_reanimation_magus = conditional_spell_lookup( talent.unholy.reanimation.ok(), 1242294 );
   spell.raise_skulker            = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 196910 );
@@ -14145,8 +14159,6 @@ void death_knight_t::spell_lookups()
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
-  spell.visceral_strength_unholy_buff = conditional_spell_lookup(
-      talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, 1234532 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
   spell.transfusion_buff        = conditional_spell_lookup( talent.sanlayn.transfusion.ok(), 1265577 );
   spell.desecrate_damage        = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
@@ -14416,6 +14428,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value_from_effect( 1 );
 
   // Blood
+  debuff.tightening_grasp = make_debuff( p.talent.blood.gorefiends_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff );
 
   // Frost
   debuff.everfrost =
@@ -14564,8 +14577,6 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect( 1 );
 
   // Deathbringer
-  buffs.empowered_soul = make_fallback( sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B4 ), this, "empowered_soul",
-                                        talent.deathbringer.echoing_fury->effectN( 3 ).trigger() );
 
   buffs.bind_in_darkness =
       make_fallback( talent.deathbringer.bind_in_darkness.ok(), this, "bind_in_darkness", spell.bind_in_darkness_buff )
@@ -14627,10 +14638,6 @@ void death_knight_t::create_buffs()
           ->add_invalidate( CACHE_STRENGTH )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  buffs.visceral_strength_unholy =
-      make_fallback( talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, this,
-                     "visceral_strength_unholy", spell.visceral_strength_unholy_buff );
-
   buffs.bloodsoaked_ground = make_fallback( talent.sanlayn.bloodsoaked_ground.ok(), this, "bloodsoaked_ground",
                                             spell.bloodsoaked_ground_buff );
 
@@ -14638,6 +14645,12 @@ void death_knight_t::create_buffs()
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.blood_shield = make_buff<blood_shield_buff_t>( this );
+
+    buffs.boiling_point = make_buff( this, "boiling_point", spell.boiling_point_buff );
+    buffs.boiling_point_echo = make_buff( this, "boiling_point_echo", spell.boiling_point_echo_buff )
+              ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        background_actions.blood_boil_boiling_point->execute();
+              } );
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
@@ -14670,12 +14683,6 @@ void death_knight_t::create_buffs()
             } )
             // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
             ->set_cooldown( 0_ms );
-
-    buffs.bonestorm = make_buff( this, "bonestorm", spell.bonestorm )
-                          ->set_cooldown( 0_ms )  // Handled by the action
-                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                          ->set_tick_callback(
-                              [ this ]( buff_t*, int, timespan_t ) { background_actions.bonestorm_tick->execute(); } );
 
     buffs.bloodied_blade_stacks =
         make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
@@ -14933,7 +14940,8 @@ void death_knight_t::create_buffs()
   buffs.unholy_aura_haste =
       make_fallback( talent.unholy.unholy_aura.ok(), this, "unholy_aura", spell.unholy_aura_mastery_buff )
           ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).percent() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
@@ -14971,7 +14979,6 @@ void death_knight_t::init_gains()
   gains.coldthirst               = get_gain( "Coldthirst" );
 
   // Blood
-  gains.bonestorm        = get_gain( "Bonestorm" );
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
@@ -15031,7 +15038,7 @@ void death_knight_t::init_procs()
 
   procs.lesser_ghoul_army = get_proc( "Lesser Ghoul from Army" );
   procs.lesser_ghoul_db   = get_proc( "Lesser Ghoul from Doomed Bidding" );
-  procs.lesser_ghoul_fs   = get_proc( "Lesser Ghoul from Festering Strike" );
+  procs.lesser_ghoul_fs   = get_proc( "Lesser Ghoul from Scourge Strike" );
 
   procs.rp_runic_corruption = get_proc( "Runic Corruption from Runic Power Spent" );
 
@@ -15044,8 +15051,6 @@ void death_knight_t::init_procs()
   procs.blood_beast           = get_proc( "Blood Beast" );
   procs.vampiric_strike       = get_proc( "Vampiric Strike Proc" );
   procs.vampiric_strike_waste = get_proc( "Vampiric Strike Proc Wasted" );
-
-  procs.exterminate_reapers_mark = get_proc( "Reaper's Mark from Exterminate" );
 }
 
 // death_knight_t::init_uptimes =============================================
@@ -15056,6 +15061,7 @@ void death_knight_t::init_uptimes()
     sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
 
   sample_data.lesser_ghouls_active = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
+  sample_data.magus_active         = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
   // Enable detailed reporting for primary resource cap uptimes if requested
   if ( sim->report_details == 1 )
@@ -15104,6 +15110,11 @@ void death_knight_t::init_finished()
 
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
+
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    magus_active = 0;
+
+  active_riders = 0;
 
   player_t::init_finished();
 }
@@ -15233,18 +15244,18 @@ void death_knight_t::activate()
       } );
 
       // This should probably be core to ground_aoe_event_t, canceling the event when leaving combat
-      if ( active_dnd != nullptr )
+      if ( !active_dnds.empty() )
       {
-        event_t::cancel( active_dnd );
+        event_t::cancel( active_dnds.front() );
         buffs.death_and_decay->expire();
         make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
       }
     }
     else
     {
-      if ( active_dnd != nullptr )
+      if ( !active_dnds.empty() )
       {
-        event_t::cancel( active_dnd );
+        event_t::cancel( active_dnds.front() );
         buffs.death_and_decay->expire();
       }
 
@@ -15281,14 +15292,15 @@ void death_knight_t::activate()
 
 void death_knight_t::reset()
 {
-  player_t::reset();
+  parse_player_effects_t::reset();
 
   _runes.reset();
-  active_dnd                   = nullptr;
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
+  magus_active                 = 0;
+  active_dnds.clear();
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
 }
@@ -15297,7 +15309,7 @@ void death_knight_t::reset()
 
 void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
-  player_t::assess_damage( school, type, s );
+  parse_player_effects_t::assess_damage( school, type, s );
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
   {
@@ -15328,8 +15340,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     buffs.bone_shield->decrement();
   }
   cooldown.bone_shield_icd->start();
-
-  cooldown.dancing_rune_weapon->adjust( talent.blood.insatiable_blade->effectN( 1 ).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e, result_amount_type, action_state_t* s )
@@ -15540,6 +15550,15 @@ inline double death_knight_t::rune_regen_coefficient() const
 // death_knight_t::arise ====================================================
 void death_knight_t::arise()
 {
+  runic_power_decay            = nullptr;
+  km_proc_attempts             = 0;
+  bone_shield_charges_consumed = 0;
+  active_riders                = 0;
+  magus_active                 = 0;
+  active_dnds.clear();
+  dk_active_pets.clear();
+  active_lesser_ghouls.clear();
+
   player_t::arise();
   start_inexorable_assault();
 
@@ -15568,6 +15587,8 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
       if ( !pet )
         action->parse_effects( buffs.coagulopathy );
+      action->parse_effects( buffs.blood_shield );
+      action->parse_effects( buffs.boiling_point );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
@@ -15616,7 +15637,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.a_feast_of_souls );
         break;
       case HERO_SANLAYN:
-        action->parse_effects( buffs.visceral_strength_unholy );
         action->parse_effects( buffs.essence_of_the_blood_queen, [ & ]( double v ) {
           if ( buffs.gift_of_the_sanlayn->check() )
             v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
@@ -15714,7 +15734,6 @@ void death_knight_t::parse_player_effects()
   {
     case DEATH_KNIGHT_BLOOD:
       parse_effects( mastery.blood_shield );
-      parse_effects( buffs.blood_shield );
       parse_effects( buffs.voracious );
       parse_effects( buffs.dancing_rune_weapon );
       parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
@@ -15794,8 +15813,8 @@ public:
   {
     // Basic Table
     os << "<div class=\"player-section custom_section\">\n";
-    os << "<h3 class=\"toggle open\">Rune waste details</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+    os << "<h3 class=\"toggle\">Rune waste details</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
 
     os << "<p style=\"width: 75%\">"
        << "In the table below, &quot;Seconds per Rune&quot; denotes the time in seconds an individual "
@@ -15887,8 +15906,8 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Runic Power Waste Details</h3>\n"
-          "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle\">Runic Power Waste Details</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
 
     int num_buckets = std::min( 24, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
     d.create_histogram( num_buckets );
@@ -15959,7 +15978,7 @@ public:
     if ( d.count() == 0 )
       return;
 
-    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "lesser_ghoul_active" ), *p.sim );
@@ -16031,13 +16050,64 @@ public:
     } );
 
     os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Lesser Ghouls</h3>\n"
-          "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle\">Lesser Ghouls</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
 
     os << lesser_ghoul_sources.to_target_div();
     p.sim->add_chart_data( lesser_ghoul_sources );
     lesser_ghoul_duration_chart( os );
     lesser_ghoul_active_chart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
+  void magus_active_chart( report::sc_html_stream& os )
+  {
+    if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
+      return;
+
+    auto& d = *p.sample_data.magus_active;
+    if ( d.count() == 0 )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle\">Magus of the Dead</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "magus_active" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Magus' Active", d.mean(), d.min(), d.max() ) )
+    {
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
 
     os << "</div>\n"
           "</div>\n";
@@ -16052,6 +16122,7 @@ public:
 
       html_rp_waste( os );
       lesser_ghoul_charts( os );
+      magus_active_chart( os );
     }
   }
 

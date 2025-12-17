@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -20713,7 +20713,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

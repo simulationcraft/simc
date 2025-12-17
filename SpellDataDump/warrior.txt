@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -852,7 +852,7 @@ Spurs all allies within $1244157A1 yards, increasing their movement speed by $12
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Improved Whirlwind (id=12950) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -1311,7 +1311,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 4.5 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Fresh Meat (215568 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #3, #4), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#1), Impale (383430 effect#1), Improved Bloodthirst (383852 effects: #1, #2), Battle Stance (386164 effect#4), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#4), Burst of Power (437121 effects: #2, #3), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Deep Thirst (455495 effect#1), Fierce Followthrough (458689 effect#2), Double Down (1216565 effects: #1, #2), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Scent of Blood (1265399 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Fresh Meat (215568 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #3, #4), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#1), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#4), Burst of Power (437121 effects: #2, #3), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Deep Thirst (455495 effect#1), Fierce Followthrough (458689 effect#2), Double Down (1216565 effects: #1, #2), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Scent of Blood (1265399 effect#1)
 Family Flags     : 8, 9, 18, 42
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -1437,7 +1437,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Arms [tree=spec, row=2, col=2, max_rank=1, req_points=0]
-                 : Fury [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+                 : Fury [tree=spec, row=3, col=1, max_rank=1, req_points=0]
                  : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
 Class            : Warrior
 School           : Physical
@@ -2300,7 +2300,7 @@ Effects          :
 Description      : You can transmogrify your two-handed weapons to use one-handed weapon appearances.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
-Talent Entry     : Fury [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -2344,7 +2344,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
 Triggered By     : Raging Blow (85288)
 Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
@@ -2505,7 +2505,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
 Triggered By     : Raging Blow (85288)
 Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
@@ -3761,7 +3761,7 @@ Tooltip          : Damage done increased by $76856s3%$?s383848[, Haste increased
 Damage taken reduced by $w3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
-Talent Entry     : Fury [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -3788,7 +3788,7 @@ Description      : Reduces damage taken by $s1% and Bloodthirst restores an addi
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
-Talent Entry     : Fury [tree=spec, row=5, col=2, max_rank=1, req_points=8, replace="Slam" (id=1464)]
+Talent Entry     : Fury [tree=spec, row=5, col=4, max_rank=1, req_points=8, replace="Slam" (id=1464)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -4787,7 +4787,7 @@ Effects          :
 Description      : $@spelldesc205545
 
 Name             : Massacre (id=206315) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -4977,7 +4977,7 @@ Effects          :
 Description      : Heroic Leap gains $s1 additional $Lcharge:charges;.
 
 Name             : Warpaint (id=208154) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Fury [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -5314,7 +5314,7 @@ Effects          :
 Description      : Slam, Whirlwind, and Execute now cause the target to bleed for $s1% additional damage over $215537d. Multiple uses accumulate increased damage.
 
 Name             : Fresh Meat (id=215568) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -7731,7 +7731,7 @@ Effects          :
 Description      : $@spelldesc280128
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -8998,7 +8998,7 @@ Effects          :
 Description      : $@spelldesc215568
 
 Name             : Improved Execute (id=316402) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -9941,7 +9941,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Category Cooldown: 4.5 seconds
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Fresh Meat (215568 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #3, #4), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#1), Impale (383430 effect#1), Improved Bloodthirst (383852 effects: #1, #2), Battle Stance (386164 effect#4), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#4), Burst of Power (437121 effects: #2, #3), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Deep Thirst (455495 effect#1), Fierce Followthrough (458689 effect#2), Double Down (1216565 effects: #1, #2), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Scent of Blood (1265399 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Fresh Meat (215568 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #3, #4), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#1), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#4), Burst of Power (437121 effects: #2, #3), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Deep Thirst (455495 effect#1), Fierce Followthrough (458689 effect#2), Double Down (1216565 effects: #1, #2), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Scent of Blood (1265399 effect#1)
 Family Flags     : 8, 9, 18, 42
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -10001,7 +10001,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
 Triggered By     : Crushing Blow (335097)
 Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
@@ -10020,7 +10020,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #13), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #5, #6), Critical Thinking (383297 effects: #1, #2), Impale (383430 effect#1), Spite (383852 effects: #1, #2), Wrath and Fury (386045 effect#1), Battle Stance (386164 effect#4), Cruelty (392931 effect#1), Wrath and Fury (392936 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2), Slayer's Malice (444779 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Opportunist (456120 effects: #1, #2), Double Down (1216569 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Warrior Slayer 11.2 Class Set 4pc (1236424 effect#1), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Ragedrinker (1265403 effect#1)
 Triggered By     : Crushing Blow (335097)
 Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
@@ -12244,7 +12244,7 @@ Effects          :
 Description      : Critical strike damage of your abilities is increased by $s1%.
 
 Name             : Invigorating Fury (id=383468) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Fury [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12332,7 +12332,7 @@ Effects          :
 Description      : $@spelldesc383703
 
 Name             : Frenzied Enrage (id=383848) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Fury [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12345,8 +12345,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enrage increases your haste by $184362s1% and your movement speed by $184362s2%.
 
-Name             : Improved Bloodthirst (id=383852) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=5, col=1, max_rank=2, req_points=8]
+Name             : Spite (id=383852) [Spell Family (4), Passive] 
+Talent Entry     : Fury [tree=spec, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -12358,17 +12358,17 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1016029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
-                   Family Flags: 42
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Raging Blow (85384), Raging Blow (96103), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Family Flags: 42, 45
 #2 (id=1277163)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
-                   Family Flags: 42
-Description      : Bloodthirst damage increased by $s1% and critical strike damage increased by $s2%.
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Raging Blow (85384), Raging Blow (96103), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Family Flags: 42, 45
+Description      : Bloodthirst and Raging Blow damage increased by ${$s1/10}% and critical strike damage increased by ${$s2/10}%.
 
 Name             : Improved Raging Blow (id=383854) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12401,7 +12401,7 @@ Effects          :
 Description      : $@spelldesc383877
 
 Name             : Hack and Slash (id=383877) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12471,7 +12471,7 @@ Effects          :
 Description      : Your auto-attacks deal an additional $383915s1 Physical damage and generate ${$383915s2/10} Rage.
 
 Name             : Cold Steel, Hot Blood (id=383959) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13770,7 +13770,7 @@ Effects          :
 Description      : $@spelldesc392792
 
 Name             : Cruelty (id=392931) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=5, col=3, max_rank=2, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
@@ -13781,10 +13781,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1031505)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
-                   Family Flags: 45
-Description      : While Enraged, Raging Blow deals $s1% increased damage.
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Raging Blow (85384), Raging Blow (96103), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
+                   Family Flags: 42, 45
+Description      : While Enraged, Bloodthirst and Raging Blow deal $s1% increased damage.
 
 Name             : Wrath and Fury (id=392936) [Spell Family (4), Passive] 
 Talent Entry     : Fury [tree=spec, row=7, col=5, max_rank=1, req_points=8]
@@ -13905,7 +13905,7 @@ Effects          :
 Description      : During Vanguard's Determination, gain Ignore Pain equal to $s1% of damage you deal.
 
 Name             : Bloodcraze (id=393950) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13918,7 +13918,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1033213)  : Apply Aura (6) | Proc Trigger Spell (42): Bloodcraze
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 393951 | Target: Self (1)
-Description      : Raging Blow increases the critical strike damage of your next Bloodthirst by $393951s1% until it critically strikes, stacking up to $393951u times.
+Description      : Raging Blow increases the damage of your next Bloodthirst by $393951s1%, stacking up to $393951u times.
 
 Name             : Bloodcraze (id=393951) [Spell Family (4)] 
 Class            : Warrior
@@ -13935,8 +13935,8 @@ Proc Flags       : Yellow Melee
 Triggered By     : Bloodcraze (393950)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033214)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Bonus Multiplier (15)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 15 | Target: Self (1)
+#1 (id=1033214)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
 Description      : $@spelldesc393930
@@ -15762,7 +15762,7 @@ Description      : $@spelldesc438597
 Tooltip          : Absorbs $w1 magic damage.
 
 Name             : Powerful Enrage (id=440277) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Fury [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18573,7 +18573,7 @@ Description      : Tactician has a $s1% increased chance to trigger.
 Name             : Deep Wounds (id=1261060) [Spell Family (4), Passive] 
 Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
                  : Arms [tree=spec, row=7, col=3, max_rank=1, req_points=8]
-                 : Fury [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+                 : Fury [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18856,7 +18856,7 @@ Effects          :
 Description      : Thunder Clap and Revenge damage increased by $s1% and Shield Charge grants Revenge!
 
 Name             : Scent of Blood (id=1265355) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18873,7 +18873,7 @@ Effects          :
 Description      : Rampage increases the damage of your next Bloodthirst by $1265399s1%, stacking up to $1265399u times.
 
 Name             : Ragedrinker (id=1265356) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18892,7 +18892,7 @@ Effects          :
 Description      : Bloodthirst critical strikes restore twice as much health and increase the damage of Raging Blow by $1265403s1% for $1265403d.
 
 Name             : Rampaging Ruin (id=1265357) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18920,7 +18920,7 @@ Effects          :
 Description      : When Raging Blow resets its own cooldown, your auto-attack damage and speed is increased by $1265560s1% for $1265560d.
 
 Name             : Kill or Be Killed (id=1265361) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19862,7 +19862,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

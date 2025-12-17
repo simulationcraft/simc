@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4586,7 +4586,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
                    Family Flags: 13, 18, 23
-Description      : Increases the damage and healing of your pet's abilities by $s1%.
+Description      : Increases the damage of Bite, Claw, Smack and the effectiveness of your pet's unique abilities by $s1%.
 
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
@@ -12915,7 +12915,7 @@ Family Flags     : 57
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869057)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=869059)   : Dummy (3)
                    Base Value: 180 | Scaled Value: 180
                    Modified By: Scent of Blood (193532 effect#1)
@@ -18492,6 +18492,7 @@ Attributes       : No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=1189797)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 6125 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Random (72)
+Description      : $@spelldesc471876
 
 Name             : Bear Summon (id=471993) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -20514,7 +20515,7 @@ Triggered By     : Flamefang Pitch (1251592)
 Family Flags     : 106, 110
 Attributes       : Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1256306)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
+#1 (id=1256306)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1251592
 
@@ -21754,7 +21755,7 @@ Name             : Boomstick (id=1261215) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
-Range            : 12 yards
+Range            : 20 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -21763,7 +21764,7 @@ Triggered By     : Boomstick (1261193)
 Family Flags     : 106, 116
 Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Bouncy Chain Missiles (146), No Cooldown On Tooltip (192), AI Face Target (283), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1270863)  : School Damage (2): physical
+#1 (id=1270863)  : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.75 | Radius: 0 - 20 yards | Target: Source (22) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc1261193
 
@@ -22913,7 +22914,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

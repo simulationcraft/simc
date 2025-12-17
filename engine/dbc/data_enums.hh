@@ -1829,7 +1829,7 @@ enum effect_targeting : unsigned
   T_DESTINATION_DESTINATION_TARGET_TOWARDS_CASTER = 148u,
   T_149                                           = 149u,
   T_UNIT_OWN_CRITTER                              = 150u,
-  T_UNIT_CASTER_AREA_ENEMY               = 151u,
+  T_UNIT_CASTER_AREA_ENEMY                        = 151u,
   T_152                                           = 152u,
   T_MAX
 };

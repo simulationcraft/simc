@@ -451,14 +451,11 @@ public:
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
-    propagate_const<action_t *> press_the_advantage;
 
     // Windwalker
-    propagate_const<action_t *> dual_threat;
     propagate_const<action_t *> empowered_tiger_lightning;
     propagate_const<action_t *> flurry_of_xuen;
     propagate_const<action_t *> combat_wisdom_eh;
-    propagate_const<action_t *> thunderfist;
 
     // Conduit of the Celestials
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
@@ -514,6 +511,7 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
+    propagate_const<buff_t *> rushing_wind_kick;
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
@@ -895,6 +893,8 @@ public:
       const spell_data_t *memory_of_the_monastery_buff;
       // Row 9
       player_talent_t rushing_wind_kick;
+      const spell_data_t *rushing_wind_kick_buff;
+      const spell_data_t *rushing_wind_kick_damage;
       player_talent_t xuens_battlegear;
       player_talent_t thunderfist;
       const spell_data_t *thunderfist_buff;
@@ -906,6 +906,8 @@ public:
       const spell_data_t *jadefire_stomp_damage;
       // Row 10
       player_talent_t skyfire_heel;
+      const spell_data_t *skyfire_heel_damage;
+      const spell_data_t *skyfire_heel_buff;
       player_talent_t harmonic_combo;
       player_talent_t flurry_of_xuen;
       const spell_data_t *flurry_of_xuen_driver;

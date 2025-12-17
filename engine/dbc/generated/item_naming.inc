@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.1.64889
-static constexpr std::array<item_name_description_t, 1030> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.1.64914
+static constexpr std::array<item_name_description_t, 1031> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -98,7 +98,7 @@ static constexpr std::array<item_name_description_t, 1030> __item_name_descripti
   { 13190, "Follower Equipment"                          },
   { 13191, "Garrison Resource"                           },
   { 13192, "Trading Post Part"                           },
-  { 13193, "Normal Hunts"                                },
+  { 13193, "Normal"                                      },
   { 13194, "Trading Post Module"                         },
   { 13195, "Pristine"                                    },
   { 13196, "Warlords Season 1"                           },
@@ -1030,5 +1030,6 @@ static constexpr std::array<item_name_description_t, 1030> __item_name_descripti
   { 14409, "Nightmare Hunts"                             },
   { 14410, "Tan"                                         },
   { 14412, "Pinnacle Cache - Midnight Preseason"         },
+  { 14416, "Normal Hunts"                                },
 } };
 

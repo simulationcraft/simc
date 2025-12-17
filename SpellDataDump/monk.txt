@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -4086,10 +4086,9 @@ Effects          :
 
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=6, col=5, max_rank=1, req_points=8]
-Class            : Windwalker Monk
+Class            : Monk
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 19
 GCD              : 1 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -7077,7 +7076,7 @@ Description      : Blackout Kick costs $s1 fewer Chi.
 
 Name             : Sharp Reflexes (id=261917) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=2, col=3, max_rank=1, req_points=0]
-Class            : Windwalker Monk
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
@@ -15159,7 +15158,7 @@ Triggered By     : Sheilun's Gift (399497)
 Family Flags     : 48, 114
 Attributes       : Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1043545)  : Direct Heal (10)
+#1 (id=1043545)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.73707 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=1043548)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -23342,7 +23341,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1276915)  : Apply Aura (6) | Proc Trigger Spell (42): Empty Barrel
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1265307 | Target: Self (1)
-Description      : Drinking a Brew has a $H% chance to leave you with an Empty Barrel, which is tossed along with your next Keg Smash to deal $1265133s1 Physical damage to your target. Ricochets up to $1265133x1 times at ${$1265133f1*100}.0% effectiveness.
+Description      : Drinking a Brew has a $H% chance to leave you with an Empty Barrel, which is tossed along with your next Keg Smash to deal $1265133s1 Physical damage to your target. Ricochets up to $1265133x1 times at ${$1265133f1*100}% effectiveness.
 
 Name             : Empty Barrel (id=1265133) [Spell Family (53)] 
 Class            : Monk
@@ -23943,7 +23942,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

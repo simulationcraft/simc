@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -2463,7 +2463,8 @@ Family Flags     : 1, 38, 49
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), Not a Proc (105), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889395)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.8 | Radius: 12 yards | Target: At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.23 | Radius: 12 yards | Target: At Ally in Area (31)
+Hotfixed         : SP Coefficient (3.8 -> 3.23)
 #2 (id=889396)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 12 yards
                    Modified By: Bountiful Bloom (370886 effect#1)
@@ -2677,13 +2678,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -12 | Scaled Value: -12 | Target: Self (1)
+                   Base Value: -17 | Scaled Value: -17 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
+Hotfixed         : Base Value (-12 -> -17)
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -17 | Scaled Value: -17 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
+Hotfixed         : Base Value (-12 -> -17)
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980)
@@ -2734,16 +2737,33 @@ Effects          :
                    Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
 #19 (id=1091002) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 56 | Scaled Value: 56 | Target: Self (1)
                    Affected Spells: Living Flame (361500)
                    Family Flags: 50
+Hotfixed         : Base Value (25 -> 56)
 #20 (id=1093837) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 56 | Scaled Value: 56 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
+Hotfixed         : Base Value (25 -> 56)
 #21 (id=1283586) : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2471 (Category) | Target: Self (1)
                    Affected Spells (Category): Verdant Embrace (360995)
+#22 (id=1298037) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Living Flame (361509)
+                   Family Flags: 22
+Hotfixed         : NEW EFFECT
+#23 (id=1298038) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
+                   Family Flags: 35
+Hotfixed         : NEW EFFECT
+#24 (id=1298039) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
+                   Family Flags: 35
+Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown Evoker (1465)
@@ -2904,7 +2924,7 @@ Labels           : 16: Class Spells
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4, #23, #24), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
 Triggered By     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -3810,7 +3830,7 @@ Labels           : 16: Class Spells
                  : 1464: Red Evoker Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting Spells : Devastation Evoker (356809 effects: #5, #6, #18, #19), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6, #10), Engulfing Blaze (370837 effect#2), Call of Ysera (373834 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Lifespark (394552 effect#2), Augmentation Evoker (396186 effects: #5, #6, #12, #13), Lifespark (443176 effect#2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
+Affecting Spells : Devastation Evoker (356809 effects: #5, #6, #18, #19), Preservation Evoker (356810 effects: #1, #2, #22), Initial Evoker (356816 effects: #5, #6, #10), Engulfing Blaze (370837 effect#2), Call of Ysera (373834 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Lifespark (394552 effect#2), Augmentation Evoker (396186 effects: #5, #6, #12, #13), Lifespark (443176 effect#2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
 Family Flags     : 1, 7, 22
 Attributes       : Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
@@ -7407,7 +7427,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 600 seconds
-Affecting Spells : Devastation Evoker (356809 effects: #23, #24), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Heat Wave (375725 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #2, #3), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Unshakable (1239581 effects: #1, #2), Devastation Evoker (1256943 effect#5)
+Affecting Spells : Devastation Evoker (356809 effects: #23, #24), Preservation Evoker (356810 effects: #23, #24), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Heat Wave (375725 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #2, #3), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Unshakable (1239581 effects: #1, #2), Devastation Evoker (1256943 effect#5)
 Family Flags     : 35
 Attributes       : Allow While Mounted (24), Allow While Stealthed (37), Suppress Caster Procs (112), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Ignore Caster Absorb Modifiers (370), Don't close loot window (379), Do Not Consume Aura Stack On Proc (428)
 Effects          :
@@ -12295,7 +12315,8 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119510)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 60)
 #2 (id=1165092)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $?c2[Verdant Embrace heals for an additional $s1% over $409895d.][Upheaval deals $s2% additional damage over $431620d.]
@@ -13727,7 +13748,7 @@ Labels           : 16: Class Spells
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4, #23, #24), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
 Family Flags     : 0, 35
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -16505,7 +16526,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1602,7 +1602,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Allow Item Spell In PvP (13), Do Not Sheath (18), No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -1720,7 +1720,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -1798,7 +1798,8 @@ Family Flags     : 43, 59, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Do Not Chain To Crowd-Controlled Targets (200), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=48018)    : School Damage (2): shadow | Attributes: Chain from Initial Target (7), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2 -> 1.6)
 #2 (id=48019)    : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Targeted Enemy (6)
 Description      : An unholy strike that deals $s1 Shadow damage and causing your plagues on the target to erupt, dealing their damage an additional time at $s2% effectiveness.
@@ -2357,7 +2358,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 1140
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
@@ -3094,9 +3095,11 @@ Effects          :
 #1 (id=95513)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
 #2 (id=341774)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9315 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.65205 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.9315 -> 0.65205)
 #3 (id=1291484)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.605476 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.423833 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.605476 -> 0.423833)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawsecond> Shadow damage to nearby enemies.
 Variables        : $mastery=${1+($77515m1/100)}
 $sweepingclaw= ${1*($AP*0.3105)*(1+$@versadmg)*2*$<mastery>}
@@ -3739,19 +3742,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Avalanche (207150), Frostscythe (207230), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Putrefy (390220), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Infected Claws (1241786), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Dread Plague (1242564), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084), Putrefy (1277016), Bloody Reflection (1279656)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -15)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Avalanche (207150), Frostscythe (207230), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Putrefy (390220), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Infected Claws (1241786), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Dread Plague (1242564), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084), Putrefy (1277016), Bloody Reflection (1279656)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -15)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -15)
 #4 (id=1032341)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -15)
 #5 (id=1079577)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self (1)
+                   Base Value: 240 | Scaled Value: 240 | Target: Self (1)
+Hotfixed         : Base Value (300 -> 240)
 #6 (id=1084153)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Veteran of the Third War (48263)
@@ -4452,7 +4460,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
                    Family Flags: 13, 18, 23
-Description      : Increases the damage and healing of your pet's abilities by $s1%.
+Description      : Increases the damage of Bite, Claw, Smack and the effectiveness of your pet's unique abilities by $s1%.
 
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
@@ -4526,7 +4534,8 @@ Family Flags     : 40, 43, 65, 78
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.315 | PvP Coefficient: 0.952 | Misc Value: 127 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26775 | PvP Coefficient: 0.952 | Misc Value: 127 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.315 -> 0.26775)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Enemy (6)
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
@@ -9743,7 +9752,7 @@ Effects          :
 #1 (id=756024)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16075 | Target: Current Target (25)
 Description      : $@spelldesc1242608
-Tooltip          : Inflicting Plague damage to nearby enemies and weakening them against your minions.
+Tooltip          : Weakening nearby enemies against your minions.
 
 Name             : Disease Cloud (id=290591) [Hidden] 
 Class            : Death Knight
@@ -11281,7 +11290,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Triggered By     : Rune of Sanguination (326801), Rune of Sanguination (333114)
 Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -11362,7 +11371,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -11391,7 +11400,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
@@ -11435,7 +11444,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Rune of Hysteria (326913), Rune of Hysteria (333113)
@@ -11496,7 +11505,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 963: Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 1 maximum
@@ -11564,7 +11573,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
@@ -11585,7 +11594,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -11609,7 +11618,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
@@ -11630,7 +11639,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 963: Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 3 maximum
@@ -14149,15 +14158,15 @@ Tooltip          : Strength increased by ${$W1}.2%.
 
 Name             : Morbidity (id=377592) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
-                 : Effect#1 [op=set, values=(2, 4)]
-                 : Effect#2 [op=set, values=(2, 4)]
-                 : Effect#3 [op=set, values=(2, 4)]
-                 : Effect#4 [op=set, values=(2, 4)]
-                 : Effect#5 [op=set, values=(2, 4)]
-                 : Effect#6 [op=set, values=(2, 4)]
-                 : Effect#7 [op=set, values=(2, 4)]
-                 : Effect#8 [op=set, values=(2, 4)]
-                 : Effect#9 [op=set, values=(2, 4)]
+                 : Effect#1 [op=set, values=(1, 2)]
+                 : Effect#2 [op=set, values=(1, 2)]
+                 : Effect#3 [op=set, values=(1, 2)]
+                 : Effect#4 [op=set, values=(1, 2)]
+                 : Effect#5 [op=set, values=(1, 2)]
+                 : Effect#6 [op=set, values=(1, 2)]
+                 : Effect#7 [op=set, values=(1, 2)]
+                 : Effect#8 [op=set, values=(1, 2)]
+                 : Effect#9 [op=set, values=(1, 2)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14528,9 +14537,11 @@ Family Flags     : 43, 78, 121
 Attributes       : Is Ability (4), Not a Proc (105), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015149)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6442 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.31536 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.6442 -> 1.31536)
 #2 (id=1274362)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.657689 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.526151 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.657689 -> 0.526151)
 Description      : $@spelldesc383269
 
 Name             : Abomination Limb (id=383315) [Spell Family (15)] 
@@ -14809,7 +14820,7 @@ Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 6230: Mastery: Dreadblade (77515 effect#9), Plague Mastery (390166 effect#3), Foul Infections (455396 effect#4), Foul Infections (455396 effect#5), Foul Infections (455396 effect#6), Blightfall (1242616 effect#4)
+                 : 6230: Mastery: Dreadblade (77515 effect#9), Plague Mastery (390166 effect#3), Foul Infections (455396 effect#4), Foul Infections (455396 effect#5), Foul Infections (455396 effect#6), Soul Reaper (1241521 effect#6), Soul Reaper (1241521 effect#7), Blightfall (1242616 effect#4)
 Attributes       : Aura Is Debuff (26), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026973)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
@@ -16086,7 +16097,8 @@ Family Flags     : 0, 24, 43, 59, 78, 127
 Attributes       : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123513)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.5168 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.01344 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.5168 -> 2.01344)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
@@ -20459,11 +20471,11 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1204391)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130), Explosion of the Soul (1276488)
+                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130), Explosion of the Soul (1276488), Reaver's Glaive (1283344)
                    Family Flags: 70
 #2 (id=1204392)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130), Explosion of the Soul (1276488)
+                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130), Explosion of the Soul (1276488), Reaver's Glaive (1283344)
                    Family Flags: 70
 #3 (id=1204393)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -22102,7 +22114,8 @@ Family Flags     : 43, 65, 77, 78, 119
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Limit N (165), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1239728)  : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.7 | Misc Value: 127 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.595 | Misc Value: 127 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.7 -> 0.595)
 #2 (id=1239729)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: at Target (63)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Avalanche (207150), Frostscythe (207230), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Putrefy (390220), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Infected Claws (1241786), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Dread Plague (1242564), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084), Putrefy (1277016), Bloody Reflection (1279656)
@@ -22200,9 +22213,16 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 5227 (Label) | Target: Targeted Enemy (6)
                    Affected Spells (Label): Infected Claws (1241786)
 #5 (id=1241387)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 5239 (Label) | Target: Targeted Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 961 (Label) | Target: Targeted Enemy (6)
+                   Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
+#6 (id=1297569)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 6230 (Label) | Target: Targeted Enemy (6)
+                   Affected Spells (Label): Coil of Devastation (390271)
+#7 (id=1297570)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 6230 (Label) | Target: Targeted Enemy (6)
+                   Affected Spells (Label): Coil of Devastation (390271)
 Description      : $@spelldesc377514
-Tooltip          : Soul ruptured by $@auracaster. Their minions and Plagues deal $s1% increased damage to you.
+Tooltip          : Soul ruptured by $@auracaster. Their minions and diseases deal $s1% increased damage to you.
 
 Name             : Clawing Shadows (id=1241567) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
@@ -22311,7 +22331,8 @@ Family Flags     : 43, 78
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1240959)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.077 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.0616 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.077 -> 0.0616)
 #2 (id=1240986)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Avalanche (207150), Frostscythe (207230), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Putrefy (390220), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Infected Claws (1241786), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Dread Plague (1242564), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084), Putrefy (1277016), Bloody Reflection (1279656)
@@ -22442,7 +22463,8 @@ Family Flags     : 43, 64, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241580)  : School Damage (2): shadowstrike
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.875 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.9 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (4.875 -> 3.9)
 Description      : $@spelldesc1242174
 
 Name             : Necrotic Coil (id=1242174) [Spell Family (15)] 
@@ -22507,7 +22529,8 @@ Family Flags     : 43, 64, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241588)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.92 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.15 -> 0.92)
 Description      : $@spelldesc1242174
 
 Name             : Graveyard (id=1242218) [Hidden] 
@@ -23035,7 +23058,8 @@ Effects          :
 #2 (id=1296373)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #3 (id=1296422)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 20)
 #4 (id=1296429)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Each Magus of the Dead under your command increases the damage of Necrotic Coil and Graveyard by $s4%.
@@ -24625,7 +24649,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -24694,9 +24718,11 @@ Effects          :
 #1 (id=1290820)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
 #2 (id=1290821)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.621 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4347 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.621 -> 0.4347)
 #3 (id=1291482)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.40365 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.282555 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.40365 -> 0.282555)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawSecond> Shadow damage to nearby enemies.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
 $sweepingclaw= ${0.85*($AP*0.207)*(1+$@versadmg)*$<mastery>}

@@ -1162,6 +1162,8 @@ public:
     double soul_fragment_from_shattered_souls_chance = 0.4;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
+    double void_metamorphosis_initial_drain          = 10.0;
+    double void_metamorphosis_drain_per_stack        = 0.012;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1346,8 +1348,10 @@ public:
     timespan_t time_to_next_tick() const;
 
     void init()
-
     {
+      initial_drain   = p()->options.void_metamorphosis_initial_drain;
+      drain_per_stack = p()->options.void_metamorphosis_drain_per_stack;
+
       if ( p()->talent.devourer.soul_glutton.enabled() )
 
       {
@@ -6811,6 +6815,13 @@ struct blade_dance_base_t
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = base_t::composite_da_multiplier( s );
+      m *= 1.0 + p()->talent.havoc.first_blood->effectN( 1 ).percent();
+      return m;
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -8413,9 +8424,9 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     fury_of_the_aldrachi_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff )
       : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
     {
-      background = dual = true;
-      aoe               = -1;
-      reduced_aoe_targets = as<int>(data().effectN( 2 ).base_value());
+      background = dual   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
     }
   };
 
@@ -10075,6 +10086,9 @@ void demon_hunter_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
+
+  add_option( opt_float( "void_metamorphosis_initial_drain", options.void_metamorphosis_initial_drain, 0, 100 ) );
+  add_option( opt_float( "void_metamorphosis_drain_per_stack", options.void_metamorphosis_drain_per_stack, 0, 100 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================

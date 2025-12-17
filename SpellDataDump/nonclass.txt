@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.64889 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.64914 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -206049,7 +206049,7 @@ Attributes       : Allow Item Spell In PvP (13), Aura Unique (43), Not an Action
 Effects          :
 #1 (id=1154525)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3601 (Label) | Radius: 15 yards | Target: Self (1)
-                   Affected Spells (Label): Well Fed (454137), Twilight-Spiced Grouper (454497), Sweet Eclipse (455290), Well Fed (455369), Well Fed (456406), Well Fed (457049), Well Fed (457284), Well Fed (461845), Well Fed (461853), Well Fed (461854), Well Fed (461855), Well Fed (461856), Well Fed (461857), Well Fed (461858), Well Fed (461859), Well Fed (461860), Well Fed (461861), Well Fed (461922), Well Fed (461924), Well Fed (461925), Well Fed (461927), Well Fed (461937), Well Fed (461939), Well Fed (461940), Well Fed (461943), Well Fed (461945), Well Fed (461946), Well Fed (461947), Well Fed (461948), Well Fed (461949), Well Fed (461957), Well Fed (461960), Hearty Well Fed (462209), Hearty Well Fed (462210), Greasy Well Fed (473173), Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185)
+                   Affected Spells (Label): Well Fed (454137), Twilight-Spiced Grouper (454497), Sweet Eclipse (455290), Well Fed (455369), Well Fed (456406), Well Fed (457049), Well Fed (457284), Well Fed (461845), Well Fed (461853), Well Fed (461854), Well Fed (461855), Well Fed (461856), Well Fed (461857), Well Fed (461858), Well Fed (461859), Well Fed (461860), Well Fed (461861), Well Fed (461922), Well Fed (461924), Well Fed (461925), Well Fed (461927), Well Fed (461937), Well Fed (461939), Well Fed (461940), Well Fed (461943), Well Fed (461945), Well Fed (461946), Well Fed (461947), Well Fed (461948), Well Fed (461949), Well Fed (461957), Well Fed (461960), Hearty Well Fed (462209), Hearty Well Fed (462210), Greasy Well Fed (473173)
 #2 (id=1154526)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3063 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Flask of Tempered Aggression (431971), Flask of Tempered Swiftness (431972), Flask of Tempered Versatility (431973), Flask of Tempered Mastery (431974), Flask of Alchemical Chaos (432021), Vicious Flask of Classical Spirits (432403), Vicious Flask of Honor (432430), Vicious Flask of the Wrecking Ball (432452), Flask of Saving Graces (432473), Vicious Flask of Manifested Fury (432497)
@@ -216008,7 +216008,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Triggered By     : Terrible Visage (462159), Looming Darkness (1253325)
+Triggered By     : Terrible Visage (462159)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1171406)  : Apply Aura (6) | Proc Trigger Spell (42): Terrible Visage
@@ -226142,7 +226142,7 @@ Labels           : 959
                  : 4370
 Proc Chance      : 101%
 Proc Flags       : Death
-Triggered By     : Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Refreshment (1219187), Hearty Well Fed (1232076), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305), Refreshment (1280485)
+Triggered By     : Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Refreshment (1219187), Hearty Well Fed (1232076), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305), Refreshment (1280485), Refreshment (1283374)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), Retain Item Cast (95), Allow Aura While Dead (116), Do Not Display Range (126), No Cooldown On Tooltip (192), Aura Points On Client (268), Recompute Aura On Level Scale (446), Unknown (467)
 Effects          :
 #1 (id=1204679)  : Apply Aura (6) | Dummy (4)
@@ -226175,9 +226175,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
-                 : 3601: Pausing Pylon (453003 effect#1)
-                 : 3708
-                 : 3899
+                 : 4370
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -226212,9 +226214,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
-                 : 3601: Pausing Pylon (453003 effect#1)
-                 : 3708
-                 : 3899
+                 : 4370
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
@@ -226249,9 +226253,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
-                 : 3601: Pausing Pylon (453003 effect#1)
-                 : 3708
-                 : 3899
+                 : 4370
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -226286,9 +226292,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
-                 : 3601: Pausing Pylon (453003 effect#1)
-                 : 3708
-                 : 3899
+                 : 4370
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4898
+                 : 4905
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231218,7 +231226,7 @@ Name             : Food & Drink (id=1232065)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Triggered By     : Refreshment (1232916), Refreshment (1232919), Refreshment (1259662), Refreshment (1280485)
+Triggered By     : Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1259662), Refreshment (1280485), Refreshment (1283374)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -231234,11 +231242,14 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
-                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4898
+                 : 4370
+                 : 4377
+                 : 4377
+                 : 4902
                  : 4905
+                 : 4906
                  : 4913
-                 : 4913
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231266,16 +231277,20 @@ Effects          :
 #11 (id=1224409) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : Increases Critical Strike by $s1 for $d.
-Tooltip          : Critical Strike increased by $w9. This aura persists through death.
+Tooltip          : Stamina increased by $w10 and Critical Strike increased by $w9. This aura persists through death.
 
 Name             : Well Fed (id=1232086) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4898
+                 : 4902
                  : 4905
+                 : 4906
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
@@ -231303,16 +231318,20 @@ Effects          :
 #11 (id=1224469) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : Increases Critical Strike by $s1 for $d.
-Tooltip          : Critical Strike increased by $w9.
+Tooltip          : Stamina increased by $w10 and Critical Strike increased by $w9.
 
 Name             : Well Fed (id=1232087) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4898
+                 : 4902
                  : 4905
+                 : 4906
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
@@ -231334,22 +231353,26 @@ Effects          :
 #8 (id=1224477)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1224478)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Hit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #10 (id=1224479) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1224480) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : Increases Haste by $s1 for $d.
-Tooltip          : Haste increased by $w9.
+Tooltip          : Stamina increased by $w10 and Haste increased by $w9.
 
 Name             : Well Fed (id=1232089) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4898
+                 : 4902
                  : 4905
+                 : 4906
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
@@ -231377,16 +231400,20 @@ Effects          :
 #11 (id=1224492) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : Increases Mastery by $s1 for $d.
-Tooltip          : Mastery increased by $w9.
+Tooltip          : Stamina increased by $w10 and Mastery increased by $w9.
 
 Name             : Well Fed (id=1232091) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4898
+                 : 4902
                  : 4905
+                 : 4906
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
@@ -231414,7 +231441,7 @@ Effects          :
 #11 (id=1224504) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : Increases Versatility by $s1 for $d.
-Tooltip          : Versatility increased by $w9.
+Tooltip          : Stamina increased by $w10 and Versatility increased by $w9.
 
 Name             : Fashion Sin (id=1232110) 
 School           : Physical
@@ -231611,7 +231638,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269917 | Target: Self (1)
 #2 (id=1224757)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269917|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s8*.5} Stamina and ${$1219179s3*.5} primary stat for $1232324d.
+Description      : $@spelldesc1269917
+
+$@spellicon461960  $@spellname461960
+If you spend at least 10 seconds eating you will become $@spellname461960 gaining ${$1219179s2*.5} primary stat for $1232324d.
 
 Name             : Refreshment (id=1232257) 
 School           : Physical
@@ -231628,7 +231658,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269922 | Target: Self (1)
 #2 (id=1224759)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269922|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.5} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1269922
+
+$@spellicon461960  $@spellname461960
+If you spend at least 10 seconds eating you will become $@spellname461960 gaining ${$1219179s2*.5} primary stat for $461924d.
 
 Name             : Temporal Retaliation (id=1232259) [Passive] 
 School           : Physical
@@ -231668,13 +231701,13 @@ Description      : $@spelldesc1232259
 Name             : Well Fed (id=1232313) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
-                 : 4942
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231707,13 +231740,13 @@ Tooltip          : Haste and Critical Strike increased by $w9.
 Name             : Well Fed (id=1232316) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
-                 : 4942
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231746,12 +231779,13 @@ Tooltip          : Haste and Mastery increased by $w9.
 Name             : Well Fed (id=1232317) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231784,12 +231818,13 @@ Tooltip          : Haste and Versatility increased by $w9.
 Name             : Well Fed (id=1232318) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231822,12 +231857,13 @@ Tooltip          : Mastery and Critical Strike increased by $w9.
 Name             : Well Fed (id=1232320) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231860,12 +231896,13 @@ Tooltip          : Mastery and Versatility  increased by $w9.
 Name             : Well Fed (id=1232321) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231898,11 +231935,13 @@ Tooltip          : Critical Strike and Versatility  increased by $w9.
 Name             : Well Fed (id=1232324) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
                  : 4907
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -231936,11 +231975,13 @@ Tooltip          : Your primary stats have been increased by $w11.
 Name             : Well Fed (id=1232325) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
                  : 4907
+                 : 6100
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232082,7 +232123,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
 #2 (id=1225197)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269921|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s5*.7} Stamina and ${$1219179s5*.7} primary stat for $1233407d.
+Description      : $@spelldesc1232065
+
+$@spellicon461960  $@spellname461960
+If you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s2*.7} primary stat for $1219183d.
 
 Name             : Refreshment (id=1232489) 
 School           : Physical
@@ -232099,18 +232143,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
 #2 (id=1225199)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s4*.7} primary stat for $1219183d.
+Description      : $@spelldesc1232065
+
+$@spellicon461960  $@spellname461960
+If you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s2*.7} primary stat for $1219183d.
 
 Name             : Well Fed (id=1232490) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232137,19 +232184,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225211) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Critical Strike and Speed by $s1 for $d.
-Tooltip          : Critical Strike and Speed increased by $w9.
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Critical Strike increased by $w9.
 
 Name             : Well Fed (id=1232491) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232176,19 +232223,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225222) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Mastery and Speed by $s1 for $d.
-Tooltip          : Mastery and Speed increased by $w9.
+Description      : Increases Mastery by $s1 for $d.
+Tooltip          : Mastery increased by $w9.
 
 Name             : Well Fed (id=1232492) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232215,19 +232262,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225233) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Versatility and Speed by $s1 for $d.
-Tooltip          : Versatility and Speed increased by $w9.
+Description      : Increases Versatility by $s1 for $d.
+Tooltip          : Versatility increased by $w9.
 
 Name             : Well Fed (id=1232493) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232254,19 +232301,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225244) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Haste and Speed by $s1 for $d.
-Tooltip          : Haste and Speed increased by $w9.
+Description      : Increases Haste by $s1 for $d.
+Tooltip          : Haste increased by $w9.
 
 Name             : Well Fed (id=1232496) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232293,19 +232340,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225257) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Critical Strike and Avoidance by $s1 for $d.
-Tooltip          : Critical Strike and Avoidance increased by $w9.
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Critical Strike increased by $w9.
 
 Name             : Well Fed (id=1232498) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232332,19 +232379,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225269) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Critical Strike and Avoidance by $s1 for $d.
-Tooltip          : Critical Strike and Avoidance increased by $w9.
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Critical Strike increased by $w9.
 
 Name             : Well Fed (id=1232500) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232371,19 +232418,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225281) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Haste and Avoidance by $s1 for $d.
-Tooltip          : Haste and Avoidance increased by $w9.
+Description      : Increases Haste by $s1 for $d.
+Tooltip          : Haste increased by $w9.
 
 Name             : Well Fed (id=1232501) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
-                 : 4900
-                 : 4901
+                 : 4898
                  : 4905
-                 : 4924
+                 : 6102
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232405,13 +232452,13 @@ Effects          :
 #8 (id=1225289)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225290)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Avoidance | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
 #10 (id=1225291) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225292) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : Increases Versatility and Avoidance by $s1 for $d.
-Tooltip          : Versatility and Avoidance increased by $w9.
+Description      : Increases Versatility by $s1 for $d.
+Tooltip          : Versatility increased by $w9.
 
 Name             : Pacifist Rig (id=1232541) 
 School           : Shadow
@@ -232508,9 +232555,10 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
-                 : 4907
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232546,9 +232594,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
                  : 4907
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232577,16 +232627,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : $@spellicon457049 $@spellname457049  
 If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s7 Stamina for $d.
-Tooltip          : Your Stamina has been increased by $w7.
+Tooltip          : Your primary stats have been increased by $w11.
 
 Name             : Well Fed (id=1232585) 
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
+                 : 4902
+                 : 4906
                  : 4907
+                 : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -232614,8 +232668,8 @@ Effects          :
 #11 (id=1225445) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
-Tooltip          : Your primary stats have been increased by $w11.
+If you spend at least 10 seconds eating you will become $@spellname457049  gaining $1219179s7 Stamina and$1219179s2 primary stat for$d.
+Tooltip          : Stamina increased by $w10 and primary stats have been increased by$w11.
 
 Name             : Pacifist Rig (id=1232696) 
 School           : Shadow
@@ -232795,7 +232849,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
 #2 (id=1225974)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.7} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.7} Versatility for $461960d.
 
 Name             : Refreshment (id=1232902) 
 School           : Physical
@@ -232875,7 +232929,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1225988)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s5*.9} Critical Strike and ${$1219179s5*.9} Speed for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Critical Strike for $461960d.
 
 Name             : Refreshment (id=1232908) 
 School           : Physical
@@ -232891,7 +232945,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1225990)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s5*.9} Mastery and ${$1219179s5*.9} Speed for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Haste for $461960d.
 
 Name             : Refreshment (id=1232909) 
 School           : Physical
@@ -232907,7 +232961,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1225992)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s5*.9} Haste and ${$1219179s5*.9} Speed for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Mastery for $461960d.
 
 Name             : Refreshment (id=1232910) 
 School           : Physical
@@ -232923,7 +232977,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1225994)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s5*.9} Versatility and ${$1219179s5*.9} Speed for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Versatility for $461960d.
 
 Name             : Refreshment (id=1232913) 
 School           : Physical
@@ -232939,7 +232993,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1225998)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1219179|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s8*.9} Stamina and ${$1219179s3*.9} primary stat for $1232324d.
+Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s4*.7} primary stat for $1219183d.
 
 Name             : Refreshment (id=1232914) 
 School           : Physical
@@ -232956,7 +233010,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1226001)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Critical Strike for $461960d.
 
 Name             : Refreshment (id=1232915) 
 School           : Physical
@@ -232973,7 +233027,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1226003)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Haste for $461960d.
 
 Name             : Refreshment (id=1232916) 
 School           : Physical
@@ -232990,7 +233044,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1226005)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9}*.9} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1269920|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*.9} Versatility for $461960d.
 
 Name             : Refreshment (id=1232917) 
 School           : Physical
@@ -233004,11 +233058,14 @@ Labels           : 2395
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
-#1 (id=1226006)  : Trigger Spell (64): Food
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
+#1 (id=1226006)  : Trigger Spell (64): Food & Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1226007)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain $1219179s2 primary stat for $461960d.
+Description      : $@spelldesc1232065
+
+$@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s2 primary stat for $462209d.
 
 Name             : Refreshment (id=1232919) 
 School           : Physical
@@ -233025,7 +233082,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1226010)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1232065
+
+$@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
 
 Name             : Refreshment (id=1232920) 
 School           : Physical
@@ -233041,7 +233101,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1226012)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain $1219179s8 Stamina and $1219179s3 primary stat for $461924d.
+Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 gaining ${$1219179s3*.1} primary stat for $461924d.
 
 Name             : Refreshment (id=1232921) 
 School           : Physical
@@ -233057,7 +233117,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1226014)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain $1219179s8 Stamina and $1219179s3 primary stat for $461924d.
+Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 gaining ${$1219179s3*.1} primary stat for $461924d.
 
 Name             : Drink (id=1232924) 
 School           : Physical
@@ -233505,12 +233565,13 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Name             : Well Fed (id=1233400) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233543,11 +233604,11 @@ Tooltip          : Haste and Mastery increased by $w9.
 Name             : Well Fed (id=1233401) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
                  : 6101
 Proc Chance      : 101%
@@ -233582,12 +233643,13 @@ Tooltip          : Haste and Critical Strike increased by $w9.
 Name             : Well Fed (id=1233402) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233620,12 +233682,13 @@ Tooltip          : Critical Strike and Versatility  increased by $w9.
 Name             : Well Fed (id=1233403) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233658,12 +233721,13 @@ Tooltip          : Mastery and Versatility  increased by $w9.
 Name             : Well Fed (id=1233404) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233696,12 +233760,13 @@ Tooltip          : Mastery and Critical Strike increased by $w9.
 Name             : Well Fed (id=1233405) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233734,12 +233799,13 @@ Tooltip          : Haste and Versatility increased by $w9.
 Name             : Well Fed (id=1233406) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4900
-                 : 4901
                  : 4905
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233772,11 +233838,13 @@ Tooltip          : Mastery and Versatility  increased by $w9.
 Name             : Well Fed (id=1233407) 
 School           : Physical
 Spell Type       : None
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
                  : 4907
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233803,8 +233871,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1226847) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Description      : Your primary stats have been increased by $s11 for $d.
 Tooltip          : Your primary stats have been increased by $w11.
 
 Name             : Well Fed (id=1233408) 
@@ -233812,9 +233879,11 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
+                 : 4370
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
                  : 4897
                  : 4907
+                 : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
@@ -233841,8 +233910,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1226858) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
-Description      : $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $d.
+Description      : Your primary stats have been increased by $s11 for $d.
 Tooltip          : Your primary stats have been increased by $w11.
 
 Name             : Durable Information Securing Container (id=1233515) [Passive] 
@@ -234427,7 +234495,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269922 | Target: Self (1)
 #2 (id=1227678)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269922|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.5} of your highest secondary stat for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269922|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 gaining ${$1219179s3*.5} primary stat for $461924d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233746) 
 School           : Physical
@@ -234545,7 +234613,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
 #2 (id=1227692)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269921|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s5*.7} Stamina and ${$1219179s5*.7} primary stat for $1233407d.|n|nThis food persists through death.
+Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s4*.7} primary stat for $1219183d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233753) 
 School           : Physical
@@ -234579,7 +234647,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
 #2 (id=1227696)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.7} of your highest secondary stat for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.7} Versatility for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233755) 
 School           : Physical
@@ -234664,7 +234732,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227706)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s5*.9} Critical Strike and ${$1219179s5*.9} Speed for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Critical Strike for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233760) 
 School           : Physical
@@ -234681,7 +234749,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227708)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s5*.9} Mastery and ${$1219179s5*.9} Speed for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Haste for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233761) 
 School           : Physical
@@ -234698,7 +234766,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227710)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s5*.9} Haste and ${$1219179s5*.9} Speed for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Mastery for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233762) 
 School           : Physical
@@ -234715,7 +234783,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227712)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s5*.9} Versatility and ${$1219179s5*.9} Speed for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Versatility for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233763) 
 School           : Physical
@@ -234731,7 +234799,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227714)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1219179|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s8*.9} Stamina and ${$1219179s3*.9} primary stat for $1232324d.|n|nThis food persists through death.
+Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1219183 and gain ${$1219179s4*.7} primary stat for $1219183d.
 
 Name             : Hearty Refreshment (id=1233764) 
 School           : Physical
@@ -234748,7 +234816,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227716)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} of your highest secondary stat for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Critical Strike for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233765) 
 School           : Physical
@@ -234765,7 +234833,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227718)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} of your highest secondary stat for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Haste for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233766) 
 School           : Physical
@@ -234782,7 +234850,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269920 | Target: Self (1)
 #2 (id=1227720)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9}*.9} of your highest secondary stat for $1232076d.|n|nThis food persists through death.
+Description      : $@spelldesc1269920|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s4*.9} Versatility for $1232076d.|n|nThis food persists through death.
 
 Name             : Hearty Refreshment (id=1233767) 
 School           : Physical
@@ -236787,7 +236855,7 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231753)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3797 | Misc Value 2: 11
-Description      : Permanently enchants helm armor with Empowered Hex of Leeching, increasing Leech by $ec1. Also heals you for $ec2s1 Health whenever you defeat a foe outdoors in a Midnight zone once per $ec2s2 sec. Cannot be applied to items lower than level $ecim.
+Description      : Permanently enchants helm armor with Empowered Hex of Leeching, increasing Leech by $ec1. Also heals you for $ec2s1% Health whenever you defeat a foe outdoors in a Midnight zone once per $ec2s2 sec. Cannot be applied to items lower than level $ecim.
 
 |cnNORMAL_FONT_COLOR:Amani Augments - Berserker Brawn|R 
 
@@ -240998,15 +241066,14 @@ Tooltip          : $pri increased by $w1. Persists through death.
 Name             : Empowered Hex of Leeching (id=1242751) [Passive] 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
 Labels           : 4128
 Triggered By     : Empowered Hex of Leeching (1242754)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1242444)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Empowered Hex of Leeching | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1242754 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 1242754 | Target: Self (1)
 #2 (id=1242463)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc1236056
 
 Name             : Empowered Hex of Leeching (id=1242754) [Passive] 
@@ -241037,20 +241104,21 @@ Triggered By     : Empowered Hex of Leeching (1242754)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1242451)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Empowered Hex of Leeching | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1242754 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 1242754 | Target: Self (1)
 #2 (id=1242467)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc1236056
 
 Name             : Empowered Hex of Leeching (id=1242760) 
 School           : Physical
 Spell Type       : None
+Cooldown         : 5 seconds
 Labels           : 969
                  : 974
                  : 3959: Item Effects
 Triggered By     : Empowered Hex of Leeching (1242754)
 Effects          :
-#1 (id=1242460)  : Direct Heal (10)
+#1 (id=1242460)  : Direct Heal% (136)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236056
 
@@ -244212,9 +244280,9 @@ Effects          :
 #5 (id=1277829)  : Trigger Spell (64): Sanctum's Edict: Kill
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1265783 | Target: Self (1)
 #6 (id=1277936)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1279037)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.4 | Scaled Value: 1.4 | Radius: 1000 yards | Target: Self (1)
 Description      : Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.
 
 Each blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.
@@ -244394,7 +244462,7 @@ Effects          :
 #5 (id=1272579)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1272580)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1272581)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 #8 (id=1272582)  : Apply Aura Raid (65) | Dummy (4)
@@ -244851,18 +244919,17 @@ Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
 Category Cooldown: 20 seconds
-Attributes       : DoT Stacking Rule (103), Only On Player (104), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1254723)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 11302.33 (coefficient=40.19783) | Misc Value: 0x7f | Target: Self (1)
+#1 (id=1254723)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1261616)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Form a Fel Shield for $d, absorbing ${$<rolemult>*$s2}% of damage taken, up to $s1. While the shield holds, a portion of the absorbed damage is stored as volatile Fel energy.
+Description      : Form a Fel Shield for $d, absorbing $s2% of incoming damage, up to $1283373s1. While the shield holds, a portion of the absorbed damage is stored as volatile Fel energy.
 
 When the shield expires or breaks, the energy erupts and inflicts Fire damage to split between nearby enemies.
-Tooltip          : Absorbing $s2% of your damage taken, up to $w1 total damage.
-Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+Tooltip          : Absorbing $s2% of incoming damage, up to $w1 total damage.
 
 Name             : Permafrost Reservoir (id=1250588) [Passive] 
 School           : Physical
@@ -246051,13 +246118,14 @@ School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
 Labels           : 292
+                 : 3959: Item Effects
 Triggered By     : Looming Darkness (1253327)
-Attributes       : Aura Is Buff (140), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1259020)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1259021)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 462158
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253327
 #3 (id=1259022)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #4 (id=1259023)  : Apply Aura (6) | Modify Rating (189)
@@ -246067,7 +246135,7 @@ Effects          :
 #6 (id=1259025)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
 Description      : @spelldesc462158
-Tooltip          : $?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $462158w2.
+Tooltip          : $?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $1253327s2.
 
 Name             : Looming Darkness (id=1253327) [Passive] 
 School           : Physical
@@ -246077,13 +246145,14 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Triggered By     : Looming Darkness (1253325)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1259027)  : Apply Aura (6) | Proc Trigger Spell (42): Looming Darkness
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253325 | Target: Self (1)
-#2 (id=1259028)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 266.3017 (coefficient=0.947128) | Target: Self (1)
-Description      : Your damaging and healing abilities have a chance to activate Umbric's Channeling Focus, increasing your highest secondary stat by $s2 for 10 sec.
+#2 (id=1259028)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 204.7923 (coefficient=1.56234) | Target: Self (1)
+Description      : Your damaging and healing abilities have a chance to activate Umbric's Channeling Focus, increasing your highest secondary stat by $s2 for $1253325d.
 
 Name             : Abyss Sabre (id=1253357) [Passive] 
 School           : Physical
@@ -246256,7 +246325,7 @@ Duration         : 0.7 seconds
 Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1260507)  : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39610 | Target: at Self (18) -> Targeted Enemy (6)
@@ -246517,9 +246586,8 @@ Name             : Flame Burst (id=1254953)
 School           : Fire
 Spell Type       : Magic
 Range            : 8 yards
-Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
-Attributes       : DoT Stacking Rule (103), Always Cast Log (255), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
+Attributes       : Always Cast Log (255), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1261617)  : School Damage (2): fire
                    Base Value: 0.7908 | Scaled Value: 0.7908 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -246906,7 +246974,7 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1266097)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 109769.9 (coefficient=390.4073) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 101639.2 (coefficient=361.4898) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1266098)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=1266099)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
@@ -247960,7 +248028,7 @@ Attributes       : Allow Item Spell In PvP (13), Aura Unique (43), Not an Action
 Effects          :
 #1 (id=1268811)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4376 (Label) | Radius: 15 yards | Target: Self (1)
-                   Affected Spells (Label): Hearty Well Fed (1232076), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Refreshment (1259662), Relaxed (1269152), Refreshment (1280485)
+                   Affected Spells (Label): Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Refreshment (1259662), Relaxed (1269152), Refreshment (1280485), Refreshment (1283374)
 #2 (id=1268812)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4876 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Midnight Versatility Flask (1235057), Flask of the Magisters (1235108), Flask of the Blood Knights (1235110), Flask of the Shattered Sun (1235111), Vicious Thalassian Flask of Honor (1239355)
@@ -247997,6 +248065,27 @@ Description      : Grants the user invisibility for $m5-$M5 sec.
 Can only be used outdoors. Cannot be cast in combat.
 Tooltip          : HU5H pup is keeping you cool.
 
+Name             : Blooming Feast (id=1259656) 
+School           : Physical
+Spell Type       : None
+Range            : 5 yards
+Cast Time        : 1 seconds
+GCD              : 180 seconds
+Duration         : 180 seconds
+Attributes       : Allow Item Spell In PvP (13), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144)
+Aura Interrupt   : Under Water (7)
+Effects          :
+#1 (id=1268830)  : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1268832)  : Kill Credit (134)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149880 | Target: Self (1)
+Description      : Place a Blooming Feast for all players to enjoy!
+
+$@spelldesc1232065
+
+$@spellicon457049 $@spellname457049  
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
+
 Name             : Quel'dorei Medley (id=1259657) 
 School           : Physical
 Spell Type       : None
@@ -248016,7 +248105,7 @@ for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon461960  $@spellname461960
-If you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.
+If you spend at least 10 seconds eating you will become $@spellname461960 gaining $1219179s7 Stamina and ${$1219179s4*1} of your highest secondary stat for $461960d.
 
 Name             : Rootland Celebration (id=1259658) 
 School           : Physical
@@ -248038,7 +248127,7 @@ for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $462209d.
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s2 primary stat for $462209d.
 
 Name             : Silvermoon Parade (id=1259659) 
 School           : Physical
@@ -248060,7 +248149,7 @@ for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 and gain $1219179s2 primary stat for $462209d.
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s2 primary stat for $462209d.
 
 Name             : Refreshment (id=1259662) 
 School           : Physical
@@ -248078,10 +248167,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1268845)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1219179
-
-$@spellicon461960  $@spellname461960
-If you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$456961s8*($456961s1/10)} Stamina and ${$456961s3*($456961s1/10)} primary stat for $1232324d.
+Description      : $@spelldesc1219179|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$456961s8*($456961s1/10)} Stamina and ${$456961s3*($456961s1/10)} primary stat for $1232324d.
 
 Name             : Gift of Light (id=1259741) 
 School           : Physical
@@ -249810,7 +249896,7 @@ Effects          :
 #5 (id=1272596)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1272597)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1272598)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 #8 (id=1272599)  : Apply Aura Raid (65) | Dummy (4)
@@ -249858,7 +249944,7 @@ Effects          :
 #5 (id=1272610)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1272611)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1272612)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 #8 (id=1272613)  : Apply Aura Raid (65) | Dummy (4)
@@ -249900,13 +249986,13 @@ Effects          :
 #2 (id=1272620)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1261040 | Radius: 1000 yards | Target: Self (1)
 #3 (id=1272621)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1272622)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Radius: 1000 yards | Target: Self (1)
 #5 (id=1272623)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1272624)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1272625)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 #8 (id=1272626)  : Apply Aura Raid (65) | Dummy (4)
@@ -251205,7 +251291,7 @@ Effects          :
 #6 (id=1277964)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1279036)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.4 | Scaled Value: 1.4 | Radius: 1000 yards | Target: Self (1)
 Description      : Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.
 
 Each blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.
@@ -251237,9 +251323,9 @@ Effects          :
 #5 (id=1277969)  : Trigger Spell (64): Sanctum's Edict: Kill
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1265783 | Target: Self (1)
 #6 (id=1277971)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1279035)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.4 | Scaled Value: 1.4 | Radius: 1000 yards | Target: Self (1)
 Description      : Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.
 
 Each blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.
@@ -251271,9 +251357,9 @@ Effects          :
 #5 (id=1277978)  : Trigger Spell (64): Sanctum's Edict: Kill
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1265783 | Target: Self (1)
 #6 (id=1277979)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
 #7 (id=1279034)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 1.5 | Scaled Value: 1.5 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1.4 | Scaled Value: 1.4 | Radius: 1000 yards | Target: Self (1)
 Description      : Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.
 
 Each blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.
@@ -252217,7 +252303,7 @@ Name             : Food (id=1269920)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Triggered By     : Refreshment (1219187), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232917), Refreshment (1232920), Refreshment (1232921), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770)
+Triggered By     : Refreshment (1219187), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232920), Refreshment (1232921), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -252931,10 +253017,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1293414)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1232065
-
-$@spellicon461960  $@spellname461960
-If you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.
+Description      : $@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.
 
 Name             : Magister's Alchemist Stone (id=1280591) [Passive, Hidden] 
 School           : Physical
@@ -253072,9 +253155,72 @@ Slaying an Elite enemy grants $w4 Sanctum's Blessings, while normal foes yield $
 Name             : Lost Idol of the Hash'ey (id=1282913) [Hidden] 
 School           : Physical
 Spell Type       : None
+Cooldown         : 30 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
 Effects          :
 #1 (id=1296961)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $?$pc152598[Ask the Loa Spirits to stay hidden when beckoned.][Ask the Loa Spirits to show themselves when beckoned.]
+
+Name             : Binding Flame (id=1283373) [Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 3959: Item Effects
+Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1297645)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 85757.64 (coefficient=305.0054) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1297646)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 7911.559 (coefficient=28.13823) | Target: Self (1)
+
+Name             : Refreshment (id=1283374) 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 60
+Duration         : 20 seconds
+Labels           : 2395
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+                 : 4908
+                 : 4910
+Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
+Aura Interrupt   : Standing (18), Swimming (33)
+Effects          :
+#1 (id=1297647)  : Trigger Spell (64): Food & Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
+#2 (id=1297648)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
+                   Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
+Description      : $@spelldesc1232065
+
+Name             : Fragmented Light Shard (id=1283377) [Passive] 
+School           : Holy
+Spell Type       : None
+Labels           : 3959: Item Effects
+Proc Chance      : 101%
+Real PPM         : 5 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Blessing Light Shard (1283378)
+Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1297651)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 504.9375 (coefficient=3.852118) | Target: Self (1)
+#2 (id=1297652)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#3 (id=1297653)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you a Light Fragment. Upon collecting $s3 fragments, you unleash the Light within the shard, increasing your $pri by $s1 for $1283378d.
+
+Name             : Blessing Light Shard (id=1283378) 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 3959: Item Effects
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1297654)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+#2 (id=1297655)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1283377
+Description      : $@spelldesc1283377
+Tooltip          : Empowered by the light, you gain $w1 $pri.
 
