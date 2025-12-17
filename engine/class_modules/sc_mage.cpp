@@ -1841,7 +1841,7 @@ public:
       else
         proc_chance *= p()->state.clearcasting_blp_count;
 
-      sim->print_debug("Clearcasting's random proc chance is {}% with a BLP count of {}/{}", 
+      sim->print_debug("Clearcasting proc chance: {}% ({}/{} BLP)", 
         proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
 
       if ( proc_chance == 1.0 || !background )
@@ -6609,12 +6609,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.icicles; } );
-  }
-
-  if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return 13 - state.clearcasting_blp_count; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
