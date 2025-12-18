@@ -8306,7 +8306,8 @@ struct blood_mist_t final : public death_knight_spell_t
 {
   blood_mist_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->spell.blood_mist_damage ),
   rp_gain( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
-  rp_gain_cap( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) / p->spell.blood_mist_buff->effectN( 3 ).base_value() )
+  rp_gain_cap( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * p->spell.blood_mist_buff->effectN( 3 ).base_value() ),
+  rp_gained( 0 )
   {
     aoe                = -1;
     background         = true;
@@ -8317,12 +8318,23 @@ struct blood_mist_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    p()->resource_gain( RESOURCE_RUNIC_POWER, rp_gain, p()->gains.blood_mist, this );
+    if ( rp_gained < rp_gain_cap )
+    {
+      p()->resource_gain( RESOURCE_RUNIC_POWER, rp_gain, p()->gains.blood_mist, this );
+      rp_gained += rp_gain;
+    }
+  }
+
+  void execute() override
+  {
+    rp_gained = 0;
+    death_knight_spell_t::execute();
   }
 
 private:
   int rp_gain;
   int rp_gain_cap;
+  int rp_gained;
 };
 
 // The Blood is Life ========================================================
