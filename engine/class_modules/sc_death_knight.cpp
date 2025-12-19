@@ -1011,6 +1011,7 @@ public:
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
+    propagate_const<gain_t*> blood_mid1_2pc;
 
     // Frost
     propagate_const<gain_t*> breath_of_sindragosa;
@@ -1432,6 +1433,9 @@ public:
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
 
+    // Blood Tier Set Spells
+    const spell_data_t* rejuvenating_blood; // 2pc rp gain
+
     // Frost
     const spell_data_t* runic_empowerment_gain;
     const spell_data_t* murderous_efficiency_gain;
@@ -1581,7 +1585,6 @@ public:
     const spell_data_t* rune_carved_plates_physical_buff;
     const spell_data_t* rune_carved_plates_magical_buff;
     const spell_data_t* swift_and_painful_buff;
-    const spell_data_t* reapers_of_souls_buff;
   } spell;
 
   struct runeforge_spells_t
@@ -8273,6 +8276,9 @@ struct blood_boil_t final : public death_knight_spell_t
       p()->buffs.boiling_point->expire();
       p()->buffs.boiling_point_echo->trigger();
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ) )
+      p()->resource_gain( RESOURCE_RUNIC_POWER, p()->spell.rejuvenating_blood->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), p()->gains.blood_mid1_2pc, this );
   }
 
   void impact( action_state_t* state ) override
@@ -14146,6 +14152,9 @@ void death_knight_t::spell_lookups()
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
 
+  // Blood Tier set spells
+  spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
+
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
   spell.rage_of_the_frozen_champion = conditional_spell_lookup( talent.frost.rage_of_the_frozen_champion.ok(), 377077 );
@@ -15106,6 +15115,7 @@ void death_knight_t::init_gains()
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
+  gains.blood_mid1_2pc   = get_gain( "Blood MID1 2pc");
 
   // Frost
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
