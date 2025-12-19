@@ -1134,7 +1134,7 @@ public:
     player_talent_t blood_draw;
     // Row 9
     player_talent_t rune_mastery;
-    player_talent_t subuding_grasp;          // NYI
+    player_talent_t subduing_grasp;          // NYI
     player_talent_t will_of_the_necropolis;  // NYI
     // Row 10
     player_talent_t null_magic;  // NYI
@@ -13637,6 +13637,9 @@ void death_knight_t::create_pets()
       pets.dancing_rune_weapon_pet.set_creation_callback(
           []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dancing_rune_weapon" ); } );
       pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
+      // As of Dec 19 2025, the first rune weapon does not get the 4s extension from everlasting bond.  Only the everlasting bond weapon does
+      if ( bugs && talent.blood.everlasting_bond.ok() )
+        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() - talent.blood.everlasting_bond->effectN( 2 ).time_value() );
       pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
@@ -13775,7 +13778,7 @@ void death_knight_t::init_spells()
   talent.blood_draw       = find_talent_spell( talent_tree::CLASS, "Blood Draw" );
   // Row 9
   talent.rune_mastery           = find_talent_spell( talent_tree::CLASS, "Rune Mastery" );
-  talent.subuding_grasp         = find_talent_spell( talent_tree::CLASS, "Subduing Grasp" );
+  talent.subduing_grasp         = find_talent_spell( talent_tree::CLASS, "Subduing Grasp" );
   talent.will_of_the_necropolis = find_talent_spell( talent_tree::CLASS, "Will of the Necropolis" );
   // Row 10
   talent.null_magic      = find_talent_spell( talent_tree::CLASS, "Null Magic" );
