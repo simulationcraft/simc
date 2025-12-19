@@ -9189,6 +9189,12 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       p()->trigger_vampiric_strike_proc( target );
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B4 ) &&
+            p()->rng().roll( p()->sets->set( DEATH_KNIGHT_BLOOD, MID1, B4)->effectN( 2 ).percent() ) )
+    {
+      p()->cooldown.blood_boil->reset( false );
+    }
   }
 
 private:
