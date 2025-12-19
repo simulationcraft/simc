@@ -876,6 +876,7 @@ public:
     cooldown_t* plague_infusion_icd;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
+    cooldown_t* bloody_reflection_icd;
     // Frost
     propagate_const<cooldown_t*> inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     propagate_const<cooldown_t*>
@@ -911,6 +912,7 @@ public:
     // Blood
     action_t* heart_strike_bloodied_blade;
     action_t* blood_boil_boiling_point;
+    action_t* bloody_reflection;
     action_t* blood_mist_tick;
     action_t* sanguinary_burst;
 
@@ -1182,20 +1184,20 @@ public:
       player_talent_t blood_feast;
       // Row 8
       player_talent_t plague_infusion;
-      // 2 new talent choice node, NYI
-      player_talent_t consumption;
+      player_talent_t bloody_reflection;
+      player_talent_t iron_heart;
       player_talent_t bloodied_blade;
       player_talent_t coagulopathy;
       // Row 9
       player_talent_t blood_mist;
       player_talent_t sanguine_ground;
-      player_talent_t carnage;
-      player_talent_t iron_heart;
+      player_talent_t bloodshot;
+      player_talent_t consumption;
       player_talent_t red_thirst;
       // Row 10
       player_talent_t sanguinary_burst;
       player_talent_t purgatory;
-      player_talent_t bloodshot;
+      player_talent_t carnage;
       player_talent_t umbilicus_eternus;
       // Apex
       player_talent_t dance_of_midnight_1;  // NYI
@@ -1414,6 +1416,7 @@ public:
     const spell_data_t* blood_mist_buff;
     const spell_data_t* blood_mist_damage;
     const spell_data_t* blood_mist_rp_gain;
+    const spell_data_t* bloody_reflection_damage;
     const spell_data_t* boiling_point_buff;
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
@@ -1869,6 +1872,7 @@ public:
     cooldown.plague_infusion_icd = get_cooldown( "plague_infusion_icd" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
+    cooldown.bloody_reflection_icd   = get_cooldown( "bloody_reflection_icd" );
 
     // Frost
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
@@ -6215,6 +6219,12 @@ struct blood_shield_buff_t final : public absorb_buff_t
       if ( dk->talent.blood.consumption.ok() )
         dk->cooldown.consumption->reset( true );
     }
+
+    if ( dk->talent.blood.bloody_reflection.ok() && dk->cooldown.bloody_reflection_icd->up() )
+    {
+      dk->background_actions.bloody_reflection->execute_on_target( source );
+      dk->cooldown.bloody_reflection_icd->start();
+    }
   }
 };
 
@@ -6275,8 +6285,8 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
     auto final_amount = amount + current_value;
 
     // Blood Shield caps at 50% max health
-    if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * 0.5 ) )
-      final_amount = player->resources.max[ RESOURCE_HEALTH ] * 0.5;
+    if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent() ) )
+      final_amount = player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent();
 
     sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})",
                       player->name(), current_value, amount, final_amount, name(), this->data().id() );
@@ -8361,6 +8371,14 @@ private:
   int rp_gain;
   int rp_gain_cap;
   int rp_gained;
+};
+
+struct bloody_reflection_t : public death_knight_spell_t
+{
+  bloody_reflection_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->spell.bloody_reflection_damage )
+  {
+    background = true;
+  }
 };
 
 // The Blood is Life ========================================================
@@ -13031,10 +13049,12 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-    if ( talent.blood.boiling_point->ok() )
+    if ( talent.blood.boiling_point.ok() )
       background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
     if ( talent.blood.blood_mist.ok() )
       background_actions.blood_mist_tick = get_action<blood_mist_t>( "blood_mist", this );
+    if ( talent.blood.bloody_reflection.ok() )
+      background_actions.bloody_reflection = get_action<bloody_reflection_t>( "bloody_reflection", this );
     if ( talent.blood.sanguinary_burst.ok() )
       background_actions.sanguinary_burst = get_action<sanguinary_burst_t>( "sanguinary_burst", this );
   }
@@ -13836,20 +13856,20 @@ void death_knight_t::init_spells()
   talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   // Row 8
   talent.blood.plague_infusion = find_talent_spell( talent_tree::SPECIALIZATION, "Plague Infusion" );
-  // Choice node NYI talents
-  talent.blood.consumption    = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.bloody_reflection = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Reflection" );
+  talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.bloodied_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.coagulopathy   = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
   // Row 9
   talent.blood.blood_mist      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Mist" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
-  talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
-  talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
+  talent.blood.bloodshot         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshot" );
+  talent.blood.consumption    = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.red_thirst      = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
   // Row 10
   talent.blood.sanguinary_burst  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguinary Burst" );
   talent.blood.purgatory         = find_talent_spell( talent_tree::SPECIALIZATION, "Purgatory" );
-  talent.blood.bloodshot         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshot" );
+  talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.umbilicus_eternus = find_talent_spell( talent_tree::SPECIALIZATION, "Umbilicus Eternus" );
   // Apex
   talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264506 );
@@ -14140,6 +14160,7 @@ void death_knight_t::spell_lookups()
   spell.blood_mist_buff             = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263729 );
   spell.blood_mist_damage           = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263752 );
   spell.blood_mist_rp_gain          = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263774 );
+  spell.bloody_reflection_damage    = conditional_spell_lookup( talent.blood.bloody_reflection.ok(), 1279656 );
   spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
@@ -14384,6 +14405,9 @@ void death_knight_t::set_icds()
 {
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
+
+  if ( talent.blood.bloody_reflection.ok() )
+    cooldown.bloody_reflection_icd->duration = 500_ms;  // Not in spelldata, found via logs Dec 12 2025
 
   if ( talent.blood.plague_infusion.ok() )
     cooldown.plague_infusion_icd->duration = talent.blood.plague_infusion->internal_cooldown();

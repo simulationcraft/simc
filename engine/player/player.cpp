@@ -8526,7 +8526,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
       if ( ab->up() )
       {
         // Consume the absorb and grab the effective amount consumed.
-        double absorbed = ab->consume( s->result_amount );
+        double absorbed = ab->consume( s->result_amount, s );
 
         s->result_amount -= absorbed;
 
