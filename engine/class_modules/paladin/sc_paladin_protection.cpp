@@ -620,8 +620,8 @@ struct judgment_prot_t : public judgment_t
 {
   int judge_holy_power, sw_holy_power;
   hammer_and_anvil_t* hammer_and_anvil;
-  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view /* options_str */ )
-    : judgment_t( p, name ),
+  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str )
+    : judgment_t( p, name, options_str ),
       judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
       sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
       hammer_and_anvil( nullptr )

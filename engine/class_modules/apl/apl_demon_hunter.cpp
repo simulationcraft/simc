@@ -67,27 +67,38 @@ void devourer( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* melee_combo = p->get_action_priority_list( "melee_combo" );
+  action_priority_list_t* reaps = p->get_action_priority_list( "reaps" );
 
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=use_cstar,default=0,value=0,op=reset" );
   precombat->add_action( "consume" );
 
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up" );
+  default_->add_action( "potion,if=buff.metamorphosis.up|fight_remains<=30" );
   default_->add_action( "metamorphosis" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up" );
-  default_->add_action( "collapsing_star" );
-  default_->add_action( "vengeful_retreat,if=buff.voidstep.up" );
-  default_->add_action( "predators_wake" );
-  default_->add_action( "the_hunt" );
-  default_->add_action( "reapers_toll" );
-  default_->add_action( "hungering_slash" );
-  default_->add_action( "pierce_the_veil,if=voidsurge_available|talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
-  default_->add_action( "voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
-  default_->add_action( "void_ray,if=!buff.eradicate.up" );
-  default_->add_action( "eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1|buff.voidfall_spending.up" );
+  default_->add_action( "void_ray" );
+  default_->add_action( "collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&!variable.use_cstar" );
+  default_->add_action( "call_action_list,name=melee_combo,if=talent.devourers_bite" );
+  default_->add_action( "eradicate,if=buff.voidfall_spending.react|active_enemies>1" );
+  default_->add_action( "call_action_list,name=melee_combo" );
+  default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.react" );
+  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(talent.scythes_embrace|!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30))" );
   default_->add_action( "soul_immolation,if=refreshable&!buff.metamorphosis.up" );
-  default_->add_action( "cull,if=buff.voidfall_spending.up" );
-  default_->add_action( "reap,if=soul_fragments>=4&(talent.scythes_embrace|active_enemies<=2)|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack|buff.voidfall_spending.up" );
   default_->add_action( "devour" );
   default_->add_action( "consume" );
+
+  melee_combo->add_action( "vengeful_retreat,if=buff.voidstep.up" );
+  melee_combo->add_action( "hungering_slash" );
+  melee_combo->add_action( "reapers_toll" );
+  melee_combo->add_action( "the_hunt,if=buff.metamorphosis.up|talent.violent_transformation" );
+  melee_combo->add_action( "pierce_the_veil" );
+  melee_combo->add_action( "predators_wake" );
+  melee_combo->add_action( "voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
+
+  reaps->add_action( "eradicate" );
+  reaps->add_action( "cull" );
+  reaps->add_action( "reap" );
 }
 //devourer_apl_end
 // clang-format on

@@ -350,7 +350,7 @@ struct holy_shock_t : public paladin_spell_t
 struct judgment_holy_t : public judgment_t
 {
   judgment_holy_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
-    judgment_t( p, name )
+    judgment_t( p, name, options_str )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();

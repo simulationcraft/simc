@@ -1102,9 +1102,7 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
 
     if ( is_mage_spell )
     {
-      if ( o()->buffs.arcane_surge->check() )
-        m *= 1.0 + o()->buffs.arcane_surge->data().effectN( 1 ).percent();
-
+      m *= 1.0 + o()->buffs.arcane_surge->check_value();
       m *= 1.0 + o()->buffs.lingering_embers->check_stack_value();
       m *= 1.0 + o()->buffs.spellfire_sphere->check_stack_value();
     }
@@ -1644,8 +1642,8 @@ public:
   {
     double m = spell_t::action_multiplier();
 
-    if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
-      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent();
+    if ( affected_by.arcane_surge )
+      m *= 1.0 + p()->buffs.arcane_surge->check_value();
 
     if ( affected_by.hand_of_frost )
       m *= 1.0 + p()->buffs.hand_of_frost->check_stack_value();
@@ -2476,16 +2474,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
       double tick_amount = p->bugs ? base_ta( d->state ) : d->state->result_total;
       intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * tick_amount );
     }
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = residual_action_t::composite_target_multiplier( target );
-
-    if ( auto td = debug_cast<mage_t*>( player )->find_target_data( target ) )
-      m *= 1.0 + td->debuffs.molten_fury->check_value();
-
-    return m;
   }
 };
 
@@ -4978,8 +4966,6 @@ struct flash_freezeburn_t final : public spell_t
     base_dd_min = base_dd_max = 1.0;
     // TODO: Hits one fewer target. It is possible that the main target
     // (which is not dealt damage) is counted as one of the five targets.
-    // Splintering Ray sometimes does hit 5 targets, but Flash Freezeburn
-    // doesn't seem to.
     aoe--;
   }
 };
@@ -4992,7 +4978,7 @@ struct controlled_instincts_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     // Only hits 5 targets despite max_targets being 6
-    aoe -= 1;
+    aoe--;
     // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
     reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -5193,7 +5179,8 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    next *= p->cache.spell_haste();  // Does not use spell speed
+    // TODO: Should be affected by spell speed as per the description; currently doesn't work
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
@@ -5569,7 +5556,7 @@ void mage_t::regen( timespan_t periodicity )
     if ( base )
     {
       // Base regen was already done, so we don't need to add 1.0 to Arcane Surge's mana regen multiplier.
-      double amount = buffs.arcane_surge->check_value() * base * periodicity.total_seconds();
+      double amount = buffs.arcane_surge->data().effectN( 3 ).percent() * base * periodicity.total_seconds();
       resource_gain( RESOURCE_MANA, amount, gains.arcane_surge );
     }
   }
@@ -5950,29 +5937,13 @@ void mage_t::init_spells()
   register_passive_effect_mask( talents.dualcasting_adept,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
-  // TODO: The effects aren't properly disabled in game, so both CmS and Meteor get 44% extra damage
-  // register_passive_effect_mask( talents.blast_radius,
-  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
+  // TODO: Blast Radius and Flash Freezeburn effects are now properly disabled on PTR and
+  // presumably also in the next beta build; double check
+  register_passive_effect_mask( talents.blast_radius,
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
-  // TODO: The effects aren't properly disabled in game, Fire gets extra GS damage and Frost gets extra Meteor damage
-  // register_passive_effect_mask( talents.flash_freezeburn,
-  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
-
-  // TODO: Remove these when Midnight releases
-  register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
-    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ).disable( 3, 4 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SPELLSLINGER, TWW3, B2 ),
-    specialization() == MAGE_FROST ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( true ).disable( 4 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SPELLSLINGER, TWW3, B4 ),
-    specialization() == MAGE_FROST ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ) );
-
-  register_passive_effect_mask( sets->set( HERO_SUNFURY, TWW3, B2 ),
-    specialization() == MAGE_ARCANE ? effect_mask_t( true ).disable( 2, 4, 8 ) : effect_mask_t( true ).disable( 1, 3, 7 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SUNFURY, TWW3, B4 ),
-    specialization() == MAGE_ARCANE ? effect_mask_t( true ).disable( 2 ) : effect_mask_t( true ).disable( 1 ) );
+  register_passive_effect_mask( talents.flash_freezeburn,
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -6013,8 +5984,8 @@ void mage_t::create_buffs()
                                           action.arcane_assault->execute_on_target( target );
                                           if ( talents.energized_familiar.ok() && buffs.arcane_surge->check() )
                                           {
-                                            // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
-                                            int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
+                                            // TODO: Fixed on PTR, double check in the next beta build
+                                            int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() ) - 1;
                                             make_repeating_event( *sim, 75_ms, [ this ] { action.arcane_assault->execute_on_target( target ); }, count );
                                           }
                                         } )
@@ -6026,7 +5997,7 @@ void mage_t::create_buffs()
                                       ->set_chance( talents.arcane_salvo.ok() )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
-                                      ->set_default_value_from_effect( 3 )
+                                      ->set_default_value_from_effect( 1 )
                                       ->set_affects_regen( true );
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )

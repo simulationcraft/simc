@@ -59,6 +59,7 @@ enum grand_crusader_source : unsigned int
 {
   GC_NORMAL   = 0,
   GC_JUDGMENT = 1,
+  GC_ROR      = 2,
 };
 
 // ==========================================================================
@@ -189,6 +190,7 @@ public:
     buff_t* empyrean_power;
 
     buff_t* art_of_war;
+    buff_t* righteous_cause;
 
     buff_t* rush_of_light;
     buff_t* templar_strikes;
@@ -372,6 +374,9 @@ public:
     proc_t* divine_inspiration;
 
     proc_t* templar_lights_judicator;
+
+    proc_t* grand_crusader_ror_sw;
+    proc_t* grand_crusader_ror_hb;
   } procs;
 
   // Spells
@@ -736,11 +741,12 @@ public:
 
   armament next_armament;
 
-  int melee_swing_count;
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
   int divine_inspiration_next;
+
+  double reflection_of_radiance_proc_chance;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -949,8 +955,8 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
     : absorb_buff_t( td->target, "holy_bulwark_absorb_" + td->source->name_str + "_" + td->target->name_str,
                      debug_cast<paladin_t*>( td->source )->spells.lightsmith.holy_bulwark_absorb )
   {
-    caster                   = debug_cast<paladin_t*>( td->source );
-    set_absorb_source( caster->get_stats( "holy_bulwark_absorb_"+td->target->name_str) );
+    caster = debug_cast<paladin_t*>( td->source );
+    set_absorb_source( caster->get_stats( "holy_bulwark_absorb_" + td->target->name_str ) );
   }
   holy_bulwark_absorb_t( paladin_t* p )
     : absorb_buff_t( p, "holy_bulwark_absorb", p->spells.lightsmith.holy_bulwark_absorb )
@@ -958,10 +964,10 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
     caster = p;
     set_absorb_source( caster->get_stats( "holy_bulwark_absorb" ) );
   }
-  bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     double total_value = this->value();
-    if (value > 0)
+    if ( value > 0 )
     {
       total_value += value;
     }
@@ -970,8 +976,19 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
       total_value += this->player->resources.max[ RESOURCE_HEALTH ] *
                      ( caster->spells.lightsmith.holy_bulwark->effectN( 4 ).percent() / 10.0 );
     }
-    total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] * caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent());
+    total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] *
+                                             caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent() );
     return absorb_buff_t::trigger( stacks, total_value, chance, duration );
+  }
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    absorb_buff_t::absorb_used( absorbed, source );
+    if ( caster->talents.lightsmith.reflection_of_radiance->ok() &&
+         caster->rng().roll( caster->reflection_of_radiance_proc_chance ) )
+    {
+      caster->trigger_grand_crusader( GC_ROR );
+      caster->procs.grand_crusader_ror_hb->occur();
+    }
   }
 };
 
@@ -1559,6 +1576,12 @@ public:
       }
     }
 
+    // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
+    {
+      num_hopo_spent = 3.0;
+    }
+
     ab::execute();
 
     // if this is a vanq-hammer-based DS, don't do this stuff
@@ -1576,6 +1599,7 @@ public:
           p->procs.righteous_cause->occur();
           p->cooldowns.blade_of_justice->reset( true );
           p->cooldowns.righteous_cause_icd->start();
+          p->buffs.righteous_cause->trigger();
           break;
         }
       }
@@ -1615,6 +1639,11 @@ public:
     {
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
+      {
+        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+      }
+      // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
+      if (p->bugs && p->talents.instrument_of_the_divine->ok())
       {
         p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
       }
@@ -1717,7 +1746,7 @@ private:
   hammer_of_wrath_t* echo;
 
 public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view name, double mul = 1.0 );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
 };
@@ -1725,7 +1754,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   hammer_of_wrath_t* hammer_of_wrath;
-  judgment_t( paladin_t* p, util::string_view options_str );
+  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
 
   proc_types proc_type() const override;
   void execute() override;
@@ -1748,12 +1777,5 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( util::string_view name, paladin_t* p );
   double action_multiplier() const override;
   double composite_target_multiplier( player_t* target ) const override;
-};
-struct divine_exaction_ret_t :public paladin_spell_t
-{
-  judgment_t* judgment;
-  hammer_of_wrath_t* hammer_of_wrath;
-  divine_exaction_ret_t( paladin_t* p );
-  void execute() override;
 };
 }  // namespace paladin

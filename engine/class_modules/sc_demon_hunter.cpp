@@ -1163,8 +1163,8 @@ public:
     double soul_fragment_from_shattered_souls_chance = 0.4;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
-    double void_metamorphosis_initial_drain          = 10.0;
-    double void_metamorphosis_drain_per_stack        = 0.012;
+    double void_metamorphosis_initial_drain          = 8.0;
+    double void_metamorphosis_drain_per_stack        = 0.025;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );

@@ -1,21 +1,31 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
+actions.precombat+=/variable,name=use_cstar,default=0,value=0,op=reset
 actions.precombat+=/consume
 
-actions=metamorphosis
-actions+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
-actions+=/collapsing_star
-actions+=/vengeful_retreat,if=buff.voidstep.up
-actions+=/predators_wake
-actions+=/the_hunt
-actions+=/reapers_toll
-actions+=/hungering_slash
-actions+=/pierce_the_veil,if=voidsurge_available|talent.duty_eternal&active_enemies=1|talent.hungering_slash
-actions+=/voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash
-actions+=/void_ray,if=!buff.eradicate.up
-actions+=/eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1|buff.voidfall_spending.up
+# Executed every time the actor is available.
+actions=invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up
+actions+=/potion,if=buff.metamorphosis.up|fight_remains<=30
+actions+=/metamorphosis
+actions+=/void_ray
+actions+=/collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&!variable.use_cstar
+actions+=/call_action_list,name=melee_combo,if=talent.devourers_bite
+actions+=/eradicate,if=buff.voidfall_spending.react|active_enemies>1
+actions+=/call_action_list,name=melee_combo
+actions+=/call_action_list,name=reaps,if=buff.voidfall_spending.react
+actions+=/call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(talent.scythes_embrace|!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30))
 actions+=/soul_immolation,if=refreshable&!buff.metamorphosis.up
-actions+=/cull,if=buff.voidfall_spending.up
-actions+=/reap,if=soul_fragments>=4&(talent.scythes_embrace|active_enemies<=2)|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack|buff.voidfall_spending.up
 actions+=/devour
 actions+=/consume
+
+actions.melee_combo=vengeful_retreat,if=buff.voidstep.up
+actions.melee_combo+=/hungering_slash
+actions.melee_combo+=/reapers_toll
+actions.melee_combo+=/the_hunt,if=buff.metamorphosis.up|talent.violent_transformation
+actions.melee_combo+=/pierce_the_veil
+actions.melee_combo+=/predators_wake
+actions.melee_combo+=/voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash
+
+actions.reaps=eradicate
+actions.reaps+=/cull
+actions.reaps+=/reap
