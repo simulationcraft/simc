@@ -749,6 +749,11 @@ struct death_and_decay_tracker_t
     dnd_event = event;
   }
 
+  ground_aoe_event_t* get_dnd_event()
+  {
+    return dnd_event;
+  }
+
   void cancel_dnd_event( std::queue<death_and_decay_tracker_t*>& dnds )
   {
     if ( dnd_event )
@@ -8742,7 +8747,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     {
       // Delay expiration by 1_ms to ensure the event destruction happens after all damage events
       make_event( *sim, 1_ms, [ & ]() {
-        if ( dnd->dnd_event )
+        if ( dnd->get_dnd_event() )
         {
           dnd->cancel_dnd_event( p()->active_dnds );
           dnd_canceled = false;
@@ -8783,7 +8788,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     if ( p()->talent.sanlayn.desecrate.ok() && !dnd_canceled && disease_ticking &&
          rng().roll( desecrate_chance * ++desecrate_attempts ) )
     {
-      timespan_t remaining_time = dnd->dnd_event->remaining_time();
+      timespan_t remaining_time = dnd->get_dnd_event()->remaining_time();
       double ticks_left         = remaining_time.total_seconds();
       desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
       des->ticks_remain         = ticks_left;
@@ -12272,7 +12277,7 @@ bool death_knight_t::in_death_and_decay() const
   if ( !sim->distance_targeting_enabled || active_dnds.empty() )
     return !active_dnds.empty();
 
-  return get_ground_aoe_distance( *active_dnds.front()->dnd_event->pulse_state ) <= active_dnds.front()->dnd_event->pulse_state->action->radius;
+  return get_ground_aoe_distance( *active_dnds.front()->get_dnd_event()->pulse_state) <= active_dnds.front()->get_dnd_event()->pulse_state->action->radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -12944,7 +12949,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
     switch ( type )
     {
       case ground_aoe_params_t::EVENT_CREATED:
-        tracker->dnd_event = event;
+        tracker->set_dnd_event( event );
         break;
       case ground_aoe_params_t::EVENT_STARTED:
         buffs.death_and_decay->trigger();
@@ -12952,14 +12957,14 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
       case ground_aoe_params_t::EVENT_STOPPED:
         break;
       case ground_aoe_params_t::EVENT_DESTRUCTED:
-        tracker->dnd_event = nullptr;
+        tracker->set_dnd_event( nullptr );
         break;
       default:
         break;
     }
   } );
 
-  tracker->dnd_event = make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ );
+  tracker->set_dnd_event( make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ ) );
   active_dnds.push( tracker );
 }
 
@@ -13604,7 +13609,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
       return make_fn_expr( "dnd_remains", [ this ]() {
-        return active_dnds.empty() ? 0 : active_dnds.front()->dnd_event->remaining_time().total_seconds();
+        return active_dnds.empty() ? 0 : active_dnds.front()->get_dnd_event()->remaining_time().total_seconds();
       } );
     }
 
@@ -13618,7 +13623,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "active_remains" ) )
     {
       return make_fn_expr( "dnd_active_remains", [ this ]() {
-        return in_death_and_decay() ? active_dnds.front()->dnd_event->remaining_time().total_seconds() : 0;
+        return in_death_and_decay() ? active_dnds.front()->get_dnd_event()->remaining_time().total_seconds() : 0;
       } );
     }
 
