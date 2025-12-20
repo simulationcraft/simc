@@ -25,6 +25,7 @@
 #include "report/highchart.hpp"
 
 #include "simulationcraft.hpp"
+#include <queue>
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -738,7 +739,7 @@ struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
-  std::vector<ground_aoe_event_t*> active_dnds;
+  std::queue<ground_aoe_event_t*> active_dnds;
   event_t* runic_power_decay;
 
   // Expression warnings
@@ -8664,7 +8665,6 @@ struct desecrate_t final : public death_knight_spell_t
     aoe             = -1;
     unsigned idx    = p->specialization() == DEATH_KNIGHT_UNHOLY ? 1 : 3;
     base_multiplier = p->talent.sanlayn.desecrate->effectN( idx ).percent();
-    ;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -8684,44 +8684,97 @@ public:
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
   death_and_decay_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : death_knight_spell_t( name, p, spell ), desecrate( nullptr )
+    : death_knight_spell_t( name, p, spell ),
+      desecrate( nullptr ),
+      desecrate_chance( 0 ),
+      desecrate_attempts( 0 ),
+      dnd_canceled( false ),
+      dnd_event( nullptr )
   {
     aoe        = -1;
     background = dual = true;
     tick_zero         = true;
 
     if ( p->talent.sanlayn.desecrate.ok() )
-      desecrate = get_action<desecrate_t>( "desecrate", p );
+    {
+      desecrate        = get_action<desecrate_t>( "desecrate", p );
+      desecrate_chance = p->pseudo_random_c_from_p( p->talent.sanlayn.desecrate->effectN( 2 ).percent() );
+    }
+  }
+
+  void reset() override
+  {
+    death_knight_spell_t::reset();
+    desecrate_attempts = 0;
+    dnd_canceled       = false;
+  }
+
+  void cancel_dnd( timespan_t remaining )
+  {
+    if ( !dnd_canceled )
+    {
+      // Delay expiration by 1_ms to ensure the event destruction happens after all damage events
+      make_event( *sim, 1_ms, [ & ]() {
+        if ( dnd_event )
+        {
+          event_t::cancel( dnd_event );
+          p()->active_dnds.pop();
+          dnd_canceled = false;
+          dnd_event = nullptr;
+        }
+      } );
+
+      // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
+      make_event( *sim, remaining, [ & ]() { p()->buffs.death_and_decay->expire(); } );
+
+      dnd_canceled = true;
+    }
   }
 
   void impact( action_state_t* s ) override
   {
+    if( !dnd_event )
+      assert( false && "death_and_decay_damage_base_t::impact called without a valid dnd_event" );
+
+    // Only one dnd event can deal damage at a time, but multiple can be active.
+    // Assume the first dnd event in the queue is the one dealing damage.
+    if ( dnd_event != p()->active_dnds.front() )
+      return;
+
     death_knight_spell_t::impact( s );
 
-    // TODO: Double Check proc mechanics
-    if ( p()->talent.sanlayn.desecrate.ok() && !p()->active_dnds.empty() &&
-         rng().roll( p()->talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
+    death_knight_td_t* td = get_td( s->target );
+    bool disease_ticking  = false;
+
+    switch ( p()->specialization() )
     {
-      timespan_t remaining_time = p()->active_dnds.front()->remains();
+      case DEATH_KNIGHT_UNHOLY:
+        disease_ticking = td->dot.virulent_plague->is_ticking() || td->dot.dread_plague->is_ticking();
+        break;
+      case DEATH_KNIGHT_BLOOD:
+        disease_ticking = td->dot.blood_plague->is_ticking();
+    }
+
+    if ( p()->talent.sanlayn.desecrate.ok() && dnd_event && !dnd_canceled && disease_ticking &&
+         rng().roll( desecrate_chance * ++desecrate_attempts ) )
+    {
+      timespan_t remaining_time = dnd_event->remaining_time();
       double ticks_left         = remaining_time.total_seconds();
       desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
       des->ticks_remain         = ticks_left;
       desecrate->execute();
-
-      make_event( *sim, 1_ms, [ & ]() {
-        if ( p()->active_dnds.front() )
-          event_t::cancel( p()->active_dnds.front() );
-      } );
-
-      // Retrigger the buff since the event destruction expires it
-      p()->buffs.death_and_decay->trigger();
-      // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
-      make_event( *sim, remaining_time, [ & ]() { p()->buffs.death_and_decay->expire(); } );
+      cancel_dnd( remaining_time );
+      desecrate_attempts = 0;
     }
   }
 
 private:
   action_t* desecrate;
+  double desecrate_chance;
+  int desecrate_attempts;
+  bool dnd_canceled;
+public:
+  ground_aoe_event_t* dnd_event;
 };
 
 struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
@@ -8824,11 +8877,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
             .x( target->x_position )
             .y( target->y_position )
             // Keep track of on-going dnd events
-            .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+            .state_callback( [ & ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+              debug_cast<death_and_decay_damage_t*>( damage )->dnd_event = event;
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_dnds.push_back( event );
+                  p()->active_dnds.push( event );
                   break;
                 case ground_aoe_params_t::EVENT_STARTED:
                   p()->buffs.death_and_decay->trigger();
@@ -8837,7 +8891,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
                   p()->buffs.death_and_decay->expire( 4_s );
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
+                  p()->active_dnds.pop();
+                  debug_cast<death_and_decay_damage_t*>( damage )->dnd_event = nullptr;
                   break;
                 default:
                   break;
@@ -9507,11 +9562,13 @@ struct festering_scythe_t final : public festering_base_t
               .x( target->x_position )
               .y( target->y_position )
               // Keep track of on-going dnd events
-              .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+              .state_callback( [ & ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+                // TODO: Figure out why putting this in EVENT_CREATED results in the event being nullptr
+                debug_cast<death_and_decay_damage_t*>( scythe_of_decay )->dnd_event = event;
                 switch ( type )
                 {
                   case ground_aoe_params_t::EVENT_CREATED:
-                    p()->active_dnds.push_back( event );
+                    p()->active_dnds.push( event );
                     break;
                   case ground_aoe_params_t::EVENT_STARTED:
                     p()->buffs.death_and_decay->trigger();
@@ -9520,13 +9577,15 @@ struct festering_scythe_t final : public festering_base_t
                     p()->buffs.death_and_decay->expire( 4_s );
                     break;
                   case ground_aoe_params_t::EVENT_DESTRUCTED:
-                    range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
+                    p()->active_dnds.pop();
+                    debug_cast<death_and_decay_damage_t*>( scythe_of_decay )->dnd_event = nullptr;
                     break;
                   default:
                     break;
                 }
               } ),
           true /* Immediate pulse */ );
+
       p()->buffs.scythe_of_decay->trigger();
     }
   }
@@ -15535,9 +15594,10 @@ void death_knight_t::reset()
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
   magus_active                 = 0;
-  active_dnds.clear();
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
+  for ( int i = 0; i < active_dnds.size(); i++ )
+    active_dnds.pop();
 }
 
 // death_knight_t::assess_damage ============================================
@@ -15790,9 +15850,10 @@ void death_knight_t::arise()
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
   magus_active                 = 0;
-  active_dnds.clear();
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
+  for ( int i = 0; i < active_dnds.size(); i++ )
+    active_dnds.pop();
 
   player_t::arise();
   start_inexorable_assault();
