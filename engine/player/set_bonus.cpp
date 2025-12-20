@@ -259,7 +259,12 @@ void set_bonus_t::initialize()
           continue;
 
         bool is_overridden = data.overridden > 0;
-        bool is_in_range = set_bonus_spec_count[ idx ][ spec_idx ] >= data.bonus->bonus && data.overridden == -1;
+        bool is_in_range = false;
+        if ( data.bonus->bonus )
+          is_in_range = set_bonus_spec_count[ idx ][ spec_idx ] >= data.bonus->bonus && data.overridden == -1;
+        else
+          is_in_range = set_bonus_spec_count[ idx ][ spec_idx ] > data.bonus->bonus && data.overridden == -1;
+
         bool is_allowed_spec = data.bonus->has_spec( actor->_spec );
         bool is_allowed_trait_sub_tree = data.bonus->trait_sub_tree != -1
                                            ? actor->player_sub_trees.count( as<unsigned>( data.bonus->trait_sub_tree ) )

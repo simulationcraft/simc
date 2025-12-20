@@ -3914,8 +3914,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
             curr_tier = enum_id;
           }
 
+          // special handling for 1piece sets
           os.format( "<li class=\"nowrap\">{} ({}pc)</li>\n",
-                     report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus );
+                     report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus ? bonus->bonus : bonus->bonus + 1 );
         }
 
         os << "</ul></td></tr>\n";
