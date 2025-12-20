@@ -137,7 +137,6 @@ using namespace unique_gear;
 struct death_knight_t;
 struct runes_t;
 struct rune_t;
-struct death_and_decay_tracker_t;
 
 namespace pets
 {
@@ -940,6 +939,7 @@ public:
     propagate_const<action_t*> vampiric_strike_heal;
     action_t* infliction_of_sorrow;
     action_t* the_blood_is_life;
+    action_t* desecrate;
 
     // Blood
     action_t* heart_strike_bloodied_blade;
@@ -8716,93 +8716,24 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
   death_and_decay_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_spell_t( name, p, spell ),
-      desecrate( nullptr ),
-      desecrate_chance( 0 ),
-      desecrate_attempts( 0 ),
-      dnd_canceled( false ),
       dnd( nullptr )
   {
     aoe        = -1;
     background = dual = true;
     tick_zero         = true;
-
-    if ( p->talent.sanlayn.desecrate.ok() )
-    {
-      desecrate        = get_action<desecrate_t>( "desecrate", p );
-      desecrate_chance = p->pseudo_random_c_from_p( p->talent.sanlayn.desecrate->effectN( 2 ).percent() );
-      dnd = new death_and_decay_tracker_t();
-    }
-  }
-
-  void reset() override
-  {
-    death_knight_spell_t::reset();
-    desecrate_attempts = 0;
-    dnd_canceled       = false;
-  }
-
-  void cancel_dnd( timespan_t remaining )
-  {
-    if ( !dnd_canceled )
-    {
-      // Delay expiration by 1_ms to ensure the event destruction happens after all damage events
-      make_event( *sim, 1_ms, [ & ]() {
-        if ( dnd->get_dnd_event() )
-        {
-          dnd->cancel_dnd_event( p()->active_dnds );
-          dnd_canceled = false;
-        }
-      } );
-
-      // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
-      make_event( *sim, remaining, [ & ]() { p()->buffs.death_and_decay->expire(); } );
-
-      dnd_canceled = true;
-    }
+    dnd               = new death_and_decay_tracker_t();
   }
 
   void impact( action_state_t* s ) override
   {
-    if( !dnd )
-      assert( false && "death_and_decay_damage_base_t::impact called without a dnd tracker" );
-
     // Only one dnd event can deal damage at a time, but multiple can be active.
-    // Assume the first dnd event in the queue is the one dealing damage.
+    // Assume the first dnd in the queue is the one dealing damage.
     if ( dnd != p()->active_dnds.front() )
       return;
 
     death_knight_spell_t::impact( s );
-
-    death_knight_td_t* td = get_td( s->target );
-    bool disease_ticking  = false;
-
-    switch ( p()->specialization() )
-    {
-      case DEATH_KNIGHT_UNHOLY:
-        disease_ticking = td->dot.virulent_plague->is_ticking() || td->dot.dread_plague->is_ticking();
-        break;
-      case DEATH_KNIGHT_BLOOD:
-        disease_ticking = td->dot.blood_plague->is_ticking();
-    }
-
-    if ( p()->talent.sanlayn.desecrate.ok() && !dnd_canceled && disease_ticking &&
-         rng().roll( desecrate_chance * ++desecrate_attempts ) )
-    {
-      timespan_t remaining_time = dnd->get_dnd_event()->remaining_time();
-      double ticks_left         = remaining_time.total_seconds();
-      desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
-      des->ticks_remain         = ticks_left;
-      desecrate->execute();
-      cancel_dnd( remaining_time );
-      desecrate_attempts = 0;
-    }
   }
 
-private:
-  action_t* desecrate;
-  double desecrate_chance;
-  int desecrate_attempts;
-  bool dnd_canceled;
 public:
   death_and_decay_tracker_t* dnd;
 };
@@ -12937,10 +12868,11 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.duration( dur );
   params.action( a );
   params.pulse_time( period );
+  params.n_pulses( as<int>( dur / period ) + 1 );
   params.x( target->x_position );
   params.y( target->y_position );
 
-  params.expiration_callback( [ & ]( const action_state_t* ) {
+  params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
     buffs.death_and_decay->expire( 4_s );
     active_dnds.pop();
   } );
@@ -12957,8 +12889,58 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
       case ground_aoe_params_t::EVENT_STOPPED:
         break;
       case ground_aoe_params_t::EVENT_DESTRUCTED:
-        tracker->set_dnd_event( nullptr );
-        break;
+        if ( tracker != active_dnds.front() )
+          break;
+      {
+        int n_dots = 0;
+        switch ( specialization() )
+        {
+          // Assume all enemies are in the dnd area of effect
+          case DEATH_KNIGHT_UNHOLY:
+            for ( auto& t : sim->target_non_sleeping_list )
+            {
+              death_knight_td_t* td = get_target_data( t );
+              if ( td->dot.dread_plague->is_ticking() || td->dot.virulent_plague->is_ticking() )
+                ++n_dots;
+            }
+            break;
+          case DEATH_KNIGHT_BLOOD:
+            for ( auto& t : sim->target_non_sleeping_list )
+            {
+              death_knight_td_t* td = get_target_data( t );
+              if ( td->dot.blood_plague->is_ticking() )
+                ++n_dots;
+            }
+            break;
+          default:
+            break;
+        }
+
+        bool desecrate_triggred = false;
+        for ( int i = 0; i < n_dots; ++i )
+        {
+          if ( rng().roll( talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
+          {
+            desecrate_triggred = true;
+            break;
+          }
+        }
+
+        if ( desecrate_triggred )
+        {
+          timespan_t remaining_time = event->remaining_time();
+          double ticks_left         = remaining_time.total_seconds();
+          desecrate_t* des          = debug_cast<desecrate_t*>( background_actions.desecrate );
+          des->ticks_remain         = ticks_left;
+          des->schedule_execute();
+
+          event->current_pulse = 11;  // End the DnD immediately
+
+          // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
+          make_event( *sim, remaining_time, [ & ]() { buffs.death_and_decay->expire(); } );
+        }
+      }
+      break;
       default:
         break;
     }
@@ -13147,6 +13129,9 @@ void death_knight_t::create_actions()
     background_actions.the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
     pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast", this );
   }
+
+  if ( talent.sanlayn.desecrate.ok() )
+    background_actions.desecrate = get_action<desecrate_t>( "desecrate", this );
 
   // Deathbringer
   if ( talent.deathbringer.reapers_mark.ok() )
