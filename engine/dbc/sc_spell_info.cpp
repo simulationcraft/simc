@@ -946,6 +946,8 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::
   {  449, "Reagent Consumes Charges"                                             },
   {  451, "Hide Passive From Tooltip"                                            },
   {  468, "Private Aura"                                                         },
+  {  506, "Non-secret Aura"                                                      },
+  {  511, "Non-secret Spell"                                                     },
 } );
 
 static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, std::string_view>( {
