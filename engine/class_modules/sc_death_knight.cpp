@@ -137,6 +137,7 @@ using namespace unique_gear;
 struct death_knight_t;
 struct runes_t;
 struct rune_t;
+struct death_and_decay_tracker_t;
 
 namespace pets
 {
@@ -735,11 +736,35 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   }
 }
 
+struct death_and_decay_tracker_t
+{
+  ground_aoe_event_t* dnd_event = nullptr;
+  death_and_decay_tracker_t()
+  {}
+
+  ~death_and_decay_tracker_t();
+
+  void set_dnd_event( ground_aoe_event_t* event )
+  {
+    dnd_event = event;
+  }
+
+  void cancel_dnd_event( std::queue<death_and_decay_tracker_t*>& dnds )
+  {
+    if ( dnd_event )
+    {
+      event_t::cancel( dnd_event );
+      dnd_event = nullptr;
+      dnds.pop();
+    }
+  }
+};
+
 struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
-  std::queue<ground_aoe_event_t*> active_dnds;
+  std::queue<death_and_decay_tracker_t*> active_dnds;
   event_t* runic_power_decay;
 
   // Expression warnings
@@ -2006,6 +2031,7 @@ public:
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
+  void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
@@ -8689,7 +8715,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
       desecrate_chance( 0 ),
       desecrate_attempts( 0 ),
       dnd_canceled( false ),
-      dnd_event( nullptr )
+      dnd( nullptr )
   {
     aoe        = -1;
     background = dual = true;
@@ -8699,6 +8725,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     {
       desecrate        = get_action<desecrate_t>( "desecrate", p );
       desecrate_chance = p->pseudo_random_c_from_p( p->talent.sanlayn.desecrate->effectN( 2 ).percent() );
+      dnd = new death_and_decay_tracker_t();
     }
   }
 
@@ -8715,12 +8742,10 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     {
       // Delay expiration by 1_ms to ensure the event destruction happens after all damage events
       make_event( *sim, 1_ms, [ & ]() {
-        if ( dnd_event )
+        if ( dnd->dnd_event )
         {
-          event_t::cancel( dnd_event );
-          p()->active_dnds.pop();
+          dnd->cancel_dnd_event( p()->active_dnds );
           dnd_canceled = false;
-          dnd_event = nullptr;
         }
       } );
 
@@ -8733,12 +8758,12 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if( !dnd_event )
-      assert( false && "death_and_decay_damage_base_t::impact called without a valid dnd_event" );
+    if( !dnd )
+      assert( false && "death_and_decay_damage_base_t::impact called without a dnd tracker" );
 
     // Only one dnd event can deal damage at a time, but multiple can be active.
     // Assume the first dnd event in the queue is the one dealing damage.
-    if ( dnd_event != p()->active_dnds.front() )
+    if ( dnd != p()->active_dnds.front() )
       return;
 
     death_knight_spell_t::impact( s );
@@ -8755,10 +8780,10 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
         disease_ticking = td->dot.blood_plague->is_ticking();
     }
 
-    if ( p()->talent.sanlayn.desecrate.ok() && dnd_event && !dnd_canceled && disease_ticking &&
+    if ( p()->talent.sanlayn.desecrate.ok() && !dnd_canceled && disease_ticking &&
          rng().roll( desecrate_chance * ++desecrate_attempts ) )
     {
-      timespan_t remaining_time = dnd_event->remaining_time();
+      timespan_t remaining_time = dnd->dnd_event->remaining_time();
       double ticks_left         = remaining_time.total_seconds();
       desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
       des->ticks_remain         = ticks_left;
@@ -8774,7 +8799,7 @@ private:
   int desecrate_attempts;
   bool dnd_canceled;
 public:
-  ground_aoe_event_t* dnd_event;
+  death_and_decay_tracker_t* dnd;
 };
 
 struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
@@ -8867,38 +8892,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
         p()->buffs.visceral_strength->trigger();
     }
 
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        ground_aoe_params_t()
-            .target( p()->target )
-            .duration( data().duration() )
-            .pulse_time( compute_tick_time() )
-            .action( damage )
-            .x( target->x_position )
-            .y( target->y_position )
-            // Keep track of on-going dnd events
-            .state_callback( [ & ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-              debug_cast<death_and_decay_damage_t*>( damage )->dnd_event = event;
-              switch ( type )
-              {
-                case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_dnds.push( event );
-                  break;
-                case ground_aoe_params_t::EVENT_STARTED:
-                  p()->buffs.death_and_decay->trigger();
-                  break;
-                case ground_aoe_params_t::EVENT_STOPPED:
-                  p()->buffs.death_and_decay->expire( 4_s );
-                  break;
-                case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p()->active_dnds.pop();
-                  debug_cast<death_and_decay_damage_t*>( damage )->dnd_event = nullptr;
-                  break;
-                default:
-                  break;
-              }
-            } ),
-        true /* Immediate pulse */ );
+    p()->create_dnd_event( damage, data().duration(), compute_tick_time() );
   }
 
 private:
@@ -9552,40 +9546,8 @@ struct festering_scythe_t final : public festering_base_t
     p()->buffs.festering_scythe->consume( this );
     if ( p()->talent.unholy.scythe_of_decay.ok() && !p()->buffs.scythe_of_decay->check() )
     {
-      make_event<ground_aoe_event_t>(
-          *sim, p(),
-          ground_aoe_params_t()
-              .target( p()->target )
-              .duration( p()->spec.death_and_decay->duration() )
-              .pulse_time( p()->spec.death_and_decay->effectN( 3 ).period() )
-              .action( scythe_of_decay )
-              .x( target->x_position )
-              .y( target->y_position )
-              // Keep track of on-going dnd events
-              .state_callback( [ & ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-                // TODO: Figure out why putting this in EVENT_CREATED results in the event being nullptr
-                debug_cast<death_and_decay_damage_t*>( scythe_of_decay )->dnd_event = event;
-                switch ( type )
-                {
-                  case ground_aoe_params_t::EVENT_CREATED:
-                    p()->active_dnds.push( event );
-                    break;
-                  case ground_aoe_params_t::EVENT_STARTED:
-                    p()->buffs.death_and_decay->trigger();
-                    break;
-                  case ground_aoe_params_t::EVENT_STOPPED:
-                    p()->buffs.death_and_decay->expire( 4_s );
-                    break;
-                  case ground_aoe_params_t::EVENT_DESTRUCTED:
-                    p()->active_dnds.pop();
-                    debug_cast<death_and_decay_damage_t*>( scythe_of_decay )->dnd_event = nullptr;
-                    break;
-                  default:
-                    break;
-                }
-              } ),
-          true /* Immediate pulse */ );
-
+      p()->create_dnd_event( scythe_of_decay, p()->spec.death_and_decay->duration(),
+                             p()->spec.death_and_decay->effectN( 3 ).period() );
       p()->buffs.scythe_of_decay->trigger();
     }
   }
@@ -12310,7 +12272,7 @@ bool death_knight_t::in_death_and_decay() const
   if ( !sim->distance_targeting_enabled || active_dnds.empty() )
     return !active_dnds.empty();
 
-  return get_ground_aoe_distance( *active_dnds.front()->pulse_state ) <= active_dnds.front()->pulse_state->action->radius;
+  return get_ground_aoe_distance( *active_dnds.front()->dnd_event->pulse_state ) <= active_dnds.front()->dnd_event->pulse_state->action->radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -12960,6 +12922,47 @@ double death_knight_t::pseudo_random_c_from_p( double p )
   return c_mid;
 }
 
+void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t period )
+{
+  death_and_decay_damage_t* dnd_damage = debug_cast<death_and_decay_damage_t*>( a );
+  death_and_decay_tracker_t* tracker   = dnd_damage->dnd;
+  ground_aoe_params_t params;
+
+  params.target( target );
+  params.duration( dur );
+  params.action( a );
+  params.pulse_time( period );
+  params.x( target->x_position );
+  params.y( target->y_position );
+
+  params.expiration_callback( [ & ]( const action_state_t* ) {
+    buffs.death_and_decay->expire( 4_s );
+    active_dnds.pop();
+  } );
+
+  params.state_callback( [ &, tracker ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+    switch ( type )
+    {
+      case ground_aoe_params_t::EVENT_CREATED:
+        tracker->dnd_event = event;
+        break;
+      case ground_aoe_params_t::EVENT_STARTED:
+        buffs.death_and_decay->trigger();
+        break;
+      case ground_aoe_params_t::EVENT_STOPPED:
+        break;
+      case ground_aoe_params_t::EVENT_DESTRUCTED:
+        tracker->dnd_event = nullptr;
+        break;
+      default:
+        break;
+    }
+  } );
+
+  tracker->dnd_event = make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ );
+  active_dnds.push( tracker );
+}
+
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if ( !fn )
@@ -13601,7 +13604,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
       return make_fn_expr( "dnd_remains", [ this ]() {
-        return active_dnds.empty() ? 0 : active_dnds.front()->remaining_time().total_seconds();
+        return active_dnds.empty() ? 0 : active_dnds.front()->dnd_event->remaining_time().total_seconds();
       } );
     }
 
@@ -13615,7 +13618,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "active_remains" ) )
     {
       return make_fn_expr( "dnd_active_remains", [ this ]() {
-        return in_death_and_decay() ? active_dnds.front()->remaining_time().total_seconds() : 0;
+        return in_death_and_decay() ? active_dnds.front()->dnd_event->remaining_time().total_seconds() : 0;
       } );
     }
 
@@ -15530,7 +15533,7 @@ void death_knight_t::activate()
   }
 
   register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-    if ( !c )
+    if ( !c && !sim->event_mgr.canceled )
     {
       runic_power_decay = make_event( *sim, 20_s, [ this ]() {
         runic_power_decay = nullptr;
@@ -15540,19 +15543,17 @@ void death_knight_t::activate()
       // This should probably be core to ground_aoe_event_t, canceling the event when leaving combat
       if ( !active_dnds.empty() )
       {
-        event_t::cancel( active_dnds.front() );
+        for ( int i = 0; i < active_dnds.size(); i++ )
+        {
+          active_dnds.front()->cancel_dnd_event( active_dnds );
+          active_dnds.pop();
+        }
         buffs.death_and_decay->expire();
         make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
       }
     }
     else
     {
-      if ( !active_dnds.empty() )
-      {
-        event_t::cancel( active_dnds.front() );
-        buffs.death_and_decay->expire();
-      }
-
       event_t::cancel( runic_power_decay );
     }
   } );
