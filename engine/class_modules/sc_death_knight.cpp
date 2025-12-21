@@ -4205,8 +4205,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_knight_pet_t::arise();
     reschedule_drw();
     dk()->buffs.dancing_rune_weapon->trigger();
-    if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      dk()->buffs.gift_of_the_sanlayn->trigger();
   }
 
   void demise() override
@@ -8581,6 +8579,9 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
 
     if ( p()->talent.blood.blood_mist.ok() )
       p()->buffs.blood_mist->trigger();
+
+    if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
+      dk()->buffs.gift_of_the_sanlayn->trigger();
   }
 
 private:
