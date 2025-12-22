@@ -2672,8 +2672,8 @@ struct slicing_winds_t : public monk_melee_attack_t
     // override gcd as we are not properly handling it as an empowered channel
     trigger_gcd = timespan_t::from_millis( 1400 );
 
-    if ( const auto &effect = player->talent.windwalker.airborne_rhythm_resource_gain->effectN( 1 ); effect.ok() )
-      parse_effect_data( effect );
+    if ( player->talent.windwalker.airborne_rhythm->ok() )
+      parse_effect_data( player->talent.windwalker.airborne_rhythm_resource_gain->effectN( 1 ) );
   }
 
   void execute() override
