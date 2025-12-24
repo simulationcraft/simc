@@ -253,9 +253,8 @@ enum drw_actions_e
   DRW_ACTION_DEATH_STRIKE    = 2,
   DRW_ACTION_HEART_STRIKE    = 3,
   DRW_ACTION_MARROWREND      = 4,
-  DRW_ACTION_CONSUMPTION     = 5,
-  DRW_ACTION_VAMPIRIC_STRIKE = 6,
-  DRW_ACTION_MAX             = 7
+  DRW_ACTION_VAMPIRIC_STRIKE = 5,
+  DRW_ACTION_MAX             = 6
 };
 
 enum empower_e
@@ -4043,16 +4042,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
-  struct consumption_t : public drw_action_t<melee_attack_t>
-  {
-    consumption_t( std::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t( p, n, p->dk()->talent.blood.consumption )
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-  };
-
   struct deaths_caress_t : public drw_action_t<spell_t>
   {
     int stack_gain;
@@ -4155,7 +4144,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* death_strike;
     action_t* heart_strike;
     action_t* marrowrend;
-    action_t* consumption;
     action_t* vampiric_strike;
   } ability;
 
@@ -4207,10 +4195,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.blood.marrowrend.ok() )
     {
       ability.marrowrend = get_action<marrowrend_t>( "marrowrend", this );
-    }
-    if ( dk()->talent.blood.consumption.ok() )
-    {
-      ability.consumption = get_action<consumption_t>( "consumption", this );
     }
     if ( dk()->talent.sanlayn.vampiric_strike.ok() )
     {
@@ -8872,6 +8856,8 @@ struct consumption_leech_damage_t final : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
+    death_knight_spell_t::impact( state );
+
     consumption_leech_heal->base_dd_min = consumption_leech_heal->base_dd_max = state->result_amount;
     consumption_leech_heal->execute();
   }
@@ -8919,11 +8905,41 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
           bp_consumption_multi = p()->talent.blood.consumption->effectN( 2 ).percent();
       }
 
+      // Player dots
       auto td = get_td( state->target );
       if ( td && td->dot.blood_plague->is_ticking() )
       {
-        leech_damage_accumulator = td->dot.blood_plague->tick_damage_over_time( td->dot.blood_plague->remains() * bp_consumption_multi );
+        double leech_damage = td->dot.blood_plague->tick_damage_over_time( td->dot.blood_plague->remains() * bp_consumption_multi );
+        leech_damage_accumulator += leech_damage;
+        sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", leech_damage, state->target->name(),  td->dot.blood_plague->source->name() );
         td->dot.blood_plague->adjust_duration(- td->dot.blood_plague->remains() * bp_consumption_multi );
+      }
+      // DRW dots
+      // Grab active DRW is we have one
+      auto drw = p()->pets.dancing_rune_weapon_pet.active_pet();
+      if ( drw )
+      {
+        auto drw_dot = drw->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
+      }
+
+      auto everlasting_bond = p()->pets.everlasting_bond_pet.active_pet();
+      if ( everlasting_bond )
+      {
+        auto drw_dot = everlasting_bond->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
       }
     }
 
@@ -13211,9 +13227,6 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
       break;
     case DRW_ACTION_MARROWREND:
       drw->ability.marrowrend->execute();
-      break;
-    case DRW_ACTION_CONSUMPTION:
-      drw->ability.consumption->execute();
       break;
     case DRW_ACTION_VAMPIRIC_STRIKE:
       drw->ability.vampiric_strike->execute();
