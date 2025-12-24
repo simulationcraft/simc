@@ -1,12 +1,12 @@
-// Mastery abilities, wow build 11.2.5.63286
-static constexpr std::array<mastery_spell_entry_t, 39> __ptr_mastery_spell_data { {
+// Mastery abilities, wow build 12.0.0.65028
+static constexpr std::array<mastery_spell_entry_t, 40> __ptr_mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
-  {   64,  76613 }, // Mastery: Icicles (Frost Mage)
+  {   64, 1246752 }, // Mastery: Freeze and Shatter (Frost Mage)
   {   65, 183997 }, // Mastery: Lightbringer (Holy Paladin)
   {   66,  76671 }, // Mastery: Divine Bulwark (Protection Paladin)
   {   70, 267316 }, // Mastery: Highlord's Judgment (Retribution Paladin)
-  {   71, 262111 }, // Mastery: Deep Wounds (Arms Warrior)
+  {   71, 1258398 }, // Mastery: Master of Arms (Arms Warrior)
   {   72,  76856 }, // Mastery: Unshackled Fury (Fury Warrior)
   {   73,  76857 }, // Mastery: Critical Block (Protection Warrior)
   {  102, 393014 }, // Mastery: Astral Invocation (Balance Druid)
@@ -39,5 +39,6 @@ static constexpr std::array<mastery_spell_entry_t, 39> __ptr_mastery_spell_data 
   { 1467, 362980 }, // Mastery: Giantkiller (Devastation Evoker)
   { 1468, 363510 }, // Mastery: Life-Binder (Preservation Evoker)
   { 1473, 406380 }, // Mastery: Timewalker (Augmentation Evoker)
+  { 1480, 1238855 }, // Mastery: Monster Within (Devourer Demon Hunter)
 } };
 

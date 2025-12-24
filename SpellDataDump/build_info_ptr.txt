@@ -1,1 +1,1 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.63286 PTR (hotfix 2025-09-22/63286)
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA (hotfix 2025-12-23/65028)

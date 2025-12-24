@@ -913,6 +913,7 @@ public:
       const spell_data_t *flurry_of_xuen_driver;
       player_talent_t martial_agility;
       player_talent_t airborne_rhythm;
+      const spell_data_t *airborne_rhythm_resource_gain;
       player_talent_t hurricanes_vault;
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;

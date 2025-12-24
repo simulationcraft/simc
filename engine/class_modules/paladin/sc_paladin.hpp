@@ -73,7 +73,7 @@ struct paladin_td_t : public actor_target_data_t
     dot_t* expurgation;
     dot_t* truths_wake;
     dot_t* dawnlight;
-  } dots;
+  } dot;
 
   struct buffs_t
   {
@@ -83,7 +83,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
-    buff_t* holy_flames;
   } debuff;
 
   struct
@@ -114,9 +113,11 @@ public:
 
     // Covenant stuff
     action_t* divine_toll;
+    action_t* divine_toll_how;
     action_t* divine_resonance;
+    action_t* divine_resonance_ret;
+    action_t* divine_resonance_ret_how;
     action_t* divine_exaction_prot;
-    action_t* divine_exaction_ret;
 
     // talent stuff
     action_t* background_cons;
@@ -385,6 +386,7 @@ public:
     const spell_data_t* avenging_wrath;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
+    const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
 
@@ -394,6 +396,7 @@ public:
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
     const spell_data_t* refining_fire_tick;
+    const spell_data_t* expurgation;
 
     struct
     {
@@ -421,13 +424,16 @@ public:
 
     const spell_data_t* highlords_judgment_hidden;
 
-    const spell_data_t* winning_streak; // Ret TWW2 2p
-    const spell_data_t* all_in; // Ret TWW2 4p
-
     // Apex
     const spell_data_t* glory_of_the_vanguard;
     const spell_data_t* blaze_of_glory;
+    const spell_data_t* light_within;
 
+    // More Hammer of Wrath spell data for Ret
+    const spell_data_t* judgment_ret;
+    const spell_data_t* judgment_ret_dt;
+    const spell_data_t* hammer_of_wrath_ret;
+    const spell_data_t* hammer_of_wrath_ret_dt;
   } spells;
 
   struct rppms_t {
@@ -713,16 +719,19 @@ public:
       const spell_data_t* gleaming_rays;
       const spell_data_t* eternal_flame;
       const spell_data_t* luminosity;
+      const spell_data_t* endless_gleam;
 
       const spell_data_t* illumine;
       const spell_data_t* will_of_the_dawn;
       const spell_data_t* blessing_of_anshe;
       const spell_data_t* lingering_radiance;
       const spell_data_t* sun_sear;
+      const spell_data_t* solar_grace;
 
       const spell_data_t* aurora;
-      const spell_data_t* solar_grace;
+      const spell_data_t* walk_into_light;
       const spell_data_t* second_sunrise;
+      const spell_data_t* born_in_sunlight;
 
       const spell_data_t* suns_avatar;
     } herald_of_the_sun;
@@ -859,6 +868,7 @@ public:
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
   void apply_action_effects( action_t* a );
+  void apply_target_action_effects( action_t* a );
 
   void generate_action_prio_list_prot();
   void generate_action_prio_list_holy();
@@ -871,10 +881,6 @@ public:
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
-  bool may_benefit_from_skyfury() const override
-  {
-    return !( talents.crusading_strikes->ok() );
-  }
   dbc_proc_callback_t* create_sacred_weapon_callback( paladin_t* source, player_t* target );
   dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target );
 
@@ -1109,7 +1115,7 @@ public:
   {
     bool avenging_wrath, judgment, divine_purpose, divine_purpose_cost;  // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden,
-      blades_of_light, rise_from_ash; // Ret
+      rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool sentinel;  // Prot
     bool solar_wrath; // Herald of the Sun
@@ -1158,25 +1164,19 @@ public:
       this->affected_by.sentinel         = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     }
 
-    this->affected_by.judgment            = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
-    this->clears_judgment                 = this->affected_by.judgment;
+    this->clears_judgment                 = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
     this->affected_by.avenging_wrath      = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
     this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
 
-    if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
-    {
-      this->affected_by.blades_of_light = true;
-    }
-    else
-    {
-      this->affected_by.blades_of_light = false;
-    }
-
     if ( this->data().ok() )
     {
       p->apply_action_effects( this );
+      if (this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK)
+      {
+        p->apply_target_action_effects( this );
+      }
     }
   }
 
@@ -1230,7 +1230,7 @@ public:
 
     if ( ab::result_is_hit( s->result ) )
     {
-      if ( affected_by.judgment && clears_judgment )
+      if ( clears_judgment )
       {
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )
@@ -1311,7 +1311,7 @@ public:
     double cttm = ab::composite_target_ta_multiplier( target );
 
     paladin_td_t* td = this->td( target );
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() && ab::id != 403695 )
+    if ( p()->talents.burn_to_ash->ok() && td->dot.truths_wake->is_ticking() && ab::id != 403695 )
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;
@@ -1740,24 +1740,31 @@ struct judgment_base_t : public paladin_melee_attack_t
   void impact( action_state_t* s ) override;
   void execute();
 };
+
 struct hammer_of_wrath_t : public judgment_base_t
 {
 private:
   hammer_of_wrath_t* echo;
 
 public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
+  bool triggers_second_sunrise = false;
+  bool triggers_divine_resonance = false;
+  hammer_of_wrath_t( paladin_t* p );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil());
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
+  bool action_ready() override;
+  void execute() override;
 };
 
 struct judgment_t : public judgment_base_t
 {
-  hammer_of_wrath_t* hammer_of_wrath;
-  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
+  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
+              const spell_data_t* s = spell_data_t::nil() );
 
   proc_types proc_type() const override;
   void execute() override;
+  bool action_ready() override;
 };
 
 

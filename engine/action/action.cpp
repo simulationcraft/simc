@@ -356,6 +356,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     not_a_proc(),
     special(),
     channeled(),
+    apply_channel_lag( true ),
     sequence(),
     quiet(),
     background(),

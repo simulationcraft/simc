@@ -227,7 +227,6 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)&variable.fwf_buffs" );
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&variable.fwf_buffs&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)" );
   cooldowns->add_action( "raise_dead,use_off_gcd=1" );
-  cooldowns->add_action( "soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=(rune<2|!buff.killing_machine.react)&runic_power<35+(talent.icy_onslaught*buff.icy_onslaught.stack*5)&gcd.remains<0.5" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=cooldown.empower_rune_weapon.full_recharge_time<=6&buff.killing_machine.react<1+(1*talent.killing_streak)&gcd.remains<0.5" );
 
@@ -298,6 +297,7 @@ void unholy( player_t* p )
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
@@ -313,6 +313,7 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
 
   default_->add_action( "auto_attack" );
+  default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=cooldowns" );
@@ -325,20 +326,20 @@ void unholy( player_t* p )
   cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
   cooldowns->add_action( "putrefy,if=(talent.reaping&!target.health.pct<=35|!talent.reaping)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&!cooldown.dark_transformation.ready" );
 
-  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate&!talent.scythe_of_decay", "Aoe Rotation" );
-  aoe->add_action( "epidemic,if=(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)&(buff.sudden_doom.react|rune<4|runic_power.deficit<20)" );
-  aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react|rune<4|runic_power.deficit<20)" );
+  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
+  aoe->add_action( "epidemic,if=(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)&(buff.sudden_doom.react|variable.spending_rp)" );
+  aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react|variable.spending_rp)" );
   aoe->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
   aoe->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
   aoe->add_action( "putrefy,if=!talent.reaping" );
-  aoe->add_action( "epidemic,if=active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up" );
-  aoe->add_action( "death_coil" );
+  aoe->add_action( "epidemic,if=variable.spending_rp&(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)" );
+  aoe->add_action( "death_coil,if=variable.spending_rp" );
 
-  single_target->add_action( "death_coil,if=buff.sudden_doom.react|(rune<3|runic_power.deficit<20|cooldown.army_of_the_dead.remains>7&runic_power.deficit<60)", "Single Target Rotation" );
+  single_target->add_action( "death_coil,if=buff.sudden_doom.react|variable.spending_rp", "Single Target Rotation" );
   single_target->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
   single_target->add_action( "putrefy,if=!talent.reaping" );
-  single_target->add_action( "death_coil" );
+  single_target->add_action( "death_coil,if=variable.spending_rp" );
 
   racials->add_action( "ancestral_call,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Racials");
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -353,6 +354,8 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
+
+  variables->add_action( "variable,name=spending_rp,value=cooldown.army_of_the_dead.remains>5&runic_power.deficit<20|cooldown.army_of_the_dead.remains<=5&runic_power.deficit<60|!talent.army_of_the_dead|rune<2|buff.forbidden_knowledge.up&rune<4", "Variables" );
 }
 //unholy_apl_end
 

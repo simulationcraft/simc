@@ -58,7 +58,7 @@ struct power_type_data_t
   const char* _name;
   unsigned _initial;
   unsigned _max;
-  double _divisor;
+  double _divisor = 1.0;
   unsigned _regen_interrupt_time;
   double _regen_combat;
   double _regen_ooc;

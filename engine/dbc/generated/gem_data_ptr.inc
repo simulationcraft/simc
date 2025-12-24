@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.2.5.63286
-static constexpr std::array<gem_property_data_t, 2333> __ptr_gem_property_data { {
+// Gem properties, wow build 12.0.0.65028
+static constexpr std::array<gem_property_data_t, 2405> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
   {    4,  2688, 0x00000004, 0 }, // +$k1 Stamina
@@ -2187,9 +2187,9 @@ static constexpr std::array<gem_property_data_t, 2333> __ptr_gem_property_data {
   { 4162,  7217, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4163,  7218, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4164,  7219, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
-  { 4165,  7220, 0x0000000e, 14118 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
-  { 4166,  7221, 0x0000000e, 14118 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
-  { 4167,  7222, 0x0000000e, 14118 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
+  { 4165,  7220, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
+  { 4166,  7221, 0x0000000e, 0 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
+  { 4167,  7222, 0x0000000e, 0 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
   { 4168,  7225, 0x01000000, 0 }, // Mark of Arrogance
   { 4169,  7226, 0x01000000, 0 }, // Quick Strike
   { 4170,  7227, 0x01000000, 0 }, // Slay
@@ -2329,6 +2329,78 @@ static constexpr std::array<gem_property_data_t, 2333> __ptr_gem_property_data {
   { 4334,  8088, 0x0000000e, 0 }, // Perfected Ettin Bone Fragment
   { 4335,  8087, 0x0000000e, 0 }, // Perfected Gleaming Iron Spike
   { 4336,  8086, 0x0000000e, 0 }, // Perfected Xakal's Determination
+  { 4337,  8094, 0x0000000e, 14277 }, // +$k1 Versatility
+  { 4338,  8095, 0x0000000e, 14277 }, // +$k1 Versatility
+  { 4339,  8096, 0x0000000e, 14277 }, // +$k1 Versatility
+  { 4340,  8097, 0x0000000e, 14277 }, // +$k1 Versatility
+  { 4341,  8098, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Critical Strike
+  { 4342,  8099, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Critical Strike
+  { 4343,  8100, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Critical Strike
+  { 4344,  8101, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Critical Strike
+  { 4345,  8102, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Haste
+  { 4346,  8103, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Haste
+  { 4347,  8104, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Haste
+  { 4348,  8105, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Haste
+  { 4349,  8106, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Mastery
+  { 4350,  8107, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Mastery
+  { 4351,  8108, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Mastery
+  { 4352,  8109, 0x0000000e, 14277 }, // +$k1 Versatility & +$k2 Mastery
+  { 4353,  8110, 0x0000000e, 14262 }, // +$k1 Haste
+  { 4354,  8111, 0x0000000e, 14262 }, // +$k1 Haste
+  { 4355,  8112, 0x0000000e, 14262 }, // +$k1 Haste
+  { 4356,  8113, 0x0000000e, 14262 }, // +$k1 Haste
+  { 4357,  8114, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Critical Strike
+  { 4358,  8115, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Critical Strike
+  { 4359,  8116, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Critical Strike
+  { 4360,  8117, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Critical Strike
+  { 4361,  8118, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Mastery
+  { 4362,  8119, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Mastery
+  { 4363,  8120, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Mastery
+  { 4364,  8121, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Mastery
+  { 4365,  8122, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Versatility
+  { 4366,  8123, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Versatility
+  { 4367,  8124, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Versatility
+  { 4368,  8125, 0x0000000e, 14262 }, // +$k1 Haste & +$k2 Versatility
+  { 4369,  8126, 0x0000000e, 14278 }, // +$k1 Mastery
+  { 4370,  8127, 0x0000000e, 14278 }, // +$k1 Mastery
+  { 4371,  8128, 0x0000000e, 14278 }, // +$k1 Mastery
+  { 4372,  8129, 0x0000000e, 14278 }, // +$k1 Mastery
+  { 4373,  8130, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Critical Strike
+  { 4374,  8131, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Critical Strike
+  { 4375,  8132, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Critical Strike
+  { 4376,  8133, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Critical Strike
+  { 4377,  8134, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Haste
+  { 4378,  8135, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Haste
+  { 4379,  8136, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Haste
+  { 4380,  8137, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Haste
+  { 4381,  8138, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Versatility
+  { 4382,  8139, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Versatility
+  { 4383,  8140, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Versatility
+  { 4384,  8141, 0x0000000e, 14278 }, // +$k1 Mastery & +$k2 Versatility
+  { 4385,  8142, 0x0000000e, 14276 }, // +$k1 Critical Strike
+  { 4386,  8143, 0x0000000e, 14276 }, // +$k1 Critical Strike
+  { 4387,  8144, 0x0000000e, 14276 }, // +$k1 Critical Strike
+  { 4388,  8145, 0x0000000e, 14276 }, // +$k1 Critical Strike
+  { 4389,  8146, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Haste
+  { 4390,  8147, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Haste
+  { 4391,  8148, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Haste
+  { 4392,  8149, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Haste
+  { 4393,  8150, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Mastery
+  { 4394,  8151, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Mastery
+  { 4395,  8152, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Mastery
+  { 4396,  8153, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Mastery
+  { 4397,  8154, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Versatility
+  { 4398,  8155, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Versatility
+  { 4399,  8156, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Versatility
+  { 4400,  8157, 0x0000000e, 14276 }, // +$k1 Critical Strike & +$k2 Versatility
+  { 4401,  8551, 0x0000000e, 0 }, // +$k1 Primary Stat
+  { 4402,  8552, 0x0000000e, 0 }, // +$k1 Primary Stat
+  { 4405,  8558, 0x0000000e, 0 }, // +$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color
+  { 4406,  8559, 0x0000000e, 0 }, // +$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color
+  { 4407,  8557, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color
+  { 4408,  8556, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color
+  { 4409,  8554, 0x0000000e, 0 }, // +$k1 Primary Stat and +$k2 Armor
+  { 4410,  8555, 0x0000000e, 0 }, // +$k1 Primary Stat and +$k2 Armor
   { 4415,  8577, 0x0000000e, 0 }, // Flawed Everchill Pearl
   { 4416,  8576, 0x0000000e, 0 }, // Intricate Everchill Pearl
   { 4417,  8575, 0x0000000e, 0 }, // Pristine Everchill Pearl

@@ -78,7 +78,7 @@ static constexpr specialization_e __ptr_class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_
   {
     DEMON_HUNTER_HAVOC,
     DEMON_HUNTER_VENGEANCE,
-    SPEC_NONE,
+    DEMON_HUNTER_DEVOURER,
     SPEC_NONE,
   },
   {

@@ -1570,6 +1570,7 @@ void player_t::init_base_stats()
     }
 
     base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
+    base.attack_speed_multiplier *= get_passive_player_value( base.attack_speed_multiplier, "attack_speed_modifier" );
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
 
     base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
@@ -7181,7 +7182,8 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
           action_queued = true;
         }
       }
-      else if ( last_foreground_action->channeled && !last_foreground_action->interrupt_immediate_occurred )
+      else if ( last_foreground_action->channeled && last_foreground_action->apply_channel_lag &&
+                !last_foreground_action->interrupt_immediate_occurred )
       {
         lag = rng().gauss( sim->channel_lag );
       }
@@ -8526,7 +8528,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
       if ( ab->up() )
       {
         // Consume the absorb and grab the effective amount consumed.
-        double absorbed = ab->consume( s->result_amount );
+        double absorbed = ab->consume( s->result_amount, s );
 
         s->result_amount -= absorbed;
 
@@ -15151,7 +15153,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
   { A_APPLY_HASTED_GCD_LABEL,                 "hasted_gcd"                       },  // 320
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                },  // 341
-  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                     },  // 342
+  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed_modifier"            },  // 342
   { A_MOD_AUTO_ATTACK_PCT,                    "auto_attack_multiplier"           },  // 344
   { A_OVERRIDE_SP_PER_AP,                     "spell_power_per_attack_power"     },  // 366
   { A_MOD_MANA_REGEN_PCT,                     "resource_regen"                   },  // 379
@@ -15451,6 +15453,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_TARGET_ARMOR_PCT:  // 280
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
         pct_val = -modifying_eff.percent();  // reversed value
         break;
 
@@ -15468,7 +15471,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_ATTACK_POWER_PCT:  // 166
       case A_HASTE_ALL:  // 193
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:  // 319
-      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
       case A_MOD_AUTO_ATTACK_PCT:  // 344
       case A_MOD_RATING_MULTIPLIER:  // 405
       case A_MOD_ABSORB_DONE_PERCENT:  // 421

@@ -617,42 +617,152 @@ public:
   struct talents_t
   {
     // Hunter Tree
-    spell_data_ptr_t kill_shot;
+    spell_data_ptr_t rejuvenating_winds; //Utility talent, won't implement
+    spell_data_ptr_t survival_of_the_fittest; //Utility talent, won't implement
+    spell_data_ptr_t posthaste; //Utility talent, won't implement
 
-    spell_data_ptr_t deathblow;
-    spell_data_ptr_t deathblow_buff;
+    spell_data_ptr_t natural_mending; //Utility talent, won't implement
+    spell_data_ptr_t padded_armor; //Utility talent, won't implement
+    spell_data_ptr_t hunters_avoidance; //Utility talent, won't implement
 
-    spell_data_ptr_t tar_trap;
+    spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
+    spell_data_ptr_t combat_experience; //TODO Not implemented
+    spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
+    spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
 
+    spell_data_ptr_t precision_strikes; //TODO Not implemented
     spell_data_ptr_t counter_shot;
     spell_data_ptr_t muzzle;
-
-    spell_data_ptr_t lone_survivor;
-    spell_data_ptr_t specialized_arsenal;
-
-    spell_data_ptr_t harmonize;
-    spell_data_ptr_t explosive_shot;
-    spell_data_ptr_t explosive_shot_cast;
-    spell_data_ptr_t explosive_shot_damage;
-
-    spell_data_ptr_t bursting_shot;
-    spell_data_ptr_t trigger_finger;
-    spell_data_ptr_t blackrock_munitions; 
-    spell_data_ptr_t keen_eyesight;
-
     spell_data_ptr_t serrated_tips;
-    spell_data_ptr_t born_to_be_wild;
-    spell_data_ptr_t improved_traps;
 
-    spell_data_ptr_t high_explosive_trap;
-    spell_data_ptr_t implosive_trap;
-    spell_data_ptr_t explosive_trap_damage;
+    spell_data_ptr_t tranquilizing_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t pathfinding; //Utility talent, won't implement
+    spell_data_ptr_t disruptive_rounds; //TODO Not implemented
+    spell_data_ptr_t improved_feign_death; //Utility talent, won't implement
+    spell_data_ptr_t misdirection; //Utility talent, won't implement
 
+    spell_data_ptr_t kodo_tranquilizer; //Utility talent, won't implement
+    spell_data_ptr_t devilsaur_tranquilizer; //Utility talent, won't implement
+    spell_data_ptr_t kindling_flare; //Utility talent, won't implement
+    spell_data_ptr_t trigger_finger;
+    spell_data_ptr_t tar_trap;
+    spell_data_ptr_t scare_beast; //Utility talent, won't implement
+    spell_data_ptr_t touch_of_grass; //Utility talent, won't implement
+    spell_data_ptr_t camouflage; //Utility talent, won't implement
+    spell_data_ptr_t no_hard_feelings; //Utility talent, won't implement
+
+    spell_data_ptr_t improved_aspect_of_the_turtle; //Utility talent, won't implement
+    spell_data_ptr_t specialized_arsenal;
+    spell_data_ptr_t scouts_instincts; //Utility talent, won't implement
+
+    spell_data_ptr_t shell_wall; //Utility talent, won't implement
+    spell_data_ptr_t intimidation; //Utility talent, won't implement
+    spell_data_ptr_t improved_snaring; //Utility talent, won't implement
+    spell_data_ptr_t lone_survivor; //Utility talent, won't implement
+    spell_data_ptr_t catlike_reflexes; //Utility talent, won't implement
+    spell_data_ptr_t binding_shot; //Utility talent, won't implement
+    spell_data_ptr_t trailblazer; //Utility talent, won't implement
+    spell_data_ptr_t moment_of_opportunity; //Utility talent, won't implement
+
+    spell_data_ptr_t cold_feet; //Utility talent, won't implement
+    spell_data_ptr_t territorial_instincts; //Utility talent, won't implement
+    spell_data_ptr_t guttural_roar; //Utility talent, won't implement
+    spell_data_ptr_t born_to_be_wild; //Utility talent, won't implement
+    spell_data_ptr_t keen_eyesight;
+    spell_data_ptr_t tar_coated_bindings; //Utility talent, won't implement
+    spell_data_ptr_t horsehair_tether; //Utility talent, won't implement
+    spell_data_ptr_t improved_traps; //Utility talent, won't implement
+
+    spell_data_ptr_t emergency_salve; //Utility talent, won't implement
+    spell_data_ptr_t roar_of_sacrifice; //Utility talent, won't implement
+    spell_data_ptr_t guardians_hide; //Utility talent, won't implement
     spell_data_ptr_t unnatural_causes;
     spell_data_ptr_t unnatural_causes_debuff;
     
-    // Beast Mastery/Survival
+    spell_data_ptr_t harmonize; //TODO Removed
+    spell_data_ptr_t explosive_shot; //TODO Removed
+    spell_data_ptr_t explosive_shot_cast; //TODO Removed
+    spell_data_ptr_t explosive_shot_damage; //TODO Removed
+    spell_data_ptr_t bursting_shot; //TODO Removed
+    spell_data_ptr_t high_explosive_trap; //TODO Removed
+    spell_data_ptr_t implosive_trap; //TODO Removed
+    spell_data_ptr_t explosive_trap_damage; //TODO Removed
+    
+    // Beast Mastery Tree
+    spell_data_ptr_t kill_command_bm_player;
+    spell_data_ptr_t kill_command_bm_pet;
+
+    spell_data_ptr_t animal_companion;
+    spell_data_ptr_t solitary_companion;
+    spell_data_ptr_t barbed_shot;
+
     spell_data_ptr_t alpha_predator;
+    spell_data_ptr_t dire_beast;
+    spell_data_ptr_t dire_beast_summon;
+    spell_data_ptr_t stomp;
+    spell_data_ptr_t stomp_primary;
+    spell_data_ptr_t stomp_cleave;
+    spell_data_ptr_t war_orders;
+
+    spell_data_ptr_t wild_thrash; //TODO Not implemented
+    spell_data_ptr_t bestial_wrath;
+    spell_data_ptr_t cobra_shot;
+    spell_data_ptr_t cobra_shot_data;
+
+    spell_data_ptr_t beast_cleave;
+    spell_data_ptr_t scent_of_blood;
+    spell_data_ptr_t thundering_hooves;
+    spell_data_ptr_t go_for_the_throat;
+
+    spell_data_ptr_t laceration;
+    spell_data_ptr_t laceration_driver;
+    spell_data_ptr_t laceration_bleed;
+    spell_data_ptr_t kill_cleave;
+    spell_data_ptr_t training_expert;
+    spell_data_ptr_t the_beast_within; //TODO Not implemented
+    spell_data_ptr_t thrill_of_the_hunt;
+    spell_data_ptr_t pack_tactics;
+    spell_data_ptr_t barbed_scales;
+
+    spell_data_ptr_t aspect_of_the_beast;
+    spell_data_ptr_t dire_cleave;
+    spell_data_ptr_t dire_command;
+    spell_data_ptr_t jagged_wounds; //TODO Not implemented
+    spell_data_ptr_t serpentine_strikes; //TODO Not implemented
+    spell_data_ptr_t snakeskin_quiver;
+    spell_data_ptr_t cobra_senses;
+
+    spell_data_ptr_t natures_ally_1; //TODO Not implemented
+    spell_data_ptr_t dire_frenzy;
+    spell_data_ptr_t frenzy; //TODO Not implemented
+    spell_data_ptr_t killer_instinct;
+
+    spell_data_ptr_t natures_ally_2; //TODO Not implemented
+    spell_data_ptr_t brutal_companion;
+    spell_data_ptr_t huntmasters_call;
+    spell_data_ptr_t heart_of_the_pack; //TODO Not implemented
+    spell_data_ptr_t bloodshed;
+    spell_data_ptr_t bloodshed_dot;
+    spell_data_ptr_t savagery_bm;
+    spell_data_ptr_t killer_cobra;
+    spell_data_ptr_t master_handler;
+
+    spell_data_ptr_t natures_ally_3; //TODO Not implemented
+    spell_data_ptr_t wildspeaker;
+    spell_data_ptr_t wildspeaker_kill_command;
+    spell_data_ptr_t wildspeaker_bestial_wrath;
+    spell_data_ptr_t wild_instincts;
+    spell_data_ptr_t bloody_frenzy;
+    spell_data_ptr_t piercing_fangs;
+
+    spell_data_ptr_t multishot_bm; //TODO removed
+    spell_data_ptr_t wild_call; //TODO removed
+    spell_data_ptr_t hunters_prey; //TODO removed
+    spell_data_ptr_t hunters_prey_hidden_buff; //TODO removed
+    spell_data_ptr_t poisoned_barbs; //TODO removed
+    spell_data_ptr_t serpentine_rhythm; //TODO removed
+    spell_data_ptr_t barbed_wrath; //TODO removed  
+    spell_data_ptr_t call_of_the_wild; //TODO removed
 
     // Marksmanship Tree
     spell_data_ptr_t aimed_shot;
@@ -663,48 +773,44 @@ public:
     spell_data_ptr_t precise_shots;
     spell_data_ptr_t precise_shots_buff;
 
-    spell_data_ptr_t streamline;
-    spell_data_ptr_t streamline_buff;
+    spell_data_ptr_t quick_draw; //TODO Not implemented
     spell_data_ptr_t lock_and_load; // TODO how does its blp work
     spell_data_ptr_t lock_and_load_buff;
-    spell_data_ptr_t ammo_conservation;
 
-    spell_data_ptr_t penetrating_shots;
+    spell_data_ptr_t surging_shots;
     spell_data_ptr_t avian_specialization;
     spell_data_ptr_t unbreakable_bond;
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t trick_shots_data;
     spell_data_ptr_t trick_shots_buff;
     spell_data_ptr_t aspect_of_the_hydra;
-    
+
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t in_the_rhythm_buff;
-    spell_data_ptr_t surging_shots;
+    spell_data_ptr_t penetrating_shots;
+    spell_data_ptr_t tenacious; //Utility talent, won't implement
+    spell_data_ptr_t cunning; //Utility talent, won't implement
     spell_data_ptr_t master_marksman;
     spell_data_ptr_t master_marksman_bleed;
     spell_data_ptr_t light_ammo;
 
-    spell_data_ptr_t improved_deathblow;
     spell_data_ptr_t obsidian_arrowhead;
     spell_data_ptr_t on_target;
     spell_data_ptr_t on_target_buff;
     spell_data_ptr_t trueshot;
-    spell_data_ptr_t moving_target;
-    spell_data_ptr_t moving_target_buff;
-    spell_data_ptr_t precision_detonation;
-    spell_data_ptr_t precision_detonation_buff;
+    spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
 
-    spell_data_ptr_t razor_fragments;
-    spell_data_ptr_t razor_fragments_bleed;
-    spell_data_ptr_t razor_fragments_buff;
-    spell_data_ptr_t headshot;
-    spell_data_ptr_t deadeye;
+    spell_data_ptr_t target_acquisition;
+    spell_data_ptr_t critical_precision; //TODO Not implemented
     spell_data_ptr_t no_scope;
     spell_data_ptr_t feathered_frenzy;
-    spell_data_ptr_t target_acquisition;
-    spell_data_ptr_t shrapnel_shot;
-    spell_data_ptr_t magnetic_gunpowder;
-    
+    spell_data_ptr_t lethality; //TODO Not implemented
+    spell_data_ptr_t headshot;
+    spell_data_ptr_t deadeye;
+    spell_data_ptr_t deathblow; //TODO Talent is unique to MM, but the effect can be achieved as DR
+    spell_data_ptr_t deathblow_buff; //TODO Moved baseline with hero talent tie ins
+
+    spell_data_ptr_t take_aim_1; //TODO Not implemented 
     spell_data_ptr_t unmatched_precision;
     spell_data_ptr_t bullseye;
     spell_data_ptr_t bullseye_buff;
@@ -713,7 +819,7 @@ public:
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t eagles_accuracy;
 
-    spell_data_ptr_t improved_streamline;
+    spell_data_ptr_t take_aim_2; //TODO Not implemented 
     spell_data_ptr_t focused_aim;
     spell_data_ptr_t bulletstorm;
     spell_data_ptr_t bulletstorm_buff;
@@ -721,82 +827,35 @@ public:
     spell_data_ptr_t volley;
     spell_data_ptr_t volley_data;
     spell_data_ptr_t volley_dmg;
-    spell_data_ptr_t ohnahran_winds;
-    spell_data_ptr_t ohnahran_winds_debuff;
+    spell_data_ptr_t focus_fire; //TODO Not implemented
 
+    spell_data_ptr_t take_aim_3; //TODO Not implemented 
     spell_data_ptr_t windrunner_quiver;
     spell_data_ptr_t incendiary_ammunition;
     spell_data_ptr_t double_tap;
     spell_data_ptr_t double_tap_buff;
-    spell_data_ptr_t kill_zone;
-    spell_data_ptr_t kill_zone_debuff;
     spell_data_ptr_t salvo;
     spell_data_ptr_t bullet_hell;
+    spell_data_ptr_t shrapnel_shot;
+    spell_data_ptr_t unload; //TODO Not implemented
 
-    // Beast Mastery Tree
-    spell_data_ptr_t kill_command_bm_player;
-    spell_data_ptr_t kill_command_bm_pet;
-
-    spell_data_ptr_t cobra_shot;
-    spell_data_ptr_t cobra_shot_data;
-    spell_data_ptr_t animal_companion;
-    spell_data_ptr_t solitary_companion;
-    spell_data_ptr_t barbed_shot;
-
-    spell_data_ptr_t pack_tactics;
-    spell_data_ptr_t aspect_of_the_beast;
-    spell_data_ptr_t war_orders;
-    spell_data_ptr_t thrill_of_the_hunt;
-
-    spell_data_ptr_t go_for_the_throat;
-    spell_data_ptr_t multishot_bm;
-    spell_data_ptr_t laceration;
-    spell_data_ptr_t laceration_driver;
-    spell_data_ptr_t laceration_bleed;
-
-    spell_data_ptr_t barbed_scales;
-    spell_data_ptr_t snakeskin_quiver;
-    spell_data_ptr_t cobra_senses;
-    spell_data_ptr_t beast_cleave;
-    spell_data_ptr_t wild_call;
-    spell_data_ptr_t hunters_prey;
-    spell_data_ptr_t hunters_prey_hidden_buff;
-    spell_data_ptr_t poisoned_barbs;
-
-    spell_data_ptr_t stomp;
-    spell_data_ptr_t stomp_primary;
-    spell_data_ptr_t stomp_cleave;
-    spell_data_ptr_t serpentine_rhythm;
-    spell_data_ptr_t kill_cleave;
-    spell_data_ptr_t training_expert;
-    spell_data_ptr_t dire_beast;
-    spell_data_ptr_t dire_beast_summon;
-
-    spell_data_ptr_t savagery;
-    spell_data_ptr_t bestial_wrath;
-    spell_data_ptr_t dire_command;
-    spell_data_ptr_t huntmasters_call;
-    spell_data_ptr_t dire_cleave;
-
-    spell_data_ptr_t killer_instinct;
-    spell_data_ptr_t master_handler;
-    spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t thundering_hooves;
-    spell_data_ptr_t dire_frenzy;
-    
-    spell_data_ptr_t call_of_the_wild;
-    spell_data_ptr_t killer_cobra;
-    spell_data_ptr_t scent_of_blood;
-    spell_data_ptr_t brutal_companion;
-    spell_data_ptr_t bloodshed;
-    spell_data_ptr_t bloodshed_dot;
-
-    spell_data_ptr_t wild_instincts;
-    spell_data_ptr_t bloody_frenzy;
-    spell_data_ptr_t piercing_fangs;
-    spell_data_ptr_t wildspeaker;
-    spell_data_ptr_t wildspeaker_kill_command;
-    spell_data_ptr_t wildspeaker_bestial_wrath;
+    spell_data_ptr_t streamline; //TODO Removed
+    spell_data_ptr_t streamline_buff; //TODO Removed
+    spell_data_ptr_t ammo_conservation; //TODO Removed 
+    spell_data_ptr_t improved_deathblow; //TODO Removed
+    spell_data_ptr_t moving_target; //TODO Removed
+    spell_data_ptr_t moving_target_buff; //TODO Removed
+    spell_data_ptr_t precision_detonation; //TODO Removed
+    spell_data_ptr_t precision_detonation_buff; //TODO Removed
+    spell_data_ptr_t razor_fragments; //TODO Removed
+    spell_data_ptr_t razor_fragments_bleed; //TODO Removed
+    spell_data_ptr_t razor_fragments_buff; //TODO Removed
+    spell_data_ptr_t magnetic_gunpowder; //TODO Removed
+    spell_data_ptr_t improved_streamline; //TODO Removed
+    spell_data_ptr_t ohnahran_winds; //TODO Removed
+    spell_data_ptr_t ohnahran_winds_debuff; //TODO Removed
+    spell_data_ptr_t kill_zone; //TODO Removed
+    spell_data_ptr_t kill_zone_debuff; //TODO Removed
 
     // Survival Tree
     spell_data_ptr_t kill_command_sv_player;
@@ -816,64 +875,90 @@ public:
     spell_data_ptr_t tip_of_the_spear_fote_buff;
 
     spell_data_ptr_t lunge;
-    spell_data_ptr_t quick_shot;
-    spell_data_ptr_t mongoose_bite;
-    spell_data_ptr_t mongoose_bite_eagle;
-    spell_data_ptr_t mongoose_fury;
-    spell_data_ptr_t flankers_advantage;
+    spell_data_ptr_t boomstick; //TODO Not implemented
+    spell_data_ptr_t strike_as_one; //TODO Not implemented
 
-    spell_data_ptr_t wildfire_infusion;
-    spell_data_ptr_t improved_wildfire_bomb;
-    spell_data_ptr_t sulfurlined_pockets;
-    spell_data_ptr_t sulfurlined_pockets_building_buff;
-    spell_data_ptr_t sulfurlined_pockets_ready_buff;
-    spell_data_ptr_t butchery;
-    spell_data_ptr_t flanking_strike;
-    spell_data_ptr_t flanking_strike_player;
-    spell_data_ptr_t flanking_strike_pet;
-    spell_data_ptr_t bloody_claws;
-    spell_data_ptr_t ranger;
-
-    spell_data_ptr_t grenade_juggler;
-    spell_data_ptr_t cull_the_herd;
-    spell_data_ptr_t cull_the_herd_dot;
-    spell_data_ptr_t frenzy_strikes;
-    spell_data_ptr_t frenzy_strikes_buff;
-    spell_data_ptr_t merciless_blow;
-    spell_data_ptr_t merciless_blow_flanking_bleed;
-    spell_data_ptr_t merciless_blow_butchery_bleed;
-    spell_data_ptr_t vipers_venom;
+    spell_data_ptr_t shrapnel_bomb; //TODO Not implemented
+    spell_data_ptr_t flamebreaker; //TODO Not implemented
     spell_data_ptr_t bloodseeker;
+    spell_data_ptr_t quick_reload; //TODO Not implemented
+    spell_data_ptr_t flankers_advantage;
+    spell_data_ptr_t two_against_many; //TODO Not implemented
 
-    spell_data_ptr_t terms_of_engagement;
-    spell_data_ptr_t terms_of_engagement_dmg;
-    spell_data_ptr_t terms_of_engagement_buff;
-    spell_data_ptr_t born_to_kill;
-    spell_data_ptr_t tactical_advantage;
+    spell_data_ptr_t mongoose_fury;
+    spell_data_ptr_t mongoose_rounds; //TODO Not implemented
+    spell_data_ptr_t wildfire_shells; //TODO Not implemented
+    spell_data_ptr_t shellshock; //TODO Not implemented
     spell_data_ptr_t sic_em;
-    spell_data_ptr_t contagious_reagents;
+
+    spell_data_ptr_t bloody_claws;
+    spell_data_ptr_t wallop; //TODO Not implemented
+    spell_data_ptr_t improved_wildfire_bomb;
+    spell_data_ptr_t bonding; //TODO Not implemented
+    spell_data_ptr_t sweeping_spear;
+    spell_data_ptr_t vulnerability; //TODO Not implemented
+    spell_data_ptr_t blackrock_munitions; //TODO Moved from MM to SV and reworked
+    spell_data_ptr_t shower_of_blood; //TODO Not implemented
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
-    
-    spell_data_ptr_t explosives_expert;
-    spell_data_ptr_t sweeping_spear;
-    spell_data_ptr_t killer_companion;
-    
-    spell_data_ptr_t fury_of_the_eagle;
-    spell_data_ptr_t coordinated_assault;
-    spell_data_ptr_t coordinated_assault_dmg;
-    spell_data_ptr_t spearhead;
-    spell_data_ptr_t spearhead_bleed;
-    spell_data_ptr_t spearhead_debuff;
 
-    spell_data_ptr_t ruthless_marauder;
-    spell_data_ptr_t ruthless_marauder_buff;
-    spell_data_ptr_t symbiotic_adrenaline;
-    spell_data_ptr_t relentless_primal_ferocity;
-    spell_data_ptr_t relentless_primal_ferocity_buff;
-    spell_data_ptr_t bombardier;
-    spell_data_ptr_t bombardier_buff;
-    spell_data_ptr_t deadly_duo;
+    spell_data_ptr_t raptor_swipe_1; //TODO Not implemented
+    spell_data_ptr_t explosives_expert;
+    spell_data_ptr_t takedown; //TODO Not implemented
+    spell_data_ptr_t killer_companion;
+
+    spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
+    spell_data_ptr_t flamefang_pitch; //TODO Not implemented
+    spell_data_ptr_t twin_fangs; //TODO Not implemented
+    spell_data_ptr_t savagery_sv; //TODO Not implemented
+    spell_data_ptr_t wildfire_infusion;
+
+    spell_data_ptr_t raptor_swipe_3; //TODO Not implemented
+    spell_data_ptr_t grenade_juggler;
+    spell_data_ptr_t wildfire_imbuement; //TODO Not implemented
+    spell_data_ptr_t flanked; //TODO Not implemented
+    spell_data_ptr_t lethal_calibration; //TODO Not implemented
+    spell_data_ptr_t primal_surge; //TODO Not implemented
+
+    spell_data_ptr_t quick_shot; //TODO Removed
+    spell_data_ptr_t mongoose_bite; //TODO Removed
+    spell_data_ptr_t mongoose_bite_eagle; //TODO Removed
+    spell_data_ptr_t sulfurlined_pockets; //TODO Removed
+    spell_data_ptr_t sulfurlined_pockets_building_buff; //TODO Removed
+    spell_data_ptr_t sulfurlined_pockets_ready_buff; //TODO Removed
+    spell_data_ptr_t butchery; //TODO Removed
+    spell_data_ptr_t flanking_strike; //TODO Removed
+    spell_data_ptr_t flanking_strike_player; //TODO Removed
+    spell_data_ptr_t flanking_strike_pet; //TODO Removed
+    spell_data_ptr_t ranger; //TODO Removed
+    spell_data_ptr_t cull_the_herd; //TODO Removed
+    spell_data_ptr_t cull_the_herd_dot; //TODO Removed
+    spell_data_ptr_t frenzy_strikes; //TODO Removed
+    spell_data_ptr_t frenzy_strikes_buff; //TODO Removed
+    spell_data_ptr_t merciless_blow; //TODO Removed
+    spell_data_ptr_t merciless_blow_flanking_bleed; //TODO Removed
+    spell_data_ptr_t merciless_blow_butchery_bleed; //TODO Removed
+    spell_data_ptr_t vipers_venom; //TODO Removed
+    spell_data_ptr_t terms_of_engagement; //TODO Removed
+    spell_data_ptr_t terms_of_engagement_dmg; //TODO Removed
+    spell_data_ptr_t terms_of_engagement_buff; //TODO Removed
+    spell_data_ptr_t born_to_kill; //TODO Removed
+    spell_data_ptr_t tactical_advantage; //TODO Removed
+    spell_data_ptr_t contagious_reagents; //TODO Removed
+    spell_data_ptr_t fury_of_the_eagle; //TODO Removed
+    spell_data_ptr_t coordinated_assault; //TODO Removed
+    spell_data_ptr_t coordinated_assault_dmg; //TODO Removed
+    spell_data_ptr_t spearhead; //TODO Removed
+    spell_data_ptr_t spearhead_bleed; //TODO Removed
+    spell_data_ptr_t spearhead_debuff; //TODO Removed
+    spell_data_ptr_t ruthless_marauder; //TODO Removed
+    spell_data_ptr_t ruthless_marauder_buff; //TODO Removed
+    spell_data_ptr_t symbiotic_adrenaline; //TODO Removed
+    spell_data_ptr_t relentless_primal_ferocity; //TODO Removed
+    spell_data_ptr_t relentless_primal_ferocity_buff; //TODO Removed
+    spell_data_ptr_t bombardier; //TODO Removed
+    spell_data_ptr_t bombardier_buff; //TODO Removed
+    spell_data_ptr_t deadly_duo; //TODO Removed
 
     // Dark Ranger
     spell_data_ptr_t black_arrow;
@@ -882,25 +967,34 @@ public:
     
     spell_data_ptr_t bleak_arrows;
     spell_data_ptr_t bleak_arrows_spell;
-    spell_data_ptr_t shadow_hounds;
-    spell_data_ptr_t shadow_hounds_summon;
     spell_data_ptr_t soul_drinker;
-    spell_data_ptr_t the_bell_tolls;
-    spell_data_ptr_t the_bell_tolls_buff;
-
-    spell_data_ptr_t phantom_pain;
-    spell_data_ptr_t phantom_pain_spell;
-    spell_data_ptr_t ebon_bowstring;
-
-    spell_data_ptr_t banshees_mark;
-    spell_data_ptr_t a_murder_of_crows_dot;
     spell_data_ptr_t bleak_powder;
     spell_data_ptr_t bleak_powder_spell;
+    spell_data_ptr_t corpsecaller; // TODO Not implemented
+
+    spell_data_ptr_t ebon_bowstring;
+    spell_data_ptr_t through_the_eyes; // TODO Not implemented
+    spell_data_ptr_t smoke_screen; //Utility talent, won't implement
+    spell_data_ptr_t dark_chains; //Utility talent, won't implement
+    spell_data_ptr_t shadow_dagger; //Utility talent, won't implement
+    spell_data_ptr_t wailing_dead; // TODO Not implemented
+
+    spell_data_ptr_t blighted_quiver; // TODO Not implemented
+    spell_data_ptr_t banshees_mark;
+    spell_data_ptr_t the_bell_tolls;
+    spell_data_ptr_t the_bell_tolls_buff;
     spell_data_ptr_t umbral_reach;
+    spell_data_ptr_t pact_of_the_hollow; // TODO Not implemented
 
     spell_data_ptr_t withering_fire;
     spell_data_ptr_t withering_fire_black_arrow;
     spell_data_ptr_t withering_fire_buff;
+
+    spell_data_ptr_t phantom_pain; //TODO Removed
+    spell_data_ptr_t phantom_pain_spell; //TODO Removed
+    spell_data_ptr_t a_murder_of_crows_dot; //TODO Removed
+    spell_data_ptr_t shadow_hounds; //TODO Removed - similiar to corpsecaller
+    spell_data_ptr_t shadow_hounds_summon; //TODO Removed - similiar to corpsecaller
 
     // Pack Leader
     spell_data_ptr_t howl_of_the_pack_leader;
@@ -920,48 +1014,71 @@ public:
     spell_data_ptr_t pack_mentality;
     spell_data_ptr_t dire_summons;
     spell_data_ptr_t better_together;
+    spell_data_ptr_t slicked_shoes; //Utility talent, won't implement
+    spell_data_ptr_t masterful_call; //Utility talent, won't implement
 
     spell_data_ptr_t ursine_fury;
     spell_data_ptr_t ursine_fury_chance;
-    spell_data_ptr_t envenomed_fangs;
-    spell_data_ptr_t envenomed_fangs_spell;
+    spell_data_ptr_t sharpened_claws; //TODO Not implemented
     spell_data_ptr_t fury_of_the_wyvern;
     spell_data_ptr_t fury_of_the_wyvern_proc;
     spell_data_ptr_t hogstrider;
     spell_data_ptr_t hogstrider_buff;
+    spell_data_ptr_t lethal_barbs; //TODO Not implemented
 
     spell_data_ptr_t no_mercy;
+    spell_data_ptr_t shell_cover; //Utility talent, won't implement
+    spell_data_ptr_t hoof_and_blade; //TODO Not implemented
+    spell_data_ptr_t wyverns_gaze; //TODO Not implemented
+    spell_data_ptr_t sharpened_fangs; //TODO Not implemented
     
-    spell_data_ptr_t lead_from_the_front;
-    spell_data_ptr_t lead_from_the_front_buff;
+    spell_data_ptr_t stampede; //TODO Not implemented
+    
+    spell_data_ptr_t lead_from_the_front; //TODO Removed
+    spell_data_ptr_t lead_from_the_front_buff; //TODO Removed
+    spell_data_ptr_t envenomed_fangs; //TODO Removed
+    spell_data_ptr_t envenomed_fangs_spell; //TODO Removed
 
     // Sentinel
-    // TODO chance to stack and chance to implode were and are still pretty rough estimates
-    spell_data_ptr_t sentinel;
-    spell_data_ptr_t sentinel_debuff;
-    spell_data_ptr_t sentinel_tick;
+    spell_data_ptr_t sentinel; //TODO Not implemented
 
-    spell_data_ptr_t extrapolated_shots;
-    spell_data_ptr_t sentinel_precision;
+    spell_data_ptr_t dont_look_back; //Utility talent, won't implement
+    spell_data_ptr_t moons_blessing; //TODO Not implemented
+    spell_data_ptr_t sanctified_armaments; //TODO Not implemented
+    spell_data_ptr_t moonlight_chakram; //TODO Not implemented
 
-    spell_data_ptr_t release_and_reload;
-    // TODO the alleged decreased chance is unknown and not modeled
-    spell_data_ptr_t invigorating_pulse;
+    spell_data_ptr_t stargazer; //TODO Not implemented
+    spell_data_ptr_t open_fire; //TODO Not implemented
+    spell_data_ptr_t cant_miss_wont_miss; //TODO Not implemented
+    spell_data_ptr_t invigorating_pulse; //TODO Reworked
+    spell_data_ptr_t twilight_requiem; //TODO Not implemented
+    spell_data_ptr_t stalk_and_strike; //TODO Not implemented
 
-    spell_data_ptr_t sentinel_watch;
-    spell_data_ptr_t eyes_closed;
-    spell_data_ptr_t symphonic_arsenal;
-    spell_data_ptr_t symphonic_arsenal_spell;
-    spell_data_ptr_t overwatch;
-    spell_data_ptr_t crescent_steel;
-    spell_data_ptr_t crescent_steel_debuff;
+    spell_data_ptr_t arcane_talons; //TODO Not implemented
+    spell_data_ptr_t lunar_calling; //TODO Not implemented
+    spell_data_ptr_t conditioning; //Utility talent, won't implement
+    spell_data_ptr_t scouts_vigil; //Utility talent, won't implement
+    spell_data_ptr_t radiant_edge; //TODO Not implemented
 
-    spell_data_ptr_t lunar_storm;
-    spell_data_ptr_t lunar_storm_initial_spell;
-    spell_data_ptr_t lunar_storm_periodic_trigger;
-    spell_data_ptr_t lunar_storm_periodic_spell;
-    spell_data_ptr_t lunar_storm_ready_buff;
-    spell_data_ptr_t lunar_storm_cooldown_buff;
+    spell_data_ptr_t lunar_storm; //TODO Not implemented
+
+    spell_data_ptr_t lunar_storm_initial_spell; //TODO Removed/Reworked
+    spell_data_ptr_t lunar_storm_periodic_trigger; //TODO Removed/Reworked
+    spell_data_ptr_t lunar_storm_periodic_spell; //TODO Removed/Reworked
+    spell_data_ptr_t lunar_storm_ready_buff; //TODO Removed/Reworked
+    spell_data_ptr_t lunar_storm_cooldown_buff; //TODO Removed/Reworked
+    spell_data_ptr_t sentinel_debuff; //TODO Removed/Reworked
+    spell_data_ptr_t sentinel_tick; //TODO Removed/Reworked
+    spell_data_ptr_t extrapolated_shots; //TODO Removed/Reworked
+    spell_data_ptr_t sentinel_precision; //TODO Removed/Reworked
+    spell_data_ptr_t release_and_reload; //TODO Removed/Reworked
+    spell_data_ptr_t sentinel_watch; //TODO Removed/Reworked
+    spell_data_ptr_t eyes_closed; //TODO Removed/Reworked
+    spell_data_ptr_t symphonic_arsenal; //TODO Removed/Reworked
+    spell_data_ptr_t symphonic_arsenal_spell; //TODO Removed/Reworked
+    spell_data_ptr_t overwatch; //TODO Removed/Reworked
+    spell_data_ptr_t crescent_steel; //TODO Removed/Reworked
+    spell_data_ptr_t crescent_steel_debuff; //TODO Removed/Reworked
   } talents;
 
   // Specialization Spells
@@ -990,7 +1107,6 @@ public:
     spell_data_ptr_t multishot;
     spell_data_ptr_t eyes_in_the_sky;
     spell_data_ptr_t spotters_mark_debuff;
-    spell_data_ptr_t harriers_cry;
   } specs;
 
   struct mastery_spells_t
@@ -7281,7 +7397,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
 
 struct harriers_cry_t: public hunter_spell_t
 {
-  harriers_cry_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "harriers_cry", p, p->specs.harriers_cry )
+  harriers_cry_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "harriers_cry", p, p->find_spell( 466904 ) )
   {
     parse_options( options_str );
 
@@ -8036,46 +8152,125 @@ void hunter_t::init_spells()
   player_t::init_spells();
 
   // Hunter Tree
-  talents.kill_shot                         = find_talent_spell( talent_tree::CLASS, "Kill Shot" );
+  talents.combat_experience                 = find_talent_spell( talent_tree::CLASS, "Combat Experience" );
 
-  talents.deathblow                         = find_talent_spell( talent_tree::CLASS, "Deathblow" );
-  talents.deathblow_buff                    = talents.deathblow.ok() ? find_spell( 378770 ) : spell_data_t::not_found();
-
-  talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
-
+  talents.precision_strikes                 = find_talent_spell( talent_tree::CLASS, "Precision Strikes" );
   talents.counter_shot                      = find_talent_spell( talent_tree::CLASS, "Counter Shot" );
   talents.muzzle                            = find_talent_spell( talent_tree::CLASS, "Muzzle" );
+  talents.serrated_tips                     = find_talent_spell( talent_tree::CLASS, "Serrated Tips" );
 
-  talents.lone_survivor                     = find_talent_spell( talent_tree::CLASS, "Lone Survivor" );
+  talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
+  talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
+
   talents.specialized_arsenal               = find_talent_spell( talent_tree::CLASS, "Specialized Arsenal" );
+
+  talents.keen_eyesight                     = find_talent_spell( talent_tree::CLASS, "Keen Eyesight" );
+
+  talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
+  talents.unnatural_causes_debuff           = talents.unnatural_causes.ok() ? find_spell( 459529 ) : spell_data_t::not_found();
+
+  //TODO Remove 
 
   talents.harmonize                         = find_talent_spell( talent_tree::CLASS, "Harmonize" );
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
   talents.explosive_shot_cast               = find_spell( 212431 );
   talents.explosive_shot_damage             = find_spell( 212680 );
-
   talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
-  talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
-  talents.keen_eyesight                     = find_talent_spell( talent_tree::CLASS, "Keen Eyesight" );
-
-  talents.serrated_tips                     = find_talent_spell( talent_tree::CLASS, "Serrated Tips" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
-
   talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
   talents.implosive_trap                    = find_talent_spell( talent_tree::CLASS, "Implosive Trap" );
   talents.explosive_trap_damage             = find_spell( 236777 );
-  talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
-  talents.unnatural_causes_debuff           = talents.unnatural_causes.ok() ? find_spell( 459529 ) : spell_data_t::not_found();
+  
+  // Beast Mastery Tree
+  if ( specialization() == HUNTER_BEAST_MASTERY )
+  {
+    talents.kill_command_bm_player            = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Command", HUNTER_BEAST_MASTERY );
+    talents.kill_command_bm_pet               = talents.kill_command_bm_player.ok() ? find_spell( 83381 ) : spell_data_t::not_found();
+
+    talents.animal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Animal Companion", HUNTER_BEAST_MASTERY );
+    talents.solitary_companion                = find_talent_spell( talent_tree::SPECIALIZATION, "Solitary Companion", HUNTER_BEAST_MASTERY );
+    talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
+
+    talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
+    talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
+    talents.dire_beast_summon                 = find_spell( 219199 );
+    talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
+    talents.stomp_primary                     = find_spell( 1217528 );
+    talents.stomp_cleave                      = find_spell( 201754 );
+    talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY );
+
+    talents.wild_thrash                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Thrash", HUNTER_BEAST_MASTERY );
+    talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY );
+    talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
+    talents.cobra_shot_data                   = find_spell( 193455 );
+
+    talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY );
+    talents.scent_of_blood                    = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood", HUNTER_BEAST_MASTERY );
+    talents.thundering_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thundering Hooves", HUNTER_BEAST_MASTERY );
+    talents.go_for_the_throat                 = find_talent_spell( talent_tree::SPECIALIZATION, "Go for the Throat", HUNTER_BEAST_MASTERY );
+
+    talents.laceration                        = find_talent_spell( talent_tree::SPECIALIZATION, "Laceration", HUNTER_BEAST_MASTERY );
+    talents.laceration_driver                 = talents.laceration.ok() ? find_spell( 459555 ) : spell_data_t::not_found();
+    talents.laceration_bleed                  = talents.laceration.ok() ? find_spell( 459560 ) : spell_data_t::not_found();
+    talents.kill_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Cleave", HUNTER_BEAST_MASTERY );
+    talents.training_expert                   = find_talent_spell( talent_tree::SPECIALIZATION, "Training Expert", HUNTER_BEAST_MASTERY );
+    talents.the_beast_within                  = find_talent_spell( talent_tree::SPECIALIZATION, "The Beast Within", HUNTER_BEAST_MASTERY );
+    talents.thrill_of_the_hunt                = find_talent_spell( talent_tree::SPECIALIZATION, "Thrill of the Hunt", HUNTER_BEAST_MASTERY );
+    talents.pack_tactics                      = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Tactics", HUNTER_BEAST_MASTERY );
+    talents.barbed_scales                     = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Scales", HUNTER_BEAST_MASTERY );
+
+    talents.aspect_of_the_beast               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Beast", HUNTER_BEAST_MASTERY );
+    talents.dire_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Cleave", HUNTER_BEAST_MASTERY );
+    talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY );
+    talents.jagged_wounds                     = find_talent_spell( talent_tree::SPECIALIZATION, "Jagged Wounds", HUNTER_BEAST_MASTERY );
+    talents.serpentine_strikes                = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Strikes", HUNTER_BEAST_MASTERY );
+    talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
+    talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
+
+    talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273043, HUNTER_BEAST_MASTERY );
+    talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
+    talents.frenzy                            = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy", HUNTER_BEAST_MASTERY );
+    talents.killer_instinct                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Instinct", HUNTER_BEAST_MASTERY );
+
+    talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273065, HUNTER_BEAST_MASTERY );
+    talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
+    talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
+    talents.heart_of_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Pack", HUNTER_BEAST_MASTERY );
+    talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
+    talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
+    talents.savagery_bm                        = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
+    talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
+    talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
+
+    talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
+    talents.wildspeaker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wildspeaker", HUNTER_BEAST_MASTERY );
+    talents.wildspeaker_bestial_wrath         = talents.wildspeaker.ok() ? find_spell( 1235388 ) : spell_data_t::not_found();
+    talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
+    talents.wild_instincts                    = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Instincts", HUNTER_BEAST_MASTERY );
+    talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
+    talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
+
+    //TODO Removed
+    talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
+    talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
+    talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
+    talents.hunters_prey_hidden_buff          = find_spell( 468219 );
+    talents.poisoned_barbs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoned Barbs", HUNTER_BEAST_MASTERY );
+    talents.serpentine_rhythm                 = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Rhythm", HUNTER_BEAST_MASTERY );
+    talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY );
+    talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
+    specs.serpent_sting = find_spell( 271788 );
+  }
 
   // Marksmanship Tree
   if ( specialization() == HUNTER_MARKSMANSHIP )
   {
+    //TODO Multishot is now  MM only - we can move it out of here
     specs.multishot                           = find_specialization_spell( "Multi-Shot" );
     specs.eyes_in_the_sky                     = find_specialization_spell( "Eyes in the Sky" );
     specs.spotters_mark_debuff                = specs.eyes_in_the_sky.ok() ? find_spell( 466872 ) : spell_data_t::not_found();
-    specs.harriers_cry                        = find_specialization_spell( "Harrier's Cry" );
 
     talents.aimed_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Aimed Shot", HUNTER_MARKSMANSHIP );
 
@@ -8085,48 +8280,44 @@ void hunter_t::init_spells()
     talents.precise_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shots", HUNTER_MARKSMANSHIP );
     talents.precise_shots_buff                = talents.precise_shots.ok() ? find_spell( 260242 ) : spell_data_t::not_found();
 
-    talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
-    talents.streamline_buff                   = talents.streamline.ok() ? find_spell( 342076 ) : spell_data_t::not_found();
+    talents.quick_draw                        = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Draw", HUNTER_MARKSMANSHIP );
     talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
     talents.lock_and_load_buff                = find_spell( 194594 );
-    talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
-    
-    talents.penetrating_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Penetrating Shots", HUNTER_MARKSMANSHIP );
+
+    talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.avian_specialization              = find_talent_spell( talent_tree::SPECIALIZATION, "Avian Specialization", HUNTER_MARKSMANSHIP );
     talents.unbreakable_bond                  = find_talent_spell( talent_tree::SPECIALIZATION, "Unbreakable Bond", HUNTER_MARKSMANSHIP );
     talents.trick_shots                       = find_talent_spell( talent_tree::SPECIALIZATION, "Trick Shots", HUNTER_MARKSMANSHIP );
     talents.trick_shots_data                  = find_spell( 257621 );
     talents.trick_shots_buff                  = find_spell( 257622 );
     talents.aspect_of_the_hydra               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Hydra", HUNTER_MARKSMANSHIP );
-    
+
     talents.in_the_rhythm                     = find_talent_spell( talent_tree::SPECIALIZATION, "In the Rhythm", HUNTER_MARKSMANSHIP );
     talents.in_the_rhythm_buff                = talents.in_the_rhythm.ok() ? find_spell( 407405 ) : spell_data_t::not_found();
-    talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
+    talents.penetrating_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Penetrating Shots", HUNTER_MARKSMANSHIP );
+    talents.tenacious                         = find_talent_spell( talent_tree::SPECIALIZATION, "Tenacious", HUNTER_MARKSMANSHIP );
+    talents.cunning                           = find_talent_spell( talent_tree::SPECIALIZATION, "Cunning", HUNTER_MARKSMANSHIP );
     talents.master_marksman                   = find_talent_spell( talent_tree::SPECIALIZATION, "Master Marksman", HUNTER_MARKSMANSHIP );
     talents.master_marksman_bleed             = talents.master_marksman.ok() ? find_spell( 269576 ) : spell_data_t::not_found();
     talents.light_ammo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Light Ammo", HUNTER_MARKSMANSHIP );
-
-    talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
+    
     talents.obsidian_arrowhead                = find_talent_spell( talent_tree::SPECIALIZATION, "Obsidian Arrowhead", HUNTER_MARKSMANSHIP );
     talents.on_target                         = find_talent_spell( talent_tree::SPECIALIZATION, "On Target", HUNTER_MARKSMANSHIP );
     talents.on_target_buff                    = talents.on_target.ok() ? find_spell( 474257 ) : spell_data_t::not_found();
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
-    talents.moving_target                     = find_talent_spell( talent_tree::SPECIALIZATION, "Moving Target", HUNTER_MARKSMANSHIP );
-    talents.moving_target_buff                = talents.moving_target.ok() ? find_spell( 474293 ) : spell_data_t::not_found();
-    talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
-    talents.precision_detonation_buff         = talents.precision_detonation.ok() ? find_spell( 474199 ) : spell_data_t::not_found();
-
-    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
-    talents.razor_fragments_bleed             = talents.razor_fragments.ok() ? find_spell( 385638 ) : spell_data_t::not_found();
-    talents.razor_fragments_buff              = talents.razor_fragments.ok() ? find_spell( 388998 ) : spell_data_t::not_found();
-    talents.headshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Headshot", HUNTER_MARKSMANSHIP );
-    talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
+    talents.kill_shot                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Shot", HUNTER_MARKSMANSHIP );
+   
+    talents.target_acquisition                = find_talent_spell( talent_tree::SPECIALIZATION, "Target Acquisition", HUNTER_MARKSMANSHIP );
+    talents.critical_precision                = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Precision", HUNTER_MARKSMANSHIP );
     talents.no_scope                          = find_talent_spell( talent_tree::SPECIALIZATION, "No Scope", HUNTER_MARKSMANSHIP );
     talents.feathered_frenzy                  = find_talent_spell( talent_tree::SPECIALIZATION, "Feathered Frenzy", HUNTER_MARKSMANSHIP );
-    talents.target_acquisition                = find_talent_spell( talent_tree::SPECIALIZATION, "Target Acquisition", HUNTER_MARKSMANSHIP );
-    talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
-    talents.magnetic_gunpowder                = find_talent_spell( talent_tree::SPECIALIZATION, "Magnetic Gunpowder", HUNTER_MARKSMANSHIP );
-    
+    talents.lethality                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lethality", HUNTER_MARKSMANSHIP );
+    talents.headshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Headshot", HUNTER_MARKSMANSHIP );
+    talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
+    talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
+    talents.deathblow_buff                    = talents.deathblow.ok() ? find_spell( 378770 ) : spell_data_t::not_found();
+
+    talents.take_aim_1                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273132, HUNTER_MARKSMANSHIP );
     talents.unmatched_precision               = find_talent_spell( talent_tree::SPECIALIZATION, "Unmatched Precision", HUNTER_MARKSMANSHIP );
     talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
     talents.bullseye_buff                     = talents.bullseye->effectN( 1 ).trigger();
@@ -8135,7 +8326,7 @@ void hunter_t::init_spells()
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
     talents.eagles_accuracy                   = find_talent_spell( talent_tree::SPECIALIZATION, "Eagle's Accuracy", HUNTER_MARKSMANSHIP );
 
-    talents.improved_streamline               = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Streamline", HUNTER_MARKSMANSHIP );
+    talents.take_aim_2                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273129, HUNTER_MARKSMANSHIP );
     talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
     talents.bulletstorm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bulletstorm", HUNTER_MARKSMANSHIP );
     talents.bulletstorm_buff                  = talents.bulletstorm.ok() ? find_spell( 389020 ) : spell_data_t::not_found();
@@ -8143,93 +8334,45 @@ void hunter_t::init_spells()
     talents.volley                            = find_talent_spell( talent_tree::SPECIALIZATION, "Volley", HUNTER_MARKSMANSHIP );
     talents.volley_data                       = find_spell( 260243 );
     talents.volley_dmg                        = find_spell( 260247 );
-    talents.ohnahran_winds                    = find_talent_spell( talent_tree::SPECIALIZATION, "Ohn'ahran Winds", HUNTER_MARKSMANSHIP );
-    talents.ohnahran_winds_debuff             = talents.ohnahran_winds.ok() ? find_spell( 1215057 ) : spell_data_t::not_found();
+    talents.focus_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Focus Fire", HUNTER_MARKSMANSHIP );
 
+    talents.take_aim_3                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273128, HUNTER_MARKSMANSHIP );
     talents.windrunner_quiver                 = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner Quiver", HUNTER_MARKSMANSHIP );
     talents.incendiary_ammunition             = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Ammunition", HUNTER_MARKSMANSHIP );
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
     talents.double_tap_buff                   = talents.double_tap.ok() ? find_spell( 260402 ) : spell_data_t::not_found();
-    talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
-    talents.kill_zone_debuff                  = talents.kill_zone.ok() ? find_spell( 393480 ) : spell_data_t::not_found();
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
     talents.bullet_hell                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bullet Hell", HUNTER_MARKSMANSHIP );
-  }
+    talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
+    talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
 
-  // Beast Mastery Tree
-  if ( specialization() == HUNTER_BEAST_MASTERY )
-  {
-    talents.kill_command_bm_player            = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Command", HUNTER_BEAST_MASTERY );
-    talents.kill_command_bm_pet               = talents.kill_command_bm_player.ok() ? find_spell( 83381 ) : spell_data_t::not_found();
-
-    talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
-    talents.cobra_shot_data                   = find_spell( 193455 );
-    talents.animal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Animal Companion", HUNTER_BEAST_MASTERY );
-    talents.solitary_companion                = find_talent_spell( talent_tree::SPECIALIZATION, "Solitary Companion", HUNTER_BEAST_MASTERY );
-    talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
-
-    talents.pack_tactics                      = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Tactics", HUNTER_BEAST_MASTERY );
-    talents.aspect_of_the_beast               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Beast", HUNTER_BEAST_MASTERY );
-    talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY );
-    talents.thrill_of_the_hunt                = find_talent_spell( talent_tree::SPECIALIZATION, "Thrill of the Hunt", HUNTER_BEAST_MASTERY );
-
-    talents.go_for_the_throat                 = find_talent_spell( talent_tree::SPECIALIZATION, "Go for the Throat", HUNTER_BEAST_MASTERY );
-    talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
-    talents.laceration                        = find_talent_spell( talent_tree::SPECIALIZATION, "Laceration", HUNTER_BEAST_MASTERY );
-    talents.laceration_driver                 = talents.laceration.ok() ? find_spell( 459555 ) : spell_data_t::not_found();
-    talents.laceration_bleed                  = talents.laceration.ok() ? find_spell( 459560 ) : spell_data_t::not_found();
-    
-    talents.barbed_scales                     = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Scales", HUNTER_BEAST_MASTERY );
-    talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
-    talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
-    talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
-    talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY );
-    talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
-    talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
-    talents.hunters_prey_hidden_buff          = find_spell( 468219 );
-    talents.poisoned_barbs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoned Barbs", HUNTER_BEAST_MASTERY );
-
-    talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
-    talents.stomp_primary                     = find_spell( 1217528 );
-    talents.stomp_cleave                      = find_spell( 201754 );
-    talents.serpentine_rhythm                 = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Rhythm", HUNTER_BEAST_MASTERY );
-    talents.kill_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Cleave", HUNTER_BEAST_MASTERY );
-    talents.training_expert                   = find_talent_spell( talent_tree::SPECIALIZATION, "Training Expert", HUNTER_BEAST_MASTERY );
-    talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
-    talents.dire_beast_summon                 = find_spell( 219199 );
-
-    talents.savagery                          = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
-    talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY );
-    talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY );
-    talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
-    talents.dire_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Cleave", HUNTER_BEAST_MASTERY );
-
-    talents.killer_instinct                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Instinct", HUNTER_BEAST_MASTERY );
-    talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
-    talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY );
-    talents.thundering_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thundering Hooves", HUNTER_BEAST_MASTERY );
-    talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
-
-    talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
-    talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
-    talents.scent_of_blood                    = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood", HUNTER_BEAST_MASTERY );
-    talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
-    talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
-    talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
-
-    talents.wild_instincts                    = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Instincts", HUNTER_BEAST_MASTERY );
-    talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
-    talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
-    talents.wildspeaker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wildspeaker", HUNTER_BEAST_MASTERY );
-    talents.wildspeaker_bestial_wrath         = talents.wildspeaker.ok() ? find_spell( 1235388 ) : spell_data_t::not_found();
-    talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
-
-    specs.serpent_sting = find_spell( 271788 );
+    //TODO Remove
+    talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
+    talents.streamline_buff                   = talents.streamline.ok() ? find_spell( 342076 ) : spell_data_t::not_found();
+    talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
+    talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
+    talents.moving_target                     = find_talent_spell( talent_tree::SPECIALIZATION, "Moving Target", HUNTER_MARKSMANSHIP );
+    talents.moving_target_buff                = talents.moving_target.ok() ? find_spell( 474293 ) : spell_data_t::not_found();
+    talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
+    talents.precision_detonation_buff         = talents.precision_detonation.ok() ? find_spell( 474199 ) : spell_data_t::not_found();
+    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
+    talents.razor_fragments_bleed             = talents.razor_fragments.ok() ? find_spell( 385638 ) : spell_data_t::not_found();
+    talents.razor_fragments_buff              = talents.razor_fragments.ok() ? find_spell( 388998 ) : spell_data_t::not_found();
+    talents.magnetic_gunpowder                = find_talent_spell( talent_tree::SPECIALIZATION, "Magnetic Gunpowder", HUNTER_MARKSMANSHIP );
+    talents.improved_streamline               = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Streamline", HUNTER_MARKSMANSHIP );
+    talents.ohnahran_winds                    = find_talent_spell( talent_tree::SPECIALIZATION, "Ohn'ahran Winds", HUNTER_MARKSMANSHIP );
+    talents.ohnahran_winds_debuff             = talents.ohnahran_winds.ok() ? find_spell( 1215057 ) : spell_data_t::not_found();
+    talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
+    talents.kill_zone_debuff                  = talents.kill_zone.ok() ? find_spell( 393480 ) : spell_data_t::not_found();
   }
 
   // Survival Tree
   if ( specialization() == HUNTER_SURVIVAL )
   {
+    specs.aspect_of_the_eagle = find_spell( 186289 );
+    specs.serpent_sting = find_spell( 259491 );
+    specs.harpoon = find_spell( 190925 );
+
     talents.kill_command_sv_player            = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Command", HUNTER_SURVIVAL );
     talents.kill_command_sv_pet               = talents.kill_command_sv_player.ok() ? find_spell( 259277 ) : spell_data_t::not_found();
 
@@ -8247,14 +8390,55 @@ void hunter_t::init_spells()
     talents.tip_of_the_spear_fote_buff        = talents.tip_of_the_spear.ok() ? find_spell( 471536 ) : spell_data_t::not_found();
 
     talents.lunge                             = find_talent_spell( talent_tree::SPECIALIZATION, "Lunge", HUNTER_SURVIVAL );
+    talents.boomstick                         = find_talent_spell( talent_tree::SPECIALIZATION, "Boomstick", HUNTER_SURVIVAL );
+    talents.strike_as_one                     = find_talent_spell( talent_tree::SPECIALIZATION, "Strike As One", HUNTER_SURVIVAL );
+
+    talents.shrapnel_bomb                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Bomb", HUNTER_SURVIVAL );
+    talents.flamebreaker                      = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreaker", HUNTER_SURVIVAL );
+    talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
+    talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
+    talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
+    talents.two_against_many                  = find_talent_spell( talent_tree::SPECIALIZATION, "Two Against Many", HUNTER_SURVIVAL );
+
+    talents.mongoose_fury                     = find_spell( 259388 );
+    talents.mongoose_rounds                   = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Rounds", HUNTER_SURVIVAL );
+    talents.wildfire_shells                   = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Shells", HUNTER_SURVIVAL );
+    talents.shellshock                        = find_talent_spell( talent_tree::SPECIALIZATION, "Shellshock", HUNTER_SURVIVAL );
+    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
+
+    talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
+    talents.wallop                            = find_talent_spell( talent_tree::SPECIALIZATION, "Wallop", HUNTER_SURVIVAL );
+    talents.improved_wildfire_bomb            = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Wildfire Bomb", HUNTER_SURVIVAL );
+    talents.bonding                           = find_talent_spell( talent_tree::SPECIALIZATION, "Bonding", HUNTER_SURVIVAL );
+    talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
+    talents.vulnerability                     = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability", HUNTER_SURVIVAL );
+    talents.blackrock_munitions               = find_talent_spell( talent_tree::SPECIALIZATION, "Blackrock Munitions", HUNTER_SURVIVAL );
+    talents.shower_of_blood                   = find_talent_spell( talent_tree::SPECIALIZATION, "Shower of Blood", HUNTER_SURVIVAL );
+    talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
+    talents.outland_venom_debuff              = talents.outland_venom.ok() ? find_spell( 459941 ) : spell_data_t::not_found();
+
+    talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259003, HUNTER_SURVIVAL );
+    talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
+    talents.takedown                          = find_talent_spell( talent_tree::SPECIALIZATION, "Takedown", HUNTER_SURVIVAL );
+    talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
+
+    talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259017, HUNTER_SURVIVAL );
+    talents.flamefang_pitch                   = find_talent_spell( talent_tree::SPECIALIZATION, "Flamefang Pitch", HUNTER_SURVIVAL );
+    talents.twin_fangs                        = find_talent_spell( talent_tree::SPECIALIZATION, "Twin Fangs", HUNTER_SURVIVAL );
+    talents.savagery_sv                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_SURVIVAL );
+    talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
+
+    talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259019, HUNTER_SURVIVAL );
+    talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
+    talents.wildfire_imbuement                = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Imbuement", HUNTER_SURVIVAL );
+    talents.flanked                           = find_talent_spell( talent_tree::SPECIALIZATION, "Flanked", HUNTER_SURVIVAL );
+    talents.lethal_calibration                = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Calibration", HUNTER_SURVIVAL );
+    talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
+
+    //TODO Removed
     talents.quick_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Shot", HUNTER_SURVIVAL );
     talents.mongoose_bite                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Bite", HUNTER_SURVIVAL );
     talents.mongoose_bite_eagle               = talents.mongoose_bite.ok() ? find_spell( 265888 ) : spell_data_t::not_found();
-    talents.mongoose_fury                     = find_spell( 259388 );
-    talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
-
-    talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
-    talents.improved_wildfire_bomb            = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Wildfire Bomb", HUNTER_SURVIVAL );
     talents.sulfurlined_pockets               = find_talent_spell( talent_tree::SPECIALIZATION, "Sulfur-Lined Pockets", HUNTER_SURVIVAL );
     talents.sulfurlined_pockets_building_buff = talents.sulfurlined_pockets.ok() ? find_spell( 459830 ) : spell_data_t::not_found();
     talents.sulfurlined_pockets_ready_buff    = talents.sulfurlined_pockets.ok() ? find_spell( 459834 ) : spell_data_t::not_found();
@@ -8262,11 +8446,7 @@ void hunter_t::init_spells()
     talents.flanking_strike                   = find_talent_spell( talent_tree::SPECIALIZATION, "Flanking Strike", HUNTER_SURVIVAL );
     talents.flanking_strike_player            = talents.flanking_strike.ok() ? find_spell( 269752 ) : spell_data_t::not_found();
     talents.flanking_strike_pet               = talents.flanking_strike.ok() ? find_spell( 259516 ) : spell_data_t::not_found();
-    talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
-    talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_SURVIVAL );
     talents.ranger                            = find_talent_spell( talent_tree::SPECIALIZATION, "Ranger", HUNTER_SURVIVAL );
-    
-    talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
     talents.cull_the_herd                     = find_talent_spell( talent_tree::SPECIALIZATION, "Cull the Herd", HUNTER_SURVIVAL );
     talents.cull_the_herd_dot                 = talents.cull_the_herd.ok() ? find_spell( 1217430 ) : spell_data_t::not_found();
     talents.frenzy_strikes                    = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy Strikes", HUNTER_SURVIVAL );
@@ -8275,29 +8455,18 @@ void hunter_t::init_spells()
     talents.merciless_blow_flanking_bleed     = talents.merciless_blow.ok() ? find_spell( 1217375 ) : spell_data_t::not_found();
     talents.merciless_blow_butchery_bleed     = talents.merciless_blow.ok() ? find_spell( 459870 ) : spell_data_t::not_found();
     talents.vipers_venom                      = find_talent_spell( talent_tree::SPECIALIZATION, "Viper's Venom", HUNTER_SURVIVAL );
-    talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
-
     talents.terms_of_engagement               = find_talent_spell( talent_tree::SPECIALIZATION, "Terms of Engagement", HUNTER_SURVIVAL );
     talents.terms_of_engagement_dmg           = talents.terms_of_engagement.ok() ? find_spell( 271625 ) : spell_data_t::not_found();
     talents.terms_of_engagement_buff          = talents.terms_of_engagement.ok() ? find_spell( 265898 ) : spell_data_t::not_found();
     talents.born_to_kill                      = find_talent_spell( talent_tree::SPECIALIZATION, "Born to Kill", HUNTER_SURVIVAL );
     talents.tactical_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Advantage", HUNTER_SURVIVAL );
-    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
     talents.contagious_reagents               = find_talent_spell( talent_tree::SPECIALIZATION, "Contagious Reagents", HUNTER_SURVIVAL );
-    talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
-    talents.outland_venom_debuff              = talents.outland_venom.ok() ? find_spell( 459941 ) : spell_data_t::not_found();
-
-    talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
-    talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
-    talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
-    
     talents.fury_of_the_eagle                 = find_talent_spell( talent_tree::SPECIALIZATION, "Fury of the Eagle", HUNTER_SURVIVAL );
     talents.coordinated_assault               = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Assault", HUNTER_SURVIVAL );
     talents.coordinated_assault_dmg           = talents.coordinated_assault.ok() ? find_spell( 360969 ) : spell_data_t::not_found();
     talents.spearhead                         = find_talent_spell( talent_tree::SPECIALIZATION, "Spearhead", HUNTER_SURVIVAL );
     talents.spearhead_bleed                   = talents.spearhead.ok() ? find_spell( 378957 ) : spell_data_t::not_found();
     talents.spearhead_debuff                  = talents.spearhead.ok() ? find_spell( 1221386 ) : spell_data_t::not_found();
-    
     talents.ruthless_marauder                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ruthless Marauder", HUNTER_SURVIVAL );
     talents.ruthless_marauder_buff            = talents.ruthless_marauder.ok() ? find_spell( 470070 ) : spell_data_t::not_found();
     talents.symbiotic_adrenaline              = find_talent_spell( talent_tree::SPECIALIZATION, "Symbiotic Adrenaline", HUNTER_SURVIVAL );
@@ -8306,74 +8475,84 @@ void hunter_t::init_spells()
     talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
     talents.bombardier_buff                   = talents.bombardier.ok() ? find_spell( 459859 ) : spell_data_t::not_found();
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
-
-    specs.aspect_of_the_eagle = find_spell( 186289 );
-    specs.serpent_sting = find_spell( 259491 );
-    specs.harpoon = find_spell( 190925 );
   }
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
   {
     // Dark Ranger
-    talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
-    talents.black_arrow_spell = talents.black_arrow.ok() ? find_spell( 466930 ) : spell_data_t::not_found();
-    talents.black_arrow_dot = talents.black_arrow.ok() ? find_spell( 468572 ) : spell_data_t::not_found();
+    talents.black_arrow                 = find_talent_spell( talent_tree::HERO, "Black Arrow" );
+    talents.black_arrow_spell           = talents.black_arrow.ok() ? find_spell( 466930 ) : spell_data_t::not_found();
+    talents.black_arrow_dot             = talents.black_arrow.ok() ? find_spell( 468572 ) : spell_data_t::not_found();
 
-    talents.bleak_arrows = find_talent_spell( talent_tree::HERO, "Bleak Arrows" );
-    talents.bleak_arrows_spell = talents.bleak_arrows.ok() ? find_spell( 467718 ) : spell_data_t::not_found();
-    talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
-    talents.shadow_hounds_summon = talents.shadow_hounds.ok() ? find_spell( 442419 ) : spell_data_t::not_found();
-    talents.soul_drinker = find_talent_spell( talent_tree::HERO, "Soul Drinker" );
-    talents.the_bell_tolls = find_talent_spell( talent_tree::HERO, "The Bell Tolls" );
-    talents.the_bell_tolls_buff = talents.the_bell_tolls.ok() ? find_spell( 1232992 ) : spell_data_t::not_found();
+    talents.bleak_arrows                = find_talent_spell( talent_tree::HERO, "Bleak Arrows" );
+    talents.bleak_arrows_spell          = talents.bleak_arrows.ok() ? find_spell( 467718 ) : spell_data_t::not_found();
+    talents.soul_drinker                = find_talent_spell( talent_tree::HERO, "Soul Drinker" );
+    talents.bleak_powder                = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
+    talents.bleak_powder_spell          = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
+    talents.corpsecaller                = find_talent_spell( talent_tree::HERO, "Corpsecaller" );
 
+    talents.ebon_bowstring              = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
+    talents.wailing_dead                = find_talent_spell( talent_tree::HERO, "Wailing Dead" );
+
+    talents.blighted_quiver             = find_talent_spell( talent_tree::HERO, "Blighted Quiver" );
+    talents.banshees_mark               = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
+    talents.the_bell_tolls              = find_talent_spell( talent_tree::HERO, "The Bell Tolls" );
+    talents.the_bell_tolls_buff         = talents.the_bell_tolls.ok() ? find_spell( 1232992 ) : spell_data_t::not_found();
+    talents.umbral_reach                = find_talent_spell( talent_tree::HERO, "Umbral Reach" );
+    talents.pact_of_the_hollow          = find_talent_spell( talent_tree::HERO, "Pact of the Hollow" );
+
+    talents.withering_fire              = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+    talents.withering_fire_black_arrow  = talents.withering_fire.ok() ? find_spell( 468037 ) : spell_data_t::not_found();
+    talents.withering_fire_buff         = talents.withering_fire.ok() ? find_spell( 466991 ) : spell_data_t::not_found();
+
+    // TODO Remove
     talents.phantom_pain = find_talent_spell( talent_tree::HERO, "Phantom Pain" );
     talents.phantom_pain_spell = talents.phantom_pain.ok() ? find_spell( 468019 ) : spell_data_t::not_found();
-    talents.ebon_bowstring = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
-
-    talents.banshees_mark = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
     talents.a_murder_of_crows_dot = talents.banshees_mark.ok() ? find_spell( 131894 ) : spell_data_t::not_found();
-    talents.bleak_powder  = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
-    talents.bleak_powder_spell = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
-    talents.umbral_reach = find_talent_spell( talent_tree::HERO, "Umbral Reach" );
-
-    talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
-    talents.withering_fire_black_arrow = talents.withering_fire.ok() ? find_spell( 468037 ) : spell_data_t::not_found();
-    talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 466991 ) : spell_data_t::not_found();
+    talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
+    talents.shadow_hounds_summon = talents.shadow_hounds.ok() ? find_spell( 442419 ) : spell_data_t::not_found();
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
   {
     // Pack Leader
-    talents.howl_of_the_pack_leader = find_talent_spell( talent_tree::HERO, "Howl of the Pack Leader" );
-    talents.howl_of_the_pack_leader_wyvern_ready_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 471878 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_boar_ready_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 472324 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_bear_ready_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 472325 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_cooldown_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 471877 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_wyvern_summon = talents.howl_of_the_pack_leader.ok() ? find_spell( 1222271 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_wyvern_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 471881 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_boar_charge_trigger = talents.howl_of_the_pack_leader.ok() ? find_spell( 472020 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_boar_charge_impact = talents.howl_of_the_pack_leader.ok() ? find_spell( 471936 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_boar_charge_cleave = talents.howl_of_the_pack_leader.ok() ? find_spell( 471938 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_bear_summon = talents.howl_of_the_pack_leader.ok() ? find_spell( 471993 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_bear_buff = talents.howl_of_the_pack_leader.ok() ? find_spell( 1225858 ) : spell_data_t::not_found();
-    talents.howl_of_the_pack_leader_bear_bleed = talents.howl_of_the_pack_leader.ok() ? find_spell( 471999 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader                       = find_talent_spell( talent_tree::HERO, "Howl of the Pack Leader" );
+    talents.howl_of_the_pack_leader_wyvern_ready_buff     = talents.howl_of_the_pack_leader.ok() ? find_spell( 471878 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_boar_ready_buff       = talents.howl_of_the_pack_leader.ok() ? find_spell( 472324 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_bear_ready_buff       = talents.howl_of_the_pack_leader.ok() ? find_spell( 472325 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_cooldown_buff         = talents.howl_of_the_pack_leader.ok() ? find_spell( 471877 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_wyvern_summon         = talents.howl_of_the_pack_leader.ok() ? find_spell( 1222271 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_wyvern_buff           = talents.howl_of_the_pack_leader.ok() ? find_spell( 471881 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_boar_charge_trigger   = talents.howl_of_the_pack_leader.ok() ? find_spell( 472020 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_boar_charge_impact    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471936 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_boar_charge_cleave    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471938 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_bear_summon           = talents.howl_of_the_pack_leader.ok() ? find_spell( 471993 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_bear_buff             = talents.howl_of_the_pack_leader.ok() ? find_spell( 1225858 ) : spell_data_t::not_found();
+    talents.howl_of_the_pack_leader_bear_bleed            = talents.howl_of_the_pack_leader.ok() ? find_spell( 471999 ) : spell_data_t::not_found();
 
-    talents.pack_mentality = find_talent_spell( talent_tree::HERO, "Pack Mentality" );
-    talents.dire_summons = find_talent_spell( talent_tree::HERO, "Dire Summons" );
-    talents.better_together = find_talent_spell( talent_tree::HERO, "Better Together" );
+    talents.pack_mentality                                = find_talent_spell( talent_tree::HERO, "Pack Mentality" );
+    talents.dire_summons                                  = find_talent_spell( talent_tree::HERO, "Dire Summons" );
+    talents.better_together                               = find_talent_spell( talent_tree::HERO, "Better Together" );
 
-    talents.ursine_fury = find_talent_spell( talent_tree::HERO, "Ursine Fury" );
-    talents.ursine_fury_chance = talents.ursine_fury.ok() ? find_spell( 472478 ) : spell_data_t::not_found();
+    talents.ursine_fury                                   = find_talent_spell( talent_tree::HERO, "Ursine Fury" );
+    talents.ursine_fury_chance                            = talents.ursine_fury.ok() ? find_spell( 472478 ) : spell_data_t::not_found();
+    talents.sharpened_claws                               = find_talent_spell( talent_tree::HERO, "Sharpened Claws" );
+    talents.fury_of_the_wyvern                            = find_talent_spell( talent_tree::HERO, "Fury of the Wyvern" );
+    talents.fury_of_the_wyvern_proc                       = talents.fury_of_the_wyvern.ok() ? find_spell( 472552 ) : spell_data_t::not_found();
+    talents.hogstrider                                    = find_talent_spell( talent_tree::HERO, "Hogstrider" );
+    talents.hogstrider_buff                               = talents.hogstrider.ok() ? find_spell( 472640 ) : spell_data_t::not_found();
+    talents.lethal_barbs                                  = find_talent_spell( talent_tree::HERO, "Lethal Barbs" );
+
+    talents.no_mercy                                      = find_talent_spell( talent_tree::HERO, "No Mercy" );
+    talents.hoof_and_blade                                = find_talent_spell( talent_tree::HERO, "Hoof and Blade" );
+    talents.wyverns_gaze                                  = find_talent_spell( talent_tree::HERO, "Wyvern's Gaze" );
+    talents.sharpened_fangs                               = find_talent_spell( talent_tree::HERO, "Sharpened Fangs" );
+
+    talents.stampede                                      = find_talent_spell( talent_tree::HERO, "Stampede" );
+
+    //TODO Remove
     talents.envenomed_fangs = find_talent_spell( talent_tree::HERO, "Envenomed Fangs" );
     talents.envenomed_fangs_spell = talents.envenomed_fangs.ok() ? find_spell( 472525 ) : spell_data_t::not_found();
-    talents.fury_of_the_wyvern = find_talent_spell( talent_tree::HERO, "Fury of the Wyvern" );
-    talents.fury_of_the_wyvern_proc = talents.fury_of_the_wyvern.ok() ? find_spell( 472552 ) : spell_data_t::not_found();
-    talents.hogstrider = find_talent_spell( talent_tree::HERO, "Hogstrider" );
-    talents.hogstrider_buff = talents.hogstrider.ok() ? find_spell( 472640 ) : spell_data_t::not_found();
-
-    talents.no_mercy = find_talent_spell( talent_tree::HERO, "No Mercy" );
-
     talents.lead_from_the_front = find_talent_spell( talent_tree::HERO, "Lead From the Front" );
     talents.lead_from_the_front_buff = talents.lead_from_the_front.ok() ? find_spell( 472743 ) : spell_data_t::not_found();
   }
@@ -8381,16 +8560,32 @@ void hunter_t::init_spells()
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_SURVIVAL )
   {
     // Sentinel
-    talents.sentinel = find_talent_spell( talent_tree::HERO, "Sentinel" );
+    talents.sentinel                = find_talent_spell( talent_tree::HERO, "Sentinel" );
+
+    talents.dont_look_back          = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
+    talents.moons_blessing          = find_talent_spell( talent_tree::HERO, "Moon's Blessing" );
+    talents.sanctified_armaments    = find_talent_spell( talent_tree::HERO, "Sanctified Armaments" );
+    talents.moonlight_chakram       = find_talent_spell( talent_tree::HERO, "Moonlight Chakram" );
+
+    talents.stargazer               = find_talent_spell( talent_tree::HERO, "Stargazer" );
+    talents.open_fire               = find_talent_spell( talent_tree::HERO, "Open Fire" );
+    talents.cant_miss_wont_miss     = find_talent_spell( talent_tree::HERO, "Can't Miss Won't Miss" );
+    talents.invigorating_pulse      = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
+    talents.twilight_requiem        = find_talent_spell( talent_tree::HERO, "Twilight Requiem" );
+    talents.stalk_and_strike        = find_talent_spell( talent_tree::HERO, "Stalk and Strike" );
+
+    talents.arcane_talons           = find_talent_spell( talent_tree::HERO, "Arcane Talons" );
+    talents.lunar_calling           = find_talent_spell( talent_tree::HERO, "Lunar Calling" );
+    talents.radiant_edge            = find_talent_spell( talent_tree::HERO, "Radiant Edge" );
+    
+    talents.lunar_storm             = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
+
+    //TODO Remove
     talents.sentinel_debuff = talents.sentinel.ok() ? find_spell( 450387 ) : spell_data_t::not_found();
     talents.sentinel_tick = talents.sentinel.ok() ? find_spell( 450412 ) : spell_data_t::not_found();
-
     talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
     talents.sentinel_precision = find_talent_spell( talent_tree::HERO, "Sentinel Precision" );
-
     talents.release_and_reload = find_talent_spell( talent_tree::HERO, "Release and Reload" );
-    talents.invigorating_pulse = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
-
     talents.sentinel_watch = find_talent_spell( talent_tree::HERO, "Sentinel Watch" );
     talents.eyes_closed = find_talent_spell( talent_tree::HERO, "Eyes Closed" );
     talents.symphonic_arsenal = find_talent_spell( talent_tree::HERO, "Symphonic Arsenal" );
@@ -8398,8 +8593,6 @@ void hunter_t::init_spells()
     talents.overwatch = find_talent_spell( talent_tree::HERO, "Overwatch" );
     talents.crescent_steel = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
     talents.crescent_steel_debuff = talents.crescent_steel.ok() ? find_spell( 451531 ) : spell_data_t::not_found();
-
-    talents.lunar_storm = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
     talents.lunar_storm_initial_spell = talents.lunar_storm.ok() ? find_spell( 1217459 ) : spell_data_t::not_found();
     talents.lunar_storm_periodic_trigger = talents.lunar_storm.ok() ? find_spell( 450978 ) : spell_data_t::not_found();
     talents.lunar_storm_periodic_spell = talents.lunar_storm.ok() ? find_spell( 450883 ) : spell_data_t::not_found();

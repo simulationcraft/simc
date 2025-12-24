@@ -137,6 +137,9 @@ public:
   /// Tells the sim to not perform any other actions, as the ability is channeled.
   bool channeled;
 
+  /// Whether to apply channel lag after the channel ends
+  bool apply_channel_lag;
+
   /// mark this as a sequence_t action
   bool sequence;
 

@@ -1358,7 +1358,6 @@ public:
       {
         // This is negative and lowers something to 75% for some reason
         initial_drain *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
-        drain_per_stack *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
       }
     }
 

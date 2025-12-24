@@ -137,7 +137,7 @@ double spelleffect_data_t::resource_multiplier() const
 {
 #if SC_USE_PTR == 1
   assert( power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ), false ) ==
-          power_type_data_t::multiplier( static_cast<power_e>( misc_value1(), true ) ) );
+          power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ), true ) );
 #endif
   return power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ) );
 }

@@ -2667,9 +2667,13 @@ struct slicing_winds_t : public monk_melee_attack_t
     parse_options( options_str );
 
     execute_action = new damage_t( player );
+    add_child( execute_action );
 
     // override gcd as we are not properly handling it as an empowered channel
     trigger_gcd = timespan_t::from_millis( 1400 );
+
+    if ( player->talent.windwalker.airborne_rhythm->ok() )
+      parse_effect_data( player->talent.windwalker.airborne_rhythm_resource_gain->effectN( 1 ) );
   }
 
   void execute() override
@@ -5301,6 +5305,7 @@ void monk_t::init_spells()
     talent.windwalker.flurry_of_xuen_driver          = find_spell( 452117 );
     talent.windwalker.martial_agility                = _ST( "Martial Agility" );
     talent.windwalker.airborne_rhythm                = _ST( "Airborne Rhythm" );
+    talent.windwalker.airborne_rhythm_resource_gain  = find_spell( 1248835 );
     talent.windwalker.hurricanes_vault               = _ST( "Hurricane's Vault" );
     talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
     talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );

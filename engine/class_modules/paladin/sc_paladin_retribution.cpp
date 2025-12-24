@@ -231,7 +231,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
 struct expurgation_t : public paladin_spell_t
 {
   expurgation_t( paladin_t* p ):
-    paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
+    paladin_spell_t( "expurgation", p, p->spells.expurgation )
   {
     // Jurisdiction doesn't increase Expurgation's damage in-game
     // It's increasing Spell Direct Amount instead of Spell Periodic Amount
@@ -255,9 +255,26 @@ struct expurgation_t : public paladin_spell_t
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-
-  blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
-    paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice )
+  struct light_within_t :public paladin_spell_t
+  {
+    light_within_t( paladin_t* p ) : paladin_spell_t( "light_within", p, p->spells.light_within )
+    {
+      background          = true;
+      aoe                 = -1;
+      reduced_aoe_targets = 8;
+    }
+    double composite_da_multiplier(const action_state_t* s) const override
+    {
+      double da = paladin_spell_t::composite_da_multiplier( s );
+      if (s->chain_target == 0)
+      {
+        da *= 1.0 + p()->talents.light_within_3->effectN( 1 ).percent();
+      }
+      return da;
+    }
+  };
+  light_within_t* lw;
+  blade_of_justice_t( paladin_t* p, util::string_view options_str ) : paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice ), lw(nullptr)
   {
     parse_options( options_str );
 
@@ -266,6 +283,11 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       base_aoe_multiplier *= p->find_spell( 404358 )->effectN( 1 ).ap_coeff() / attack_power_mod.direct;
       aoe = -1;
       reduced_aoe_targets = 5;
+    }
+    if (p->talents.light_within_3->ok())
+    {
+      lw = new light_within_t( p );
+      add_child( lw );
     }
 
     triggers_higher_calling   = true;
@@ -280,6 +302,10 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       p()->active.background_cons->schedule_execute();
       p()->cooldowns.consecrated_blade_icd->start();
+    }
+    if (p()->talents.light_within_3->ok())
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), lw, execute_state->target, 350_ms );
     }
   }
 
@@ -816,7 +842,6 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
@@ -1094,9 +1119,12 @@ void paladin_t::init_spells_retribution()
 
   spells.crusade = find_spell( 231895 );
   spells.highlords_judgment_hidden = find_spell( 449198 );
-
-  spells.winning_streak = find_spell( 1216828 );
-  spells.all_in = find_spell( 1216837 );
+  spells.light_within   = find_spell( 1261160 );
+  spells.expurgation               = find_spell( 383346 );
+  spells.judgment_ret              = find_spell( 20271 );
+  spells.judgment_ret_dt           = find_spell( 20271 ); // Should be 406957, but that's not in spell data
+  spells.hammer_of_wrath_ret       = find_spell( 24275 );
+  spells.hammer_of_wrath_ret_dt    = find_spell( 1279408 );
 }
 
 // Action Priority List Generation

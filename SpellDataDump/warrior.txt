@@ -19418,7 +19418,8 @@ Attributes       : Aura Points On Client (268)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1281122)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Stat: Str | Target: Self (1)
+Hotfixed         : Base Value (1 -> 3), Misc Value 2 (0 -> 1)
 Description      : $@spelldesc1269308
 Tooltip          : Strength increased by $w1%.
 $?$w2!=0[Rampage Rage cost reduced by ${$w2/10}.
