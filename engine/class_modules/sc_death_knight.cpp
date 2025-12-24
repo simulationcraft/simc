@@ -45,6 +45,17 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
+// Only to be used with empowered release spells
+template <typename Action, typename Actor, typename... Args>
+action_t* get_empower_release_action( std::string_view name, Actor* actor, Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background == false );
+  return a;
+}
+
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
@@ -5414,7 +5425,7 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    release_spell             = get_action<T>( n, base::p() );
+    release_spell             = get_empower_release_action<T>( n, base::p() );
     release_spell->stats      = base::stats;
     release_spell->background = false;
   }
@@ -5529,13 +5540,6 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
   {
     base::last_tick( d );
 
-    // being stunned ends the empower without triggering the release spell
-    // if ( base::p()->buffs.stunned->check() )
-    // {
-    //   base::p()->was_empowering = false;
-    //   return;
-    // }
-
     auto release_target = get_release_target( d );
 
     // if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
@@ -5543,6 +5547,10 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     //   base::p()->was_empowering = false;
     //   return;
     // }
+
+    // If we have no valid targets, do not fire off the release spell
+    if ( release_target == nullptr )
+      return;
 
     auto emp_state        = release_spell->get_state();
     emp_state->target     = release_target;
@@ -8939,8 +8947,31 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
   consumption_t( death_knight_t* p, std::string_view options_str )
     : death_knight_empowered_charge_spell_t( "consumption", p, p->talent.blood.consumption, options_str )
     {
+      if ( !target )
+        target = p->sim->target;
       create_release_spell<consumption_damage_t>( "consumption_release" );
     }
+
+  player_t* get_release_target( dot_t* d ) override
+  {
+    auto t = d->state->target;
+
+    if ( t->is_sleeping() )
+    {
+      t = nullptr;
+
+      for ( auto enemy : p()->sim->target_non_sleeping_list )
+      {
+        if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
+          continue;
+
+        t = enemy;
+        break;
+      }
+    }
+
+    return t;
+  }
 };
 
 // Dancing Rune Weapon ======================================================
