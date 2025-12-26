@@ -86,26 +86,22 @@ struct pet_action_base_t : public BASE
     return debug_cast<PET_TYPE *>( this->player );
   }
 
-  void impact( action_state_t *s ) override
+  void impact( action_state_t *state ) override
   {
-    super_t::impact( s );
+    super_t::impact( state );
 
-    if ( s->result_type != result_amount_type::DMG_DIRECT && s->result_type != result_amount_type::DMG_OVER_TIME )
-      return;
-
-    o()->trigger_empowered_tiger_lightning( s );
-
-    if ( super_t::result_is_miss( s->result ) || s->result_amount <= 0.0 )
-      return;
+    if ( monk_td_t *target_data = o()->get_target_data( state->target ); target_data )
+      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
+        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( state );
   }
 
   void tick( dot_t *dot ) override
   {
     super_t::tick( dot );
 
-    if ( !super_t::result_is_miss( dot->state->result ) &&
-         dot->state->result_type == result_amount_type::DMG_OVER_TIME )
-      o()->trigger_empowered_tiger_lightning( dot->state );
+    if ( monk_td_t *target_data = o()->get_target_data( dot->state->target ); target_data )
+      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
+        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( dot->state );
   }
 };
 

@@ -447,14 +447,15 @@ void monk_action_t<Base>::execute()
 }
 
 template <class Base>
-void monk_action_t<Base>::impact( action_state_t *s )
+void monk_action_t<Base>::impact( action_state_t *state )
 {
-  trigger_mystic_touch( s );
+  trigger_mystic_touch( state );
 
-  base_t::impact( s );
+  base_t::impact( state );
 
-  if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-    p()->trigger_empowered_tiger_lightning( s );
+  if ( monk_td_t *target_data = p()->get_target_data( state->target ); target_data )
+    if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
+      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( state );
 }
 
 template <class Base>
@@ -462,8 +463,9 @@ void monk_action_t<Base>::tick( dot_t *dot )
 {
   base_t::tick( dot );
 
-  if ( !base_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
-    p()->trigger_empowered_tiger_lightning( dot->state );
+  if ( monk_td_t *target_data = p()->get_target_data( dot->state->target ); target_data )
+    if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
+      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( dot->state );
 }
 
 template <class Base>
@@ -3389,16 +3391,15 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
   }
 };
 
-struct xuen_spell_t : public monk_spell_t
+struct xuen_summon_t : public monk_spell_t
 {
-  xuen_spell_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "invoke_xuen_the_white_tiger", p->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger )
+  xuen_summon_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "invoke_xuen_the_white_tiger",
+                    player->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger )
   {
     parse_options( options_str );
 
     cast_during_sck = true;
-    // Specifically set for 10.1 class trinket
-    harmful = true;
   }
 
   void execute() override
@@ -3406,54 +3407,34 @@ struct xuen_spell_t : public monk_spell_t
     monk_spell_t::execute();
 
     if ( p()->bugs )
-    {
-      // BUG: Invoke Xuen and Fury of Xuen reset both damage cache to 0 when either spawn
       for ( auto target : p()->sim->target_non_sleeping_list )
-      {
-        auto td = p()->get_target_data( target );
-        if ( td )
-        {
+        if ( auto *td = p()->get_target_data( target ); td )
           td->debuff.empowered_tiger_lightning->current_value = 0;
-        }
-      }
-    }
 
     p()->pets.xuen.spawn( p()->talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->duration(), 1 );
-
     p()->buff.invoke_xuen->trigger();
-
-    if ( p()->talent.windwalker.flurry_of_xuen->ok() )
-      p()->buff.flurry_of_xuen->trigger();
-
+    p()->buff.flurry_of_xuen->trigger();
     p()->buff.courage_of_the_white_tiger->trigger();
   }
 };
 
 struct empowered_tiger_lightning_t : public monk_spell_t
 {
-  empowered_tiger_lightning_t( monk_t *p )
-    : monk_spell_t( p, "empowered_tiger_lightning", p->baseline.windwalker.empowered_tiger_lightning_damage )
+  empowered_tiger_lightning_t( monk_t *player )
+    : monk_spell_t( player, "empowered_tiger_lightning", player->baseline.windwalker.empowered_tiger_lightning_damage )
   {
     background = true;
-    may_crit   = false;
-  }
-
-  bool ready() override
-  {
-    return p()->baseline.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
 struct flurry_of_xuen_t : public monk_spell_t
 {
-  flurry_of_xuen_t( monk_t *p )
-    : monk_spell_t( p, "flurry_of_xuen", p->talent.windwalker.flurry_of_xuen_driver->effectN( 1 ).trigger() )
+  flurry_of_xuen_t( monk_t *player )
+    : monk_spell_t( player, "flurry_of_xuen", player->talent.windwalker.flurry_of_xuen_driver->effectN( 1 ).trigger() )
   {
-    background = true;
-    may_crit   = true;
-
+    background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
+    reduced_aoe_targets = player->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
   }
 };
 
@@ -4254,63 +4235,83 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<>
 
 struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
 {
-  static void invoke_xuen_callback( buff_t *b, int, timespan_t )
-  {
-    auto *p = debug_cast<monk_t *>( b->player );
-    if ( p->baseline.windwalker.empowered_tiger_lightning->ok() )
-    {
-      double empowered_tiger_lightning_multiplier =
-          p->baseline.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+  double multiplier;
+  action_t *etl;
 
-      for ( auto target : p->sim->target_non_sleeping_list )
-      {
-        if ( p->find_target_data( target ) )
-        {
-          auto td = p->get_target_data( target );
-          if ( td->debuff.empowered_tiger_lightning->up() )
-          {
-            double value                                        = td->debuff.empowered_tiger_lightning->check_value();
-            td->debuff.empowered_tiger_lightning->current_value = 0;
-            if ( value > 0 )
-            {
-              p->action.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
-              p->action.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
-              p->action.empowered_tiger_lightning->execute_on_target( target );
-            }
-          }
-        }
-      }
-    }
-  }
-
-  invoke_xuen_the_white_tiger_buff_t( monk_t *p, std::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  invoke_xuen_the_white_tiger_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    : monk_buff_t( player, name, spell_data ), multiplier( 0.0 ), etl( nullptr )
   {
     set_cooldown( timespan_t::zero() );
-    set_duration( s->duration() );
+    set_period( spell_data->effectN( 2 ).period() );
 
-    set_period( s->effectN( 2 ).period() );
+    if ( !player->baseline.windwalker.empowered_tiger_lightning->ok() )
+      return;
 
-    set_tick_callback( invoke_xuen_callback );
-  }
+    multiplier = player->baseline.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+    // defer etl action lookup until callback invocation, as (background) actions
+    // are not yet constructed (see: sim_t::init_actor())
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    if ( buff_t::trigger( stacks, value, chance, duration ) )
-    {
-      if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
-        p().buff.rushing_jade_wind->trigger( remains() );
+    set_tick_callback( [ & ]( buff_t *, int, timespan_t ) {
+      if ( !etl )
+        etl = p().find_action( "empowered_tiger_lightning" );
 
-      return true;
-    }
-
-    return false;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
+      for ( player_t *target : p().sim->target_non_sleeping_list )
+        if ( monk_td_t *target_data = p().get_target_data( target ); target_data )
+          if ( buff_t *debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
+            if ( double value = debuff->check_value(); value )
+            {
+              etl->base_dd_min = etl->base_dd_max = value * multiplier;
+              etl->execute_on_target( target );
+              debuff->current_value = 0;
+            }
+    } );
   }
 };
+
+empowered_tiger_lightning_t::empowered_tiger_lightning_t( monk_td_t &target_data )
+  : monk_buff_t( &target_data, "empowered_tiger_lightning", spell_data_t::nil() )
+{
+  set_quiet( true );
+  set_trigger_spell( target_data.monk.baseline.windwalker.empowered_tiger_lightning );
+  set_duration( 5_s );
+  set_default_value( 0.0 );
+}
+
+bool empowered_tiger_lightning_t::trigger( const action_state_t *state )
+{
+  if ( !action_t::result_is_miss( state->result ) )
+    return false;
+
+  const std::array<unsigned, 4> blacklist = {
+      p().baseline.monk.touch_of_death->id(),
+      p().baseline.windwalker.empowered_tiger_lightning_damage->id(),
+      p().baseline.windwalker.touch_of_karma_tick->id(),
+      p().talent.windwalker.skyfire_heel_damage->id(),
+  };
+
+  switch ( state->result_type )
+  {
+    case result_amount_type::DMG_DIRECT:
+    case result_amount_type::DMG_OVER_TIME:
+      if ( !state->result_amount )
+        return false;
+
+      if ( !p().buff.invoke_xuen->check() )
+        return false;
+
+      if ( range::contains( blacklist, state->action->id ) )
+        return false;
+
+      if ( check() )
+        current_value += state->result_amount;
+      else
+        trigger( 1, state->result_amount );
+
+      return true;
+    default:
+      return false;
+  }
+}
 
 struct touch_of_death_ww_buff_t : public monk_buff_t<>
 {
@@ -4625,64 +4626,38 @@ absorb_buff_t *fractional_absorb_t::set_absorb_fraction( double fraction )
   return this;
 }
 }  // namespace buffs
-
-namespace items
-{
-void do_trinket_init( monk_t *player, specialization_e spec, const special_effect_t *&ptr,
-                      const special_effect_t &effect )
-{
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( !player->find_spell( effect.spell_id )->ok() || player->specialization() != spec )
-  {
-    return;
-  }
-
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
-
-void init()
-{
-}
-}  // namespace items
 }  // end namespace monk
 
 namespace monk
 {
-monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dot(), debuff(), monk( *p )
+monk_td_t::monk_td_t( player_t *target, monk_t *player )
+  : actor_target_data_t( target, player ), dot(), debuff(), monk( *player )
 {
   // Windwalker
-  debuff.empowered_tiger_lightning = make_buff_fallback( p->specialization() == MONK_WINDWALKER, *this,
-                                                         "empowered_tiger_lightning", spell_data_t::nil() )
-                                         ->set_trigger_spell( p->baseline.windwalker.empowered_tiger_lightning )
-                                         ->set_quiet( true )
-                                         ->set_cooldown( timespan_t::zero() )
-                                         ->set_refresh_behavior( buff_refresh_behavior::NONE )
-                                         ->set_max_stack( 1 )
-                                         ->set_default_value( 0 );
+  debuff.empowered_tiger_lightning = make_buff_fallback<buffs::empowered_tiger_lightning_t>(
+      player->baseline.windwalker.empowered_tiger_lightning->ok(), *this, "empowered_tiger_lightning" );
 
   // Brewmaster
-  debuff.keg_smash =
-      make_buff_fallback( p->talent.brewmaster.keg_smash->ok(), *this, "keg_smash", p->talent.brewmaster.keg_smash )
-          ->set_cooldown( timespan_t::zero() )
-          ->set_default_value_from_effect( 3 );
+  debuff.keg_smash = make_buff_fallback( player->talent.brewmaster.keg_smash->ok(), *this, "keg_smash",
+                                         player->talent.brewmaster.keg_smash )
+                         ->set_cooldown( timespan_t::zero() )
+                         ->set_default_value_from_effect( 3 );
 
-  debuff.exploding_keg = make_buff_fallback( p->talent.brewmaster.exploding_keg->ok(), *this, "exploding_keg_debuff",
-                                             p->talent.brewmaster.exploding_keg )
-                             ->set_trigger_spell( p->talent.brewmaster.exploding_keg )
+  debuff.exploding_keg = make_buff_fallback( player->talent.brewmaster.exploding_keg->ok(), *this,
+                                             "exploding_keg_debuff", player->talent.brewmaster.exploding_keg )
+                             ->set_trigger_spell( player->talent.brewmaster.exploding_keg )
                              ->set_cooldown( timespan_t::zero() );
 
   // Shado-Pan
 
-  debuff.high_impact = make_buff_fallback( p->talent.shado_pan.high_impact->ok(), *this, "high_impact",
-                                           p->talent.shado_pan.high_impact_debuff )
-                           ->set_trigger_spell( p->talent.shado_pan.high_impact )
+  debuff.high_impact = make_buff_fallback( player->talent.shado_pan.high_impact->ok(), *this, "high_impact",
+                                           player->talent.shado_pan.high_impact_debuff )
+                           ->set_trigger_spell( player->talent.shado_pan.high_impact )
                            ->set_quiet( true );
 
-  dot.breath_of_fire               = target->get_dot( "breath_of_fire_dot", p );
-  dot.crackling_jade_lightning_aoe = target->get_dot( "crackling_jade_lightning_aoe", p );
-  dot.aspect_of_harmony            = target->get_dot( "aspect_of_harmony_damage", p );
+  dot.breath_of_fire               = target->get_dot( "breath_of_fire_dot", player );
+  dot.crackling_jade_lightning_aoe = target->get_dot( "crackling_jade_lightning_aoe", player );
+  dot.aspect_of_harmony            = target->get_dot( "aspect_of_harmony_damage", player );
 }
 
 monk_t::monk_t( sim_t *sim, std::string_view name, race_e r )
@@ -4850,9 +4825,9 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
   if ( name == "strike_of_the_windlord" )
     return new strike_of_the_windlord_t( this, options_str );
   if ( name == "invoke_xuen" )
-    return new xuen_spell_t( this, options_str );
+    return new xuen_summon_t( this, options_str );
   if ( name == "invoke_xuen_the_white_tiger" )
-    return new xuen_spell_t( this, options_str );
+    return new xuen_summon_t( this, options_str );
   if ( name == "rushing_jade_wind" )
     return new rushing_jade_wind_t( this, options_str );
   if ( name == "whirling_dragon_punch" )
@@ -6680,65 +6655,6 @@ void monk_t::create_actions()
   buff.aspect_of_harmony.construct_actions( this );
 }
 
-void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
-{
-  /*
-   * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
-   * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   */
-
-  if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
-    return;
-
-  if ( s->result_amount <= 0 )
-    return;
-
-  // Proc cannot proc from itself
-  if ( s->action->id == baseline.windwalker.empowered_tiger_lightning->id() )
-    return;
-
-  auto td = get_target_data( s->target );
-
-  if ( !td )
-    return;
-
-  // These abilities are always blacklisted by both tigers
-  auto etl_blacklist = {
-      122470,  // Touch of Karma
-      451585,  // Gale Force
-      450615,  // Flurry Strikes
-      115129,  // Expel Harm
-      389541,  // White Tiger State
-  };
-
-  for ( unsigned int id : etl_blacklist )
-    if ( s->action->id == id )
-      return;
-
-  // 1 = Xuen, 2 = FoX, 3 = Both
-  auto mode = buff.invoke_xuen->check();
-
-  if ( mode == 0 )
-    return;
-
-  double xuen_contribution = mode != 2 ? s->result_amount : 0;
-  double fox_contribution  = mode > 1 ? s->result_amount : 0;
-
-  // Return value
-  double amount = xuen_contribution + fox_contribution;
-
-  if ( amount > 0 )
-  {
-    auto cache    = td->debuff.empowered_tiger_lightning;
-    auto duration = buff.invoke_xuen->remains();
-
-    if ( cache->check() )
-      cache->current_value += amount;
-    else
-      cache->trigger( -1, amount, -1, duration );
-  }
-}
-
 std::unique_ptr<expr_t> monk_t::create_expression( std::string_view name_str )
 {
   auto splits = util::string_split<std::string_view>( name_str, "." );
@@ -6852,7 +6768,6 @@ struct monk_module_t : public module_t
 
   void static_init() const override
   {
-    items::init();
   }
 
   void register_hotfixes() const override

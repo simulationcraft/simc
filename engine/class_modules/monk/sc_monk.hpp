@@ -264,6 +264,14 @@ struct gift_of_the_ox_t : monk_buff_t<>
   void reset();
 };
 
+struct empowered_tiger_lightning_t : monk_buff_t<>
+{
+  empowered_tiger_lightning_t( monk_td_t & );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( const action_state_t * );
+};
+
 struct aspect_of_harmony_t
 {
 private:
@@ -1184,7 +1192,6 @@ public:
 
   // Actions
   void trigger_celestial_fortune( action_state_t * );
-  void trigger_empowered_tiger_lightning( action_state_t * );
 };
 
 namespace events
