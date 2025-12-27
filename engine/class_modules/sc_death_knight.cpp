@@ -844,6 +844,8 @@ public:
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
 
+    propagate_const<buff_t*> dance_of_midnight_1;
+
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
     propagate_const<buff_t*> gathering_storm;
@@ -1476,6 +1478,7 @@ public:
     const spell_data_t* boiling_point_buff;
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
+    const spell_data_t* dance_of_midnight_1_buff;
     const spell_data_t* sanguine_ground;
     const spell_data_t* sanguinary_burst_buff;
     const spell_data_t* sanguinary_burst_damage;
@@ -14793,6 +14796,7 @@ void death_knight_t::spell_lookups()
   spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.dance_of_midnight_1_buff    = conditional_spell_lookup( talent.blood.dance_of_midnight_1.ok(), 1264568 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.sanguinary_burst_buff       = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263789 );
   spell.sanguinary_burst_damage     = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263786 );
@@ -15559,6 +15563,10 @@ void death_knight_t::create_buffs()
 
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
 
+    buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
+                                  ->set_chance( 0.05 )  // Found via log analysis, not in spelldata as of Dec 27 2025
+                                  ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
+
     // Tier Sets
   }
 
@@ -16116,16 +16124,23 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 {
   parse_player_effects_t::assess_damage( school, type, s );
 
-  if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY )
   {
-    if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+    if ( talent.blood.bloodied_blade->ok() )
     {
-      buffs.bloodied_blade_stacks->expire();
-      buffs.bloodied_blade_final->trigger();
-      background_actions.heart_strike_bloodied_blade->execute_on_target( target );
+      if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+      {
+        buffs.bloodied_blade_stacks->expire();
+        buffs.bloodied_blade_final->trigger();
+        background_actions.heart_strike_bloodied_blade->execute_on_target( target );
+      }
+      else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
+        buffs.bloodied_blade_stacks->trigger();
     }
-    else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
-      buffs.bloodied_blade_stacks->trigger();
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() )
+    {
+      buffs.dance_of_midnight_1->trigger();
+    }
   }
 }
 
@@ -16395,6 +16410,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.coagulopathy );
       action->parse_effects( buffs.blood_shield );
       action->parse_effects( buffs.boiling_point );
+      action->parse_effects( buffs.dance_of_midnight_1 );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
