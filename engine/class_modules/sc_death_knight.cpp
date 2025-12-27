@@ -14502,8 +14502,8 @@ void death_knight_t::init_spells()
   talent.blood.umbilicus_eternus = find_talent_spell( talent_tree::SPECIALIZATION, "Umbilicus Eternus" );
   // Apex
   talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264506 );
-  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264405 );
-  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264351 );
+  talent.blood.dance_of_midnight_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1264405 );
+  talent.blood.dance_of_midnight_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1264351 );
 
   //////// Frost
   // Row 1
