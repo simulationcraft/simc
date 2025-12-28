@@ -140,6 +140,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.combo_breaker, affect_list_t( 1, 2, 3 ).remove_spell(
                                               p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
   parse_effects( p()->buff.zenith );
+  parse_effects( p()->buff.invoke_xuen, effect_mask_t( false ).enable( 3 ), "Ferociousness" );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
@@ -148,6 +149,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
+  if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
+    parse_effects( p()->buff.invoke_xuen, effect_mask_t( false ).enable( 4, 5 ), "Restore Balance" );
 
   // Master of Harmony
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
@@ -4722,7 +4725,12 @@ void monk_t::parse_player_effects()
   // windwalker talent auras
   parse_effects( buff.memory_of_the_monastery );
   parse_effects( buff.momentum_boost_speed );
-  parse_effects( buff.ferociousness, USE_CURRENT );
+  parse_effects( talent.windwalker.ferociousness, [ & ]( double value ) {
+    if ( buff.invoke_xuen->check() )
+      value *= 1.0 + talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->effectN( 3 ).percent();
+
+    return value;
+  } );
 
   // Shadopan
 
@@ -5470,6 +5478,8 @@ void monk_t::init_spells()
                                                                          ? effect_mask_t( true ).disable( 5 )
                                                                          : effect_mask_t( true ) );
 
+  deregister_passive_spell( talent.windwalker.ferociousness );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -5791,22 +5801,6 @@ void monk_t::create_buffs()
           ->set_duration( timespan_t::from_seconds( 1.5 ) )
           ->set_quiet( true );
 
-  buff.ferociousness = make_buff_fallback( talent.windwalker.ferociousness->ok(), this, "ferociousness",
-                                           talent.windwalker.ferociousness )
-                           ->set_quiet( true )
-                           ->set_default_value_from_effect( 1 )
-                           ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
-                             double previous     = self->current_value;
-                             self->current_value = self->default_value;
-                             if ( pets.xuen.n_active_pets() )
-                               self->current_value *= 1 + self->data().effectN( 2 ).percent();
-                             if ( previous != self->current_value )
-                               invalidate_cache( CACHE_CRIT_CHANCE );
-                           } )
-                           ->set_period( 1_s )
-                           ->set_freeze_stacks( true )
-                           ->set_tick_behavior( buff_tick_behavior::CLIP );
-
   buff.hit_combo =
       make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", talent.windwalker.hit_combo_buff )
           ->set_default_value_from_effect( 1 );
@@ -5820,8 +5814,9 @@ void monk_t::create_buffs()
           ->set_freeze_stacks( true );
 
   buff.invoke_xuen = make_buff_fallback<buffs::invoke_xuen_the_white_tiger_buff_t>(
-      talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->ok(), this, "invoke_xuen_the_white_tiger",
-      talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger );
+                         talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->ok(), this,
+                         "invoke_xuen_the_white_tiger", talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger )
+                         ->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.memory_of_the_monastery =
       make_buff_fallback( talent.windwalker.memory_of_the_monastery->ok(), this, "memory_of_the_monastery",
@@ -6522,10 +6517,6 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::combat_begin()
 {
-  // Trigger Ferociousness precombat
-  if ( talent.windwalker.ferociousness->ok() )
-    buff.ferociousness->trigger();
-
   base_t::combat_begin();
 
   if ( talent.monk.chi_wave->ok() )
