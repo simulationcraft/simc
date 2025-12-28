@@ -453,9 +453,10 @@ void monk_action_t<Base>::impact( action_state_t *state )
 
   base_t::impact( state );
 
-  if ( monk_td_t *target_data = p()->get_target_data( state->target ); target_data )
-    if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
-      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( state );
+  if ( p()->baseline.windwalker.empowered_tiger_lightning->ok() )
+    if ( monk_td_t *target_data = p()->get_target_data( state->target ); target_data )
+      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
+        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
 }
 
 template <class Base>
@@ -463,9 +464,10 @@ void monk_action_t<Base>::tick( dot_t *dot )
 {
   base_t::tick( dot );
 
-  if ( monk_td_t *target_data = p()->get_target_data( dot->state->target ); target_data )
-    if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
-      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( dot->state );
+  if ( p()->baseline.windwalker.empowered_tiger_lightning->ok() )
+    if ( monk_td_t *target_data = p()->get_target_data( dot->state->target ); target_data )
+      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
+        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( dot->state );
 }
 
 template <class Base>
@@ -4279,9 +4281,6 @@ empowered_tiger_lightning_t::empowered_tiger_lightning_t( monk_td_t &target_data
 
 bool empowered_tiger_lightning_t::trigger( const action_state_t *state )
 {
-  if ( !action_t::result_is_miss( state->result ) )
-    return false;
-
   const std::array<unsigned, 4> blacklist = {
       p().baseline.monk.touch_of_death->id(),
       p().baseline.windwalker.empowered_tiger_lightning_damage->id(),
@@ -4289,24 +4288,26 @@ bool empowered_tiger_lightning_t::trigger( const action_state_t *state )
       p().talent.windwalker.skyfire_heel_damage->id(),
   };
 
+  if ( action_t::result_is_miss( state->result ) )
+    return false;
+
+  if ( !state->result_amount )
+    return false;
+
+  if ( !p().buff.invoke_xuen->check() )
+    return false;
+
+  if ( range::contains( blacklist, state->action->id ) )
+    return false;
+
   switch ( state->result_type )
   {
     case result_amount_type::DMG_DIRECT:
     case result_amount_type::DMG_OVER_TIME:
-      if ( !state->result_amount )
-        return false;
-
-      if ( !p().buff.invoke_xuen->check() )
-        return false;
-
-      if ( range::contains( blacklist, state->action->id ) )
-        return false;
-
       if ( check() )
         current_value += state->result_amount;
       else
         trigger( 1, state->result_amount );
-
       return true;
     default:
       return false;

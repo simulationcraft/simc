@@ -90,18 +90,20 @@ struct pet_action_base_t : public BASE
   {
     super_t::impact( state );
 
-    if ( monk_td_t *target_data = o()->get_target_data( state->target ); target_data )
-      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
-        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( state );
+    if ( o()->baseline.windwalker.empowered_tiger_lightning->ok() )
+      if ( monk_td_t *target_data = o()->get_target_data( state->target ); target_data )
+        if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
+          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
   }
 
   void tick( dot_t *dot ) override
   {
     super_t::tick( dot );
 
-    if ( monk_td_t *target_data = o()->get_target_data( dot->state->target ); target_data )
-      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff && debuff->up() )
-        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get_ref() )->trigger( dot->state );
+    if ( o()->baseline.windwalker.empowered_tiger_lightning->ok() )
+      if ( monk_td_t *target_data = o()->get_target_data( dot->state->target ); target_data )
+        if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
+          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( dot->state );
   }
 };
 
