@@ -158,6 +158,7 @@ struct gargoyle_pet_t;
 struct risen_skulker_pet_t;
 struct dancing_rune_weapon_pet_t;
 struct everlasting_bond_pet_t;
+struct dance_of_midnight_pet_t;
 struct bloodworm_pet_t;
 struct magus_pet_t;
 struct blood_beast_pet_t;
@@ -1498,6 +1499,8 @@ public:
     const spell_data_t* leeching_strike_damage;
     const spell_data_t* consumption_damage;
     const spell_data_t* consumption_leech;
+    const spell_data_t* everlasting_bond_summon;
+    const spell_data_t* dance_of_midnight_summon;
 
     // Blood Tier Set Spells
     const spell_data_t* rejuvenating_blood; // 2pc rp gain
@@ -1747,6 +1750,7 @@ public:
     // Blood
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dance_of_midnight_pet;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     // Frost
 
@@ -1775,6 +1779,7 @@ public:
       : ghoul_pet( "ghoul", p ),
         dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
         everlasting_bond_pet( "everlasting_bond", p ),
+        dance_of_midnight_pet( "dance_of_midnight_pet", p ),
         bloodworms( "bloodworm", p ),
         lesser_ghoul_army( "lesser_ghoul_army", p ),
         lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
@@ -9032,6 +9037,18 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
           drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
         }
       }
+
+      for ( auto& dom : p()->pets.dance_of_midnight_pet.active_pets() )
+      {
+        auto drw_dot = dom->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
+      }
     }
 
     void execute() override
@@ -9098,6 +9115,10 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     {
       p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
+
+    // Consider moving this to it's own action
+    if ( p->talent.blood.dance_of_midnight_3.ok() )
+      p->pets.dance_of_midnight_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -9111,12 +9132,11 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( !p()->buffs.dancing_rune_weapon->up() )
     {
-      p()->pets.dancing_rune_weapon_pet.spawn();
-
+      // As of Dec 29th, 2025 everlasting bond spawns first
       if ( p()->talent.blood.everlasting_bond.ok() )
-      {
         p()->pets.everlasting_bond_pet.spawn();
-      }
+
+      p()->pets.dancing_rune_weapon_pet.spawn();
     }
 
     if ( p()->talent.sanlayn.the_blood_is_life.ok() )
@@ -12496,6 +12516,16 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     {
       buffs.rune_carved_plates_magical_buff->trigger( as<int>( amount ) );
     }
+
+    // Proc rate is mentioned in patch notes, however we find that it is typically double the proc rate.  Also it seems like in
+    // rare cases, we proc the dom weapon twice, so I believe with everlasting bond, we get 2 10% rolls.
+    if ( talent.blood.dance_of_midnight_3.ok() )
+    {
+      if ( rng().roll( 0.10 ) )
+        pets.dance_of_midnight_pet.spawn();
+      if ( rng().roll( 0.10 ) )
+        pets.dance_of_midnight_pet.spawn();
+    }
   }
 
   // Procs from runes spent
@@ -13226,6 +13256,8 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
         pets.dancing_rune_weapon_pet.active_pet()->transfusion->trigger();
       if ( pets.everlasting_bond_pet.active_pet() != nullptr )
         pets.everlasting_bond_pet.active_pet()->transfusion->trigger();
+      for ( auto& dom : pets.dance_of_midnight_pet.active_pets() )
+        dom->transfusion->trigger();
     }
   }
 
@@ -13297,16 +13329,22 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
 
 void death_knight_t::trigger_drw_action( drw_actions_e action )
 {
-  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() ||
-       pets.dancing_rune_weapon_pet.active_pet() == nullptr )
+  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() )
     return;
 
-  drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
+  if ( pets.dancing_rune_weapon_pet.active_pet() )
+    drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
 
-  if ( !talent.blood.everlasting_bond.ok() || pets.everlasting_bond_pet.active_pet() == nullptr )
-    return;
+  if ( talent.blood.everlasting_bond.ok() && pets.everlasting_bond_pet.active_pet() )
+    drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
 
-  drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
+  if ( talent.blood.dance_of_midnight_3.ok() )
+  {
+    for ( auto& dom : pets.dance_of_midnight_pet.active_pets() )
+    {
+      drw_action_execute( dom, action );
+    }
+  }
 }
 
 double death_knight_t::pseudo_random_p_from_c( double c )
@@ -14305,15 +14343,23 @@ void death_knight_t::create_pets()
       pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
       // As of Dec 19 2025, the first rune weapon does not get the 4s extension from everlasting bond.  Only the everlasting bond weapon does
       if ( bugs && talent.blood.everlasting_bond.ok() )
-        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() - talent.blood.everlasting_bond->effectN( 2 ).time_value() );
+        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
       pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
       {
         pets.everlasting_bond_pet.set_creation_callback(
             []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "everlasting_bond" ); } );
-        pets.everlasting_bond_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
+        pets.everlasting_bond_pet.set_default_duration( spell.everlasting_bond_summon->duration() );
         pets.everlasting_bond_pet.set_max_pets( 1 );
+      }
+
+      if ( talent.blood.dance_of_midnight_3.ok() )
+      {
+        pets.dance_of_midnight_pet.set_creation_callback(
+            []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dance_of_midnight" ); } );
+        pets.dance_of_midnight_pet.set_default_duration( spell.dance_of_midnight_summon->duration() );
+        pets.dance_of_midnight_pet.set_max_pets( 10 );
       }
     }
 
@@ -14816,6 +14862,8 @@ void death_knight_t::spell_lookups()
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
   spell.consumption_damage       = conditional_spell_lookup( talent.blood.consumption.ok(), 1263825 );
   spell.consumption_leech        = conditional_spell_lookup( talent.blood.consumption.ok(), 1263872 );
+  spell.everlasting_bond_summon  = conditional_spell_lookup( talent.blood.everlasting_bond.ok(), 1237128 );
+  spell.dance_of_midnight_summon = conditional_spell_lookup( talent.blood.dance_of_midnight_3.ok(), 1264353 );
 
   // Blood Tier set spells
   spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
