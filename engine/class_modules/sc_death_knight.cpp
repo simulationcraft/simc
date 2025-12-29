@@ -845,6 +845,7 @@ public:
     propagate_const<buff_t*> voracious;
 
     propagate_const<buff_t*> dance_of_midnight_1;
+    propagate_const<buff_t*> dance_of_midnight_2;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -1258,8 +1259,8 @@ public:
       player_talent_t carnage;
       player_talent_t umbilicus_eternus;
       // Apex
-      player_talent_t dance_of_midnight_1;  // NYI
-      player_talent_t dance_of_midnight_2;  // NYI
+      player_talent_t dance_of_midnight_1;
+      player_talent_t dance_of_midnight_2;
       player_talent_t dance_of_midnight_3;  // NYI
     } blood;
 
@@ -1479,6 +1480,7 @@ public:
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* dance_of_midnight_1_buff;
+    const spell_data_t* dance_of_midnight_2_buff;
     const spell_data_t* sanguine_ground;
     const spell_data_t* sanguinary_burst_buff;
     const spell_data_t* sanguinary_burst_damage;
@@ -4255,6 +4257,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_knight_pet_t::arise();
     reschedule_drw();
     dk()->buffs.dancing_rune_weapon->trigger();
+    dk()->buffs.dance_of_midnight_2->trigger();
   }
 
   void demise() override
@@ -14797,6 +14800,7 @@ void death_knight_t::spell_lookups()
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.dance_of_midnight_1_buff    = conditional_spell_lookup( talent.blood.dance_of_midnight_1.ok(), 1264568 );
+  spell.dance_of_midnight_2_buff    = conditional_spell_lookup( talent.blood.dance_of_midnight_2.ok(), 1264407 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.sanguinary_burst_buff       = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263789 );
   spell.sanguinary_burst_damage     = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263786 );
@@ -15566,6 +15570,8 @@ void death_knight_t::create_buffs()
     buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
                                   ->set_chance( 0.05 )  // Found via log analysis, not in spelldata as of Dec 27 2025
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
+                            
+    buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff );
 
     // Tier Sets
   }
@@ -16403,7 +16409,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
   action->parse_effects( buffs.blood_draw );
 
   switch ( specialization() )
-  {
+    {
     case DEATH_KNIGHT_BLOOD:
       // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
       if ( !pet )
@@ -16411,6 +16417,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.blood_shield );
       action->parse_effects( buffs.boiling_point );
       action->parse_effects( buffs.dance_of_midnight_1 );
+      action->parse_effects( buffs.dance_of_midnight_2 );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
@@ -16565,6 +16572,7 @@ void death_knight_t::parse_player_effects()
       parse_effects( buffs.sanguine_ground );
       parse_effects( buffs.bone_shield, IGNORE_STACKS );
       parse_effects( buffs.perseverance_of_the_ebon_blade );
+      parse_effects( buffs.dance_of_midnight_2 );
       break;
     case DEATH_KNIGHT_FROST:
       parse_effects( buffs.bonegrinder_frost );
