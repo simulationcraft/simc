@@ -11632,7 +11632,6 @@ struct putrefy_st_t final : public death_knight_spell_t
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
-    execute_action->execute_on_target( s->target );
 
     if ( p()->talent.unholy.blightburst.ok() )
     {

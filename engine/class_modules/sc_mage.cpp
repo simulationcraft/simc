@@ -277,6 +277,7 @@ public:
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
     buff_t* fiery_rush;
+    buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* wildfire;
@@ -347,6 +348,7 @@ public:
   // Options
   struct options_t
   {
+    timespan_t scorch_delay = 15_ms;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t arcane_missiles_delay = 100_ms;
@@ -433,6 +435,7 @@ public:
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
+    bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     bool eureka;
     bool thermal_void_active;
@@ -883,7 +886,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false );
+  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
@@ -1231,6 +1234,9 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
 
   void demise() override
   {
+    if ( current.sleeping )
+      return;
+
     mage_pet_t::demise();
 
     event_t::cancel( cast_event );
@@ -1521,6 +1527,7 @@ struct mage_spell_t : public spell_t
     bool from_the_ashes = false;
     bool frostfire_empowerment = false;
     bool ignite = false;
+    bool mana_cascade = false;  // Arcane only
     bool molten_chill_ignite = false;
     bool touch_of_the_magi = true;
 
@@ -1828,13 +1835,16 @@ public:
 
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
+        if ( p()->trigger_clearcasting( proc_chance, 100_ms, !background ) )
           p()->state.clearcasting_blp_count = 0;
       }
     }
 
     if ( triggers.frostfire_empowerment && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
+
+    if ( triggers.mana_cascade && p()->specialization() == MAGE_ARCANE )
+      p()->trigger_mana_cascade();
 
     if ( !background && harmful )
       p()->trigger_spellfire_sphere( MAGE_ARCANE );
@@ -1858,9 +1868,6 @@ public:
 
     if ( freezing_targets == -1 || s->chain_target < freezing_targets )
       p()->trigger_freezing( s->target, freezing_stacks, freezing_source, freezing_chance );
-
-    if ( triggers.ignite )
-      trigger_ignite( s );
 
     if ( triggers.molten_chill_ignite )
       trigger_molten_chill_ignite( s );
@@ -1887,6 +1894,9 @@ public:
 
     if ( s->result_total <= 0.0 )
       return;
+
+    if ( triggers.ignite )
+      trigger_ignite( s );
 
     if ( auto td = find_td( s->target ) )
     {
@@ -2148,6 +2158,28 @@ struct fire_mage_spell_t : public mage_spell_t
           // with a guaranteed crit, let them react to the Hot Streak instantly.
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
+
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast
+          // or Flamestrike, the game will immediately finish the cast. This is presumably
+          // done to work around the buff application delay inside Combustion or with
+          // Searing Touch active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 || p->executing->id == 1254851 ) )
+          {
+            if ( p->executing->target->is_sleeping() )
+            {
+              make_event( *sim, [ p ] { p->interrupt(); } );
+            }
+            else
+            {
+              assert( p->executing->execute_event );
+              p->current_execute_type = execute_type::FOREGROUND;
+              event_t::cancel( p->executing->execute_event );
+              event_t::cancel( p->cast_while_casting_poll_event );
+              // We need to set time_to_execute to zero, start a new action execute event and
+              // adjust GCD. action_t::schedule_execute should handle all these.
+              p->executing->schedule_execute();
+            }
+          }
         }
         // Crit without HU => generate HU
         else
@@ -2261,7 +2293,10 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
+    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
+      return true;
+
+    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
   }
 };
 
@@ -2448,6 +2483,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
+    p->buffs.heat_shimmer->trigger();
+
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
       // 2024-05-19: Intensifying Flames deals a percentage of Ignite's base tick damage and not the damage it actually ticked for.
@@ -2613,7 +2650,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     parse_options( options_str );
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.overflowing_energy = true;
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
@@ -2681,16 +2718,14 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     {
       const auto& gi = p()->talents.glorious_incandescence;
       int meteors_per_event = as<int>( gi->effectN( 6 ).base_value() );
-      int events_per_salvo = as<int>( gi->effectN( 4 ).base_value() );
+      int salvo_per_event = as<int>( gi->effectN( 4 ).base_value() );
       // TODO: Seems to generate an additional meteor as long as at least 1 salvo stack is present
-      int meteors = meteors_per_event * ( 1 + salvo / events_per_salvo );
+      int meteors = meteors_per_event * ( 1 + salvo / salvo_per_event );
       if ( meteors )
         // TODO: During Arcane Soul, it is possible to overwrite a previous non-zero snapshot
         // (by casting ABar before the previous one hits), essentially losing those Meteors forever.
         p()->state.glorious_incandescence_snapshot = meteors;
     }
-
-    p()->trigger_mana_cascade();
 
     snapshot_charges = -1;
   }
@@ -2746,7 +2781,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -2754,7 +2789,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     // Add a small amount of travel time so that Arcane Blast's damage can be stored
     // in a Touch of the Magi cast immediately afterwards. Because simc has a default
     // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+    return std::max( arcane_mage_spell_t::travel_time(), 10_ms );
   }
 
   double cost_pct_multiplier() const override
@@ -2775,7 +2810,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
     p()->trigger_splinter( p()->target );
-    p()->trigger_mana_cascade();
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2832,6 +2866,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = !echo;
+    triggers.mana_cascade = true;  // Echo triggers it as well
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -3033,7 +3068,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     tick_zero = channeled = true;
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
   }
@@ -3146,6 +3181,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -3626,9 +3662,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.ignite = true;
     aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-    // 1 ms travel delay to handle Majesty of the Phoenix correctly
-    travel_delay = 0.001;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
@@ -4303,7 +4337,7 @@ struct meteor_burn_t final : public fire_mage_spell_t
   meteor_burn_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
-    background = proc = ground_aoe = true;
+    background = proc = ground_aoe = triggers.ignite = true;
     aoe = -1;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
 
@@ -4342,9 +4376,13 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     // With Deep Impact, Meteor deals extra damage to the target closest to the impact point.
     // For simplicity, we assume that will be the main target.
-    double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
-    base_multiplier     *= m;
-    base_aoe_multiplier /= m;
+    // TODO: This is currently broken and doesn't actually work in game.
+    if ( !p->bugs )
+    {
+      double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
+      base_multiplier     *= m;
+      base_aoe_multiplier /= m;
+    }
 
     // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
     if ( p->bugs )
@@ -4700,6 +4738,73 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     return frost_mage_spell_t::ready();
   }
+};
+
+struct scorch_t final : public fire_mage_spell_t
+{
+  scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    fire_mage_spell_t( n, p, p->talents.scorch )
+  {
+    parse_options( options_str );
+    triggers.hot_streak = TT_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = true;
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
+    travel_delay = p->options.scorch_delay.total_seconds();
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    fire_mage_spell_t::schedule_execute( s );
+
+    // Heat Shimmer cannot be consumed or apply its benefit unless
+    // it was already active at the beginning of the Scorch cast.
+    p()->state.heat_shimmer = p()->buffs.heat_shimmer->check();
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
+    {
+      p()->buffs.heat_shimmer->decrement();
+      p()->state.heat_shimmer = false;
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( p()->buffs.heat_shimmer->check() )
+      return 0_ms;
+
+    return fire_mage_spell_t::execute_time();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( scorch_execute_active( s->target ) )
+      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+
+    m *= 1.0 + p()->buffs.heat_shimmer->check_value();
+
+    return m;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = fire_mage_spell_t::composite_target_crit_chance( target );
+
+    if ( scorch_execute_active( target ) )
+      c += 1.0;
+
+    return c;
+  }
+
+  bool usable_moving() const override
+  { return true; }
 };
 
 struct shimmer_t final : public mage_spell_t
@@ -5316,6 +5421,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "flamestrike"       ) return new       flamestrike_t( name, this, options_str );
   if ( name == "meteor"            ) return new            meteor_t( name, this, options_str );
   if ( name == "pyroblast"         ) return new         pyroblast_t( name, this, options_str );
+  if ( name == "scorch"            ) return new            scorch_t( name, this, options_str );
 
   // Frost
   if ( name == "blizzard"          ) return new          blizzard_t( name, this, options_str );
@@ -5424,6 +5530,7 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
+  add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_delay", options.arcane_missiles_delay, 0_ms, timespan_t::max() ) );
@@ -6004,6 +6111,9 @@ void mage_t::create_buffs()
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
+  buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
+                                     ->set_default_value_from_effect( 3 )
+                                     ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
@@ -6473,7 +6583,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     return hp_pct_expr( talents.firestarter.ok(), talents.firestarter->effectN( 1 ).base_value(), false );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "scorch_execute" ) )
-    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value() + talents.sunfury_execution->effectN( 2 ).base_value(), true );
+    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value(), true );
 
   return player_t::create_action_expression( action, name );
 }
@@ -6854,7 +6964,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_predictable )
+bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_predict )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -6872,7 +6982,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
       buffs.clearcasting->trigger();
-    if ( chance >= 1.0 && !never_predictable )
+    if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
     // TODO: double check timing

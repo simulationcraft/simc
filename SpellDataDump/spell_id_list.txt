@@ -6170,7 +6170,7 @@ Evoker
 1256943  Devastation Evoker
 1256944  Preservation Evoker
 1259171  Duplicate
-1259172 *Eruption
+1259172  Eruption
 1259173  Duplicate
 1259174  Duplicate
 1259175  Duplicate

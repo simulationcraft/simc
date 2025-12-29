@@ -2488,6 +2488,7 @@ class SpellDataGenerator(DataGenerator):
           ( 410265, 3 ), # Inferno's Blessing
           ( 424368, 3 ), # DF3 4pc Buff Trembling Earth
           ( 409276, 3 ), # Motes of Possibility Buff
+          ( 1259172, 3 ), # Duplicate Eruption
           # Flameshaper
           ( 444249, 0 ), # Firebreath copied by Travelling Flame
           ( 444089, 0 ), # Consume Flame Fire Breath Damage

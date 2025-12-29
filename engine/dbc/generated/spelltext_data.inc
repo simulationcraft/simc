@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.64914
-static constexpr std::array<spelltext_data_t, 28650> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28651> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27367,6 +27367,7 @@ static constexpr std::array<spelltext_data_t, 28650> __spelltext_data { {
   { 1259128, "$@spelldesc1244276", 0, 0 },
   { 1259153, "Desperately unravel yourself over $d to unleash a barrage of ${$d/$t1} cosmic missiles at your target, increased by your haste. Each deals ${$1259103s1*$<rolemult>} Cosmic damage split between nearby enemies. $@spelldesc1240903\r\n\r\nAllied deaths induce further madness, reducing the cooldown by $1259103s3 sec.", "Dealing Cosmic damage to your target every ${$t1}.2 sec. Slowed by $w2%.", 0 },
   { 1259171, "$@spelldesc1259173", "Ebon Might is $s2% more effective and your Upheaval and Eruption deal $s3% more damage.", 0 },
+  { 1259172, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
   { 1259173, "Breath of Eons summons a version of you from the future to assist you in battle, lasting $1259171d. Your duplicate casts Eruption, Fire Breath, and Upheaval.", 0, 0 },
   { 1259174, "Any time you extend Ebon Might, your duplicate is also extended, equal to $s1% of the amount you extended Ebon Might by.", 0, 0 },
   { 1259175, "While your duplicate is active, your Ebon Might grants $s1% additional stats.", 0, 0 },
