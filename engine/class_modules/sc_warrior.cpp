@@ -2422,10 +2422,6 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    // Delayed event to cancel the stack on any crit results
-    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
-      make_event( *p()->sim, [ this ] { p()->buff.bloodcraze->expire(); } );
-
     if ( gushing_wound && s->result == RESULT_CRIT )
     {
       gushing_wound->execute_on_target( s->target );
@@ -2515,6 +2511,8 @@ struct bloodthirst_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    p()->buff.bloodcraze->expire();
   }
 
   bool ready() override
@@ -2671,11 +2669,6 @@ struct bloodbath_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    // Delayed event to cancel the stack on any crit results
-    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
-      make_event( *p()->sim, [ this ] { p()->buff.bloodcraze->expire(); } );
-
-
     if ( gushing_wound && s->result == RESULT_CRIT )
     {
       gushing_wound->set_target( s->target );
@@ -2764,6 +2757,8 @@ struct bloodbath_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    p()->buff.bloodcraze->expire();
   }
 
   bool ready() override
