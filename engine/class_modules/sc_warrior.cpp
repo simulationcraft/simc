@@ -285,11 +285,6 @@ public:
     buff_t* thunder_blast;
     buff_t* steadfast_as_the_peaks;
     buff_t* burst_of_power;
-
-    // TWW3 Tier
-    buff_t* critical_conclusion; // Colossus 4pc Crit buff
-    buff_t* deeper_wounds;       // Colossus 4pc Deep Wounds and Rend amp
-    buff_t* severe_thunder;      // Mountain Thane 4pc Thunder Blast amp
   } buff;
 
   struct rppm_t
@@ -1083,8 +1078,6 @@ public:
       }
       parse_effects( p()->buff.cut_to_the_bone );
 
-      parse_effects( p()->buff.critical_conclusion );
-      parse_effects( p()->buff.deeper_wounds );
       parse_effects( p()->buff.celeritous_conclusion_crit );
     }
 
@@ -1103,7 +1096,6 @@ public:
     if ( p()->talents.mountain_thane.lightning_strikes->ok() )
     {
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
-      parse_effects( p()->buff.severe_thunder );
 
       if ( p()->talents.mountain_thane.storm_surge->ok() )
         parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 9, 10 ) );
@@ -1133,12 +1125,6 @@ public:
       // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
       parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
                             p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), p()->spell.wrecked_debuff->effectN( 2 ).base_value() / 1000 );
-
-      if( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B2 ) )
-      {
-        parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
-                          p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 3 ), p()->spell.wrecked_debuff->effectN( 3 ).base_value() / 1000 );
-      }
     }
 
     // Slayer
@@ -2465,15 +2451,6 @@ struct bloodthirst_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
   }
 
   void execute() override
@@ -2529,6 +2506,15 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   bool ready() override
@@ -2720,15 +2706,6 @@ struct bloodbath_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
   }
 
   void execute() override
@@ -2778,6 +2755,15 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   bool ready() override
@@ -2893,9 +2879,16 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.fierce_followthrough->expire();
 
-    p()->buff.critical_conclusion->expire();
-
     p()->buff.celeritous_conclusion_crit->expire();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2941,18 +2934,6 @@ struct mortal_strike_t : public warrior_attack_t
         p()->buff.colossal_might->trigger();
       }
     }
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
-
-    if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-      p()->buff.deeper_wounds->trigger();
 
     if ( s->result == RESULT_CRIT && p()->talents.colossus.cut_to_the_bone->ok() )
       p()->buff.cut_to_the_bone->trigger();
@@ -3372,15 +3353,6 @@ struct cleave_t : public warrior_attack_t
     {  // does this eat RPPM when switching from low -> high health target?
       td( s->target )->debuffs_fatal_mark->trigger();
     }
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && execute_state->n_targets >= p()->talents.slayer.reap_the_storm->effectN( 2 ).base_value() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
   }
 
   void execute() override
@@ -3408,6 +3380,15 @@ struct cleave_t : public warrior_attack_t
         p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
       }
       p()->buff.colossal_might->trigger();
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && execute_state->n_targets >= p()->talents.slayer.reap_the_storm->effectN( 2 ).base_value() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 };
@@ -3530,9 +3511,10 @@ struct demolish_t : public warrior_attack_t
     warrior_attack_t::last_tick( d );
     p()->buff.colossal_might->expire();
 
-    if ( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
+    if ( p()->talents.colossus.celeritous_conclusion.ok() )
     {
-      p()->buff.critical_conclusion->trigger();
+      p()->buff.celeritous_conclusion_haste->trigger();
+      p()->buff.celeritous_conclusion_crit->trigger();
     }
   }
 };
@@ -3581,7 +3563,6 @@ struct thunder_blast_t : public warrior_attack_t
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  action_t* ionizing_strike;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
@@ -3590,7 +3571,6 @@ struct thunder_blast_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
       lightning_strike( nullptr ),
-      ionizing_strike( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -3616,12 +3596,6 @@ struct thunder_blast_t : public warrior_attack_t
       add_child( lightning_strike );
     }
 
-    if ( p->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) )
-    {
-      ionizing_strike = get_action<ionizing_strike_t>( "ionizing_strike", p );
-      add_child( ionizing_strike );
-    }
-
     if ( p->talents.protection.strategist->ok() )
     {
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
@@ -3643,9 +3617,6 @@ struct thunder_blast_t : public warrior_attack_t
     rend_targets_hit = 0;
 
     warrior_attack_t::execute();
-
-    if (  p()->buff.severe_thunder->up() )
-      p()->buff.severe_thunder->expire();
 
     if ( rng().roll( shield_slam_reset ) )
     {
@@ -3689,25 +3660,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
 
     p()->buff.thunder_blast->decrement();
-
-    if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
-    {
-      size_t ionizing_bolt_target = 0;
-      for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
-      {
-        ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
-        ionizing_bolt_target++;
-        if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
-          ionizing_bolt_target = 0;
-      }
-
-      if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
-      {
-        p()->buff.thunder_blast->trigger();
-        p()->cooldown.thunder_clap->reset( true );
-        p()->buff.severe_thunder->trigger();
-      }
-    }
 
     if ( p()->talents.mountain_thane.capacitance->ok() && p()->buff.avatar->up() )
       p()->buff.avatar->extend_duration_or_trigger( p()->talents.mountain_thane.capacitance->effectN( 1 ).time_value() );
@@ -3967,12 +3919,6 @@ struct execute_arms_t : public warrior_attack_t
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
-
-    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-    {
-      slayers_strike = get_action<slayers_strike_t>( "slayers_strike_execute", p );
-      add_child( slayers_strike );
-    }
   }
 
   double tactician_cost() const override
@@ -4060,20 +4006,6 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->active.fatality->set_target( state->target );
       p()->active.fatality->execute();
-    }
-
-    if ( p()->buff.sudden_death -> up() )
-    {
-      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-      {
-        auto target_data = td( state->target );
-        if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-        {
-          // This is resolved after everything else happens
-          slayers_strike->set_target( state-> target );
-          slayers_strike->schedule_execute();
-        }
-      }
     }
   }
 
@@ -4219,12 +4151,6 @@ struct execute_fury_t : public warrior_attack_t
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
     }
-
-    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-    {
-      slayers_strike = get_action<slayers_strike_t>("slayers_strike_execute", p );
-      add_child( slayers_strike );
-    }
   }
 
 //  double cost() const override
@@ -4235,25 +4161,6 @@ struct execute_fury_t : public warrior_attack_t
 
 //    return c;
 //  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if ( p()->buff.sudden_death -> up() )
-    {
-      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
-      {
-        auto target_data = td( state->target );
-        if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-        {
-          // This is resolved after everything else happens
-          slayers_strike->set_target( state->target );
-          slayers_strike->schedule_execute();
-        }
-      }
-    }
-  }
 
   void execute() override
   {
@@ -4628,11 +4535,9 @@ struct pummel_t : public warrior_attack_t
 struct raging_blow_attack_t : public warrior_attack_t
 {
   int aoe_targets;
-  action_t* reap_the_storm;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s )
     : warrior_attack_t( name, p, s ),
-    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-    reap_the_storm( nullptr )
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
@@ -4640,28 +4545,6 @@ struct raging_blow_attack_t : public warrior_attack_t
 
     //base_multiplier *= 1.0 + p->talents.cruelty->effectN( 1 ).percent();
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
-
-    // 85834 is Raging Blow OH
-    if ( s->id() == 85384 && p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
-      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-    }
-  }
-
-  void impact ( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( reap_the_storm && p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) && p()->cooldown.reap_the_storm_icd->is_ready() )
-    {
-      auto target_data = td( s->target );
-      if ( rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-      {
-        reap_the_storm->execute_on_target( s->target );
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
   }
 
   int n_targets() const override
@@ -4807,40 +4690,15 @@ struct raging_blow_t : public warrior_attack_t
 struct crushing_blow_attack_t : public warrior_attack_t
 {
   int aoe_targets;
-  action_t* reap_the_storm;
   crushing_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s )
     : warrior_attack_t( name, p, s ),
-    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-    reap_the_storm( nullptr )
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
     background = true;
 
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
-
-    // 335100 is Crushing Blow OH attack
-    if ( s->id() == 335100 && p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_crushing_blow", p );
-      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-      add_child( reap_the_storm );
-    }
-  }
-
-  void impact ( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( reap_the_storm && p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) && p()->cooldown.reap_the_storm_icd->is_ready() )
-    {
-      auto target_data = td( s->target );
-      if ( rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-      {
-        reap_the_storm->execute_on_target( s->target );
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
   }
 
   int n_targets() const override
@@ -5150,13 +5008,11 @@ struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
   warrior_attack_t* dreadnaught;
-  action_t* reap_the_storm;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
-      dreadnaught( nullptr ),
-      reap_the_storm( nullptr )
+      dreadnaught( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -5166,13 +5022,6 @@ struct overpower_t : public warrior_attack_t
     {
       dreadnaught = new dreadnaught_t( p );
       add_child( dreadnaught );
-    }
-
-    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
-      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-      add_child( reap_the_storm );
     }
   }
 
@@ -5184,16 +5033,6 @@ struct overpower_t : public warrior_attack_t
     if ( dreadnaught && result_is_hit( s->result ) )
     {
       dreadnaught->execute_on_target( s->target );
-    }
-
-    if ( reap_the_storm && p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) && p()->cooldown.reap_the_storm_icd->is_ready() )
-    {
-      auto target_data = td( s->target );
-      if ( rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-      {
-        reap_the_storm->execute_on_target( s->target );
-        p()->cooldown.reap_the_storm_icd->start();
-      }
     }
   }
 
@@ -5848,8 +5687,6 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.thunder_blast->trigger();
     }
 
-    p()->buff.critical_conclusion->expire();
-
     p()->buff.celeritous_conclusion_crit->expire();
   }
 
@@ -5892,9 +5729,6 @@ struct shield_slam_t : public warrior_attack_t
       // Reset CD after everything resolves
       make_event( *p()->sim, [ this ] { p()->cooldown.shield_slam->reset( true ); } );
     }
-
-    if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
-      p()->buff.deeper_wounds->trigger();
 
     if ( state->result == RESULT_CRIT && p()->talents.colossus.cut_to_the_bone->ok() )
       p()->buff.cut_to_the_bone->trigger();
@@ -7998,11 +7832,6 @@ void warrior_t::create_buffs()
                                   ->set_initial_stack( find_spell( 437121 )->max_stacks() )
                                   ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
                                   ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
-
-  // TWW3 Tier
-  buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ); // Colossus 4pc
-  buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );             // Colossus 4pc
-  buff.severe_thunder = make_buff( this, "severe_thunder", find_spell( 1252096 ) );          // Mountain Thane 4pc
 }
 
 // warrior_t::init_special_effects() ====================================
