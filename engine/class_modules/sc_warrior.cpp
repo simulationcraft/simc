@@ -804,6 +804,7 @@ public:
     struct shared_talents_t
     {
       player_talent_t avatar;
+      player_talent_t bladestorm;
       player_talent_t ravager;
       player_talent_t bloodsurge;
       player_talent_t sudden_death;
@@ -6851,7 +6852,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   if ( name == "berserker_stance" )
     return new berserker_stance_t( this, options_str );
   if ( name == "bladestorm" )
-    return new bladestorm_t( this, options_str, name, talents.slayer.unrelenting_onslaught->ok() ? find_spell( 446035 ) : find_spell( 227847 ) );
+    return new bladestorm_t( this, options_str, name, talents.slayer.unrelenting_onslaught->ok() && talents.shared.bladestorm.ok() ? find_spell( 446035 ) : talents.shared.bladestorm );
   if ( name == "bloodthirst" )
     return new bloodthirst_t( this, options_str );
   if ( name == "bloodbath" )
@@ -7418,6 +7419,7 @@ void warrior_t::init_spells()
   };
 
   talents.shared.avatar = find_shared_talent( { &talents.arms.avatar, &talents.fury.avatar, &talents.protection.avatar } );
+  talents.shared.bladestorm = find_shared_talent( { &talents.arms.bladestorm, &talents.fury.bladestorm } );
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
@@ -7862,7 +7864,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202164 )->effectN( 1 ).percent() );
 
   buff.bladestorm =
-      make_buff( this, "bladestorm", talents.slayer.unrelenting_onslaught->ok() ? find_spell( 446035 ) : find_spell( 227847 ) )
+      make_buff( this, "bladestorm", talents.slayer.unrelenting_onslaught->ok() && talents.shared.bladestorm.ok() ? find_spell( 446035 ) : talents.shared.bladestorm )
       ->disable_ticking( true )
       ->set_cooldown( timespan_t::zero() );
 
