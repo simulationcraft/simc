@@ -713,18 +713,18 @@ struct simplified_player_t : public player_t
     int item_level = option.item_level;
 
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=213743,enchant_id=7927", item_level ) },
-        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=213482/213458", item_level ) },
+        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={}", item_level ) },
+        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={}", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK,      fmt::format( ",id=195482,ilevel={}", item_level ) },
-        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=crystalline_radiance_3", item_level ) },
-        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=213491", item_level ) },
+        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={}", item_level ) },
+        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={}", item_level ) },
         { SLOT_HANDS,     fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=213473", item_level ) },
-        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=sunset_spellthread_3", item_level ) },
+        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={}", item_level ) },
+        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={}", item_level ) },
         { SLOT_FEET,      fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
-        { SLOT_FINGER_2,  fmt::format( ",id=237570,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) }, 
+        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={}", item_level ) },
+        { SLOT_FINGER_2,  fmt::format( ",id=237570,ilevel={}", item_level ) }, 
         { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
         { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
         { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
@@ -877,7 +877,7 @@ struct simplified_player_t : public player_t
 
   double matching_gear_multiplier( attribute_e attr ) const override
   {
-    return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+    return attr == ATTR_INTELLECT ? 1.05 : 1.0;
   }
 
   stat_e convert_hybrid_stat( stat_e stat ) const override
@@ -2913,15 +2913,11 @@ struct empowered_release_t : public empowered_base_t<BASE>
   timespan_t extend_tier29_4pc;
   timespan_t extend_ebon;
   action_t* sands;
-  action_t* threads_of_fate;
 
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : ab( name, p, spell ),
       extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
       sands( p->specialization() == EVOKER_AUGMENTATION ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
-                                                        : nullptr ),
-      threads_of_fate( p->talent.chronowarden.threads_of_fate.enabled()
-                           ? p->get_secondary_action<threads_of_fate_t>( "threads_of_fate" )
                                                         : nullptr )
   {
     ab::dual = true;
@@ -2957,10 +2953,6 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     if ( sands )
       sands->execute();
-
-    if ( threads_of_fate && ab::p()->buff.temporal_burst->check() )
-      threads_of_fate->execute();
-
   }
 };
 
@@ -5075,7 +5067,6 @@ struct upheaval_t : public empowered_charge_spell_t
       if ( is_rumbling_earth )
       {
         sands           = nullptr;
-        threads_of_fate = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
         extend_ebon = 0_s;
       }
@@ -5095,7 +5086,6 @@ struct upheaval_t : public empowered_charge_spell_t
       {
         base_dd_multiplier *= p->sets->set( EVOKER_AUGMENTATION, TWW2, B2 )->effectN( 1 ).percent();
         sands           = nullptr;
-        threads_of_fate = nullptr;
         extend_ebon     = 0_s;
       }
 
@@ -6584,7 +6574,7 @@ public:
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
-    spell_power_mod.direct            = 0.88;  // Hardcoded for some reason, 24/05/2023
+    spell_power_mod.direct            = 3.5;  // Hardcoded for some reason, 29/12/2025
   }
 };
 
@@ -8665,9 +8655,9 @@ void evoker_t::create_pets()
       }
       else
       {
-        if ( p->level() < 80 )
+        if ( p->level() < 90 )
         {
-          p->option.item_level = 562;
+          p->option.item_level = 170;
         }
       }
     }
@@ -9754,8 +9744,8 @@ void evoker_t::create_buffs()
 
   if ( talent.chronowarden.energy_cycles.ok() )
   {
-    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int t, timespan_t ) {
-      if ( t > 0 && ( t % as<int>( talent.chronowarden.temporal_burst->effectN( 1 ).base_value() ) ) == 0 )
+    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      if ( ( b->current_tick % as<int>( talent.chronowarden.energy_cycles->effectN( 1 ).base_value() ) ) == 0 )
       {
         buff.essence_burst->trigger();
       }

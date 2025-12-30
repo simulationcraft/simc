@@ -1569,8 +1569,9 @@ void player_t::init_base_stats()
       base.crit_damage_multiplier[ school ] *= get_passive_player_value( 1.0, "crit_damage_multiplier", -1 );
     }
 
-    base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
-    base.attack_speed_multiplier *= get_passive_player_value( base.attack_speed_multiplier, "attack_speed_modifier" );
+    double attack_speed_multiplier = base.attack_speed_multiplier;
+    base.attack_speed_multiplier /= get_passive_player_value( attack_speed_multiplier, "attack_speed" );
+    base.attack_speed_multiplier *= get_passive_player_value( attack_speed_multiplier, "attack_speed_modifier" );
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
 
     base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );

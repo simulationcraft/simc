@@ -1598,6 +1598,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
     triggers_second_sunrise = false;
     triggers_divine_resonance = false;
+    triggers_sanctification   = true;
     cooldown->duration        = 0_ms;
   }
 };
@@ -1680,6 +1681,10 @@ void hammer_of_wrath_t::execute()
   {
     p()->active.blade_of_justice->execute_on_target( execute_state->target );
     p()->cooldowns.walk_into_light_icd->start();
+  }
+  if ( triggers_sanctification && p()->talents.templar.sanctification->ok() )
+  {
+    p()->buffs.templar.sanctification->trigger();
   }
 }
 
