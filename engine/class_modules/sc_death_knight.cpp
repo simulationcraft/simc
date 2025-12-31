@@ -4261,14 +4261,30 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     reschedule_drw();
-    dk()->buffs.dancing_rune_weapon->trigger();
-    dk()->buffs.dance_of_midnight_2->trigger();
+    // We will let DRW and DOM drive the DRW buff
+    if ( dk()->buffs.dancing_rune_weapon->remains() < duration)
+    {
+      if ( name_str == "dancing_rune_weapon" )
+      {
+        if ( !dk()->buffs.dancing_rune_weapon->check() )
+          dk()->buffs.dancing_rune_weapon->trigger( duration );
+      }
+      else if ( name_str == "dance_of_midnight" )
+        dk()->buffs.dancing_rune_weapon->trigger( duration );
+
+      dk()->buffs.dance_of_midnight_2->trigger( duration );
+    }
+
+    if ( name_str == "dance_of_midnight" )
+    {
+      if ( dk()->buffs.gift_of_the_sanlayn->check() )
+        dk()->buffs.gift_of_the_sanlayn->expire();
+    }
   }
 
   void demise() override
   {
     death_knight_pet_t::demise();
-    dk()->buffs.dancing_rune_weapon->expire();
     if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
       dk()->buffs.gift_of_the_sanlayn->expire();
   }
@@ -10749,6 +10765,9 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.boiling_point->trigger();
       boiling_point_proc_attempts = 0;
     }
+
+    if ( p()->talent.blood.dance_of_midnight_1.ok() )
+      p()->buffs.dance_of_midnight_1->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -15555,7 +15574,7 @@ void death_knight_t::create_buffs()
     buffs.dancing_rune_weapon =
         make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
             ->set_cooldown( 0_ms )
-            ->set_duration( 0_ms )
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
             ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
             ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
               if ( talent.sanlayn.the_blood_is_life.ok() && pets.blood_beast.active_pet() != nullptr )
@@ -15615,10 +15634,11 @@ void death_knight_t::create_buffs()
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
 
     buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
-                                  ->set_chance( 0.05 )  // Found via log analysis, not in spelldata as of Dec 27 2025
+                                  ->set_chance( 1.0 )  // handled in assess damage.  Likely bugged
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
                             
-    buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff );
+    buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     // Tier Sets
   }
@@ -16190,7 +16210,10 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
       else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
         buffs.bloodied_blade_stacks->trigger();
     }
-    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() )
+    // As of Dec 29, 2025, best we can tell there is a baseline 20% chance to proc dom 1, chance seems to be reduced
+    // per target you are in combat with
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() && sim->target_non_sleeping_list.size() > 0 &&
+          rng().roll( 0.20 / sim->target_non_sleeping_list.size() ) )
     {
       buffs.dance_of_midnight_1->trigger();
     }
