@@ -1262,7 +1262,7 @@ public:
       // Apex
       player_talent_t dance_of_midnight_1;
       player_talent_t dance_of_midnight_2;
-      player_talent_t dance_of_midnight_3;  // NYI
+      player_talent_t dance_of_midnight_3;
     } blood;
 
     // Frost
