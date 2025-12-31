@@ -15483,7 +15483,7 @@ void death_knight_t::create_buffs()
           ->set_tick_callback(
               [ this ]( buff_t*, int, timespan_t ) { background_actions.blood_mist_tick->execute(); } )
           ->set_expire_callback(
-              [ this ]( buff_t*, int, timespan_t) { background_actions.sanguinary_burst->execute(); } );
+              [ this ]( buff_t*, int, timespan_t) { if ( talent.blood.sanguinary_burst.ok() ) background_actions.sanguinary_burst->execute(); } );
 
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
