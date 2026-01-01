@@ -963,7 +963,6 @@ public:
       const spell_data_t *jade_sanctuary_buff;
       player_talent_t celestial_conduit;
       const spell_data_t *celestial_conduit_action;
-      const spell_data_t *celestial_conduit_buff;
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;

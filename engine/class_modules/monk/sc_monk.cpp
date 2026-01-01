@@ -3404,6 +3404,7 @@ struct xuen_summon_t : public monk_spell_t
     p()->buff.invoke_xuen->trigger();
     p()->buff.flurry_of_xuen->trigger();
     p()->buff.courage_of_the_white_tiger->trigger();
+    p()->buff.celestial_conduit->trigger();
   }
 };
 
@@ -3603,10 +3604,8 @@ struct celestial_conduit_t : public monk_spell_t
 
   bool ready() override
   {
-    if ( p()->talent.conduit_of_the_celestials.celestial_conduit->ok() )
-      return monk_spell_t::ready();
-
-    return false;
+    return p()->talent.conduit_of_the_celestials.celestial_conduit->ok() && p()->buff.celestial_conduit->check() &&
+           monk_spell_t::ready();
   }
 
   bool usable_moving() const override
@@ -5308,7 +5307,6 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.jade_sanctuary_buff                      = find_spell( 448508 );
     talent.conduit_of_the_celestials.celestial_conduit                        = _HT( "Celestial Conduit" );
     talent.conduit_of_the_celestials.celestial_conduit_action                 = find_spell( 443028 );
-    talent.conduit_of_the_celestials.celestial_conduit_buff                   = find_spell( 443028 );
     talent.conduit_of_the_celestials.celestial_conduit_damage                 = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal                   = find_spell( 443039 );
     talent.conduit_of_the_celestials.inner_compass                            = _HT( "Inner Compass" );
@@ -5835,7 +5833,7 @@ void monk_t::create_buffs()
   // Conduit of the Celestials
   buff.celestial_conduit =
       make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this, "celestial_conduit",
-                          talent.conduit_of_the_celestials.celestial_conduit_buff );
+                          talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).trigger() );
 
   buff.chijis_swiftness =
       make_buff_fallback( talent.conduit_of_the_celestials.chijis_swiftness->ok(), this, "chijis_swiftness",
