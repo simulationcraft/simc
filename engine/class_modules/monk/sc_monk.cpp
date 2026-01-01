@@ -455,22 +455,6 @@ void monk_action_t<Base>::impact( action_state_t *state )
   trigger_mystic_touch( state );
 
   base_t::impact( state );
-
-  if ( p()->baseline.windwalker.empowered_tiger_lightning->ok() )
-    if ( monk_td_t *target_data = p()->get_target_data( state->target ); target_data )
-      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
-        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
-}
-
-template <class Base>
-void monk_action_t<Base>::tick( dot_t *dot )
-{
-  base_t::tick( dot );
-
-  if ( p()->baseline.windwalker.empowered_tiger_lightning->ok() )
-    if ( monk_td_t *target_data = p()->get_target_data( dot->state->target ); target_data )
-      if ( auto debuff = target_data->debuff.empowered_tiger_lightning; debuff )
-        debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( dot->state );
 }
 
 template <class Base>
@@ -6340,6 +6324,25 @@ void monk_t::init_special_effects()
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           action.flurry_strikes->execute( actions::attacks::flurry_strikes_t::STAND_READY );
         } );
+
+  if ( baseline.windwalker.empowered_tiger_lightning->ok() )
+  {
+    auto cb_t = create_proc_callback( { baseline.windwalker.empowered_tiger_lightning, PF_ALL_DAMAGE,
+                                        static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
+                    ->register_callback_execute_function(
+                        [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                          monk_td_t *target_data = get_target_data( state->target );
+                          if ( !target_data )
+                            return;
+
+                          propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
+                          if ( !debuff )
+                            return;
+
+                          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
+                        } );
+    cb_t->proc_chance = 1.0;
+  }
 
   base_t::init_special_effects();
 }

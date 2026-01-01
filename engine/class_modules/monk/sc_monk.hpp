@@ -106,7 +106,6 @@ public:
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
-  void tick( dot_t *dot ) override;
   void trigger_mystic_touch( action_state_t *state );
 };
 
