@@ -6064,6 +6064,21 @@ void monk_effect_callback_t::execute( action_t *action, action_state_t *state )
   dbc_proc_callback_t::execute( action, state );
 }
 
+void monk_effect_callback_t::initialize()
+{
+  dbc_proc_callback_t::initialize();
+
+  for ( const monk_effect_callback_t::post_init_callback_fn_t &fn : post_init_callbacks )
+    fn( this );
+}
+
+monk_effect_callback_t *monk_effect_callback_t::register_post_init_callback(
+    const monk_effect_callback_t::post_init_callback_fn_t &fn )
+{
+  post_init_callbacks.emplace_back( std::move( fn ) );
+  return this;
+}
+
 monk_effect_callback_t *monk_effect_callback_t::register_callback_trigger_function(
     dbc_proc_callback_t::trigger_fn_type t, const dbc_proc_callback_t::trigger_fn_t &fn )
 {
@@ -6324,23 +6339,24 @@ void monk_t::init_special_effects()
         } );
 
   if ( baseline.windwalker.empowered_tiger_lightning->ok() )
-  {
-    auto cb_t = create_proc_callback( { baseline.windwalker.empowered_tiger_lightning, PF_ALL_DAMAGE,
-                                        static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
-                    ->register_callback_execute_function(
-                        [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                          monk_td_t *target_data = get_target_data( state->target );
-                          if ( !target_data )
-                            return;
+    create_proc_callback( { baseline.windwalker.empowered_tiger_lightning, PF_ALL_DAMAGE,
+                            static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          monk_td_t *target_data = get_target_data( state->target );
+          if ( !target_data )
+            return;
 
-                          propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
-                          if ( !debuff )
-                            return;
+          propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
+          if ( !debuff )
+            return;
 
-                          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
-                        } );
-    cb_t->proc_chance = 1.0;
-  }
+          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
+        } )
+        ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
+          cb->proc_chance                       = 1.0;
+          cb->can_proc_from_procs               = true;
+          cb->can_only_proc_from_class_abilites = true;
+        } );
 
   base_t::init_special_effects();
 }

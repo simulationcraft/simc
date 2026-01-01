@@ -379,10 +379,18 @@ struct monk_effect_callback_t : dbc_proc_callback_t
 {
   monk_t *player;
 
+  using post_init_callback_fn_t = std::function<void( monk_effect_callback_t * )>;
+
+private:
+  std::vector<post_init_callback_fn_t> post_init_callbacks;
+
+public:
   monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
   void trigger( action_t *action, action_state_t *state ) override;
   void execute( action_t *action, action_state_t *state ) override;
+  void initialize() override;
 
+  monk_effect_callback_t *register_post_init_callback( const post_init_callback_fn_t &fn );
   monk_effect_callback_t *register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type t,
                                                               const dbc_proc_callback_t::trigger_fn_t &fn );
   monk_effect_callback_t *register_callback_execute_function( const dbc_proc_callback_t::execute_fn_t &fn );
