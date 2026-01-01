@@ -4250,7 +4250,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
             {
               etl->base_dd_min = etl->base_dd_max = value * multiplier;
               etl->execute_on_target( target );
-              debuff->current_value = 0;
+              debuff->expire();
             }
     } );
   }
