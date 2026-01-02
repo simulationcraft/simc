@@ -5367,6 +5367,7 @@ struct the_hunt_base_t
       if ( s->chain_target == 0 && p()->talent.aldrachi_reaver.broken_spirit->ok() )
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
+        p()->proc.soul_fragment_from_broken_spirit->occur();
       }
     }
   };
