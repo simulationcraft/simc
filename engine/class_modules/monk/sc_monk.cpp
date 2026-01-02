@@ -611,6 +611,7 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
     switch ( key )
     {
       case FLURRY_STRIKES:
+      case WISDOM_OF_THE_WALL:
         break;
       case STAND_READY:
         if ( const auto &effect = player->talent.shado_pan.stand_ready->effectN( 2 ); effect.ok() )
@@ -618,8 +619,6 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
               .set_value( effect.percent() - 1.0 )
               .set_note( "Stand Ready Efficiency Multiplier" )
               .set_eff( &effect );
-        break;
-      case WISDOM_OF_THE_WALL:
         break;
       default:
         assert( false );
@@ -4713,7 +4712,11 @@ void monk_t::parse_player_effects()
   parse_effects( talent.windwalker.ferociousness, [ & ]( double value ) {
     if ( buff.invoke_xuen->check() )
       value *= 1.0 + talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->effectN( 3 ).percent();
-
+    return value;
+  } );
+  parse_effects( talent.windwalker.martial_agility, [ & ]( double value ) {
+    if ( buff.zenith->check() )
+      return talent.windwalker.martial_agility->effectN( 3 ).percent();
     return value;
   } );
 
@@ -5463,6 +5466,7 @@ void monk_t::init_spells()
                                                                          : effect_mask_t( true ) );
 
   deregister_passive_spell( talent.windwalker.ferociousness );
+  deregister_passive_spell( talent.windwalker.martial_agility );
 
   parse_all_class_passives();
   parse_all_passive_talents();
