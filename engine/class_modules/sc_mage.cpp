@@ -356,6 +356,7 @@ public:
     unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     int clearcasting_blp_threshold = -1;
+    int sphere_blp_threshold = 11;
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -441,6 +442,7 @@ public:
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
     int clearcasting_blp_count;
+    int sphere_blp_count;
     int icicles;
   } state;
 
@@ -891,7 +893,7 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
-  void trigger_spellfire_sphere( specialization_e spec );
+  void trigger_spellfire_sphere( specialization_e spec, bool background );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
@@ -1530,6 +1532,7 @@ struct mage_spell_t : public spell_t
     bool mana_cascade = false;  // Arcane only
     bool molten_chill_ignite = false;
     bool touch_of_the_magi = true;
+    bool spellfire_sphere = false;
 
     target_trigger_type_e hot_streak = TT_NONE;
   } triggers;
@@ -1830,7 +1833,7 @@ public:
       else
         proc_chance *= p()->state.clearcasting_blp_count;
 
-      sim->print_debug("Clearcasting proc chance: {}% ({}/{} BLP)", 
+      sim->print_debug( "Clearcasting proc chance: {}% ({}/{} BLP)", 
         proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
 
       if ( proc_chance == 1.0 || !background )
@@ -1846,8 +1849,8 @@ public:
     if ( triggers.mana_cascade && p()->specialization() == MAGE_ARCANE )
       p()->trigger_mana_cascade();
 
-    if ( !background && harmful )
-      p()->trigger_spellfire_sphere( MAGE_ARCANE );
+    if ( p()->talents.spellfire_spheres.ok() && triggers.spellfire_sphere )
+      p()->trigger_spellfire_sphere( MAGE_ARCANE, background );
   }
 
   void impact( action_state_t* s ) override
@@ -2383,7 +2386,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE );
+      p()->trigger_spellfire_sphere( MAGE_FIRE, background ); // TODO: No clue on how spheres work for fire.
       p()->trigger_mana_cascade();
     }
 
@@ -2392,7 +2395,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE );
+      p()->trigger_spellfire_sphere( MAGE_FIRE, background ); // TODO: No clue on how spheres work for fire.
       p()->trigger_mana_cascade();
 
       assert( pyromaniac_action );
@@ -2650,7 +2653,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     parse_options( options_str );
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.overflowing_energy = true;
-    triggers.clearcasting = triggers.mana_cascade = true;
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
@@ -2781,7 +2784,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    triggers.clearcasting = triggers.mana_cascade = true;
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -2866,7 +2869,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = !echo;
-    triggers.mana_cascade = true;  // Echo triggers it as well
+    triggers.spellfire_sphere = triggers.mana_cascade = true;  // Echo triggers Mana Cascade as well
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -3068,7 +3071,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     tick_zero = channeled = true;
-    triggers.clearcasting = triggers.mana_cascade = true;
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
   }
@@ -3181,7 +3184,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-    triggers.mana_cascade = true;
+    triggers.spellfire_sphere = triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -5549,6 +5552,7 @@ void mage_t::create_options()
                 return true;
               } ) );
   add_option( opt_int( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
+  add_option( opt_int( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -6903,17 +6907,27 @@ void mage_t::trigger_meteor_burn( action_t* action, player_t* target, timespan_t
   e->expiration = expiration;
 }
 
-void mage_t::trigger_spellfire_sphere( specialization_e spec )
+void mage_t::trigger_spellfire_sphere( specialization_e spec, bool background )
 {
   if ( !talents.spellfire_spheres.ok() || spec != specialization() )
     return;
+  
+  // https://www.desmos.com/calculator/7akzzy14fg;
+  // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
+  double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
+  proc_chance = ( -0.202381 * ( proc_chance * proc_chance ) ) + ( 0.550833 * proc_chance ) - 0.0481071;
 
-  // TODO: Double check what procs this for Arcane
-  // TODO: Implement the BLP
-  if ( rng().roll( talents.spellfire_spheres->effectN( 1 ).percent() ) )
+  state.sphere_blp_count++;
+  proc_chance *= state.sphere_blp_count;
+
+  sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)", 
+    proc_chance * 100, state.sphere_blp_count, options.sphere_blp_threshold );
+
+  if ( ( state.sphere_blp_count == options.sphere_blp_threshold ) || ( !background && rng().roll( proc_chance ) ) )
   {
     buffs.spellfire_sphere->trigger();
-    buffs.glorious_incandescence->trigger();
+    buffs.glorious_incandescence->trigger(); // TODO: This isn't needed for Arcane, keeping it solely for fire; I've also zero clue what triggers the BLP with fire.
+    state.sphere_blp_count = 0;
   }
 }
 
