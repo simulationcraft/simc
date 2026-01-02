@@ -152,7 +152,7 @@ jobs:
 
   spec-test:
     needs: [ubuntu-clang-build]
-    if: github.ref_name == 'thewarwithin' || github.ref_name == 'midnight'
+    if: github.ref == github.event.repository.defaultBranchRef || github.ref_name == 'midnight'
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -171,7 +171,7 @@ jobs:
     name: Update Generated Files
     needs: [spec-test]
     runs-on: ubuntu-22.04
-    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.ref == github.event.repository.defaultBranchRef
 
     steps:
       - uses: actions/cache@v4
@@ -241,7 +241,7 @@ jobs:
 
   ubuntu-run:
     needs: [ubuntu-clang-build, ubuntu-gcc-build]
-    if: github.ref_name == 'thewarwithin'
+    if: github.ref == github.event.repository.defaultBranchRef
     uses: ./.github/workflows/ubuntu_run.yml
     with:
       cache-sha: ${{ github.sha }}
@@ -256,7 +256,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: github.ref_name == 'thewarwithin'
+        if: github.ref == github.event.repository.defaultBranchRef
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
