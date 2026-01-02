@@ -7022,6 +7022,13 @@ struct blade_dance_base_t
       }
     }
 
+    if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
+         rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 4 ).percent() ) )
+    {
+      p()->proc.soul_fragment_from_broken_spirit->occur();
+      p()->spawn_soul_fragment( soul_fragment::LESSER );
+    }
+
     // Eternal Hunt buff expires ~500ms after Blade Dance is used
 
     if ( p()->buff.eternal_hunt->up() )
