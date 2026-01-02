@@ -893,7 +893,7 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
-  void trigger_spellfire_sphere( specialization_e spec, bool background );
+  void trigger_spellfire_sphere( specialization_e spec, bool background = false );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
@@ -1849,7 +1849,7 @@ public:
     if ( triggers.mana_cascade && p()->specialization() == MAGE_ARCANE )
       p()->trigger_mana_cascade();
 
-    if ( p()->talents.spellfire_spheres.ok() && triggers.spellfire_sphere )
+    if ( triggers.spellfire_sphere )
       p()->trigger_spellfire_sphere( MAGE_ARCANE, background );
   }
 
@@ -2386,7 +2386,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE, background ); // TODO: No clue on how spheres work for fire.
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
     }
 
@@ -2395,7 +2395,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE, background ); // TODO: No clue on how spheres work for fire.
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
       assert( pyromaniac_action );
@@ -6926,7 +6926,7 @@ void mage_t::trigger_spellfire_sphere( specialization_e spec, bool background )
   if ( ( state.sphere_blp_count == options.sphere_blp_threshold ) || ( !background && rng().roll( proc_chance ) ) )
   {
     buffs.spellfire_sphere->trigger();
-    buffs.glorious_incandescence->trigger(); // TODO: This isn't needed for Arcane, keeping it solely for fire; I've also zero clue what triggers the BLP with fire.
+    buffs.glorious_incandescence->trigger();
     state.sphere_blp_count = 0;
   }
 }
