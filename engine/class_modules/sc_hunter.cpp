@@ -4273,6 +4273,8 @@ struct arcane_shot_t : public arcane_shot_base_t
       {
         cc += p()->talents.critical_precision->effectN( 1 ).percent();
       }
+
+      return cc;
   }
 
   timespan_t gcd() const override
@@ -5541,6 +5543,8 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     {
       cc += p()->talents.critical_precision->effectN( 1 ).percent();
     }
+
+    return cc;
   }
 
   timespan_t gcd() const override
