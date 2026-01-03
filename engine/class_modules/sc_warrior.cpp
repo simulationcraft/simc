@@ -2896,7 +2896,7 @@ struct mortal_strike_t : public warrior_attack_t
       td( s->target )->debuffs_executioners_precision->expire();
     }
 
-    if ( p()->talents.arms.bloodletting->ok() && p()->talents.warrior.rend->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting.ok() && p()->talents.warrior.rend.ok() && ( target->health_percentage() < p()->talents.arms.bloodletting->effectN( 3 ).base_value() ) )
     {
       rend_dot->execute_on_target( s->target );
     }
