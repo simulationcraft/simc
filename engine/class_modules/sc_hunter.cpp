@@ -4282,7 +4282,7 @@ struct arcane_shot_t : public arcane_shot_base_t
     timespan_t g = arcane_shot_base_t::gcd();
 
     if ( p()->buffs.precise_shots->check() )
-      g *= 1 + p()->talents.precise_shots_buff->effectN( 6 ).percent();
+      g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
     
     return std::max( min_gcd, g );
   }
@@ -4582,13 +4582,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
 
   double health_threshold_pct;
   razor_fragments_t* razor_fragments = nullptr;
-  double precise_shots_multiplier;
   double blighted_quiver_chance = 0;
 
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
-    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() ),
-    precise_shots_multiplier( p->talents.precise_shots_buff->effectN( 4 ).percent() )
+    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
     if ( p->talents.razor_fragments.ok() )
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
@@ -4667,26 +4665,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     return am;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    if ( precise_shots_multiplier )
-      am *= 1 + p()->buffs.precise_shots->check() * precise_shots_multiplier;
-
-    return am;
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = hunter_ranged_attack_t::gcd();
-
-    if ( p()->buffs.precise_shots->check() )
-      g *= 1 + p()->talents.precise_shots_buff->effectN( 6 ).percent();
-
-    return std::max( min_gcd, g );
-  }
-
   action_state_t* new_state() override
   {
     return new state_t( this, target );
@@ -4696,7 +4674,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::snapshot_state( s, type );
     debug_cast<state_t*>( s )->razor_fragments_up = p()->buffs.razor_fragments->check();
-    debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->talents.headshot.ok() && p()->buffs.precise_shots->up();
   }
 
   bool ready() override
@@ -5552,7 +5529,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     timespan_t g = hunter_ranged_attack_t::gcd();
 
     if ( p()->buffs.precise_shots->check() )
-      g *= 1 + p()->talents.precise_shots_buff->effectN( 6 ).percent();
+      g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
 
     return std::max( min_gcd, g );
   }
@@ -8124,6 +8101,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
+  if ( name == "wild_thrash"           ) return new            wild_thrash_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
   // Blizzard refers to Cobra Shot as Arcane Shot in their Assisted Combat system. 
@@ -8598,6 +8576,7 @@ void hunter_t::init_spells()
     talents.howl_of_the_pack_leader_cooldown_buff         = talents.howl_of_the_pack_leader.ok() ? find_spell( 471877 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_wyvern_summon         = talents.howl_of_the_pack_leader.ok() ? find_spell( 1222271 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_wyvern_buff           = talents.howl_of_the_pack_leader.ok() ? find_spell( 471881 ) : spell_data_t::not_found();
+    //TODO change to child action?
     talents.howl_of_the_pack_leader_boar_charge_trigger   = talents.howl_of_the_pack_leader.ok() ? find_spell( 472020 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_boar_charge_impact    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471936 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_boar_charge_cleave    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471938 ) : spell_data_t::not_found();
@@ -9748,18 +9727,6 @@ double hunter_t::composite_melee_auto_attack_speed() const
 
   if ( buffs.bloodseeker -> check() )
     s /= 1 + buffs.bloodseeker -> check_stack_value();
-
-  if ( talents.trigger_finger->ok() )
-  {
-    // TODO 23/1/25: Trigger Finger is maybe applying another attack speed mod from the effect 2 script separately (multiplicative), so there is always double the expected amount
-    // only one effect is doubled while petless, so mm sees triple the expected amount
-    s /= 1 + talents.trigger_finger->effectN( 1 ).percent();
-
-    if ( pets.main )
-      s /= 1 + talents.trigger_finger->effectN( 2 ).percent();
-    else
-      s /= 1 + talents.trigger_finger->effectN( 2 ).percent() * ( 1 + talents.trigger_finger->effectN( 3 ).percent() );
-  }
 
   s /= 1 + buffs.frenzy_strikes->check_value();
   
