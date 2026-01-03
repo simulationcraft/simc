@@ -704,7 +704,7 @@ public:
     spell_data_ptr_t stomp_cleave;
     spell_data_ptr_t war_orders;
 
-    spell_data_ptr_t wild_thrash; //TODO Not implemented
+    spell_data_ptr_t wild_thrash;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t cobra_shot;
     spell_data_ptr_t cobra_shot_data;
@@ -7386,6 +7386,42 @@ struct a_murder_of_crows_t : public hunter_spell_t
   double cost() const override
   {
     return 0;
+  }
+};
+
+// Wild Thrash =============================================================
+
+struct wild_thrash_t : public hunter_spell_t
+{
+  wild_thrash_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "wild_thrash", p, p->talents.wild_thrash )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    reduced_aoe_targets = 8;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p()->talents.beast_cleave->ok() )
+    {
+      p()->buffs.beast_cleave->trigger();
+
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+        pet->buffs.beast_cleave->trigger();
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_spell_t::composite_da_multiplier( s );
+
+    if ( s->n_targets >= data().effectN( 2 ).base_value() )
+      m *= 1.0 + data().effectN( 1 ).percent();
+
+    return m;
   }
 };
 
