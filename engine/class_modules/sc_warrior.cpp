@@ -254,7 +254,6 @@ public:
     buff_t* shield_charge_movement;
     buff_t* shield_wall;
     buff_t* spell_reflection;
-    buff_t* storm_of_swords;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
     buff_t* whirlwind;
@@ -1018,7 +1017,6 @@ public:
       // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
-      parse_effects( p()->buff.storm_of_swords );
       if( p()->main_hand_weapon.type == WEAPON_2H )
         parse_effects( p()->mastery.master_of_arms );
     }
@@ -3210,10 +3208,10 @@ struct charge_t : public warrior_attack_t
 
 struct slam_t : public warrior_attack_t
 {
-  bool from_Fervor;
+  bool from_fervor;
   int aoe_targets;
   slam_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false ),
+    : warrior_attack_t( "slam", p, p->spell.slam ), from_fervor( false ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -3226,7 +3224,7 @@ struct slam_t : public warrior_attack_t
   }
 
   slam_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->spell.slam ), from_Fervor( false ),
+    : warrior_attack_t( name, p, p->spell.slam ), from_fervor( false ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     background = true;
@@ -3236,6 +3234,16 @@ struct slam_t : public warrior_attack_t
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+    if ( p()->talents.arms.fervor_of_battle.ok() && from_fervor )
+    {
+      m *= 1.0 + p()->talents.arms.fervor_of_battle->effectN( 2 ).percent();
+    }
+    return m;
   }
 
   int n_targets() const override
@@ -3249,7 +3257,7 @@ struct slam_t : public warrior_attack_t
 
   double cost() const override
   {
-    if ( from_Fervor )
+    if ( from_fervor )
       return 0;
 
     return warrior_attack_t::cost();
@@ -3257,7 +3265,7 @@ struct slam_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    if ( from_Fervor )
+    if ( from_fervor )
       return 0;
     return warrior_attack_t::cost();
   }
@@ -3302,7 +3310,7 @@ struct cleave_t : public warrior_attack_t
     if ( p->talents.arms.fervor_of_battle->ok() )
     {
       fervor_slam                               = new slam_t( "slam_cleave_fervor_of_battle", p );
-      fervor_slam->from_Fervor                  = true;
+      fervor_slam->from_fervor                  = true;
       add_child( fervor_slam );
     }
     if ( p->talents.slayer.reap_the_storm->ok() )
@@ -6082,7 +6090,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
       if ( p->talents.arms.fervor_of_battle->ok() )
       {
         fervor_slam                               = new slam_t( "slam_whirlwind_fervor_of_battle", p );
-        fervor_slam->from_Fervor                  = true;
+        fervor_slam->from_fervor                  = true;
         add_child( fervor_slam );
       }
     }
@@ -6103,13 +6111,6 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p()->buff.storm_of_swords->up() )
-    {
-      p()->buff.storm_of_swords->expire();
-    }
-
-    p()->buff.storm_of_swords->trigger();
 
     first_attack->execute_on_target( target );
 
@@ -6957,10 +6958,8 @@ void warrior_t::init_spells()
   talents.arms.die_by_the_sword          = find_talent_spell( talent_tree::SPECIALIZATION, "Die by the Sword" );
   // Row 4
   talents.arms.bloodsurge                = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_ARMS );
-  talents.arms.initiative                = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
   talents.arms.improved_overpower        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Overpower" );
   talents.arms.improved_execute          = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_ARMS );
-  talents.arms.storm_of_swords           = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
   talents.arms.fervor_of_battle          = find_talent_spell( talent_tree::SPECIALIZATION, "Fervor of Battle" );
   // Row 5
   talents.arms.tactician                 = find_talent_spell( talent_tree::SPECIALIZATION, "Tactician" );
@@ -7741,9 +7740,6 @@ void warrior_t::create_buffs()
 
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
-
-  buff.storm_of_swords = make_buff( this, "storm_of_swords", talents.arms.storm_of_swords->effectN( 1 ).trigger() )
-                                  ->set_chance( talents.arms.storm_of_swords->proc_chance() );
 
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_cooldown(timespan_t::zero());
