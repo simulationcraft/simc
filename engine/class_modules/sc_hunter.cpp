@@ -813,7 +813,7 @@ public:
     spell_data_ptr_t deathblow; //TODO Talent is unique to MM, but the effect can be achieved as DR
     spell_data_ptr_t deathblow_buff; //TODO Moved baseline with hero talent tie ins
 
-    spell_data_ptr_t take_aim_1; //TODO Not implemented 
+    spell_data_ptr_t take_aim_1;
     spell_data_ptr_t unmatched_precision;
     spell_data_ptr_t bullseye;
     spell_data_ptr_t bullseye_buff;
@@ -5992,6 +5992,9 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
 
       p()->buffs.trick_shots->up(); // Benefit tracking
+
+      if ( p()->talents.take_aim_1.ok() )
+        p()->cooldowns.aimed_shot->adjust( -p()->talents.take_aim_1->effectN( 2 ).time_value() );
     }
 
     void impact( action_state_t* state ) override
