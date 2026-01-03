@@ -564,10 +564,8 @@ public:
       player_talent_t die_by_the_sword;
       // Row 4
       player_talent_t bloodsurge;
-      player_talent_t initiative;  // NYI
       player_talent_t improved_overpower;
       player_talent_t improved_execute;
-      player_talent_t storm_of_swords;
       player_talent_t fervor_of_battle;
       // Row 5
       player_talent_t tactician;
@@ -3397,6 +3395,8 @@ struct colossus_smash_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
+    aoe = -1;
+    reduced_aoe_targets = p->talents.arms.colossus_smash->effectN( 3 ).base_value();
   }
 
   void impact( action_state_t* s ) override
