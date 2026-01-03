@@ -8951,6 +8951,7 @@ struct consumption_leech_damage_t final : public death_knight_spell_t
    empower_level( 0 )
   {
     background = true;
+    aoe = -1;
 
     consumption_leech_heal = get_action<consumption_leech_heal_t>("consumption_leech_heal", p );
   }
@@ -8981,6 +8982,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       leech_damage_accumulator( 0 ),
       bp_consumption_multi( 0 )
     {
+      aoe = -1;
       reduced_aoe_targets = p->spell.consumption_damage->effectN( 3 ).base_value();
       background = false;
 
