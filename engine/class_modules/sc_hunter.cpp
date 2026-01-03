@@ -4264,6 +4264,17 @@ struct arcane_shot_t : public arcane_shot_base_t
     return c;
   }
 
+  double composite_crit_chance() const override
+  {
+      double cc = arcane_shot_base_t::composite_crit_chance();
+
+      //TODO confirm if crit bonus stacks with Windrunner Quiver
+      if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
+      {
+        cc += p()->talents.critical_precision->effectN( 1 ).base_value();
+      }
+  }
+
   timespan_t gcd() const override
   {
     timespan_t g = arcane_shot_base_t::gcd();
