@@ -23,12 +23,12 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 80 ) ? "feast_of_the_divine_day" : "feast_of_the_divine_day";
+  return ( p->true_level > 80 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 80 ) ? "crystallized" : "crystallized";
+  return ( p->true_level > 80 ) ? "void_touched" : "crystallized";
 }
 
 std::string temporary_enchant( const player_t* p )

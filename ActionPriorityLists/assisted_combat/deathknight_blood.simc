@@ -11,25 +11,21 @@ actions+=/call_action_list,name=assisted_combat
 actions.assisted_combat=death_strike,if=health.pct<=50
 actions.assisted_combat+=/dancing_rune_weapon,if=target.distance<=20
 actions.assisted_combat+=/death_and_decay,if=target.distance<=6&buff.death_and_decay.down
-actions.assisted_combat+=/bonestorm,if=active_enemies>1&buff.bone_shield.stack>=5
 actions.assisted_combat+=/reapers_mark,if=debuff.reapers_mark_debuff.down
 actions.assisted_combat+=/marrowrend,if=buff.bone_shield.stack<=6
 actions.assisted_combat+=/marrowrend,if=buff.bone_shield.down
 actions.assisted_combat+=/marrowrend,if=buff.exterminate.up
-actions.assisted_combat+=/soul_reaper,if=buff.reaper_of_souls.up
 actions.assisted_combat+=/heart_strike,if=buff.gift_of_the_sanlayn.up&target.distance<=8
 actions.assisted_combat+=/heart_strike,if=buff.vampiric_strike.up&target.distance<=8
-actions.assisted_combat+=/consumption,if=target.distance<=5
-actions.assisted_combat+=/soul_reaper,if=target.health.pct<=35
+actions.assisted_combat+=/blood_boil,if=target.distance<=10&active_dot.blood_plague<=0&charges>=2
 actions.assisted_combat+=/death_strike,if=runic_power>=80
-actions.assisted_combat+=/blooddrinker
-actions.assisted_combat+=/blood_boil,if=target.distance<=10&active_dot.blood_plague<=0
+actions.assisted_combat+=/consumption,if=target.distance<=5
 actions.assisted_combat+=/heart_strike
 actions.assisted_combat+=/deaths_caress
 actions.assisted_combat+=/heart_strike,if=target.distance<=12
 actions.assisted_combat+=/death_and_decay
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
@@ -37,5 +33,4 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 actions.cooldowns+=/vampiric_blood
-actions.cooldowns+=/tombstone,if=buff.bone_shield.stack>5
 actions.cooldowns+=/raise_dead

@@ -786,8 +786,6 @@ public:
   bool deprecated_dnd_expression;
   // for runeforge.name expressions that call death knight runeforges instead of shadowlands legendary runeforges
   bool runeforge_expression_warning;
-  // Checking if Soul Reaper is caastable
-  bool soul_reaper_castable;
 
   // Counters
   unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
@@ -879,6 +877,7 @@ public:
     propagate_const<buff_t*> forbidden_sacrifice;
     propagate_const<buff_t*> forbidden_ritual;
     propagate_const<buff_t*> scythe_of_decay;
+    propagate_const<buff_t*> reaping;
     // Tier Sets
     propagate_const<buff_t*> blighted;
 
@@ -1889,7 +1888,6 @@ public:
       runic_power_decay( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
-      soul_reaper_castable( false ),
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
@@ -3063,8 +3061,14 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   {
     timespan_t t = pet_melee_attack_t<T>::execute_time();
 
-    if ( this->first && this->weapon->slot == SLOT_OFF_HAND )
-      return t * 0.5;
+    // Randomize first swing time
+    if ( this->first )
+    {
+      if ( this->weapon->slot == SLOT_OFF_HAND )
+        return t * pet()->rng().range( 0.5 );
+      else
+        return pet()->rng().range( 0_ms, t );
+    }
     else
       return t;
   }
@@ -5333,7 +5337,8 @@ struct death_knight_empower_action_state_t : public Base, public Data
   void copy_state( const action_state_t* o ) override
   {
     Base::copy_state( o );
-    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
+    *static_cast<Data*>( this ) =
+        *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
   }
 };
 
@@ -5357,8 +5362,7 @@ public:
   empower_e max_empower;
 
   death_knight_empowered_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : BASE( name, p, spell ),
-      max_empower( empower_e::EMPOWER_3 )
+    : BASE( name, p, spell ), max_empower( empower_e::EMPOWER_3 )
   {
     BASE::can_have_one_button_penalty = false;
   }
@@ -5386,19 +5390,19 @@ struct death_knight_empowered_release_t : public death_knight_empowered_base_t<B
 
   death_knight_empowered_release_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_empowered_base_t<BASE>( name, p, spell )
-    {
-      base::dual = true;
-    }
+  {
+    base::dual = true;
+  }
 
-    empower_e empower_level( const action_state_t* s ) const
-    {
-      return base::cast_state( s )->empower;
-    }
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return base::cast_state( s )->empower;
+  }
 
-    int empower_value( const action_state_t* s ) const
-    {
-      return static_cast<int>( base::cast_state( s )->empower );
-    }
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( base::cast_state( s )->empower );
+  }
 };
 
 template <class BASE>
@@ -5429,17 +5433,18 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     }
     else
     {
-      empower_to       = std::min( static_cast<int>( base::max_empower ), empower_to );
+      empower_to            = std::min( static_cast<int>( base::max_empower ), empower_to );
       base_empower_duration = base_time_to_empower( static_cast<empower_e>( empower_to ) );
     }
 
     // apply parsed modifiers
-    base::dot_duration = base::player->get_passive_value( base::data(), "duration" );
+    base::dot_duration      = base::player->get_passive_value( base::data(), "duration" );
     base::dot_duration.base = base_empower_duration;
-    base::base_tick_time = base::dot_duration;
+    base::base_tick_time    = base::dot_duration;
   }
 
-  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell, std::string_view options_str )
+  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell,
+                                   std::string_view options_str )
     : base( name, p, spell ),
       release_spell( nullptr ),
       dummy_stat( p->get_stats( "dummy_stat" ) ),
@@ -5466,9 +5471,9 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    release_spell             = get_empower_release_action<T>( n, base::p() );
-    release_spell->stats      = base::stats;
-    release_spell->background = false;
+    this->release_spell             = get_empower_release_action<T>( n, base::p() );
+    this->release_spell->stats      = base::stats;
+    this->release_spell->background = false;
   }
 
   timespan_t base_time_to_empower( empower_e emp ) const
@@ -8423,7 +8428,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() )
     {
-      p()->soul_reaper_castable = true;
+      p()->buffs.reaping->trigger();
       p()->cooldown.soul_reaper->reset( false );
     }
 
@@ -8977,6 +8982,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       bp_consumption_multi( 0 )
     {
       reduced_aoe_targets = p->spell.consumption_damage->effectN( 3 ).base_value();
+      background = false;
 
       consumption_leech_damage = get_action<consumption_leech_damage_t>("consumption_leech", p );
       add_child( consumption_leech_damage );
@@ -12167,7 +12173,7 @@ struct soul_reaper_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    p()->soul_reaper_castable = false;
+    p()->buffs.reaping->decrement();
     int charges               = as<int>( std::floor( p()->cooldown.putrefy->charges_fractional() ) );
     for ( int i = 0; i < charges; i++ )
       p()->background_actions.putrefy_sr->execute();
@@ -12181,7 +12187,7 @@ struct soul_reaper_t final : public death_knight_spell_t
 
   bool target_ready( player_t* tar ) override
   {
-    if ( tar->health_percentage() > data().effectN( 2 ).base_value() && !p()->soul_reaper_castable )
+    if ( tar->health_percentage() > data().effectN( 2 ).base_value() && !p()->buffs.reaping->check() )
       return false;
 
     return death_knight_spell_t::target_ready( tar );
@@ -14955,6 +14961,7 @@ void death_knight_t::spell_lookups()
   spell.pestilence_buff                 = conditional_spell_lookup( talent.unholy.pestilence.ok(), 1271975 );
   spell.pestilence_damage               = conditional_spell_lookup( talent.unholy.pestilence.ok(), 1272116 );
   spell.scythe_of_decay_buff            = conditional_spell_lookup( talent.unholy.scythe_of_decay.ok(), 1282565 );
+  spell.reaping_buff                    = conditional_spell_lookup( talent.unholy.reaping.ok(), 1242654 );
   // Unholy Apex
   spell.forbidden_knowledge_buff = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.necrotic_coil_action     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242174 );
@@ -15165,10 +15172,7 @@ void death_knight_t::init_blizzard_action_list()
       cooldowns->add_action( "raise_dead" );
       break;
     case DEATH_KNIGHT_UNHOLY:
-      cooldowns->add_action( "raise_abomination" );
       cooldowns->add_action( "army_of_the_dead" );
-      cooldowns->add_action( "summon_gargoyle,if=runic_power>30" );
-      cooldowns->add_action( "legion_of_souls" );
       break;
     default:
       break;
@@ -15179,10 +15183,27 @@ void death_knight_t::init_blizzard_action_list()
 parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
     const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 1252004 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == spell.lesser_ghoul_counter->id() )
   {
-    return { "!talent.apocalypse" };
+    if ( rule.condition_value_2 >= 1 )
+      return { "buff.lesser_ghoul_counter.up" };
+    if ( rule.condition_value_2 == 0 )
+      return { "buff.lesser_ghoul_counter.down" };
   }
+
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == spell.lesser_ghoul_buff->id() )
+  {
+    if ( rule.condition_value_2 >= 1 )
+      return { "buff.lesser_ghoul_ready.up" };
+    if ( rule.condition_value_2 == 0 )
+      return { "buff.lesser_ghoul_ready.down" };
+  }
+
+  if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == 194310 )
+    return { "target.health.pct<=0",
+             "Leftover line from old Unholy, references Festering Wounds. Since this can never trigger in game, "
+             "giving it a condition thatll never be met.",
+             true };
 
   return player_t::parse_assisted_combat_rule( rule, step );
 }
@@ -15216,6 +15237,9 @@ std::string death_knight_t::aura_expr_from_spell_id( unsigned int spell_id, bool
 {
   std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
   if ( aura_expr == "debuff.reapers_mark" )
+    aura_expr.append( "_debuff" );
+
+  if ( aura_expr == "debuff.festering_scythe" )
     aura_expr.append( "_debuff" );
 
   return aura_expr;
@@ -15762,7 +15786,7 @@ void death_knight_t::create_buffs()
 
   buffs.frost_mid1_4pc_buff = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ), this, "mid1_4pc_buff",
                                              sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() )
-                                  ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                                     cooldown.empower_rune_weapon->adjust_max_charges( -1 );
                                   } );
 
@@ -15829,6 +15853,8 @@ void death_knight_t::create_buffs()
 
   buffs.scythe_of_decay =
       make_fallback( talent.unholy.scythe_of_decay.ok(), this, "scythe_of_decay", spell.scythe_of_decay_buff );
+
+  buffs.reaping = make_fallback( talent.unholy.reaping.ok(), this, "reaping", spell.reaping_buff );
 
   // Tier Sets
   buffs.blighted =
