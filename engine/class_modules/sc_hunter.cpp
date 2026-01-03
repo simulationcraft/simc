@@ -4266,12 +4266,12 @@ struct arcane_shot_t : public arcane_shot_base_t
 
   double composite_crit_chance() const override
   {
-      double cc = arcane_shot_base_t::composite_crit_chance();
+      double cc = arcane_shot_t::composite_crit_chance();
 
       //TODO confirm if crit bonus stacks with Windrunner Quiver
       if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
       {
-        cc += p()->talents.critical_precision->effectN( 1 ).base_value();
+        cc += p()->talents.critical_precision->effectN( 1 ).percent();
       }
   }
 
@@ -5530,6 +5530,17 @@ struct multishot_mm_t: public hunter_ranged_attack_t
       c *= 1 + p()->talents.precise_shots_buff->effectN( 3 ).percent();
 
     return c;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    // TODO confirm if crit bonus stacks with Windrunner Quiver
+    if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
+    {
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
+    }
   }
 
   timespan_t gcd() const override
