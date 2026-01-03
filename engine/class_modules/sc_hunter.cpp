@@ -585,6 +585,8 @@ public:
     gain_t* terms_of_engagement;
 
     gain_t* invigorating_pulse;
+
+    gain_t* serpentine_strikes;
   } gains;
 
   struct procs_t
@@ -728,7 +730,8 @@ public:
     spell_data_ptr_t dire_cleave;
     spell_data_ptr_t dire_command;
     spell_data_ptr_t jagged_wounds; //TODO Not implemented
-    spell_data_ptr_t serpentine_strikes; //TODO Not implemented
+    spell_data_ptr_t serpentine_strikes;
+    spell_data_ptr_t serpentine_strikes_energize;
     spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
 
@@ -5215,6 +5218,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 struct cobra_shot_base_t: public hunter_ranged_attack_t
 {
   const timespan_t kill_command_reduction;
+  const double serpentine_strikes_amount = p()->talents.serpentine_strikes_energize->effectN( 1 ).base_value();
 
   cobra_shot_base_t( hunter_t* p, util::string_view n, const spell_data_t* s ): 
     hunter_ranged_attack_t( n, p, s ),
@@ -5268,6 +5272,14 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::schedule_travel( s );
 
     p() -> cooldowns.kill_command -> adjust( kill_command_reduction );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( s->result == RESULT_CRIT && p()->talents.serpentine_strikes.ok() ) 
+      p()->resource_gain( RESOURCE_FOCUS, serpentine_strikes_amount, p()->gains.serpentine_strikes, this );
   }
 };
 
@@ -8262,6 +8274,7 @@ void hunter_t::init_spells()
     talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY );
     talents.jagged_wounds                     = find_talent_spell( talent_tree::SPECIALIZATION, "Jagged Wounds", HUNTER_BEAST_MASTERY );
     talents.serpentine_strikes                = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Strikes", HUNTER_BEAST_MASTERY );
+    talents.serpentine_strikes_energize       = talents.serpentine_strikes.ok() ? find_spell( 1282710 ) : spell_data_t::not_found();
     talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
 
@@ -9201,6 +9214,8 @@ void hunter_t::init_gains()
   gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
 
   gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
+
+  gains.serpentine_strikes        = get_gain( "Serpentine Strikes" );
 }
 
 void hunter_t::init_position()
