@@ -804,7 +804,7 @@ public:
     spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
 
     spell_data_ptr_t target_acquisition;
-    spell_data_ptr_t critical_precision; //TODO Not implemented
+    spell_data_ptr_t critical_precision;
     spell_data_ptr_t no_scope;
     spell_data_ptr_t feathered_frenzy;
     spell_data_ptr_t lethality; //TODO Not implemented
