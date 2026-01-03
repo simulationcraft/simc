@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Test
         run:
-          echo "${{github.ref}} ${{github.event.repository.default_branch}} ${{github.ref_name}} ${{github.base_ref}} ${{github.head_ref}}"
+          echo "${{github.event.repository.default_branch}} ${{github.base_ref}} ${{github.sha}}"
 
   build:
     uses: ./.github/workflows/build.yml
@@ -29,7 +29,7 @@ jobs:
       cache-sha: ${{ github.sha }}
 
   spec-test:
-    needs: [ubuntu-clang-build]
+    needs: [build]
     if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/spec_test.yml
     with:
@@ -38,7 +38,7 @@ jobs:
       is-ptr: false
 
   spec-test-ptr:
-    needs: [spec-test, ubuntu-clang-build]
+    needs: [spec-test]
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -46,14 +46,14 @@ jobs:
       is-ptr: true
 
   ubuntu-run:
-    needs: [ubuntu-clang-build, ubuntu-gcc-build]
+    needs: [build]
     if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/ubuntu_run.yml
     with:
       cache-sha: ${{ github.sha }}
 
   update-generated-files:
-    needs: [spec-test]
+    needs: [build]
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.base_ref == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml
     with:
