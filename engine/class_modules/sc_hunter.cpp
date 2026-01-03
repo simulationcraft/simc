@@ -822,7 +822,7 @@ public:
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t eagles_accuracy;
 
-    spell_data_ptr_t take_aim_2; //TODO Not implemented 
+    spell_data_ptr_t take_aim_2;
     spell_data_ptr_t focused_aim;
     spell_data_ptr_t bulletstorm;
     spell_data_ptr_t bulletstorm_buff;
@@ -832,7 +832,7 @@ public:
     spell_data_ptr_t volley_dmg;
     spell_data_ptr_t focus_fire; //TODO Not implemented
 
-    spell_data_ptr_t take_aim_3; //TODO Not implemented 
+    spell_data_ptr_t take_aim_3;
     spell_data_ptr_t windrunner_quiver;
     spell_data_ptr_t incendiary_ammunition;
     spell_data_ptr_t double_tap;
@@ -5625,7 +5625,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double cm = hunter_ranged_attack_t::composite_crit_damage_bonus_multiplier();
 
-    cm *= 1 + p()->buffs.bulletstorm->check() * p()->talents.bulletstorm_buff->effectN( 2 ).percent();
+    if ( p()->talents.incendiary_ammunition.ok() )
+      cm *= 1 + p()->buffs.bulletstorm->check() * p()->talents.bulletstorm_buff->effectN( 2 ).percent();
+
+    if ( p()->talents.take_aim_2.ok() )
+      cm *= 1 + p()->talents.take_aim_2->effectN( 4 ).percent() * p()->cache.attack_crit_chance();
 
     return cm;
   }
