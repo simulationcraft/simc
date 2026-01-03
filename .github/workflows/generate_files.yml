@@ -2,10 +2,6 @@ name: generate-files
 
 on:
   workflow_call:
-    inputs:
-      cache-sha:
-        type: string
-        required: true
 
 jobs:
   update-generated-files:
@@ -21,12 +17,12 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ubuntu-clang++-15-for_run-${{ inputs.cache-sha }}-cpp-17
+          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
       - uses: actions/checkout@v4
 
       - name: Setup
-        run: echo "SHORT_SHA=$(git rev-parse --short ${{ inputs.cache-sha }})" >> $GITHUB_ENV
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Generate APL Modules
         if: steps.cache.outputs.cache-hit == 'true'
@@ -38,7 +34,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ActionPriorityLists
-          pattern: apl-${{ inputs.cache-sha }}-*
+          pattern: apl-${{ github.sha }}-*
           merge-multiple: true
 
       - name: Generate Profiles
@@ -75,4 +71,4 @@ jobs:
       - name: Cleanup APL Dumps
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: apl-${{ inputs.cache-sha }}-*
+          name: apl-${{ github.sha }}-*

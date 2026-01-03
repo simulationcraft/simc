@@ -16,17 +16,10 @@ env:
   CCACHE_GENERATION: 0 # bump if you need to "clean" ccache
 
 jobs:
-  test-job:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Test
-        run:
-          echo "${{github.event.repository.default_branch}} ${{github.base_ref}} ${{github.sha}}"
-
   build:
     uses: ./.github/workflows/build.yml
     with:
-      cache-sha: ${{ github.sha }}
+      do-test: ${{ github.base_ref == github.event.repository.default_branchy || github.base_ref == 'midnight' }}
 
   spec-test:
     needs: [build]
@@ -34,28 +27,23 @@ jobs:
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-      cache-sha: ${{ github.sha }}
       is-ptr: false
 
   spec-test-ptr:
-    needs: [spec-test]
+    needs: [build]
+    if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-      cache-sha: ${{ github.sha }}
       is-ptr: true
 
   ubuntu-run:
     needs: [build]
     if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/ubuntu_run.yml
-    with:
-      cache-sha: ${{ github.sha }}
 
+  # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
     needs: [build]
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.base_ref == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml
-    with:
-      cache-sha: ${{ github.sha }}
-      do-test: github.base_ref == github.event.repository.default_branchy || github.base_ref == 'midnight'

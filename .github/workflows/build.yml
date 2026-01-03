@@ -3,21 +3,11 @@ name: build
 on:
   workflow_call:
     inputs:
-      cache-sha:
-        type: string
-        required: true
       do-test:
         type: boolean
         required: true
 
 jobs:
-  test-job-2:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Test-2
-        run:
-          echo "${{github.event.repository.default_branch}} ${{github.base_ref}} ${{github.sha}}"
-
   ubuntu-gcc-build:
     name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
     runs-on: ${{ matrix.os }}
@@ -43,7 +33,7 @@ jobs:
           CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
         with:
           path: ${{ runner.workspace }}/.ccache
-          key: ${{ env.CCACHE_PREFIX }}-${{ inputs.cache-sha }}
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
           restore-keys: ${{ env.CCACHE_PREFIX }}-
 
       - name: Install deps
@@ -77,7 +67,7 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
     name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
@@ -104,7 +94,7 @@ jobs:
           CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
         with:
           path: ${{ runner.workspace }}/.ccache
-          key: ${{ env.CCACHE_PREFIX }}-${{ inputs.cache-sha }}
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
           restore-keys: ${{ env.CCACHE_PREFIX }}-
 
       - name: Install deps
@@ -144,7 +134,7 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   build-osx:
     name: macos-latest
@@ -156,7 +146,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: inputs.do-test
+        if: inputs.do-test == 'true'
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -193,5 +183,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: matrix.runSmokeTest && inputs.do-test
+        if: matrix.runSmokeTest && inputs.do-test == 'true'
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
