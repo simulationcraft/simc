@@ -8979,7 +8979,6 @@ struct consumption_leech_damage_t final : public death_knight_spell_t
    empower_level( 0 )
   {
     background = true;
-    aoe = -1;
 
     consumption_leech_heal = get_action<consumption_leech_heal_t>("consumption_leech_heal", p );
   }
@@ -9020,6 +9019,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
 
     void impact( action_state_t* state ) override
     {
+      leech_damage_accumulator = 0;
       death_knight_empowered_release_spell_t::impact( state );
 
       switch ( empower_value( state ) )
@@ -9085,6 +9085,10 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
           drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
         }
       }
+
+      debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( state );
+      consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
+      consumption_leech_damage->execute_on_target( state->target );
     }
 
     void execute() override
@@ -9093,10 +9097,6 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       bp_consumption_multi = 0;
 
       death_knight_empowered_release_spell_t::execute();
-
-      debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( execute_state );
-      consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
-      consumption_leech_damage->execute_on_target( p()->target );
     }
     private:
       double leech_damage_accumulator;
@@ -10756,7 +10756,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
 
     if ( p->talent.blood.boiling_point.ok() )
-      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
+      boiling_point_proc_chance = 0.15;
   }
 
   int n_targets() const override
@@ -10777,11 +10777,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
 
-    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
-    {
+    // For some reason, boiling point seems to be on a two roll system.
+    // First roll checks only for first target
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance ) )
       p()->buffs.boiling_point->trigger();
-      boiling_point_proc_attempts = 0;
-    }
+
+    // Second roll, multiplies proc chance by number of targets -1
+    if ( p()->talent.blood.boiling_point.ok() && p()->sim->target_non_sleeping_list.size() > 1 &&
+            p()->rng().roll( boiling_point_proc_chance * ( p()->sim->target_non_sleeping_list.size() - 1 ) ) )
+      p()->buffs.boiling_point->trigger();
 
     if ( p()->talent.blood.dance_of_midnight_1.ok() )
       p()->buffs.dance_of_midnight_1->expire();
