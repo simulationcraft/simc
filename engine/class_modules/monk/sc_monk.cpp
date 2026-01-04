@@ -3636,15 +3636,35 @@ struct celestial_conduit_t : public monk_spell_t
 
 struct zenith_t : public monk_spell_t
 {
+  struct zenith_stomp_t : public monk_spell_t
+  {
+    zenith_stomp_t( monk_t *player ) : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp_damage )
+    {
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    }
+  };
+
+  action_t *zenith_stomp;
+
   zenith_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp( nullptr )
   {
     parse_options( options_str );
+
+    if ( player->talent.monk.zenith_stomp->ok() )
+    {
+      zenith_stomp = new zenith_stomp_t( player );
+      add_child( zenith_stomp );
+    }
   }
 
   void execute() override
   {
     monk_spell_t::execute();
+
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
 
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
@@ -5109,6 +5129,7 @@ void monk_t::init_spells()
     talent.monk.profound_rebuttal            = _CT( "Profound Rebuttal" );
     talent.monk.summon_black_ox_statue       = _CT( "Summon Black Ox Statue" );
     talent.monk.zenith_stomp                 = _CT( "Zenith Stomp" );
+    talent.monk.zenith_stomp_damage          = find_spell( 1272696 );
     talent.monk.ironshell_brew               = _CT( "Ironshell Brew" );
     talent.monk.expeditious_fortification    = _CT( "Expeditious Fortification" );
     talent.monk.diffuse_magic                = _CT( "Diffuse Magic" );
@@ -5831,7 +5852,8 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
-  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith );
+  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith )
+                    ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );

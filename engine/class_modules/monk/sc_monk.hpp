@@ -734,6 +734,7 @@ public:
       player_talent_t profound_rebuttal;
       player_talent_t summon_black_ox_statue;  // Brewmaster
       player_talent_t zenith_stomp;            // Windwalker
+      const spell_data_t *zenith_stomp_damage;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;
