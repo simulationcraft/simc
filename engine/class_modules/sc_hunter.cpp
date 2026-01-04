@@ -632,7 +632,7 @@ public:
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
     spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
 
-    spell_data_ptr_t precision_strikes; //TODO Not implemented
+    spell_data_ptr_t precision_strikes;
     spell_data_ptr_t counter_shot;
     spell_data_ptr_t muzzle;
     spell_data_ptr_t serrated_tips;
@@ -721,7 +721,7 @@ public:
     spell_data_ptr_t laceration_bleed;
     spell_data_ptr_t kill_cleave;
     spell_data_ptr_t training_expert;
-    spell_data_ptr_t the_beast_within; //TODO Not implemented
+    spell_data_ptr_t the_beast_within;
     spell_data_ptr_t thrill_of_the_hunt;
     spell_data_ptr_t pack_tactics;
     spell_data_ptr_t barbed_scales;
@@ -740,7 +740,7 @@ public:
     spell_data_ptr_t frenzy; //TODO Not implemented
     spell_data_ptr_t killer_instinct;
 
-    spell_data_ptr_t natures_ally_2; //TODO Not implemented
+    spell_data_ptr_t natures_ally_2;
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t heart_of_the_pack; //TODO Not implemented
@@ -776,7 +776,7 @@ public:
     spell_data_ptr_t precise_shots;
     spell_data_ptr_t precise_shots_buff;
 
-    spell_data_ptr_t quick_draw; //TODO Not implemented
+    spell_data_ptr_t quick_draw; //TODO implement move speed buff?
     spell_data_ptr_t lock_and_load; // TODO how does its blp work
     spell_data_ptr_t lock_and_load_buff;
 
