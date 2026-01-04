@@ -10728,7 +10728,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
 
     if ( p->talent.blood.boiling_point.ok() )
-      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
+      boiling_point_proc_chance = 0.15;
   }
 
   int n_targets() const override
@@ -10749,11 +10749,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
 
-    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
-    {
+    // For some reason, boiling point seems to be on a two roll system.
+    // First roll checks only for first target
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance ) )
       p()->buffs.boiling_point->trigger();
-      boiling_point_proc_attempts = 0;
-    }
+
+    // Second roll, multiplies proc chance by number of targets -1
+    if ( p()->talent.blood.boiling_point.ok() && p()->sim->target_non_sleeping_list.size() > 1 &&
+            p()->rng().roll( boiling_point_proc_chance * ( p()->sim->target_non_sleeping_list.size() - 1 ) ) )
+      p()->buffs.boiling_point->trigger();
 
     if ( p()->talent.blood.dance_of_midnight_1.ok() )
       p()->buffs.dance_of_midnight_1->expire();
