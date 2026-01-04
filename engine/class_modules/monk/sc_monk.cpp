@@ -3666,7 +3666,6 @@ struct zenith_t : public monk_spell_t
 
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
-    p()->resource_gain( RESOURCE_CHI, data().effectN( 9 ).base_value(), p()->gain.zenith );
     p()->buff.stand_ready->trigger();
   }
 };
