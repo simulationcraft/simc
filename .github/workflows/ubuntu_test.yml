@@ -8,7 +8,7 @@ env:
   SIMC_ARGS: output=/dev/null html=/dev/null json=/dev/null
 
 jobs:
-  ubuntu-run:
+  ubuntu-test:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     env:
