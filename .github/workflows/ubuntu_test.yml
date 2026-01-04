@@ -1,4 +1,4 @@
-name: ubuntu-run
+name: ubuntu-test
 
 on:
   workflow_call:

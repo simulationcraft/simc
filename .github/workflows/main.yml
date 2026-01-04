@@ -37,13 +37,13 @@ jobs:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
       is-ptr: true
 
-  ubuntu-run:
+  ubuntu-test:
     needs: [build]
     if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/ubuntu_run.yml
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
-    needs: [build]
+    needs: [build, spec-test]
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.base_ref == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml
