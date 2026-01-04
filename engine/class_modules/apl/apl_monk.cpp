@@ -212,10 +212,10 @@ std::string monk_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self
   {
     switch ( spell_id )
     {
-      case 443421:  // Heart of the Jade Serpent Strike of the Windlord Cooldown Reduction
-        return "buff.heart_of_the_jade_serpent_cdr";
-      case 443616:  // Heart of the Jade Serpent Conduit of the Celestial Cooldown Reduction
-        return "buff.heart_of_the_jade_serpent_cdr_celestial";
+      case 443616:
+        return "buff.heart_of_the_jade_serpent_unity_within";
+      case 1238904:
+        return "buff.heart_of_the_jade_serpent_yulons_avatar";
     }
   }
 
