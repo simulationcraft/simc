@@ -548,6 +548,7 @@ struct sim_t : private sc_thread_t
   bool report_all_variables;
   int report_rng;
   int hosted_html;
+  int offline;
   int save_raid_summary;
   int save_gear_comments;
   int statistics_level;

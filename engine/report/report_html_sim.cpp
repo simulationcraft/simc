@@ -1284,7 +1284,8 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
       os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
     }
 
-    os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";
+    if ( !sim.offline )
+      os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";
   }
 
   if ( sim.hosted_html )
