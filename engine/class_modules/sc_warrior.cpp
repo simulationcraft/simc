@@ -1017,7 +1017,7 @@ public:
       // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
-      if( p()->main_hand_weapon.type == WEAPON_2H )
+      if( p()->main_hand_weapon.group() == WEAPON_2H )
         parse_effects( p()->mastery.master_of_arms );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
@@ -1944,7 +1944,7 @@ struct auto_attack_t : public warrior_attack_t
     ignore_false_positive = usable_while_channeling = true;
     range = 5;
 
-    if ( p->main_hand_weapon.type == WEAPON_2H && p->has_shield_equipped() && p->specialization() != WARRIOR_FURY )
+    if ( p->main_hand_weapon.group() == WEAPON_2H && p->has_shield_equipped() && p->specialization() != WARRIOR_FURY )
     {
       sim->errorf( "Player %s is using a 2 hander + shield while specced as Protection or Arms. Disabling autoattacks.",
                    name() );
@@ -8911,7 +8911,7 @@ void warrior_t::parse_player_effects()
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    if( main_hand_weapon.type == WEAPON_2H )
+    if( main_hand_weapon.group() == WEAPON_2H )
       parse_effects( mastery.master_of_arms );
   }
   else if ( specialization() == WARRIOR_FURY )
