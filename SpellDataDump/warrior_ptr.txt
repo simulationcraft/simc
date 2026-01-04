@@ -684,11 +684,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
@@ -907,7 +907,7 @@ Duration         : 30 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=5980)     : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -187.5 (coefficient=-0.75) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: -98.31036 (coefficient=-0.75) | Target: Targeted Enemy (6)
 Description      : Reduces target's attack power by $s1 for $d.
 Tooltip          : Reduces attack power by $s1.
 
@@ -927,7 +927,7 @@ Effects          :
 #1 (id=5981)     : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
 #2 (id=5982)     : School Damage (2): physical | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.09793029 (coefficient=0.286) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 36.55179 (coefficient=0.286) | Target: Targeted Enemy (6)
 Description      : Pummel the target for $s2 damage and interrupt the spell being cast for $d.
 
 Name             : Cripple (desc=Rank 1) (id=18381) [Spell Family (4)] 
@@ -939,7 +939,7 @@ Duration         : 30 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9940)     : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -284.125 (coefficient=-1.1365) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: -148.973 (coefficient=-1.1365) | Target: Targeted Enemy (6)
 Description      : Reduces target enemy's attack power by $s1 for $d.
 Tooltip          : Reduced attack power.
 
@@ -977,7 +977,7 @@ Duration         : 10 seconds
 Attributes       : Do Not Sheath (18), No School Immunities (90), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=10354)    : Apply Aura (6) | Resistance (22) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 16.50404 (coefficient=1.304) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15.4258 (coefficient=1.304) | Misc Value: 1 | Target: Self (1)
 Description      : Increases armor by $s1 for $d.
 Tooltip          : Increased armor.
 
@@ -1037,7 +1037,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1098,9 +1098,9 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -1518,7 +1518,7 @@ Duration         : 20 seconds
 Attributes       : Do Not Sheath (18), No School Immunities (90), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=23324)    : Apply Aura (6) | Resistance (22) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 368.75 (coefficient=1.475) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 193.3437 (coefficient=1.475) | Misc Value: 1 | Target: Self (1)
 Description      : Increases armor by $s1 for $d.
 Tooltip          : Increased armor.
 
@@ -1804,7 +1804,7 @@ Triggered By     : Improved Battle Shout (37536)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=51473)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 183.375 (coefficient=0.7335) | Misc Value: 8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96.14754 (coefficient=0.7335) | Misc Value: 8 | Target: Self (1)
 Description      : Battle Shout grants you up to $s1 additional attack power.
 Tooltip          : Battle Shout grants you up to $s1 additional attack power.
 
@@ -3897,15 +3897,15 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268071)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -6.1365 (coefficient=-0.024546) | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -3.217502 (coefficient=-0.024546) | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield Block (132404)
                    Family Flags: 83
 #2 (id=268133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 6.1365 (coefficient=0.024546) | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.217502 (coefficient=0.024546) | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456), Ignore Pain (1277297)
                    Family Flags: 109
 #3 (id=268762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 10.73875 (coefficient=0.042955) | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.630562 (coefficient=0.042955) | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385059)
                    Family Flags: 103
 Description      : $?s137048[Shield Block now also reduces magic damage taken by $s1%. Ignore Pain now also increases your Armor by $s2%.][]$?s137048&s152276[ Shield Charge now increases Shield Slam, Revenge, and Heroic Strike damage by an additional $s3%.][]
@@ -6460,9 +6460,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6758,9 +6758,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -6827,11 +6827,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -6848,7 +6848,7 @@ Effects          :
 #1 (id=723960)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Deafening Crash
                    Base Value: 2000 | Scaled Value: 2000 | Trigger Spell: 279006 | Target: Self (1)
 #2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7877615 (coefficient=2.300614) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 294.0265 (coefficient=2.300614) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
 #3 (id=752814)   : Dummy (3)
@@ -6911,7 +6911,7 @@ Azerite Power Id : 174
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725007)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Gathering Storm | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 83.9695 (coefficient=0.335878) | PvP Coefficient: 0.5 | Trigger Spell: 273412 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 44.02705 (coefficient=0.335878) | PvP Coefficient: 0.5 | Trigger Spell: 273412 | Target: Self (1)
 #2 (id=725008)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : While $?s152277[Ravager is active][Bladestorming], every $?c2[$288131t1][$273414t1] sec you gain $s2% movement speed and $s1 Strength, stacking. Lasts $273415d.
@@ -6977,7 +6977,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -6989,7 +6989,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -7002,7 +7002,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -7092,7 +7092,7 @@ Azerite Power Id : 226
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728612)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Test of Might | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 23.6825 (coefficient=0.09473) | PvP Coefficient: 0.5 | Trigger Spell: 275531 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.41725 (coefficient=0.09473) | PvP Coefficient: 0.5 | Trigger Spell: 275531 | Target: Self (1)
 #2 (id=728613)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
@@ -7159,7 +7159,7 @@ Triggered By     : Pulverizing Blows (275672)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728800)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Pulverizing Blows | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7100357 (coefficient=2.07362) | PvP Coefficient: 0.5 | Trigger Spell: 275670 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 265.0158 (coefficient=2.07362) | PvP Coefficient: 0.5 | Trigger Spell: 275670 | Target: Self (1)
 Description      : Raging Blow causes every strike of your next Rampage to deal an additional $s1 damage. Stacks up to $275672u times.
 
 Name             : Pulverizing Blows (id=275670) [Spell Family (4), Hidden] 
@@ -7232,7 +7232,7 @@ Triggered By     : Seismic Wave (278497)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seismic Wave | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.260281 (coefficient=9.521472) | PvP Coefficient: 0.5 | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1216.877 (coefficient=9.521472) | PvP Coefficient: 0.5 | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -7358,7 +7358,7 @@ Effects          :
 #1 (id=734680)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lord of War
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 19.78726 (coefficient=57.78759) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7385.455 (coefficient=57.78759) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
                    Family Flags: 23, 62
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$279203s1/10} Rage.
@@ -7377,7 +7377,7 @@ Effects          :
 #1 (id=734698)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Simmering Rage
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 278840 | Target: Self (1)
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5335769 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.1539 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
                    Family Flags: 108
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
@@ -7396,7 +7396,7 @@ Effects          :
 #1 (id=734706)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Callous Reprisal
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 278991 | Target: Self (1)
 #2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.8822927 (coefficient=2.576687) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 329.3096 (coefficient=2.576687) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Revenge (6572), Revenge (1215174)
                    Family Flags: 10
 Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
@@ -7413,9 +7413,9 @@ Azerite Power Id : 441
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734717)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Iron Fortress | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 170 (coefficient=0.68) | PvP Coefficient: 0.5 | Trigger Spell: 279141 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 89.13473 (coefficient=0.68) | PvP Coefficient: 0.5 | Trigger Spell: 279141 | Target: Self (1)
 #2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160 (coefficient=0.64) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 83.89151 (coefficient=0.64) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
 Name             : Crushing Assault (id=278824) [Spell Family (4), Hidden] 
@@ -7602,9 +7602,9 @@ Effects          :
 #1 (id=735376)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bloodsport
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279193 | Target: Self (1)
 #2 (id=735377)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1395448 (coefficient=0.407533) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 52.08413 (coefficient=0.407533) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
 #3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 10.50348 (coefficient=30.67485) | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3920.352 (coefficient=30.67485) | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456), Ignore Pain (1277297)
                    Family Flags: 109
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
@@ -7989,7 +7989,7 @@ Triggered By     : Bastion of Might (287379)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750325)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bastion of Might | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 379.5515 (coefficient=1.518206) | PvP Coefficient: 0.5 | Trigger Spell: 287378 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.0072 (coefficient=1.518206) | PvP Coefficient: 0.5 | Trigger Spell: 287378 | Target: Self (1)
 Description      : Avatar increases your Mastery by $s1 for $287379d, and instantly grants you Ignore Pain.
 
 Name             : Bastion of Might (id=287378) [Spell Family (4), Hidden] 
@@ -8048,7 +8048,7 @@ Effects          :
 #1 (id=751443)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Unbridled Ferocity
                    Base Value: 4000 | Scaled Value: 4000 | Trigger Spell: 288060 | Target: Self (1)
 #2 (id=751444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5335769 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.1539 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
                    Family Flags: 108
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and has a $288060h% chance to grant you Recklessness for ${$s1/1000} sec.
@@ -8085,7 +8085,7 @@ Effects          :
 #1 (id=751474)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288084 | Target: Self (1)
 #2 (id=751475)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.25608 (coefficient=9.509202) | PvP Coefficient: 0.5 | Trigger Spell: 288085 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1215.309 (coefficient=9.509202) | PvP Coefficient: 0.5 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
 Variables        : $rage=${$288087s1/10}
 $damage=${$s2*3}
@@ -8191,7 +8191,7 @@ Triggered By     : Striking the Anvil (288455)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752078)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 4.411463 (coefficient=12.88344) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1646.548 (coefficient=12.88344) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=752079)   : Dummy (3)
                    Base Value: 1500 | Scaled Value: 1500
 Description      : The Tactician effect improves your next Overpower, causing it to deal $s1 additional damage and reduce the remaining cooldown of Mortal Strike by ${$s2/1000}.1 sec.
@@ -8711,7 +8711,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -8927,7 +8927,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Cleave (id=315955) [Spell Family (4)] 
@@ -9460,7 +9460,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Aura Points On Client 
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Stamina (-6)
-                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 346.7088 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Rating: Mastery | Target: Self (1)
 #2 (id=845745)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=880295)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -9550,7 +9550,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immuni
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Stamina (-6)
-                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.666667 | Rating: Mastery | Radius: 0 - 30 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 346.7088 (coefficient=0.017155) | PvP Coefficient: 0.666667 | Rating: Mastery | Radius: 0 - 30 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=816613)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 30 yards | Target: at Self (18) -> At Ally in Area (31)
 #3 (id=880301)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -17102,9 +17102,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
@@ -17693,7 +17693,7 @@ Triggered By     : Godly Rage (1223161)
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1210915)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 255776.1 (coefficient=100) | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 2522.36 (coefficient=100) | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=1210928)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Inflicts $s1 Fire damage to all enemies within $A1 yards, reduced beyond $1223163s2 targets.

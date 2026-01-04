@@ -71,11 +71,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Will of the Forsaken (desc=Racial) (id=7744) 
@@ -193,7 +193,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -482,9 +482,9 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 
@@ -1666,7 +1666,7 @@ Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel 
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Damage Channel Duration (15), Standing (19), Invulnerability (22)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 3 | Scaled Value: 0.02748255 (coefficient=0.024) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 4500 (coefficient=0.024) | Target: Self (1)
                    Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
@@ -4598,9 +4598,9 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268046)   : Apply Aura (6) | Trigger Spell Based on Health% (468): Ironskin Brew Charge | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 16.87525 (coefficient=0.067501) | Misc Value: 1 | Trigger Spell: 128939 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.848064 (coefficient=0.067501) | Misc Value: 1 | Trigger Spell: 128939 | Target: Self (1)
 #2 (id=269052)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.60225 (coefficient=0.018409) | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.413061 (coefficient=0.018409) | Misc Value: 23 | Target: Self (1)
                    Family Flags: 111
 Description      : When you drop below $s1% health, you gain a charge of Ironskin Brew. Ironskin Brew also increases damage dealt by $s2%.
 
@@ -4614,7 +4614,7 @@ Proc Flags       : Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268047)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 9.20475 (coefficient=0.036819) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.826252 (coefficient=0.036819) | Misc Value: 127 | Target: Self (1)
 Description      : Soothing Mist also heals allies around the target for $s1% of the primary target.
 
 Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
@@ -6444,7 +6444,7 @@ Labels           : 95
 Attributes       : Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 21.18463 (coefficient=0.353149) | Rating: Mastery | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+                   Base Value: 0 | Scaled Value: 6.189088 (coefficient=0.353149) | Rating: Mastery | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
 
@@ -6920,9 +6920,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7128,9 +7128,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -7197,11 +7197,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -7235,7 +7235,7 @@ Effects          :
 #1 (id=723910)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Boiling Brew
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272797 | Target: Self (1)
 #2 (id=723911)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3571185 (coefficient=1.042945) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 133.292 (coefficient=1.042945) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Breath of Fire (123725)
                    Family Flags: 125
 Description      : Breath of Fire deals ${$s2*($123725d/$123725t1)} additional damage over its duration, and has a chance to summon a Healing Sphere each time it deals damage.
@@ -7315,7 +7315,7 @@ Triggered By     : Sunrise Technique (273298), Sunrise Technique (275673)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724795)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunrise Technique | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.157484 (coefficient=3.380368) | PvP Coefficient: 0.5 | Trigger Spell: 273292 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 432.0228 (coefficient=3.380368) | PvP Coefficient: 0.5 | Trigger Spell: 273292 | Target: Self (1)
 Description      : Attacking a target with Rising Sun Kick causes your damaging melee abilities to deal $s1 additional Physical damage to that target for $273298d.
 
 Name             : Sunrise Technique (id=273292) [Spell Family (53), Hidden] 
@@ -7370,7 +7370,7 @@ Triggered By     : Overflowing Mists (273348), Overflowing Mists (273354)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724861)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Overflowing Mists | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.680558 (coefficient=4.907976) | PvP Coefficient: 0.5 | Trigger Spell: 273334 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 627.2564 (coefficient=4.907976) | PvP Coefficient: 0.5 | Trigger Spell: 273334 | Target: Self (1)
 Description      : Your Enveloping Mists heal the target for $s1 each time they take damage.
 
 Name             : Overflowing Mists (id=273334) [Spell Family (53), Hidden] 
@@ -7418,7 +7418,7 @@ Triggered By     : Staggering Strikes (273469)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725112)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Staggering Strikes | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.30209 (coefficient=18.40491) | PvP Coefficient: 0.5 | Trigger Spell: 273468 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2352.211 (coefficient=18.40491) | PvP Coefficient: 0.5 | Trigger Spell: 273468 | Target: Self (1)
 Description      : When you Blackout Kick, your Stagger is reduced by $s1.
 
 Name             : Staggering Strikes (id=273468) [Spell Family (53), Hidden] 
@@ -7486,7 +7486,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -7498,7 +7498,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -7511,7 +7511,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -7619,7 +7619,7 @@ Triggered By     : Fit to Burst (275894)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729236)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.430234 (coefficient=18.77914) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2400.04 (coefficient=18.77914) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Drinking Purifying Brew while at Heavy Stagger causes your next $275893u melee abilities to heal you for $s1.
 
 Name             : Fit to Burst (id=275893) [Spell Family (53)] 
@@ -7671,7 +7671,7 @@ Triggered By     : Misty Peaks (276025)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=729339)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Misty Peaks | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 473.569 (coefficient=1.894276) | PvP Coefficient: 0.5 | Trigger Spell: 280386 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.3026 (coefficient=1.894276) | PvP Coefficient: 0.5 | Trigger Spell: 280386 | Target: Self (1)
 Description      : When your Renewing Mists heals an ally, you have a chance to gain $s1 Haste for $276025d.
 
 Name             : Misty Peaks (id=276025) [Spell Family (53)] 
@@ -7703,7 +7703,7 @@ Azerite Power Id : 385
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=732969)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Burst of Life | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 52.93756 (coefficient=154.6012) | PvP Coefficient: 0.5 | Trigger Spell: 287472 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19758.57 (coefficient=154.6012) | PvP Coefficient: 0.5 | Trigger Spell: 287472 | Target: Self (1)
 Description      : Life Cocoon's cooldown is reduced by ${$287472s1/-1000} sec.  When Life Cocoon expires, it releases a burst of mist that restores $s1 health split among the target and nearby allies.
 
 Name             : Burst of Life (id=278564) [Spell Family (53)] 
@@ -7735,7 +7735,7 @@ Azerite Power Id : 383
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734364)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 83.571 (coefficient=0.334284) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43.81811 (coefficient=0.334284) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=734365)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734366)   : Dummy (3)
@@ -7757,7 +7757,7 @@ Effects          :
 #2 (id=734371)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=736014)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.470488 (coefficient=4.294478) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 548.8492 (coefficient=4.294478) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Blackout Kick (205523)
                    Family Flags: 80
 Description      : Blackout Strike deals an additional $s3 damage. Blackout Strike critical hits grant an additional $m2 $Lstack:stacks; of Elusive Brawler.
@@ -7777,7 +7777,7 @@ Effects          :
 #2 (id=734379)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=736011)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.512502 (coefficient=4.417178) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 564.5307 (coefficient=4.417178) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 Description      : Your Vivify heals for an additional $s3. Vivify critical heals reduce the cooldown of your Revival by ${$s2/1000}.1 sec.
@@ -7795,7 +7795,7 @@ Azerite Power Id : 390
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734381)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Pressure Point (Passive) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.403129 (coefficient=9.938649) | PvP Coefficient: 0.5 | Trigger Spell: 278718 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1270.194 (coefficient=9.938649) | PvP Coefficient: 0.5 | Trigger Spell: 278718 | Target: Self (1)
                    Modified By: Brewmaster Monk (462087 effect#2), Mistweaver Monk (462090 effect#2)
 #2 (id=734382)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -7880,7 +7880,7 @@ Effects          :
 #1 (id=736486)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=736487)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7352438 (coefficient=2.147239) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 274.4246 (coefficient=2.147239) | PvP Coefficient: 0.5 | Target: Self (1)
                    Family Flags: 108
 Description      : Your Essence Font's initial heal is increased by $s2 and has a chance to reduce the cooldown of Thunder Focus Tea by $s1 sec.
 
@@ -7901,7 +7901,7 @@ Effects          :
 #3 (id=736549)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=736552)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 4.648265 (coefficient=13.575) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1734.932 (coefficient=13.575) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
 Description      : When Fists of Fury deals damage, it has a $s2% chance to refund $s3 Chi, and it deals $s4 additional damage.
@@ -8134,7 +8134,7 @@ Triggered By     : Straight, No Chaser (285959)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=748082)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 61.06875 (coefficient=0.244275) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.01969 (coefficient=0.244275) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=748083)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Shuffle increases your Armor by $s1.
@@ -8168,9 +8168,9 @@ Triggered By     : Dance of Chi-Ji (286587)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749049)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Dance of Chi-Ji | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.230667 (coefficient=18.19632) | PvP Coefficient: 0.5 | Trigger Spell: 286586 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2325.553 (coefficient=18.19632) | PvP Coefficient: 0.5 | Trigger Spell: 286586 | Target: Self (1)
 #2 (id=756050)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.557665 (coefficient=4.549075) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 581.3876 (coefficient=4.549075) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal $s1 additional damage.
 
 Name             : Dance of Chi-Ji (id=286586) [Spell Family (53), Hidden] 
@@ -8229,7 +8229,7 @@ Triggered By     : Fury of Xuen (287062), Fury of Xuen (287063), Fury of Xuen (3
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749794)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 835.7097 (coefficient=3.342839) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 438.181 (coefficient=3.342839) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your Combo Strikes grant a stacking ${$287062s3/100}.1% chance for your next Fists of Fury to grant $s1 Haste and invoke Xuen, The White Tiger for $287063d.
 
 Name             : Fury of Xuen (id=287062) [Spell Family (53)] 
@@ -8356,7 +8356,7 @@ Triggered By     : Secret Infusion (287831), Secret Infusion (287835), Secret In
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=751061)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Secret Infusion | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 417.855 (coefficient=1.67142) | PvP Coefficient: 0.5 | Trigger Spell: 287830 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 219.0905 (coefficient=1.67142) | PvP Coefficient: 0.5 | Trigger Spell: 287830 | Target: Self (1)
 Description      : After using Thunder Focus Tea, your next spell gives $s1 of a stat for $287831d:
 $@spellname124682: Critical strike
 $@spellname115151: Haste
@@ -8459,7 +8459,7 @@ Triggered By     : Glory of the Dawn (288636), Glory of the Dawn (392959)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752477)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 24.21263 (coefficient=70.71166) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9037.196 (coefficient=70.71166) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=752478)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=754207)   : Dummy (3)
@@ -8944,7 +8944,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -9160,7 +9160,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Alpaca Saddlebags (desc=Racial Passive) (id=317795) [Passive] 
@@ -14208,7 +14208,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 26.6339 (coefficient=77.78283) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9940.916 (coefficient=77.78283) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1031559)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1031560)  : Dummy (3)
@@ -20067,9 +20067,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 

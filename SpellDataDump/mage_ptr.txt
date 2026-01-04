@@ -414,11 +414,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Arcane Missiles (id=7268) [Spell Family (3)] 
@@ -647,9 +647,9 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=5948)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5954572 (coefficient=1.739) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 222.2502 (coefficient=1.739) | Target: Targeted Enemy (6)
 #2 (id=5949)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.04451377 (coefficient=0.13) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 16.61445 (coefficient=0.13) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -669,7 +669,7 @@ Effects          :
 #1 (id=5950)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #2 (id=5951)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.2207883 - 0.3311824 (coefficient=0.806, delta=0.4) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 82.40768 - 123.6115 (coefficient=0.806, delta=0.4) | Target: Targeted Enemy (6)
 Description      : Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -683,10 +683,10 @@ Duration         : 15 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=6142)     : Apply Aura (6) | Damage Taken (14) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: -0.356795 (coefficient=-1.042) | Misc Value: 0x4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -133.1712 (coefficient=-1.042) | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
 #2 (id=6143)     : Apply Aura (6) | Resistance (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7132475 (coefficient=2.083) | Misc Value: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 266.2146 (coefficient=2.083) | Misc Value: 4 | Target: Self (1)
 Description      : Increases Fire resistance by $s2 and reduces all Fire damage taken by up to $s1 for $d.
 Tooltip          : Increased Fire resistance and reduces fire damage taken.
 
@@ -701,7 +701,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=8140)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 357.25 (coefficient=1.429) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 182.6312 (coefficient=1.429) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Fireball (id=16415) [Spell Family (3)] 
@@ -716,9 +716,9 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=8150)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.05448 - 2.511031 (coefficient=6.66666, delta=0.2) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 766.8201 - 937.2245 (coefficient=6.66666, delta=0.2) | Target: Targeted Enemy (6)
 #2 (id=8151)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1027241 (coefficient=0.3) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 38.34104 (coefficient=0.3) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -735,9 +735,9 @@ Proc Chance      : 101%
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=8185)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6420255 (coefficient=1.875) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 239.6315 (coefficient=1.875) | Target: Targeted Enemy (6)
 #2 (id=8186)     : Apply Aura (6) | Damage Taken (14) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1071755 (coefficient=0.313) | Misc Value: 0x4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 40.00249 (coefficient=0.313) | Misc Value: 0x4 | Target: Targeted Enemy (6)
                    Affected School(s): Fire
 Description      : Blasts a target for $s1 Fire damage and increases damage done to target by Fire spells by up to $s2 for $d1.
 
@@ -794,9 +794,9 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9686)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.035159 - 1.330919 (coefficient=3.455, delta=0.25) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 386.3659 - 496.7561 (coefficient=3.455, delta=0.25) | Target: Targeted Enemy (6)
 #2 (id=9687)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.06231927 (coefficient=0.182) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 23.26023 (coefficient=0.182) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -812,7 +812,7 @@ Triggered By     : Galgann's Firehammer (248274)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=9688)     : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4550.238 - 6480.642 (coefficient=22.06176, delta=0.35) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 2326.145 - 3312.994 (coefficient=22.06176, delta=0.35) | Target: Targeted Enemy (6)
 Description      : $@spelldesc248274
 
 Name             : Arcane Blast (id=18091) [Spell Family (3)] 
@@ -826,7 +826,7 @@ Triggered By     : Archeus (265025)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=9697)     : School Damage (2): arcane | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.455258 (coefficient=4.25) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 543.1648 (coefficient=4.25) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Arcane damage.
 
 Name             : Frost Blast (id=18092) [Spell Family (3)] 
@@ -839,7 +839,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9698)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.08956 (coefficient=3.182) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 406.6707 (coefficient=3.182) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Fireball (id=18199) [Spell Family (3)] 
@@ -854,9 +854,9 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9806)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.59793 - 2.054481 (coefficient=5.333333, delta=0.25) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 596.4162 - 766.8208 (coefficient=5.333333, delta=0.25) | Target: Targeted Enemy (6)
 #2 (id=9807)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1141378 (coefficient=0.333333) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 42.60112 (coefficient=0.333333) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -871,7 +871,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9813)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1437.588 - 1588.912 (coefficient=6.053, delta=0.1) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 734.9147 - 812.2742 (coefficient=6.053, delta=0.1) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Frost Blast (id=18276) [Spell Family (3)] 
@@ -882,7 +882,7 @@ Triggered By     : Darrowspike (265174)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=9883)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.185436 (coefficient=3.462) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 442.4556 (coefficient=3.462) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Frost Blast (id=18398) [Spell Family (3)] 
@@ -896,7 +896,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9957)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 304 (coefficient=1.216) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 155.409 (coefficient=1.216) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Fireball (id=18796) [Spell Family (3)] 
@@ -910,9 +910,9 @@ Triggered By     : Fiery War Axe (265000)
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=10322)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.305731 - 2.934567 (coefficient=7.652, delta=0.24) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 860.5979 - 1095.306 (coefficient=7.652, delta=0.24) | Target: Targeted Enemy (6)
 #2 (id=10323)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1191599 (coefficient=0.348) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 44.47561 (coefficient=0.348) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -927,7 +927,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=10564)    : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.610241 - 2.518582 (coefficient=6.029, delta=0.44) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 601.0112 - 940.0431 (coefficient=6.029, delta=0.44) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
@@ -957,7 +957,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1180,7 +1180,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=11803)    : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.510729 (coefficient=4.412) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 563.8689 (coefficient=4.412) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Arcane Blast (id=20883) [Spell Family (3)] 
@@ -1194,7 +1194,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=11815)    : School Damage (2): arcane | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Arcane damage.
 
 Name             : Fireball (id=21159) [Spell Family (3)] 
@@ -1207,9 +1207,9 @@ Triggered By     : Sulfuron Hammer (265240)
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=11979)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7269783 - 0.888529 (coefficient=2.359, delta=0.2) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 271.3396 - 331.6372 (coefficient=2.359, delta=0.2) | Target: Targeted Enemy (6)
 #2 (id=11980)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.0352686 (coefficient=0.103) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 13.16376 (coefficient=0.103) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -1226,9 +1226,9 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=11983)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1482.075 - 1811.425 (coefficient=6.587, delta=0.2) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 757.6573 - 926.0256 (coefficient=6.587, delta=0.2) | Target: Targeted Enemy (6)
 #2 (id=11984)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 81.5 (coefficient=0.326) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 41.66393 (coefficient=0.326) | Target: Targeted Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
 Tooltip          : $s2 Fire damage every $t2 sec.
 
@@ -1256,7 +1256,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=13540)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3014181 - 0.4292925 (coefficient=1.067, delta=0.35) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 112.5022 - 160.2304 (coefficient=1.067, delta=0.35) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Fire damage.
 
 Name             : Chaos Fire (id=24389) [Spell Family (3)] 
@@ -1269,9 +1269,9 @@ Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Gene
 Attributes       : Is Ability (4), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14615)    : Energize Power (30) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2083.25 (coefficient=8.333) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1092.294 (coefficient=8.333) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
 #2 (id=14616)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 833.25 (coefficient=3.333) | SP Coefficient: 1 | Misc Value: 0x4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 436.8913 (coefficient=3.333) | SP Coefficient: 1 | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
 Description      : Restores $s1 mana and increases the spell power of your next Fire spell by $s2.  Effect lasts for $d.
 Tooltip          : Spell power of your next Fire spell increased by $s2.
@@ -1296,7 +1296,7 @@ Triggered By     : Frosty Zap (24392)
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14638)    : Energize Power (30) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 416.75 (coefficient=1.667) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 218.5112 (coefficient=1.667) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
 
 Name             : Improved Counterspell (id=24429) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -1317,7 +1317,7 @@ Duration         : 20 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14741)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1351.25 (coefficient=5.405) | SP Coefficient: 1 | Misc Value: 0x40 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 708.49 (coefficient=5.405) | SP Coefficient: 1 | Misc Value: 0x40 | Target: Self (1)
                    Affected School(s): Arcane
 Description      : Increases arcane spell power by $s1 for $d.
 Tooltip          : Increases arcane spell power by $s1.
@@ -1599,7 +1599,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
@@ -1679,7 +1679,7 @@ Proc Flags       : White Melee, Yellow Melee
 Attributes       : No Aura Icon (60), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=26425)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2812.5 (coefficient=11.25) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1474.655 (coefficient=11.25) | Rating: Crit | Target: Self (1)
 Description      : Increases the critical strike of your next attack made within 4 seconds by 900.
 
 Name             : Mana Surge (id=37445) [Spell Family (3)] 
@@ -1694,10 +1694,10 @@ Proc Chance      : 101%
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=27956)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 750 (coefficient=3) | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=27957)    : Apply Aura (6) | Modify Healing Power (135) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 750 (coefficient=3) | Misc Value: 126 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | Misc Value: 126 | Target: Self (1)
 Description      : Spell damage increased by up to $s1.
 Tooltip          : Spell damage increased by up to $s1.
 
@@ -2846,7 +2846,7 @@ Effects          :
 #1 (id=101964)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Mechanic: Snare | Target: Targeted Enemy (6)
 #2 (id=101965)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.941417 (coefficient=1.55) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1.342158 (coefficient=1.55) | Target: Targeted Enemy (6)
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -3622,7 +3622,7 @@ Effects          :
 #1 (id=193650)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #2 (id=193651)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.2977629 - 0.4466443 (coefficient=1.087, delta=0.4) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 111.1379 - 166.7069 (coefficient=1.087, delta=0.4) | Target: Targeted Enemy (6)
 Description      : Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -3637,7 +3637,7 @@ Category Cooldown: 8 seconds
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=193654)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7337923 (coefficient=2.143) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 273.8828 (coefficient=2.143) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Arcane Missiles (id=145435) [Spell Family (3)] 
@@ -4319,15 +4319,15 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268043)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -7.6705 (coefficient=-0.030682) | Misc Value: 32 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -4.021811 (coefficient=-0.030682) | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Arcane Surge (365362)
                    Family Flags: 51
 #2 (id=268118)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -7.6705 (coefficient=-0.030682) | Misc Value: 33 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -4.021811 (coefficient=-0.030682) | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Arcane Surge (365362)
                    Family Flags: 51
 #3 (id=271754)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 7.6705 (coefficient=0.030682) | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.021811 (coefficient=0.030682) | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Arcane Surge (365362)
                    Family Flags: 51
 Description      : Arcane Power also increases the damage and reduces the cast time and global cooldown of Arcane Blast by $s1%.
@@ -5933,9 +5933,9 @@ Duration         : 5 seconds
 Attributes       : Do Not Sheath (18), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=331819)   : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 25000 (coefficient=100) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 12780.35 (coefficient=100) | Target: Targeted Enemy (6)
 #2 (id=342491)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3750 (coefficient=15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1917.052 (coefficient=15) | Target: Targeted Enemy (6)
 Description      : Deal $sw1 Fire damage and an additional $sw2 Fire damage over $d.
 Tooltip          : Taking $sw2 Fire damage every $t2 sec.
 
@@ -5949,7 +5949,7 @@ Duration         : 5 seconds
 Attributes       : Do Not Sheath (18), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=331848)   : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 41250 (coefficient=165) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 21087.57 (coefficient=165) | Target: Targeted Enemy (6)
 #2 (id=342164)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
 Description      : Deal $s1 Frost damage and reduces the target's movement speed by $s2% for $d.
@@ -5963,7 +5963,7 @@ Range            : 30 yards
 Attributes       : Do Not Sheath (18), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=331849)   : School Damage (2): arcane | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 43750 (coefficient=175) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 22365.61 (coefficient=175) | Target: Targeted Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
 Name             : Phoenix's Flames (desc=Artifact) (id=224637) [Spell Family (3)] 
@@ -7231,9 +7231,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7430,7 +7430,7 @@ Triggered By     : Equipoise (264351)
 Attributes       : Aura Points On Client (268), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=707710)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: -190 | Scaled Value: -56.76273 (coefficient=-0.610932) | Misc Value: 14 | Target: Self (1)
+                   Base Value: -190 | Scaled Value: -11.7826 (coefficient=-0.610932) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 Description      : $@spelldesc286027
@@ -7476,7 +7476,7 @@ Triggered By     : Bonechill Hammer (265176)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=709147)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.185436 (coefficient=3.462) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 442.4556 (coefficient=3.462) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Frost damage.
 
 Name             : Fireblood (desc=Racial) (id=265221) 
@@ -7500,9 +7500,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -7569,11 +7569,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -7757,7 +7757,7 @@ Triggered By     : Arcane Pummeling (270670)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=720338)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcane Pummeling | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5136204 (coefficient=1.5) | PvP Coefficient: 0.5 | Trigger Spell: 270671 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 191.7052 (coefficient=1.5) | PvP Coefficient: 0.5 | Trigger Spell: 270671 | Target: Self (1)
 #2 (id=748104)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Clearcasting procs $s2% more often, and each wave of a Clearcast Arcane Missiles deals $s1 more damage than the previous.
@@ -7822,7 +7822,7 @@ Triggered By     : Flames of Alacrity (272934)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=724148)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of Alacrity | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 206.1418 (coefficient=0.824567) | PvP Coefficient: 0.5 | Trigger Spell: 272933 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 108.0846 (coefficient=0.824567) | PvP Coefficient: 0.5 | Trigger Spell: 272933 | Target: Self (1)
 Description      : Enhanced Pyrotechnics grants an additional $s1 Haste. 
 
 Name             : Flames of Alacrity (id=272933) [Spell Family (3), Hidden] 
@@ -7873,7 +7873,7 @@ Azerite Power Id : 132
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724230)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Packed Ice | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.129813 (coefficient=6.22) | PvP Coefficient: 0.5 | Trigger Spell: 272969 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 794.9376 (coefficient=6.22) | PvP Coefficient: 0.5 | Trigger Spell: 272969 | Target: Self (1)
 Description      : Ice Lance deals an additional $s1 damage to enemies recently damaged by your Frozen Orb.
 
 Name             : Packed Ice (id=272969) [Spell Family (3), Hidden] 
@@ -7967,7 +7967,7 @@ Triggered By     : Brain Storm (273330)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724859)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Brain Storm | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 29.38925 (coefficient=0.117557) | PvP Coefficient: 0.5 | Trigger Spell: 273327 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15.40943 (coefficient=0.117557) | PvP Coefficient: 0.5 | Trigger Spell: 273327 | Target: Self (1)
 Description      : Evocation grants $288466s1 Arcane $lCharge:Charges;, and while channeling Evocation, your Intellect is increased by $s1 every $273329t1 sec. Lasts $273330d.
 
 Name             : Brain Storm (id=273327) [Spell Family (3), Hidden] 
@@ -8034,7 +8034,7 @@ Labels           : 292
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724865)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.037607 (coefficient=8.871165) | Trigger Spell: 273332 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1133.766 (coefficient=8.871165) | Trigger Spell: 273332 | Target: Self (1)
 Description      : Scorch increases the damage the target takes from your Fire Blast by $s1 for $273333d.
 
 Name             : Preheat (id=273332) [Spell Family (3), Hidden] 
@@ -8082,7 +8082,7 @@ Azerite Power Id : 205
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=726666)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 19.76336 (coefficient=57.7178) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7376.535 (coefficient=57.7178) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ice Barrier (11426), Blazing Barrier (235313), Prismatic Barrier (235450), Merely a Setback (449336), Merely a Setback (1246023)
                    Family Flags: 32, 68, 94
 Description      : Your Ice Barrier, Blazing Barrier, and Prismatic Barrier absorb $s1 additional damage.
@@ -8098,7 +8098,7 @@ Azerite Power Id : 214
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=727008)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5.060579 (coefficient=14.77914) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1888.826 (coefficient=14.77914) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=727009)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 Description      : Arcane Barrage deals an additional $s1 damage per Arcane Charge against targets below $s2% health.
@@ -8115,7 +8115,7 @@ Triggered By     : Blaster Master (274598)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=727013)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blaster Master | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 200.5703 (coefficient=0.802281) | PvP Coefficient: 0.5 | Trigger Spell: 274597 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 105.1634 (coefficient=0.802281) | PvP Coefficient: 0.5 | Trigger Spell: 274597 | Target: Self (1)
 Description      : Fire Blast increases your Mastery by $s1 for 3 sec. This effect stacks.
 
 Name             : Blaster Master (id=274597) [Spell Family (3), Hidden] 
@@ -8165,7 +8165,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -8177,7 +8177,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -8190,7 +8190,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -8229,7 +8229,7 @@ Triggered By     : Trailing Embers (277703)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732956)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5587854 (coefficient=1.631902) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 208.5627 (coefficient=1.631902) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Pyroblast burns enemies between you and the target for ${$s1*(1+$277703d/$277703t1)} Fire damage over $277703d.
 
 Name             : Tunnel of Ice (id=277663) [Spell Family (3), Passive] 
@@ -8244,7 +8244,7 @@ Triggered By     : Tunnel of Ice (277904)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732964)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Tunnel of Ice | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.796164 (coefficient=2.325153) | PvP Coefficient: 0.5 | Trigger Spell: 277902 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 297.1626 (coefficient=2.325153) | PvP Coefficient: 0.5 | Trigger Spell: 277902 | Target: Self (1)
 Description      : Frostbolt increases the damage of Frostbolt by $s1, stacking up to $277904u times. This effect is reset if you cast Frostbolt at a different enemy.
 
 Name             : Trailing Embers (id=277700) [Spell Family (3)] 
@@ -8368,7 +8368,7 @@ Effects          :
 #1 (id=734300)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Galvanizing Spark
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
 #2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 50 | Scaled Value: 0.4096359 (coefficient=1.196319) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 152.8937 (coefficient=1.196319) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
@@ -8386,13 +8386,13 @@ Effects          :
 #1 (id=734302)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734303)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 3 | Scaled Value: 1.037744 (coefficient=3.030675) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 387.3308 (coefficient=3.030675) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Arcane Explosion (1449), Time and Space (240689), Arcane Explosion (414381), Arcane Explosion (461508), Arcane Pulse (1243460)
                    Family Flags: 12
 #3 (id=734304)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #4 (id=734305)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 50 | Scaled Value: 7.05204 (coefficient=20.59509) | PvP Coefficient: 0.5
+                   Base Value: 50 | Scaled Value: 2632.124 (coefficient=20.59509) | PvP Coefficient: 0.5
 Description      : Arcane Explosion deals an additional $s2 damage. When it damages at least $s1 targets, it has a $s3% chance to deal an additional $s4 Arcane damage to them.
 
 Name             : Duplicative Incineration (id=278538) [Spell Family (3), Passive] 
@@ -8408,7 +8408,7 @@ Effects          :
 #1 (id=734306)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Duplicative Incineration
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 279084 | Target: Self (1)
 #2 (id=734307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 20 | Scaled Value: 1.344446 (coefficient=3.92638) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 501.805 (coefficient=3.92638) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Fireball (133), Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 0
 Description      : Fireball deals an additional $s2 damage, and has a $s1% chance to launch a second Fireball.
@@ -8425,7 +8425,7 @@ Triggered By     : Firemind (279715)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734308)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 37.75 (coefficient=0.151) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19.79315 (coefficient=0.151) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=734309)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Consuming Hot Streak grants you $s1 Intellect for $279715d. This effect stacks up to $s2 times.
@@ -8445,7 +8445,7 @@ Effects          :
 #2 (id=734312)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=735803)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7688551 (coefficient=2.245399) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 286.9698 (coefficient=2.245399) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
                    Family Flags: 17
 Description      : Ice Lance deals an additional $s3 damage and reduces the cooldown of Frozen Orb by ${$s2/10}.1 sec.
@@ -8462,7 +8462,7 @@ Triggered By     : Frigid Grasp (279684)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734313)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Frigid Grasp | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 400.7633 (coefficient=1.603053) | PvP Coefficient: 0.5 | Trigger Spell: 279685 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 210.129 (coefficient=1.603053) | PvP Coefficient: 0.5 | Trigger Spell: 279685 | Target: Self (1)
 Description      : Icy Veins grants you a charge of Fingers of Frost and increases your Intellect by $s1 for $279684d.
 
 Name             : Galvanizing Spark (id=279080) [Spell Family (3), Hidden] 
@@ -8586,7 +8586,7 @@ Triggered By     : Glacial Assault (279856)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=736464)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glacial Assault | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 9.377511 (coefficient=27.3865) | PvP Coefficient: 0.5 | Trigger Spell: 279855 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3500.09 (coefficient=27.3865) | PvP Coefficient: 0.5 | Trigger Spell: 279855 | Target: Self (1)
 Description      : Flurry has a $279855h% chance each strike to call down an icy comet, crashing into your target and nearby enemies for $s1 Frost damage.
 
 Name             : Glacial Assault (id=279855) [Spell Family (3), Hidden] 
@@ -8724,7 +8724,7 @@ Triggered By     : Equipoise (264352)
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=748188)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Equipoise | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.9453135 (coefficient=2.760736) | PvP Coefficient: 0.5 | Trigger Spell: 264351 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 352.8317 (coefficient=2.760736) | PvP Coefficient: 0.5 | Trigger Spell: 264351 | Target: Self (1)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
 While you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.
@@ -8768,11 +8768,11 @@ Effects          :
 #1 (id=751526)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Quick Thinking
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 288125 | Target: Self (1)
 #2 (id=751527)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 5 | Scaled Value: 11.51182 (coefficient=33.61963) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 4296.706 (coefficient=33.61963) | PvP Coefficient: 0.2 | Target: Self (1)
 #3 (id=751528)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 5 | Scaled Value: 2.302364 (coefficient=6.723927) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 859.3412 (coefficient=6.723927) | PvP Coefficient: 0.2 | Target: Self (1)
 #4 (id=751529)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 5 | Scaled Value: 3.453546 (coefficient=10.08589) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 1289.012 (coefficient=10.08589) | PvP Coefficient: 0.2 | Target: Self (1)
 Description      : Your instant cast damaging spells heal you for $?C1[$s2]?C2[$s3][$s4].
 
 Name             : Quick Thinking (id=288125) [Spell Family (3), Hidden] 
@@ -8818,7 +8818,7 @@ Effects          :
 #1 (id=751603)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flash Freeze
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 288204 | Target: Self (1)
 #2 (id=751604)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 5 | Scaled Value: 1.884325 (coefficient=5.503068) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 703.3112 (coefficient=5.503068) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Icicle (148022), Icicles (1246832)
                    Family Flags: 115
 Description      : Each of your Icicles deals $s2 additional damage, and when an Icicle deals damage you have a $s1% chance to gain the Fingers of Frost effect.
@@ -8881,7 +8881,7 @@ Effects          :
 #1 (id=752674)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Wildfire
                    Base Value: 4 | Scaled Value: 4 | Trigger Spell: 288795 | Target: Self (1)
 #2 (id=752737)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.378057 (coefficient=4.02454) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 514.3502 (coefficient=4.02454) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Pyroblast (11366), Pyroblast (460475), Pyroblast (1262863)
                    Family Flags: 22
 Description      : Pyroblast deals $s2 additional damage. When you activate Combustion, you gain $288800s1 Critical Strike, and up to $288803I nearby allies gain $288803s1 Critical Strike for $288800d.
@@ -8916,7 +8916,7 @@ Triggered By     : Wildfire (288795)
 Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=752743)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 229.4411 (coefficient=2.469453) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47.62655 (coefficient=2.469453) | Rating: Crit | Target: Self (1)
 #2 (id=752747)   : Trigger Spell (64): Wildfire
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288803 | Target: Self (1)
 Description      : $@spelldesc288755
@@ -8937,7 +8937,7 @@ Triggered By     : Wildfire (288800)
 Attributes       : Exclude Caster (51), Allow Cast While Casting (135), Not On Player Controlled NPC (168), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=752746)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 28.68017 (coefficient=0.308682) | Rating: Crit | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 5.953327 (coefficient=0.308682) | Rating: Crit | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
 Description      : $@spelldesc288755
 Tooltip          : Critical Strike increased by $w1.
 
@@ -9354,7 +9354,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -9640,7 +9640,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Tormenting Backlash (id=317589) [Spell Family (3)] 
@@ -13642,7 +13642,7 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053871)  : Apply Aura (6) | Dummy (4) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 24000 | Scaled Value: 0.183217 (coefficient=0.16) | Target: Self (1)
+                   Base Value: 24000 | Scaled Value: 30000 (coefficient=0.16) | Target: Self (1)
 #2 (id=1073548)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : For every $s1 Mana spent on and during Arcane Surge, your spell damage is increased by ${$409022s1}.1% for $409022d after Arcane Surge fades, stacking up to $s2 times. Mana regeneration is increased by $409022s2% for this time.
@@ -17189,9 +17189,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
@@ -17526,7 +17526,7 @@ Triggered By     : Searing Dagger (470634)
 Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1186113)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 26.23048 (coefficient=76.60466) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 9790.342 (coefficient=76.60466) | Target: Targeted Enemy (6)
 #2 (id=1186116)  : Trigger Spell (64): Searing Dagger
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 470636 | Target: Self (1)
 Description      : $@spelldesc470634
@@ -17540,7 +17540,7 @@ Triggered By     : Searing Dagger (470636)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1186117)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.623029 (coefficient=7.660411) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 979.0271 (coefficient=7.660411) | Target: Targeted Enemy (6)
 Description      : $@spelldesc470634
 
 Name             : Recall (desc=Bronze) (id=471078) [Spell Family (3), Hidden] 

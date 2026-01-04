@@ -1060,8 +1060,6 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> temporal_burst;
     propagate_const<buff_t*> time_convergence_intellect;
     // Flameshaper
-    propagate_const<buff_t*> burning_adrenaline;
-    propagate_const<buff_t*> burning_adrenaline_channel;
     propagate_const<buff_t*> inner_flame;
     // Scalecommander
     propagate_const<buff_t*> mass_disintegrate_stacks;
@@ -2235,33 +2233,6 @@ public:
       // Add time spent to stats, because it cost this much time
       ab::stats->iteration_total_execute_time += gcd_ready;
     }
-
-    if ( ab::execute_time() > timespan_t::zero() && !ab::channeled && !ab::background )
-    {
-      p()->buff.burning_adrenaline->decrement();
-      p()->buff.burning_adrenaline_channel->decrement();
-    }
-
-    if ( ab::channeled && !ab::background && ab::get_dot( ab::target )->is_ticking() )
-    {
-      p()->buff.burning_adrenaline_channel->decrement();
-      if ( p()->buff.burning_adrenaline->check() == 1 )
-      {
-        p()->buff.burning_adrenaline_channel->trigger();
-      }
-      p()->buff.burning_adrenaline->decrement();
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    ab::last_tick( d );
-
-    if ( ab::channeled && !ab::background )
-    {
-      p()->buff.burning_adrenaline->decrement();
-      p()->buff.burning_adrenaline_channel->decrement();
-    }
   }
 
   evoker_td_t* td( player_t* t ) const
@@ -2333,16 +2304,6 @@ public:
         chrono_mask.disable( 15 );
 
       parse_effects( p()->buff.temporal_burst, chrono_mask );
-    }
-
-    if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
-    {
-      parse_effects( p()->buff.burning_adrenaline, IGNORE_STACKS );
-      
-      if ( ab::channeled )
-      {
-        parse_effects( p()->buff.burning_adrenaline_channel, IGNORE_STACKS );
-      }
     }
 
     if ( p()->talent.scalecommander.unrelenting_siege.enabled() )
@@ -4184,7 +4145,7 @@ public:
 };
 
 
-  struct chrono_flame_damage_t : public evoker_spell_t
+struct chrono_flame_damage_t : public evoker_spell_t
 {
   double chrono_mult;
   double chrono_cap;
@@ -4333,6 +4294,12 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
       chrono_flame->execute_on_target( state->target );
     }
 
+    if ( p()->talent.flameshaper.titanic_precision.ok() && state->result == RESULT_CRIT &&
+         rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.titanic_precision_ruby_essence_burst->occur();
+    }
   }
 };
 
@@ -4342,9 +4309,16 @@ struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
   {
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    base_t::execute();
+    base_t::impact( state );
+
+    if ( p()->talent.flameshaper.titanic_precision.ok() && state->result == RESULT_CRIT &&
+         rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.titanic_precision_ruby_essence_burst->occur();
+    }
   }
 };
 
@@ -4606,7 +4580,8 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       int n = s ? empower_value( s ) : max_empower;
 
-      n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      if ( p()->talent.eternitys_span.enabled() )
+        n *= 2;
 
       return n == 1 ? 0 : n;
     }
@@ -4635,7 +4610,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
         shattering_star->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
         damage_state->da_multiplier *=
-            1 + cast_state( s )->empower * p()->talent.shattering_stars->effectN( 1 ).percent();
+            1 + ( cast_state( s )->empower - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
 
         shattering_star->schedule_execute( damage_state );
       }
@@ -6026,14 +6001,6 @@ struct living_flame_t : public evoker_spell_t
 
       for ( int i = 0; i < total_damage_hits; i++ )
       {
-        // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() &&
-             rng().roll( damage->composite_target_crit_chance( target ) && rng().roll( eb_chance ) ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.titanic_precision_ruby_essence_burst->occur();
-        }
-
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
         {
           p()->buff.essence_burst->trigger();
@@ -6043,14 +6010,6 @@ struct living_flame_t : public evoker_spell_t
 
       for ( int i = 0; i < total_heal_hits; i++ )
       {
-        // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() &&
-             rng().roll( heal->composite_target_crit_chance( player ) && rng().roll( eb_chance ) ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.titanic_precision_ruby_essence_burst->occur();
-        }
-
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
         {
           p()->buff.essence_burst->trigger();
@@ -7206,8 +7165,8 @@ struct twin_flame_t : public evoker_spell_t
     background = true;
 
     aoe = p->talent.flameshaper.fire_torrent.enabled()
-              ? 0
-              : 1 + as<int>( p->talent.flameshaper.fire_torrent->effectN( 1 ).base_value() );
+              ? 1 + as<int>( p->talent.flameshaper.fire_torrent->effectN( 1 ).base_value() )
+              : 0;
   }
 };
 
@@ -9761,13 +9720,6 @@ void evoker_t::create_buffs()
                                          talent.chronowarden.time_convergence_intellect_buff )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
-
-  buff.burning_adrenaline = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline",
-                                 talent.flameshaper.burning_adrenaline_buff );
-  buff.burning_adrenaline_channel = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline_channel",
-                                         talent.flameshaper.burning_adrenaline_buff )
-                                        ->set_quiet( true );
-
   // Flameshaper
   buff.inner_flame =
       MBF( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ), this, "inner_flame", talent.flameshaper.inner_flame_buff_base )

@@ -76,25 +76,27 @@ enum rppm_modifier_type_e
 
 enum item_bonus_type
 {
-  ITEM_BONUS_ILEVEL          = 1,
-  ITEM_BONUS_MOD             = 2,
-  ITEM_BONUS_QUALITY         = 3,
-  ITEM_BONUS_DESC            = 4,
-  ITEM_BONUS_SUFFIX          = 5,
-  ITEM_BONUS_SOCKET          = 6,
-  ITEM_BONUS_REQ_LEVEL       = 8,
-  ITEM_BONUS_SCALING         = 11,  // Scaling based on ScalingStatDistribution.db2
-  ITEM_BONUS_SCALING_2       = 13,  // Scaling based on ScalingStatDistribution.db2
-  ITEM_BONUS_SET_ILEVEL      = 14,
-  ITEM_BONUS_ADD_RANK        = 17,  // Add artifact power rank to a specific trait
-  ITEM_BONUS_ADD_ITEM_EFFECT = 23,
-  ITEM_BONUS_MOD_ITEM_STAT   = 25,  // Modify item stat to type
-  ITEM_BONUS_ILEVEL_IN_PVP   = 36,  // Item has a higher level in PvP context
-  ITEM_BONUS_SET_ILEVEL_2    = 42,  // Used in some DF (10.0) crafted items
-  ITEM_BONUS_SQUISH_CURVE    = 48,
-  ITEM_BONUS_SCALE_CONFIG    = 49,
-  ITEM_BONUS_APPLY_BONUS     = 50,
-  ITEM_BONUS_SCALE_CONFIG_2  = 51
+  ITEM_BONUS_ILEVEL           = 1,
+  ITEM_BONUS_MOD              = 2,
+  ITEM_BONUS_QUALITY          = 3,  // Seems unused as of Midnight. Might change in the future.
+  ITEM_BONUS_DESC             = 4,
+  ITEM_BONUS_SUFFIX           = 5,
+  ITEM_BONUS_SOCKET           = 6,
+  ITEM_BONUS_REQ_LEVEL        = 8,
+  ITEM_BONUS_SCALING          = 11,  // Scaling based on ScalingStatDistribution.db2
+  ITEM_BONUS_SCALING_2        = 13,  // Scaling based on ScalingStatDistribution.db2
+  ITEM_BONUS_SET_ILEVEL       = 14,
+  ITEM_BONUS_ADD_RANK         = 17,  // Add artifact power rank to a specific trait
+  ITEM_BONUS_ADD_ITEM_EFFECT  = 23,
+  ITEM_BONUS_MOD_ITEM_STAT    = 25,  // Modify item stat to type
+  ITEM_BONUS_ILEVEL_IN_PVP    = 36,  // Item has a higher level in PvP context
+  ITEM_BONUS_SET_ILEVEL_2     = 42,  // Used in some DF (10.0) crafted items
+  ITEM_BONUS_SQUISH_CURVE     = 48,
+  ITEM_BONUS_SCALE_CONFIG     = 49,
+  ITEM_BONUS_APPLY_BONUS      = 50,
+  ITEM_BONUS_SCALE_CONFIG_2   = 51,
+  ITEM_BONUS_CRAFTING_QUALITY = 52,
+  ITEM_BONUS_MIDNIGHT_ILEVEL  = 53
 };
 
 enum proc_types

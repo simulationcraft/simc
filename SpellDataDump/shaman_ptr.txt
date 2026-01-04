@@ -365,11 +365,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Will of the Forsaken (desc=Racial) (id=7744) 
@@ -609,7 +609,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -863,7 +863,7 @@ Duration         : 20 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14723)    : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2060.75 (coefficient=8.243) | SP Coefficient: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1080.496 (coefficient=8.243) | SP Coefficient: 1 | Target: Self (1)
                    Affected Spells: Lightning Shield (192106), Lightning Shield (192109), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Shield (344174)
                    Family Flags: 10
 Description      : Increases the damage dealt by your Lightning Shield spell by $s1 for $d.
@@ -1106,9 +1106,9 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 
@@ -1199,7 +1199,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=28224)    : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.770701 - 4.382166 (coefficient=11.905, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1407.388 - 1635.613 (coefficient=11.905, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Shaman Tier 6 Trinket (id=40463) [Spell Family (11), Passive, Hidden] 
@@ -1514,7 +1514,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
                    Modified By: Therazane's Resilience (1217622 effect#5)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 131.579 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 68.98976 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
                    Modified By: Therazane's Resilience (1217622 effect#4), Therazane's Resilience (1217622 effect#8)
 #3 (id=1282307)  : Apply Aura (6) | Modify Total Stat% (137) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
@@ -1552,7 +1552,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=47725)    : School Damage (2): nature | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 55.16095 - 64.10596 (coefficient=14.337, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 51.53936 - 59.89709 (coefficient=14.337, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
@@ -2052,7 +2052,7 @@ Proc Flags       : Magic Heal
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=54223)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -1526.75 (coefficient=-6.107) | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -800.5085 (coefficient=-6.107) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Riptide (61295), Healing Wave (77472)
                    Family Flags: 7, 8, 68, 80
 Description      : Your next healing spell costs $s1 less mana.
@@ -2197,7 +2197,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=61880)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3313.93 - 3851.324 (coefficient=14.33051, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1694.127 - 1968.85 (coefficient=14.33051, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a Pillar of Flame at the target for $s1 Fire damage.
 
 Name             : Pillar of Flame (desc=Rank 1) (id=67760) [Spell Family (11)] 
@@ -2208,7 +2208,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=61942)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1935.1 - 2248.9 (coefficient=8.368, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 989.25 - 1149.669 (coefficient=8.368, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a Pillar of Flame at the target for $s1 Fire damage.
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -4510,15 +4510,15 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=268063)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 41.94575 (coefficient=0.167783) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.99308 (coefficient=0.167783) | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #2 (id=269245)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 41.94575 (coefficient=0.167783) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.99308 (coefficient=0.167783) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #3 (id=269246)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 41.94575 (coefficient=0.167783) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.99308 (coefficient=0.167783) | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #4 (id=278743)   : Apply Aura (6) | Periodic Dummy (226): every 10 seconds
@@ -4533,7 +4533,7 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268064)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 128.8657 (coefficient=0.515463) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 67.56714 (coefficient=0.515463) | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
                    Family Flags: 23
 #2 (id=268127)   : Apply Aura (6) | Dummy (4)
@@ -4552,7 +4552,7 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268065)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 15.341 (coefficient=0.061364) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.043623 (coefficient=0.061364) | Misc Value: 127 | Target: Self (1)
 #2 (id=278745)   : Apply Aura (6) | Periodic Dummy (226): every 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Casting Healing Surge, Chain Heal, or Healing Wave on a target with your Riptide on it has a $s1% chance to spread that Riptide to another nearby ally.
@@ -7784,9 +7784,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -8130,7 +8130,7 @@ Azerite Power Id : 17
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=706763)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -250 (coefficient=-1) | PvP Coefficient: 0.2 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -131.0805 (coefficient=-1) | PvP Coefficient: 0.2 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Shift (108271)
                    Family Flags: 43
 Description      : Increases the damage reduction of Astral Shift by an additional $s1%. 
@@ -8147,7 +8147,7 @@ Azerite Power Id : 25
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=706769)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
 Description      : Increases the healing of Chain Heal by $s1 and causes it to bounce an additional time.
@@ -8166,11 +8166,11 @@ Azerite Power Id : 24
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=706772)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #2 (id=709470)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 750 (coefficient=3) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | PvP Coefficient: 0.5
 Description      : Increases the damage of Chain Lightning by $s1 and causes your Fire spells to deal an additional $s2 damage for 4 sec.
 Tooltip          : Increases the damage of Chain Lightning by $s1 and causes your Fire spells to deal an additional $s2 damage for 4 sec.
 
@@ -8185,7 +8185,7 @@ Azerite Power Id : 23
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=706775)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Crash Lightning (187874), Crash Lightning (195592), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433)
                    Family Flags: 85
 #2 (id=709473)   : Dummy (3)
@@ -8245,7 +8245,7 @@ Azerite Power Id : 32
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707298)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1000 (coefficient=4) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 524.3219 (coefficient=4) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
 #2 (id=709472)   : Dummy (3)
@@ -8266,11 +8266,11 @@ Azerite Power Id : 33
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707315)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 25 (coefficient=0.1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13.10805 (coefficient=0.1) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Stormstrike (17364)
                    Family Flags: 36
 #2 (id=709480)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 750 (coefficient=3) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | PvP Coefficient: 0.5
 Description      : Increases the critical chance of Stormstrike by $s1 and causes Stormstrike critical strikes to deal an additional $s2 damage.
 
 |C000FFF00Enhancement|R
@@ -8314,9 +8314,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -8383,11 +8383,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -8475,7 +8475,7 @@ Triggered By     : Volcanic Lightning (272981)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724243)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | PvP Coefficient: 0.5 | Misc Value: 18 | Trigger Spell: 272980 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Misc Value: 18 | Trigger Spell: 272980 | Target: Self (1)
 Description      : Lava Bursts on a target that has been struck by your Lightning in the last 4 sec deal an additional $s1 damage. 
 
 Name             : Volcanic Lightning (id=272980) [Spell Family (11), Hidden] 
@@ -8526,7 +8526,7 @@ Triggered By     : Primal Primer (273006)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724260)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Primer | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6176049 (coefficient=1.803681) | PvP Coefficient: 0.5 | Trigger Spell: 273005 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 230.5167 (coefficient=1.803681) | PvP Coefficient: 0.5 | Trigger Spell: 273005 | Target: Self (1)
 Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by ${$s1/2}, stacking up to $273006u times.
 
 Name             : Primal Primer (id=273005) [Spell Family (11), Hidden] 
@@ -8717,7 +8717,7 @@ Triggered By     : Lava Shock (273453)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725090)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lava Shock | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.8402789 (coefficient=2.453988) | PvP Coefficient: 0.5 | Trigger Spell: 273449 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 313.6282 (coefficient=2.453988) | PvP Coefficient: 0.5 | Trigger Spell: 273449 | Target: Self (1)
 Description      : Flame Shock damage increases the damage of your next Earth Shock by $s1, stacking up to $273453u times.
 
 Name             : Lava Shock (id=273449) [Spell Family (11), Hidden] 
@@ -8774,7 +8774,7 @@ Triggered By     : Strength of Earth (273466)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Earth | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.674187 (coefficient=7.809816) | PvP Coefficient: 0.5 | Trigger Spell: 273463 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 998.1216 (coefficient=7.809816) | PvP Coefficient: 0.5 | Trigger Spell: 273463 | Target: Self (1)
 Description      : Flame Shock causes your next melee ability to deal an additional $s1 Nature damage.
 
 Name             : Strength of Earth (id=273463) [Spell Family (11), Hidden] 
@@ -8892,7 +8892,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -8904,7 +8904,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -8917,7 +8917,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -8950,7 +8950,7 @@ Azerite Power Id : 222
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728385)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5.629868 (coefficient=16.44172) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2101.309 (coefficient=16.44172) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires, it leaves behind a $?s192249[Spark Elemental][Ember Elemental] to continue attacking your enemies for $275385d.
 
 Name             : Ember Blast (id=275382) [Spell Family (11)] 
@@ -9031,7 +9031,7 @@ Triggered By     : Lightning Conduit (275394)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728400)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lightning Conduit | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.9075011 (coefficient=2.650307) | PvP Coefficient: 0.5 | Trigger Spell: 275389 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 338.7184 (coefficient=2.650307) | PvP Coefficient: 0.5 | Trigger Spell: 275389 | Target: Self (1)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
 Name             : Lightning Conduit (id=275389) [Spell Family (11), Hidden] 
@@ -9167,7 +9167,7 @@ Triggered By     : Overflowing Shores (278095)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732958)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Overflowing Shores | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.730906 (coefficient=7.97546) | PvP Coefficient: 0.5 | Trigger Spell: 278077 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1019.291 (coefficient=7.97546) | PvP Coefficient: 0.5 | Trigger Spell: 278077 | Target: Self (1)
 #2 (id=732959)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : Healing Rain instantly restores $s1 health to allies within its area, and its radius is increased to $s2 yds.
@@ -9263,11 +9263,11 @@ Triggered By     : Natural Harmony: Fire (279028), Natural Harmony: Frost (27902
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734562)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Natural Harmony | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 85.75 (coefficient=0.343) | PvP Coefficient: 0.5 | Trigger Spell: 279027 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 44.96061 (coefficient=0.343) | PvP Coefficient: 0.5 | Trigger Spell: 279027 | Target: Self (1)
 #2 (id=734563)   : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 85.75 (coefficient=0.343) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 44.96061 (coefficient=0.343) | PvP Coefficient: 0.5
 #3 (id=734564)   : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 85.75 (coefficient=0.343) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 44.96061 (coefficient=0.343) | PvP Coefficient: 0.5
 Description      : Dealing Fire damage grants $s1 Critical Strike for $279028d. 
 Dealing Frost damage grants $s2 Mastery for $279029d.
 Dealing Nature damage grants $s3 Haste for $279033d.
@@ -9284,11 +9284,11 @@ Triggered By     : Rumbling Tremors (279523), Rumbling Tremors (279553), Rumblin
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734578)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.310766 (coefficient=6.748466) | Trigger Spell: 279522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 862.4774 (coefficient=6.748466) | Trigger Spell: 279522 | Target: Self (1)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734580)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.730906 (coefficient=7.97546)
+                   Base Value: 0 | Scaled Value: 1019.291 (coefficient=7.97546)
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
@@ -9305,7 +9305,7 @@ Triggered By     : Surging Tides (279187)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734587)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Surging Tides | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 17.12068 (coefficient=50) | PvP Coefficient: 0.5 | Trigger Spell: 279181 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6390.174 (coefficient=50) | PvP Coefficient: 0.5 | Trigger Spell: 279181 | Target: Self (1)
 #2 (id=734588)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=734589)   : Dummy (3)
@@ -9324,7 +9324,7 @@ Triggered By     : Spouting Spirits (279505)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734592)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Spouting Spirits | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 11.64206 (coefficient=34) | PvP Coefficient: 0.5 | Trigger Spell: 279504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4345.318 (coefficient=34) | PvP Coefficient: 0.5 | Trigger Spell: 279504 | Target: Self (1)
 #2 (id=734593)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Spirit Link Totem's radius is increased by $279504s2%, and it restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.
@@ -9342,7 +9342,7 @@ Triggered By     : Roiling Storm (279515)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734600)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Roiling Storm | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.207764 (coefficient=9.368098) | PvP Coefficient: 0.5 | Trigger Spell: 279513 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1197.275 (coefficient=9.368098) | PvP Coefficient: 0.5 | Trigger Spell: 279513 | Target: Self (1)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=734602)   : Dummy (3)
@@ -9542,7 +9542,7 @@ Effects          :
 #1 (id=736419)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Igneous Potential
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279830 | Target: Self (1)
 #2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.625871 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 980.088 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #3 (id=736422)   : Dummy (3)
@@ -9680,7 +9680,7 @@ Triggered By     : Tectonic Thunder (286967)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749619)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.625871 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 980.088 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=749620)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Earthquake deals $s1 Physical damage instantly, and has a $s2% chance to make your next Chain Lightning be instant cast.
@@ -9736,7 +9736,7 @@ Azerite Power Id : 191
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750187)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.940976 (coefficient=8.588958) | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1097.699 (coefficient=8.588958) | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Family Flags: 105
 #2 (id=752186)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Turn of the Tide
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287302 | Target: Self (1)
@@ -9802,7 +9802,7 @@ Effects          :
 #1 (id=750959)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Thunderaan's Fury
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 287801 | Target: Self (1)
 #2 (id=750960)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 5 | Scaled Value: 1.062953 (coefficient=3.104295) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 396.7397 (coefficient=3.104295) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
 Description      : Stormstrike deals ${$m2+($m2*0.5)} additional damage, and has a $287801h% chance to summon Thunderaan's Fury Totem, doubling the chance to activate Windfury Weapon for $287802d.
@@ -10405,7 +10405,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -10621,7 +10621,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Ghost Wolf (id=317706) [Hidden] 
@@ -13783,7 +13783,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1013071)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 1750.875 (coefficient=0.000667) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 25.0125 (coefficient=0.000667) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Flash of Lightning (id=381936) [Spell Family (11), Passive, Hidden] 
@@ -15252,7 +15252,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1052177)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 2625 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 37.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Mana Spring (id=404551) [Spell Family (11)] 
@@ -15269,7 +15269,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1052178)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 2625 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 37.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Shaman Elemental 10.1 Class Set 2pc (id=405565) [Spell Family (11), Passive, Hidden] 
@@ -18268,9 +18268,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
@@ -18542,7 +18542,7 @@ Labels           : 16: Class Spells
                  : 292
 Effects          :
 #1 (id=1172306)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0.002181427 (coefficient=0.001905) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 357.1875 (coefficient=0.001905) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc462454
 
 Name             : Downpour (id=462486) [Spell Family (11), Passive, Hidden] 

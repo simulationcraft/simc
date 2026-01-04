@@ -6173,7 +6173,7 @@ Evoker
 1256943  Devastation Evoker
 1256944  Preservation Evoker
 1259171 *Duplicate
-1259172 *Eruption
+1259172  Eruption
 1259173 *Duplicate
 1259174 *Duplicate
 1259175 *Duplicate
@@ -14771,7 +14771,7 @@ Paladin
 431423   Illumine
 431425   Sun's Avatar
 431452  *Eternal Sun
-431460  *Dawnlight
+431460   Dawnlight
 431462   Will of the Dawn
 431463   Zealous Vindication
 431464   Templar's Watch
@@ -14780,7 +14780,7 @@ Paladin
 431480   Gleaming Rays
 431481   Gleaming Rays
 431482   Morning Star
-431522  *Dawnlight
+431522   Dawnlight
 431533   Shake the Heavens
 431536   Shake the Heavens
 431539   Morning Star

@@ -801,11 +801,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Growl (id=6795) [Spell Family (7)] 
@@ -1132,7 +1132,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9714)     : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.9245937 - 1.316846 (coefficient=3.273, delta=0.35) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 345.0981 - 491.5034 (coefficient=3.273, delta=0.35) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Swiftmend (id=18562) [Spell Family (7)] 
@@ -1215,7 +1215,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1633,7 +1633,7 @@ Duration         : 20 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=13976)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -3125 (coefficient=-12.5) | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -1638.506 (coefficient=-12.5) | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Cat Form (768), Travel Form (783), Bear Form (5487), Moonkin Form (24858), Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Flight Form (165962), Moonkin Form (197625), Mount Form (210053), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Ancient of Lore (473909)
                    Family Flags: 29, 30, 31, 45, 46, 47, 48
 Description      : Decreases the mana cost of all Druid shapeshifting forms by $s1 for $d.
@@ -1646,7 +1646,7 @@ Duration         : 15 seconds
 Attributes       : Do Not Sheath (18), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14738)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 473 (coefficient=1.892) | SP Coefficient: 1 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.0043 (coefficient=1.892) | SP Coefficient: 1 | Rating: Haste | Target: Self (1)
 #2 (id=14739)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Rejuvenation (Germination) (155777), Tranquility (157982), Tranquility (1236573), Regrowth (1236647), Tranquility (1264659), Regrowth (1264664)
@@ -1995,7 +1995,7 @@ Duration         : 15 seconds
 Attributes       : Instant Target Procs (115), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=27832)    : Apply Aura (6) | Resistance (22) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 969 (coefficient=3.876) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 508.068 (coefficient=3.876) | Misc Value: 1 | Target: Self (1)
 Description      : Increases your armor by $s1.
 Tooltip          : Increases your armor by $s1.
 
@@ -2018,7 +2018,7 @@ Duration         : 15 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=28491)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -87.25 (coefficient=-0.349) | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -45.74709 (coefficient=-0.349) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Tranquility (1236573), Regrowth (1236647), Tranquility (1264659), Regrowth (1264664)
                    Family Flags: 4, 5, 6, 7, 33, 36
 Tooltip          : Your healing spells cost $s1 less mana.
@@ -2041,7 +2041,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=29057)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -877.25 (coefficient=-3.509) | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -459.9614 (coefficient=-3.509) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Cat Form (768), Travel Form (783), Bear Form (5487), Rebirth (20484), Moonkin Form (24858), Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Flight Form (165962), Moonkin Form (197625), Mount Form (210053), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Ancient of Lore (473909)
                    Family Flags: 28, 29, 30, 31, 45, 46, 47, 48
 Description      : Reduces the base Mana cost of your shapeshifting spells by $s1.
@@ -2056,7 +2056,7 @@ Triggered By     : HoTs on Heals (38299)
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29068)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5708035 (coefficient=1.667) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 213.0484 (coefficient=1.667) | Target: Targeted Ally (21)
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
 Name             : Regeneration (id=38325) [Spell Family (7)] 
@@ -2067,7 +2067,7 @@ Duration         : 12 seconds
 Attributes       : Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29069)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1083.25 (coefficient=4.333) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 553.7725 (coefficient=4.333) | Target: Self (1)
 Description      : Heals $o1 damage over $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -2103,7 +2103,7 @@ Triggered By     : Blessing of Life (38332)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29077)    : Apply Aura (6) | Modify Healing Received (115) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 119 (coefficient=0.476) | Misc Value: 126 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 60.83445 (coefficient=0.476) | Misc Value: 126 | Target: Targeted Ally (21)
 Description      : Increases healing received by up to $s1.
 Tooltip          : Increases healing received by up to $s1.
 
@@ -2642,7 +2642,7 @@ Triggered By     : Talisman of Troll Divinity (60517)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=54226)    : Apply Aura (6) | Modify Healing Received (115) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1342261 (coefficient=0.392) | Misc Value: 126 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 50.09896 (coefficient=0.392) | Misc Value: 126 | Target: Targeted Ally (21)
 Description      : Increases healing received by up to $s1.
 Tooltip          : Increases healing received by up to $s1.
 
@@ -2656,7 +2656,7 @@ Triggered By     : Forethought Talisman (60529)
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Do Not Display Range (126), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=54242)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1336.75 (coefficient=5.347) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 683.3652 (coefficient=5.347) | Target: Targeted Ally (21)
 Description      : Heals for $s1 every $t1 sec for $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -5970,7 +5970,7 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268011)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 51.6535 (coefficient=0.206614) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27.08306 (coefficient=0.206614) | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Tiger's Fury (5217), Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Berserk (279526), Incarnation: Chosen of Elune (390414), Ancient of Lore (473909)
                    Family Flags: 43, 70, 75
 Description      : Increases the duration of Tiger's Fury and Berserk by $s1%.
@@ -5985,7 +5985,7 @@ Proc Flags       : Helpful Periodic
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268013)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2.0435 (coefficient=0.008174) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.071452 (coefficient=0.008174) | Misc Value: 127 | Target: Self (1)
 Description      : Your Rejuvenation and Lifebloom ticks have a $s1% chance to also heal other allies within $185019A1 yds.
 
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 
@@ -8247,7 +8247,7 @@ Labels           : 63
 Attributes       : Not In Arena or Rated Battleground (144), Not On Player (167), Not On Player Controlled NPC (168), Not In Raid Instances (203), Not in Battleground (284), Not In Arena (297), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
 #1 (id=343350)   : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3488.848 - 4720.207 (coefficient=235.433, delta=0.3) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 1215.548 - 1644.565 (coefficient=235.433, delta=0.3) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc227953
 
 Name             : Shapeshift Form (desc=Shapeshift) (id=228545) [Spell Family (7), Hidden] 
@@ -9128,9 +9128,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -9272,9 +9272,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -9341,11 +9341,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -9364,7 +9364,7 @@ Triggered By     : Long Night (269380)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=717596)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 70.0935 (coefficient=0.280374) | PvP Coefficient: 0.5 | Trigger Spell: 270611 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 36.75156 (coefficient=0.280374) | PvP Coefficient: 0.5 | Trigger Spell: 270611 | Target: Self (1)
 #2 (id=717597)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
@@ -9453,7 +9453,7 @@ Triggered By     : Streaking Star (272873)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724053)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Streaking Stars | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5.600458 (coefficient=16.35583) | PvP Coefficient: 0.5 | Trigger Spell: 272872 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2090.332 (coefficient=16.35583) | PvP Coefficient: 0.5 | Trigger Spell: 272872 | Target: Self (1)
 Description      : While Celestial Alignment is active, your damaging spells call a Streaking Star, dealing an additional $s1 damage when they are not a repeat of the previous ability.
 Tooltip          : While Celestial Alignment is active, your damaging spells cause an additional $s1 damage when they are not a repeat of the previous ability.
 
@@ -9552,7 +9552,7 @@ Effects          :
 #1 (id=724873)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Untamed Ferocity
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273339 | Target: Self (1)
 #2 (id=753655)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6302091 (coefficient=1.840491) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 235.2211 (coefficient=1.840491) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Swipe (106785), Thrash (106830), Rake (155722), Brutal Slash (202028), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233), Frantic Frenzy (1243807), Frantic Frenzy (1244079)
                    Family Flags: 12, 15, 74, 94, 99, 126
 #3 (id=753656)   : Apply Aura (6) | Dummy (4)
@@ -9612,9 +9612,9 @@ Azerite Power Id : 171
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724883)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 467.5 (coefficient=1.87) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 245.1205 (coefficient=1.87) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
 #2 (id=725191)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 275 (coefficient=1.1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 144.1885 (coefficient=1.1) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Increases your Mastery by $s1 and Armor by $s2 for $273349d after Survival Instincts expires.
 
 Name             : Masterful Instincts (id=273349) [Spell Family (7)] 
@@ -9648,7 +9648,7 @@ Effects          :
 #1 (id=724916)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Power of the Moon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273389 | Target: Self (1)
 #2 (id=736537)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3949309 (coefficient=1.153374) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 147.4052 (coefficient=1.153374) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (155625), Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92, 120
 Description      : Moonfire deals $s2 additional periodic damage.
@@ -9794,7 +9794,7 @@ Triggered By     : Jungle Fury (274426)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726746)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Jungle Fury | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 369.1053 (coefficient=1.476421) | PvP Coefficient: 0.5 | Trigger Spell: 274425 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 193.53 (coefficient=1.476421) | PvP Coefficient: 0.5 | Trigger Spell: 274425 | Target: Self (1)
 #2 (id=753578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=753579)   : Apply Aura (6) | Dummy (4)
@@ -9851,7 +9851,7 @@ Azerite Power Id : 210
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726761)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Autumn Leaves | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3991324 (coefficient=1.165644) | PvP Coefficient: 0.5 | Trigger Spell: 287247 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 148.9734 (coefficient=1.165644) | PvP Coefficient: 0.5 | Trigger Spell: 287247 | Target: Self (1)
 Description      : Rejuvenation's duration is increased by ${$287247s1/1000} sec, and it heals for an additional $s1 when it is your only heal over time on the target.
 
 Name             : Ancestral Call (desc=Racial) (id=274738) 
@@ -9864,7 +9864,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -9876,7 +9876,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -9889,7 +9889,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -9972,7 +9972,7 @@ Triggered By     : Twisted Claws (275909)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729255)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Twisted Claws | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 40.88775 (coefficient=0.163551) | PvP Coefficient: 0.5 | Trigger Spell: 275908 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.43834 (coefficient=0.163551) | PvP Coefficient: 0.5 | Trigger Spell: 275908 | Target: Self (1)
 Description      : Thrash's direct damage has a $275908h% chance to grant you $s1 Agility for $275909d, stacking up to $275909u times.
 
 Name             : Twisted Claws (id=275908) [Spell Family (7), Hidden] 
@@ -10041,7 +10041,7 @@ Triggered By     : Iron Jaws (276026)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729398)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.371414 (coefficient=18.60736) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2378.086 (coefficient=18.60736) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Ferocious Bite has a $s2% chance per combo point to increase the damage of your next Maim by $s1 per combo point.
@@ -10095,7 +10095,7 @@ Triggered By     : Dawning Sun (276154)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=730125)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Dawning Sun | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.926419 (coefficient=5.626) | PvP Coefficient: 0.5 | Trigger Spell: 276153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 719.0223 (coefficient=5.626) | PvP Coefficient: 0.5 | Trigger Spell: 276153 | Target: Self (1)
 Description      : Starfire increases the damage of your Wrath by $s1 for $276154d.
 
 Name             : Dawning Sun (id=276153) [Spell Family (7), Hidden] 
@@ -10150,7 +10150,7 @@ Effects          :
 #1 (id=734244)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): High Noon
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 279070 | Target: Self (1)
 #2 (id=734245)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.4537504 (coefficient=1.325153) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 169.3592 (coefficient=1.325153) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
 Description      : Sunfire's radius is increased to $<radius> yds, and it deals $s2 additional periodic damage.
@@ -10169,7 +10169,7 @@ Triggered By     : Lunar Shrapnel (279641)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.1176389 (coefficient=0.343558) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43.90791 (coefficient=0.343558) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Starfall's stars deal an additional $s1 damage to nearby enemies when they damage an enemy afflicted by Moonfire.
 
 Name             : Gushing Lacerations (id=278509) [Spell Family (7), Passive] 
@@ -10186,7 +10186,7 @@ Effects          :
 #1 (id=734251)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Gushing Lacerations
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279468 | Target: Self (1)
 #2 (id=734252)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3046012 (coefficient=0.889571) | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 113.6903 (coefficient=0.889571) | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
 Description      : Rip deals $s2 additional periodic damage, and has a $279468h% chance to award a combo point each time it deals damage.
@@ -10203,7 +10203,7 @@ Triggered By     : Gory Regeneration (279537)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734253)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Gory Regeneration | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 4.590022 (coefficient=13.40491) | PvP Coefficient: 0.5 | Trigger Spell: 279536 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1713.194 (coefficient=13.40491) | PvP Coefficient: 0.5 | Trigger Spell: 279536 | Target: Self (1)
 #2 (id=734254)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=752811)   : Dummy (3)
@@ -10223,7 +10223,7 @@ Effects          :
 #1 (id=734255)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Guardian's Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279540 | Target: Self (1)
 #2 (id=734256)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 482.315 (coefficient=1.92926) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 252.8883 (coefficient=1.92926) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254), Ravage (441605), Echo of Maul (1269648)
                    Family Flags: 11
 Description      : Maul deals $s2 additional damage, and Maul reduces the cost of your next Ironfur by ${$279541s1/-10} Rage stacking up to $279541u times.
@@ -10239,7 +10239,7 @@ Azerite Power Id : 363
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734259)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Waking Dream | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7875513 (coefficient=2.3) | PvP Coefficient: 0.5 | Trigger Spell: 278958 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 293.948 (coefficient=2.3) | PvP Coefficient: 0.5 | Trigger Spell: 278958 | Target: Self (1)
 #2 (id=734260)   : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000
 Description      : Ysera's Gift now heals every ${$s2/1000} sec, and heals for an additional $s1 for each of your active Rejuvenations.
@@ -10340,7 +10340,7 @@ Effects          :
 #1 (id=735844)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blood Mist
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279525 | Target: Self (1)
 #2 (id=735845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.3321412 (coefficient=0.97) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 123.9694 (coefficient=0.97) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
 Description      : Rake deals ${$s2*5} additional damage over its duration, and has a chance to grant you Berserk for $279526d. Cannot occur while $?s102543[Incarnation: King of the Jungle][Berserk] is active.
@@ -10398,9 +10398,9 @@ Azerite Power Id : 359
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=735850)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.109032 (coefficient=9.079755) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1160.424 (coefficient=9.079755) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=735851)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.008334 (coefficient=2.944785) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 376.3538 (coefficient=2.944785) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Shred deals $s1 additional damage, and $?s202028[Brutal Slash][Swipe] deals $s2 additional damage, to enemies suffering from your Thrash.
 
 Name             : Gory Regeneration (id=279536) [Spell Family (7), Hidden] 
@@ -10484,7 +10484,7 @@ Triggered By     : Layered Mane (279555)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=735909)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 56.27 (coefficient=0.22508) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29.5036 (coefficient=0.22508) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=735910)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=735914)   : Apply Aura (6) | Dummy (4)
@@ -10562,7 +10562,7 @@ Triggered By     : Lively Spirit (279648)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=736071)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lively Spirit | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 47.5 (coefficient=0.19) | PvP Coefficient: 0.5 | Trigger Spell: 279646 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 24.90529 (coefficient=0.19) | PvP Coefficient: 0.5 | Trigger Spell: 279646 | Target: Self (1)
 Description      : When Innervate expires, for each spell the target cast using Innervate, you gain $s1 Intellect for $279648d and ${$289335s1/100}.1% mana.
 
 Name             : Lively Spirit (id=279646) [Spell Family (7), Hidden] 
@@ -10677,7 +10677,7 @@ Triggered By     : Grove Tending (279793)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=736321)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Grove Tending | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 4.519859 (coefficient=13.2) | PvP Coefficient: 0.5 | Trigger Spell: 279779 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1687.006 (coefficient=13.2) | PvP Coefficient: 0.5 | Trigger Spell: 279779 | Target: Self (1)
 Description      : Swiftmend heals the target for ${$s1*($279793d/$279793t1)} over $279793d.
 
 Name             : Grove Tending (id=279779) [Spell Family (7), Hidden] 
@@ -10753,7 +10753,7 @@ Triggered By     : Ursoc's Endurance (280165)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737266)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ursoc's Endurance | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 47.43206 (coefficient=138.5227) | PvP Coefficient: 0.2 | Trigger Spell: 280161 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17703.68 (coefficient=138.5227) | PvP Coefficient: 0.2 | Trigger Spell: 280161 | Target: Self (1)
 Description      : When you use Barkskin or Survival Instincts, absorb $s1 damage over $280165d.
 
 Name             : Ursoc's Endurance (id=280161) [Spell Family (7), Hidden] 
@@ -10812,7 +10812,7 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.182556 (coefficient=9.294479) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 1187.867 (coefficient=9.294479) | PvP Coefficient: 0.5
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -10943,7 +10943,7 @@ Triggered By     : Early Harvest (287255)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750107)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Early Harvest | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.415801 (coefficient=7.055214) | PvP Coefficient: 0.5 | Trigger Spell: 287253 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 901.6809 (coefficient=7.055214) | PvP Coefficient: 0.5 | Trigger Spell: 287253 | Target: Self (1)
 Description      : When Wild Growth expires, it heals the target for $s1 if they are injured, or it reduces the cooldown of Innervate by $<reduction> sec if they are not.
 Variables        : $reduction=${$287253s2/1000}
 
@@ -11021,7 +11021,7 @@ Effects          :
 #1 (id=750968)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcanic Pulsar
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287784 | Target: Self (1)
 #2 (id=750969)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.151046 (coefficient=9.202455) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1176.106 (coefficient=9.202455) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626), Starsurge (1271222)
                    Family Flags: 89
 #3 (id=750970)   : Dummy (3)
@@ -11173,7 +11173,7 @@ Triggered By     : Burst of Savagery (289315)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=753603)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 334.284 (coefficient=1.337136) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 175.2724 (coefficient=1.337136) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=753606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Consuming Gore grants you $s1 mastery for $289315d and has a $s2% chance to activate Gore.
@@ -11667,7 +11667,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -11897,7 +11897,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Alpaca Saddlebags (desc=Racial Passive) (id=317795) [Passive] 
@@ -12350,7 +12350,7 @@ Effects          :
 #5 (id=889284)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
 #6 (id=889338)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 25.19541 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
 Description      : Form a bond with an ally. Every $327097d, you may empower the bond for $327037d, granting you an effect based on your partner's role, and granting them an effect based on your role.
 
 $?c3[|cFFFFFFFFTank|r
@@ -12403,7 +12403,7 @@ Effects          :
 #5 (id=889249)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | Target: Current Target (25)
 #6 (id=889250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 25.19541 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
 Description      : $@spelldesc326434
 Tooltip          : Bonded with $@auracaster. Every $327097d, you may empower the bond, granting bonuses based on your respective roles.
 
@@ -13737,7 +13737,7 @@ Effects          :
 #1 (id=888549)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 #2 (id=892247)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 570.8045 (coefficient=2.210526) | Rating: Mastery | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 52.91033 (coefficient=2.210526) | Rating: Mastery | Target: Current Target (25)
 #3 (id=892248)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 6 | Scaled Value: 6 | Target: Current Target (25)
 #4 (id=892249)   : Apply Aura (6) | Modify Critical Strike% (290)
@@ -13873,7 +13873,7 @@ Effects          :
 #1 (id=892218)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 #2 (id=892219)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 570.8045 (coefficient=2.210526) | Rating: Mastery | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 52.91033 (coefficient=2.210526) | Rating: Mastery | Target: Current Target (25)
 #3 (id=892220)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 6 | Scaled Value: 6 | Target: Current Target (25)
 #4 (id=892221)   : Apply Aura (6) | Modify Critical Strike% (290)
@@ -18228,7 +18228,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077504)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0.0763408 (coefficient=0.066667) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12500.06 (coefficient=0.066667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411144) [Spell Family (7)] 
@@ -18245,7 +18245,7 @@ Triggered By     : Master Shapeshifter (289237)
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077505)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0.01908549 (coefficient=0.016667) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3125.063 (coefficient=0.016667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411146) [Spell Family (7)] 
@@ -18261,7 +18261,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077507)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0.01335995 (coefficient=0.011667) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2187.562 (coefficient=0.011667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411267) [Spell Family (7)] 
@@ -22015,9 +22015,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 

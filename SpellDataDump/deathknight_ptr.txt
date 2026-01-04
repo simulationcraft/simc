@@ -68,11 +68,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Will of the Forsaken (desc=Racial) (id=7744) 
@@ -151,7 +151,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -212,9 +212,9 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -2611,7 +2611,7 @@ Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=65632)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 23.25 (coefficient=0.093) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.19049 (coefficient=0.093) | Stat: Str | Target: Self (1)
 Description      : Gained a Soul Fragment, granting $s1 strength each.  When $u Soul Fragments are accumulated, they will release, triggering Chaos Bane.  Lasts $d.
 Tooltip          : Strength Increased by $w1.
 
@@ -4313,9 +4313,9 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268037)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 8.182 (coefficient=0.032728) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.290002 (coefficient=0.032728) | Misc Value: 127 | Target: Self (1)
 #2 (id=269050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 8.182 (coefficient=0.032728) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.290002 (coefficient=0.032728) | Target: Self (1)
                    Affected Spells: Marrowrend (195182)
                    Family Flags: 117
 Description      : Marrowrend deals $s2% increased damage, and heals you for $s1% of damage dealt.
@@ -4330,7 +4330,7 @@ Proc Flags       : Periodic
 Attributes       : Passive (6), Allow Aura While Dead (116), Can Proc From Procs (122), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268168)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 7.98875 (coefficient=0.031955) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.188677 (coefficient=0.031955) | Misc Value: 127 | Target: Self (1)
 Description      : Your disease ticks have a $s1% chance to trigger Wandering Plague, dealing the same damage again to the target and all other enemies within $184899A1 yards, split evenly.
 
 Name             : Death and Decay (id=188290) [Spell Family (15)] 
@@ -7766,9 +7766,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7892,9 +7892,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -7961,11 +7961,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -7981,7 +7981,7 @@ Triggered By     : Deep Cuts (272685)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723724)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5251741 (coefficient=1.533742) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 196.0176 (coefficient=1.533742) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Heart Strike amplifies your Blood Plague on your primary target for $272685d, causing it to drain an additional $s1 health each time it drains.
 
 Name             : Deep Cuts (id=272685) [Spell Family (15)] 
@@ -8014,7 +8014,7 @@ Triggered By     : Icy Citadel (272723)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723791)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Icy Citadel | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 324.4275 (coefficient=1.29771) | PvP Coefficient: 0.5 | Trigger Spell: 272719 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 170.1045 (coefficient=1.29771) | PvP Coefficient: 0.5 | Trigger Spell: 272719 | Target: Self (1)
 #2 (id=723792)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 Description      : When Pillar of Frost expires, your Strength is increased by $s1 for $272723d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
@@ -8088,9 +8088,9 @@ Triggered By     : Bone Spike Graveyard (273089)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724416)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.520837 (coefficient=7.361964) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 940.8846 (coefficient=7.361964) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=724417)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.151046 (coefficient=9.202455) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1176.106 (coefficient=9.202455) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Casting $?s152280[Defile][Death and Decay] impales enemies with bone spikes, inflicting $s1 Physical damage and healing you for $s2 per enemy.
 
 Name             : Bone Spike Graveyard (id=273089) [Spell Family (15)] 
@@ -8137,7 +8137,7 @@ Azerite Power Id : 141
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724423)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=724424)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Frost Strike deals an additional ${$s1+($s1/2)} damage if you have at least $s2 empty runes.
@@ -8154,7 +8154,7 @@ Triggered By     : Horrid Experimentation (273096)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724426)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2579.389 (coefficient=10.31756) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1352.43 (coefficient=10.31756) | Target: Self (1)
 Description      : When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.
 
 Name             : Horrid Experimentation (id=273096) [Spell Family (15)] 
@@ -8385,7 +8385,7 @@ Azerite Power Id : 197
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726166)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 110 (coefficient=0.44) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 57.67541 (coefficient=0.44) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Death Strike heals for an additional $s1 for each remaining charge of Bone Shield.
 
 Name             : Glacial Contagion (id=274070) [Spell Family (15), Passive] 
@@ -8399,9 +8399,9 @@ Triggered By     : Glacial Contagion (274074)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726180)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.722571 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 642.9376 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
 #2 (id=726181)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5734904 (coefficient=1.674847) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 214.0513 (coefficient=1.674847) | Target: Self (1)
 Description      : Your autoattacks have a chance to apply Glacial Contagion, dealing ${$s1*($274074d/$274074t1)} Frost damage over $274074d. Obliterate deals an additional $s2 damage to targets infected with Glacial Contagion.
 
 Name             : Glacial Contagion (id=274071) [Spell Family (15), Hidden] 
@@ -8457,7 +8457,7 @@ Triggered By     : Festermight (274373)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726196)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 30.53425 (coefficient=0.122137) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 16.00978 (coefficient=0.122137) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
 Name             : Festermight (id=274373) [Spell Family (15)] 
@@ -8490,7 +8490,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -8502,7 +8502,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -8515,7 +8515,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -8590,7 +8590,7 @@ Triggered By     : Echoing Howl (275918)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729270)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.730906 (coefficient=7.97546) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1019.291 (coefficient=7.97546) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When empowered by Rime, Howling Blast causes a secondary burst of icy wind around you that deals $s1 Frost damage to nearby enemies.
 
 Name             : Echoing Howl (id=275918) [Spell Family (15)] 
@@ -8624,7 +8624,7 @@ Triggered By     : Harrowing Decay (275931)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729285)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Harrowing Decay | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6407127 (coefficient=1.871166) | PvP Coefficient: 0.5 | Trigger Spell: 275930 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 239.1415 (coefficient=1.871166) | PvP Coefficient: 0.5 | Trigger Spell: 275930 | Target: Self (1)
 Description      : Death Coil infects the target with Harrowing Decay, dealing ${$s1*($275931d/$275931t1)} Shadow damage over $275931d.
 
 Name             : Harrowing Decay (id=275930) [Spell Family (15), Hidden] 
@@ -8764,7 +8764,7 @@ Triggered By     : Eternal Rune Weapon (278543)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734194)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Eternal Rune Weapon | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 312.5 (coefficient=1.25) | PvP Coefficient: 0.5 | Trigger Spell: 278534 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 163.8506 (coefficient=1.25) | PvP Coefficient: 0.5 | Trigger Spell: 278534 | Target: Self (1)
 #2 (id=734195)   : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=734342)   : Dummy (3)
@@ -8782,7 +8782,7 @@ Azerite Power Id : 346
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734196)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Killer Frost | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.7919626 (coefficient=2.312883) | PvP Coefficient: 0.5 | Trigger Spell: 278603 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 295.5945 (coefficient=2.312883) | PvP Coefficient: 0.5 | Trigger Spell: 278603 | Target: Self (1)
 #2 (id=734501)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Frost Strike deals $s1 additional damage with each hit and has a $s2% chance on critical strikes to grant Killing Machine.
@@ -8798,7 +8798,7 @@ Azerite Power Id : 350
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734199)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.30209 (coefficient=18.40491) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2352.211 (coefficient=18.40491) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Festering Strike (85948), Festering Scythe (458128), Festering Strike (1240994)
                    Family Flags: 73
 #2 (id=734200)   : Dummy (3)
@@ -8817,7 +8817,7 @@ Triggered By     : Bones of the Damned (279503)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734204)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bones of the Damned | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 105 (coefficient=0.42) | PvP Coefficient: 0.5 | Trigger Spell: 279502 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 55.0538 (coefficient=0.42) | PvP Coefficient: 0.5 | Trigger Spell: 279502 | Target: Self (1)
 #2 (id=734205)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Marrowrend has a chance to grant an extra charge of Bone Shield. Bone Shield increases your Armor by $s1. 
@@ -8835,11 +8835,11 @@ Effects          :
 #1 (id=734208)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.4621532 (coefficient=1.349693) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 172.4955 (coefficient=1.349693) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 #3 (id=735829)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.4621532 (coefficient=1.349693) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 172.4955 (coefficient=1.349693) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 Description      : Remorseless Winter deals an additional $s2 damage. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
@@ -8855,7 +8855,7 @@ Azerite Power Id : 351
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734211)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 4.087233 (coefficient=11.93654) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1525.531 (coefficient=11.93654) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1026898)  : Dummy (3)
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
@@ -9024,7 +9024,7 @@ Effects          :
 #2 (id=737262)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=737448)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 43.47939 (coefficient=126.9792) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 16228.38 (coefficient=126.9792) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707), Anti-Magic Shell (444740), Anti-Magic Shell (444741), Lesser Anti-Magic Shell (454863)
                    Family Flags: 17
 Description      : Anti-Magic Shell absorbs $s3 additional damage and its duration is increased to $s2 seconds.
@@ -9041,7 +9041,7 @@ Triggered By     : March of the Damned (280149)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737263)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): March of the Damned | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 243.0522 (coefficient=0.972209) | PvP Coefficient: 0.2 | Trigger Spell: 280143 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 127.4376 (coefficient=0.972209) | PvP Coefficient: 0.2 | Trigger Spell: 280143 | Target: Self (1)
 #2 (id=737264)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 Description      : When you use Death's Advance, gain $s1 Speed for $280149d. The cooldown of Death's Advance is reduced to $s2 seconds.
@@ -9223,7 +9223,7 @@ Triggered By     : Helchains (286836), Helchains (286954), Helchains (290814)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749436)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Helchains | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.890627 (coefficient=5.521472) | PvP Coefficient: 0.5 | Trigger Spell: 286834 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 705.6633 (coefficient=5.521472) | PvP Coefficient: 0.5 | Trigger Spell: 286834 | Target: Self (1)
 #2 (id=749437)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Dark Transformations ignites you and your pet with flaming chains that deal $s1 Fire damage every sec to enemies between you for $s2 sec. 
@@ -9387,9 +9387,9 @@ Triggered By     : Frostwhelp's Indignation (287320), Frostwhelp's Indignation (
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750152)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Frostwhelp's Indignation | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1908.397 (coefficient=7.633588) | PvP Coefficient: 0.5 | Trigger Spell: 287303 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1000.614 (coefficient=7.633588) | PvP Coefficient: 0.5 | Trigger Spell: 287303 | Target: Self (1)
 #2 (id=750153)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 38.168 (coefficient=0.152672) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20.01232 (coefficient=0.152672) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
 #3 (id=750154)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=765340)   : Dummy (3)
@@ -9512,7 +9512,7 @@ Azerite Power Id : 109
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752014)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.04601 (coefficient=8.895705) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1136.902 (coefficient=8.895705) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Apocalypse and Army of the Dead additionally summon a Magus of the Dead for $288544d who hurls Frostbolts and Shadow Bolts at your foes, dealing $s1 damage each. 
 
 Name             : Cold Hearted (id=288424) [Spell Family (15), Passive] 
@@ -9527,7 +9527,7 @@ Triggered By     : Cold Hearted (288426)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752031)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Hearted | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 8.402787 (coefficient=24.53988) | PvP Coefficient: 0.2 | Trigger Spell: 288425 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3136.282 (coefficient=24.53988) | PvP Coefficient: 0.2 | Trigger Spell: 288425 | Target: Self (1)
 #2 (id=752032)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Icebound Fortitude heals for $s1 every sec and its cooldown is reduced by $s2 seconds.
@@ -9670,7 +9670,7 @@ Effects          :
 #1 (id=753644)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bloody Runeblade
                    Base Value: 4 | Scaled Value: 4 | Trigger Spell: 289347 | Target: Self (1)
 #2 (id=753654)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 378.855 (coefficient=1.51542) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 198.642 (coefficient=1.51542) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When Crimson Scourge activates, you gain $s2 Haste for $289349d, and immediately gain ${$289348m3/10} Runic Power.
 
 Name             : Bloody Runeblade (id=289347) [Spell Family (15), Hidden] 
@@ -10337,7 +10337,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -10611,7 +10611,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Rune Strike (id=316239) [Spell Family (15)] 
@@ -19914,9 +19914,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 

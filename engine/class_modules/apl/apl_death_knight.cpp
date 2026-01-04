@@ -139,6 +139,7 @@ void blood( player_t* p )
   high_prio_actions->add_action( "raise_dead,use_off_gcd=1" );
   high_prio_actions->add_action( "death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd" );
   high_prio_actions->add_action( "dancing_rune_weapon" );
+  high_prio_actions->add_action( "abomination_limb" );
 
   deathbringer->add_action( "death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))" );
   deathbringer->add_action( "reapers_mark" );

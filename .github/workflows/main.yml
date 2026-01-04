@@ -13,285 +13,37 @@ on:
 
 env:
   SIMC_PROFILE: profiles/CI.simc
-  RUN_BINARY_CACHE: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-  CCACHE_COMPRESS: true # always enable ccache compression
-  ccache-generation: 0 # bump if you need to "clean" ccache
+  CCACHE_GENERATION: 0 # bump if you need to "clean" ccache
 
 jobs:
-  ubuntu-gcc-build:
-    name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        compiler: [gcc-12, gcc-14]
-        cppVersion: [17, 20]
-        include:
-          - compiler: gcc-12
-            cxx: g++-12
-            packages: gcc-12 g++-12
-            os: ubuntu-22.04
-          - compiler: gcc-14
-            cxx: g++-14
-            packages: gcc-14 g++-14
-            os: ubuntu-24.04
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        env:
-          {
-            ccache-prefix: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}",
-          }
-        with:
-          path: ${{ runner.workspace }}/.ccache
-          key: ${{ env.ccache-prefix }}-${{ github.sha }}
-          restore-keys: ${{ env.ccache-prefix }}-
-
-      - name: Install deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
-
-      - name: Configure
-        run:
-          cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-          -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
-
-      - name: Build
-        env:
-          CCACHE_BASEDIR: ${{ runner.workspace }}
-          CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
-        run: |
-          ccache -z
-          ninja -C '${{ runner.workspace }}/b/ninja'
-          ccache -s
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-  ubuntu-clang-build:
-    name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        cppVersion: [17, 20]
-        compiler: [clang++-15, clang++-18]
-        include:
-          - compiler: clang++-15
-            os: ubuntu-22.04
-            packages: clang-15 lld-15
-            enable_file_prefix_map: true
-          - compiler: clang++-18
-            os: ubuntu-24.04
-            packages: clang-18 lld-18
-            enable_file_prefix_map: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        env:
-          {
-            ccache-prefix: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}",
-          }
-        with:
-          path: ${{ runner.workspace }}/.ccache
-          key: ${{ env.ccache-prefix }}-${{ github.sha }}
-          restore-keys: ${{ env.ccache-prefix }}-
-
-      - name: Install deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
-
-      - name: Configure
-        env:
-          UBSAN_STRIP_COUNT: '`echo "${{ runner.workspace }}//" | grep -o ''/'' - | wc -l`'
-        run:
-          cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
-          -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.workspace) || ''}}
-          -fno-omit-frame-pointer -fsanitize=address,undefined
-          -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
-          -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
-          -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-
-      - name: Build
-        env:
-          CCACHE_BASEDIR: ${{ runner.workspace }}
-          CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
-        run: |
-          ccache -z
-          ninja -C '${{ runner.workspace }}/b/ninja'
-          ccache -s
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      do-test: ${{ github.base_ref == github.event.repository.default_branchy || github.base_ref == 'midnight' }}
 
   spec-test:
-    needs: [ubuntu-clang-build]
-    if: github.ref_name == 'thewarwithin' || github.ref_name == 'midnight'
+    needs: [build]
+    if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-      cache-sha: ${{ github.sha }}
       is-ptr: false
 
   spec-test-ptr:
-    needs: [spec-test, ubuntu-clang-build]
+    needs: [build]
+    if: github.base_ref == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-      cache-sha: ${{ github.sha }}
       is-ptr: true
 
+  ubuntu-test:
+    needs: [build]
+    if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
+    uses: ./.github/workflows/ubuntu_test.yml
+
+  # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
-    name: Update Generated Files
-    needs: [spec-test]
-    runs-on: ubuntu-22.04
-    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
-
-    steps:
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
-
-      - uses: actions/checkout@v4
-
-      - name: Setup
-        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
-
-      - name: Generate APL Modules
-        if: steps.cache.outputs.cache-hit == 'true'
-        env:
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace }}/generate_apl_modules_ci.sh
-
-      - name: Download APL Dumps
-        uses: actions/download-artifact@v4
-        with:
-          path: ActionPriorityLists
-          pattern: apl-${{ github.sha }}-*
-          merge-multiple: true
-
-      - name: Generate Profiles
-        if: steps.cache.outputs.cache-hit == 'true'
-        continue-on-error: true
-        env:
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace }}/generate_profiles_ci.sh
-
-      - name: Dump Spell Data
-        if: steps.cache.outputs.cache-hit == 'true'
-        env:
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
-
-      - name: Check for Non-Trivial Changes
-        run: |
-          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
-            git checkout -- SpellDataDump/build_info.txt
-          fi
-
-      - name: Commit Updated Files
-        continue-on-error: true
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: "Update Generated Files ${{ env.SHORT_SHA }}"
-          default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
-          add: |
-            - "engine/class_modules/apl"
-            - "*.simc"
-            - "*.txt"
-
-      - name: Cleanup APL Dumps
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: apl-${{ github.sha }}-*
-
-  ubuntu-run:
-    needs: [ubuntu-clang-build, ubuntu-gcc-build]
-    if: github.ref_name == 'thewarwithin'
-    uses: ./.github/workflows/ubuntu_run.yml
-    with:
-      cache-sha: ${{ github.sha }}
-
-  build-osx:
-    name: macos-latest
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build
-        run: make SANITIZE=1 -C engine debug -j 2
-
-      - name: Smoke Test
-        if: github.ref_name == 'thewarwithin'
-        run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
-
-  windows-VS:
-    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        vs: [2019]
-        arch: [x64, amd64_arm64]
-        include:
-          - arch: x64
-            runSmokeTest: false # disable smoke test for now, as it seems to hang the workflow indefinitely on assert, instead of failing.
-
-    env:
-      CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
-
-    steps:
-      - uses: actions/checkout@v4
-
-        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
-      - uses: lukka/get-cmake@latest
-
-      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.arch }}
-
-      - name: Generate project files
-        run: |
-          cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
-
-      - name: Build
-        run: |
-          cmake --build "${{ env.CMAKE_BUILD_DIR }}"
-
-      - name: Smoke Test
-        if: matrix.runSmokeTest
-        run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+    needs: [build, spec-test]
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.base_ref == github.event.repository.default_branch
+    uses: ./.github/workflows/generate_files.yml

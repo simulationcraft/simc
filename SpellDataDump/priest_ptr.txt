@@ -460,11 +460,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Weakened Soul (id=6788) [Spell Family (6)] 
@@ -815,7 +815,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1123,7 +1123,7 @@ Duration         : 15 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14742)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 473 (coefficient=1.892) | SP Coefficient: 1 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.0043 (coefficient=1.892) | SP Coefficient: 1 | Rating: Haste | Target: Self (1)
 #2 (id=14743)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Power Word: Radiance (194509)
@@ -1422,7 +1422,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.57 (coefficient=1.28628) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6062 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
@@ -1527,7 +1527,7 @@ Proc Flags       : Magic Heal
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=28280)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: -1541 (coefficient=-6.164) | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -807.9801 (coefficient=-6.164) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Holy Word: Sanctify (34861), Binding Heal (368276)
                    Family Flags: 6, 9, 11, 12, 28, 34, 37
 Description      : Your next healing spell costs $s1 less mana.
@@ -4246,7 +4246,7 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268054)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 6.9035 (coefficient=0.027614) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.619657 (coefficient=0.027614) | Target: Self (1)
                    Affected Spells: Heal (2060), Flash Heal (2061)
                    Family Flags: 11, 12
 Description      : Increases the healing done by your Heal and Flash Heal by $s1%.
@@ -4261,7 +4261,7 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268055)   : Apply Aura (6) | Proc Trigger Spell (42): Mental Fatigue | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 239.2857 (coefficient=0.957143) | Trigger Spell: 185104 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 125.4628 (coefficient=0.957143) | Trigger Spell: 185104 | Target: Self (1)
 Description      : Mind Flay damage applies Mental Fatigue to the target, increasing damage taken from Mind spells by ${$m1/100}.2% for $185104d, stacking up to $185104u times.
 
 Name             : Mental Fatigue (id=185104) [Spell Family (6)] 
@@ -4275,7 +4275,7 @@ Triggered By     : Mental Fatigue (184915)
 Attributes       : DoT Stacking Rule (103), Aura Points On Client (268), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268400)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 2.39275 (coefficient=0.009571) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1.254571 (coefficient=0.009571) | Target: Targeted Enemy (6)
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Corrupted Apparitions (73510), Void Torrent (263165), Mind Flay: Insanity (391403), Void Blast (450983)
                    Family Flags: 13, 51, 70, 80
 Description      : $@spelldesc184915
@@ -7315,9 +7315,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7562,9 +7562,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -7631,11 +7631,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -7715,7 +7715,7 @@ Triggered By     : Moment of Repose (272776)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723883)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 33.61115 (coefficient=98.15951) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12545.13 (coefficient=98.15951) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Pain Suppression applies Atonement to the target and instantly heals them for $s1.
 
 Name             : Moment of Repose (id=272776) [Spell Family (6)] 
@@ -7747,7 +7747,7 @@ Azerite Power Id : 114
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723891)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Permeating Glow | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.898962 (coefficient=8.466258) | PvP Coefficient: 0.5 | Trigger Spell: 272782 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1082.017 (coefficient=8.466258) | PvP Coefficient: 0.5 | Trigger Spell: 272782 | Target: Self (1)
 Description      : Flash Heal increases the healing of your Flash Heals on that ally by $s1 for $272783d.
 
 Name             : Permeating Glow (id=272782) [Spell Family (6), Hidden] 
@@ -7778,7 +7778,7 @@ Azerite Power Id : 115
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723903)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.361252 (coefficient=3.97546) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 508.0776 (coefficient=3.97546) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Mind Sear deals an additional $s1 damage to enemies suffering from your Shadow Word: Pain and snares all enemies hit by $288371s1%.
 
 Name             : Open Skies (desc=Racial Passive) (id=273216) [Passive] 
@@ -7838,9 +7838,9 @@ Triggered By     : Weal (273310), Woe (273312)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724827)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Weal and Woe | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.680557 (coefficient=4.907975) | PvP Coefficient: 0.5 | Trigger Spell: 273308 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 627.2563 (coefficient=4.907975) | PvP Coefficient: 0.5 | Trigger Spell: 273308 | Target: Self (1)
 #2 (id=724828)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.302091 (coefficient=18.40491) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2352.211 (coefficient=18.40491) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Healing an ally with Penance increases the damage of your next Smite by $s1. Damaging an enemy with Penance increases the absorption of your next Power Word: Shield by $s2.
 
 Name             : Weal and Woe (id=273308) [Spell Family (6), Hidden] 
@@ -7914,7 +7914,7 @@ Azerite Power Id : 165
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724838)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.46615 (coefficient=10.1227) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1293.716 (coefficient=10.1227) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Echo of Light from Holy Word: Sanctify heals for an additional ${$s1*2}.
 
 Name             : Sanctum (id=274366) [Spell Family (6), Passive] 
@@ -7929,7 +7929,7 @@ Triggered By     : Sanctum (274369)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=726642)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sanctum | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 35.57405 (coefficient=103.892) | PvP Coefficient: 0.2 | Trigger Spell: 274368 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13277.76 (coefficient=103.892) | PvP Coefficient: 0.2 | Trigger Spell: 274368 | Target: Self (1)
 Description      : When you cast Fade, absorb $s1 Magic damage for $274369d.
 
 Name             : Sanctum (id=274368) [Spell Family (6), Hidden] 
@@ -7979,7 +7979,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -7991,7 +7991,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -8004,7 +8004,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -8020,7 +8020,7 @@ Triggered By     : Depth of the Shadows (275544)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728629)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Depth of the Shadows | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.4537504 (coefficient=1.325153) | PvP Coefficient: 0.5 | Trigger Spell: 275542 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 169.3592 (coefficient=1.325153) | PvP Coefficient: 0.5 | Trigger Spell: 275542 | Target: Self (1)
 Description      : Each time $?s204197[Purge the Wicked][Shadow Word: Pain] deals damage, the healing of your next Shadow Mend is increased by $s1, up to a maximum of ${$s1*$275544u}.
 
 Atonement applied by Shadow Mend lasts an additional ${$275542s1/1000} sec.
@@ -8077,7 +8077,7 @@ Azerite Power Id : 228
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728716)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 8 | Scaled Value: 4.831603 (coefficient=14.11043) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 1803.362 (coefficient=14.11043) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Prayer of Healing restores an additional $s1 health to the most injured ally it affects.
 
 Name             : Whispers of the Damned (id=275722) [Spell Family (6), Passive] 
@@ -8093,7 +8093,7 @@ Effects          :
 #1 (id=728943)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Whispers of the Damned
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275725 | Target: Self (1)
 #2 (id=751888)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.907296 (coefficient=11.41104) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1458.371 (coefficient=11.41104) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Collapsing Void (448405), Void Blast (450983)
                    Family Flags: 13, 30
 Description      : $?s205351[Shadow Word: Void][Mind Blast] deals $s2 additional damage and generates ${$275726s1/100} additional Insanity on critical strikes.
@@ -8143,7 +8143,7 @@ Azerite Power Id : 400
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732993)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5.041672 (coefficient=14.72393) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1881.769 (coefficient=14.72393) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Heal restores up to $s1 additional health, based on your missing mana.
 
 Name             : Spiteful Apparitions (id=277682) [Spell Family (6), Passive] 
@@ -8157,7 +8157,7 @@ Azerite Power Id : 403
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732994)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.396895 (coefficient=7) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 894.6243 (coefficient=7) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
 Name             : Contemptuous Homily (id=278629) [Spell Family (6), Passive] 
@@ -8173,7 +8173,7 @@ Effects          :
 #1 (id=734461)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Contemptuous Homily
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 313267 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6163445 (coefficient=1.8) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 230.0463 (coefficient=1.8) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Penance (47666), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 47
 Description      : Penance deals an additional $s2 damage and extends your $?s204197[Purge the Wicked][Shadow Word: Pain] by ${$s1/1000} sec per bolt.
@@ -8191,7 +8191,7 @@ Effects          :
 #1 (id=734477)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Enduring Luminescence
                    Base Value: 70 | Scaled Value: 70 | Trigger Spell: 279245 | Target: Self (1)
 #2 (id=734478)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.415802 (coefficient=7.055215) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 901.681 (coefficient=7.055215) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
                    Family Flags: 22
 Description      : Power Word: Radiance restores $s2 additional health, and applies Atonement for $s1% of its normal duration.
@@ -8207,7 +8207,7 @@ Azerite Power Id : 401
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734480)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.8455 (coefficient=0.643382) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.33483 (coefficient=0.643382) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #2 (id=734481)   : Apply Aura (6) | Dummy (4)
@@ -8227,7 +8227,7 @@ Triggered By     : Death Throes (278941)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734499)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.8696884 (coefficient=2.539877) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 324.6051 (coefficient=2.539877) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Purge the Wicked (204213), Encroaching Shadows (472568)
                    Family Flags: 15, 100
                    Modified By: Discipline Priest (462098 effect#2)
@@ -8247,7 +8247,7 @@ Triggered By     : Chorus of Insanity (279572)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734503)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 18.5185 (coefficient=0.074074) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.709656 (coefficient=0.074074) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When Voidform ends, gain $s1 Critical Strike, stacking 20 times. This effect decays every $279572t3 sec.
 
 Name             : Contemptuous Homily (id=278904) [Spell Family (6)] 
@@ -8592,7 +8592,7 @@ Triggered By     : Promise of Deliverance (287340)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750248)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Promise of Deliverance | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.310766 (coefficient=6.748466) | PvP Coefficient: 0.5 | Trigger Spell: 287337 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 862.4774 (coefficient=6.748466) | PvP Coefficient: 0.5 | Trigger Spell: 287337 | Target: Self (1)
 #2 (id=750269)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 Description      : For $287340d after you cast Holy Word: Serenity, Heal and Flash Heal heal for an additional $s1, and reduce the cooldown of Holy Word: Serenity by an additional $<duration> sec.
@@ -8650,7 +8650,7 @@ Triggered By     : Sudden Revelation (287360)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750284)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sudden Revelation | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 7.190685 (coefficient=21) | PvP Coefficient: 0.5 | Trigger Spell: 287356 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2683.873 (coefficient=21) | PvP Coefficient: 0.5 | Trigger Spell: 287356 | Target: Self (1)
 Description      : Power Word: Radiance has a $287356h% chance to cause your next Holy Nova to deal $s1 additional damage and reduce the cooldown of Power Word: Radiance by ${$287356s2/1000} sec.
 
 Name             : Sudden Revelation (id=287356) [Spell Family (6), Hidden] 
@@ -8734,7 +8734,7 @@ Triggered By     : Death Denied (287722)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750865)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Death Denied | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 52.51742 (coefficient=153.3742) | PvP Coefficient: 0.2 | Trigger Spell: 287719 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19601.76 (coefficient=153.3742) | PvP Coefficient: 0.2 | Trigger Spell: 287719 | Target: Self (1)
 Description      : Leap of Faith absorbs the next $s1 damage to the target within $287722d. While the shield holds, Leap of Faith cools down $287723s1% faster.
 
 Name             : Death Denied (id=287719) [Spell Family (6), Hidden] 
@@ -8805,7 +8805,7 @@ Effects          :
 #1 (id=751893)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Thought Harvester
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288342 | Target: Self (1)
 #2 (id=751938)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5671883 (coefficient=1.656442) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 211.699 (coefficient=1.656442) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Vampiric Touch (34914)
                    Family Flags: 42
 Description      : Vampiric Touch damage is increased by $s2, and each time Vampiric Touch deals damage you have a chance to increase the damage of your next Mind Sear within $288343d by $288343s1%.
@@ -9224,7 +9224,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -9473,7 +9473,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Alpaca Saddlebags (desc=Racial Passive) (id=317795) [Passive] 
@@ -17618,9 +17618,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 

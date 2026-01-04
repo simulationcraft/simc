@@ -685,6 +685,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
+    propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> tightening_grasp;
 
     // Frost
@@ -1458,6 +1459,7 @@ public:
     const spell_data_t* virulent_plague;
 
     // Blood
+    const spell_data_t* abomination_limb_debuff;
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
@@ -8374,8 +8376,34 @@ struct reapers_mark_t final : public death_knight_spell_t
 // Death Knight Abilities
 // ==========================================================================
 
-// Dark Transformation ======================================================
+// Abomination Limb =========================================================
+struct abomination_limb_t : public death_knight_spell_t
+{
+  abomination_limb_t( death_knight_t* p, std::string_view options_str = "" )
+    : death_knight_spell_t( "abomination_limb", p, p->talent.blood.abomination_limb )
+    {
+      harmful = false;
+      parse_options( options_str );
+    }
 
+    void tick( dot_t* dot ) override
+    {
+      death_knight_spell_t::tick( dot );
+
+      for ( auto& target : p()->sim->target_non_sleeping_list )
+      {
+        auto td = get_td( target );
+        if ( !td->debuff.abomination_limb->check() )
+        {
+          td->debuff.tightening_grasp->trigger();
+          td->debuff.abomination_limb->trigger();
+          return;
+        }
+      }
+    }
+};
+
+// Dark Transformation ======================================================
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str = "" )
@@ -8981,6 +9009,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       leech_damage_accumulator( 0 ),
       bp_consumption_multi( 0 )
     {
+      aoe = -1;
       reduced_aoe_targets = p->spell.consumption_damage->effectN( 3 ).base_value();
       background = false;
 
@@ -8990,6 +9019,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
 
     void impact( action_state_t* state ) override
     {
+      leech_damage_accumulator = 0;
       death_knight_empowered_release_spell_t::impact( state );
 
       switch ( empower_value( state ) )
@@ -9055,6 +9085,10 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
           drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
         }
       }
+
+      debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( state );
+      consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
+      consumption_leech_damage->execute_on_target( state->target );
     }
 
     void execute() override
@@ -9063,10 +9097,6 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       bp_consumption_multi = 0;
 
       death_knight_empowered_release_spell_t::execute();
-
-      debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( execute_state );
-      consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
-      consumption_leech_damage->execute_on_target( p()->target );
     }
     private:
       double leech_damage_accumulator;
@@ -10726,7 +10756,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
 
     if ( p->talent.blood.boiling_point.ok() )
-      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
+      boiling_point_proc_chance = 0.15;
   }
 
   int n_targets() const override
@@ -10747,11 +10777,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
 
-    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
-    {
+    // For some reason, boiling point seems to be on a two roll system.
+    // First roll checks only for first target
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance ) )
       p()->buffs.boiling_point->trigger();
-      boiling_point_proc_attempts = 0;
-    }
+
+    // Second roll, multiplies proc chance by number of targets -1
+    if ( p()->talent.blood.boiling_point.ok() && p()->sim->target_non_sleeping_list.size() > 1 &&
+            p()->rng().roll( boiling_point_proc_chance * ( p()->sim->target_non_sleeping_list.size() - 1 ) ) )
+      p()->buffs.boiling_point->trigger();
 
     if ( p()->talent.blood.dance_of_midnight_1.ok() )
       p()->buffs.dance_of_midnight_1->expire();
@@ -13940,6 +13974,8 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new raise_dead_t( this, options_str );
 
   // Blood Actions
+  if ( name == "abomination_limb" )
+    return new abomination_limb_t( this, options_str );
   if ( name == "blood_boil" )
     return new blood_boil_t( this, options_str );
   if ( name == "consumption" )
@@ -14843,9 +14879,10 @@ void death_knight_t::spell_lookups()
   spell.virulent_plague = conditional_spell_lookup( talent.unholy.outbreak.ok(), 191587 );
 
   // Blood
+  spell.abomination_limb_debuff     = conditional_spell_lookup( talent.blood.abomination_limb.ok(), 1263566 );
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
-  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
-  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460499 );
+  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460500 );
   spell.blood_mist_buff             = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263729 );
   spell.blood_mist_damage           = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263752 );
   spell.blood_mist_rp_gain          = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263774 );
@@ -15303,6 +15340,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value_from_effect( 1 );
 
   // Blood
+  debuff.abomination_limb = make_debuff( p.talent.blood.abomination_limb.ok(), *this, "abomination_limb", p.spell.abomination_limb_debuff );
   debuff.tightening_grasp = make_debuff( p.talent.blood.gorefiends_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff );
 
   // Frost

@@ -221,11 +221,6 @@ public:
     propagate_const<buff_t*> crushing_void;
     propagate_const<buff_t*> ancient_madness;
 
-    // Tier Sets
-    propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
-    propagate_const<buff_t*> tww3_archon_4pc;   // TWW3 Archon Set 4pc helper
-    propagate_const<buff_t*> overflowing_void;  // TWW3 VW Set 4pc
-
     // Archon
     propagate_const<buff_t*> power_surge;
     propagate_const<buff_t*> sustained_potency;
@@ -662,13 +657,6 @@ public:
     const spell_data_t* echo_of_light;
   } mastery_spells;
 
-  struct
-  {
-    const spell_data_t* voidweaver_4pc_buff;
-    const spell_data_t* archon_2pc_buff;
-    const spell_data_t* voidweaver_4pc;
-  } tww3_spells;
-
   // Cooldowns
   struct
   {
@@ -716,7 +704,6 @@ public:
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> shield_discipline;
-    propagate_const<gain_t*> ascension_tww3_2pc;
     propagate_const<gain_t*> insanity_dark_thoughts;
     propagate_const<gain_t*> insanity_horrific_vision;
     propagate_const<gain_t*> insanity_vision_of_nzoth;

@@ -899,12 +899,6 @@ struct shadow_word_madness_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    // TODO: check this with Maddening Tentacles
-    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) && priest().buffs.power_surge->check() )
-    {
-      priest().buffs.tww3_archon_4pc->trigger();
-    }
-
     if ( priest().talents.shadow.ancient_madness.enabled() && priest().buffs.voidform->up() && casted )
     {
       timespan_t base_duration = timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() );
@@ -1260,19 +1254,6 @@ struct void_torrent_t final : public priest_spell_t
     return m;
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_persistent_multiplier( s );
-
-    // tww3 set bonus
-    if ( priest().buffs.overflowing_void->check() )
-    {
-      m *= 1 + priest().buffs.overflowing_void->check_value();
-    }
-
-    return m;
-  }
-
   void last_tick( dot_t* d ) override
   {
     priest().buffs.void_torrent->expire();
@@ -1297,7 +1278,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-    priest().buffs.overflowing_void->expire();
   }
 };
 

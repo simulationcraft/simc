@@ -1,0 +1,187 @@
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      do-test:
+        type: boolean
+        required: true
+
+jobs:
+  ubuntu-gcc-build:
+    name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        compiler: [gcc-12, gcc-14]
+        cppVersion: [17, 20]
+        include:
+          - compiler: gcc-12
+            cxx: g++-12
+            packages: gcc-12 g++-12
+            os: ubuntu-22.04
+          - compiler: gcc-14
+            cxx: g++-14
+            packages: gcc-14 g++-14
+            os: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        env:
+          CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
+          restore-keys: ${{ env.CCACHE_PREFIX }}-
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
+
+      - name: Configure
+        run:
+          cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
+
+      - name: Build
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
+        run: |
+          ccache -z
+          ninja -C '${{ runner.workspace }}/b/ninja'
+          ccache -s
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+  ubuntu-clang-build:
+    name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        cppVersion: [17, 20]
+        compiler: [clang++-15, clang++-18]
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+            packages: clang-15 lld-15
+            enable_file_prefix_map: true
+          - compiler: clang++-18
+            os: ubuntu-24.04
+            packages: clang-18 lld-18
+            enable_file_prefix_map: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        env:
+          CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
+          restore-keys: ${{ env.CCACHE_PREFIX }}-
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
+
+      - name: Configure
+        env:
+          UBSAN_STRIP_COUNT: '`echo "${{ runner.workspace }}//" | grep -o ''/'' - | wc -l`'
+        run:
+          cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.workspace) || ''}}
+          -fno-omit-frame-pointer -fsanitize=address,undefined
+          -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
+          -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
+          -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+      - name: Build
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
+        run: |
+          ccache -z
+          ninja -C '${{ runner.workspace }}/b/ninja'
+          ccache -s
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+  build-osx:
+    name: macos-latest
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: make SANITIZE=1 -C engine debug -j 2
+
+      - name: Smoke Test
+        if: inputs.do-test == 'true'
+        run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+
+  windows-VS:
+    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        vs: [2019]
+        arch: [x64, amd64_arm64]
+        include:
+          - arch: x64
+            runSmokeTest: false # disable smoke test for now, as it seems to hang the workflow indefinitely on assert, instead of failing.
+
+    env:
+      CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
+
+    steps:
+      - uses: actions/checkout@v4
+
+        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
+      - uses: lukka/get-cmake@latest
+
+      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+
+      - name: Generate project files
+        run: |
+          cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: |
+          cmake --build "${{ env.CMAKE_BUILD_DIR }}"
+
+      - name: Smoke Test
+        if: matrix.runSmokeTest && inputs.do-test == 'true'
+        run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

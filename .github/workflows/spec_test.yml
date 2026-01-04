@@ -6,9 +6,6 @@ on:
       cache-key:
         type: string
         required: true
-      cache-sha:
-        type: string
-        required: true
       is-ptr:
         type: boolean
         required: true
@@ -246,7 +243,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: apl-${{ inputs.cache-sha }}-${{ matrix.spec }}
+          name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: |
             default/${{ matrix.spec }}.simc
             assisted_combat/${{ matrix.spec }}.simc

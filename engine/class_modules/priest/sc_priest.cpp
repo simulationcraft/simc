@@ -164,18 +164,6 @@ public:
     return priest().buffs.insidious_ire->check();
   }
 
-  double recharge_multiplier( const cooldown_t& c ) const override
-  {
-    auto m = base_t::recharge_multiplier( c );
-
-    if ( p().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) && p().buffs.entropic_rift->check() )
-    {
-      m *= 1 + void_blast_cdr;
-    }
-
-    return m;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
@@ -330,10 +318,6 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     if ( priest().talents.voidweaver.darkening_horizon.enabled() )
     {
       priest().extend_entropic_rift();
-      if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-      {
-        priest().expand_entropic_rift();
-      }
     }
   }
 
@@ -656,11 +640,6 @@ struct halo_t final : public priest_spell_t
           break;
       }
     }
-
-    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
-    {
-      priest().buffs.ascension->trigger();
-    }
   }
 
 private:
@@ -842,18 +821,6 @@ struct void_blast_disc_t final : public smite_base_t
   void_blast_disc_t( priest_t& p, util::string_view options_str )
     : smite_base_t( p, "void_blast", p.talents.voidweaver.void_blast_disc, false, options_str )
   {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    smite_base_t::impact( s );
-
-    // This call contains the relevant talent checks, do not need to make them twice.
-    p().extend_entropic_rift();
-    if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-    {
-      priest().expand_entropic_rift( 2 );
-    }
   }
 
   double composite_atonement_multiplier( action_state_t* s ) override
@@ -2195,7 +2162,6 @@ void priest_t::create_gains()
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
   gains.shield_discipline                = get_gain( "Shield Discipline" );
-  gains.ascension_tww3_2pc               = get_gain( "Ascension" );
   gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
   gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
   gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
@@ -2867,10 +2833,6 @@ void priest_t::init_spells()
 
   auto sd_nf = spell_data_t::not_found();
 
-  tww3_spells.archon_2pc_buff = sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) ? find_spell( 1239336 ) : sd_nf;
-
-  tww3_spells.voidweaver_4pc_buff = sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) ? find_spell( 1237615 ) : sd_nf;
-
   init_spells_shadow();
   init_spells_discipline();
   init_spells_holy();
@@ -3052,8 +3014,6 @@ void priest_t::init_spells()
   talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
-  tww3_spells.voidweaver_4pc = sets->set( HERO_VOIDWEAVER, TWW3, B4 );
-
   if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
@@ -3120,20 +3080,11 @@ void priest_t::create_buffs()
           }
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-          if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) )
-            cooldowns.mind_blast->adjust_recharge_multiplier();
-
           if ( !new_ )
           {
             buffs.darkening_horizon->expire();
             background_actions.collapsing_void->trigger( state.last_entropic_rift_target,
                                                          buffs.collapsing_void->check() );
-            if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-            {
-              auto value = ( 1.0 + as<double>( buffs.collapsing_void->check() ) / buffs.collapsing_void->max_stack() ) *
-                           buffs.overflowing_void->default_value;
-              buffs.overflowing_void->trigger( 1, value );
-            }
             buffs.collapsing_void->expire();
             buffs.voidheart->expire();
 
@@ -3164,12 +3115,6 @@ void priest_t::create_buffs()
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                               ->set_max_stack( specialization() == PRIEST_SHADOW ? 5 : 10 );
 
-  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-  {
-    buffs.collapsing_void->default_value +=
-        tww3_spells.voidweaver_4pc->effectN( specialization() == PRIEST_SHADOW ? 3 : 1 ).percent();
-  }
-
   // Unknown what this piece of spell data is for. Discipline testing shows a maximum of 10 stacks.
   /*if ( talents.voidweaver.collapsing_void.enabled() )
   {
@@ -3186,51 +3131,6 @@ void priest_t::create_buffs()
                                                 talents.archon.sustained_potency_buff );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", talents.archon.mind_flay_insanity_buff );
-
-  buffs.ascension =
-      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ), this, "ascension", tww3_spells.archon_2pc_buff )
-          ->set_default_value_from_effect( 1, 0.01 )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_INSANITY, b->current_value, gains.ascension_tww3_2pc );
-          } );
-
-  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
-  {
-    buffs.ascension->base_buff_duration -= 1_ms;
-    buffs.ascension->buff_period -= 1_ms;
-  }
-
-  buffs.overflowing_void = make_buff_fallback( tww3_spells.voidweaver_4pc_buff->ok(), this, "overflowing_void",
-                                               tww3_spells.voidweaver_4pc_buff )
-                               ->set_default_value( 0 );
-
-  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-  {
-    buffs.overflowing_void->set_default_value( tww3_spells.voidweaver_4pc->effectN( 2 ).percent() / 2 );
-  }
-
-  buffs.tww3_archon_4pc =
-      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ), this, "tww3_archon_4pc_helper" );
-
-  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) )
-  {
-    int casts_per_extend = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 1 ).base_value() );
-    int max_extension    = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 3 ).base_value() );
-    buffs.tww3_archon_4pc->set_max_stack( casts_per_extend * max_extension )
-        ->set_stack_change_callback( [ this, casts_per_extend ]( buff_t*, int, int _new ) {
-          if ( _new % casts_per_extend == 0 && _new != 0 )
-          {
-            buffs.power_surge->extend_duration( this, buffs.power_surge->tick_time() );
-          }
-        } );
-
-    buffs.power_surge->add_stack_change_callback( [ this ]( buff_t*, int, int _new ) {
-      if ( !_new )
-      {
-        buffs.tww3_archon_4pc->expire();
-      }
-    } );
-  }
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -3411,7 +3311,7 @@ void priest_t::init_action_list()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      if ( sim->dbc->wowv() > dbc::client_data_version( false ) )
+      if ( is_ptr() )
       {
         priest_apl::shadow_ptr( this );
       }
@@ -3525,6 +3425,12 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 450404 )
   {
     return { "buff.entropic_rift.up" };
+  }
+
+  // guard against buff.power_word_fortitude_highlight, base sim handles this
+  if ( step.spell_id == 21562 && rule.condition_value_1 == 1271911 )
+  {
+    return { "0" };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );

@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.65028
-static constexpr std::array<spelltext_data_t, 28320> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28323> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20924,6 +20924,7 @@ static constexpr std::array<spelltext_data_t, 28320> __ptr_spelltext_data { {
   {  431442, "Living Flame is enhanced with Bronze magic, repeating $?c2[$s1%][$s3%] of the damage or healing you dealt to the target in the last $s2 sec as Arcane, up to $?s1260647[$<cap2>][$<cap>].", 0, "Bronze" },
   {  431443, "Twist Chrono Flames toward your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]\r\n\r\nBronze magic repeats $?c2[$431442s1%][$431442s3%] of the damage or healing you dealt to the target in the last $431442s2 sec as Arcane, up to $<cap>.\r\n", 0, "Bronze" },
   {  431444, "$@spelldesc431432", "Unable to stealth or turn invisible.", 0 },
+  {  431460, "After you cast $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][], your next Holy Power spender is guaranteed to apply $s2 Dawnlight.", 0, 0 },
   {  431462, "$@spelldesc431406", "Movement speed increased by $w1%.", 0 },
   {  431463, "Hammer of Light instantly calls down $s1 Empyrean Hammers on your target when it is cast.", 0, 0 },
   {  431464, "$@spelldesc431463", 0, 0 },
@@ -20937,6 +20938,7 @@ static constexpr std::array<spelltext_data_t, 28320> __ptr_spelltext_data { {
   {  431484, "Each time you cast an empower spell, unstable time magic reduces its cooldown by up to $s1 sec.", 0, "Bronze" },
   {  431501, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Long range|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nConjure a Mana Sphere, then project it forward damaging and knocking back enemies it passes through.\r\n\r\nHold to increase sphere size.", 0, "Offensive" },
   {  431513, "$@spelldesc431501", 0, 0 },
+  {  431522, "$@spelldesc431460", "Your next Holy Power spender applies Dawnlight.", 0 },
   {  431533, "After casting Hammer of Light, you call down an Empyrean Hammer on a nearby target every $431536T sec, for $431536d.", 0, 0 },
   {  431536, "$@spelldesc431533", "Casting Empyrean Hammer on a nearby target every $t sec.", 0 },
   {  431539, "$@spelldesc431482", "The damage and healing of your next Dawnlight is increased by $w1%.", 0 },
@@ -27203,6 +27205,7 @@ static constexpr std::array<spelltext_data_t, 28320> __ptr_spelltext_data { {
   { 1259127, "$@spelldesc1244276", 0, 0 },
   { 1259128, "$@spelldesc1244276", 0, 0 },
   { 1259153, "Desperately unravel yourself over $d to unleash a barrage of ${$d/$t1} cosmic missiles at your target, increased by your haste. Each deals ${$1259103s1*$<rolemult>} Cosmic damage split between nearby enemies. $@spelldesc1240903\r\n\r\nAllied deaths induce further madness, reducing the cooldown by $1259103s3 sec.", "Dealing Cosmic damage to your target every ${$t1}.2 sec. Slowed by $w2%.", 0 },
+  { 1259172, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
   { 1259213, "$@spelldesc1244238", 0, 0 },
   { 1259216, "$@spelldesc1244238", 0, 0 },
   { 1259218, "$@spelldesc1244238", 0, 0 },

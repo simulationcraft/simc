@@ -323,11 +323,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Blessing of Sacrifice (id=6940) [Spell Family (10)] 
@@ -541,7 +541,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1316,7 +1316,7 @@ Triggered By     : Endless Blessing (38346)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=29078)    : Apply Aura (6) | Proc Trigger Spell (42): Endless Blessing | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 363.9527 (coefficient=1.455811) | Trigger Spell: 38346 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 190.8284 (coefficient=1.455811) | Trigger Spell: 38346 | Target: Self (1)
 Description      : Your spell casts have a chance to restore $s1 mana every $38346T1 sec for $38346d.
 
 Name             : Crit Proc Spell Damage (id=38347) [Spell Family (10), Passive, Hidden] 
@@ -1363,7 +1363,7 @@ Stance Mask      : 0x00000002
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=31647)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 558.75 (coefficient=2.235) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 285.6408 (coefficient=2.235) | Target: Targeted Ally (21)
 Description      : Heals the target for $o1 over $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -1375,7 +1375,7 @@ Duration         : 8 seconds
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=31648)    : Apply Aura (6) | Periodic Damage (3): holy every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 353 (coefficient=1.412) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 180.4585 (coefficient=1.412) | Target: Targeted Enemy (6)
 Description      : Causes $o1 Holy damage over $d.
 Tooltip          : $s1 Holy damage every $t1 seconds.
 
@@ -3310,7 +3310,7 @@ Effects          :
 #1 (id=96225)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=96703)    : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1617.75 (coefficient=6.471) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 848.2218 (coefficient=6.471) | Target: Self (1)
 Description      : Recaptures $s1% of the base mana cost of your spells, and stores it within the doll to be released at a later time.  Up to a maximum of $s2 mana can be stored.
 
 Name             : Item - Proc Spell Power On Dmg (id=92319) [Spell Family (10), Passive, Hidden] 
@@ -3539,7 +3539,7 @@ Proc Flags       : Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=103171)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3050.848 (coefficient=12.20339) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1559.636 (coefficient=12.20339) | Target: Self (1)
 Description      : You gain an Electrical Charge each time you cause a damaging spell critical strike, granting a chance to fire a Lightning Bolt for ${$m1*0.875} to ${$m1*1.125} damage per Electrical Charge accumulated.  You cannot have more than $96890u Electrical Charges and cannot gain one more often than once every 2.5 sec.
 
 Name             : Eye of Blazing Power (id=96967) [Spell Family (10), Passive] 
@@ -3563,7 +3563,7 @@ Proc Flags       : Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=103488)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1008.25 (coefficient=4.033) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 528.6476 (coefficient=4.033) | Target: Self (1)
 Description      : You gain an Electrical Charge each time you cause a damaging spell critical strike, granting a chance to fire a Lightning Bolt for ${$m1*0.875} to ${$m1*1.125} damage per Electrical Charge accumulated.  You cannot have more than $96890u Electrical Charges and cannot gain one more often than once every 2.5 sec.
 
 Name             : Eye of Blazing Power (id=97137) [Spell Family (10), Passive] 
@@ -5261,7 +5261,7 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268049)   : Apply Aura (6) | Trigger Spell with Value (231) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 24.54575 (coefficient=0.098183) | Trigger Spell: 185100 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.86988 (coefficient=0.098183) | Trigger Spell: 185100 | Target: Self (1)
 Description      : Healing with Holy Shock grants you Magnifying Light, increasing the healing of your next Holy Light or Flash of Light within $185100d by $185100s1%.
 
 Name             : Focus of Vengeance (id=184911) [Spell Family (10), Passive] 
@@ -5274,7 +5274,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268051)   : Apply Aura (6) | Proc Trigger Spell (42): Focus of Vengeance | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 122.7142 (coefficient=0.490857) | Trigger Spell: 185102 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 64.34177 (coefficient=0.490857) | Trigger Spell: 185102 | Target: Self (1)
 Description      : Crusader Strike increases your damage by ${$m1/100}.2% for $185102d, stacking up to $185102u times. This effect is reset if you Crusader Strike a different target.
 
 Name             : Magnifying Light (id=185100) [Spell Family (10)] 
@@ -5289,7 +5289,7 @@ Triggered By     : Magnifying Light (184909)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=268391)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 24.54575 (coefficient=0.098183) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.86988 (coefficient=0.098183) | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Holy Light (82326)
                    Family Flags: 30, 74
 Description      : $@spelldesc184909
@@ -5306,7 +5306,7 @@ Triggered By     : Focus of Vengeance (184911)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268394)   : Apply Aura (6) | Modify Damage Done% (79) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1.22725 (coefficient=0.004909) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0.6434741 (coefficient=0.004909) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc184911
 Tooltip          : Damage dealt increased by $w1%.
@@ -8485,9 +8485,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -8629,9 +8629,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -8698,11 +8698,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -8799,7 +8799,7 @@ Triggered By     : Bulwark of Light (272979)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724241)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bulwark of Light | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 20.54482 (coefficient=60) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7668.208 (coefficient=60) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
 Description      : Avenger's Shield grants you a shield, absorbing $s1 damage for $272979d.
 
 Name             : Bulwark of Light (id=272977) [Spell Family (10), Hidden] 
@@ -8851,7 +8851,7 @@ Triggered By     : Martyr's Breath (273034)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724321)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 6 | Scaled Value: 5.671882 (coefficient=16.56442) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 2116.99 (coefficient=16.56442) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Light of the Martyr has a chance to cause your Blessing of Sacrifice to additionally heal the target for $s1. This effect can stack up to $273034u times.
 
 Name             : Martyr's Breath (id=273032) [Spell Family (10), Hidden] 
@@ -8904,7 +8904,7 @@ Azerite Power Id : 143
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724530)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 200 (coefficient=0.8) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 104.8644 (coefficient=0.8) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Flash of Light on your Beacon of Light target is increased by $s1.
 
 Name             : Rejuvenating Grace (id=273131) [Spell Family (10), Passive] 
@@ -8918,7 +8918,7 @@ Azerite Power Id : 144
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724531)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 82.5 (coefficient=0.33) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43.25656 (coefficient=0.33) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Your Holy Light critical strikes refund $s1 mana during Avenging Wrath.
 
 Name             : Fortifying Auras (id=273134) [Spell Family (10), Passive] 
@@ -8932,7 +8932,7 @@ Azerite Power Id : 145
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724538)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1000 (coefficient=4) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 524.3219 (coefficient=4) | PvP Coefficient: 0.5 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Aura Mastery also grants your allies $s1 Max Health for its duration.
 
 Name             : Righteous Flames (id=273140) [Spell Family (10), Passive] 
@@ -8946,9 +8946,9 @@ Azerite Power Id : 148
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724544)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 500 (coefficient=2) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 262.161 (coefficient=2) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
 #2 (id=724545)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 750 (coefficient=3) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | PvP Coefficient: 0.5
 Description      : When Shield of the Righteous expires, gain $s1 block and deal $s2 Holy damage to all attackers for 4 seconds.
 
 Name             : Healing Hammer (id=273142) [Spell Family (10), Passive] 
@@ -8962,7 +8962,7 @@ Azerite Power Id : 149
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724547)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 875 (coefficient=3.5) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 458.7817 (coefficient=3.5) | PvP Coefficient: 0.5 | Trigger Spell: 272977 | Target: Self (1)
 #2 (id=724548)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Hammer of the Righteous heals you for X if your health is below 20%.
@@ -9078,7 +9078,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -9090,7 +9090,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -9103,7 +9103,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -9119,9 +9119,9 @@ Triggered By     : Divine Revelations (275468), Divine Revelations (275469)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728510)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 348.2125 (coefficient=1.39285) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 182.5755 (coefficient=1.39285) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
 #2 (id=750486)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 687.0227 (coefficient=2.748091) | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 360.2211 (coefficient=2.748091) | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Infusion of Light (54149), Infusion of Light (458213)
                    Family Flags: 116
 #3 (id=757266)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Revelations
@@ -9180,9 +9180,9 @@ Triggered By     : Inner Light (275481), Inner Light (275483), Inner Light (3865
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728530)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 525 (coefficient=2.1) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 275.269 (coefficient=2.1) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=728531)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 210 (coefficient=0.84) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 110.1076 (coefficient=0.84) | PvP Coefficient: 0.5
 Description      : When Shield of the Righteous expires, gain $s1 Block and deal $s2 Holy damage to all attackers for $275481d.
 
 Name             : Inner Light (id=275481) 
@@ -9467,11 +9467,11 @@ Azerite Power Id : 394
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734417)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breaking Dawn | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.9243068 (coefficient=2.699387) | PvP Coefficient: 0.5 | Trigger Spell: 279406 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 344.991 (coefficient=2.699387) | PvP Coefficient: 0.5 | Trigger Spell: 279406 | Target: Self (1)
 #2 (id=734418)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=735677)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.9243068 (coefficient=2.699387) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 344.991 (coefficient=2.699387) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Light of Dawn (85222)
                    Family Flags: 82
 Description      : Increases the healing done by Light of Dawn by $s1 and its range to $s2 yards.
@@ -9755,7 +9755,7 @@ Azerite Power Id : 396
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=748526)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.737276 (coefficient=5.07362) | PvP Coefficient: 0.5 | Trigger Spell: 286231 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 648.4263 (coefficient=5.07362) | PvP Coefficient: 0.5 | Trigger Spell: 286231 | Target: Self (1)
 Description      : Spending Holy Power during $?<s231895>[Crusade][Avenging Wrath] causes you to explode with Holy light for $s1 damage per Holy Power spent to nearby enemies. $?<s231895>[Crusade][Avenging Wrath]'s duration is increased by ${$286231s2/1000} sec.
 
 Name             : Light's Decree (id=286231) [Spell Family (10), Hidden] 
@@ -9856,7 +9856,7 @@ Azerite Power Id : 189
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749914)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.308393 (coefficient=18.42331) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2354.563 (coefficient=18.42331) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
                    Family Flags: 78
 Description      : Word of Glory heals for $s1 additional healing. During Avenging Wrath, it receives the maximum value of any health-based bonuses.
@@ -9873,9 +9873,9 @@ Triggered By     : Glimmer of Light (287285), Glimmer of Light (287286), Glimmer
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750129)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glimmer of Light | Scaling Class: Replace Primary (-8)
-                   Base Value: 6 | Scaled Value: 2.058683 (coefficient=6.01227) | PvP Coefficient: 0.5 | Trigger Spell: 287269 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 768.389 (coefficient=6.01227) | PvP Coefficient: 0.5 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=750167)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 6 | Scaled Value: 2.268753 (coefficient=6.625767) | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 846.796 (coefficient=6.625767) | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
 Description      : Holy Shock leaves a Glimmer of Light on the target for $287280d.  When you Holy Shock, all targets with Glimmer of Light are damaged for $s1 or healed for $s2.
 
 You may have Glimmer of Light on up to $287269s1 targets.
@@ -10432,7 +10432,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -10661,7 +10661,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Word of Glory (desc=Rank 2) (id=315921) [Spell Family (10), Passive] 
@@ -19108,6 +19108,24 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : You link to your Dawnlights within $s8 yds, causing $431911s1 Radiant damage to enemies or $431939s1 healing to allies that pass through the beams, reduced beyond $s6 targets.
 
+Name             : Dawnlight (id=431460) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Internal Cooldown: 2 seconds
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1119259)  : Apply Aura (6) | Proc Trigger Spell (42): Dawnlight
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 431522 | Target: Self (1)
+#2 (id=1119260)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : After you cast $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][], your next Holy Power spender is guaranteed to apply $s2 Dawnlight.
+
 Name             : Will of the Dawn (id=431462) [Spell Family (10)] 
 Class            : Paladin
 School           : Holyfire
@@ -19264,6 +19282,29 @@ Effects          :
 Description      : Every ${$t1}.1 sec, your next Dawnlight's damage or healing is increased by $431539s1%, stacking up to $431539u times.
 
 Morning Star stacks twice as fast while out of combat.
+
+Name             : Dawnlight (id=431522) [Spell Family (10)] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Internal Cooldown: 0.9 seconds
+Stacks           : 6 maximum
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Dawnlight (431460)
+Attributes       : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1119361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#2 (id=1133259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+Description      : $@spelldesc431460
+Tooltip          : Your next Holy Power spender applies Dawnlight.
 
 Name             : Shake the Heavens (id=431533) [Spell Family (10), Passive] 
 Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
@@ -21506,9 +21547,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
@@ -21653,15 +21694,15 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1169968)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: -0.002617713 (coefficient=-0.002286) | Misc Value: 14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -428.625 (coefficient=-0.002286) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Light (82326), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Hammer of Wrath (1241413)
                    Family Flags: 23, 74
 #2 (id=1170046)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: -0.002617713 (coefficient=-0.002286) | Misc Value: 34 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -428.625 (coefficient=-0.002286) | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331), Crusader Strike (1279187)
                    Family Flags: 47
 #3 (id=1170048)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 3 (39) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: -0.002617713 (coefficient=-0.002286) | Misc Value: 39 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -428.625 (coefficient=-0.002286) | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 Description      : $@spelldesc461287
@@ -24485,7 +24526,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1282879)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0.007634423 (coefficient=0.006667) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1250.062 (coefficient=0.006667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc415091
 
 Name             : Shield of the Righteous (id=1270617) [Spell Family (10)] 
@@ -24500,7 +24541,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1282880)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0.5 | Scaled Value: 0.007634423 (coefficient=0.006667) | Resource: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 1250.062 (coefficient=0.006667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc415091
 
 Name             : Divine Favor (id=1270916) [Spell Family (10), Passive] 

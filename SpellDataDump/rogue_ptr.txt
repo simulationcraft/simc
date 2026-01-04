@@ -857,11 +857,11 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=2314)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Str | Target: Self (1)
 #2 (id=2315)     : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Agi | Target: Self (1)
 #3 (id=214750)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 62.5 (coefficient=0.25) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Stat: Int | Target: Self (1)
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -1235,7 +1235,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11544)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 188.75 (coefficient=0.755) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 98.96577 (coefficient=0.755) | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1 (scales with level).
 
 Name             : Nature Resistance (desc=Racial Passive) (id=20551) [Passive] 
@@ -1296,9 +1296,9 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 321.5697 (coefficient=1.286279) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168.6061 (coefficient=1.286279) | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -1500,9 +1500,9 @@ Duration         : 20 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=13978)    : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 369.25 (coefficient=1.477) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 193.6059 (coefficient=1.477) | Target: Self (1)
 #2 (id=13979)    : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Deadly Poison (113780), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326)
                    Family Flags: 16
 Description      : Increases the damage dealt by Instant Poison by $s1 and the periodic damage dealt by Deadly Poison by $s2 for $d.
@@ -1839,7 +1839,7 @@ Triggered By     : Armor Penetration (37173)
 Attributes       : Instant Target Procs (115), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=27654)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 473.25 (coefficient=1.893) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.1354 (coefficient=1.893) | Rating: Crit | Target: Self (1)
 Description      : You gain an additional $s1 critical strike.
 Tooltip          : $s1 critical strike.
 
@@ -1864,7 +1864,7 @@ Range            : 5 yards
 Attributes       : No Redirection (35), No Reflection (39), Item Cast With Owner Skill (88)
 Effects          :
 #1 (id=29416)    : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.485306 - 3.228041 (coefficient=1.02, delta=0.26) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 2.822911 - 3.66654 (coefficient=1.02, delta=0.26) | Target: Targeted Enemy (6)
 
 Name             : Rogue Tier 6 Trinket (id=40460) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -3766,7 +3766,7 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268057)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 14.38975 (coefficient=0.057559) | Misc Value: 33 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.544862 (coefficient=0.057559) | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Envenom (32645)
                    Family Flags: 35
 Description      : Envenom also increases the critical strike chance of Mutilate by $s1%.
@@ -3781,7 +3781,7 @@ Effects          :
 #1 (id=268058)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Target: Self (1)
 #2 (id=268533)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 24.0885 (coefficient=0.096354) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.63013 (coefficient=0.096354) | Target: Self (1)
                    Affected Spells: Dispatch (2098), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
                    Family Flags: 112
 #3 (id=268542)   : Apply Aura (6) | Dummy (4)
@@ -3796,7 +3796,7 @@ Labels           : 112
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268062)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 27.9205 (coefficient=0.111682) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.63933 (coefficient=0.111682) | Target: Self (1)
                    Affected Spells: Shadowstrike (185438), Shadowstrike (345121), Shadowstrike (1269336)
                    Family Flags: 104
 Description      : Increases the damage of Shadowstrike by $s1%.
@@ -6344,9 +6344,9 @@ Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 8892.043 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6511,9 +6511,9 @@ Effects          :
 #5 (id=709240)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
 #6 (id=724448)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 250 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
 #7 (id=724449)   : Dummy (3) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 125 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Target: Self (1)
 Description      : Removes all poison, disease, curse, magic, and bleed effects and increases your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by ${$265226s1*3} and an additional $265226s1 for each effect removed. Lasts $265226d. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mass Production (desc=Racial Passive) (id=265222) [Passive] 
@@ -6580,11 +6580,11 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Aura Points On Client (268)
 Effects          :
 #1 (id=709246)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Agi | Target: Self (1)
 #2 (id=709247)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Int | Target: Self (1)
 #3 (id=709248)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 160.7717 (coefficient=0.643087) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Stat: Str | Target: Self (1)
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
@@ -6602,7 +6602,7 @@ Effects          :
 #1 (id=717438)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Trigger Spell: 270627 | Target: Self (1)
 #2 (id=717439)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 202.7027 (coefficient=0.810811) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 106.2815 (coefficient=0.810811) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate (27576)
                    Family Flags: 33, 34
 Description      : Mutilate has a $s1% chance to apply additional Deadly Poison, and does ${$s2*2} additional damage.
@@ -6740,7 +6740,7 @@ Triggered By     : Deadshot (272940)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724153)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Deadshot | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.354608 (coefficient=18.55828) | PvP Coefficient: 0.5 | Trigger Spell: 272936 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2371.813 (coefficient=18.55828) | PvP Coefficient: 0.5 | Trigger Spell: 272936 | Target: Self (1)
 Description      : Between the Eyes increases the damage of your next Pistol Shot by $s1.
 
 Name             : Deadshot (id=272936) [Spell Family (8), Hidden] 
@@ -6796,7 +6796,7 @@ Triggered By     : Double Dose (273009)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724288)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.504031 (coefficient=7.312883) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.6119 (coefficient=7.312883) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When Mutilate applies Lethal Poison with both daggers, it poisons the target for an additional ${$s1*$<assassinationMastery>} damage.
 Variables        : $spec=${1+$137037s1/100}.2
 $vers=${1+$@versadmg}.2
@@ -6922,7 +6922,7 @@ Azerite Power Id : 181
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725163)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.5209727 (coefficient=1.521472) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 194.4494 (coefficient=1.521472) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Envenom (32645)
                    Family Flags: 35
 #2 (id=736546)   : Dummy (3)
@@ -6962,7 +6962,7 @@ Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Aura Log (202), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=727247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Points Per Level: 4 | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you $274741s1 of one of your two highest secondary stat for $274739d.
 
 Name             : Rictus of the Laughing Skull (desc=Racial) (id=274739) 
@@ -6974,7 +6974,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727248)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Crit | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases critical strike by $w1.
 
@@ -6987,7 +6987,7 @@ Duration         : 15 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268)
 Effects          :
 #1 (id=727250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 429 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.9341 (coefficient=1.716) | Rating: Mastery | Target: Self (1)
 Description      : Invoke the spirits of your ancestors, granting you their power.
 Tooltip          : Increases mastery by $w1.
 
@@ -7132,7 +7132,7 @@ Azerite Power Id : 408
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734512)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.029341 (coefficient=3.006135) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 384.1945 (coefficient=3.006135) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=734513)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Garrote cast from Stealth generates $s2 additional Combo Points and deals ${$s1*$<assassinationMastery>} additional damage every $703t1 sec for $703d. 
@@ -7156,7 +7156,7 @@ Triggered By     : Paradise Lost (278962)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734528)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 117.1755 (coefficient=0.468702) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 61.43769 (coefficient=0.468702) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Take control of the dice of fate, granting yourself $s1 Agility if Roll the Bones only provides you with one combat enhancement.
 
 Name             : Ace Up Your Sleeve (id=278676) [Spell Family (8), Passive] 
@@ -7170,7 +7170,7 @@ Azerite Power Id : 411
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734530)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ace Up Your Sleeve | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1.405366 (coefficient=4.104294) | PvP Coefficient: 0.5 | Trigger Spell: 279712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 524.543 (coefficient=4.104294) | PvP Coefficient: 0.5 | Trigger Spell: 279712 | Target: Self (1)
 #2 (id=734531)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=736175)   : Dummy (3)
@@ -7190,7 +7190,7 @@ Triggered By     : The First Dance (278981)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734538)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 467.9975 (coefficient=1.87199) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 245.3814 (coefficient=1.87199) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=753883)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Activating Shadow Dance grants you $s2 Combo Points and increases your Haste by $s1 for its duration.
@@ -7210,7 +7210,7 @@ Effects          :
 #2 (id=734546)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=736187)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.8213725 (coefficient=2.398773) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 306.5715 (coefficient=2.398773) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Backstab (53), Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121), Backstab (1269209), Gloomblade (1269214), Shadowstrike (1269336)
                    Family Flags: 2, 104, 109
 Description      : $?S200758[Gloomblade][Backstab] and Shadowstrike deal an additional $s3 damage and extend the duration of your Symbols of Death by ${$s2/10}.1 sec.
@@ -7623,7 +7623,7 @@ Triggered By     : Replicating Shadows (286131)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=748343)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Replicating Shadows | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 15.95689 (coefficient=46.60123) | PvP Coefficient: 0.5 | Trigger Spell: 286130 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5955.799 (coefficient=46.60123) | PvP Coefficient: 0.5 | Trigger Spell: 286130 | Target: Self (1)
 #2 (id=748344)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Each combo point spent has a $s2% chance to cause your Rupture to deal $s1 Shadow damage and replicate to a nearby enemy.
@@ -7687,7 +7687,7 @@ Triggered By     : Nothing Personal (286581)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749028)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Nothing Personal | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2.32127 (coefficient=6.779141) | PvP Coefficient: 0.5 | Trigger Spell: 286579 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 866.3978 (coefficient=6.779141) | PvP Coefficient: 0.5 | Trigger Spell: 286579 | Target: Self (1)
 #2 (id=749029)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 Description      : Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.
@@ -7752,17 +7752,17 @@ Effects          :
 #1 (id=750744)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Echoing Blades
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287650 | Target: Self (1)
 #2 (id=750745)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.6743237 (coefficient=1.969325) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 251.6866 (coefficient=1.969325) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723)
                    Family Flags: 50
 #3 (id=750746)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 15 | Scaled Value: 0.6743237 (coefficient=1.969325) | PvP Coefficient: 0.5
+                   Base Value: 15 | Scaled Value: 251.6866 (coefficient=1.969325) | PvP Coefficient: 0.5
 #4 (id=750747)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #5 (id=753866)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 #6 (id=758748)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 8 | Scaled Value: 0.6743237 (coefficient=1.969325) | PvP Coefficient: 0.5
+                   Base Value: 8 | Scaled Value: 251.6866 (coefficient=1.969325) | PvP Coefficient: 0.5
 Description      : Fan of Knives damage is increased by ${$s2*$<assassinationNoMastery>}. For each of the first $s4 critical strikes, it will fire a second spray of knives at that location, dealing ${$s3*$<assassinationNoMastery>*2} damage to enemies within $s5 yards. This second spray of knives always critically hits.
 Variables        : $spec=${1+$137037s1/100}.2
 $vers=${1+$@versadmg}.2
@@ -7850,7 +7850,7 @@ Effects          :
 #1 (id=753023)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Keep Your Wits About You
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 288985 | Target: Self (1)
 #2 (id=753032)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3.873685 (coefficient=11.31288) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1445.826 (coefficient=11.31288) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Sinister Strike (197834), Sinister Strike (341541)
                    Family Flags: 23
 Description      : When an attack Blade Flurries, increase the chance for Sinister Strike to strike again by $s1%. Additional strikes of Sinister Strike deal $s2 more damage.
@@ -8193,7 +8193,7 @@ Min Scaling Level: 10
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=794929)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 5 | Scaled Value: 10 (coefficient=0.04) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5.243219 (coefficient=0.04) | Target: Self (1)
 #2 (id=794930)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=795651)   : Dummy (3)
@@ -8534,7 +8534,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Effects          :
 #1 (id=799917)   : Trigger Missiles (32): Holy Relic | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 0.856034 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 319.5087 (coefficient=2.5) | Trigger Spell: 317829 | Target: Targeted Ally (21)
 Description      : Heals a friend for $s1. Share the wealth!
 
 Name             : Find Weakness (id=316220) [Spell Family (8)] 
@@ -10667,7 +10667,7 @@ Triggered By     : Banshee's Blight (358126)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=895083)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Banshee's Blight | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4820.502 (coefficient=19.28201) | Trigger Spell: 358135 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2464.308 (coefficient=19.28201) | Trigger Spell: 358135 | Target: Self (1)
 
 Name             : Familiar Skies (desc=Racial Passive) (id=360009) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -15794,7 +15794,7 @@ Triggered By     : Bubbling Wax (448001)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1146222)  : Apply Aura (6) | Proc Trigger Spell (42): Bubbling Wax | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3260.216 (coefficient=13.04086) | Trigger Spell: 448001 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1666.667 (coefficient=13.04086) | Trigger Spell: 448001 | Target: Self (1)
 Description      : $@spelldesc444755
 
 Name             : Wide-Eyed Wonder (id=448924) [Passive] 
@@ -17194,9 +17194,9 @@ Effects          :
 #1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 645000 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
 Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
