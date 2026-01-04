@@ -1361,6 +1361,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       bok_totm_proc = new blackout_kick_totm_proc_t( p );
       add_child( bok_totm_proc );
     }
+
+    if ( p->talent.windwalker.obsidian_spiral->ok() )
+      parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -2663,7 +2666,7 @@ struct slicing_winds_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_millis( 1400 );
 
     if ( player->talent.windwalker.airborne_rhythm->ok() )
-      parse_effect_data( player->talent.windwalker.airborne_rhythm_resource_gain->effectN( 1 ) );
+      parse_effect_data( player->talent.windwalker.airborne_rhythm_energize->effectN( 1 ) );
   }
 };
 }  // namespace attacks
@@ -5254,6 +5257,7 @@ void monk_t::init_spells()
     talent.windwalker.drinking_horn_cover                      = _ST( "Drinking Horn Cover" );
     talent.windwalker.spiritual_focus                          = _ST( "Spiritual Focus" );
     talent.windwalker.obsidian_spiral                          = _ST( "Obsidian Spiral" );
+    talent.windwalker.obsidian_spiral_energize                 = find_spell( 1249833 );
     talent.windwalker.combo_breaker                            = _ST( "Combo Breaker" );
     talent.windwalker.combo_breaker_buff                       = find_spell( 116768 );
     talent.windwalker.dance_of_chiji                           = _ST( "Dance of Chi-Ji" );
@@ -5295,7 +5299,7 @@ void monk_t::init_spells()
     talent.windwalker.flurry_of_xuen_driver          = find_spell( 452117 );
     talent.windwalker.martial_agility                = _ST( "Martial Agility" );
     talent.windwalker.airborne_rhythm                = _ST( "Airborne Rhythm" );
-    talent.windwalker.airborne_rhythm_resource_gain  = find_spell( 1248835 );
+    talent.windwalker.airborne_rhythm_energize       = find_spell( 1248835 );
     talent.windwalker.hurricanes_vault               = _ST( "Hurricane's Vault" );
     talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
     talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );

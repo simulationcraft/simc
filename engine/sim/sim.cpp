@@ -1524,6 +1524,7 @@ sim_t::sim_t()
     report_all_variables( false ),
     report_rng( 0 ),
     hosted_html( 0 ),
+    offline( 0 ),
     save_raid_summary( 0 ),
     save_gear_comments( 0 ),
     statistics_level( 1 ),

@@ -884,6 +884,7 @@ public:
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
       player_talent_t obsidian_spiral;
+      const spell_data_t *obsidian_spiral_energize;
       player_talent_t combo_breaker;
       const spell_data_t *combo_breaker_buff;
       // Row 7
@@ -929,7 +930,7 @@ public:
       const spell_data_t *flurry_of_xuen_driver;
       player_talent_t martial_agility;
       player_talent_t airborne_rhythm;
-      const spell_data_t *airborne_rhythm_resource_gain;
+      const spell_data_t *airborne_rhythm_energize;
       player_talent_t hurricanes_vault;
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
