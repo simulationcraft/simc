@@ -40,7 +40,7 @@ jobs:
   ubuntu-test:
     needs: [build]
     if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
-    uses: ./.github/workflows/ubuntu_run.yml
+    uses: ./.github/workflows/ubuntu_test.yml
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
