@@ -475,6 +475,7 @@ public:
     buff_t* bulletstorm;
     buff_t* volley;
     buff_t* double_tap;
+    buff_t* focus_fire;
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -830,7 +831,8 @@ public:
     spell_data_ptr_t volley;
     spell_data_ptr_t volley_data;
     spell_data_ptr_t volley_dmg;
-    spell_data_ptr_t focus_fire; //TODO Not implemented
+    spell_data_ptr_t focus_fire;
+    spell_data_ptr_t focus_fire_buff;
 
     spell_data_ptr_t take_aim_3;
     spell_data_ptr_t windrunner_quiver;
@@ -5826,10 +5828,10 @@ struct aimed_shot_t : public aimed_shot_base_t
       add_child( double_tap );
     }
 
-    if ( p -> talents.surging_shots.ok() )
+    if ( p->talents.surging_shots.ok() )
     {
-      surging_shots.chance = p -> talents.surging_shots -> proc_chance();
-      surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+      surging_shots.chance = p->talents.surging_shots->effectN( 3 ).percent();
+      surging_shots.proc = p->get_proc( "Surging Shots Rapid Fire reset" );
     }
 
     if ( p->talents.deathblow.ok() )
@@ -5896,8 +5898,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( rng().roll( surging_shots.chance ) )
     {
-      surging_shots.proc -> occur();
-      p() -> cooldowns.rapid_fire -> reset( true );
+      surging_shots.proc->occur();
+      p()->cooldowns.rapid_fire->reset( true );
+      p()->buffs.focus_fire->trigger();
     }
     
     p()->buffs.trick_shots->up(); // Benefit tracking
@@ -6007,6 +6010,18 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
       p()->buffs.bulletstorm->trigger();
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // Spell data for buff is invalid and doesn't work as of 2026-01-04 so applying manually
+      // TODO confirm the above is still true later in the beta cycle
+      if ( p()->buffs.focus_fire->check() )
+        m *= 1.0 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
+
+      return m;
+    }
   };
 
   struct rapid_fire_tick_aspect_of_the_hydra_t : public rapid_fire_tick_t
@@ -6088,6 +6103,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     p()->consume_trick_shots();
     p()->buffs.double_tap->expire();
+    p()->buffs.focus_fire->expire();
 
     //If a Rapid Fire is cancelled it does not trigger In The Rhythm
     if ( d->ticks_left() == 0 )
@@ -8395,6 +8411,7 @@ void hunter_t::init_spells()
     talents.volley_data                       = find_spell( 260243 );
     talents.volley_dmg                        = find_spell( 260247 );
     talents.focus_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Focus Fire", HUNTER_MARKSMANSHIP );
+    talents.focus_fire_buff                   = talents.focus_fire.ok() ? find_spell( 1277549 ) : spell_data_t::not_found();
 
     talents.take_aim_3                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273128, HUNTER_MARKSMANSHIP );
     talents.windrunner_quiver                 = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner Quiver", HUNTER_MARKSMANSHIP );
@@ -8886,6 +8903,9 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> disable_ticking( true ) // disable ticks as an optimization
       -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  buffs.focus_fire = 
+    make_buff( this, "focus_fire", talents.focus_fire_buff );
 
   // Beast Mastery Tree
 
