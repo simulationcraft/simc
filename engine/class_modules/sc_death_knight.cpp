@@ -685,6 +685,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
+    propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> tightening_grasp;
 
     // Frost
@@ -1458,6 +1459,7 @@ public:
     const spell_data_t* virulent_plague;
 
     // Blood
+    const spell_data_t* abomination_limb_debuff;
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
@@ -8374,8 +8376,34 @@ struct reapers_mark_t final : public death_knight_spell_t
 // Death Knight Abilities
 // ==========================================================================
 
-// Dark Transformation ======================================================
+// Abomination Limb =========================================================
+struct abomination_limb_t : public death_knight_spell_t
+{
+  abomination_limb_t( death_knight_t* p, std::string_view options_str = "" )
+    : death_knight_spell_t( "abomination_limb", p, p->talent.blood.abomination_limb )
+    {
+      harmful = false;
+      parse_options( options_str );
+    }
 
+    void tick( dot_t* dot ) override
+    {
+      death_knight_spell_t::tick( dot );
+
+      for ( auto& target : p()->sim->target_non_sleeping_list )
+      {
+        auto td = get_td( target );
+        if ( !td->debuff.abomination_limb->check() )
+        {
+          td->debuff.tightening_grasp->trigger();
+          td->debuff.abomination_limb->trigger();
+          return;
+        }
+      }
+    }
+};
+
+// Dark Transformation ======================================================
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str = "" )
@@ -13942,6 +13970,8 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new raise_dead_t( this, options_str );
 
   // Blood Actions
+  if ( name == "abomination_limb" )
+    return new abomination_limb_t( this, options_str );
   if ( name == "blood_boil" )
     return new blood_boil_t( this, options_str );
   if ( name == "consumption" )
@@ -14845,9 +14875,10 @@ void death_knight_t::spell_lookups()
   spell.virulent_plague = conditional_spell_lookup( talent.unholy.outbreak.ok(), 191587 );
 
   // Blood
+  spell.abomination_limb_debuff     = conditional_spell_lookup( talent.blood.abomination_limb.ok(), 1263566 );
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
-  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
-  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460499 );
+  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460500 );
   spell.blood_mist_buff             = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263729 );
   spell.blood_mist_damage           = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263752 );
   spell.blood_mist_rp_gain          = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263774 );
@@ -15305,6 +15336,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value_from_effect( 1 );
 
   // Blood
+  debuff.abomination_limb = make_debuff( p.talent.blood.abomination_limb.ok(), *this, "abomination_limb", p.spell.abomination_limb_debuff );
   debuff.tightening_grasp = make_debuff( p.talent.blood.gorefiends_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff );
 
   // Frost
