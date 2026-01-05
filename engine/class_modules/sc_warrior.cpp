@@ -1203,6 +1203,9 @@ public:
     // 388539 is the rend dot for arms.  Collateral damage is not procced from it, but is procced from other background actions like demolish
     if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 && !(ab::data().id() == 388539) )
       p()->buff.collateral_damage->trigger();
+
+    if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 )
+      p()->buff.sweeping_strikes->decrement();
   }
 
   bool ready() override
@@ -4808,7 +4811,7 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p()->buff.sweeping_strikes->extend_duration_or_trigger();
+    p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
   }
 };
 
@@ -7628,8 +7631,7 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
-    ->set_cooldown(timespan_t::zero());
+  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes);
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
