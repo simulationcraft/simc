@@ -601,7 +601,7 @@ public:
       player_talent_t executioners_precision;
       player_talent_t fatality;
       // Row 10
-      player_talent_t master_tactician;  // NYI
+      player_talent_t master_tactician;
       player_talent_t mortal_wounds;
       player_talent_t avatar;
       // Apex
@@ -969,7 +969,6 @@ struct warrior_action_t : public parse_action_effects_t<Base>
   } affected_by;
 
   bool usable_while_channeling;
-  double tactician_per_rage;
 
 private:
   using ab = parse_action_effects_t<Base>;
@@ -982,7 +981,6 @@ public:
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       usable_while_channeling( false ),
-      tactician_per_rage( player->talents.arms.tactician->effectN( 1 ).percent() / 100 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
@@ -1019,6 +1017,8 @@ public:
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
       if( p()->main_hand_weapon.group() == WEAPON_2H )
         parse_effects( p()->mastery.master_of_arms );
+
+      parse_effects( p()->buff.collateral_damage );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -1174,20 +1174,6 @@ public:
     return p()->get_target_data( t );
   }
 
-  virtual double tactician_cost() const
-  {
-    double base = ab::base_cost();
-
-    if ( ab::sim->log )
-    {
-      ab::sim->out_debug.printf(
-          "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f", ab::name(),
-          base, this->cost() );
-    }
-
-    return base;
-  }
-
   int n_targets() const override
   {
     if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->check() )
@@ -1215,10 +1201,8 @@ public:
     ab::execute();
 
     // 388539 is the rend dot for arms.  Collateral damage is not procced from it, but is procced from other background actions like demolish
-    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 && !(ab::data().id() == 388539) )
-    {
-      p() -> buff.collateral_damage -> trigger();
-    }
+    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 && !(ab::data().id() == 388539) )
+      p()->buff.collateral_damage->trigger();
   }
 
   bool ready() override
@@ -1325,13 +1309,6 @@ public:
 
   void consume_resource() override
   {
-    //td = find_target_data( target );
-
-    if ( tactician_per_rage )
-    {
-      tactician();
-    }
-
     ab::consume_resource();
 
     double rage = ab::last_resource_cost;
@@ -1339,6 +1316,17 @@ public:
     if ( p()->talents.warrior.anger_management->ok() )
     {
       anger_management( rage );
+    }
+
+    if ( p()->talents.arms.tactician.ok() && rage > 0 && !ab::background )
+    {
+      if ( ab::rng().roll( p()->talents.arms.tactician->effectN( 1 ).percent() ) )
+      {
+        p()->cooldown.overpower->reset( true );
+        p()->proc.tactician->occur();
+        if ( p()->talents.slayer.opportunist->ok() )
+          p()->buff.opportunist->trigger();
+      }
     }
 
     if ( rage > 0 && !ab::aoe && ab::execute_state && ab::result_is_miss( ab::execute_state->result ) )
@@ -1369,23 +1357,6 @@ public:
         if( overflow > 0)
           p()->buff.seeing_red->trigger( 1, overflow );
       }
-    }
-  }
-
-  virtual void tactician()
-  {
-    if ( p()->specialization() == WARRIOR_ARMS && ab::id == 190456 ) // Ignore pain can not trigger tactician for arms
-      return;
-
-    double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
-    double tactician_chance = tactician_per_rage;
-
-    if ( ab::rng().roll( tactician_chance * tact_rage ) )
-    {
-      p()->cooldown.overpower->reset( true );
-      p()->proc.tactician->occur();
-      if ( p()->talents.slayer.opportunist->ok() )
-        p()->buff.opportunist->trigger();
     }
   }
 
@@ -2841,13 +2812,6 @@ struct mortal_strike_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  double tactician_cost() const override
-  {
-    if ( background )
-      return 0;
-    return warrior_attack_t::tactician_cost();
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3263,13 +3227,6 @@ struct slam_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  double tactician_cost() const override
-  {
-    if ( from_fervor )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3320,18 +3277,6 @@ struct cleave_t : public warrior_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
-    {
-      am *= 1.0 + p()->buff.collateral_damage->stack_value();
-    }
-
-    return am;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
@@ -3366,10 +3311,8 @@ struct cleave_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
 
-    if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up()  )
-    {
-      p() -> buff.collateral_damage -> expire();
-    }
+    if ( p()->talents.arms.collateral_damage.ok() && p()->buff.collateral_damage->up()  )
+      p()->buff.collateral_damage->expire();
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
@@ -3922,27 +3865,6 @@ struct execute_arms_t : public warrior_attack_t
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
-  }
-
-  double tactician_cost() const override
-  {
-    double c;
-
-    if ( p()->buff.sudden_death->check() )
-    {
-      c = 0;
-    }
-    else
-    {
-      c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
-      c = ( c / max_rage ) * 40;
-    }
-    if ( sim->log )
-    {
-      sim->out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
-                             name(), c, cost() );
-    }
-    return c;
   }
 
   double cost() const override
@@ -6012,18 +5934,6 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     background = true;
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
-    {
-      am *= 1.0 + p()->buff.collateral_damage->stack_value();
-    }
-
-    return am;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
@@ -6036,19 +5946,12 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     return m;
   }
 
-  double tactician_cost() const override
-  {
-    return 0;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() && data().id() == 411547 )
-    {
-      p() -> buff.collateral_damage -> expire();
-    }
+    if ( p()->talents.arms.collateral_damage.ok() && p()->buff.collateral_damage->up() && data().id() == 411547 )
+      p()->buff.collateral_damage->expire();
   }
 };
 
@@ -6094,18 +5997,6 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
         add_child( fervor_slam );
       }
     }
-  }
-
-  double tactician_cost() const override
-  {
-    double c = warrior_attack_t::cost();
-
-    if ( sim->log )
-    {
-      sim->out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
-                             name(), c, cost() );
-    }
-    return c;
   }
 
   void execute() override
@@ -7672,11 +7563,7 @@ void warrior_t::create_buffs()
   buff.avatar = make_buff( this, "avatar", spell.avatar )
       ->set_cooldown( timespan_t::zero() );
 
-  // In game the accumumlator counts the number of stacks, and the buff is triggered with the total number of stacks
-  // as a result, it allows you to exceed the 20 max_stacks that exists in spelldata
-  buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
-      -> set_default_value_from_effect( 1 )
-      -> set_max_stack( 99 );
+  buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) );
 
   buff.champions_spear = make_buff( this, "champions_spear", find_spell( 376080 ) );
 
