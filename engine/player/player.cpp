@@ -3114,6 +3114,51 @@ static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
   }
 }
 
+static void recurse_apex_talent( player_t* player, size_t index )
+{
+  const player_talent_t& talent = player->apex_talent[ index ];
+  if ( !talent.ok() )
+    return;
+
+  const trait_data_t* trait = talent.trait();
+  auto get_rank = [ &player ] ( auto next ) {
+    if ( auto entry = range::find_if(
+             player->player_traits,
+             [ &next ]( auto trait_entry ) { return std::get<1>( trait_entry ) == next->id_trait_node_entry; } );
+         entry != player->player_traits.end() )
+      return std::get<2>( *entry );
+    return 0U;
+  };
+  auto next_if = [ & ]( size_t rank, size_t _index ) {
+    auto children = trait_data_t::children( trait, player->is_ptr() );
+    if ( auto next =
+             range::find_if( children, [ &rank ]( auto _trait ) { return _trait->max_ranks == rank; } );
+         next != children.end() )
+      player->apex_talent[ _index ] = player_talent_t( player, *next, get_rank( *next ) );
+    else
+      assert( false );
+  };
+
+  switch ( trait->child_count() )
+  {
+    case 0:
+      return;
+    case 1:
+    {
+      const trait_data_t* next = trait_data_t::children( trait, player->is_ptr() ).front();
+      player->apex_talent[ ++index ] = player_talent_t( player, next, get_rank( next ) );
+      recurse_apex_talent( player, index );
+      return;
+    }
+    case 2:
+      next_if( 2, 1 );
+      next_if( 1, 2 );
+      return;
+    default:
+      assert( false );
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -3323,6 +3368,24 @@ void player_t::init_talents()
         default:
           assert( 0 );
       }
+    }
+  }
+
+  // Populate generic apex talent handler
+  for ( const auto& player_trait : player_traits )
+  {
+    unsigned rank = std::get<2>( player_trait );
+    if ( rank == 0 )
+      continue;
+
+    const trait_data_t* trait = trait_data_t::find( std::get<1>( player_trait ), is_ptr() );
+    assert( trait );
+
+    if ( trait->parent_count() == 0 && trait->req_points == 20 )
+    {
+      apex_talent[ 0 ] = player_talent_t( this, trait, rank );
+      recurse_apex_talent( this, 0 );
+      break;
     }
   }
 }
@@ -3802,6 +3865,10 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
       {
+        // Check first if `v1` refers to an apex talent, as their names are identical
+        for ( size_t i = 0; i < apex_talent.size(); ++i )
+          if ( apex_talent[ i ]->id() == v1 )
+            return fmt::format( "apex.{}", i );
         for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
         {
           const auto& traits = trait_data_t::find_by_spell( tree, v1, util::class_id( type ), specialization(), is_ptr() );
@@ -12386,7 +12453,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw sc_invalid_apl_argument( fmt::format( "Hero tree '{}' not found.", splits[ 1 ] ) );
     }
-  } // splits.size() == 2
+  }
 
   if ( splits.size() == 3 )
   {
@@ -12463,6 +12530,28 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // *** Variable-Length expressions from here on ***
 
   // talents
+  if ( splits.size() >= 2 && splits[ 0 ] == "apex" )
+  {
+    unsigned index = util::to_unsigned( splits[ 1 ] ) - 1;
+    if ( index >= apex_talent.size() )
+      throw sc_invalid_apl_argument( fmt::format( "Invalid apex talent expression '{}'.", splits[ 1 ] ) );
+
+    bool value       = apex_talent[ index ]->ok();
+    std::string name = "enabled";
+    if ( splits.size() == 3 )
+    {
+      if ( splits[ 2 ] == "disabled" )
+      {
+        value = !value;
+        name  = "disabled";
+      }
+      else if ( splits[ 2 ] != "enabled" )
+        throw sc_invalid_apl_argument( fmt::format( "Invalid apex talent expression '{}'.", splits[ 2 ] ) );
+    }
+
+    return expr_t::create_constant( fmt::format( "apex_{}_{}", index, name ), value );
+  }
+
   if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
   {
     const auto ctalent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true );

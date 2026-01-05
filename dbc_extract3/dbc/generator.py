@@ -4814,10 +4814,16 @@ class TemporaryEnchantItemGenerator(DataGenerator):
         self.output_footer()
 
 class TraitGenerator(DataGenerator):
+    collected_trait_references = []
+
     def filter(self):
         return TraitSet(self._options).get()
 
     def _generate_table(self, data, subtrees):
+        def entry_position(node_id):
+            for index, entry in enumerate(data):
+                if entry['node'].id == node_id:
+                    return index
         for entry in data:
             fields = []
 
@@ -4848,8 +4854,13 @@ class TraitGenerator(DataGenerator):
             if _subtree != 0:
                 subtrees.add(_subtree)
 
-            fields.append(f'{_subtree:2d}')
+            fields.append(f'{_subtree:3d}')
             fields += entry['node'].field('type')
+
+            fields.append(f'{{ {len(self.collected_trait_references):5d}, {str(len(entry["children"]))}}}')
+            self.collected_trait_references += [f'&__{self.format_str("trait_data")}_data[{entry_position(node_id)}]' for node_id in entry['children']]
+            fields.append(f'{{ {len(self.collected_trait_references):5d}, {str(len(entry["parents"]))}}}')
+            self.collected_trait_references += [f'&__{self.format_str("trait_data")}_data[{entry_position(node_id)}]' for node_id in entry['parents']]
 
             self.output_record(fields)
 
@@ -4868,6 +4879,22 @@ class TraitGenerator(DataGenerator):
                 length=len(data))
 
         self._generate_table(sorted_data, subtrees)
+
+        self.output_footer()
+
+        self.output_header(
+            header='Player trait child and parent references',
+            type='const trait_data_t*',
+            array='trait_data_references',
+            length=len(self.collected_trait_references)
+        )
+        offset = 0
+        self._out.write('\t')
+        for e in self.collected_trait_references:
+            self._out.write(f'{e:>25},')
+            offset += 1
+            if offset % 4 == 0:
+                self._out.write('\n\t')
 
         self.output_footer()
 

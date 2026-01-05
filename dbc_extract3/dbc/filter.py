@@ -439,7 +439,9 @@ class TraitSet(DataSet):
             'row': -1,
             'col': -1,
             'selection_index': -1,
-            'req_points': 0
+            'req_points': 0,
+            'children': set(),
+            'parents': set()
         })
 
         for group in _trait_node_groups.values():
@@ -488,6 +490,8 @@ class TraitSet(DataSet):
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['starter'] |= group_starter | node_starter
+                    _traits[key]['children'] = { n.id_right_trait_node for n in node['node'].child_refs('TraitEdge', 'id_left_trait_node') }
+                    _traits[key]['parents'] = { n.id_left_trait_node for n in node['node'].child_refs('TraitEdge', 'id_right_trait_node') }
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index

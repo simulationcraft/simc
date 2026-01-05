@@ -16,9 +16,34 @@
 #include "generated/trait_data_ptr.inc"
 #endif
 
+util::span<const trait_data_t*const> trait_data_t::children( const trait_data_t* td, bool ptr )
+{
+  return td->relatives( &trait_data_t::_children, ptr );
+}
+
+size_t trait_data_t::child_count() const
+{
+  return relative_count( &trait_data_t::_children );
+}
+
+util::span<const trait_data_t* const> trait_data_t::parents( const trait_data_t* td, bool ptr )
+{
+  return td->relatives( &trait_data_t::_parents, ptr );
+}
+
+size_t trait_data_t::parent_count() const
+{
+  return relative_count( &trait_data_t::_parents );
+}
+
 util::span<const trait_data_t> trait_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __trait_data_data, __ptr_trait_data_data, ptr );
+}
+
+util::span<const trait_data_t* const> trait_data_t::reference_data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __trait_data_references_data, __ptr_trait_data_references_data, ptr );
 }
 
 util::span<const trait_data_t> trait_data_t::data( talent_tree tree, bool ptr )

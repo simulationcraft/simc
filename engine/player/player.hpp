@@ -228,6 +228,9 @@ struct player_t : public actor_t
   // Player added dbc sub tree traits ids that don't require activated sub tree ids
   std::vector<unsigned> player_sub_traits;
 
+  // Apex traits
+  std::array<player_talent_t, 3> apex_talent;
+
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 

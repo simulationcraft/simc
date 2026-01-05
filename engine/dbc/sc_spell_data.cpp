@@ -99,7 +99,13 @@ constexpr sdata_field_t::getter_t::getter_t( nontype_t<Ptr> )
   : type( detail::getter<Ptr>::type ), get( detail::getter<Ptr>::get )
 {}
 
-static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
+template <auto F>
+static size_t relative_count( const dbc_t&, const trait_data_t& trait )
+{
+  return std::get<1>( std::invoke( F, trait ) );
+}
+
+static constexpr std::array<sdata_field_t, 11> _talent_data_fields { {
   { "name",  nontype< &trait_data_t::name > },
   { "id",    nontype< &trait_data_t::id_trait_node_entry > },
   { "node",  nontype< &trait_data_t::id_node > },
@@ -107,6 +113,10 @@ static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
   { "col",   nontype< &trait_data_t::col > },
   { "row",   nontype< &trait_data_t::row > },
   { "max_rank", nontype< &trait_data_t::max_ranks > },
+  { "req_points", nontype< &trait_data_t::req_points > },
+  { "class", nontype< &trait_data_t::id_class > },
+  { "child_count", nontype< relative_count< &trait_data_t::_children > > },
+  { "parent_count", nontype< relative_count< &trait_data_t::_parents > > },
 } };
 
 static constexpr std::array<sdata_field_t, 27> _effect_data_fields { {
