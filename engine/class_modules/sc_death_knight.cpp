@@ -1769,7 +1769,7 @@ public:
       : ghoul_pet( "ghoul", p ),
         dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
         everlasting_bond_pet( "everlasting_bond", p ),
-        dance_of_midnight_pet( "dance_of_midnight_pet", p ),
+        dance_of_midnight_pet( "dance_of_midnight", p ),
         bloodworms( "bloodworm", p ),
         lesser_ghoul_army( "lesser_ghoul_army", p ),
         lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
@@ -9147,14 +9147,6 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     parse_options( options_str );
 
     p->pets.dancing_rune_weapon_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    if ( p->talent.blood.everlasting_bond.ok() )
-    {
-      p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
-
-    // Consider moving this to it's own action
-    if ( p->talent.blood.dance_of_midnight_3.ok() )
-      p->pets.dance_of_midnight_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
