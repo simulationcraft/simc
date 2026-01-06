@@ -4551,7 +4551,7 @@ struct raging_blow_t : public warrior_attack_t
       oh_attack->execute();
     }
 
-    p()->buff.opportunist->decrement();
+    p()->buff.opportunist->expire();
 
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
@@ -4706,7 +4706,7 @@ struct crushing_blow_t : public warrior_attack_t
       oh_attack->execute();
     }
 
-    p()->buff.opportunist->decrement();
+    p()->buff.opportunist->expire();
 
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
@@ -4978,7 +4978,7 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
     }
 
-    p()->buff.opportunist->decrement();
+    p()->buff.opportunist->expire();
   }
 
   bool ready() override
