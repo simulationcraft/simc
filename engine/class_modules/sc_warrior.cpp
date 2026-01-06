@@ -556,7 +556,7 @@ public:
       player_talent_t overpower;
       player_talent_t sudden_death;
       // Row 3
-      player_talent_t fueled_by_violence;
+      player_talent_t fueled_by_violence;  // NYI
       player_talent_t ignore_pain;
       player_talent_t die_by_the_sword;
       // Row 4
@@ -699,7 +699,7 @@ public:
       player_talent_t punish;
       // Row 7
       player_talent_t tough_as_nails;
-      player_talent_t fueled_by_violence;
+      player_talent_t fueled_by_violence; // NYI
       player_talent_t enduring_defenses;
       player_talent_t unyielding_stance;
       player_talent_t deep_wounds;
