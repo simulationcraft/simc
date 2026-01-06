@@ -413,11 +413,10 @@ public:
     const spell_data_t* whirlwind_buff;
     const spell_data_t* aftershock_duration;
     const spell_data_t* shield_wall;
-    const spell_data_t* sudden_death_arms;
-    const spell_data_t* sudden_death_fury;
     const spell_data_t* devastator;
     const spell_data_t* bloodsurge_energize;
     const spell_data_t* deep_wounds_dot;
+    const spell_data_t* sudden_death_buff;
 
     // Colossus
     const spell_data_t* wrecked_debuff;
@@ -1485,7 +1484,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() )
+    if ( ( p()->talents.shared.sudden_death.ok() )
            && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -6736,7 +6735,6 @@ void warrior_t::init_spells()
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.deep_wounds_dot         = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
-  spell.sudden_death_arms       = find_spell( 52437 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -6747,7 +6745,6 @@ void warrior_t::init_spells()
   spec.bloodbath                = find_spell(335096);
   spec.crushing_blow            = find_spell(335097);
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );
-  spell.sudden_death_fury       = find_spell( 280776 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -6764,6 +6761,7 @@ void warrior_t::init_spells()
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
   spell.ravager                 = find_spell( 228920 );
+  spell.sudden_death_buff       = find_spell( 52437 );
 
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
@@ -7184,11 +7182,7 @@ void warrior_t::init_spells()
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.sudden_death_icd                 = get_cooldown( "sudden_death" );
-  cooldown.sudden_death_icd->duration =
-      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown():
-      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() :
-      talents.protection.sudden_death->internal_cooldown();
-  cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
+  cooldown.sudden_death_icd->duration       = talents.shared.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
@@ -7644,7 +7638,7 @@ void warrior_t::create_buffs()
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
+  buff.sudden_death = make_buff( this, "sudden_death", spell.sudden_death_buff );
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_cooldown( timespan_t::zero() )
@@ -7738,9 +7732,7 @@ void warrior_t::init_rng()
   if ( talents.protection.best_served_cold->ok() )
     rppm.revenge->set_modifier( rppm.revenge->get_modifier() + talents.protection.best_served_cold->effectN( 3 ).percent() );
 
-  rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death :
-                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death :
-                                                    talents.protection.sudden_death );
+  rppm.sudden_death     = get_rppm( "sudden death", talents.shared.sudden_death );
   rppm.whirling_blade    = get_rppm( "whirling_blade", talents.protection.whirling_blade );
 }
 
