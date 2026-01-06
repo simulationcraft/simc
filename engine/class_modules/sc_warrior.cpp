@@ -246,7 +246,6 @@ public:
     buff_t* intervene_movement;
     buff_t* into_the_fray;
     buff_t* last_stand;
-    buff_t* overpower;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -1019,6 +1018,7 @@ public:
         parse_effects( p()->mastery.master_of_arms );
 
       parse_effects( p()->buff.collateral_damage );
+      parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -1058,6 +1058,7 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
+      parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
     }
 
     // Colossus
