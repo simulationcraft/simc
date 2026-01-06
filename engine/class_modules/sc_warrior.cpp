@@ -126,7 +126,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
-  buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_honed_reflexes;
@@ -228,6 +227,7 @@ public:
     buff_t* bloodcraze;
     buff_t* scent_of_blood;
     buff_t* ragedrinker;
+    buff_t* executioners_precision;
     buff_t* executioners_wrath;
     buff_t* surge_of_adrenaline;
     buff_t* bloodborne;
@@ -1019,6 +1019,7 @@ public:
 
       parse_effects( p()->buff.collateral_damage );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
+      parse_effects( p()->buff.executioners_precision );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -1107,9 +1108,6 @@ public:
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff );
 
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_executioners_precision ),
-                          p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
-                          p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
@@ -2849,6 +2847,8 @@ struct mortal_strike_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    p()->buff.executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2858,11 +2858,6 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
     { // does this eat RPPM when switching from low -> high health target?
       td( s->target )->debuffs_fatal_mark->trigger();
-    }
-
-    if ( td( s->target )->debuffs_executioners_precision->up() )
-    {
-      td( s->target )->debuffs_executioners_precision->expire();
     }
 
     if ( p()->talents.arms.bloodletting.ok() && p()->talents.warrior.rend.ok() && ( target->health_percentage() < p()->talents.arms.bloodletting->effectN( 3 ).base_value() ) )
@@ -3806,11 +3801,6 @@ struct execute_damage_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( state->result ) ) )
-    {
-      td( state->target )->debuffs_executioners_precision->trigger();
-    }
-
     if ( p()->buff.sudden_death->up() )
     {
       if ( p()->talents.slayer.unrelenting_onslaught->ok() )
@@ -3926,6 +3916,9 @@ struct execute_arms_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->talents.arms.executioners_precision.ok() )
+      p()->buff.executioners_precision->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -7506,8 +7499,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
 
-  debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
-
   debuffs_fatal_mark = make_buff( *this, "fatal_mark" )
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
@@ -7656,6 +7647,9 @@ void warrior_t::create_buffs()
   buff.scent_of_blood = make_buff( this, "scent_of_blood", talents.fury.scent_of_blood->effectN( 1 ).trigger() );
 
   buff.ragedrinker = make_buff( this, "ragedrinker", talents.fury.ragedrinker->effectN( 1 ).trigger() );
+
+  buff.executioners_precision = make_buff( this, "executioners_precision", talents.arms.executioners_precision->effectN( 1 ).trigger() )
+                                  ->set_cooldown( talents.arms.executioners_precision->internal_cooldown() );
 
   buff.executioners_wrath = make_buff( this, "executioners_wrath", talents.fury.executioners_wrath->effectN( 2 ).trigger() );
 
