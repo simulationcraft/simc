@@ -799,6 +799,7 @@ public:
       player_talent_t bloodsurge;
       player_talent_t sudden_death;
       player_talent_t deep_wounds;
+      player_talent_t ignore_pain;
     } shared;
 
   } talents;
@@ -2166,7 +2167,7 @@ struct slayers_strike_t : public warrior_attack_t
 
 struct ignore_pain_buff_t : public absorb_buff_t
 {
-  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->talents.protection.ignore_pain )
+  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->talents.shared.ignore_pain )
   {
     cooldown->duration = 0_ms;
     set_absorb_source( player->get_stats( "ignore_pain" ) );
@@ -2177,7 +2178,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   double consume( double amount, action_state_t* ) override
   {
     // Effect 2 stores the % of damage that is absorbed
-    amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
+    amount *= debug_cast< warrior_t* >( player ) -> talents.shared.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
     return absorbed;
@@ -2188,7 +2189,8 @@ struct ignore_pain_t : public warrior_spell_t
 {
   double max_hp_percent_cap;
   ignore_pain_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "ignore_pain", p, p->talents.protection.ignore_pain )
+    : warrior_spell_t( "ignore_pain", p, p->talents.shared.ignore_pain ),
+    max_hp_percent_cap( 1.0 )  // Let arms have a full health bar worth of IP max
   {
     parse_options( options_str );
     may_crit     = false;
@@ -2196,16 +2198,15 @@ struct ignore_pain_t : public warrior_spell_t
     harmful      = false;
     range        = -1;
     target       = player;
-    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 20 : 35);
-
     base_dd_max = base_dd_min = 0;
     resource_current = RESOURCE_RAGE;
 
-    max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
+    if ( p->specialization() == WARRIOR_PROTECTION )
+      max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
   }
 
   ignore_pain_t ( util::string_view name, warrior_t* p )
-    : warrior_spell_t( name, p, p->talents.protection.ignore_pain )
+    : warrior_spell_t( name, p, p->talents.shared.ignore_pain )
     {
       may_crit    = false;
       background  = true;
@@ -2214,7 +2215,8 @@ struct ignore_pain_t : public warrior_spell_t
       target      = player;
       base_dd_min = base_dd_max = 0;
 
-      max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
+      if ( p->specialization() == WARRIOR_PROTECTION )
+        max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
     }
 
   void impact( action_state_t* s ) override
@@ -6954,7 +6956,7 @@ void warrior_t::init_spells()
 
   // Protection Talents
   // Row 1
-  talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
+  talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain", WARRIOR_PROTECTION );
   // Row 2
   talents.protection.demoralizing_shout     = find_talent_spell( talent_tree::SPECIALIZATION, "Demoralizing Shout" );
   talents.protection.revenge                = find_talent_spell( talent_tree::SPECIALIZATION, "Revenge" );
@@ -7145,6 +7147,7 @@ void warrior_t::init_spells()
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
   talents.shared.deep_wounds = find_shared_talent( { &talents.arms.deep_wounds, &talents.fury.deep_wounds, &talents.protection.deep_wounds } );
+  talents.shared.ignore_pain = find_shared_talent( { &talents.arms.ignore_pain, &talents.protection.ignore_pain } );
 
   // Active spells
   active.deep_wounds    = nullptr;
