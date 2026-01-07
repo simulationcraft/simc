@@ -204,7 +204,7 @@ void arms( player_t* p )
   colossus_execute->add_action( "avatar" );
   colossus_execute->add_action( "colossus_smash" );
   colossus_execute->add_action( "demolish,if=debuff.colossus_smash.up&buff.colossal_might.stack=10" );
-  colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|!talent.executioners_precision|talent.battlelord" );
+  colossus_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2|!talent.executioners_precision|talent.battlelord" );
   colossus_execute->add_action( "overpower,if=rage<90" );
   colossus_execute->add_action( "execute,if=rage>=40&talent.executioners_precision" );
   colossus_execute->add_action( "overpower" );
@@ -253,7 +253,7 @@ void arms( player_t* p )
   slayer_aoe->add_action( "cleave" );
   slayer_aoe->add_action( "bladestorm" );
   slayer_aoe->add_action( "overpower,if=buff.opportunist.up&talent.dreadnaught" );
-  slayer_aoe->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
+  slayer_aoe->add_action( "mortal_strike,if=buff.executioners_precision.stack=2" );
   slayer_aoe->add_action( "execute,if=buff.sudden_death.up" );
   slayer_aoe->add_action( "thunder_clap,if=dot.rend.remains<8&talent.rend" );
   slayer_aoe->add_action( "overpower,if=talent.dreadnaught" );
@@ -273,9 +273,9 @@ void arms( player_t* p )
   slayer_execute->add_action( "champions_spear,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_execute->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_execute->add_action( "colossus_smash" );
-  slayer_execute->add_action( "bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision" );
+  slayer_execute->add_action( "bladestorm,if=(buff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision" );
   slayer_execute->add_action( "overpower,if=buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<80)" );
-  slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up" );
+  slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|buff.executioners_precision.stack=2&!buff.ravager.up" );
   slayer_execute->add_action( "overpower,if=rage<=40&talent.fierce_followthrough" );
   slayer_execute->add_action( "execute,if=rage>=40" );
   slayer_execute->add_action( "overpower" );
@@ -289,7 +289,7 @@ void arms( player_t* p )
   slayer_st->add_action( "champions_spear,if=debuff.colossus_smash.up|buff.avatar.up" );
   slayer_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_st->add_action( "colossus_smash,if=cooldown.avatar.remains>10&(variable.trinket_1_buffs|variable.trinket_2_buffs)|(!variable.trinket_1_buffs&!variable.trinket_2_buffs)" );
-  slayer_st->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2" );
+  slayer_st->add_action( "mortal_strike,if=buff.executioners_precision.stack=2" );
   slayer_st->add_action( "execute,if=buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
   slayer_st->add_action( "overpower,if=buff.opportunist.up" );
   slayer_st->add_action( "bladestorm,if=cooldown.colossus_smash.remains>=gcd*4|debuff.colossus_smash.remains>=gcd*4" );
