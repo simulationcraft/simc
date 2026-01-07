@@ -350,7 +350,6 @@ public:
     damage_buff_t* acrobatic_strikes;
     damage_buff_t* cold_blood;
     buff_t* subterfuge;
-    buff_t* thistle_tea;
     buff_t* echoing_reprimand;
 
     // Hero
@@ -535,7 +534,6 @@ public:
     const spell_data_t* recuperator_heal;
     const spell_data_t* shadowstep_buff;
     const spell_data_t* subterfuge_buff;
-    const spell_data_t* thistle_tea_buff;
     const spell_data_t* vanish_buff;
 
     // Hero Spells
@@ -3249,11 +3247,9 @@ struct melee_t : public rogue_attack_t
       m *= damage_buff->is_stacking ? damage_buff->stack_value_auto_attack() : damage_buff->value_auto_attack();
 
     // Class Passives
-    m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
-    m *= 1.0 + p()->spec.assassination_rogue->effectN( 23 ).percent(); // Non-PvP
-    m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
-    m *= 1.0 + p()->spec.subtlety_rogue->effectN( 11 ).percent();
-    m *= 1.0 + p()->spec.subtlety_rogue->effectN( 18 ).percent(); // Non-PvP
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 5 ).percent();
+    m *= 1.0 + p()->spec.outlaw_rogue->effectN( 5 ).percent();
+    m *= 1.0 + p()->spec.subtlety_rogue->effectN( 5 ).percent();
 
     return m;
   }
@@ -4543,9 +4539,7 @@ struct pistol_shot_t : public rogue_attack_t
 
     m *= 1.0 + p()->buffs.opportunity->value();
 
-    // 2023-09-26 Pistol shot says it does 20% less damage on followup fan the hammer hits, but currently does not
-    // MIDNIGHT TOCHECK -- Still an issue??
-    if ( !p()->bugs && secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
     {
       m *= 1.0 - p()->talent.outlaw.fan_the_hammer->effectN( 3 ).percent();
     }
@@ -5867,8 +5861,6 @@ struct thistle_tea_t : public rogue_spell_t
     {
       p()->cooldowns.thistle_tea->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
     }
-
-    p()->buffs.thistle_tea->trigger();
   }
 };
 
@@ -7142,11 +7134,11 @@ struct roll_the_bones_t : public buff_t
    
     if ( rogue->options.fixed_rtb > 0 )
     {
-      rolled = random_roll( rogue->buffs.loaded_dice->up() );
+      rolled = rogue->options.fixed_rtb;
     }
     else
     {
-      rolled = rogue->options.fixed_rtb;
+      rolled = random_roll( rogue->buffs.loaded_dice->up() );
     }
 
     assert( rolled > 0 && rolled <= buffs.size() );
@@ -9519,7 +9511,6 @@ void rogue_t::init_spells()
   spell.shadowstep_buff = spec.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.thistle_tea = talent.rogue.thistle_tea->ok() ? talent.rogue.thistle_tea->effectN( 1 ).trigger() : spell_data_t::not_found();
-  spell.thistle_tea_buff = talent.rogue.thistle_tea->ok() ? find_spell( 381623 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
 
   // Hero Talent Background Spells
@@ -10042,7 +10033,7 @@ void rogue_t::create_buffs()
 
   buffs.between_the_eyes = make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
     ->set_cooldown( timespan_t::zero() )
-    ->set_refresh_behavior( buff_refresh_behavior::MAX ); // MIDNIGHT TOCHECK
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.adrenaline_rush = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry = new buffs::blade_flurry_t( this );
@@ -10098,11 +10089,6 @@ void rogue_t::create_buffs()
   buffs.echoing_reprimand = make_buff( this, "echoing_reprimand", spell.echoing_reprimand_buff );
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
-
-  buffs.thistle_tea = make_buff( this, "thistle_tea", spell.thistle_tea_buff )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.supercharger.clear();
   std::array<unsigned int, 7> supercharger_ids = { 470398, 470406, 470409, 470412, 470414, 470415, 470416 };
