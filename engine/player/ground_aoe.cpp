@@ -84,7 +84,8 @@ ground_aoe_event_t::ground_aoe_event_t( player_t* p, const ground_aoe_params_t* 
   : player_event_t( *p, immediate_pulse ? timespan_t::zero() : _pulse_time( param, p ) ),
     params( param ),
     pulse_state( ps ),
-    current_pulse( 1 )
+    current_pulse( 1 ),
+    expired( false )
 {
   // Ensure we have enough information to start pulsing.
   assert( params->target() != nullptr && "No target defined for ground_aoe_event_t" );
@@ -169,6 +170,10 @@ timespan_t ground_aoe_event_t::_pulse_time( const ground_aoe_params_t* params, c
 
 bool ground_aoe_event_t::may_pulse() const
 {
+  if ( expired )
+  {
+    return false;
+  }
   if ( params->n_pulses() > 0 )
   {
     return current_pulse < params->n_pulses();
@@ -280,7 +285,7 @@ void ground_aoe_event_t::handle_expiration()
 
   // Trigger immediately, since no time left. Can happen for example when ground aoe events are
   // not hasted, or when pulse-based behavior is used (instead of duration-based behavior)
-  if ( time_left <= timespan_t::zero() )
+  if ( time_left <= timespan_t::zero() || expired )
   {
     params->expiration_callback()( pulse_state );
   }
