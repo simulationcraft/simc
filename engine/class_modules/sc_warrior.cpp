@@ -246,6 +246,7 @@ public:
     buff_t* intervene_movement;
     buff_t* into_the_fray;
     buff_t* last_stand;
+    buff_t* martial_prowess;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -578,7 +579,7 @@ public:
       player_talent_t cleave;
       player_talent_t collateral_damage;
       // Row 7
-      player_talent_t martial_prowess;  // NYI
+      player_talent_t martial_prowess;
       player_talent_t dreadnaught;
       player_talent_t deep_wounds;
       player_talent_t tactical_edge;  // NYI
@@ -1019,6 +1020,7 @@ public:
       parse_effects( p()->buff.collateral_damage );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
+      parse_effects( p()->buff.martial_prowess );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -2848,6 +2850,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     p()->buff.executioners_precision->expire();
+    p()->buff.martial_prowess->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3229,6 +3232,9 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.whirlwind->decrement();
+
+    if ( p()->talents.arms.martial_prowess.ok() )
+      p()->buff.martial_prowess->trigger();
   }
 
   bool ready() override
@@ -4930,6 +4936,9 @@ struct overpower_t : public warrior_attack_t
     }
 
     p()->buff.opportunist->expire();
+
+    if ( p()->talents.arms.martial_prowess.ok() )
+      p()->buff.martial_prowess->trigger();
   }
 
   bool ready() override
@@ -7583,6 +7592,9 @@ void warrior_t::create_buffs()
                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                     ->set_cooldown( timespan_t::zero() )
                     ->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+
+  buff.martial_prowess = make_buff( this, "martial_prowess", talents.arms.martial_prowess->effectN( 1 ).trigger() )
+                            ->set_cooldown( talents.arms.martial_prowess->internal_cooldown() );
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() );
