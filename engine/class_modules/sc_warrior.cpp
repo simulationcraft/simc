@@ -287,7 +287,6 @@ public:
 
   struct rppm_t
   {
-    real_ppm_t* fatal_mark;
     real_ppm_t* revenge;
     real_ppm_t* sudden_death;
     real_ppm_t* whirling_blade;
@@ -2855,10 +2854,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
-    { // does this eat RPPM when switching from low -> high health target?
+    if ( p()->talents.arms.fatality->ok() && p()->rng().roll( p()->talents.arms.fatality->effectN( 1 ).percent() ) )
       td( s->target )->debuffs_fatal_mark->trigger();
-    }
 
     if ( p()->talents.arms.bloodletting.ok() && p()->talents.warrior.rend.ok() && ( target->health_percentage() < p()->talents.arms.bloodletting->effectN( 3 ).base_value() ) )
     {
@@ -3294,11 +3291,6 @@ struct cleave_t : public warrior_attack_t
     warrior_attack_t::impact( s );
     if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( s->target );
-
-    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
-    {  // does this eat RPPM when switching from low -> high health target?
-      td( s->target )->debuffs_fatal_mark->trigger();
-    }
   }
 
   void execute() override
@@ -3509,16 +3501,12 @@ struct thunder_blast_t : public warrior_attack_t
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  double rend_target_cap;
-  double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_blast", p, p->find_spell( 435222 ) ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
-      lightning_strike( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
+      lightning_strike( nullptr )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -3530,11 +3518,7 @@ struct thunder_blast_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->talents.warrior.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-      if ( p->talents.warrior.rend->ok() )
         rend = new rend_dot_t( p );
-    }
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
     {
@@ -3560,8 +3544,6 @@ struct thunder_blast_t : public warrior_attack_t
 
   void execute() override
   {
-    rend_targets_hit = 0;
-
     warrior_attack_t::execute();
 
     if ( rng().roll( shield_slam_reset ) )
@@ -3616,14 +3598,8 @@ struct thunder_blast_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.warrior.rend.ok() )
-    {
-      if ( rend_targets_hit < rend_target_cap )
-      {
-        rend->execute_on_target( state->target );
-        rend_targets_hit++;
-      }
-    }
+    if ( p()->talents.warrior.rend.ok() && rend )
+      rend->execute_on_target( state->target );
   }
 
   bool ready() override
@@ -3643,16 +3619,12 @@ struct thunder_clap_t : public warrior_attack_t
   double shield_slam_reset;
   warrior_attack_t* rend;
   action_t* lightning_strike;
-  double rend_target_cap;
-  double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
-      lightning_strike( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
+      lightning_strike( nullptr )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -3661,11 +3633,7 @@ struct thunder_clap_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->talents.warrior.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-      if ( p->talents.warrior.rend->ok() )
         rend = new rend_dot_t( p );
-    }
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
     {
@@ -3691,8 +3659,6 @@ struct thunder_clap_t : public warrior_attack_t
 
   void execute() override
   {
-    rend_targets_hit = 0;
-
     warrior_attack_t::execute();
 
     if ( rng().roll( shield_slam_reset ) )
@@ -3736,14 +3702,8 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.warrior.rend.ok() )
-    {
-      if ( rend_targets_hit < rend_target_cap )
-      {
-        rend->execute_on_target( state->target );
-        rend_targets_hit++;
-      }
-    }
+    if ( p()->talents.warrior.rend.ok() && rend )
+      rend->execute_on_target( state->target );
   }
 
   bool ready() override
@@ -3925,11 +3885,8 @@ struct execute_arms_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if( state->target->health_percentage() < 30 && td( state->target )->debuffs_fatal_mark->check() )
-    {
-      p()->active.fatality->set_target( state->target );
-      p()->active.fatality->execute();
-    }
+    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
+      p()->active.fatality->execute_on_target( state->target );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7499,9 +7456,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
 
-  debuffs_fatal_mark = make_buff( *this, "fatal_mark" )
-          ->set_duration( p.spell.fatal_mark_debuff->duration() )
-          ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
+  debuffs_fatal_mark = make_buff( *this, "fatal_mark", p.spell.fatal_mark_debuff );
 
   debuffs_honed_reflexes = make_buff( *this, "honed_reflexes", p.talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
 
@@ -7724,7 +7679,6 @@ void warrior_t::init_finished()
 void warrior_t::init_rng()
 {
   parse_player_effects_t::init_rng();
-  rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
   if ( talents.protection.best_served_cold->ok() )
     rppm.revenge->set_modifier( rppm.revenge->get_modifier() + talents.protection.best_served_cold->effectN( 3 ).percent() );
