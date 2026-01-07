@@ -13493,10 +13493,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.x( target->x_position );
   params.y( target->y_position );
 
-  params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
-    buffs.death_and_decay->expire( 4_s );
-    range::erase_remove( active_dnds, tracker );
-  } );
+  timespan_t dnd_expiration = 4_s;
 
   params.state_callback( [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
     switch ( type )
@@ -13559,14 +13556,19 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
 
           event->expired = true;
 
-          // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
-          make_event( *sim, remaining_time, [ & ]() { buffs.death_and_decay->expire(); } );
+          // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration? if so, +=
+          dnd_expiration = remaining_time;
         }
       }
       break;
       default:
         break;
     }
+  } );
+
+  params.expiration_callback( [ &, tracker, dnd_expiration ]( const action_state_t* ) {
+    buffs.death_and_decay->expire( dnd_expiration );
+    range::erase_remove( active_dnds, tracker );
   } );
 
   tracker->set_dnd_event( make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ ) );
