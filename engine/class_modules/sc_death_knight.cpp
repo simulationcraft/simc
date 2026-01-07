@@ -13509,6 +13509,8 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
     {
       case ground_aoe_params_t::EVENT_CREATED:
         tracker->set_dnd_event( event );
+        // Set the initial expire time to the default 4s after dnd ends. Ensures theres no accidental carryover between dnds.
+        tracker->set_expire_time( 4_s );
         break;
       case ground_aoe_params_t::EVENT_STARTED:
         buffs.death_and_decay->trigger();
