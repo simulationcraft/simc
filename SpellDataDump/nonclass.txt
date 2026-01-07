@@ -252017,7 +252017,8 @@ Effects          :
 #1 (id=1190120)  : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 10095.39 (coefficient=3.946964) | Target: Targeted Enemy (6)
 #2 (id=1190121)  : Apply Aura (6) | Periodic Mana Leech (64) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 10095.39 (coefficient=3.946963) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 255.7761 (coefficient=0.1) | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+Hotfixed         : Coefficient (3.946963 -> 0.1), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc472174
 Tooltip          : Drains $s1 health and mana every 3 sec.
 
