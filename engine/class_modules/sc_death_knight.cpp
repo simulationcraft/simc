@@ -13520,6 +13520,9 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
       case ground_aoe_params_t::EVENT_DESTRUCTED:
         if ( tracker != active_dnds.front() )
           break;
+
+        if ( !talent.sanlayn.desecrate.ok() )
+          break;
       {
         int n_dots = 0;
         switch ( specialization() )
