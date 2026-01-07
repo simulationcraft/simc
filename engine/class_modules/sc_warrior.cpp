@@ -571,7 +571,7 @@ public:
       // Row 6
       player_talent_t brute_force;  // NYI
       player_talent_t efficiency;  // NYI
-      player_talent_t overpowering_finish;  // NYI
+      player_talent_t overpowering_finish;
       player_talent_t strength_of_arms;
       player_talent_t just_warming_up;  // NYI
       player_talent_t broad_strokes;  // NYI
@@ -4909,6 +4909,14 @@ struct overpower_t : public warrior_attack_t
       dreadnaught = new dreadnaught_t( p );
       add_child( dreadnaught );
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+    if ( p()->talents.arms.overpowering_finish.ok() && target->health_percentage() < p()->talents.arms.overpowering_finish->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.arms.overpowering_finish->effectN( 1 ).percent();
+    return m;
   }
 
   void impact( action_state_t* s ) override
