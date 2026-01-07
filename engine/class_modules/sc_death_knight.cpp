@@ -759,6 +759,7 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 struct death_and_decay_tracker_t
 {
   ground_aoe_event_t* dnd_event = nullptr;
+  timespan_t buff_expiration_time = 4_s;
   death_and_decay_tracker_t()
   {}
 
@@ -769,9 +770,19 @@ struct death_and_decay_tracker_t
     dnd_event = event;
   }
 
+  void set_expire_time( timespan_t time )
+  {
+    buff_expiration_time = time;
+  }
+
   ground_aoe_event_t* get_dnd_event()
   {
     return dnd_event;
+  }
+
+  timespan_t get_expire_time()
+  {
+    return buff_expiration_time;
   }
 };
 
@@ -13493,8 +13504,6 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.x( target->x_position );
   params.y( target->y_position );
 
-  timespan_t dnd_expiration = 4_s;
-
   params.state_callback( [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
     switch ( type )
     {
@@ -13557,7 +13566,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
           event->expired = true;
 
           // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration? if so, +=
-          dnd_expiration = remaining_time;
+          tracker->set_expire_time( remaining_time );
         }
       }
       break;
@@ -13566,8 +13575,8 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
     }
   } );
 
-  params.expiration_callback( [ &, tracker, dnd_expiration ]( const action_state_t* ) {
-    buffs.death_and_decay->expire( dnd_expiration );
+  params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
+    buffs.death_and_decay->expire( tracker->get_expire_time() );
     range::erase_remove( active_dnds, tracker );
   } );
 
