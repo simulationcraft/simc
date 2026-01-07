@@ -13486,7 +13486,6 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   }
 
   params.target( target );
-  params.duration( dur );
   params.action( a );
   params.pulse_time( period );
   params.n_pulses( as<int>( n_ticks ) );
@@ -13498,7 +13497,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
     range::erase_remove( active_dnds, tracker );
   } );
 
-  params.state_callback( [ &, tracker, n_ticks ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+  params.state_callback( [ &, tracker, n_ticks, dur, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
     switch ( type )
     {
       case ground_aoe_params_t::EVENT_CREATED:
@@ -13549,8 +13548,8 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
 
         if ( desecrate_triggred )
         {
-          timespan_t remaining_time = event->remaining_time();
-          double ticks_left         = remaining_time.total_seconds();
+          double ticks_left         = std::ceil( n_ticks / event->current_pulse );
+          timespan_t remaining_time = ( dur.total_seconds() - event->current_pulse - 1 ) * period;
           desecrate_t* des          = debug_cast<desecrate_t*>( background_actions.desecrate );
           des->ticks_remain         = ticks_left;
           des->schedule_execute();
