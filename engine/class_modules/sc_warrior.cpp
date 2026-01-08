@@ -225,6 +225,7 @@ public:
     buff_t* best_served_cold;
     buff_t* bladestorm;
     buff_t* bloodcraze;
+    buff_t* crushing_combo;
     buff_t* scent_of_blood;
     buff_t* ragedrinker;
     buff_t* executioners_precision;
@@ -571,10 +572,10 @@ public:
       player_talent_t impale;
       // Row 6
       player_talent_t brute_force;
-      player_talent_t efficiency;  // NYI
+      player_talent_t efficiency;
       player_talent_t overpowering_finish;
       player_talent_t strength_of_arms;
-      player_talent_t just_warming_up;  // NYI
+      player_talent_t just_warming_up;
       player_talent_t broad_strokes;  // NYI
       player_talent_t sharpened_blades;
       player_talent_t cleave;
@@ -583,8 +584,8 @@ public:
       player_talent_t martial_prowess;
       player_talent_t dreadnaught;
       player_talent_t deep_wounds;
-      player_talent_t tactical_edge;  // NYI
-      player_talent_t crushing_combo;  // NYI
+      player_talent_t tactical_edge;
+      player_talent_t crushing_combo;
       player_talent_t massacre;
       player_talent_t mass_execution;
       player_talent_t improved_sweeping_strikes;
@@ -1019,6 +1020,7 @@ public:
         parse_effects( p()->mastery.master_of_arms );
 
       parse_effects( p()->buff.collateral_damage );
+      parse_effects( p()->buff.crushing_combo );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
@@ -3382,6 +3384,9 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( p()->talents.arms.tactical_edge.ok() )
       p()->buff.tactical_edge->trigger();
+
+    if ( p()->talents.arms.crushing_combo.ok() )
+      p()->buff.crushing_combo->trigger();
   }
 };
 
@@ -7593,6 +7598,8 @@ void warrior_t::create_buffs()
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.crushing_combo = make_buff( this, "crushing_combo", talents.arms.crushing_combo->effectN( 1 ).trigger() );
 
   buff.die_by_the_sword = make_buff( this, "die_by_the_sword", talents.arms.die_by_the_sword )
     ->set_default_value( talents.arms.die_by_the_sword->effectN( 2 ).percent() )
