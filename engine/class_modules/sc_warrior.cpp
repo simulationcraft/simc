@@ -256,6 +256,7 @@ public:
     buff_t* spell_reflection;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
+    buff_t* tactical_edge;
     buff_t* whirlwind;
     buff_t* wild_strikes;
 
@@ -1327,6 +1328,8 @@ public:
       // Brute forces causes Slam (1464) and heroic strike (1269383) to have a 10% increase proc rate
       if ( p()->talents.arms.brute_force.ok() && ( ab::id == 1464 || ab::id == 1269383 ) )
         proc_chance += 0.10;
+      if ( p()->talents.arms.tactical_edge.ok() && p()->buff.tactical_edge->check() && ab::id == p()->talents.arms.mortal_strike->id() )
+        proc_chance += p()->buff.tactical_edge->value();
       if ( ab::rng().roll( proc_chance ) )
       {
         p()->cooldown.overpower->reset( true );
@@ -2855,6 +2858,9 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.executioners_precision->expire();
     p()->buff.martial_prowess->expire();
+
+    if( !background )
+      p()->buff.tactical_edge->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -3368,6 +3374,14 @@ struct colossus_smash_t : public warrior_attack_t
     {
       td( s->target )->debuffs_colossus_smash->trigger();
     }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->talents.arms.tactical_edge.ok() )
+      p()->buff.tactical_edge->trigger();
   }
 };
 
@@ -7612,7 +7626,11 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes);
+  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes);
+
+  buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_initial_stack( talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() );
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
