@@ -220,6 +220,7 @@ public:
   {
     buff_t* avatar;
     buff_t* battle_stance;
+    buff_t* battle_shout_highlight;
     buff_t* berserker_rage;
     buff_t* berserker_stance;
     buff_t* best_served_cold;
@@ -525,7 +526,7 @@ public:
       player_talent_t shattering_throw;
       player_talent_t rumbling_earth;
       player_talent_t berserker_shout;
-      player_talent_t fearless;  // NYI
+      player_talent_t fearless;
       player_talent_t intimidating_shout;
       player_talent_t piercing_howl;
       player_talent_t honed_reflexes;
@@ -535,8 +536,8 @@ public:
       player_talent_t reinforced_plates;
       // Row 8
       player_talent_t barbaric_training;
-      player_talent_t javelineer;  // NYI
-      player_talent_t resonant_voice;  // NYI
+      player_talent_t javelineer;
+      player_talent_t resonant_voice;
       player_talent_t crushing_force;
       // Row 9
       player_talent_t cruel_strikes;
@@ -547,7 +548,7 @@ public:
       player_talent_t anger_management;
       player_talent_t champions_spear;
       player_talent_t stance_mastery;
-      player_talent_t battlefield_commander;  // NYI
+      player_talent_t battlefield_commander;
     } warrior;
 
     struct arms_talents_t
@@ -7602,6 +7603,8 @@ void warrior_t::create_buffs()
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.battle_shout_highlight = make_buff( this, "battle_shout_highlight", find_spell( 1271909 ) );
+
   buff.crushing_combo = make_buff( this, "crushing_combo", talents.arms.crushing_combo->effectN( 1 ).trigger() );
 
   buff.die_by_the_sword = make_buff( this, "die_by_the_sword", talents.arms.die_by_the_sword )
@@ -8458,6 +8461,9 @@ double warrior_t::composite_attack_power_multiplier() const
   {
     ap *= 1.0 + mastery.critical_block -> effectN( 5 ).mastery_value() * cache.mastery();
   }
+
+  if ( talents.warrior.battlefield_commander.ok() )
+    ap *= 1.0 + talents.warrior.battlefield_commander->effectN( 6 ).percent();
   return ap;
 }
 
