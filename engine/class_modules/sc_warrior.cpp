@@ -576,7 +576,7 @@ public:
       player_talent_t overpowering_finish;
       player_talent_t strength_of_arms;
       player_talent_t just_warming_up;
-      player_talent_t broad_strokes;  // NYI
+      player_talent_t broad_strokes;
       player_talent_t sharpened_blades;
       player_talent_t cleave;
       player_talent_t collateral_damage;
@@ -589,7 +589,7 @@ public:
       player_talent_t massacre;
       player_talent_t mass_execution;
       player_talent_t improved_sweeping_strikes;
-      player_talent_t powerful_momentum;  // NYI
+      player_talent_t powerful_momentum;
       // Row 8
       player_talent_t bloodborne;
       player_talent_t bladestorm;
@@ -3387,6 +3387,9 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( p()->talents.arms.crushing_combo.ok() )
       p()->buff.crushing_combo->trigger();
+
+    if ( p()->talents.arms.broad_strokes.ok() )
+      p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
   }
 };
 
