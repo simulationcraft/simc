@@ -489,6 +489,7 @@ public:
     buff_t* summon_fenryr;
     buff_t* summon_hati;
     buff_t* heart_of_the_pack;
+    buff_t* natures_ally_3;
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -753,7 +754,8 @@ public:
     spell_data_ptr_t killer_cobra;
     spell_data_ptr_t master_handler;
 
-    spell_data_ptr_t natures_ally_3; //TODO Not implemented
+    spell_data_ptr_t natures_ally_3;
+    spell_data_ptr_t natures_ally_3_buff;
     spell_data_ptr_t wildspeaker;
     spell_data_ptr_t wildspeaker_kill_command;
     spell_data_ptr_t wildspeaker_bestial_wrath;
@@ -1313,6 +1315,7 @@ public:
   double calculate_tip_of_the_spear_value( double base_value ) const;
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
+  void trigger_natures_ally_3();
 };
 
 // Template for common hunter action code.
@@ -2873,6 +2876,9 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
 
     da *= 1 + bonus;
 
+    if ( o()->buffs.natures_ally_3->check() )
+      da *= 1 + o()->talents.natures_ally_3_buff->effectN( 1 ).percent();
+
     return da;
   }
   
@@ -3971,6 +3977,12 @@ void hunter_t::trigger_howl_of_the_pack_leader()
   }
 }
 
+void hunter_t::trigger_natures_ally_3()
+{
+  if ( talents.natures_ally_3.ok() )
+    buffs.natures_ally_3->trigger();
+}
+
 // ==========================================================================
 // Hunter Attacks
 // ==========================================================================
@@ -4914,6 +4926,8 @@ struct black_arrow_t final : public kill_shot_base_t
     }
 
     p()->buffs.the_bell_tolls->trigger();
+
+    p()->trigger_natures_ally_3();
   }
 
   void impact( action_state_t* s ) override
@@ -5257,6 +5271,8 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 3 ).time_value() );
 
     p()->buffs.hogstrider->expire();
+
+    p()->trigger_natures_ally_3();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5379,6 +5395,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     {
       pet -> actions.brutal_companion_ba -> execute_on_target( target );
     }
+
+    p()->trigger_natures_ally_3();
   }
 
   void impact( action_state_t* s ) override
@@ -7161,6 +7179,8 @@ struct kill_command_t: public hunter_spell_t
       p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
     }
+
+    p()->buffs.natures_ally_3->expire();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -8332,6 +8352,7 @@ void hunter_t::init_spells()
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
 
     talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
     talents.wildspeaker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wildspeaker", HUNTER_BEAST_MASTERY );
     talents.wildspeaker_bestial_wrath         = talents.wildspeaker.ok() ? find_spell( 1235388 ) : spell_data_t::not_found();
     talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
@@ -9010,6 +9031,10 @@ void hunter_t::create_buffs()
       -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) /* Spelldata is scuffed as of 2026-01-08
                                                                                         TODO: re-check later in beta */
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.natures_ally_3 = 
+    make_buff( this, "natures_ally_3", talents.natures_ally_3_buff )
+      -> set_default_value( talents.natures_ally_3_buff->effectN( 1 ).percent() );
 
   // Survival Tree
 
