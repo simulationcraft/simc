@@ -3605,13 +3605,23 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_cut_to_the_chase( execute_state );
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      const auto rs = cast_state( execute_state );
+      const int cp_spend = rs->get_combo_points();
+
+      if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN ( 1 ).percent() * cp_spend ) )
+      {
+        p()->buffs.palmed_bullets->trigger();
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
-    // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
     if ( scoundrel_strike && cast_state( state )->get_combo_points() >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
     {
       scoundrel_strike->execute_on_target( state->target );
@@ -7392,13 +7402,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     p()->buffs.deadly_momentum->trigger();
   }
 
-  // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
-  //                     Double check what happens when you spend when the initial 4s timer is active, if it refreshes or is lost.
-  //                     Does CP spend that cancels an existing buff count towards the new counter?
   if ( p()->talent.outlaw.deadly_pursuit->ok() )
   {
-    p()->buffs.deadly_pursuit_cdr->expire();
-    if ( p()->buffs.deadly_pursuit->check() )
+    if ( p()->buffs.deadly_pursuit_cdr->check() )
+      p()->buffs.deadly_pursuit_cdr->expire();
+    else if ( p()->buffs.deadly_pursuit->check() )
       p()->buffs.deadly_pursuit->refresh();
     else
       p()->buffs.deadly_pursuit_tracker->trigger( as<int>( max_spend ) );
@@ -9889,6 +9897,7 @@ void rogue_t::init_spells()
     active.fan_the_hammer = get_secondary_trigger_action<actions::pistol_shot_t>(
       secondary_trigger::FAN_THE_HAMMER, "pistol_shot_fan_the_hammer" );
     active.fan_the_hammer->not_a_proc = true; // Scripted foreground cast, can trigger cast procs
+    active.fan_the_hammer->energize_type = action_energize::NONE; // Fan the Hammer itself does not generate CPs, only from Quick Draw
   }
 
   // Subtlety
