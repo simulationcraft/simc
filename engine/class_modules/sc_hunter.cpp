@@ -488,6 +488,7 @@ public:
     buff_t* huntmasters_call;
     buff_t* summon_fenryr;
     buff_t* summon_hati;
+    buff_t* heart_of_the_pack;
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -744,7 +745,8 @@ public:
     spell_data_ptr_t natures_ally_2;
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
-    spell_data_ptr_t heart_of_the_pack; //TODO Not implemented
+    spell_data_ptr_t heart_of_the_pack;
+    spell_data_ptr_t heart_of_the_pack_buff;
     spell_data_ptr_t bloodshed;
     spell_data_ptr_t bloodshed_dot;
     spell_data_ptr_t savagery_bm;
@@ -1935,6 +1937,14 @@ struct dire_beast_t final : public dire_critter_t
     // 13-10-22 Dire Beast damage increased by 50%. (60% -> 90%)
     // 22-7-24 Dire Beast damage increased by 10% (90% -> 100%)
     owner_coeff.ap_from_ap = 1;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    dire_critter_t::summon( duration );
+
+    if ( o()->talents.heart_of_the_pack.ok() )
+      o()->buffs.heart_of_the_pack->trigger();
   }
 };
 
@@ -8314,6 +8324,7 @@ void hunter_t::init_spells()
     talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
     talents.heart_of_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Pack", HUNTER_BEAST_MASTERY );
+    talents.heart_of_the_pack_buff            = talents.heart_of_the_pack.ok() ? find_spell( 1282747 ) : spell_data_t::not_found();
     talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
     talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
     talents.savagery_bm                        = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
@@ -8993,6 +9004,12 @@ void hunter_t::create_buffs()
     make_buff( this, "summon_hati", find_spell( 459738 ) )
       -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       -> set_default_value_from_effect( 2 );
+
+  buffs.heart_of_the_pack = 
+    make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
+      -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) /* Spelldata is scuffed as of 2026-01-08
+                                                                                        TODO: re-check later in beta */
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Survival Tree
 
