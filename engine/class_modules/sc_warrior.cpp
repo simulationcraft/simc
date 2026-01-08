@@ -585,7 +585,7 @@ public:
       player_talent_t tactical_edge;  // NYI
       player_talent_t crushing_combo;  // NYI
       player_talent_t massacre;
-      player_talent_t mass_execution;  // NYI
+      player_talent_t mass_execution;
       player_talent_t improved_sweeping_strikes;
       player_talent_t powerful_momentum;  // NYI
       // Row 8
@@ -3284,6 +3284,14 @@ struct cleave_t : public warrior_attack_t
     }
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+    if ( p()->talents.arms.mass_execution.ok() && target->health_percentage() < p()->talents.arms.mass_execution->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.arms.mass_execution->effectN( 1 ).percent();
+    return m;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
@@ -5919,6 +5927,14 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
       m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
     }
 
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+    if ( p()->talents.arms.mass_execution.ok() && target->health_percentage() < p()->talents.arms.mass_execution->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.arms.mass_execution->effectN( 1 ).percent();
     return m;
   }
 
