@@ -13570,8 +13570,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
 
           event->expired = true;
 
-          // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration? if so, +=
-          tracker->set_expire_time( remaining_time );
+          tracker->set_expire_time( remaining_time + 4_s );
         }
       }
       break;
