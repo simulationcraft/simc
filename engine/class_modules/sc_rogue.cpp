@@ -10216,7 +10216,7 @@ void rogue_t::create_buffs()
   {
     buffs.palmed_bullets
       ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        if ( new_ >= spec.palmed_bullets_buff->effectN( 1 ).misc_value2() )
+        if ( new_ == spec.palmed_bullets_buff->effectN( 1 ).misc_value2() )
         {
           buffs.gravedigger->trigger();
         }
