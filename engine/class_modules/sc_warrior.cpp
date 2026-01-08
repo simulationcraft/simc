@@ -569,7 +569,7 @@ public:
       player_talent_t colossus_smash;
       player_talent_t impale;
       // Row 6
-      player_talent_t brute_force;  // NYI
+      player_talent_t brute_force;
       player_talent_t efficiency;  // NYI
       player_talent_t overpowering_finish;
       player_talent_t strength_of_arms;
@@ -1323,7 +1323,11 @@ public:
 
     if ( p()->talents.arms.tactician.ok() && rage > 0 && !ab::background )
     {
-      if ( ab::rng().roll( p()->talents.arms.tactician->effectN( 1 ).percent() ) )
+      double proc_chance = p()->talents.arms.tactician->effectN( 1 ).percent();
+      // Brute forces causes Slam (1464) and heroic strike (1269383) to have a 10% increase proc rate
+      if ( p()->talents.arms.brute_force.ok() && ( ab::id == 1464 || ab::id == 1269383 ) )
+        proc_chance += 0.10;
+      if ( ab::rng().roll( proc_chance ) )
       {
         p()->cooldown.overpower->reset( true );
         p()->proc.tactician->occur();
