@@ -3698,6 +3698,7 @@ struct between_the_eyes_t : public rogue_attack_t
         trigger_combo_point_gain( as<int>( p()->spec.gravedigger_energize->effectN( 1 ).base_value() ),
                                   p()->gains.gravedigger );
         p()->cooldowns.between_the_eyes->reset( false );
+        p()->buffs.palmed_bullets->decrement( p()->spec.palmed_bullets_buff->effectN( 1 ).misc_value2() );
       }
     }
 
@@ -10214,10 +10215,8 @@ void rogue_t::create_buffs()
   if ( spec.palmed_bullets_buff->ok() )
   {
     buffs.palmed_bullets
-      ->set_max_stack( spec.palmed_bullets_buff->effectN( 1 ).misc_value2() )
-      ->set_expire_at_max_stack( true )
-      ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
-        if ( b && stack == b->max_stack() )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( new_ >= spec.palmed_bullets_buff->effectN( 1 ).misc_value2() )
         {
           buffs.gravedigger->trigger();
         }
