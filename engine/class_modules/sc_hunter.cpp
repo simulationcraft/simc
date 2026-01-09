@@ -2223,7 +2223,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
       double amount = o()->talents.frenzy->effectN( 1 ).percent();
 
       /* Frenzy only gains half of the amount in spelldata 2026-01-09
-         TODO confirm the above later in the beta */
+         TODO reconfirm before launch */
       if ( bugs )
         amount /= 2;
 
@@ -6043,7 +6043,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       // Spell data for buff is invalid and doesn't work as of 2026-01-04 so applying manually
-      // TODO confirm the above is still true later in the beta cycle
+      // TODO reconfirm before launch
       if ( p()->buffs.focus_fire->check() )
         m *= 1.0 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
 
@@ -9028,7 +9028,7 @@ void hunter_t::create_buffs()
   buffs.heart_of_the_pack = 
     make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
       -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) /* Spelldata is scuffed as of 2026-01-08
-                                                                                        TODO: re-check later in beta */
+                                                                                        TODO: reconfirm before launch */
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.natures_ally_3 = 
