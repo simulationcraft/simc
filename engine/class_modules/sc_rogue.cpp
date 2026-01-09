@@ -2310,7 +2310,7 @@ public:
     if ( affected_by.summarily_dispatched )
     {
       m *= 1.0 + ( p()->talent.outlaw.summarily_dispatched->effectN( 2 ).percent() *
-        ( 1.0 + p()->buffs.between_the_eyes->up() * p()->spec.between_the_eyes->effectN( 4 ).percent() ) );
+        ( 1.0 + ( p()->buffs.between_the_eyes->check() > 0 ) * p()->spec.between_the_eyes->effectN( 4 ).percent() ) );
     }
 
     // Dark Shadow
