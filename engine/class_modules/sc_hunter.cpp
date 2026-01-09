@@ -740,7 +740,7 @@ public:
 
     spell_data_ptr_t natures_ally_1; //TODO Not implemented
     spell_data_ptr_t dire_frenzy;
-    spell_data_ptr_t frenzy; //TODO Not implemented
+    spell_data_ptr_t frenzy;
     spell_data_ptr_t killer_instinct;
 
     spell_data_ptr_t natures_ally_2;
@@ -2175,7 +2175,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   struct buffs_t
   {
-    buff_t* frenzy = nullptr;
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
@@ -2188,12 +2187,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
   void create_buffs() override
   {
     stable_pet_t::create_buffs();
-
-    buffs.frenzy =
-      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
-      -> set_default_value_from_effect( 1 )
-      -> modify_default_value( o() -> tier_set.tww_s1_bm_2pc -> effectN( 1 ).percent() )
-      -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
@@ -2223,12 +2216,21 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   double composite_melee_auto_attack_speed() const override
   {
-    double ah = stable_pet_t::composite_melee_auto_attack_speed();
+    double as = stable_pet_t::composite_melee_auto_attack_speed();
 
-    if ( buffs.frenzy -> check() )
-      ah /= 1 + buffs.frenzy -> check_stack_value();
+    if ( o()->talents.frenzy.ok() )
+    {
+      double amount = o()->talents.frenzy->effectN( 1 ).percent();
 
-    return ah;
+      /* Frenzy only gains half of the amount in spelldata 2026-01-09
+         TODO confirm the above later in the beta */
+      if ( bugs )
+        amount /= 2;
+
+      as *= 1 - amount;
+    }
+
+    return as;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -5386,15 +5388,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       if ( p() -> talents.stomp.ok() )
         pet -> stable_pet_t::actions.stomp -> execute();
 
-      pet -> buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
     }
 
-    auto pet = p() -> pets.main;
-    if ( pet && pet -> hunter_main_pet_base_t::buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
-    {
-      pet -> actions.brutal_companion_ba -> execute_on_target( target );
-    }
+    auto pet = p()->pets.main;
+    if ( pet && p()->rng().roll( p()->talents.brutal_companion->effectN( 1 ).percent() ) )
+      pet->actions.brutal_companion_ba->execute_on_target( target );
 
     p()->trigger_natures_ally_3();
   }
