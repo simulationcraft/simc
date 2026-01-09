@@ -704,8 +704,7 @@ public:
     spell_data_ptr_t dire_beast;
     spell_data_ptr_t dire_beast_summon;
     spell_data_ptr_t stomp;
-    spell_data_ptr_t stomp_primary;
-    spell_data_ptr_t stomp_cleave;
+    spell_data_ptr_t stomp_dmg;
     spell_data_ptr_t war_orders;
 
     spell_data_ptr_t wild_thrash;
@@ -3137,36 +3136,13 @@ struct coordinated_assault_t: public hunter_pet_attack_t<hunter_main_pet_t>
 
 struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 {
-  struct cleave_t : public hunter_pet_attack_t<hunter_pet_t>
-  {
-    cleave_t( hunter_pet_t* p, util::string_view n, double effectiveness = 1.0 )
-      : hunter_pet_attack_t( fmt::format( "{}_cleave", n ), p, p->o()->talents.stomp_cleave )
-    {
-      background = true;
-      aoe = -1;
-      base_dd_multiplier *= effectiveness;
-      target_filter_callback = secondary_targets_only();
-    }
-  };
-
-  cleave_t* cleave;
-
-  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", double effectiveness = 1.0 )
-    : hunter_pet_attack_t( n, p, p->o()->talents.stomp_primary ),
-    cleave( new cleave_t( p, n, effectiveness ) )
+  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", double effectiveness = 1.0 ) 
+    : hunter_pet_attack_t( n, p, p->o()->talents.stomp_dmg )
   {
     background = true;
+    aoe = -1;
     base_dd_multiplier *= effectiveness;
-
-    add_child( cleave );
-  }
-
-  void execute() override
-  {
-    hunter_pet_attack_t::execute();
-
-    cleave->execute_on_target( target );
-  }
+  };
 };
 
 // Bloodshed ===============================================================
@@ -8275,8 +8251,7 @@ void hunter_t::init_spells()
     talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
     talents.dire_beast_summon                 = find_spell( 219199 );
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
-    talents.stomp_primary                     = find_spell( 1217528 );
-    talents.stomp_cleave                      = find_spell( 201754 );
+    talents.stomp_dmg                         = find_spell( 201754 );
     talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY );
 
     talents.wild_thrash                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Thrash", HUNTER_BEAST_MASTERY );
