@@ -5356,8 +5356,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_reduction );
 
-    if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
-      p() -> cooldowns.kill_command -> reset( true );
+    if ( p()->talents.war_orders.ok() )
+      p()->cooldowns.kill_command->adjust( -p()->talents.war_orders->effectN( 3 ).time_value() );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
