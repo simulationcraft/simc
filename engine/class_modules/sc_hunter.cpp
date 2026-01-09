@@ -489,6 +489,7 @@ public:
     buff_t* summon_hati;
     buff_t* heart_of_the_pack;
     buff_t* natures_ally_3;
+    buff_t* bloody_frenzy;
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -759,6 +760,7 @@ public:
     spell_data_ptr_t wildspeaker_bestial_wrath;
     spell_data_ptr_t wild_instincts;
     spell_data_ptr_t bloody_frenzy;
+    spell_data_ptr_t bloody_frenzy_buff;
     spell_data_ptr_t piercing_fangs;
 
     spell_data_ptr_t multishot_bm; //TODO removed
@@ -3367,9 +3369,6 @@ void stable_pet_t::init_spells()
 {
   hunter_pet_t::init_spells();
 
-  if ( o() -> talents.bloody_frenzy.ok() )
-    actions.stomp = new actions::stomp_t( this );
-
   if ( o()->talents.thundering_hooves.ok() )
     actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves->effectN( 1 ).percent() );
 }
@@ -3388,7 +3387,7 @@ void hunter_main_pet_base_t::init_spells()
     if ( o() -> talents.kill_cleave.ok() )
       actions.kill_cleave = new actions::kill_cleave_t( this );
 
-    if ( !stable_pet_t::actions.stomp && ( o()->talents.stomp.ok() || o()->talents.bloody_frenzy.ok() ) )
+    if ( !stable_pet_t::actions.stomp && o()->talents.stomp.ok() )
       stable_pet_t::actions.stomp = new actions::stomp_t( this );
 
     if ( o()->talents.bloodshed.ok() )
@@ -5365,6 +5364,16 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.kill_command -> adjust( -p() -> talents.master_handler -> effectN( 1 ).time_value() );
     }
   }
+
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
+  {
+    double tt = hunter_ranged_attack_t::tick_time_pct_multiplier( s );
+
+    if ( p()->buffs.bloody_frenzy->up() )
+      tt *= 1 + p()->talents.bloody_frenzy_buff->effectN( 1 ).percent();
+
+    return tt;
+  }
 };
 
 // Laceration (Beast Mastery Talent) ==============================================
@@ -7270,8 +7279,8 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     adjust_precast_cooldown( precast_time );
 
-    if ( p() -> talents.scent_of_blood.ok() )
-      p() -> cooldowns.barbed_shot -> reset( true, as<int>( p() -> talents.scent_of_blood -> effectN( 1 ).base_value() ) );
+    if ( p()->talents.scent_of_blood.ok() )
+      p()->cooldowns.barbed_shot->reset( true, as<int>( p()->talents.scent_of_blood->effectN( 1 ).base_value() ) );
 
     if ( p()->talents.lead_from_the_front->ok() )
     {
@@ -7287,6 +7296,9 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       if ( p()->tier_set.tww_s2_bm_4pc.ok() )
         p()->pets.main->buffs.potent_mutagen->trigger();
     }
+
+    if ( p()->talents.bloody_frenzy.ok() )
+      p()->buffs.bloody_frenzy->trigger();
   }
 
   bool ready() override
@@ -7323,19 +7335,6 @@ struct call_of_the_wild_t: public hunter_spell_t
     double on_cast_reduction = percent_reduction * as<int>( data().effectN( 1 ).base_value() );
     p() -> cooldowns.kill_command -> adjust( -( p() -> cooldowns.kill_command -> duration * on_cast_reduction ) );
     p() -> cooldowns.barbed_shot -> adjust( -( p() -> cooldowns.barbed_shot -> duration * on_cast_reduction ) );
-
-    //2023-11-14 
-    //When casting Call of the Wild with Bloody Frenzy talented it will apply beast cleave to the player, the main pet, AC pet and all call of the wild pets
-    if ( p() -> talents.bloody_frenzy -> ok() )
-    {
-      timespan_t duration = p() -> buffs.call_of_the_wild -> remains();
-      p() -> buffs.beast_cleave -> trigger( duration ); 
-      for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-        pet -> buffs.beast_cleave -> trigger( duration );
-
-      for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
-        pet -> buffs.beast_cleave -> trigger( duration );
-    }
 
     p()->buffs.withering_fire->trigger( p()->buffs.call_of_the_wild->buff_duration() );
   }
@@ -8306,6 +8305,7 @@ void hunter_t::init_spells()
     talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
     talents.wild_instincts                    = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Instincts", HUNTER_BEAST_MASTERY );
     talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
+    talents.bloody_frenzy_buff                = talents.bloody_frenzy.ok() ? find_spell( 1265063 ) : spell_data_t::not_found();
     talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
 
     //TODO Removed
@@ -8916,29 +8916,6 @@ void hunter_t::create_buffs()
           double percent_reduction = talents.call_of_the_wild -> effectN( 3 ).base_value() / 100.0; 
           cooldowns.kill_command -> adjust( -( cooldowns.kill_command -> duration * percent_reduction ) );
           cooldowns.barbed_shot -> adjust( -( cooldowns.barbed_shot -> duration * percent_reduction ) );
-
-          if ( talents.bloody_frenzy.ok() )
-          {
-            //In-game this (re)application of beast_cleave happens multiple times a second, since the regular Beast Cleave buff is longer than the time between ticks, we can get by with just refreshing once per tick
-            //In 11.0 it has been changed to use the player's remaining duration of beast_cleave, instead of the remaining duration of call_of_the_wild - this change is to support covering_fire functionality
-            timespan_t duration = buffs.beast_cleave -> remains();
-            for ( auto pet : pets::active<pets::stable_pet_t>( pets.main, pets.animal_companion ) )
-            {
-              pet -> actions.stomp -> execute();
-              if ( duration > 0_ms )
-              {
-                pet -> buffs.beast_cleave -> trigger( duration );
-              }
-            }
-            for ( auto pet : ( pets.cotw_stable_pet.active_pets() ) )
-            {
-              pet -> actions.stomp -> execute();
-              if ( duration > 0_ms )
-              {
-                pet -> buffs.beast_cleave -> trigger( duration );
-              }
-            }
-          }
         } );
 
   buffs.beast_cleave = 
@@ -8978,6 +8955,10 @@ void hunter_t::create_buffs()
   buffs.natures_ally_3 = 
     make_buff( this, "natures_ally_3", talents.natures_ally_3_buff )
       -> set_default_value( talents.natures_ally_3_buff->effectN( 1 ).percent() );
+
+  buffs.bloody_frenzy = 
+    make_buff( this, "bloody_frenzy", talents.bloody_frenzy_buff )
+      -> set_default_value_from_effect( 1 );
 
   // Survival Tree
 
