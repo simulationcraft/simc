@@ -1944,6 +1944,16 @@ struct dire_beast_t final : public dire_critter_t
     if ( o()->talents.heart_of_the_pack.ok() )
       o()->buffs.heart_of_the_pack->trigger();
   }
+
+  double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
+  {
+    double dm = dire_critter_t::composite_owner_pet_damage_multiplier( s );
+
+    if ( o()->talents.dire_frenzy.ok() )
+      dm *= 1 + o()->talents.dire_frenzy->effectN( 2 ).percent();
+
+    return dm;
+  }
 };
 
 // =========================================================================
