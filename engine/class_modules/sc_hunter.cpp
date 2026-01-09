@@ -479,7 +479,6 @@ public:
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
-    buff_t* thrill_of_the_hunt;
     buff_t* bestial_wrath;
     buff_t* call_of_the_wild;
     buff_t* beast_cleave; 
@@ -1338,7 +1337,6 @@ public:
     damage_affected_by unnatural_causes;
 
     // Beast Mastery
-    bool thrill_of_the_hunt = false;
     damage_affected_by bestial_wrath;
     damage_affected_by master_of_beasts;
 
@@ -1384,7 +1382,6 @@ public:
     affected_by.trueshot_crit_damage_bonus = check_affected_by( this, p->talents.trueshot->effectN( 5 ) );
     affected_by.bullseye_crit_chance = check_affected_by( this, p->talents.bullseye->effectN( 1 ).trigger()->effectN( 1 ) );
 
-    affected_by.thrill_of_the_hunt = check_affected_by( this, p->talents.thrill_of_the_hunt->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bestial_wrath = parse_damage_affecting_aura( this, p->talents.bestial_wrath );
     affected_by.master_of_beasts = parse_damage_affecting_aura( this, p->mastery.master_of_beasts );
 
@@ -1571,9 +1568,6 @@ public:
   double composite_crit_chance() const override
   {
     double cc = ab::composite_crit_chance();
-
-    if ( affected_by.thrill_of_the_hunt )
-      cc += p()->buffs.thrill_of_the_hunt->check_stack_value();
 
     if ( affected_by.bullseye_crit_chance )
       cc += p()->buffs.bullseye->check_stack_value();
@@ -2175,7 +2169,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   struct buffs_t
   {
-    buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
   } buffs;
@@ -2187,12 +2180,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
   void create_buffs() override
   {
     stable_pet_t::create_buffs();
-
-    buffs.thrill_of_the_hunt =
-      make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
-        -> set_default_value_from_effect( 1 )
-        -> set_max_stack( std::max( 1, as<int>( o() -> talents.thrill_of_the_hunt -> effectN( 2 ).base_value() ) ) )
-        -> set_chance( o() -> talents.thrill_of_the_hunt.ok() );
 
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
@@ -2241,15 +2228,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
       m *= 1 + buffs.bestial_wrath -> check_value();
     
     return m;
-  }
-
-  double composite_melee_crit_chance() const override
-  {
-    double cc = stable_pet_t::composite_melee_crit_chance();
-
-    cc += buffs.thrill_of_the_hunt -> check_stack_value();
-
-    return cc;
   }
 
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
@@ -5376,8 +5354,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     else if ( sim -> debug )
       sim -> out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player -> name(), name() );
 
-    p() -> buffs.thrill_of_the_hunt -> trigger();
-
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_reduction );
 
     if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
@@ -5387,8 +5363,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     {
       if ( p() -> talents.stomp.ok() )
         pet -> stable_pet_t::actions.stomp -> execute();
-
-      pet -> buffs.thrill_of_the_hunt -> trigger();
     }
 
     auto pet = p()->pets.main;
@@ -8951,11 +8925,6 @@ void hunter_t::create_buffs()
             resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
           } );
   }
-
-  buffs.thrill_of_the_hunt =
-    make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
-      -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( talents.thrill_of_the_hunt );
 
   buffs.bestial_wrath =
     make_buff( this, "bestial_wrath", talents.bestial_wrath )
