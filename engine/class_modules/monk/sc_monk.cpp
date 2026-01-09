@@ -1392,6 +1392,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     base_t::execute();
 
+    if ( p()->buff.invoke_niuzao->check() )
+      p()->pets.niuzao.active_pet()->stomp->execute();
+
     if ( tier_tww2_opportunistic_strike )
       cooldown->adjust( -p()->tier.tww2.brm_4pc_opportunistic_strike->effectN( 1 ).time_value() );
 
@@ -1458,10 +1461,15 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     }
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    {
+      double missing_health_percentage = 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 );
+      double m = 1.0 + missing_health_percentage * p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent();
+
       p()->find_stagger( "Stagger" )
           ->purify_flat(
-              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() * m,
               "staggering_strikes" );
+    }
 
     if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
     {
@@ -3272,21 +3280,16 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
 
-    if ( p()->buff.invoke_niuzao->check() )
-      p()->pets.niuzao.active_pet()->stomp->execute();
+    p()->buff.ox_stance->trigger();
+    p()->buff.aspect_of_harmony.trigger_flat(
+        p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
+        ( 1.0 + p()->composite_damage_versatility() ) *
+        p()->composite_total_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) );
 
-    auto stacks = as<unsigned>( p()->find_stagger( "Stagger" )->level_index() );
-    if ( stacks > 0 )
-    {
-      p()->buff.ox_stance->trigger( stacks );
-      p()->buff.aspect_of_harmony.trigger_flat(
-          stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
-          ( 1.0 + p()->composite_damage_versatility() ) *
-          p()->composite_total_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) );
-    }
-
+    double pool_size      = p()->find_stagger( "Stagger" )->pool_size();
     double purify_percent = data().effectN( 1 ).percent();
-    double cleared        = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
+    double purify_amount  = std::max(pool_size * purify_percent, p()->max_health() * data().effectN( 2 ).percent());
+    double cleared        = p()->find_stagger( "Stagger" )->purify_flat( purify_amount, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -3295,13 +3298,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       gai_plins->target                               = p();
       gai_plins->execute();
     }
-
-    if ( p()->buff.blackout_combo->up() )
-    {
-      timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->find_stagger( "Stagger" )->delay_tick( delay );
-    }
-    p()->buff.blackout_combo->expire();
   }
 };
 
