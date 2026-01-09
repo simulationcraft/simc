@@ -2298,19 +2298,19 @@ public:
     // Menacing Rush
     if ( affected_by.menacing_rush && p()->buffs.adrenaline_rush->check() )
     {
-      m *= p()->talent.outlaw.adrenaline_rush->effectN( 4 ).percent();
+      m *= 1.0 + p()->talent.outlaw.adrenaline_rush->effectN( 4 ).percent();
     }
 
     if ( affected_by.menacing_rush_label && p()->buffs.adrenaline_rush->check() )
     {
-      m *= p()->talent.outlaw.adrenaline_rush->effectN( 5 ).percent();
+      m *= 1.0 + p()->talent.outlaw.adrenaline_rush->effectN( 5 ).percent();
     }
 
     // Summarily Dispatched
     if ( affected_by.summarily_dispatched )
     {
-      m *= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).percent() *
-        ( 1.0 + ( p()->buffs.between_the_eyes->check() * p()->spec.between_the_eyes->effectN( 4 ).percent() ) );
+      m *= 1.0 + ( p()->talent.outlaw.summarily_dispatched->effectN( 2 ).percent() * 
+        ( 1.0 + p()->buffs.between_the_eyes->up() * p()->spec.between_the_eyes->effectN( 4 ).percent() ) );
     }
 
     // Dark Shadow
@@ -7982,7 +7982,7 @@ void actions::rogue_action_t<Base>::trigger_keep_it_rolling()
   if ( !p()->talent.outlaw.keep_it_rolling->ok() )
     return;
 
-  timespan_t extend_duration = timespan_t::from_seconds( p()->talent.outlaw.keep_it_rolling->effectN( 1 ).base_value() );
+  timespan_t extend_duration = timespan_t::from_millis( p()->talent.outlaw.keep_it_rolling->effectN( 1 ).base_value() );
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->extend_secondary_buffs( extend_duration );
 }
 
@@ -9803,7 +9803,7 @@ void rogue_t::init_spells()
   register_passive_effect_override( talent.rogue.alacrity->effectN( 1 ), talent.rogue.alacrity->effectN( 1 ).base_value() / 10 );
 
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
-  register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( false ).enable( 2 ) );
+  register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
 
   // Corrupt the blood effects are exclusive per spec
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
