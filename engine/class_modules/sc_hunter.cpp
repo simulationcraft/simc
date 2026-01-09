@@ -3154,8 +3154,6 @@ struct bloodshed_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   bloodshed_t( hunter_main_pet_base_t* p ) : hunter_pet_attack_t( "bloodshed", p, p->o()->talents.bloodshed_dot )
   {
     background = true;
-    // Seems to be ~10% based on a log of 2472 Bloodshed ticks giving 258 Dire Beast summons. Will trigger without Dire Beast talented.
-    dire_beast_chance = 0.1;
   }
 };
 
@@ -3337,7 +3335,7 @@ bear_td_t::bear_td_t( player_t* target, bear_t* p ) : actor_target_data_t( targe
 
 hunter_main_pet_base_td_t::hunter_main_pet_base_td_t( player_t* target, hunter_main_pet_base_t* p ) : actor_target_data_t( target, p ), dots()
 {
-  dots.bloodshed = target -> get_dot( "bloodshed", p );
+  dots.bloodshed = target->get_dot( "bloodshed", p );
 }
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ) : hunter_main_pet_base_td_t( target, p ), debuffs()
@@ -7299,6 +7297,12 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     if ( p()->talents.bloody_frenzy.ok() )
       p()->buffs.bloody_frenzy->trigger();
+
+    if ( p()->talents.bloodshed.ok() )
+    {
+      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+        pet->actions.bloodshed->execute_on_target( target );
+    }
   }
 
   bool ready() override
@@ -7337,41 +7341,6 @@ struct call_of_the_wild_t: public hunter_spell_t
     p() -> cooldowns.barbed_shot -> adjust( -( p() -> cooldowns.barbed_shot -> duration * on_cast_reduction ) );
 
     p()->buffs.withering_fire->trigger( p()->buffs.call_of_the_wild->buff_duration() );
-  }
-};
-
-// Bloodshed ================================================================
-
-struct bloodshed_t : hunter_spell_t
-{
-  bloodshed_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "bloodshed", p, p -> talents.bloodshed )
-  {
-    parse_options( options_str );
-
-    may_hit = false;
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
-      pet->actions.bloodshed->execute_on_target( target );      
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    return p() -> pets.main &&
-           p() -> pets.main -> hunter_main_pet_base_t::actions.bloodshed -> target_ready( candidate_target ) &&
-           hunter_spell_t::target_ready( candidate_target );
-  }
-
-  bool ready() override
-  {
-    return p() -> pets.main &&
-           p() -> pets.main -> hunter_main_pet_base_t::actions.bloodshed -> ready() &&
-           hunter_spell_t::ready();
   }
 };
 
@@ -8078,7 +8047,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
-  if ( name == "bloodshed"             ) return new              bloodshed_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new       call_of_the_wild_t( this, options_str );
@@ -8765,7 +8733,7 @@ void hunter_t::create_actions()
 
   player_t::create_actions();
 
-  if ( talents.dire_beast.ok() || talents.bloodshed.ok() )
+  if ( talents.dire_beast.ok() )
     actions.dire_beast = new spells::dire_beast_summon_t( this );
 
   if ( talents.laceration.ok() )
