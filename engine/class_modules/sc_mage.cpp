@@ -6914,7 +6914,10 @@ void mage_t::trigger_spellfire_sphere( specialization_e spec, bool background )
   
   // https://www.desmos.com/calculator/7akzzy14fg;
   // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
+  // Bug: Fire's total rate is 12%, not the tooltip's 20% -- Sphere's effectN1 in-game is (probably?) unmodified by 137019's effectN7.
   double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
+  if ( bugs && spec == MAGE_FIRE )
+    proc_chance -= find_spell( 137019 )->effectN( 7 ).percent();
   proc_chance = ( -0.202381 * ( proc_chance * proc_chance ) ) + ( 0.550833 * proc_chance ) - 0.0481071;
 
   state.sphere_blp_count++;
