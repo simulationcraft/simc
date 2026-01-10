@@ -358,7 +358,6 @@ struct hunter_td_t: public actor_target_data_t
   struct debuffs_t
   {
     buff_t* cull_the_herd;
-    buff_t* wild_instincts;
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
@@ -596,7 +595,6 @@ public:
   {
     proc_t* snakeskin_quiver;
     proc_t* wild_call;
-    proc_t* wild_instincts;
     proc_t* dire_command;
     proc_t* bear_without_lftf;
 
@@ -1144,6 +1142,7 @@ public:
     action_t* phantom_pain = nullptr;
 
     action_t* stampede = nullptr;
+    action_t* wild_instincts = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -2826,12 +2825,6 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
       p()->actions.kill_cleave->execute_on_target( s->target, amount );
     }
 
-    auto pet = o() -> pets.main;
-    if ( pet == p() && o() -> talents.wild_instincts.ok() && o() -> buffs.call_of_the_wild -> check() )
-    {
-      o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
-    }
-
     if ( phantom_pain.replicate_amount > 0 )
     {
       int target_count = 0;
@@ -3155,6 +3148,30 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
     aoe = -1;
     base_dd_multiplier *= effectiveness;
   };
+
+  void execute() override
+  {
+    hunter_pet_attack_t::execute();
+
+    if ( o()->talents.wild_instincts.ok() && p() == o()->pets.main )
+    {
+      /* Prioritise targets without Barbed Shot ticking.
+         If every target is debuffed, hit the main target. */
+      auto tl = target_list();
+      range::erase_remove(
+          tl, [ this ]( player_t* t ) { return t == target || o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
+      target_cache.is_valid = false;
+
+      if ( !tl.empty() )
+      {
+        o()->actions.wild_instincts->execute_on_target( tl.front() );
+      }
+      else
+      {
+        o()->actions.wild_instincts->execute_on_target( target );
+      }
+    }
+  }
 };
 
 // Bloodshed ===============================================================
@@ -5285,45 +5302,11 @@ struct cobra_shot_snakeskin_quiver_t : public cobra_shot_base_t
 
 // Barbed Shot ===============================================================
 
-struct barbed_shot_t: public hunter_ranged_attack_t
+struct barbed_shot_base_t : public hunter_ranged_attack_t
 {
-  struct poisoned_barbs_t final : hunter_ranged_attack_t
+  barbed_shot_base_t( hunter_t* p, util::string_view n, const spell_data_t* s ) : hunter_ranged_attack_t( n, p, s )
   {
-    serpent_sting_t* poisoned_barbs_serpent_sting = nullptr;
-
-    poisoned_barbs_t( util::string_view, hunter_t* p ) : hunter_ranged_attack_t( "poisoned_barbs", p, p->find_spell( 1217549 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-      reduced_aoe_targets = p->talents.poisoned_barbs->effectN( 2 ).base_value();
-
-      poisoned_barbs_serpent_sting = p->get_background_action<serpent_sting_t>( "serpent_sting" );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_ranged_attack_t::impact( s );
-
-      poisoned_barbs_serpent_sting->execute_on_target( s->target );
-    }
-  };
-
-  timespan_t bestial_wrath_reduction;
-  action_t* poisoned_barbs = nullptr;
-
-  barbed_shot_t( hunter_t* p, util::string_view options_str ) :
-    hunter_ranged_attack_t( "barbed_shot", p, p -> talents.barbed_shot )
-  {
-    parse_options(options_str);
-
-    bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
-
     tick_zero = true;
-
-    p -> actions.barbed_shot = this;
-
-    if ( p->talents.poisoned_barbs.ok() )
-      poisoned_barbs = p->get_background_action<poisoned_barbs_t>( "poisoned_barbs" );
   }
 
   void execute() override
@@ -5331,22 +5314,11 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     // trigger regen buff
-    auto it = range::find_if( p() -> buffs.barbed_shot, []( buff_t* b ) { return !b -> check(); } );
-    if ( it != p() -> buffs.barbed_shot.end() )
-      ( *it ) -> trigger();
-    else if ( sim -> debug )
-      sim -> out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player -> name(), name() );
-
-    p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_reduction );
-
-    if ( p()->talents.war_orders.ok() )
-      p()->cooldowns.kill_command->adjust( -p()->talents.war_orders->effectN( 3 ).time_value() );
-
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-    {
-      if ( p() -> talents.stomp.ok() )
-        pet -> stable_pet_t::actions.stomp -> execute();
-    }
+    auto it = range::find_if( p()->buffs.barbed_shot, []( buff_t* b ) { return !b->check(); } );
+    if ( it != p()->buffs.barbed_shot.end() )
+      ( *it )->trigger();
+    else if ( sim->debug )
+      sim->out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player->name(), name() );
 
     auto pet = p()->pets.main;
     if ( pet && p()->rng().roll( p()->talents.brutal_companion->effectN( 1 ).percent() ) )
@@ -5355,22 +5327,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     p()->trigger_natures_ally_3();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( poisoned_barbs && rng().roll( p()->talents.poisoned_barbs->effectN( 1 ).percent() ) )
-      poisoned_barbs->execute_on_target( s->target );
-  }
-
   void tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::tick( d );
 
-    if ( p() -> talents.master_handler -> ok() )
-    {
-      p() -> cooldowns.kill_command -> adjust( -p() -> talents.master_handler -> effectN( 1 ).time_value() );
-    }
+    if ( p()->talents.master_handler->ok() )
+      p()->cooldowns.kill_command->adjust( -p()->talents.master_handler->effectN( 1 ).time_value() );
   }
 
   double tick_time_pct_multiplier( const action_state_t* s ) const override
@@ -5381,6 +5343,50 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       tt *= 1 + p()->talents.bloody_frenzy_buff->effectN( 1 ).percent();
 
     return tt;
+  }
+
+  /* Rolling periodic behaviour not working correctly 2026-01-10
+     TODO reconfirm before launch */
+  dot_t* get_dot( player_t* t ) override
+  {
+    if ( !t )
+      t = target;
+    if ( !t )
+      return nullptr;
+
+    return p()->get_target_data( t )->dots.barbed_shot;
+  }
+};
+
+struct barbed_shot_t : public barbed_shot_base_t
+{
+  barbed_shot_t( hunter_t* p, util::string_view options_str )
+    : barbed_shot_base_t( p, "barbed_shot", p->talents.barbed_shot )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    barbed_shot_base_t::execute();
+
+    if ( p()->talents.war_orders.ok() )
+      p()->cooldowns.kill_command->adjust( -p()->talents.war_orders->effectN( 3 ).time_value() );
+
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+    {
+      if ( p()->talents.stomp.ok() )
+        pet->stable_pet_t::actions.stomp->execute();
+    }
+  }
+};
+
+struct barbed_shot_wild_instincts_t : public barbed_shot_base_t
+{
+  barbed_shot_wild_instincts_t( hunter_t* p )
+    : barbed_shot_base_t( p, "barbed_shot_wild_instincts", p->talents.barbed_shot )
+  {
+    background = dual = true;
   }
 };
 
@@ -7895,9 +7901,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   cooldowns.overwatch = t->get_cooldown( "overwatch" );
   cooldowns.overwatch->duration = timespan_t::from_seconds( p->talents.overwatch->effectN( 2 ).base_value() );
 
-  debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
-    -> set_default_value_from_effect( 1 );
-
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
     -> disable_ticking( true );
@@ -8775,6 +8778,9 @@ void hunter_t::create_actions()
 
   if ( tier_set.tww_s3_pack_leader_4pc.ok() )
     actions.stampede = new attacks::stampede_t( this );
+
+  if ( talents.wild_instincts.ok() )
+    actions.wild_instincts = new attacks::barbed_shot_wild_instincts_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -9774,9 +9780,6 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   if ( td->debuffs.lunar_storm->check() )
     m *= 1 + talents.lunar_storm_periodic_spell->effectN( 2 ).trigger()->effectN( guardian ? 3 : 2 ).percent();
-
-  if ( !guardian )
-    m *= 1 + td->debuffs.wild_instincts->check_stack_value();
 
   return m;
 }
