@@ -7698,7 +7698,7 @@ void warrior_t::create_buffs()
   buff.executioners_wrath = make_buff( this, "executioners_wrath", talents.fury.executioners_wrath->effectN( 2 ).trigger() );
 
   buff.surge_of_adrenaline = make_buff( this, "surge_of_adrenaline", find_spell( 1265560 ) )
-                                          ->set_trigger_spell( talents.fury.surge_of_adrenaline );
+                              ->set_chance( 1.0 );
 
   buff.bloodborne = make_buff( this, "bloodborne", talents.fury.bloodborne->effectN( 1 ).trigger() )
                                         ->set_trigger_spell( talents.fury.bloodborne );
