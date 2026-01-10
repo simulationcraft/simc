@@ -2395,6 +2395,8 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
+      // TODO: Pyromaniac increments Sphere's BLP (and thus can proc Spheres w/ the cap), 
+      // but it hasn't been tested whether it can roll the random chance.
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
