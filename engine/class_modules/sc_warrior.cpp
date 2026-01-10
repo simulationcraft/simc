@@ -1162,6 +1162,11 @@ public:
     initialized = true;
   }
 
+  std::string full_name() const
+  {
+    std::string n = ab::data().name_cstr();
+    return n.empty() ? ab::name_str : n;
+  }
 
   warrior_t* p()
   {
@@ -1402,6 +1407,62 @@ public:
         p()->cooldown.shield_wall->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
+  }
+
+  void set_replacement_action( action_t* a, buff_t* buff = nullptr )
+  {
+    if ( !a )
+    {
+      p()->sim->errorf( "%s Attempting to set null replacement action for %s. Ignoring.\n", p()->name(),
+                        full_name().c_str() );
+      return;
+    }
+
+    this->replacement_action = a;
+
+    if ( buff )
+    {
+      this->replacement_action_buff = buff;
+      this->add_child( a );
+    }
+    else
+      this->always_replace = true;
+  }
+
+  void set_replacement_action( int id, buff_t* buff = nullptr )
+  {
+    action_t* a = find_action_by_id( id );
+    if ( !a )
+    {
+      p()->sim->errorf(
+          "%s Attempting to set replacement action by id %d for %s, but no such action exists. Ignoring.\n",
+          p()->name(), id, full_name().c_str() );
+      return;
+    }
+    set_replacement_action( a, buff );
+  }
+
+  void set_replacement_action( std::string_view name, buff_t* buff = nullptr )
+  {
+    action_t* a = p()->find_action( name );
+    if ( !a )
+    {
+      p()->sim->errorf(
+          "%s Attempting to set replacement action by name '%s' for %s, but no such action exists. Ignoring.\n",
+          p()->name(), name.data(), full_name().c_str() );
+      return;
+    }
+    set_replacement_action( a, buff );
+  }
+
+  action_t* find_action_by_id( int id )
+  {
+    for ( auto& a : p()->action_list )
+    {
+      if ( a->data().id() == id )
+        return a.get();
+    }
+    return nullptr;
   }
 
   // Delayed Execute Event ====================================================
