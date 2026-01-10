@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.64914
-static constexpr std::array<spelltext_data_t, 28651> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28654> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24780,6 +24780,9 @@ static constexpr std::array<spelltext_data_t, 28651> __spelltext_data { {
   { 1214909, "Roll the dice of fate, providing a combat enhancement of random power for $d.\r\n\r\n1 set or better: Add $1214937s1% increased chance to gain Opportunity.\r\n\r\n2 sets or better: Add increased combo point generation.\r\n\r\n3 sets or better: Add $1214937s4% bonus to Restless Blades' effect.\r\n\r\nJackpot: Add $1214937s5% increased critical strike chance.", "Gained a random combat enhancement.", 0 },
   { 1214930, "$@spelldesc467034", "$@spelldesc467034", 0 },
   { 1214932, "$@spelldesc467034", 0, 0 },
+  { 1214933, "$@spelldesc1214774", "Sinister Strike has a $w1% increased chance to strike twice and grant Opportunity.", 0 },
+  { 1214934, "$@spelldesc1214774", "Sinister Strike has a $w1% increased chance to strike twice and grant Opportunity.\r\n\r\nSinister Strike and Ambush generate $w2 additional combo $Lpoint:points; and deal $w3% increased damage.", 0 },
+  { 1214935, "$@spelldesc1214774", "Sinister Strike has a $w1% increased chance to strike twice and grant Opportunity.\r\n\r\nSinister Strike and Ambush generate $w2 additional combo $Lpoint:points; and deal $w3% increased damage.\r\n\r\nRestless Blades cooldown reduction increased by $w4%.", 0 },
   { 1214937, "$@spelldesc1214774", "Sinister Strike has a $w1% increased chance to strike twice and grant Opportunity.\r\n\r\nSinister Strike and Ambush generate $w2 additional combo $Lpoint:points; and deal $w3% increased damage.\r\n\r\nRestless Blades cooldown reduction increased by $w4%.\r\n\r\nCritical strike chance increased by $w5%.", 0 },
   { 1214941, "Launch a random number of deadly grenades at your enemies, each dealing ${$1214939s1*$<rolemult>} Fire damage split between nearby targets caught in the blast.", 0, 0 },
   { 1214972, "$@spelldesc467034", 0, 0 },

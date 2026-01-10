@@ -10924,7 +10924,7 @@ Mage
 1222947 *Aether Fragment
 1223522  Arcane Soul
 1223797  Intuition
-1223798  Intuition
+1223798 *Intuition
 1223799  Intuition
 1223800 *Arcane Rebound
 1223801  Arcane Rebound
@@ -14376,7 +14376,7 @@ Paladin
 383185  *Exorcism
 383208  *Exorcism
 383228   Swift Justice
-383254  *Improved Crusader Strike
+383254   Improved Crusader Strike
 383259  *Swift Crusader
 383263  *Blade of Condemnation
 383271  *Highlord's Judgment

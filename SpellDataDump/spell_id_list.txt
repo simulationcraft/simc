@@ -18542,9 +18542,9 @@ Rogue
 1214146 *Vanish
 1214734 *Cosmic Empowerment
 1214909  Roll the Bones
-1214933 *One of a Kind
-1214934 *Double Trouble
-1214935 *Triple Threat
+1214933  One of a Kind
+1214934  Double Trouble
+1214935  Triple Threat
 1214937  Jackpot
 1215719  Rogue Assassination 11.1 Class Set 2pc
 1215720  Rogue Outlaw 11.1 Class Set 2pc
