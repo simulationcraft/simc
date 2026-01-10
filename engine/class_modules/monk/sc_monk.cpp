@@ -2941,7 +2941,8 @@ struct crackling_jade_lightning_t : public monk_spell_t
     {
       auto &tl = target_list();
       range::erase_remove( tl, [ this ]( const auto &t ) { return t == target; } );
-      for ( size_t i = 0; i < p()->talent.brewmaster.jade_flash->effectN( 2 ).base_value() - 1; ++i )
+      size_t count = std::min( tl.size(), as<size_t>( p()->talent.brewmaster.jade_flash->effectN( 2 ).base_value() ) );
+      for ( size_t i = 0; i < count; ++i )
         aoe_dot->execute_on_target( tl[ i ] );
     }
   }
