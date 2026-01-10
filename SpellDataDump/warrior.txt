@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64772 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.65299 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical

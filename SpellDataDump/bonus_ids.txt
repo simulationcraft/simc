@@ -1,4 +1,4 @@
-SimulationCraft 1125-01 for World of Warcraft 11.2.7.64772 Live
+SimulationCraft 1125-01 for World of Warcraft 11.2.7.65299 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
@@ -6114,6 +6114,7 @@ bonus_id={ 11075 }, quality={ common }, effects={ Lightning Bulwark (id=442371, 
 bonus_id={ 11076 }, quality={ uncommon }, effects={ Lightning Bulwark (id=442404, index=0, type=equip) }
 bonus_id={ 11077 }, quality={ rare }, effects={ Lightning Bulwark (id=442407, index=0, type=equip) }
 bonus_id={ 11078 }, quality={ epic }, effects={ Lightning Bulwark (id=442411, index=0, type=equip) }
+bonus_id={ 11083 }, ilevel={ 5 @plvl 1 - 366 @plvl 70 }
 bonus_id={ 11085 }, ilevel={ 10 @plvl 1 - 371 @plvl 70 }
 bonus_id={ 11096 }, quality={ common }, effects={ Storm Archon (id=442445, index=0, type=equip) }
 bonus_id={ 11097 }, quality={ uncommon }, effects={ Storm Archon (id=442819, index=0, type=equip) }
