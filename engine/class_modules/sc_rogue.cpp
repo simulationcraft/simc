@@ -7993,6 +7993,7 @@ void actions::rogue_action_t<Base>::trigger_keep_it_rolling()
 
   timespan_t extend_duration = timespan_t::from_millis( p()->talent.outlaw.keep_it_rolling->effectN( 1 ).base_value() );
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->extend_secondary_buffs( extend_duration );
+  // Extend container buff so buffs.roll_the_bones->check_value() works during the extended secondary buffs
   p()->buffs.roll_the_bones->extend_duration( p(), extend_duration );
 }
 
