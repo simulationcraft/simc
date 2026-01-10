@@ -2214,6 +2214,9 @@ struct auto_attack_t : public monk_melee_attack_t
         base_hit -= 0.19;
 
       parent->add_child( this );
+
+      if ( const auto &effect = player->talent.monk.tiger_fang->effectN( 1 ); effect.ok() )
+        add_parse_entry( crit_chance_effects ).set_value( effect.percent() ).set_eff( &effect );
     }
 
     void reset() override
@@ -2923,43 +2926,23 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     min_gcd = timespan_t::from_millis( 750 );
 
-    // TODO: Implement Jade Flash
-    // if ( player->talent.mistweaver.jade_empowerment->ok() )
-    // {
-    //   aoe_dot = new aoe_dot_t( player );
-    //   add_child( aoe_dot );
-    // }
+    if ( player->talent.brewmaster.jade_flash->ok() )
+    {
+      aoe_dot = new aoe_dot_t( player );
+      add_child( aoe_dot );
+    }
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    // TODO: Implement Jade Flash
-    if ( false )
+    if ( aoe_dot )
     {
-      const auto &tl = target_list();
-      int count      = 0;
-
-      int cleave_targets = 0;
-      // if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
-      //   cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
-
-      for ( auto &t : tl )
-      {
-        // Don't apply AoE version to primary target
-        if ( t == target )
-          continue;
-
-        if ( count >= cleave_targets )
-          break;
-
-        if ( count < cleave_targets )
-        {
-          aoe_dot->execute_on_target( t );
-          count++;
-        }
-      }
+      auto &tl = target_list();
+      range::erase_remove( tl, [ this ]( const auto &t ) { return t == target; } );
+      for ( size_t i = 0; i < p()->talent.brewmaster.jade_flash->effectN( 2 ).base_value() - 1; ++i )
+        aoe_dot->execute_on_target( tl[ i ] );
     }
   }
 
@@ -2967,19 +2950,14 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    // TODO: Implement Jade Flash
-    if ( false )
-      // delay expiration so it occurs after final tick of cjl aoe
+    // delay expiration so it occurs after final tick of cjl aoe
+    if ( aoe_dot )
       make_event<events::delayed_cb_event_t>( *sim, p(), 1_ms, [ & ]() {
         // buff expire
         const auto &tl = target_list();
         for ( const auto &t : tl )
           get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
       } );
-    else
-    {
-    }
-    // buff expire
 
     // Reset swing timer
     if ( player->main_hand_attack )
