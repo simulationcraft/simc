@@ -4271,10 +4271,9 @@ struct arcane_shot_t : public arcane_shot_base_t
   {
       double cc = arcane_shot_base_t::composite_crit_chance();
 
-      //TODO confirm if crit bonus stacks with Windrunner Quiver
-      if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
+      if ( p()->talents.critical_precision.ok() )
       {
-        cc += p()->talents.critical_precision->effectN( 1 ).percent();
+        cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
       }
 
       return cc;
@@ -5464,6 +5463,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     // Delay this since secondary Aimed Shots can cleave with a Trick Shots from Volley, but will not be affected by a Trick Shots 
     // from a queued Multi-Shot that might be executed before they are since they are delayed 10 ms.
+    // TODO reconfirm before launch
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
       make_event( p()->sim, 10_ms, [ this ]() { p()->buffs.trick_shots->trigger(); } );
 
@@ -6013,8 +6013,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
       // Spell data for buff is invalid and doesn't work as of 2026-01-04 so applying manually
       // TODO reconfirm before launch
-      if ( p()->buffs.focus_fire->check() )
-        m *= 1.0 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
+      if ( p()->buffs.focus_fire->up() )
+        m *= 1 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
 
       return m;
     }
@@ -8858,7 +8858,8 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.focus_fire = 
-    make_buff( this, "focus_fire", talents.focus_fire_buff );
+    make_buff( this, "focus_fire", talents.focus_fire_buff )
+      -> set_default_value_from_effect( 1 );
 
   // Beast Mastery Tree
 
