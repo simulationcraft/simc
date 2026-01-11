@@ -462,7 +462,6 @@ public:
 
     // Marksmanship Tree
     buff_t* precise_shots;
-    buff_t* streamline;
     buff_t* trick_shots;
     buff_t* lock_and_load;
     buff_t* in_the_rhythm;
@@ -846,8 +845,6 @@ public:
     spell_data_ptr_t shrapnel_shot;
     spell_data_ptr_t unload; //TODO Not implemented
 
-    spell_data_ptr_t streamline; //TODO Removed
-    spell_data_ptr_t streamline_buff; //TODO Removed
     spell_data_ptr_t ammo_conservation; //TODO Removed 
     spell_data_ptr_t improved_deathblow; //TODO Removed
     spell_data_ptr_t moving_target; //TODO Removed
@@ -858,7 +855,6 @@ public:
     spell_data_ptr_t razor_fragments_bleed; //TODO Removed
     spell_data_ptr_t razor_fragments_buff; //TODO Removed
     spell_data_ptr_t magnetic_gunpowder; //TODO Removed
-    spell_data_ptr_t improved_streamline; //TODO Removed
     spell_data_ptr_t ohnahran_winds; //TODO Removed
     spell_data_ptr_t ohnahran_winds_debuff; //TODO Removed
     spell_data_ptr_t kill_zone; //TODO Removed
@@ -1146,7 +1142,6 @@ public:
 
   struct {
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
-    timespan_t tensile_bowstring_extension = 0_s;
     event_t* current_volley = nullptr;
     event_t* precision_detonation_expiry = nullptr;
     timespan_t sentinel_watch_reduction = 0_s;
@@ -3671,20 +3666,11 @@ void hunter_t::consume_precise_shots()
     if ( talents.moving_target.ok() )
     {
       buffs.moving_target->trigger();
-      buffs.streamline->trigger( buffs.precise_shots->check() );
     }
 
     cooldowns.explosive_shot->adjust( -talents.magnetic_gunpowder->effectN( 1 ).time_value() * buffs.precise_shots->check() );
 
     cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
-
-    if ( talents.tensile_bowstring.ok() && buffs.trueshot->up() && state.tensile_bowstring_extension < talents.tensile_bowstring->effectN( 3 ).time_value() )
-    {
-      timespan_t extension = talents.tensile_bowstring->effectN( 1 ).time_value() * buffs.precise_shots->check();
-      buffs.trueshot->extend_duration( this, extension );
-      buffs.withering_fire->extend_duration( this, extension );
-      state.tensile_bowstring_extension += extension;
-    }
   }
 
   buffs.precise_shots->expire();
@@ -4502,9 +4488,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       p()->buffs.lock_and_load->trigger();
       p()->cooldowns.aimed_shot->reset( false );
     }
-
-    if ( p()->talents.precision_detonation->ok() )
-      p()->buffs.streamline->trigger();
   }
 
   double cost_pct_multiplier() const override
@@ -5875,12 +5858,10 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     double c = aimed_shot_base_t::cost_pct_multiplier();
 
-    double streamline_mod = p()->buffs.streamline->check() * p()->talents.streamline_buff->effectN( 2 ).percent();
-
+    /* Spelldata percent is not negative as of 2026-01-11 
+       TODO reconfirm before launch */
     if ( p()->buffs.trueshot->check() )
-      streamline_mod *= 1 + p()->talents.tensile_bowstring->effectN( 2 ).percent();
-
-    c *= 1 + streamline_mod;
+      c *= 1 - p()->talents.tensile_bowstring->effectN( 2 ).percent();
 
     return c;
   }
@@ -5892,12 +5873,10 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     auto et = aimed_shot_base_t::execute_time_pct_multiplier();
 
-    double streamline_mod = p()->buffs.streamline->check_stack_value();
-    
+    /* Spelldata percent is not negative as of 2026-01-11
+       TODO reconfirm before launch */
     if ( p()->buffs.trueshot->check() )
-      streamline_mod *= 1 + p()->talents.tensile_bowstring->effectN( 2 ).percent();
-
-    et *= 1 + streamline_mod;
+      et *= 1 - p()->talents.tensile_bowstring->effectN( 1 ).percent();
 
     return et;
   }
@@ -5912,10 +5891,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   void execute() override
   {
     aimed_shot_base_t::execute();
-
-    // Lock and Load completely supresses consumption of Streamline
-    if ( !p()->buffs.lock_and_load->check() )
-      p()->buffs.streamline->expire();
 
     if ( rng().roll( surging_shots.chance ) )
     {
@@ -6092,8 +6067,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    p()->buffs.streamline->trigger();
 
     if ( rng().roll( deathblow.chance ) )
       p()->trigger_deathblow();
@@ -8378,8 +8351,6 @@ void hunter_t::init_spells()
     talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
 
     //TODO Remove
-    talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
-    talents.streamline_buff                   = talents.streamline.ok() ? find_spell( 342076 ) : spell_data_t::not_found();
     talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
     talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
     talents.moving_target                     = find_talent_spell( talent_tree::SPECIALIZATION, "Moving Target", HUNTER_MARKSMANSHIP );
@@ -8390,7 +8361,6 @@ void hunter_t::init_spells()
     talents.razor_fragments_bleed             = talents.razor_fragments.ok() ? find_spell( 385638 ) : spell_data_t::not_found();
     talents.razor_fragments_buff              = talents.razor_fragments.ok() ? find_spell( 388998 ) : spell_data_t::not_found();
     talents.magnetic_gunpowder                = find_talent_spell( talent_tree::SPECIALIZATION, "Magnetic Gunpowder", HUNTER_MARKSMANSHIP );
-    talents.improved_streamline               = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Streamline", HUNTER_MARKSMANSHIP );
     talents.ohnahran_winds                    = find_talent_spell( talent_tree::SPECIALIZATION, "Ohn'ahran Winds", HUNTER_MARKSMANSHIP );
     talents.ohnahran_winds_debuff             = talents.ohnahran_winds.ok() ? find_spell( 1215057 ) : spell_data_t::not_found();
     talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
@@ -8789,10 +8759,6 @@ void hunter_t::create_buffs()
     make_buff( this, "precise_shots", talents.precise_shots_buff )
       ->set_default_value_from_effect( 1 );
 
-  buffs.streamline =
-    make_buff( this, "streamline", talents.streamline_buff )
-      ->set_default_value( talents.streamline_buff->effectN( 1 ).percent() );
-
   buffs.trick_shots =
     make_buff( this, "trick_shots", talents.trick_shots_buff );
   
@@ -8812,8 +8778,6 @@ void hunter_t::create_buffs()
         [ this ]( buff_t*, int, int cur ) {
           cooldowns.aimed_shot->adjust_recharge_multiplier();
           cooldowns.rapid_fire->adjust_recharge_multiplier();
-          if ( cur == 0 ) 
-            state.tensile_bowstring_extension = 0_s;
         } );
 
   buffs.moving_target =
