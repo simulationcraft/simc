@@ -1108,17 +1108,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     trigger_gcd       = timespan_t::zero();
   }
 
-  void init_finished() override
-  {
-    monk_melee_attack_t::init_finished();
-    action_t *bok = player->find_action( "blackout_kick" );
-    if ( bok )
-    {
-      attack_power_mod = bok->attack_power_mod;
-      bok->add_child( this );
-    }
-  }
-
   double composite_target_multiplier( player_t *target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
@@ -1195,10 +1184,8 @@ struct charred_passions_t : base_action_t
 
     chp_cooldown = player->get_cooldown( "charred_passions" );
     chp_damage   = new damage_t( player, base_action_t::name_str );
-    // TODO: Have a more resilient way to re-map stats objects.
-    // Issue: When SCK tick stats replace the action stats of SCK channel, adding
-    // a child of SCK tick breaks reporting.
-    // base_action_t::add_child( damage );
+
+    base_action_t::add_child( chp_damage );
   }
 
   void execute() override
@@ -1228,8 +1215,31 @@ struct charred_passions_t : base_action_t
   }
 };
 
+template <typename TBase>
+struct base_blackout_kick_t : TBase
+{
+  base_blackout_kick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    : TBase( player, name, spell_data )
+  {
+    // TODO: check this
+    ap_type    = attack_power_type::WEAPON_BOTH;
+    ww_mastery = true;
+
+    if ( const auto &effect = p->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target != target; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_note( "Secondary Target Reduction" )
+          .set_eff( &effect );
+  }
+};
+
 struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
 {
+  struct teachings_of_the_monastery_t : monk_melee_attack_t
+  {
+  };
+
   blackout_kick_totm_proc_t *bok_totm_proc;
 
   blackout_kick_t( monk_t *p, std::string_view options_str )
@@ -1244,33 +1254,15 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    if ( p->talent.brewmaster.charred_passions->ok() )
-      add_child( base_t::chp_damage );
-
     if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
     {
       bok_totm_proc = new blackout_kick_totm_proc_t( p );
       add_child( bok_totm_proc );
     }
 
+    // only bok not totm
     if ( p->talent.windwalker.obsidian_spiral->ok() )
       parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
-
-    if ( const auto &effect = p->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
-      add_parse_entry( target_multiplier_effects )
-          .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target != target; } )
-          .set_value( effect.percent() - 1.0 )
-          .set_note( "Secondary Target Reduction" )
-          .set_eff( &effect );
-  }
-
-  void consume_resource() override
-  {
-    base_t::consume_resource();
-
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.combo_breaker->up() )
-      p()->gain.combo_breaker->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
   void execute() override
@@ -1284,6 +1276,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
         timespan_t::from_seconds( p()->baseline.brewmaster.blackout_kick->effectN( 2 ).base_value() ) );
 
     p()->buff.blackout_combo->trigger();
+
     if ( !result_is_hit( execute_state->result ) )
       return;
 
@@ -1445,15 +1438,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_combo_strike = true;
     tick_zero        = true;
     tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    add_child( tick_action );
 
     interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
-
-      if ( p->talent.brewmaster.charred_passions->ok() )
-        add_child( debug_cast<sck_tick_action_t *>( tick_action )->chp_damage );
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -5541,7 +5532,8 @@ void monk_t::create_buffs()
   buff.invoke_niuzao = make_buff_fallback( talent.brewmaster.invoke_niuzao_the_black_ox->ok(), this,
                                            "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
                            ->set_default_value_from_effect( 2 )
-                           ->set_cooldown( timespan_t::zero() );
+                           ->set_cooldown( timespan_t::zero() )
+                           ->add_invalidate( CACHE_MASTERY );
 
   buff.press_the_advantage =
       make_buff_fallback( talent.brewmaster.press_the_advantage->ok(), this, "press_the_advantage",
