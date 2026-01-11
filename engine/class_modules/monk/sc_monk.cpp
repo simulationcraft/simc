@@ -1364,16 +1364,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( p->talent.windwalker.obsidian_spiral->ok() )
       parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
-  }
 
-  double composite_target_multiplier( player_t *target ) const override
-  {
-    double m = base_t::composite_target_multiplier( target );
-
-    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
-      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
-
-    return m;
+    if ( const auto &effect = p->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ &target ]( actor_target_data_t *target_data ) { return target_data->target != target; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_note( "Secondary Target Reduction" )
+          .set_eff( &effect );
   }
 
   void consume_resource() override
