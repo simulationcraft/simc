@@ -4088,6 +4088,18 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     return am;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+      double cdm = auto_attack_base_t::composite_crit_damage_bonus_multiplier();
+
+      /* Auto Shot is missing from Lethality's spelldata as of 2026-01-11
+         TODO reconfirm before launch */
+      if ( p()->talents.lethality.ok() )
+        cdm *= 1 + p()->talents.lethality->effectN( 1 ).percent();
+
+      return cdm;
+  }
+
   timespan_t execute_time_flat_modifier() const override
   {
     timespan_t m = auto_attack_base_t::execute_time_flat_modifier();
