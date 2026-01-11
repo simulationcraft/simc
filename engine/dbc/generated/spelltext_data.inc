@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.64914
-static constexpr std::array<spelltext_data_t, 28654> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28657> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -3572,6 +3572,7 @@ static constexpr std::array<spelltext_data_t, 28654> __spelltext_data { {
   {  115196, "An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.", "Movement speed slowed by $s1%.", 0 },
   {  115203, "$@spelldesc120954", 0, 0 },
   {  115294, "Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana.\r\n\r\nCan be cast while moving, but movement speed is reduced by $s2% while channeling.", "Restoring $s1 Mana every $t1 sec.", 0 },
+  {  115308, "A swig of strong brew allows you to Stagger substantially more damage for $215479d. \r\n\r\nShares charges with Purifying Brew.", 0, 0 },
   {  115310, "Heals all party and raid members within $A1 yds for $s1 and clears them of $s4 harmful Magic, all Poison, and all Disease effects.\r\n\r\nHealing reduced beyond $s5 targets.", 0, 0 },
   {  115313, "Summons a Jade Serpent Statue at the target location. When you channel Soothing Mist, the statue will also begin to channel Soothing Mist on your target, healing for $198533o1 over $198533d.", 0, 0 },
   {  115315, "Summons a Black Ox Statue at the target location for $d, pulsing threat to all enemies within $163178A1 yards.\r\n\r\nYou may cast Provoke on the statue to taunt all enemies near the statue.", 0, 0 },
@@ -7462,6 +7463,7 @@ static constexpr std::array<spelltext_data_t, 28654> __spelltext_data { {
   {  215444, "Your ranged attacks and spells have a chance to unleash a Dark Blast in the direction of your target, dealing $s1 Shadow damage to all enemies in the line.", 0, 0 },
   {  215467, "Create a Collapsing Shadow at your location for $d, increasing your Agility or Intellect by $s2 while you are within it.|CFF808080$?!(a137013|a137012|a137015|a137016|a137018|a137024|a137029|a137030|a137040|a137039|a137042)[\r\n\r\nValid for healer and ranged damage specializations.][]|R", 0, 0 },
   {  215476, "$@spelldesc215467", "Agility or Intellect increased by $w3.", 0 },
+  {  215479, "$@spelldesc115308", "Your Stagger is $w3% more effective.", 0 },
   {  215537, "$@spelldesc215538", "Bleeding for $w1 every $t1 sec.", 0 },
   {  215538, "Slam, Whirlwind, and Execute now cause the target to bleed for $s1% additional damage over $215537d. Multiple uses accumulate increased damage.", 0, 0 },
   {  215568, "Bloodthirst always Enrages you the first time you strike a target and it has a $s1% increased chance to trigger Enrage.", 0, 0 },
@@ -13679,6 +13681,7 @@ static constexpr std::array<spelltext_data_t, 28654> __spelltext_data { {
   {  322113, "Touch of Death can now be used on targets with less than $s1% health remaining, dealing $s2% of your maximum health in damage.", 0, 0 },
   {  322115, "Power Word: Radiance gains an additional charge.", 0, 0 },
   {  322118, "Summons an effigy of Yu'lon, the Jade Serpent for $d. Yu'lon will heal injured allies with Soothing Breath, healing the target and up to $s2 allies for $343737o1 over $343737d. \r\n\r\nEnveloping Mist costs $s4% less mana while Yu'lon is active.", 0, 0 },
+  {  322119, "$@spelldesc115308", "Your Stagger is $s3% more effective.", 0 },
   {  322120, "Niuzao's teachings allow you to shuffle during combat, increasing the effectiveness of your |CFFffffffStagger|R by $s1%.\r\n\r\nShuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.\r\n\r\n$@spellicon115069 $@spellname115069: $@spelldesc115069 ", 0, 0 },
   {  322167, "$@spelldesc321792", 0, 0 },
   {  322170, "$@spelldesc321792", "Suffering $w1 Shadow damage every $t1 sec.", 0 },

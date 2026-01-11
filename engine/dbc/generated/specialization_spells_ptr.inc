@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 12.0.0.65294
-static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specialization_spell_data { {
+static constexpr std::array<specialization_spell_entry_t, 610> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -104,7 +104,6 @@ static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specializat
   {  2,   70,  315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   70,  342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70,  376996,      0, "Seasoned Warhorse"                 , 0 },
-  {  2,   70,  383254,      0, "Improved Crusader Strike"          , 0 },
   {  2,   70,  384376,      0, "Avenging Wrath"                    , 0 },
   {  2,   70,  403876,      0, "Divine Protection"                 , 0 },
   {  2,   70,  404752,      0, "Instrument of Retribution"         , 0 },

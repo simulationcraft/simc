@@ -10924,7 +10924,7 @@ Mage
 1222947 *Aether Fragment
 1223522  Arcane Soul
 1223797  Intuition
-1223798 *Intuition
+1223798  Intuition
 1223799  Intuition
 1223800 *Arcane Rebound
 1223801  Arcane Rebound
@@ -11139,7 +11139,7 @@ Monk
 115288  *Energizing Elixir
 115294   Mana Tea
 115295  *Guard
-115308  *Ironskin Brew
+115308   Ironskin Brew
 115310   Revival
 115313   Summon Jade Serpent Statue
 115315   Summon Black Ox Statue
@@ -11600,7 +11600,7 @@ Monk
 214920  *Wanderer's Hardiness
 214921  *Mistweaving
 214922  *Windborne Blows
-215479  *Shuffle
+215479   Shuffle
 216074  *Surge of Mist
 216172  *Masterful Strikes
 216255  *Eminence
@@ -11870,7 +11870,7 @@ Monk
 322111   Touch of Death
 322113   Improved Touch of Death
 322118   Invoke Yu'lon, the Jade Serpent
-322119  *Ironskin Brew
+322119   Ironskin Brew
 322120   Shuffle
 322507   Celestial Brew
 322510  *Improved Celestial Brew
@@ -14376,7 +14376,7 @@ Paladin
 383185  *Exorcism
 383208  *Exorcism
 383228   Swift Justice
-383254   Improved Crusader Strike
+383254  *Improved Crusader Strike
 383259  *Swift Crusader
 383263  *Blade of Condemnation
 383271  *Highlord's Judgment
