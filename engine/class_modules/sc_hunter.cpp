@@ -802,7 +802,6 @@ public:
 
     spell_data_ptr_t obsidian_arrowhead;
     spell_data_ptr_t on_target;
-    spell_data_ptr_t on_target_buff;
     spell_data_ptr_t trueshot;
     spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
 
@@ -5719,9 +5718,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       target_data->debuffs.spotters_mark->expire();
       target_data->debuffs.ohnahran_winds->expire();
 
-      if ( !p()->buffs.on_target->at_max_stacks() )
-        p()->buffs.on_target->trigger();
-      
       if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
       {
         p()->cooldowns.target_acquisition->start();
@@ -8340,7 +8336,6 @@ void hunter_t::init_spells()
     
     talents.obsidian_arrowhead                = find_talent_spell( talent_tree::SPECIALIZATION, "Obsidian Arrowhead", HUNTER_MARKSMANSHIP );
     talents.on_target                         = find_talent_spell( talent_tree::SPECIALIZATION, "On Target", HUNTER_MARKSMANSHIP );
-    talents.on_target_buff                    = talents.on_target.ok() ? find_spell( 474257 ) : spell_data_t::not_found();
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.kill_shot                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Shot", HUNTER_MARKSMANSHIP );
    
@@ -8814,12 +8809,6 @@ void hunter_t::create_buffs()
   buffs.in_the_rhythm = 
     make_buff( this, "in_the_rhythm", talents.in_the_rhythm_buff )
       ->set_default_value( talents.in_the_rhythm_buff->effectN( 1 ).base_value() );
-
-  buffs.on_target =
-    make_buff( this, "on_target", talents.on_target_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.trueshot =
     make_buff( this, "trueshot", talents.trueshot )
