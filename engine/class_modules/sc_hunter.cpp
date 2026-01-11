@@ -373,7 +373,6 @@ struct hunter_td_t: public actor_target_data_t
   {
     dot_t* explosive_shot;
     dot_t* serpent_sting;
-    dot_t* a_murder_of_crows;
     
     dot_t* barbed_shot;
     dot_t* laceration;
@@ -577,7 +576,6 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
-    cooldown_t* banshees_mark;
   } cooldowns;
 
   struct gains_t
@@ -998,7 +996,6 @@ public:
 
     spell_data_ptr_t phantom_pain; //TODO Removed
     spell_data_ptr_t phantom_pain_spell; //TODO Removed
-    spell_data_ptr_t a_murder_of_crows_dot; //TODO Removed
     spell_data_ptr_t shadow_hounds; //TODO Removed - similiar to corpsecaller
     spell_data_ptr_t shadow_hounds_summon; //TODO Removed - similiar to corpsecaller
 
@@ -1129,8 +1126,6 @@ public:
     action_t* dire_beast = nullptr;
     action_t* laceration = nullptr;
 
-    action_t* a_murder_of_crows = nullptr;
-
     action_t* boar_charge = nullptr;
 
     action_t* sentinel = nullptr;
@@ -1199,7 +1194,6 @@ public:
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
-    cooldowns.banshees_mark = get_cooldown( "banshees_mark" );
 
     base_gcd = 1.5_s;
 
@@ -4929,12 +4923,6 @@ struct black_arrow_t final : public kill_shot_base_t
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
     }
-
-    if ( p()->talents.banshees_mark.ok() && rng().roll( p()->talents.banshees_mark->effectN( 2 ).percent() ) && p()->cooldowns.banshees_mark->up() )
-    {
-      p()->actions.a_murder_of_crows->execute_on_target( s->target ); 
-      p()->cooldowns.banshees_mark->start();
-    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7368,36 +7356,6 @@ struct call_of_the_wild_t: public hunter_spell_t
   }
 };
 
-// A Murder of Crows ========================================================
-
-struct a_murder_of_crows_t : public hunter_spell_t
-{
-  struct peck_t final : public hunter_ranged_attack_t
-  {
-    peck_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 131900 ) )
-    {
-      background = dual = true;
-    }
-
-    timespan_t travel_time() const override
-    {
-      return timespan_t::from_seconds( data().missile_speed() );
-    }
-  };
-
-  a_murder_of_crows_t( hunter_t* p ) : hunter_spell_t( "a_murder_of_crows", p, p->talents.a_murder_of_crows_dot )
-  {
-    background = dual = true;
-    tick_action = p->get_background_action<peck_t>( "a_murder_of_crows_peck" );
-  }
-
-  // Spell data for A Murder of Crows still has it listed as costing focus
-  double cost() const override
-  {
-    return 0;
-  }
-};
-
 // Wild Thrash =============================================================
 
 struct wild_thrash_t : public hunter_spell_t
@@ -7936,7 +7894,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     -> set_schools_from_effect( 1 );
 
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
-  dots.a_murder_of_crows = t -> get_dot( "a_murder_of_crows", p );
   dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
@@ -8553,7 +8510,6 @@ void hunter_t::init_spells()
     // TODO Remove
     talents.phantom_pain = find_talent_spell( talent_tree::HERO, "Phantom Pain" );
     talents.phantom_pain_spell = talents.phantom_pain.ok() ? find_spell( 468019 ) : spell_data_t::not_found();
-    talents.a_murder_of_crows_dot = talents.banshees_mark.ok() ? find_spell( 131894 ) : spell_data_t::not_found();
     talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
     talents.shadow_hounds_summon = talents.shadow_hounds.ok() ? find_spell( 442419 ) : spell_data_t::not_found();
   }
@@ -8706,7 +8662,6 @@ void hunter_t::init_spells()
   cooldowns.ruthless_marauder->duration = talents.ruthless_marauder->internal_cooldown();
 
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
-  cooldowns.banshees_mark->duration = talents.banshees_mark->internal_cooldown();
 
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
 
@@ -8759,9 +8714,6 @@ void hunter_t::create_actions()
   if ( talents.laceration.ok() )
     actions.laceration = new attacks::laceration_t( this );
   
-  if ( talents.banshees_mark.ok() )
-    actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
-
   if ( talents.howl_of_the_pack_leader.ok() )
     actions.boar_charge = new attacks::boar_charge_t( this );
 
