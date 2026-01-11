@@ -367,6 +367,8 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* sentinel;
     buff_t* crescent_steel;
     buff_t* lunar_storm;
+
+    buff_t* headshot;
   } debuffs;
 
   struct dots_t
@@ -809,6 +811,7 @@ public:
     spell_data_ptr_t feathered_frenzy;
     spell_data_ptr_t lethality; //TODO Not implemented
     spell_data_ptr_t headshot;
+    spell_data_ptr_t headshot_debuff;
     spell_data_ptr_t deadeye;
     spell_data_ptr_t deathblow; //TODO Talent is unique to MM, but the effect can be achieved as DR
     spell_data_ptr_t deathblow_buff; //TODO Moved baseline with hero talent tie ins
@@ -4615,9 +4618,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
 
     p()->buffs.deathblow->expire();
     p()->buffs.razor_fragments->expire();
-
-    if ( p()->talents.headshot.ok() )
-      p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4754,6 +4754,19 @@ struct kill_shot_t : public kill_shot_base_t
 
     if ( cull_the_herd.dot )
       residual_action::trigger( cull_the_herd.dot, s->target, s->result_amount * cull_the_herd.result_mod );
+
+    if ( p()->talents.headshot.ok() )
+      td( s->target )->debuffs.headshot->trigger();
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    if ( p()->talents.headshot.ok() )
+      tdm *= 1 + p()->talents.headshot_debuff->effectN( 1 ).percent() * td( t )->debuffs.headshot->check();
+
+    return tdm;
   }
 };
 
@@ -4923,6 +4936,18 @@ struct black_arrow_t final : public kill_shot_base_t
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
     }
+
+    if ( p()->talents.headshot.ok() )
+      td( s->target )->debuffs.headshot->trigger();
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    tdm *= 1 + p()->talents.headshot_debuff->effectN( 1 ).percent() * td( t )->debuffs.headshot->check();
+
+    return tdm;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7893,6 +7918,9 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     -> set_default_value_from_effect( 1 )
     -> set_schools_from_effect( 1 );
 
+  debuffs.headshot = make_buff( *this, "headshot", p->talents.headshot_debuff )
+    -> set_default_value_from_effect( 1 );
+
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
   dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
@@ -8314,6 +8342,7 @@ void hunter_t::init_spells()
     talents.feathered_frenzy                  = find_talent_spell( talent_tree::SPECIALIZATION, "Feathered Frenzy", HUNTER_MARKSMANSHIP );
     talents.lethality                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lethality", HUNTER_MARKSMANSHIP );
     talents.headshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Headshot", HUNTER_MARKSMANSHIP );
+    talents.headshot_debuff                   = talents.headshot.ok() ? find_spell( 1277558 ) : spell_data_t::not_found();
     talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
     talents.deathblow_buff                    = talents.deathblow.ok() ? find_spell( 378770 ) : spell_data_t::not_found();
