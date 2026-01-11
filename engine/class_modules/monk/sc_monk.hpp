@@ -550,12 +550,6 @@ public:
     // Shado-Pan
     propagate_const<buff_t *> flurry_charge;
     propagate_const<buff_t *> stand_ready;
-
-    // TWW1 Set Bonus
-    propagate_const<buff_t *> tiger_strikes;
-    propagate_const<buff_t *> tigers_ferocity;
-    propagate_const<buff_t *> flow_of_battle_damage;
-    propagate_const<buff_t *> flow_of_battle_free_keg_smash;
   } buff;
 
   struct
@@ -1065,51 +1059,15 @@ public:
   {
     struct
     {
-      const spell_data_t *ww_4pc;
-      const spell_data_t *ww_4pc_dmg;
-      const spell_data_t *brm_4pc_damage_buff;
-      const spell_data_t *brm_4pc_free_keg_smash_buff;
-    } tww1;
+    } mid1;
 
     struct
     {
-      const spell_data_t *ww_2pc;
-      const spell_data_t *ww_2pc_winning_streak;
-      const spell_data_t *ww_4pc;
-      const spell_data_t *ww_4pc_cashout;
-      propagate_const<buff_t *> winning_streak;
-      propagate_const<buff_t *> cashout;
-
-      const spell_data_t *brm_2pc;
-      const spell_data_t *brm_2pc_luck_of_the_draw;
-      const spell_data_t *brm_4pc;
-      const spell_data_t *brm_4pc_opportunistic_strike;
-      propagate_const<buff_t *> luck_of_the_draw;
-      propagate_const<buff_t *> opportunistic_strike;
-    } tww2;
+    } mid2;
 
     struct
     {
-      const spell_data_t *coc_2pc;
-      const spell_data_t *coc_2pc_heart_of_the_jade_serpent_data;
-      propagate_const<buff_t *> coc_2pc_heart_of_the_jade_serpent;
-      const spell_data_t *coc_4pc;
-      const spell_data_t *coc_4pc_jade_serpents_blessing_data;
-      propagate_const<buff_t *> coc_4pc_jade_serpents_blessing;
-      const spell_data_t *moh_2pc;
-      const spell_data_t *moh_2pc_harmonic_surge_buff_data;
-      const spell_data_t *moh_2pc_harmonic_surge_damage;
-      const spell_data_t *moh_2pc_harmonic_surge_heal;
-      propagate_const<buff_t *> moh_2pc_harmonic_surge_buff;
-      accumulated_rng_t *moh_2pc_rng;
-      std::map<unsigned, cooldown_t *> moh_2pc_icd;
-      const spell_data_t *moh_4pc;
-      const spell_data_t *spm_2pc;
-      const spell_data_t *spm_2pc_flurry_charge_data;
-      propagate_const<buff_t *> spm_2pc_flurry_charge;
-      action_t *spm_2pc_flurry_strikes;
-      const spell_data_t *spm_4pc;
-    } tww3;
+    } mid3;
   } tier;
 
   struct pets_t

@@ -161,26 +161,9 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Shado-Pan
 
-  // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes,
-                 affect_list_t( 1 ).add_spell(
-                     p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(),
-                     p()->talent.windwalker.fists_of_fury->effectN( 3 ).trigger()->id(),
-                     p()->talent.windwalker.whirling_dragon_punch_aoe_tick->id(),
-                     p()->talent.windwalker.whirling_dragon_punch_st_tick->id(),
-                     p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
-                     p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
-                     ) );
-  parse_effects( p()->buff.tigers_ferocity );
-  parse_effects( p()->buff.flow_of_battle_damage );
-
-  // TWW S2 Set Effects
-  parse_effects( p()->tier.tww2.winning_streak );
-  parse_effects( p()->tier.tww2.luck_of_the_draw );
-
-  // TWW S3 Set Effects
-
-  // TWW S4 Set Effects
+  // Midnight S1 Set
+  // Midnight S2 Set
+  // Midnight S3 Set
 }
 
 // Action-related parsing of debuffs. Does not work on spells
@@ -414,39 +397,10 @@ template <class Base>
 void monk_action_t<Base>::execute()
 {
   if ( p()->specialization() == MONK_WINDWALKER )
-  {
     if ( may_combo_strike )
       combo_strikes_trigger();
-  }
-
-  static const std::array<unsigned, 2> winning_streak_cancel_list = {
-      p()->baseline.monk.spinning_crane_kick->id(),
-      p()->talent.monk.rising_sun_kick->id(),
-  };
-
-  // TWW S2 WW 2pc
-  if ( p()->tier.tww2.winning_streak->check() &&
-       std::find( winning_streak_cancel_list.begin(), winning_streak_cancel_list.end(), base_t::data().id() ) !=
-           winning_streak_cancel_list.end() )
-    if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) ||
-         p()->tier.tww2.winning_streak->at_max_stacks() )
-      p()->tier.tww2.winning_streak->expire();
 
   base_t::execute();
-
-  // TWW S1 Windwalker 2PC
-  if ( p()->buff.tiger_strikes->up() )
-  {
-    // These spells are not listed in the spell effect data but are affected
-    std::vector<unsigned int> missing_tiger_strikes_spells = {
-        p()->baseline.monk.spinning_crane_kick->id(), p()->talent.windwalker.fists_of_fury->id(),
-        p()->talent.windwalker.whirling_dragon_punch->id(), p()->talent.windwalker.strike_of_the_windlord->id() };
-
-    if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
-         std::find( missing_tiger_strikes_spells.begin(), missing_tiger_strikes_spells.end(), base_t::data().id() ) !=
-             missing_tiger_strikes_spells.end() )
-      p()->buff.tiger_strikes->decrement();
-  }
 }
 
 template <class Base>
@@ -724,28 +678,6 @@ struct overwhelming_force_t : base_action_t
   }
 };
 
-// Tiger's Ferocity ( Windwalker TWW1 4PC )
-struct tigers_ferocity_t : public monk_melee_attack_t
-{
-  std::vector<player_t *> &t_list;
-
-  tigers_ferocity_t( monk_t *p )
-    : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
-  {
-    background = dual   = true;
-    aoe                 = -1;
-    reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
-  }
-
-  std::vector<player_t *> &target_list() const override
-  {
-    // The player's target is not hit by this ability so we need to modify the target list.
-    t_list = base_t::target_list();
-    t_list.erase( std::remove( t_list.begin(), t_list.end(), player->target ), t_list.end() );
-    return t_list;
-  }
-};
-
 struct harmonic_surge_t : public monk_spell_t
 {
   template <typename TBase>
@@ -768,8 +700,8 @@ struct harmonic_surge_t : public monk_spell_t
 
       assert( offset != 0 );
 
-      if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
-        add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+      // if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
+      //   add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
     }
   };
 
@@ -778,9 +710,8 @@ struct harmonic_surge_t : public monk_spell_t
 
   harmonic_surge_t( monk_t *player )
     : monk_spell_t( player, "harmonic_surge", spell_data_t::nil() ),
-      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage",
-                                          player->tier.tww3.moh_2pc_harmonic_surge_damage ) ),
-      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", player->tier.tww3.moh_2pc_harmonic_surge_heal ) )
+      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage", spell_data_t::nil() ) ),
+      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", spell_data_t::nil() ) )
   {
   }
 
@@ -788,10 +719,6 @@ struct harmonic_surge_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( !p()->tier.tww3.moh_2pc_harmonic_surge_buff->up() )
-      return;
-
-    p()->tier.tww3.moh_2pc_harmonic_surge_buff->decrement();
     damage->execute();
     heal->execute();
   }
@@ -800,14 +727,10 @@ struct harmonic_surge_t : public monk_spell_t
 struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 {
   bool face_palm;
-  action_t *tigers_ferocity;
   action_t *harmonic_surge;
 
   tiger_palm_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ),
-      face_palm( false ),
-      tigers_ferocity( nullptr ),
-      harmonic_surge( nullptr )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false ), harmonic_surge( nullptr )
   {
     parse_options( options_str );
 
@@ -829,14 +752,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
           .set_value( effect.percent() - ( p->wowv_l( { 11, 2, 0 } ) ? 1.0 : 0.0 ) )
           .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
-    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-    {
-      tigers_ferocity = new tigers_ferocity_t( p );
-      add_child( tigers_ferocity );
-    }
-
-    if ( p->sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B2 ) )
-      harmonic_surge = new harmonic_surge_t( p );
   }
 
   bool ready() override
@@ -881,10 +796,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
       p()->action.combat_wisdom_eh->execute();
       p()->buff.combat_wisdom->expire();
     }
-
-    // T33 Windwalker Set Bonus
-    p()->buff.tiger_strikes->trigger();
-    p()->buff.tigers_ferocity->expire();
   }
 
   void impact( action_state_t *s ) override
@@ -892,16 +803,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     base_t::impact( s );
 
     p()->buff.teachings_of_the_monastery->trigger();
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-    {
-      double damage = s->result_amount;
-
-      damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
-
-      tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
-      tigers_ferocity->execute_on_target( s->target );
-    }
   }
 };
 
@@ -966,7 +867,6 @@ struct press_the_advantage_t : base_action_t
 
   propagate_const<damage_t *> press_the_advantage_action;
   propagate_const<proc_t *> press_the_advantage_proc;
-  // action_t* harmonic_surge; TODO: Implement MoH tier for PtA when it can be tested
 
   template <typename... Args>
   press_the_advantage_t( monk_t *player, Args &&...args )
@@ -1331,15 +1231,11 @@ struct charred_passions_t : base_action_t
 struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
 {
   blackout_kick_totm_proc_t *bok_totm_proc;
-  cooldown_t *keg_smash_cooldown;
-  bool tier_tww2_opportunistic_strike;
 
   blackout_kick_t( monk_t *p, std::string_view options_str )
     : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                       : p->baseline.monk.blackout_kick ) ),
-      keg_smash_cooldown( nullptr ),
-      tier_tww2_opportunistic_strike( false )
+                                                       : p->baseline.monk.blackout_kick ) )
   {
     parse_options( options_str );
 
@@ -1347,11 +1243,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     ww_mastery       = true;
     may_combo_strike = true;
     cast_during_sck  = true;
-
-    parse_effects( p->tier.tww2.opportunistic_strike, [ & ]() { return tier_tww2_opportunistic_strike; } );
-
-    if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
-      keg_smash_cooldown = player->get_cooldown( "keg_smash" );
 
     if ( p->talent.brewmaster.charred_passions->ok() )
       add_child( base_t::chp_damage );
@@ -1384,34 +1275,17 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
   void execute() override
   {
-    tier_tww2_opportunistic_strike = p()->tier.tww2.opportunistic_strike->check();
-    p()->tier.tww2.opportunistic_strike->decrement();
-
     base_t::execute();
 
     if ( p()->buff.invoke_niuzao->check() )
       p()->pets.niuzao.active_pet()->stomp->execute();
 
-    if ( tier_tww2_opportunistic_strike )
-      cooldown->adjust( -p()->tier.tww2.brm_4pc_opportunistic_strike->effectN( 1 ).time_value() );
-
     p()->buff.shuffle->trigger(
         timespan_t::from_seconds( p()->baseline.brewmaster.blackout_kick->effectN( 2 ).base_value() ) );
 
     p()->buff.blackout_combo->trigger();
-    p()->buff.flow_of_battle_damage->trigger();
-    // 08-18-2024: Sampling of a large number of logs strongly suggests a proc rate of 0.33.
-    // Reproducible via running https://github.com/renanthera/crunch/tree/ec850f8b37b922f177d88b0c1626271a382ce771
-    if ( keg_smash_cooldown && p()->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() && p()->rng().roll( 0.33 ) )
-    {
-      keg_smash_cooldown->reset( false );
-      p()->buff.flow_of_battle_free_keg_smash->trigger();
-    }
-
     if ( !result_is_hit( execute_state->result ) )
       return;
-
-    p()->buff.tigers_ferocity->trigger();
 
     if ( p()->buff.combo_breaker->up() )
     {
@@ -1642,8 +1516,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( chi_x && p()->buff.chi_energy->up() )
       chi_x->execute();
-
-    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -1885,8 +1757,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
-
-    p()->buff.tigers_ferocity->trigger();
   }
 
   bool ready() override
@@ -2004,8 +1874,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
-
-    p()->buff.tigers_ferocity->trigger();
 
     p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
@@ -2301,7 +2169,6 @@ struct keg_smash_t : monk_melee_attack_t
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
           .set_value( effect.percent() )
           .set_eff( &effect );
-    parse_effects( player->buff.flow_of_battle_free_keg_smash );
 
     if ( player->talent.brewmaster.salsalabims_strength->ok() )
       breath_of_fire = player->get_cooldown( "breath_of_fire" );
@@ -2310,7 +2177,6 @@ struct keg_smash_t : monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-    p()->buff.flow_of_battle_free_keg_smash->expire();
 
     if ( breath_of_fire )
     {
@@ -3782,10 +3648,6 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
     p()->buff.blackout_combo->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
-
-    if ( p()->sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B4 ) )
-      p()->tier.tww3.moh_2pc_harmonic_surge_buff->trigger(
-          as<int>( p()->sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 )->effectN( 1 ).base_value() ) );
   }
 };
 
@@ -4730,14 +4592,9 @@ void monk_t::parse_player_effects()
   parse_effects( buff.heart_of_the_jade_serpent_yulons_avatar, em );
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
 
-  // TWW S1 Set Effects
-  parse_effects( buff.shuffle, sets->set( MONK_BREWMASTER, TWW1, B2 ) );
-
-  // TWW S2 Set Effects
-
-  // TWW S3 Set Effects
-
-  // TWW S4 Set Effects
+  // Midnight S1 Set Effects
+  // Midnight S2 Set Effects
+  // Midnight S3 Set Effects
 }
 
 action_t *monk_t::create_action( std::string_view name, std::string_view options_str )
@@ -5384,34 +5241,8 @@ void monk_t::init_spells()
     talent.shado_pan.wisdom_of_the_wall                       = _HT( "Wisdom of the Wall" );
   }
 
-  // monk_t::talent::tier
+  // monk_t::tier
   {
-    tier.tww1.ww_4pc                      = find_spell( 454505 );
-    tier.tww1.ww_4pc_dmg                  = find_spell( 454508 );
-    tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
-    tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
-
-    tier.tww2.ww_2pc                       = sets->set( MONK_WINDWALKER, TWW2, B2 );
-    tier.tww2.ww_2pc_winning_streak        = tier.tww2.ww_2pc->effectN( 1 ).trigger();
-    tier.tww2.ww_4pc                       = sets->set( MONK_WINDWALKER, TWW2, B4 );
-    tier.tww2.ww_4pc_cashout               = find_spell( 1216498 );
-    tier.tww2.brm_2pc                      = sets->set( MONK_BREWMASTER, TWW2, B2 );
-    tier.tww2.brm_2pc_luck_of_the_draw     = tier.tww2.brm_2pc->effectN( 1 ).trigger();
-    tier.tww2.brm_4pc                      = sets->set( MONK_BREWMASTER, TWW2, B4 );
-    tier.tww2.brm_4pc_opportunistic_strike = find_spell( 1217999 );
-
-    tier.tww3.coc_2pc                                = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B2 );
-    tier.tww3.coc_2pc_heart_of_the_jade_serpent_data = find_spell( 1238904 );
-    tier.tww3.coc_4pc                                = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B4 );
-    tier.tww3.coc_4pc_jade_serpents_blessing_data    = find_spell( 1238901 );
-    tier.tww3.moh_2pc                                = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B2 );
-    tier.tww3.moh_2pc_harmonic_surge_buff_data       = find_spell( 1239483 );
-    tier.tww3.moh_2pc_harmonic_surge_damage          = find_spell( 1239442 );
-    tier.tww3.moh_2pc_harmonic_surge_heal            = find_spell( 1239443 );
-    tier.tww3.moh_4pc                                = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 );
-    tier.tww3.spm_2pc                                = sets->set( HERO_SHADOPAN, TWW3, B2 );
-    tier.tww3.spm_2pc_flurry_charge_data             = find_spell( 1237196 );
-    tier.tww3.spm_4pc                                = sets->set( HERO_SHADOPAN, TWW3, B4 );
   }
 
   // Shared Talent Spells
@@ -5726,23 +5557,6 @@ void monk_t::create_buffs()
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
-  buff.tiger_strikes =
-      make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B2 )->ok(), this, "tiger_strikes", find_spell( 454485 ) )
-          ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B2 ) );
-
-  buff.tigers_ferocity =
-      make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B4 )->ok(), this, "tigers_ferocity", find_spell( 454502 ) )
-          ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
-
-  buff.flow_of_battle_damage = make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this,
-                                                   "flow_of_battle_damage", tier.tww1.brm_4pc_damage_buff )
-                                   ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
-
-  buff.flow_of_battle_free_keg_smash =
-      make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this, "flow_of_battle_free_keg_smash",
-                          tier.tww1.brm_4pc_free_keg_smash_buff )
-          ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
-
   // Windwalker
   buff.teachings_of_the_monastery =
       make_buff_fallback( talent.windwalker.teachings_of_the_monastery->ok(), this, "teachings_of_the_monastery",
@@ -5938,53 +5752,6 @@ void monk_t::create_buffs()
   buff.stand_ready =
       make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
           ->set_default_value_from_effect( 1 );
-
-  // TWW S2 Tier Buffs
-  // WW
-  tier.tww2.winning_streak =
-      make_buff_fallback( tier.tww2.ww_2pc->ok(), this, "winning_streak", tier.tww2.ww_2pc_winning_streak )
-          ->set_stack_change_callback( [ & ]( buff_t *, int old, int new_ ) {
-            if ( old && !new_ )
-              tier.tww2.cashout->trigger( old );
-          } );
-  tier.tww2.cashout =
-      make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout )
-          ->set_max_stack( 59 );  // Spell says it caps at 8, but have screenshots of it stacking to at least 59.
-  // BrM
-  tier.tww2.luck_of_the_draw =
-      make_buff_fallback( tier.tww2.brm_2pc->ok(), this, "luck_of_the_draw", tier.tww2.brm_2pc_luck_of_the_draw )
-          ->set_stack_change_callback( [ & ]( buff_t *, int old, int new_ ) {
-            if ( new_ )
-              tier.tww2.opportunistic_strike->trigger();
-            if ( !old )
-              buff.fortifying_brew->trigger( tier.tww2.brm_2pc->effectN( 1 ).time_value() );
-          } )
-          ->set_refresh_duration_callback( [ & ]( const buff_t *b, timespan_t duration ) {
-            tier.tww2.opportunistic_strike->trigger();
-            return std::max( b->remains(), duration );
-          } );
-  tier.tww2.opportunistic_strike = make_buff_fallback( tier.tww2.brm_4pc->ok(), this, "opportunistic_strike",
-                                                       tier.tww2.brm_4pc_opportunistic_strike )
-                                       ->set_stack_change_callback( [ & ]( buff_t *b, int, int new_ ) {
-                                         if ( new_ < b->max_stack() )
-                                           cooldown.blackout_kick->adjust( -b->data().effectN( 1 ).time_value() );
-                                       } );
-
-  // TWW S3 Tier Buffs
-  // CoC
-  tier.tww3.coc_4pc_jade_serpents_blessing =
-      make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
-                          tier.tww3.coc_4pc_jade_serpents_blessing_data )
-          ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-
-  // SPM
-  tier.tww3.spm_2pc_flurry_charge = make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "flurry_charge_tww3_tier",
-                                                        tier.tww3.spm_2pc_flurry_charge_data );
-
-  // MoH
-  tier.tww3.moh_2pc_harmonic_surge_buff =
-      make_buff_fallback( sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B2 ), this, "harmonic_surge_buff",
-                          tier.tww3.moh_2pc_harmonic_surge_buff_data );
 }
 
 void monk_t::init_gains()
@@ -6258,19 +6025,6 @@ void monk_t::init_special_effects()
                                                 return false;
                                               } );
 
-  if ( tier.tww2.ww_2pc->ok() )
-    create_proc_callback( { tier.tww2.ww_2pc } );
-  if ( tier.tww2.brm_2pc->ok() )
-    create_proc_callback( { tier.tww2.brm_2pc, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } );
-
-  if ( tier.tww3.spm_2pc->ok() )
-    create_proc_callback( { tier.tww3.spm_2pc_flurry_charge_data, static_cast<proc_flag>( 0ull ),
-                            static_cast<proc_flag2>( 0ull ), tier.tww3.spm_2pc_flurry_strikes } )
-        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-                                                return tier.tww3.spm_2pc_flurry_charge->check();
-                                              } );
-
   if ( talent.brewmaster.walk_with_the_ox.ok() )
   {
     action.walk_with_the_ox_rng = get_accumulated_rng(
@@ -6285,36 +6039,6 @@ void monk_t::init_special_effects()
               dbc_proc_cb->cooldown->start();
               return static_cast<bool>( action.walk_with_the_ox_rng->trigger() );
             } );
-  }
-
-  if ( sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B2 ) )
-  {
-    tier.tww3.moh_2pc_rng =
-        get_accumulated_rng( "tww3_moh_2pc", 0.02, [ & ]( double, unsigned attempts, action_state_t * ) {
-          return 0.002 + 0.0015 * 25.0 - 0.0015 * 24.0 * std::pow( 0.96, attempts - 1 );
-        } );
-    create_proc_callback( { tier.tww3.moh_2pc_harmonic_surge_buff_data, PF_ALL_DAMAGE, PF2_ALL_HIT } )
-        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                if ( action->id <= 0 )
-                                                  return false;
-                                                auto icd = tier.tww3.moh_2pc_icd.find( action->id );
-                                                if ( icd == tier.tww3.moh_2pc_icd.end() )
-                                                {
-                                                  cooldown_t *_icd =
-                                                      get_cooldown( fmt::format( "tww3_moh_2pc_{}", action->id ) );
-                                                  tier.tww3.moh_2pc_icd.emplace( action->id, _icd );
-                                                  icd = tier.tww3.moh_2pc_icd.find( action->id );
-                                                }
-                                                bool trigger = false;
-                                                if ( action->allow_class_ability_procs && icd->second->up() )
-                                                  trigger = tier.tww3.moh_2pc_rng->trigger();
-                                                icd->second->start( 5_ms );
-                                                return trigger;
-                                              } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          tier.tww3.moh_2pc_harmonic_surge_buff->trigger();
-        } );
   }
 
   if ( talent.shado_pan.stand_ready->ok() )
