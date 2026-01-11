@@ -4697,6 +4697,12 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
+  parse_effects( talent.brewmaster.heart_of_the_ox, [ & ]( double value ) {
+    if ( buff.invoke_niuzao->check() )
+      // value not available in spell data :(
+      value *= 1.0 + 1.0;
+    return value;
+  } );
 
   // windwalker talent auras
   parse_effects( buff.memory_of_the_monastery );
@@ -5462,6 +5468,9 @@ void monk_t::init_spells()
                                                                          ? effect_mask_t( true ).disable( 5 )
                                                                          : effect_mask_t( true ) );
 
+  // brewmaster
+  deregister_passive_spell( talent.brewmaster.heart_of_the_ox );
+  // windwalker
   deregister_passive_spell( talent.windwalker.ferociousness );
   deregister_passive_spell( talent.windwalker.martial_agility );
 
