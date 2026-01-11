@@ -201,6 +201,7 @@ public:
   int never_surrender_percentage;
   bool first_rampage_attack_missed;
   int slayers_strike_attempts_since_last_proc;
+  int master_of_warfare_attempts_since_last_proc;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -261,6 +262,10 @@ public:
     buff_t* tactical_edge;
     buff_t* whirlwind;
     buff_t* wild_strikes;
+
+    // Arms Apex
+    buff_t* master_of_warfare_proc;
+    buff_t* master_of_warfare; // Damage buff
 
     // Fury Apex
     buff_t* berserk;
@@ -401,6 +406,7 @@ public:
     const spell_data_t* whirlwind;
 
     // Arms
+    const spell_data_t* heroic_strike;
 
     // Fury
 
@@ -431,9 +437,6 @@ public:
 
     // Mountain Thane
     const spell_data_t* lightning_strike;
-
-    // TWW3
-    const spell_data_t* ionizing_strike;
   } spell;
 
   // Mastery
@@ -837,7 +840,7 @@ public:
     into_the_fray_friends = -1;
     never_surrender_percentage = 70;
     slayers_strike_attempts_since_last_proc = 0;
-
+    master_of_warfare_attempts_since_last_proc = 0;
     resource_regeneration = regen_type::DISABLED;
   }
 
@@ -980,6 +983,11 @@ public:
   simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
   simple_sample_data_t* cd_wasted_iter;
   bool initialized;
+
+  action_t* replacement_action;
+  buff_t* replacement_action_buff;
+  bool always_replace;
+  bool was_replaced;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       usable_while_channeling( false ),
@@ -987,7 +995,11 @@ public:
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
       cd_wasted_iter( nullptr ),
-      initialized( false )
+      initialized( false ),
+      replacement_action( nullptr ),
+      replacement_action_buff( nullptr ),
+      always_replace( false ),
+      was_replaced( false )
   {
     ab::may_crit = true;
 
@@ -1205,8 +1217,46 @@ public:
     return dm;
   }
 
+  double cost() const override
+  {
+    if ( !this->replacement_action )
+      return ab::cost();
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->cost();
+
+    return ab::cost();
+  }
+
+  void queue_execute( execute_type et ) override
+  {
+    if ( !this->replacement_action || this->cooldown->duration == 0_ms )
+      return ab::queue_execute( et );
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->queue_execute( et );
+
+    return ab::queue_execute( et );
+  }
+
   void execute() override
   {
+    if ( this->replacement_action )
+    {
+      if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      {
+        this->replacement_action->set_target( this->target );
+        this->replacement_action->execute();
+
+        if ( !this->always_replace )
+          this->stats->add_execute( 0_ms, this->target );
+
+        this->was_replaced = true;
+        return;
+      }
+    }
+
+    this->was_replaced = false;
     ab::execute();
 
     // 388539 is the rend dot for arms.  Collateral damage is not procced from it, but is procced from other background actions like demolish
@@ -1219,17 +1269,37 @@ public:
 
   bool ready() override
   {
-    if ( !ab::ready() )
-      return false;
+    if ( !this->replacement_action )
+    {
+      if ( !ab::ready() )
+        return false;
 
-    // -1 melee range implies that the ability can be used at any distance from the target.
-    if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
-      return false;
+      // -1 melee range implies that the ability can be used at any distance from the target.
+      if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
+        return false;
 
-    if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
-      return false;
+      if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
+        return false;
 
+      return true;
+    }
+    else
+    {
+      if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+        return this->replacement_action->ready();
+    }
     return true;
+  }
+
+  bool action_ready() override
+  {
+    if ( !this->replacement_action || this->cooldown->duration == 0_ms )
+      return ab::action_ready();
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->action_ready();
+
+    return ab::action_ready();
   }
 
   void update_ready( timespan_t cd ) override
@@ -1514,12 +1584,16 @@ struct warrior_spell_t : public warrior_action_t<spell_t>
 struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 {  // Main Warrior Attack Class
   double slayers_strike_proc_chance;
+  double master_of_warfare_proc_chance;
   warrior_attack_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s ),
-    slayers_strike_proc_chance( 0 )
+    slayers_strike_proc_chance( 0 ),
+    master_of_warfare_proc_chance( 0 )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
       slayers_strike_proc_chance = p->pseudo_random_c_from_p( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+    if ( p->talents.arms.master_of_warfare_1.ok() )
+      master_of_warfare_proc_chance = p->pseudo_random_c_from_p( 0.15 );  // Not in spelldata
     special = true;
   }
 
@@ -2159,18 +2233,6 @@ struct lightning_strike_t : public warrior_attack_t
         avatar->schedule_execute();
     }
   }
-};
-
-
-// Ionizing Strike ==========================================================
-
-struct ionizing_strike_t : public warrior_attack_t
-{
-  ionizing_strike_t ( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->spell.ionizing_strike )
-    {
-      background = true;
-    }
 };
 
 // Slayer's Strike ==========================================================
@@ -2925,6 +2987,12 @@ struct mortal_strike_t : public warrior_attack_t
 
     if( !background )
       p()->buff.tactical_edge->decrement();
+
+    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3252,16 +3320,14 @@ struct charge_t : public warrior_attack_t
 };
 
 // Slam =====================================================================
-
-struct slam_t : public warrior_attack_t
+struct slam_base_t : public warrior_attack_t
 {
   bool from_fervor;
   int aoe_targets;
-  slam_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "slam", p, p->spell.slam ), from_fervor( false ),
+  slam_base_t( std::string_view n, warrior_t* p, const spell_data_t* s )
+    : warrior_attack_t( n, p, s ), from_fervor( false ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
-    parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
     radius = 5;
     if ( player->specialization() == WARRIOR_FURY )
@@ -3270,17 +3336,10 @@ struct slam_t : public warrior_attack_t
     }
   }
 
-  slam_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->spell.slam ), from_fervor( false ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  slam_base_t( std::string_view n, warrior_t* p, const spell_data_t* s, std::string_view options_str )
+    : slam_base_t( n, p, s )
   {
-    background = true;
-    weapon                       = &( p->main_hand_weapon );
-    radius = 5;
-    if ( player->specialization() == WARRIOR_FURY )
-    {
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
-    }
+    parse_options( options_str );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -3318,6 +3377,12 @@ struct slam_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
+
+    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   bool ready() override
@@ -3327,6 +3392,40 @@ struct slam_t : public warrior_attack_t
       return false;
     }
     return warrior_attack_t::ready();
+  }
+};
+
+struct heroic_strike_t : public slam_base_t
+{
+  heroic_strike_t( warrior_t* p, std::string_view options_str )
+    : slam_base_t( "heroic_strike", p, p->spell.heroic_strike, options_str )
+  {
+
+  }
+
+  void execute() override
+  {
+    slam_base_t::execute();
+
+    p()->buff.master_of_warfare_proc->expire();
+    p()->buff.master_of_warfare->trigger();
+  }
+};
+
+struct slam_t : public slam_base_t
+{
+  slam_t( warrior_t* p, std::string_view options_str )
+    : slam_base_t( "slam", p, p->spell.slam )
+  {
+    parse_options( options_str );
+    set_replacement_action( new heroic_strike_t( p, options_str ), p->buff.master_of_warfare_proc );
+  }
+
+  slam_t( util::string_view name, warrior_t* p )
+  : slam_base_t( name, p, p->spell.slam )
+  {
+    background = true;
+    // TODO check if fervor slams automatically upgrade to heroic strike
   }
 };
 
@@ -3995,6 +4094,12 @@ struct execute_arms_t : public warrior_attack_t
       {
         lightning_strike->execute();
       }
+
+    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
     }
 
     if ( p()->talents.arms.executioners_precision.ok() )
@@ -5061,6 +5166,12 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
+
+    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   bool ready() override
@@ -6826,6 +6937,7 @@ void warrior_t::init_spells()
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.deep_wounds_dot         = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
+  spell.heroic_strike           = find_spell( 1269383 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -6864,9 +6976,6 @@ void warrior_t::init_spells()
 
   // Mountain Thane Spells
   spell.lightning_strike            = find_spell( 435791 );
-
-  // TWW3
-  spell.ionizing_strike             = find_spell( 1238042 );
 
   // Class Talents
   // Arms Battle / Defensive
@@ -7809,6 +7918,14 @@ void warrior_t::create_buffs()
                                   ->set_initial_stack( find_spell( 437121 )->max_stacks() )
                                   ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
                                   ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
+
+  // Arms Apex
+  buff.master_of_warfare_proc = make_buff( this, "master_of_warfare_proc", find_spell( 1269391 ) )
+                                        ->set_trigger_spell( talents.arms.master_of_warfare_1 )
+                                        ->set_cooldown( talents.arms.master_of_warfare_1->internal_cooldown() );
+
+  buff.master_of_warfare = make_buff( this, "master_of_warfare", find_spell( 1269394 ) )
+                                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 // warrior_t::init_special_effects() ====================================
@@ -8346,6 +8463,7 @@ void warrior_t::reset()
   parse_player_effects_t::reset();
   first_rampage_attack_missed = false;
   slayers_strike_attempts_since_last_proc = 0;
+  master_of_warfare_attempts_since_last_proc = 0;
 }
 
 // Movement related overrides. =============================================
