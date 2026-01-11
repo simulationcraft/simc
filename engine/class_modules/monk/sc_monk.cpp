@@ -700,8 +700,8 @@ struct harmonic_surge_t : public monk_spell_t
 
       assert( offset != 0 );
 
-      // if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
-      //   add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+      if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset ); effect.ok() )
+        add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
     }
   };
 
@@ -710,8 +710,8 @@ struct harmonic_surge_t : public monk_spell_t
 
   harmonic_surge_t( monk_t *player )
     : monk_spell_t( player, "harmonic_surge", spell_data_t::nil() ),
-      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage", spell_data_t::nil() ) ),
-      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", spell_data_t::nil() ) )
+      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage", player->talent.master_of_harmony.harmonic_surge_damage ) ),
+      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", player->talent.master_of_harmony.harmonic_surge_heal ) )
   {
   }
 
@@ -719,6 +719,10 @@ struct harmonic_surge_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    if ( !p()->buff.harmonic_surge->up() )
+      return;
+
+    p()->buff.harmonic_surge->decrement();
     damage->execute();
     heal->execute();
   }
@@ -727,10 +731,9 @@ struct harmonic_surge_t : public monk_spell_t
 struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 {
   bool face_palm;
-  action_t *harmonic_surge;
 
   tiger_palm_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false ), harmonic_surge( nullptr )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
 
@@ -774,8 +777,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     base_t::execute();
 
-    if ( harmonic_surge )
-      harmonic_surge->execute();
+    p()->action.harmonic_surge->execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -2196,6 +2198,9 @@ struct keg_smash_t : monk_melee_attack_t
     p()->buff.blackout_combo->expire();
     p()->baseline.brewmaster.brews.adjust( reduction );
     p()->action.chi_wave->execute();
+
+    if ( p()->talent.master_of_harmony.potential_energy->ok() )
+      p()->buff.harmonic_surge->trigger( 1 );
   }
 
   void impact( action_state_t *state ) override
@@ -3528,6 +3533,7 @@ struct vivify_t : public monk_heal_t
     monk_heal_t::execute();
 
     p()->action.chi_wave->execute();
+    p()->action.harmonic_surge->execute();
   }
 };
 
@@ -3648,6 +3654,10 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
     p()->buff.blackout_combo->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
+
+    if ( p()->talent.master_of_harmony.harmonic_surge->ok() )
+      p()->buff.harmonic_surge->trigger(
+          as<int>( p()->talent.master_of_harmony.harmonic_surge->effectN( 5 ).base_value() ) );
   }
 };
 
@@ -5199,6 +5209,9 @@ void monk_t::init_spells()
     talent.master_of_harmony.balanced_stratagem_magic      = find_spell( 451508 );
     talent.master_of_harmony.balanced_stratagem_physical   = find_spell( 451514 );
     talent.master_of_harmony.harmonic_surge                = _HT( "Harmonic Surge" );
+    talent.master_of_harmony.harmonic_surge_buff           = find_spell( 1270990 );
+    talent.master_of_harmony.harmonic_surge_damage         = find_spell( 1271011 );
+    talent.master_of_harmony.harmonic_surge_heal           = find_spell( 1271045 );
     talent.master_of_harmony.tigers_vigor                  = _HT( "Tiger's Vigor" );
     talent.master_of_harmony.roar_from_the_heavens         = _HT( "Roar from the Heavens" );
     talent.master_of_harmony.endless_draught               = _HT( "Endless Draught" );
@@ -5328,6 +5341,9 @@ void monk_t::init_background_actions()
 
   if ( sbt )
     action.strength_of_the_black_ox = actions::spells::strength_of_the_black_ox_t( this );
+
+  // Master of Harmony
+  action.harmonic_surge = new actions::attacks::harmonic_surge_t( this );
 
   // Shado-Pan
   action.flurry_strikes = new actions::attacks::flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
@@ -5743,6 +5759,10 @@ void monk_t::create_buffs()
   buff.balanced_stratagem_physical =
       make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical",
                           talent.master_of_harmony.balanced_stratagem_physical );
+
+  // Master of Harmony
+  buff.harmonic_surge = make_buff_fallback( talent.master_of_harmony.harmonic_surge->ok(), this, "harmonic_surge",
+                                            talent.master_of_harmony.harmonic_surge_buff );
 
   // Shado-Pan
   buff.flurry_charge =

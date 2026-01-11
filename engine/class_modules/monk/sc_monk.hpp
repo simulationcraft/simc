@@ -476,6 +476,9 @@ public:
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
     actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
 
+    // Master of Harmony
+    propagate_const<action_t *> harmonic_surge;
+
     // Shado-Pan
     actions::attacks::flurry_strikes_t *flurry_strikes;
   } action;
@@ -546,6 +549,7 @@ public:
     buffs::aspect_of_harmony_t aspect_of_harmony;
     propagate_const<buff_t *> balanced_stratagem_physical;
     propagate_const<buff_t *> balanced_stratagem_magic;
+    propagate_const<buff_t *> harmonic_surge;
 
     // Shado-Pan
     propagate_const<buff_t *> flurry_charge;
@@ -1003,6 +1007,9 @@ public:
       const spell_data_t *balanced_stratagem_physical;
       const spell_data_t *balanced_stratagem_magic;
       player_talent_t harmonic_surge;
+      const spell_data_t *harmonic_surge_buff;
+      const spell_data_t *harmonic_surge_damage;
+      const spell_data_t *harmonic_surge_heal;
       // Row 3
       player_talent_t tigers_vigor;
       player_talent_t roar_from_the_heavens;
