@@ -1111,7 +1111,7 @@ public:
 
     // MM
     spell_data_ptr_t multishot;
-    spell_data_ptr_t eyes_in_the_sky;
+    spell_data_ptr_t spotters_mark_data;
     spell_data_ptr_t spotters_mark_debuff;
   } specs;
 
@@ -3695,7 +3695,7 @@ void hunter_t::consume_precise_shots()
 
 void hunter_t::trigger_spotters_mark( player_t* target, bool force )
 {
-  double chance = force ? 1.0 : specs.eyes_in_the_sky->effectN( 1 ).percent();
+  double chance = force ? 1.0 : specs.spotters_mark_data->effectN( 1 ).percent();
       
   if ( !force && talents.feathered_frenzy.ok() && buffs.trueshot->up() )
     chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
@@ -8302,8 +8302,8 @@ void hunter_t::init_spells()
   {
     //TODO Multishot is now  MM only - we can move it out of here
     specs.multishot                           = find_specialization_spell( "Multi-Shot" );
-    specs.eyes_in_the_sky                     = find_specialization_spell( "Eyes in the Sky" );
-    specs.spotters_mark_debuff                = specs.eyes_in_the_sky.ok() ? find_spell( 466872 ) : spell_data_t::not_found();
+    specs.spotters_mark_data                  = find_specialization_spell( "Spotter's Mark" );
+    specs.spotters_mark_debuff                = specs.spotters_mark_data.ok() ? find_spell( 466872 ) : spell_data_t::not_found();
 
     talents.aimed_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Aimed Shot", HUNTER_MARKSMANSHIP );
 
