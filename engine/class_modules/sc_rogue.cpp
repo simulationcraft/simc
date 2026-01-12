@@ -437,6 +437,8 @@ public:
     damage_buff_t* tww3_deathstalker_2pc;
     buff_t* tww3_trickster_4pc;
 
+    damage_buff_t* mid1_outlaw_4pc;
+
   } buffs;
 
   // Cooldowns
@@ -1107,6 +1109,13 @@ public:
     const spell_data_t* tww3_trickster_2pc;
     const spell_data_t* tww3_trickster_4pc;
 
+    const spell_data_t* mid1_assassination_2pc;
+    const spell_data_t* mid1_assassination_4pc;
+    const spell_data_t* mid1_outlaw_2pc;
+    const spell_data_t* mid1_outlaw_4pc;
+    const spell_data_t* mid1_subtlety_2pc;
+    const spell_data_t* mid1_subtlety_4pc;
+
   } set_bonuses;
 
   // Options
@@ -1624,6 +1633,8 @@ public:
     bool zoldyck_insignia = false;
 
     bool tww3_fatebound_4pc = false;
+    bool mid1_assassination_4pc = false;
+    bool mid1_subtlety_2pc = false;
 
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
@@ -1793,6 +1804,11 @@ public:
         ab::data().affected_by_label( buff_spell->effectN( 5 ) ) ||
         ab::data().affected_by_label( buff_spell->effectN( 7 ) );
     }
+
+    if ( p->set_bonuses.mid1_subtlety_2pc->ok() )
+    {
+      affected_by.mid1_subtlety_2pc = ab::base_costs[ RESOURCE_COMBO_POINT ] > 0;
+    }
   }
 
   void init() override
@@ -1871,6 +1887,7 @@ public:
     register_damage_buff( p()->buffs.tww2_outlaw_2pc );
     register_damage_buff( p()->buffs.tww2_subtlety_2pc );
     register_damage_buff( p()->buffs.tww3_deathstalker_2pc );
+    register_damage_buff( p()->buffs.mid1_outlaw_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -3527,6 +3544,7 @@ struct ambush_t : public rogue_attack_t
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.ambush, options_str )
   {
+    affected_by.mid1_assassination_4pc = true;
   }
 
   void execute() override
@@ -3572,6 +3590,7 @@ struct shadow_clone_t : public rogue_attack_t
     rogue_attack_t( name, p, s )
   {
     base_multiplier = 0.5; // All current triggers default to half damage
+    affected_by.mid1_subtlety_2pc = true;
   }
 
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
@@ -3966,6 +3985,7 @@ struct blade_rush_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.blade_rush->trigger();
+      p()->buffs.mid1_outlaw_4pc->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -4236,6 +4256,7 @@ struct eviscerate_t : public rogue_attack_t
       affected_by.darkest_night = !p->bugs;
       // 2024-09-01 -- Note: This works but needs custom composite_crit_chance() handling below
       affected_by.darkest_night_crit = false;
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -4329,6 +4350,7 @@ struct fan_of_knives_t: public rogue_attack_t
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    affected_by.mid1_assassination_4pc = true;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
@@ -4424,6 +4446,13 @@ struct garrote_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
+
+    // MIDNIGHT TOCHECK -- Does this happen before or after VW?
+    if ( p()->set_bonuses.mid1_assassination_2pc->ok() )
+    {
+      trigger_poisons( d->state );
+    }
+
     trigger_venomous_wounds( d->state );
   }
 
@@ -4917,6 +4946,7 @@ struct mutilate_t : public rogue_attack_t
     mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
+      affected_by.mid1_assassination_4pc = true;
     }
 
     void impact( action_state_t* state ) override
@@ -5124,6 +5154,7 @@ struct secret_technique_t : public rogue_attack_t
       aoe = -1;
       full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
       reduced_aoe_targets = p->spec.secret_technique->effectN( 6 ).base_value() - 1;
+      affected_by.mid1_subtlety_2pc = true;
     }
 
     double composite_player_multiplier( const action_state_t* state ) const override
@@ -5445,6 +5476,7 @@ struct black_powder_t: public rogue_attack_t
       callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -6371,6 +6403,7 @@ struct coup_de_grace_t : public rogue_attack_t
       last_cp( 1 )
     {
       dual = true;
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -6402,6 +6435,8 @@ struct coup_de_grace_t : public rogue_attack_t
       rogue_attack_t( name, p, s ),
       bonus_attack( nullptr )
     {
+      affected_by.mid1_subtlety_2pc = true;
+
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
         auto formatted_name = fmt::format( "eviscerate_{}", name );
@@ -7770,16 +7805,16 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_s
 
   auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
                                   std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
-  if ( consume_stacks == 0 )
-    return;
-    
-  trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
-  p()->buffs.shadow_techniques->decrement( consume_stacks );
-    
-  if ( p()->talent.subtlety.ancient_arts_1->ok() )
+  if ( consume_stacks > 0 )
   {
-    const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
-    trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+    trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
+    p()->buffs.shadow_techniques->decrement( consume_stacks );
+
+    if ( p()->talent.subtlety.ancient_arts_1->ok() )
+    {
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
+      trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+    }
   }
 
   if ( p()->talent.subtlety.ancient_arts_3->ok() &&
@@ -9971,6 +10006,13 @@ void rogue_t::init_spells()
   spec.tww3_deathstalker_2pc_buff = set_bonuses.tww3_deathstalker_2pc->ok() ?
     ( specialization() == ROGUE_ASSASSINATION ? find_spell( 1239231 ) : find_spell( 1239232 ) ) : spell_data_t::not_found();
 
+  set_bonuses.mid1_assassination_2pc = sets->set( ROGUE_ASSASSINATION, MID1, B2 );
+  set_bonuses.mid1_assassination_4pc = sets->set( ROGUE_ASSASSINATION, MID1, B4 );
+  set_bonuses.mid1_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID1, B2 );
+  set_bonuses.mid1_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID1, B4 );
+  set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
+  set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
+
   // Register passives ======================================================
 
   // Extra CP from improved ambush is reported separatedly and manually handled within the action
@@ -10411,7 +10453,8 @@ void rogue_t::create_buffs()
   buffs.double_trouble = make_buff<damage_buff_t>( this, "double_trouble", spec.double_trouble );
   buffs.triple_threat = make_buff<damage_buff_t>( this, "triple_threat", spec.triple_threat );
   buffs.jackpot = make_buff<damage_buff_t>( this, "jackpot", spec.jackpot );
-  buffs.jackpot->add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.jackpot->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
 
@@ -10564,7 +10607,6 @@ void rogue_t::create_buffs()
   buffs.escalating_blade = make_buff( this, "escalating_blade", spell.escalating_blade_buff );
 
   buffs.flawless_form = make_buff<damage_buff_t>( this, "flawless_form", spell.flawless_form_buff );
-  buffs.flawless_form->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.unseen_blade_cd = make_buff( this, "unseen_blade_cooldown", spell.unseen_blade_buff )
     ->set_quiet( true );
@@ -10773,6 +10815,8 @@ void rogue_t::create_buffs()
           buffs.escalating_blade->expire(); // Technically this is the same buff in-game
       } );
   }
+
+  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN(2).trigger() );
 }
 
 // rogue_t::invalidate_cache =========================================

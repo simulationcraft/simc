@@ -1269,25 +1269,22 @@ public:
 
   bool ready() override
   {
-    if ( !this->replacement_action )
-    {
-      if ( !ab::ready() )
-        return false;
-
-      // -1 melee range implies that the ability can be used at any distance from the target.
-      if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
-        return false;
-
-      if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
-        return false;
-
-      return true;
-    }
-    else
+    if ( this->replacement_action )
     {
       if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
         return this->replacement_action->ready();
     }
+
+    if ( !ab::ready() )
+      return false;
+
+    // -1 melee range implies that the ability can be used at any distance from the target.
+    if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
+      return false;
+
+    if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
+      return false;
+
     return true;
   }
 
@@ -7325,8 +7322,11 @@ void warrior_t::init_spells()
   // As of Midnight Beta  Nov 18 2025 Bounding Stride effect 2 makes the cooldown of leap go negative
   register_passive_affect_list ( talents.warrior.bounding_stride, affect_list_t( 2 ).remove_spell( 6544 ) );
 
-  register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 1 ), talents.arms.master_of_warfare_2->effectN( 1 ).base_value() / 10 );
-  register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
+  if ( talents.arms.master_of_warfare_2.ok() )
+  {
+    register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 1 ), talents.arms.master_of_warfare_2->effectN( 1 ).base_value() / 10 );
+    register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
+  }
 
   parse_all_class_passives();
   parse_all_passive_talents();

@@ -1351,8 +1351,6 @@ public:
     {
     }
 
-    timespan_t time_to_next_tick() const;
-
     void init()
     {
       initial_drain   = p()->options.void_metamorphosis_initial_drain;
@@ -10433,6 +10431,7 @@ void demon_hunter_t::init_spells()
       spec.metamorphosis_buff            = spec.metamorphosis->effectN( 1 ).trigger();
       spec.soul_fragments_buff           = find_spell( 1245577 );
       spec.shattered_souls               = find_spell( 1227619 );
+      break;
     default:
       break;
   }

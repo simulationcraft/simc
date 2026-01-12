@@ -2483,6 +2483,16 @@ void sim_t::init_actors()
   {
     out_debug.printf( "Initializing actors." );
   }
+  
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+  {
+    player_no_pet_list[ i ]->create_permanent_actors();
+  }
+
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    target_list[ i ]->create_permanent_actors();
+  }
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {

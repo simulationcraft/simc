@@ -2170,6 +2170,14 @@ struct keg_smash_t : monk_melee_attack_t
           .set_value( effect.percent() )
           .set_eff( &effect );
 
+    // increased damage to primary target
+    if ( const auto &effect = player->talent.brewmaster.stormstouts_last_keg->effectN( 1 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target == target; } )
+          .set_value( effect.percent() )
+          .set_eff( &effect )
+          .set_note( "Primary Target" );
+
     if ( player->talent.brewmaster.salsalabims_strength->ok() )
       breath_of_fire = player->get_cooldown( "breath_of_fire" );
   }
@@ -2728,6 +2736,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
 
+    p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
   }
 };
@@ -2942,13 +2951,6 @@ public:
     full_amount_targets = 1;
     cast_during_sck     = true;
 
-    if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
-      add_parse_entry( da_multiplier_effects )
-          .set_value_func(
-              [ this ]( double value ) { return 1.0 + p()->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
-          .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
-          .set_eff( &effect );
-
     if ( player->talent.brewmaster.dragonfire_brew->ok() )
       dragonfire_brew = new dragonfire_brew_t( player );
 
@@ -2975,7 +2977,6 @@ public:
     monk_spell_t::execute();
 
     p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
-    p()->buff.blackout_combo->expire();
   }
 
   void impact( action_state_t *state ) override
@@ -3034,6 +3035,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     if ( p()->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
       absorb->execute();
     p()->buff.fortifying_brew->trigger();
+    p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
   }
 };
@@ -3645,7 +3647,6 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
 
     brew_t<monk_absorb_t>::execute();
 
-    p()->buff.blackout_combo->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
   }
