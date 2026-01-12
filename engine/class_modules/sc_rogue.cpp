@@ -1599,6 +1599,7 @@ public:
     bool darkest_night_crit = false;    // Crit%
     bool dashing_scoundrel = false;
     bool deadly_pursuit = false;        // Cooldown Reduction
+    bool delivered_doom = false;
     bool death_perception_find_weakness = false;
     bool death_perception_shadow_dance = false;
     bool death_perception_shadow_blades = false;
@@ -2417,6 +2418,14 @@ public:
          p()->buffs.shadow_dance->check() && p()->buffs.tww2_subtlety_2pc->check() )
     {
       m *= 1.0 + ( affected_by.tww2_subtlety_4pc.direct_percent * p()->buffs.tww2_subtlety_2pc->check() );
+    }
+
+    if ( affected_by.delivered_doom && p()->talent.fatebound.delivered_doom->ok() )
+    {
+      if ( cast_state( state )->get_combo_points() >= as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
+      {
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+      }
     }
 
     return m;
@@ -3690,6 +3699,9 @@ struct dispatch_t: public rogue_attack_t
       rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
     {
     }
+
+    bool procs_blade_flurry() const override
+    { return true; }
   };
 
   scoundrel_strike_t* scoundrel_strike;
@@ -3698,27 +3710,12 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t( name, p, p->spec.dispatch, options_str ),
     scoundrel_strike( nullptr )
   {
+    affected_by.delivered_doom = true;
     if ( p->talent.outlaw.gravedigger_2->ok() )
     {
       scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
       add_child( scoundrel_strike );
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_attack_t::composite_da_multiplier( state );
-
-    if ( p()->talent.fatebound.delivered_doom->ok() )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-      if ( cp_spend >= as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
-      {
-        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
-      }
-    }
-
-    return m;
   }
 
   void execute() override
@@ -3779,6 +3776,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.between_the_eyes, options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
+    affected_by.delivered_doom = true;
   }
 
   double cost_pct_multiplier() const override
@@ -3788,22 +3786,6 @@ struct between_the_eyes_t : public rogue_attack_t
     c *= 1.0 + p()->buffs.gravedigger->check_value();
 
     return c;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_attack_t::composite_da_multiplier( state );
-
-    if ( p()->talent.fatebound.delivered_doom->ok() )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-      if ( cp_spend >= as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
-      {
-        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
-      }
-    }
-
-    return m;
   }
 
   void execute() override
@@ -4148,6 +4130,7 @@ struct envenom_t : public rogue_attack_t
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
     affected_by.darkest_night = affected_by.darkest_night_crit = true;
+    affected_by.delivered_doom = true;
 
     if ( p->active.poison_bomb )
     {
@@ -4174,15 +4157,6 @@ struct envenom_t : public rogue_attack_t
       if ( tdata->debuffs.amplifying_poison->stack() >= consume_stacks )
       {
         m *= 1.0 + p()->talent.assassination.amplifying_poison->effectN( 1 ).percent();
-      }
-    }
-
-    if ( p()->talent.fatebound.delivered_doom->ok() )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-      if ( cp_spend >= as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
-      {
-        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
       }
     }
 
@@ -8011,7 +7985,7 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
   if ( p()->talent.fatebound.lucky_coin->ok() )
   {
     if ( !p()->buffs.fatebound_lucky_coin->check() )
-      p()->buffs.fatebound_coin_flips->increment();
+      p()->buffs.fatebound_coin_flips->trigger();
   }
 }
 
