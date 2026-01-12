@@ -7325,8 +7325,11 @@ void warrior_t::init_spells()
   // As of Midnight Beta  Nov 18 2025 Bounding Stride effect 2 makes the cooldown of leap go negative
   register_passive_affect_list ( talents.warrior.bounding_stride, affect_list_t( 2 ).remove_spell( 6544 ) );
 
-  register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 1 ), talents.arms.master_of_warfare_2->effectN( 1 ).base_value() / 10 );
-  register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
+  if ( talents.arms.master_of_warfare_2.ok() )
+  {
+    register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 1 ), talents.arms.master_of_warfare_2->effectN( 1 ).base_value() / 10 );
+    register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
+  }
 
   parse_all_class_passives();
   parse_all_passive_talents();
