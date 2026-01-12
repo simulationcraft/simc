@@ -559,6 +559,7 @@ public:
     cooldown_t* salvo;
     
     cooldown_t* kill_command;
+    cooldown_t* wild_thrash;
 
     cooldown_t* barbed_shot;
     cooldown_t* bestial_wrath;
@@ -703,7 +704,8 @@ public:
     spell_data_ptr_t stomp_dmg;
     spell_data_ptr_t war_orders;
 
-    spell_data_ptr_t wild_thrash;
+    spell_data_ptr_t wild_thrash_player;
+    spell_data_ptr_t wild_thrash_pet;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t cobra_shot;
     spell_data_ptr_t cobra_shot_data;
@@ -1174,9 +1176,10 @@ public:
     cooldowns.volley                    = get_cooldown( "volley" );
     cooldowns.salvo                     = get_cooldown( "salvo_icd" );
     
-    cooldowns.kill_command = get_cooldown( "kill_command" );
+    cooldowns.kill_command  = get_cooldown( "kill_command" );
     cooldowns.barbed_shot   = get_cooldown( "barbed_shot" );
     cooldowns.bestial_wrath = get_cooldown( "bestial_wrath" );
+    cooldowns.wild_thrash   = get_cooldown( "wild_thrash" );
 
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
     cooldowns.butchery            = get_cooldown( "butchery" );
@@ -2164,6 +2167,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     action_t* kill_cleave = nullptr;
     action_t* bestial_wrath = nullptr;
     action_t* bloodshed = nullptr;
+    action_t* wild_thrash = nullptr;
   } actions;
 
   struct buffs_t
@@ -2914,6 +2918,28 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
   }
 };
 
+// Wild Thrash  ==============================================================
+
+struct wild_thrash_t : public hunter_pet_attack_t<hunter_pet_t>
+{
+  wild_thrash_t( hunter_main_pet_base_t* p, const spell_data_t* s ) : hunter_pet_attack_t( "wild_thrash", p, s )
+  {
+    background = dual = proc = true;
+    aoe = -1;
+    reduced_aoe_targets      = data().effectN( 2 ).base_value();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double dm = hunter_pet_attack_t::composite_da_multiplier( s );
+
+    if ( s->n_targets >= o()->talents.wild_thrash_player->effectN( 2 ).base_value() )
+      dm *= 1 + o()->talents.wild_thrash_player->effectN( 1 ).percent();
+
+    return dm;
+  }
+};
+
 // Beast Cleave ==============================================================
 
 struct beast_cleave_attack_t: public hunter_pet_attack_t<hunter_pet_t>
@@ -3395,8 +3421,9 @@ void hunter_main_pet_base_t::init_spells()
 
   if ( o()->specialization() == HUNTER_BEAST_MASTERY )
   {
-    actions.kill_command = new actions::kill_command_bm_t( this, o()->talents.kill_command_bm_pet );
+    actions.kill_command  = new actions::kill_command_bm_t( this, o()->talents.kill_command_bm_pet );
     actions.bestial_wrath = new actions::bestial_wrath_t( this );
+    actions.wild_thrash   = new actions::wild_thrash_t( this, o()->talents.wild_thrash_pet );
     
     if ( o() -> talents.kill_cleave.ok() )
       actions.kill_cleave = new actions::kill_cleave_t( this );
@@ -7436,12 +7463,9 @@ struct call_of_the_wild_t: public hunter_spell_t
 
 struct wild_thrash_t : public hunter_spell_t
 {
-  wild_thrash_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "wild_thrash", p, p->talents.wild_thrash )
+  wild_thrash_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "wild_thrash", p, p->talents.wild_thrash_player )
   {
     parse_options( options_str );
-
-    aoe = -1;
-    reduced_aoe_targets = 8;
   }
 
   void execute() override
@@ -7455,16 +7479,29 @@ struct wild_thrash_t : public hunter_spell_t
       for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->buffs.beast_cleave->trigger();
     }
+
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+      pet->actions.wild_thrash->execute();
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
+  bool target_ready( player_t* candidate_target ) override
   {
-    double m = hunter_spell_t::composite_da_multiplier( s );
+    if ( p()->pets.main &&
+         p()->pets.main->hunter_main_pet_base_t::actions.wild_thrash->target_ready( candidate_target ) )
+      return hunter_spell_t::target_ready( candidate_target );
 
-    if ( s->n_targets >= data().effectN( 2 ).base_value() )
-      m *= 1.0 + data().effectN( 1 ).percent();
+    return false;
+  }
 
-    return m;
+  bool ready() override
+  {
+    if ( p()->pets.main &&
+         p()->pets.main->hunter_main_pet_base_t::actions.wild_thrash->ready() )  // Range check from the pet.
+    {
+      return hunter_spell_t::ready();
+    }
+
+    return false;
   }
 };
 
@@ -8279,7 +8316,8 @@ void hunter_t::init_spells()
     talents.stomp_dmg                         = find_spell( 201754 );
     talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY );
 
-    talents.wild_thrash                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Thrash", HUNTER_BEAST_MASTERY );
+    talents.wild_thrash_player                = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Thrash", HUNTER_BEAST_MASTERY );
+    talents.wild_thrash_pet                   = talents.wild_thrash_player.ok() ? find_spell( 1264355 ) : spell_data_t::not_found();
     talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY );
     talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
     talents.cobra_shot_data                   = find_spell( 193455 );
