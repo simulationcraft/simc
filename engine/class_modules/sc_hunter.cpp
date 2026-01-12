@@ -4394,7 +4394,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
   timespan_t grenade_juggler_reduction = 0_s;
   damage_t* explosion = nullptr;
-  bool triggers_shrapnel_shot_lnl = true;
 
   explosive_shot_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : hunter_ranged_attack_t( n, p, s )
   {
@@ -4480,12 +4479,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     
     p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
     p()->buffs.bombardier->decrement();
-
-    if ( triggers_shrapnel_shot_lnl && p()->talents.shrapnel_shot.ok() )
-    {
-      p()->buffs.lock_and_load->trigger();
-      p()->cooldowns.aimed_shot->reset( false );
-    }
   }
 
   double cost_pct_multiplier() const override
@@ -5794,7 +5787,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     explosive_shot_tww_s2_mm_4pc_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p )
     {
-      triggers_shrapnel_shot_lnl = false;
     }
 
     double composite_persistent_multiplier( const action_state_t *state ) const override
@@ -7645,6 +7637,9 @@ struct volley_t : public hunter_spell_t
       );
 
     p()->buffs.double_tap->trigger();
+    
+    if ( p()->talents.shrapnel_shot.ok() && rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
+      p()->buffs.lock_and_load->trigger();
   }
 };
 
