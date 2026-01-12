@@ -376,6 +376,7 @@ public:
     damage_buff_t* unshakeable_drive;
 
     // Fatebound
+    buff_t* fatebound_coin_flips;
     damage_buff_t* fatebound_coin_heads;
     buff_t* fatebound_coin_tails;
     stat_buff_t* fatebound_lucky_coin;
@@ -491,6 +492,7 @@ public:
     gain_t* venomous_wounds;
     gain_t* venomous_wounds_death;
     gain_t* relentless_strikes;
+    gain_t* rush_to_the_inevitable;
     gain_t* slice_and_dice;
 
     // CP Gains
@@ -566,12 +568,11 @@ public:
     const spell_data_t* deathstalkers_mark_damage;
     const spell_data_t* deathstalkers_mark_debuff;
     const spell_data_t* escalating_blade_buff;
+    const spell_data_t* fatebound_coin_flips;
     const spell_data_t* fatebound_coin_heads_buff;
-    const spell_data_t* fatebound_coin_heads_initial_buff;
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
-    const spell_data_t* fatebound_lucky_coin_damage;
     const spell_data_t* fazed_debuff;
     const spell_data_t* flawless_form_buff;
     const spell_data_t* hunt_them_down_damage;
@@ -1001,20 +1002,22 @@ public:
 
     struct fatebound_talents_t
     {
-      player_talent_t hand_of_fate;
-
       player_talent_t chosens_revelry;
-      player_talent_t tempted_fate;     // TODO: Defensive
-      player_talent_t mean_streak;
-      player_talent_t inexorable_march; // No implementation
-      player_talent_t deaths_arrival;   // NYI in-game
-
+      player_talent_t controlled_chaos;
       player_talent_t deal_fate;
-      player_talent_t edge_case;        // TODO: Double jeopardy + edge case stealth break overlap bug
-      player_talent_t fate_intertwined;
-
+      player_talent_t deaths_arrival;  // NYI in-game
       player_talent_t delivered_doom;
       player_talent_t destiny_defined;  // TODO: Outlaw also gets the poison proc rate the text says is for assa? Verify in-game.
+      player_talent_t edge_case;
+      player_talent_t fate_intertwined;
+      player_talent_t hand_of_fate;
+      player_talent_t inexorable_march;  // No implementation
+      player_talent_t lucky_coin;
+      player_talent_t mean_streak;
+      player_talent_t ravenholdt_mint;
+      player_talent_t rush_to_the_inevitable;
+      player_talent_t sometimes_lucky;
+      player_talent_t tempted_fate;  // TODO: Defensive
 
     } fatebound;
 
@@ -1605,6 +1608,7 @@ public:
     bool darkest_night_crit = false;    // Crit%
     bool dashing_scoundrel = false;
     bool deadly_pursuit = false;        // Cooldown Reduction
+    bool delivered_doom = false;
     bool death_perception_find_weakness = false;
     bool death_perception_shadow_dance = false;
     bool death_perception_shadow_blades = false;
@@ -2431,6 +2435,14 @@ public:
          p()->buffs.shadow_dance->check() && p()->buffs.tww2_subtlety_2pc->check() )
     {
       m *= 1.0 + ( affected_by.tww2_subtlety_4pc.direct_percent * p()->buffs.tww2_subtlety_2pc->check() );
+    }
+
+    if ( affected_by.delivered_doom && p()->talent.fatebound.delivered_doom->ok() )
+    {
+      if ( cast_state( state )->get_combo_points() >= as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
+      {
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+      }
     }
 
     // MID1 Set Bonuses
@@ -3719,6 +3731,9 @@ struct dispatch_t: public rogue_attack_t
       rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
     {
     }
+
+    bool procs_blade_flurry() const override
+    { return true; }
   };
 
   scoundrel_strike_t* scoundrel_strike;
@@ -3727,6 +3742,7 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t( name, p, p->spec.dispatch, options_str ),
     scoundrel_strike( nullptr )
   {
+    affected_by.delivered_doom = true;
     if ( p->talent.outlaw.gravedigger_2->ok() )
     {
       scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
@@ -3792,6 +3808,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.between_the_eyes, options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
+    affected_by.delivered_doom = true;
   }
 
   double cost_pct_multiplier() const override
@@ -4146,6 +4163,7 @@ struct envenom_t : public rogue_attack_t
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
     affected_by.darkest_night = affected_by.darkest_night_crit = true;
+    affected_by.delivered_doom = true;
 
     if ( p->active.poison_bomb )
     {
@@ -6296,7 +6314,6 @@ struct hand_of_fate_t : public rogue_attack_t
   {
     background = true;
     add_child( p->active.fatebound.fatebound_coin_tails );
-    add_child( p->active.fatebound.lucky_coin );
   }
 };
 
@@ -6315,14 +6332,9 @@ struct fatebound_coin_tails_t : public rogue_attack_t
     auto stacks = p()->buffs.fatebound_coin_tails->total_stack();
     m *= 1.0 + ( stacks * p()->spell.fatebound_coin_tails_buff->effectN( 1 ).percent() );
 
-    if ( p()->talent.fatebound.delivered_doom->ok() )
+    if ( p()->buffs.fatebound_lucky_coin->check() )
     {
-      auto num_targets = targets_in_range_list( target_list() ).size();
-      if ( num_targets < 6 )
-      {
-        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent() -
-          ( p()->talent.fatebound.delivered_doom->effectN( 2 ).percent() * ( num_targets - 1 ) );
-      }
+      m *= 1.0 + p()->spell.fatebound_lucky_coin_buff->effectN( 3 ).percent();
     }
 
     return m;
@@ -6339,17 +6351,6 @@ struct fatebound_coin_tails_t : public rogue_attack_t
   { return true; }
 
   bool procs_poison() const override
-  { return true; }
-};
-
-struct fatebound_lucky_coin_t : public rogue_attack_t
-{
-  fatebound_lucky_coin_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spell.fatebound_lucky_coin_damage )
-  {
-  }
-
-  bool procs_blade_flurry() const override
   { return true; }
 };
 
@@ -7962,6 +7963,11 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       {
         matching_odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
       }
+      if ( p()->buffs.fatebound_lucky_coin->check() )
+      {
+        // MIDNIGHT TOCHECK -- Is this additive?
+        matching_odds += p()->spell.fatebound_lucky_coin_buff->effectN( 5 ).percent();
+      }
     }
 
     // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
@@ -7974,6 +7980,16 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   }
 
   execute_fatebound_coinflip( state, result );
+
+  if ( p()->talent.fatebound.controlled_chaos->ok() )
+  {
+    int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
+    if ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ||
+         p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS )
+    {
+      execute_fatebound_coinflip( state, result, 200_ms );
+    }
+  }
 }
 
 template <typename Base>
@@ -8002,6 +8018,23 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
       }
     }
   } );
+  if ( p()->talent.fatebound.rush_to_the_inevitable->ok() )
+  {
+    double energize_normal = p()->specialization() == ROGUE_ASSASSINATION
+     ? p()->talent.fatebound.rush_to_the_inevitable->effectN( 1 ).base_value()
+     : p()->talent.fatebound.rush_to_the_inevitable->effectN( 2 ).base_value();
+
+    double energize_edge = p()->specialization() == ROGUE_ASSASSINATION
+     ? p()->talent.fatebound.rush_to_the_inevitable->effectN( 3 ).base_value()
+     : p()->talent.fatebound.rush_to_the_inevitable->effectN( 4 ).base_value();
+
+    p()->resource_gain( RESOURCE_ENERGY, result == fatebound_t::coinflip_e::EDGE ? energize_edge : energize_normal, p()->gains.rush_to_the_inevitable );
+  }
+  if ( p()->talent.fatebound.lucky_coin->ok() )
+  {
+    if ( !p()->buffs.fatebound_lucky_coin->check() )
+      p()->buffs.fatebound_coin_flips->trigger();
+  }
 }
 
 template <typename Base>
@@ -8753,7 +8786,7 @@ double rogue_t::composite_leech() const
 
   if ( talent.fatebound.chosens_revelry->ok() ) {
     // a server side script enables leech effect in base buffs - value in the talent's effect is "50", which doesnt seem to reflect the 0.5% it promises and applies
-    l += (buffs.fatebound_coin_heads->check() + buffs.fatebound_coin_tails->check()) * 0.005;
+    l += ( buffs.fatebound_coin_heads->check() + buffs.fatebound_coin_tails->check() ) * 0.005;
   }
 
   return l;
@@ -9778,20 +9811,22 @@ void rogue_t::init_spells()
   talent.deathstalker.unshakeable_drive = find_talent_spell( talent_tree::HERO, "Unshakeable Drive" );
 
   // Fatebound Talents
-  talent.fatebound.hand_of_fate = find_talent_spell( talent_tree::HERO, "Hand of Fate" );
-
-  talent.fatebound.chosens_revelry = find_talent_spell( talent_tree::HERO, "Chosen's Revelry" );
-  talent.fatebound.tempted_fate = find_talent_spell( talent_tree::HERO, "Tempted Fate" );
-  talent.fatebound.mean_streak = find_talent_spell( talent_tree::HERO, "Mean Streak" );
-  talent.fatebound.inexorable_march = find_talent_spell( talent_tree::HERO, "Inexorable March" );
-  talent.fatebound.deaths_arrival = find_talent_spell( talent_tree::HERO, "Death's Arrival [NYI]" );
-
+  talent.fatebound.chosens_revelry  = find_talent_spell( talent_tree::HERO, "Chosen's Revelry" );
+  talent.fatebound.controlled_chaos = find_talent_spell( talent_tree::HERO, "Controlled Chaos" );
   talent.fatebound.deal_fate = find_talent_spell( talent_tree::HERO, "Deal Fate" );
-  talent.fatebound.edge_case = find_talent_spell( talent_tree::HERO, "Edge Case" );
-  talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
-
+  talent.fatebound.deaths_arrival = find_talent_spell( talent_tree::HERO, "Death's Arrival [NYI]" );
   talent.fatebound.delivered_doom = find_talent_spell( talent_tree::HERO, "Delivered Doom" );
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
+  talent.fatebound.edge_case = find_talent_spell( talent_tree::HERO, "Edge Case" );
+  talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
+  talent.fatebound.hand_of_fate = find_talent_spell( talent_tree::HERO, "Hand of Fate" );
+  talent.fatebound.inexorable_march = find_talent_spell( talent_tree::HERO, "Inexorable March" );
+  talent.fatebound.lucky_coin = find_talent_spell( talent_tree::HERO, "Lucky Coin" );
+  talent.fatebound.mean_streak = find_talent_spell( talent_tree::HERO, "Mean Streak" );
+  talent.fatebound.ravenholdt_mint = find_talent_spell( talent_tree::HERO, "Ravenholdt Mint" );
+  talent.fatebound.rush_to_the_inevitable = find_talent_spell( talent_tree::HERO, "Rush to the Inevitable" );
+  talent.fatebound.sometimes_lucky = find_talent_spell( talent_tree::HERO, "Sometimes Lucky" );
+  talent.fatebound.tempted_fate = find_talent_spell( talent_tree::HERO, "Tempted Fate" );
 
   // Trickster Talents
   talent.trickster.clever_combatant = find_talent_spell( talent_tree::HERO, "Clever Combatant" );
@@ -9838,12 +9873,11 @@ void rogue_t::init_spells()
   spell.symbolic_victory_buff = talent.deathstalker.symbolic_victory->ok() ? find_spell( 457167 ) : spell_data_t::not_found();
   
   // Fatebound
+  spell.fatebound_coin_flips = talent.fatebound.hand_of_fate->ok() ? find_spell( 1249093 ) : spell_data_t::not_found();
   spell.fatebound_coin_heads_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452923 ) : spell_data_t::not_found();
-  spell.fatebound_coin_heads_initial_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 456479 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
-  spell.fatebound_lucky_coin_buff = spell_data_t::not_found(); // TODO Lucky Coin
-  spell.fatebound_lucky_coin_damage = spell_data_t::not_found(); // TODO Lucky Coin
+  spell.fatebound_lucky_coin_buff = talent.fatebound.lucky_coin->ok() ? find_spell( 1248971 ) : spell_data_t::not_found();
 
   // Trickster
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
@@ -10152,9 +10186,6 @@ void rogue_t::init_spells()
       get_secondary_trigger_action<actions::fatebound_coin_tails_t>( secondary_trigger::HAND_OF_FATE, "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails->not_a_proc = true; // Scripted foreground cast, can trigger cast procs
 
-    active.fatebound.lucky_coin =
-      get_secondary_trigger_action<actions::fatebound_lucky_coin_t>( secondary_trigger::HAND_OF_FATE, "lucky_coin" );
-
     // Stats wrapper to group these for reporting purposes
     get_background_action<actions::hand_of_fate_t>( "hand_of_fate" );
   }
@@ -10211,6 +10242,7 @@ void rogue_t::init_gains()
   gains.premeditation                   = get_gain( "Premeditation" );
   gains.quick_draw                      = get_gain( "Quick Draw" );
   gains.relentless_strikes              = get_gain( "Relentless Strikes" );
+  gains.rush_to_the_inevitable          = get_gain( "Rush to the Inevitable" );
   gains.roll_the_bones                  = get_gain( "Roll the Bones" );
   gains.ruthlessness                    = get_gain( "Ruthlessness" );
   gains.seal_fate                       = get_gain( "Seal Fate" );
@@ -10511,17 +10543,38 @@ void rogue_t::create_buffs()
 
   // Fatebound
 
+  // MIDNIGHT TODO: Use actual spell 1249093
+  buffs.fatebound_coin_flips = make_buff( this, "fatebound_coin_flips", talent.fatebound.lucky_coin )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_duration( sim->max_time / 2 ); // Flip buff persists even if actual coins expire from duration
+
+  if ( talent.fatebound.lucky_coin->ok() )
+  {
+    buffs.fatebound_coin_flips
+      ->set_max_stack( talent.fatebound.lucky_coin->effectN( 1 ).base_value() )
+      ->set_expire_at_max_stack( true )
+      ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
+        if ( b && stack == b->max_stack() )
+        {
+          buffs.fatebound_lucky_coin->trigger();
+        }
+      } );
+  }
+
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
-  if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_initial_buff->ok() )
+  if ( spell.fatebound_coin_heads_buff->ok() )
   {
     // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff
+    // Ravenholdt Mint modifies stacking buff to 6%
+    // As of Midnight, the initial stack value is scripted
     buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + ( spell.fatebound_coin_heads_initial_buff->effectN( 1 ).percent() ) );
+                                                1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + ( spell.fatebound_coin_heads_initial_buff->effectN( 2 ).percent() ) );
+                                                  1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
     buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
-                                                      1.0 + spell.fatebound_coin_heads_initial_buff->effectN( 3 ).percent() );
+                                                     1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
   }
+
   buffs.fatebound_coin_heads
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
@@ -10536,17 +10589,18 @@ void rogue_t::create_buffs()
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-    ->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int ) {
-      // 07-29-2025 -- Testing shows this also reduces the active cooldowns by the amount when the buff is triggered
-      if ( old_ == 0 && this->bugs )
-      {
-        cooldowns.adrenaline_rush->adjust( b->data().effectN( 2 ).time_value() );
-        cooldowns.deathmark->adjust( b->data().effectN( 3 ).time_value() );
-        cooldowns.kingsbane->adjust( b->data().effectN( 5 ).time_value() );
-      }
-    } );
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  if ( talent.fatebound.lucky_coin->ok() )
+  {
+    // Lucky Coin bonuses to Fatebound Heads is scripted so dynamic buffs are manually set
+    buffs.fatebound_coin_heads->direct_mod.dynamic_buff_multipliers.push_back(
+        { buffs.fatebound_lucky_coin, spell.fatebound_lucky_coin_buff->effectN( 4 ).percent() } );
+    buffs.fatebound_coin_heads->periodic_mod.dynamic_buff_multipliers.push_back(
+        { buffs.fatebound_lucky_coin, spell.fatebound_lucky_coin_buff->effectN( 4 ).percent() } );
+    buffs.fatebound_coin_heads->auto_attack_mod.dynamic_buff_multipliers.push_back(
+        { buffs.fatebound_lucky_coin, spell.fatebound_lucky_coin_buff->effectN( 4 ).percent() } );
+  }
 
   // Trickster
 
