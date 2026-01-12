@@ -465,7 +465,6 @@ public:
     buff_t* trick_shots;
     buff_t* lock_and_load;
     buff_t* in_the_rhythm;
-    buff_t* on_target;
     buff_t* trueshot;
     buff_t* moving_target;
     buff_t* precision_detonation_hidden;
@@ -807,7 +806,7 @@ public:
     spell_data_ptr_t critical_precision;
     spell_data_ptr_t no_scope;
     spell_data_ptr_t feathered_frenzy;
-    spell_data_ptr_t lethality; //TODO Not implemented
+    spell_data_ptr_t lethality;
     spell_data_ptr_t headshot;
     spell_data_ptr_t headshot_debuff;
     spell_data_ptr_t deadeye;
@@ -5502,8 +5501,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     // Multi-Shot only ever seems to trigger Spotter's Mark on the primary target
     if ( s->chain_target == 0 && debug_cast<state_t*>( s )->empowered_by_precise_shots )
       p()->trigger_spotters_mark( s->target );
-
-    p()->cooldowns.rapid_fire->adjust( -p()->talents.bullet_hell->effectN( 1 ).time_value() );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5744,9 +5741,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
         p()->cooldowns.aimed_shot->adjust( -target_acquisition_reduction );
       }
     }
-
-    // TODO 3/3/25: Aimed Shot hits are giving .3 second reduction rather than .5
-    p()->cooldowns.volley->adjust( -p()->talents.bullet_hell->effectN( 1 ).time_value() );
   }
 };
 
@@ -7593,8 +7587,6 @@ struct volley_t : public hunter_spell_t
 
       if ( p()->talents.kill_zone.ok() )
         p()->get_target_data( s->target )->debuffs.kill_zone->trigger();
-
-      p()->cooldowns.rapid_fire->adjust( -p()->talents.bullet_hell->effectN( 1 ).time_value() );
     }
   };
 
