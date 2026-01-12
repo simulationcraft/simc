@@ -192,26 +192,6 @@ struct flurry_strikes_t : public monk_spell_t
   void execute( source_e );
 };
 }  // namespace attacks
-
-namespace spells {
-template <class base_action_t>
-struct harmonic_surge_t : public base_action_t
-{
-  using base_t = harmonic_surge_t<base_action_t>;
-  template <typename TBase>
-  struct impact_t : TBase
-  {
-    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
-  };
-
-  template <typename... Args>
-  harmonic_surge_t( monk_t *player, Args &&...args );
-  void execute() override;
-
-  action_t *damage;
-  action_t *heal;
-};
-}  // namespace spells
 }  // namespace actions
 
 namespace buffs
