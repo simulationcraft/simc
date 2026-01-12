@@ -2534,6 +2534,11 @@ public:
       }
     }
 
+    if ( p()->buffs.roll_the_bones->check_value() >= 4 )
+    {
+      c += p()->spec.jackpot->effectN( 5 ).percent();
+    }
+
     return c;
   }
 
