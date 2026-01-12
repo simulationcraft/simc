@@ -2534,11 +2534,6 @@ public:
       }
     }
 
-    if ( p()->buffs.roll_the_bones->check_value() >= 4 )
-    {
-      c += p()->spec.jackpot->effectN( 5 ).percent();
-    }
-
     return c;
   }
 
@@ -10384,7 +10379,8 @@ void rogue_t::create_buffs()
   buffs.double_trouble = make_buff<damage_buff_t>( this, "double_trouble", spec.double_trouble );
   buffs.triple_threat = make_buff<damage_buff_t>( this, "triple_threat", spec.triple_threat );
   buffs.jackpot = make_buff<damage_buff_t>( this, "jackpot", spec.jackpot );
-  buffs.jackpot->add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.jackpot->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
 
