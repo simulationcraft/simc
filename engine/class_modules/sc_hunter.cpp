@@ -519,7 +519,6 @@ public:
     buff_t* winning_streak; // SV 2pc - Wildfire Bomb damage stacking buff
     buff_t* strike_it_rich; // SV 4pc - Mongoose Bite damage buff, consuming it reduces Wildfire Bomb cooldown
     // TWW - S3
-    buff_t* blighted_quiver; // Dark Ranger 4pc
     buff_t* boon_of_elune_2pc; // Sentinel 2pc
     buff_t* boon_of_elune_4pc; // Sentinel 4pc
     buff_t* grizzled_fur; // Pack Leader 2pc mastery
@@ -983,7 +982,7 @@ public:
     spell_data_ptr_t shadow_dagger; //Utility talent, won't implement
     spell_data_ptr_t wailing_dead; // TODO Not implemented
 
-    spell_data_ptr_t blighted_quiver; // TODO Not implemented
+    spell_data_ptr_t blighted_quiver;
     spell_data_ptr_t banshees_mark;
     spell_data_ptr_t the_bell_tolls;
     spell_data_ptr_t the_bell_tolls_buff;
@@ -1149,7 +1148,6 @@ public:
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     ground_aoe_event_t* current_boar_charge = nullptr;
-    int blighted_quiver_count = 0;
   } state;
 
   struct options_t {
@@ -4577,7 +4575,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
 
   double health_threshold_pct;
   razor_fragments_t* razor_fragments = nullptr;
-  double blighted_quiver_chance = 0;
 
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
@@ -4585,12 +4582,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     if ( p->talents.razor_fragments.ok() )
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
-
-    if ( p->specialization() == HUNTER_BEAST_MASTERY )
-      blighted_quiver_chance = p->tier_set.tww_s3_dark_ranger_4pc->effectN( 2 ).percent();
-
-    if ( p->specialization() == HUNTER_MARKSMANSHIP )
-      blighted_quiver_chance = p->tier_set.tww_s3_dark_ranger_4pc->effectN( 3 ).percent();
   }
 
   double cost() const override
@@ -4604,9 +4595,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    if ( p()->buffs.deathblow->up() && rng().roll( blighted_quiver_chance ) )
-      p()->buffs.blighted_quiver->trigger();
 
     p()->buffs.razor_fragments->expire();
   }
@@ -4950,7 +4938,7 @@ struct black_arrow_t final : public black_arrow_base_t
       range::erase_remove( tl, [ this ]( player_t* t ) { return t != target && td( t )->dots.black_arrow->is_ticking(); } );
       target_cache.is_valid = false;
 
-      int count = withering_fire.count + p()->state.blighted_quiver_count;
+      int count = withering_fire.count;
       int t = 1;
       while ( t <= count )
         withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
@@ -7415,6 +7403,8 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->actions.bloodshed->execute_on_target( target );
     }
+
+    p()->buffs.withering_fire->trigger( p()->buffs.bestial_wrath->buff_duration() );
   }
 
   bool ready() override
@@ -9114,9 +9104,6 @@ void hunter_t::create_buffs()
     make_buff( this, "strike_it_rich", find_spell( 1216879 ) ) 
       ->set_default_value_from_effect( 1 ); // Damage increase to mongoose/raptor strike
 
-  buffs.blighted_quiver = 
-    make_buff( this, "blighted_quiver", tier_set.tww_s3_dark_ranger_4pc_buff );
-
   buffs.boon_of_elune_2pc =
     make_buff( this, "boon_of_elune_2pc", tier_set.tww_s3_sentinel_2pc_buff )
       ->set_default_value_from_effect( specialization() == HUNTER_MARKSMANSHIP ? 1 : 3 );
@@ -9211,23 +9198,7 @@ void hunter_t::create_buffs()
       } );
 
   buffs.withering_fire =
-    make_buff( this, "withering_fire", talents.withering_fire_buff )
-      ->set_stack_change_callback(
-        [ this ]( buff_t*, int, int cur ) {
-          if ( cur == 0 )
-          {
-            state.blighted_quiver_count = 0;
-          }
-          else
-          {
-            trigger_deathblow( true );
-            state.blighted_quiver_count = buffs.blighted_quiver->check();
-            buffs.blighted_quiver->expire();
-          }
-        } );
-
-  if ( specialization() == HUNTER_BEAST_MASTERY )
-    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow(); } );
+    make_buff( this, "withering_fire", talents.withering_fire_buff );
 
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )
