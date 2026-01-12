@@ -2756,9 +2756,6 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
-
-    p()->buff.pretense_of_instability->trigger();
-    p()->action.special_delivery->execute();
   }
 };
 
@@ -3056,8 +3053,6 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     if ( p()->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
       absorb->execute();
     p()->buff.fortifying_brew->trigger();
-    p()->buff.pretense_of_instability->trigger();
-    p()->action.special_delivery->execute();
   }
 };
 
@@ -3141,9 +3136,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
   void execute() override
   {
     brew_t<monk_spell_t>::execute();
-
-    p()->buff.pretense_of_instability->trigger();
-    p()->action.special_delivery->execute();
 
     p()->buff.ox_stance->trigger();
     p()->buff.aspect_of_harmony.trigger_flat(
@@ -3668,9 +3660,6 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
 
     brew_t<monk_absorb_t>::execute();
 
-    p()->buff.pretense_of_instability->trigger();
-    p()->action.special_delivery->execute();
-
     if ( p()->talent.master_of_harmony.harmonic_surge->ok() )
       p()->buff.harmonic_surge->trigger(
           as<int>( p()->talent.master_of_harmony.harmonic_surge->effectN( 5 ).base_value() ) );
@@ -3718,6 +3707,10 @@ template <class base_action_t>
 void brew_t<base_action_t>::execute()
 {
   base_action_t::execute();
+
+  base_action_t::p()->buff.swift_as_a_coursing_river->trigger();
+  base_action_t::p()->buff.pretense_of_instability->trigger();
+  base_action_t::p()->action.special_delivery->execute();
 }
 
 void brews_t::insert_cooldown( action_t *action )
@@ -4582,6 +4575,7 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
+  parse_effects( buff.swift_as_a_coursing_river );
   parse_effects( talent.brewmaster.heart_of_the_ox, [ & ]( double value ) {
     if ( buff.invoke_niuzao->check() )
       // value not available in spell data :(
@@ -5585,6 +5579,10 @@ void monk_t::create_buffs()
 
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
+
+  buff.swift_as_a_coursing_river = make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
+                                                       talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
+                                       ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
 
   // Windwalker
   buff.teachings_of_the_monastery =

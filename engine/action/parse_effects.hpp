@@ -703,6 +703,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> base_armor_multiplier_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
+  std::vector<player_effect_t> melee_haste_effects;
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;

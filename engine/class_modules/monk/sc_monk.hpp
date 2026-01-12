@@ -506,6 +506,7 @@ public:
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> shuffle;
+    propagate_const<buff_t *> swift_as_a_coursing_river;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> ox_stance;
 
