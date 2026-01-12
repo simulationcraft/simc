@@ -1269,25 +1269,22 @@ public:
 
   bool ready() override
   {
-    if ( !this->replacement_action )
-    {
-      if ( !ab::ready() )
-        return false;
-
-      // -1 melee range implies that the ability can be used at any distance from the target.
-      if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
-        return false;
-
-      if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
-        return false;
-
-      return true;
-    }
-    else
+    if ( this->replacement_action )
     {
       if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
         return this->replacement_action->ready();
     }
+
+    if ( !ab::ready() )
+      return false;
+
+    // -1 melee range implies that the ability can be used at any distance from the target.
+    if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
+      return false;
+
+    if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
+      return false;
+
     return true;
   }
 
