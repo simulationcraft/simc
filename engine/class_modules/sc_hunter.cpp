@@ -820,7 +820,8 @@ public:
     spell_data_ptr_t bullseye;
     spell_data_ptr_t bullseye_buff;
     spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t unerring_vision;
+    spell_data_ptr_t unerring_vision; /* Spelldata now scuffed because of Streamline's removal, manual parsing likely needed
+                                         TODO reconfirm before launch */
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t eagles_accuracy;
 
@@ -843,7 +844,7 @@ public:
     spell_data_ptr_t salvo;
     spell_data_ptr_t bullet_hell;
     spell_data_ptr_t shrapnel_shot;
-    spell_data_ptr_t unload; //TODO Not implemented
+    spell_data_ptr_t unload;
 
     spell_data_ptr_t ammo_conservation; //TODO Removed 
     spell_data_ptr_t improved_deathblow; //TODO Removed
@@ -4592,6 +4593,14 @@ struct kill_shot_base_t : hunter_ranged_attack_t
       blighted_quiver_chance = p->tier_set.tww_s3_dark_ranger_4pc->effectN( 3 ).percent();
   }
 
+  double cost() const override
+  {
+    if ( p()->buffs.deathblow->up() )
+      return 0;
+
+    return hunter_ranged_attack_t::cost();
+  }
+
   void execute() override
   {
     hunter_ranged_attack_t::execute();
@@ -4599,7 +4608,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     if ( p()->buffs.deathblow->up() && rng().roll( blighted_quiver_chance ) )
       p()->buffs.blighted_quiver->trigger();
 
-    p()->buffs.deathblow->expire();
     p()->buffs.razor_fragments->expire();
   }
 
@@ -4622,19 +4630,9 @@ struct kill_shot_base_t : hunter_ranged_attack_t
       p()->trigger_spotters_mark( s->target );
   }
 
-  int n_targets() const override
-  {
-    if ( p()->buffs.deathblow->check() )
-      return as<int>( p()->talents.deathblow_buff->effectN( 2 ).base_value() );
-
-    return hunter_ranged_attack_t::n_targets();
-  }
-
   bool target_ready( player_t* candidate_target ) override
   {
-    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
-      ( candidate_target -> health_percentage() <= health_threshold_pct
-        || p()->buffs.deathblow->may_react() );
+    return hunter_ranged_attack_t::target_ready( candidate_target ) && ( candidate_target->health_percentage() <= health_threshold_pct );
   }
 
   double action_multiplier() const override
@@ -4751,6 +4749,18 @@ struct kill_shot_t : public kill_shot_base_t
 
     return tdm;
   }
+
+  void execute() override
+  {
+    kill_shot_base_t::execute();
+
+    p()->buffs.deathblow->expire();
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return kill_shot_base_t::target_ready( candidate_target ) || p()->buffs.deathblow->may_react();
+  }
 };
 
 // Bursting Shot ======================================================================
@@ -4766,12 +4776,12 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 // Black Arrow (Dark Ranger) =========================================================
 
-struct black_arrow_t final : public kill_shot_base_t
+struct black_arrow_base_t : public kill_shot_base_t
 {
   struct black_arrow_dot_t : public hunter_ranged_attack_t
   {
     timespan_t dark_hound_duration;
-  
+
     black_arrow_dot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.black_arrow_dot )
     {
       background = dual = true;
@@ -4799,19 +4809,19 @@ struct black_arrow_t final : public kill_shot_base_t
     struct
     {
       black_arrow_dot_t* dot = nullptr;
-      size_t targets = 0;
+      size_t targets         = 0;
     } umbral_reach;
 
     bleak_powder_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.bleak_powder_spell )
     {
-      background = dual = true;
-      aoe = -1;
-      reduced_aoe_targets = p->talents.bleak_powder->effectN( 2 ).base_value();
+      background = dual      = true;
+      aoe                    = -1;
+      reduced_aoe_targets    = p->talents.bleak_powder->effectN( 2 ).base_value();
       target_filter_callback = secondary_targets_only();
 
       if ( p->talents.umbral_reach.ok() )
       {
-        umbral_reach.dot = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
+        umbral_reach.dot     = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
         umbral_reach.targets = as<size_t>( p->talents.umbral_reach->effectN( 2 ).base_value() );
       }
     }
@@ -4829,7 +4839,7 @@ struct black_arrow_t final : public kill_shot_base_t
           {
             p()->buffs.beast_cleave->trigger();
             for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
-              pet -> buffs.beast_cleave -> trigger();
+              pet->buffs.beast_cleave->trigger();
           }
           else if ( p()->specialization() == HUNTER_MARKSMANSHIP && p()->talents.trick_shots.ok() )
             p()->buffs.trick_shots->trigger();
@@ -4838,51 +4848,21 @@ struct black_arrow_t final : public kill_shot_base_t
     }
   };
 
-  // Withering Fire (Dark Ranger) =========================================================
-  struct withering_fire_t final : hunter_ranged_attack_t
-  {
-    black_arrow_dot_t* dot;
-
-    withering_fire_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.withering_fire_black_arrow ),
-      dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
-    {
-      background = dual = true;
-      impact_action = dot;
-    }
-  };
-
   bleak_powder_t* bleak_powder = nullptr;
   black_arrow_dot_t* dot;
-
-  struct
-  {
-    int count = 0;
-    withering_fire_t* action = nullptr;
-  } withering_fire;
 
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
-  black_arrow_t( hunter_t* p, util::string_view options_str ) : kill_shot_base_t( "black_arrow", p, p->talents.black_arrow_spell ),
+  black_arrow_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : kill_shot_base_t( n, p, s ), 
     dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) ),
-    lower_health_threshold_pct( data().effectN( 2 ).base_value() ),
-    upper_health_threshold_pct( data().effectN( 3 ).base_value() )
+    lower_health_threshold_pct( p->talents.black_arrow_spell->effectN( 2 ).base_value() ),
+    upper_health_threshold_pct( p->talents.black_arrow_spell->effectN( 3 ).base_value() )
   {
-    parse_options( options_str );
-
     impact_action = dot;
-
-    add_child( dot );
 
     if ( p->talents.bleak_powder.ok() )
       bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
-
-    if ( p->talents.withering_fire.ok() )
-    {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
-      withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
-      add_child( withering_fire.action );
-    }
   }
 
   void execute() override
@@ -4891,23 +4871,6 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
       p()->trigger_deathblow( true );
-
-    if ( p()->buffs.withering_fire->up() )
-    {
-      // Prefer targets without Black Arrow ticking.
-      auto tl = target_list();
-      range::erase_remove( tl, [ this ]( player_t* t ) { return t != target && td( t )->dots.black_arrow->is_ticking(); } );
-      target_cache.is_valid = false;
-
-      int count = withering_fire.count + p()->state.blighted_quiver_count;
-      int t = 1;
-      while ( t <= count )
-        withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
-    }
-
-    p()->buffs.the_bell_tolls->trigger();
-
-    p()->trigger_natures_ally_3();
   }
 
   void impact( action_state_t* s ) override
@@ -4926,7 +4889,7 @@ struct black_arrow_t final : public kill_shot_base_t
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+    double tdm = kill_shot_base_t::composite_target_da_multiplier( t );
 
     tdm *= 1 + p()->talents.headshot_debuff->effectN( 1 ).percent() * td( t )->debuffs.headshot->check();
 
@@ -4935,11 +4898,72 @@ struct black_arrow_t final : public kill_shot_base_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    // Black Arrow has different target ready conditionals than regular Kill Shot, so we don't call Kill Shot base.
-    return hunter_ranged_attack_t::target_ready( candidate_target ) && 
-      ( candidate_target->health_percentage() <= lower_health_threshold_pct || 
-        candidate_target->health_percentage() >= upper_health_threshold_pct || 
-        p()->buffs.deathblow->may_react() );
+    /* Black Arrow has different target ready conditionals than regular Kill Shot, so we don't call Kill Shot base.
+       Deathblow check moved to black_arrow_t for Unload. */
+    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
+           ( candidate_target->health_percentage() <= lower_health_threshold_pct ||
+             candidate_target->health_percentage() >= upper_health_threshold_pct );
+  }
+};
+
+struct black_arrow_t final : public black_arrow_base_t
+{
+  // Withering Fire (Dark Ranger) =========================================================
+  struct withering_fire_t final : hunter_ranged_attack_t
+  {
+    black_arrow_dot_t* dot;
+
+    withering_fire_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.withering_fire_black_arrow ),
+      dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
+    {
+      background = dual = true;
+      impact_action = dot;
+    }
+  };
+
+  struct
+  {
+    int count = 0;
+    withering_fire_t* action = nullptr;
+  } withering_fire;
+
+  black_arrow_t( hunter_t* p, util::string_view options_str ) : black_arrow_base_t( "black_arrow", p, p->talents.black_arrow_spell )
+  {
+    parse_options( options_str );
+
+    if ( p->talents.withering_fire.ok() )
+    {
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
+      withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
+      add_child( withering_fire.action );
+    }
+  }
+
+  void execute() override
+  {
+    black_arrow_base_t::execute();
+
+    if ( p()->buffs.withering_fire->up() )
+    {
+      // Prefer targets without Black Arrow ticking.
+      auto tl = target_list();
+      range::erase_remove( tl, [ this ]( player_t* t ) { return t != target && td( t )->dots.black_arrow->is_ticking(); } );
+      target_cache.is_valid = false;
+
+      int count = withering_fire.count + p()->state.blighted_quiver_count;
+      int t = 1;
+      while ( t <= count )
+        withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
+    }
+
+    p()->buffs.deathblow->expire();
+
+    p()->trigger_natures_ally_3();
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return black_arrow_base_t::target_ready( candidate_target ) || p()->buffs.deathblow->may_react();
   }
 };
 
@@ -6028,6 +6052,43 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     }
   };
 
+  struct arcane_shot_unload_t : public attacks::arcane_shot_base_t
+  {
+    arcane_shot_unload_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
+    {
+      background = dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+      base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+    }
+  };
+
+  struct kill_shot_unload_t : public attacks::kill_shot_base_t
+  {
+    kill_shot_unload_t( util::string_view n, hunter_t* p ) : kill_shot_base_t( n, p, p->talents.kill_shot )
+    {
+      background = dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+      base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+    }
+  };
+
+  struct black_arrow_unload_t : public attacks::black_arrow_base_t
+  {
+    black_arrow_unload_t( util::string_view n, hunter_t* p ) : black_arrow_base_t( n, p, p->talents.black_arrow_spell )
+    {
+      background = dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+      base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+    }
+  };
+
+  struct
+  {
+    arcane_shot_unload_t* arcane_shot = nullptr;
+    kill_shot_unload_t* kill_shot     = nullptr;
+    black_arrow_unload_t* black_arrow = nullptr;
+  } unload;
+
   rapid_fire_tick_t* damage;
   rapid_fire_tick_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
   int base_num_ticks;
@@ -6053,6 +6114,43 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       aspect_of_the_hydra = p->get_background_action<rapid_fire_tick_aspect_of_the_hydra_t>( "rapid_fire_tick_aspect_of_the_hydra" );
       add_child( aspect_of_the_hydra );
     }
+
+    if ( p->talents.unload.ok() )
+    {
+      unload.arcane_shot = p->get_background_action<arcane_shot_unload_t>( "arcane_shot_unload" );
+
+      if ( p->talents.black_arrow.ok() )
+      {
+        unload.black_arrow = p->get_background_action<black_arrow_unload_t>( "black_arrow_unload" );
+      }
+      else
+      {
+        unload.kill_shot = p->get_background_action<kill_shot_unload_t>( "kill_shot_unload" );
+      }
+    }
+  }
+
+  void execute_unload()
+  {
+    if ( !p()->talents.unload.ok() )
+      return;
+
+    bool executed = false;
+
+    if ( unload.black_arrow && unload.black_arrow->target_ready( target ) )
+    {
+      unload.black_arrow->execute_on_target( target );
+      executed = true;
+    }
+
+    if ( !executed && unload.kill_shot && unload.kill_shot->target_ready( target ) )
+    {
+      unload.kill_shot->execute_on_target( target );
+      executed = true;
+    }
+
+    if ( !executed )
+      unload.arcane_shot->execute_on_target( target );
   }
 
   void init() override
@@ -6078,6 +6176,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     if ( p()->buffs.lunar_storm_ready->up() )
       p()->trigger_lunar_storm( target );
+
+    execute_unload();
   }
 
   void tick( dot_t* d ) override
@@ -6098,6 +6198,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     p()->consume_trick_shots();
     p()->buffs.double_tap->expire();
     p()->buffs.focus_fire->expire();
+
+    execute_unload();
 
     //If a Rapid Fire is cancelled it does not trigger In The Rhythm
     if ( d->ticks_left() == 0 )
