@@ -750,7 +750,7 @@ public:
       player_talent_t practiced_strikes;
       player_talent_t precise_might;
       player_talent_t mountain_of_muscle_and_scars;
-      player_talent_t celeritous_conclusion;  // NYI
+      player_talent_t celeritous_conclusion;
       player_talent_t dominance_of_the_colossus;
     } colossus;
 
@@ -3609,17 +3609,6 @@ struct demolish_damage_t : public warrior_attack_t
 
     if ( data().id() == 440888 && p()->talents.colossus.decimator->ok() ) // Third Attack
       p()->active.deep_wounds->execute_on_target( state->target );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if( data().id() == 440888 )
-    {
-      p()->buff.celeritous_conclusion_haste->trigger();
-      p()->buff.celeritous_conclusion_crit->trigger();
-    }
   }
 };
 
