@@ -13590,6 +13590,8 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   } );
 
   params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
+    // Need to expire the buff before we set it with an expiration time, as it does not seem to extend
+    buffs.death_and_decay->expire();
     buffs.death_and_decay->expire( tracker->get_expire_time() );
     range::erase_remove( active_dnds, tracker );
   } );
