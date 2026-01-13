@@ -481,43 +481,47 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
 namespace spells
 {
-template <class base_action_t>
+template <typename base_action_t>
 struct harmonic_surge_t : public base_action_t
 {
   using base_t = harmonic_surge_t<base_action_t>;
+
   template <typename TBase>
   struct impact_t : TBase
   {
     impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, name, spell_data )
+      : TBase( player, fmt::format( "harmonic_surge_{}", name ), spell_data )
     {
       TBase::aoe              = -1;
       TBase::split_aoe_damage = true;
 
-      unsigned offset = 0;
+      size_t offset = 1;
 
       if ( spell_data->effectN( 1 ).type() == E_SCHOOL_DAMAGE )
         offset += 0;
       if ( spell_data->effectN( 1 ).type() == E_HEAL )
         offset += 1;
 
-      offset += 1;
-
-      assert( offset != 0 );
-
-      if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset ); effect.ok() )
+      if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset );
+           effect.ok() )
         add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
     }
   };
 
+  action_t *damage;
+  action_t *heal;
+
   template <typename... Args>
-  harmonic_surge_t( monk_t *player, Args &&...args )
-    : base_action_t( player, std::forward<Args>( args )... ),
-      damage( new impact_t<monk_spell_t>( player, fmt::format( "harmonic_surge_damage_{}", base_action_t::name_str ), player->talent.master_of_harmony.harmonic_surge_damage ) ),
-      heal( new impact_t<monk_heal_t>( player, fmt::format( "harmonic_surge_heal_{}", base_action_t::name_str ), player->talent.master_of_harmony.harmonic_surge_heal ) )
+  harmonic_surge_t( monk_t *player, std::string_view name, Args &&...args )
+    : base_action_t( player, name std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
   {
     if ( !player->talent.master_of_harmony.harmonic_surge->ok() )
       return;
+
+    damage = new impact_t<monk_spell_t>( player, fmt::format( "damage_{}", name ),
+                                         player->talent.master_of_harmony.harmonic_surge_damage );
+    heal   = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
+                                        player->talent.master_of_harmony.harmonic_surge_heal );
 
     base_action_t::add_child( damage );
     base_action_t::add_child( heal );
@@ -534,9 +538,6 @@ struct harmonic_surge_t : public base_action_t
     damage->execute();
     heal->execute();
   }
-
-  action_t *damage;
-  action_t *heal;
 };
 }  // namespace spells
 
@@ -2209,7 +2210,7 @@ struct keg_smash_t : monk_melee_attack_t
     p()->action.chi_wave->execute();
 
     if ( p()->talent.master_of_harmony.potential_energy->ok() )
-      p()->buff.harmonic_surge->trigger( 1 );
+      p()->buff.harmonic_surge->trigger();
   }
 
   void impact( action_state_t *state ) override
