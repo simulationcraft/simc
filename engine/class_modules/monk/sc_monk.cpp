@@ -497,10 +497,16 @@ struct harmonic_surge_t : public base_action_t
 
       size_t offset = 1;
 
-      if ( spell_data->effectN( 1 ).type() == E_SCHOOL_DAMAGE )
-        offset += 0;
-      if ( spell_data->effectN( 1 ).type() == E_HEAL )
-        offset += 1;
+      switch ( spell_data->effectN( 1 ).type() )
+      {
+        case E_SCHOOL_DAMAGE:
+          break;
+        case E_HEAL:
+          offset++;
+          break;
+        default:
+          assert( false );
+      }
 
       if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset );
            effect.ok() )
