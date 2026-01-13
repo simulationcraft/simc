@@ -9234,6 +9234,9 @@ struct desecrate_t final : public death_knight_spell_t
     aoe             = -1;
     unsigned idx    = p->specialization() == DEATH_KNIGHT_UNHOLY ? 1 : 3;
     base_multiplier = p->talent.sanlayn.desecrate->effectN( idx ).percent();
+    // Currently blood uses 300% from the unholy effectN( 1 ), tested Jan 13 2026
+    if ( p->bugs )
+      base_multiplier = p->talent.sanlayn.desecrate->effectN( 1 ).percent();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -13502,7 +13505,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   bool partial_tick = std::trunc( n_ticks ) != n_ticks;
   if ( partial_tick )
   {
-    n_ticks = std::floor( n_ticks );
+    n_ticks = std::ceil( n_ticks );
     params.expiration_pulse( ground_aoe_params_t::expiration_pulse_type::FULL_EXPIRATION_PULSE );
   }
 
@@ -13571,11 +13574,28 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
         if ( desecrate_triggred )
         {
           timespan_t remaining_time = event->remaining_time();
-          double ticks_left         = remaining_time.total_seconds() * period.total_seconds();
+          double ticks_left         = remaining_time.total_seconds() / period.total_seconds();
           if( partial_tick )
-            ticks_left += 1.0;
+            ticks_left = std::ceil( ticks_left );
+
+          // Via in game testing, we find that
+          // Unholy desecrate does damage as if it had 1 less tick
+          // Blood without rapid decomp does damage as if it equaled the number of remaining ticks
+          // Blood with rapid decomp does damage as if it had 2 less ticks
+          switch ( specialization() )
+          {
+            case DEATH_KNIGHT_UNHOLY:
+              ticks_left -= 1;
+              break;
+            case DEATH_KNIGHT_BLOOD:
+              if ( talent.blood.rapid_decomposition.ok() )
+                ticks_left -= 2;
+              break;
+            default:
+              break;
+          }
           desecrate_t* des          = debug_cast<desecrate_t*>( background_actions.desecrate );
-          des->ticks_remain         = ticks_left;
+          des->ticks_remain         = std::max( ticks_left, 1.0 );  // At least 1 ticks worth always
           des->schedule_execute();
 
           event->expired = true;
