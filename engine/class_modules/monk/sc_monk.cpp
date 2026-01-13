@@ -519,7 +519,7 @@ struct harmonic_surge_t : public base_action_t
 
   template <typename... Args>
   harmonic_surge_t( monk_t *player, std::string_view name, Args &&...args )
-    : base_action_t( player, name std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
+    : base_action_t( player, name, std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
   {
     if ( !player->talent.master_of_harmony.harmonic_surge->ok() )
       return;
