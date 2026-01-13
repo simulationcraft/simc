@@ -703,6 +703,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> base_armor_multiplier_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
+  std::vector<player_effect_t> melee_haste_effects;
+  std::vector<player_effect_t> spell_haste_effects;
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
@@ -1195,6 +1197,6 @@ public:
 
   void print_custom_parsed_effects( report::sc_html_stream& os ) const override
   {
-    parsed_effects_html( os ); 
+    parsed_effects_html( os );
   }
 };

@@ -981,6 +981,9 @@ double parse_player_effects_t::composite_melee_haste() const
   for ( const auto& i : haste_effects )
     mh *= 1.0 / ( 1.0 + get_effect_value( i ) );
 
+  for ( const auto& i : melee_haste_effects )
+    mh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
   return mh;
 }
 
@@ -990,6 +993,9 @@ double parse_player_effects_t::composite_spell_haste() const
 
   for ( const auto& i : haste_effects )
     sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+  for ( const auto& i : spell_haste_effects )
+    sh *= 1.0 / ( 1.0 + get_effect_value( i ) )
 
   return sh;
 }
@@ -1143,9 +1149,19 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       return &versatility_effects;
 
     case A_HASTE_ALL:
-      str = "haste";
+      str = "all haste";
       invalidate( CACHE_HASTE );
       return &haste_effects;
+
+    case A_MOD_MELEE_HASTE:
+      str = "melee haste";
+      invalidate( CACHE_ATTACK_HASTE );
+      return &melee_haste_effects;
+
+    case A_MOD_SPELL_HASTE:
+      str = "spell haste";
+      invalidate( CACHE_SPELL_HASTE );
+      return &spell_haste_effects;
 
     case A_MOD_MASTERY_PCT:
       str = "mastery";
@@ -1388,7 +1404,9 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, crit_bonus_effects, "Crit Damage Bonus" );
     print_parsed_type( os, dodge_effects, "Dodge" );
     print_parsed_type( os, expertise_effects, "Expertise" );
-    print_parsed_type( os, haste_effects, "Haste" );
+    print_parsed_type( os, haste_effects, "All Haste" );
+    print_parsed_type( os, melee_haste_effects, "Melee Haste" );
+    print_parsed_type( os, spell_haste_effects, "Spell Haste" );
     print_parsed_type( os, healing_received_effects, "Healing Received" );
     print_parsed_type( os, leech_effects, "Leech" );
     print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
@@ -1416,7 +1434,7 @@ size_t parse_player_effects_t::total_effects_count() const
          player_multiplier_effects.size() +
          pet_multiplier_effects.size() +
          attack_power_multiplier_effects.size() +
-         crit_chance_effects.size() + 
+         crit_chance_effects.size() +
          spell_crit_chance_effects.size() +
          crit_bonus_effects.size() +
          leech_effects.size() +
@@ -1426,11 +1444,13 @@ size_t parse_player_effects_t::total_effects_count() const
          base_armor_multiplier_effects.size() +
          armor_multiplier_effects.size() +
          haste_effects.size() +
+         melee_haste_effects.size() +
+         spell_haste_effects.size() +
          mastery_effects.size() +
          parry_rating_from_crit_effects.size() +
          dodge_effects.size() +
          absorb_multiplier_effects.size() +
-         healing_received_effects.size() + 
+         healing_received_effects.size() +
          absorb_received_mult_effects.size() +
          target_multiplier_effects.size() +
          target_pet_multiplier_effects.size();
