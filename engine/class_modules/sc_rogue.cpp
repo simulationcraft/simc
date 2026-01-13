@@ -1002,7 +1002,7 @@ public:
 
     struct fatebound_talents_t
     {
-      player_talent_t chosens_revelry;
+      player_talent_t chosens_revelry;  // No implementation
       player_talent_t controlled_chaos;
       player_talent_t deal_fate;
       player_talent_t deaths_arrival;  // NYI in-game
@@ -1014,6 +1014,7 @@ public:
       player_talent_t inexorable_march;  // No implementation
       player_talent_t lucky_coin;
       player_talent_t mean_streak;
+      player_talent_t overflowing_purse;
       player_talent_t ravenholdt_mint;
       player_talent_t rush_to_the_inevitable;
       player_talent_t sometimes_lucky;
@@ -1695,10 +1696,7 @@ public:
     if ( p->set_bonuses.tww3_fatebound_4pc->ok() && p->spell.fatebound_lucky_coin_buff->ok() )
     {
       // Cooldown whitelists are in the Lucky Coin buff and modified by the set bonus
-      affected_by.tww3_fatebound_4pc = ( ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 2 ) ) ||
-                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 3 ) ) ||
-                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 4 ) ) ||
-                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 5 ) ) );
+      affected_by.tww3_fatebound_4pc = ( ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 2 ) ) );
     }
     
     // Assassination
@@ -2236,7 +2234,7 @@ public:
   void trigger_weaponmaster( const action_state_t* );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
-  void trigger_hand_of_fate( const action_state_t*, bool biased = false );
+  void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
   void trigger_relentless_strikes( const action_state_t* );
@@ -2275,22 +2273,6 @@ public:
       cd_duration = timespan_t::zero();
     }
 
-    if ( affected_by.tww3_fatebound_4pc && cd_duration != 0_ms && p()->buffs.fatebound_lucky_coin->check() )
-    {
-      if ( cd_duration == timespan_t::min() )
-      {
-        cd_duration = ab::cooldown_base_duration( *ab::cooldown );
-      }
-
-      for ( size_t i = 1; i <= p()->spell.fatebound_lucky_coin_buff->effect_count(); i++ )
-      {
-        if ( ab::data().affected_by( p()->spell.fatebound_lucky_coin_buff->effectN( i ) ) )
-        {
-          cd_duration += p()->spell.fatebound_lucky_coin_buff->effectN( i ).time_value();
-        }
-      }
-    }
-
     ab::update_ready( cd_duration );
   }
 
@@ -2316,6 +2298,11 @@ public:
     if ( affected_by.deadly_pursuit && p()->buffs.deadly_pursuit_cdr->check() && ab::cooldown == &cd )
     {
       m /= 1.0 + p()->spec.deadly_pursuit_cdr_buff->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.tww3_fatebound_4pc && p()->buffs.fatebound_lucky_coin->check() && ab::cooldown == &cd )
+    {
+      m /= 1.0 + p()->spell.fatebound_lucky_coin_buff->effectN( 2 ).percent();
     }
 
     return m;
@@ -3759,6 +3746,18 @@ struct dispatch_t: public rogue_attack_t
       trigger_restless_blades( execute_state );
       trigger_hand_of_fate( execute_state, true );
       trigger_tww2_set_bonus_removal();
+
+      if ( p()->talent.fatebound.overflowing_purse->ok() )
+      {
+        unsigned int num_coins = as<int>( p()->talent.fatebound.overflowing_purse->effectN( 1 ).base_value() );
+        if ( p()->rng().roll( p()->talent.fatebound.overflowing_purse->effectN( 2 ).percent() ) )
+        {
+          for ( unsigned i = 1; i < num_coins; i++ )
+          {
+            trigger_hand_of_fate( execute_state, true, 200_ms * i );
+          }
+        }
+      }
     }
 
     trigger_cut_to_the_chase( execute_state );
@@ -4223,6 +4222,18 @@ struct envenom_t : public rogue_attack_t
     trigger_poison_bomb( execute_state );
     trigger_hand_of_fate( execute_state, true );
     trigger_tww2_set_bonus_removal();
+
+    if ( p()->talent.fatebound.overflowing_purse->ok() )
+    {
+      unsigned int num_coins = as<int>( p()->talent.fatebound.overflowing_purse->effectN( 1 ).base_value() );
+      if ( p()->rng().roll( p()->talent.fatebound.overflowing_purse->effectN( 3 ).percent() ) )
+      {
+        for ( unsigned i = 1; i < num_coins; i++ )
+        {
+          trigger_hand_of_fate( execute_state, true, 200_ms * i );
+        }
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7929,7 +7940,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased )
+void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, timespan_t current_delay )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
@@ -7979,7 +7990,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
   }
 
-  execute_fatebound_coinflip( state, result );
+  execute_fatebound_coinflip( state, result, current_delay );
 
   if ( p()->talent.fatebound.controlled_chaos->ok() )
   {
@@ -7987,7 +7998,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     if ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ||
          p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS )
     {
-      execute_fatebound_coinflip( state, result, 200_ms );
+      // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
+      execute_fatebound_coinflip( state, result, 250_ms + current_delay );
     }
   }
 }
@@ -8781,13 +8793,6 @@ double rogue_t::composite_heal_versatility() const
 double rogue_t::composite_leech() const
 {
   double l = player_t::composite_leech();
-
-  l += spell.leeching_poison_buff->effectN( 1 ).percent();
-
-  if ( talent.fatebound.chosens_revelry->ok() ) {
-    // a server side script enables leech effect in base buffs - value in the talent's effect is "50", which doesnt seem to reflect the 0.5% it promises and applies
-    l += ( buffs.fatebound_coin_heads->check() + buffs.fatebound_coin_tails->check() ) * 0.005;
-  }
 
   return l;
 }
@@ -9811,7 +9816,7 @@ void rogue_t::init_spells()
   talent.deathstalker.unshakeable_drive = find_talent_spell( talent_tree::HERO, "Unshakeable Drive" );
 
   // Fatebound Talents
-  talent.fatebound.chosens_revelry  = find_talent_spell( talent_tree::HERO, "Chosen's Revelry" );
+  talent.fatebound.chosens_revelry = find_talent_spell( talent_tree::HERO, "Chosen's Revelry" );
   talent.fatebound.controlled_chaos = find_talent_spell( talent_tree::HERO, "Controlled Chaos" );
   talent.fatebound.deal_fate = find_talent_spell( talent_tree::HERO, "Deal Fate" );
   talent.fatebound.deaths_arrival = find_talent_spell( talent_tree::HERO, "Death's Arrival [NYI]" );
@@ -9823,6 +9828,7 @@ void rogue_t::init_spells()
   talent.fatebound.inexorable_march = find_talent_spell( talent_tree::HERO, "Inexorable March" );
   talent.fatebound.lucky_coin = find_talent_spell( talent_tree::HERO, "Lucky Coin" );
   talent.fatebound.mean_streak = find_talent_spell( talent_tree::HERO, "Mean Streak" );
+  talent.fatebound.overflowing_purse = find_talent_spell( talent_tree::HERO, "Overflowing Purse");
   talent.fatebound.ravenholdt_mint = find_talent_spell( talent_tree::HERO, "Ravenholdt Mint" );
   talent.fatebound.rush_to_the_inevitable = find_talent_spell( talent_tree::HERO, "Rush to the Inevitable" );
   talent.fatebound.sometimes_lucky = find_talent_spell( talent_tree::HERO, "Sometimes Lucky" );
@@ -10571,7 +10577,7 @@ void rogue_t::create_buffs()
                                                 1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
                                                   1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
-    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
+    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 3 ).percent(),
                                                      1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
   }
 
@@ -10580,12 +10586,6 @@ void rogue_t::create_buffs()
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    
-  if ( talent.fatebound.chosens_revelry->ok() )
-  {
-    buffs.fatebound_coin_tails->add_invalidate( CACHE_LEECH );
-    buffs.fatebound_coin_heads->add_invalidate( CACHE_LEECH );
-  }
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
