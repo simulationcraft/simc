@@ -995,7 +995,7 @@ double parse_player_effects_t::composite_spell_haste() const
     sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
 
   for ( const auto& i : spell_haste_effects )
-    sh *= 1.0 / ( 1.0 + get_effect_value( i ) )
+    sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
 
   return sh;
 }
