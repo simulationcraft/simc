@@ -5431,7 +5431,7 @@ struct ravager_tick_t : public warrior_attack_t
   double rage_from_ravager;
   ravager_tick_t( warrior_t* p, util::string_view name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ),
-      rage_from_ravager( p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) )
+      rage_from_ravager( p->specialization() == WARRIOR_PROTECTION ? p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) : 0 )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
