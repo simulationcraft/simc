@@ -7834,7 +7834,8 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes);
+  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes)
+                              ->set_cooldown( 0_s );  // Handled by the action
 
   buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
                           ->set_default_value_from_effect( 1 )
