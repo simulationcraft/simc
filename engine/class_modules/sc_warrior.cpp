@@ -3401,6 +3401,12 @@ struct heroic_strike_t : public slam_base_t
 
   }
 
+  heroic_strike_t( std::string_view name, warrior_t* p )
+    : slam_base_t( name, p, p->spell.heroic_strike )
+  {
+    background = true;
+  }
+
   void execute() override
   {
     slam_base_t::execute();
@@ -3426,7 +3432,12 @@ struct slam_t : public slam_base_t
   : slam_base_t( name, p, p->spell.slam )
   {
     background = true;
-    // TODO check if fervor slams automatically upgrade to heroic strike
+    std::string heroic_strike_name = "heroic_strike_";
+    if ( util::starts_with( name, "slam_") )
+      heroic_strike_name += name.substr(5);
+    else
+      heroic_strike_name += name;
+    set_replacement_action( get_action<heroic_strike_t>( heroic_strike_name, p ), p->buff.master_of_warfare_proc );
   }
 };
 
