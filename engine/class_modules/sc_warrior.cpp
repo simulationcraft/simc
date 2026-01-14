@@ -2986,7 +2986,7 @@ struct mortal_strike_t : public warrior_attack_t
     if( !background )
       p()->buff.tactical_edge->decrement();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -3376,7 +3376,7 @@ struct slam_base_t : public warrior_attack_t
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -4096,7 +4096,7 @@ struct execute_arms_t : public warrior_attack_t
         lightning_strike->execute();
       }
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -5168,7 +5168,7 @@ struct overpower_t : public warrior_attack_t
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
