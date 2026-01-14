@@ -497,6 +497,7 @@ public:
     propagate_const<buff_t *> blackout_combo;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
+    propagate_const<buff_t *> elixir_of_determination;
     propagate_const<buff_t *> elusive_brawler;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
@@ -553,7 +554,9 @@ public:
 
     // Shado-Pan
     propagate_const<buff_t *> flurry_charge;
+    propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
+    propagate_const<buff_t *> whirling_steel;
   } buff;
 
   struct

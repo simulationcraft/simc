@@ -3988,6 +3988,27 @@ struct fortifying_brew_t : public monk_buff_t<>
   }
 };
 
+struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
+{
+  actions::monk_absorb_t *absorb;
+
+  elixir_of_determination_t( monk_t *p, std::string_view name, const spell_data_t *spell_data )
+    : monk_buff_t<absorb_buff_t>( p, name, spell_data ),
+      absorb( new actions::monk_absorb_t( p, name, spell_data ) )
+  {
+    set_internal_cooldown( timespan_t::from_seconds( 15 ) );
+    set_absorb_source( player->get_stats( name ) );
+  }
+
+  bool trigger( int stacks, double, double chance, timespan_t duration ) override
+  {
+    double minimum = p().max_health() * p().talent.brewmaster.elixir_of_determination->effectN( 3 ).percent();
+    double amount  = minimum;  // TODO max( minimum, recently_purified * effectN( 2 ) )
+
+    return base_t::trigger( stacks, amount, chance, duration );
+  }
+};
+
 struct touch_of_karma_buff_t : public monk_buff_t<>
 {
   touch_of_karma_buff_t( monk_t *p, std::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
@@ -4604,6 +4625,7 @@ void monk_t::parse_player_effects()
   } );
 
   // Shadopan
+  parse_effects( buff.whirling_steel );
 
   // Conduit of the Celestials
   parse_effects( buff.inner_compass_crane_stance );
@@ -5489,9 +5511,11 @@ void monk_t::create_buffs()
             buff.ox_stance->decrement();
           }
 
-          // multiplier is not available in spell data :(
           if ( talent.brewmaster.zen_state->ok() )
-            stagger_rating *= 1.0 + 1.3 * ( 1.0 - current_health() );
+          {
+            double missing_health_percentage = 1.0 - std::max( health_percentage() / 100.0, 0.0 );
+            stagger_rating *= 1.0 + missing_health_percentage * talent.brewmaster.zen_state->effectN( 1 ).percent();
+          }
 
           double k = dbc->armor_mitigation_constant( state->target->level() );
           k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
@@ -5566,6 +5590,11 @@ void monk_t::create_buffs()
           ->set_cooldown( 0_ms )
           ->set_duration( 1_ms )
           ->set_max_stack( 1 );
+
+  buff.elixir_of_determination =
+      make_buff_fallback<buffs::elixir_of_determination_t>(
+          talent.brewmaster.elixir_of_determination->ok(), this, "elixir_of_determination",
+          talent.brewmaster.elixir_of_determination->effectN( 1 ).trigger() );
 
   buff.invoke_niuzao = make_buff_fallback( talent.brewmaster.invoke_niuzao_the_black_ox->ok(), this,
                                            "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
@@ -5782,9 +5811,18 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.shado_pan.flurry_strikes->ok(), this, "flurry_charge", talent.shado_pan.flurry_charge )
           ->set_default_value_from_effect( 1 );
 
+  buff.predictive_training =
+      make_buff_fallback( talent.shado_pan.predictive_training->ok(), this, "predictive_training",
+                          talent.shado_pan.predictive_training->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talent.shado_pan.predictive_training );
+
   buff.stand_ready =
       make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
           ->set_default_value_from_effect( 1 );
+
+  buff.whirling_steel =
+      make_buff_fallback<buff_t>( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
+                                                    talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
 }
 
 void monk_t::init_gains()
@@ -6003,9 +6041,7 @@ void monk_t::init_special_effects()
     create_proc_callback( { talent.brewmaster.spirit_of_the_ox.spell() } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
                                               [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return state->action->id ==
-                                                           talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
-                                                       state->action->id == baseline.brewmaster.blackout_kick->id();
+                                                return state->action->id == baseline.brewmaster.blackout_kick->id();
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.gift_of_the_ox->spawn_orb( 1 );
@@ -6101,6 +6137,28 @@ void monk_t::init_special_effects()
           cb->proc_chance                       = 1.0;
           cb->can_proc_from_procs               = true;
           cb->can_only_proc_from_class_abilites = true;
+        } );
+
+  if ( talent.brewmaster.elixir_of_determination->ok() )
+    create_proc_callback( { &buff.elixir_of_determination->data() } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+              return health_percentage() < talent.brewmaster.elixir_of_determination->effectN( 1 ).base_value();
+            } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.elixir_of_determination->trigger();
+        } );
+
+  if ( talent.shado_pan.whirling_steel->ok() )
+    create_proc_callback( { talent.shado_pan.whirling_steel } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+              return health_percentage() < talent.shado_pan.whirling_steel->effectN( 1 ).base_value();
+            } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.whirling_steel->trigger();
         } );
 
   base_t::init_special_effects();
@@ -6339,9 +6397,12 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       }
 
       buff.counterstrike->trigger();
+      buff.predictive_training->trigger();
     }
     if ( s->result == RESULT_MISS )
       buff.counterstrike->trigger();
+    if ( s->result == RESULT_PARRY )
+      buff.predictive_training->trigger();
   }
 
   // trigger the mastery if the player gets hit by a physical attack; but not from stagger
@@ -6385,6 +6446,9 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
       s->result_amount = 0;
     }
   }
+
+  if ( buff.predictive_training->up() )
+    s->result_amount *= ( 1.0 + buff.predictive_training->data().effectN( 1 ).percent() );
 
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
   // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
