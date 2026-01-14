@@ -1166,7 +1166,7 @@ struct base_blackout_kick_t : monk_melee_attack_t
   proc_t *rising_sun_kick_reset;
 
   base_blackout_kick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-    : monk_melee_attack_t( player, name, spell_data ), rising_sun_kick( nullptr )
+    : monk_melee_attack_t( player, name, spell_data ), rising_sun_kick( nullptr ), rising_sun_kick_reset( nullptr )
   {
     // TODO: check this
     ap_type    = attack_power_type::WEAPON_BOTH;
