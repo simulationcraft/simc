@@ -5511,11 +5511,9 @@ void monk_t::create_buffs()
             buff.ox_stance->decrement();
           }
 
+          // multiplier is not available in spell data :(
           if ( talent.brewmaster.zen_state->ok() )
-          {
-            double missing_health_percentage = 1.0 - std::max( health_percentage() / 100.0, 0.0 );
-            stagger_rating *= 1.0 + missing_health_percentage * talent.brewmaster.zen_state->effectN( 1 ).percent();
-          }
+            stagger_rating *= 1.0 + 1.3 * ( 1.0 - current_health() );
 
           double k = dbc->armor_mitigation_constant( state->target->level() );
           k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
