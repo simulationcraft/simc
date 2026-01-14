@@ -3371,6 +3371,9 @@ struct slam_base_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( was_replaced )
+      return;
+
     p()->buff.whirlwind->decrement();
 
     if ( p()->talents.arms.martial_prowess.ok() )
