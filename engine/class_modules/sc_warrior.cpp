@@ -4740,6 +4740,9 @@ struct raging_blow_t : public warrior_attack_t
         // cast with opportunist up.
         if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
+
+        if ( p()->talents.fury.surge_of_adrenaline->ok() )
+          p()->buff.surge_of_adrenaline->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() )
@@ -4895,6 +4898,9 @@ struct crushing_blow_t : public warrior_attack_t
         // cast with opportunist up.
         if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
+
+        if ( p()->talents.fury.surge_of_adrenaline->ok() )
+          p()->buff.surge_of_adrenaline->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() && rng().roll( cd_reset_chance ) )
@@ -7839,7 +7845,7 @@ void warrior_t::create_buffs()
 
   buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
                           ->set_default_value_from_effect( 1 )
-                          ->set_initial_stack( talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() );
+                          ->set_initial_stack( talents.arms.tactical_edge.ok() ? talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() : 1 );
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
