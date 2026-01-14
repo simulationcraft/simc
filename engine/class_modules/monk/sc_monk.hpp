@@ -572,7 +572,6 @@ public:
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
     propagate_const<proc_t *> elusive_footwork_proc;
-    propagate_const<proc_t *> rsk_reset_totm;
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
