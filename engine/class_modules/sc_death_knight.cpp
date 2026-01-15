@@ -1415,7 +1415,7 @@ public:
       player_talent_t grim_reaper;
       player_talent_t pact_of_the_deathbringer;  // NYI
       player_talent_t rune_carved_plates;
-      player_talent_t deathly_blows;  // NYI
+      player_talent_t deathly_blows;
       player_talent_t swift_and_painful;
       player_talent_t dark_talons;
       player_talent_t reapers_onslaught;

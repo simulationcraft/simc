@@ -357,6 +357,7 @@ public:
     gain_t* critical_block;
     gain_t* execute;
     gain_t* frothing_berserker;
+    gain_t* just_warming_up;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
@@ -3594,6 +3595,9 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( p()->talents.arms.broad_strokes.ok() )
       p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
+
+    if ( p()->talents.arms.just_warming_up.ok() )
+      p()->resource_gain(RESOURCE_RAGE, p()->talents.arms.just_warming_up->effectN( 1 ).resource( RESOURCE_RAGE ), p()->gain.just_warming_up );
   }
 };
 
@@ -8031,6 +8035,7 @@ void warrior_t::init_gains()
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
   gain.frothing_berserker               = get_gain( "frothing_berserker" );
+  gain.just_warming_up                  = get_gain( "just_warming_up" );
   gain.melee_crit                       = get_gain( "melee_crit" );
   gain.melee_main_hand                  = get_gain( "melee_main_hand" );
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
