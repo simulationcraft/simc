@@ -348,7 +348,6 @@ struct tar_trap_aoe_t;
 struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
-  bool sentinel_imploding = false;
 
   struct cooldowns_t
   {
@@ -364,7 +363,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* kill_zone;
     buff_t* ohnahran_winds;
 
-    buff_t* sentinel;
+    buff_t* sentinels_mark;
     buff_t* crescent_steel;
     buff_t* lunar_storm;
 
@@ -601,8 +600,6 @@ public:
     proc_t* precision_detonation;
     proc_t* tww_s2_mm_4pc_explosive;
 
-    proc_t* sentinel_stacks;
-    proc_t* sentinel_implosions;
     proc_t* extrapolated_shots_stacks;
     proc_t* release_and_reload_stacks;
     proc_t* crescent_steel_stacks;
@@ -1043,7 +1040,8 @@ public:
     spell_data_ptr_t envenomed_fangs_spell; //TODO Removed
 
     // Sentinel
-    spell_data_ptr_t sentinel; //TODO Not implemented
+    spell_data_ptr_t sentinel;
+    spell_data_ptr_t sentinels_mark;
 
     spell_data_ptr_t dont_look_back; //Utility talent, won't implement
     spell_data_ptr_t moons_blessing; //TODO Not implemented
@@ -1070,8 +1068,6 @@ public:
     spell_data_ptr_t lunar_storm_periodic_spell; //TODO Removed/Reworked
     spell_data_ptr_t lunar_storm_ready_buff; //TODO Removed/Reworked
     spell_data_ptr_t lunar_storm_cooldown_buff; //TODO Removed/Reworked
-    spell_data_ptr_t sentinel_debuff; //TODO Removed/Reworked
-    spell_data_ptr_t sentinel_tick; //TODO Removed/Reworked
     spell_data_ptr_t extrapolated_shots; //TODO Removed/Reworked
     spell_data_ptr_t sentinel_precision; //TODO Removed/Reworked
     spell_data_ptr_t release_and_reload; //TODO Removed/Reworked
@@ -1128,7 +1124,6 @@ public:
 
     action_t* boar_charge = nullptr;
 
-    action_t* sentinel = nullptr;
     action_t* symphonic_arsenal = nullptr;
     action_t* lunar_storm_initial = nullptr;
     action_t* lunar_storm_periodic = nullptr;
@@ -1145,7 +1140,6 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     event_t* current_volley = nullptr;
     event_t* precision_detonation_expiry = nullptr;
-    timespan_t sentinel_watch_reduction = 0_s;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     ground_aoe_event_t* current_boar_charge = nullptr;
@@ -1297,12 +1291,9 @@ public:
   void trigger_outland_venom_update();
   void consume_trick_shots();
   void trigger_deathblow( bool activated = false );
-  void trigger_sentinel( player_t* target, bool force = false, proc_t* proc = nullptr );
-  void trigger_sentinel_implosion( hunter_td_t* td );
-  void trigger_symphonic_arsenal();
   void trigger_lunar_storm( player_t* target );
   void consume_precise_shots();
-  void trigger_spotters_mark( player_t* target, bool force = false );
+  void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false );
   double calculate_tip_of_the_spear_value( double base_value ) const;
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
@@ -1346,6 +1337,9 @@ public:
     damage_affected_by tip_of_the_spear;
     damage_affected_by coordinated_assault;
 
+    // Sentinel
+    damage_affected_by sentinels_mark;
+
     // Pack Leader
     damage_affected_by wyverns_cry;
     damage_affected_by lead_from_the_front;    
@@ -1383,6 +1377,8 @@ public:
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     affected_by.spearhead = check_affected_by( this, p->talents.spearhead_bleed->effectN( 2 ) );
     affected_by.deadly_duo = check_affected_by( this, p->talents.spearhead_bleed->effectN( 3 ) );
+
+    affected_by.sentinels_mark = parse_damage_affecting_aura( this, p->talents.sentinels_mark );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
@@ -1461,7 +1457,10 @@ public:
     ab::execute();
 
     if ( decrements_tip_of_the_spear )
+    {
       p()->buffs.tip_of_the_spear->decrement();
+      p()->trigger_eagles_mark( p()->target, true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1611,6 +1610,9 @@ public:
       if ( target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         da *= 1.0476;
     }
+
+    if ( affected_by.sentinels_mark.direct )
+      da *= 1 + td( target )->debuffs.sentinels_mark->check_value();
 
     return da;
   }
@@ -2895,14 +2897,6 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
     return da;
   }
   
-  void impact( action_state_t* s ) override
-  {
-    hunter_pet_attack_t::impact( s );
-
-    if ( o()->talents.sentinel.ok() )
-      o()->trigger_sentinel( s->target, false, o()->procs.sentinel_stacks );
-  }
-  
   void trigger_dot( action_state_t* s ) override
   {
     hunter_pet_attack_t::trigger_dot( s );
@@ -3701,40 +3695,47 @@ void hunter_t::consume_precise_shots()
   buffs.precise_shots->expire();
 }
 
-void hunter_t::trigger_spotters_mark( player_t* target, bool force )
+void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force )
 {
-  double chance = force ? 1.0 : specs.spotters_mark_data->effectN( 1 ).percent();
-      
-  if ( !force && talents.feathered_frenzy.ok() && buffs.trueshot->up() )
-    chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
-      
-  if ( force || rng().roll( chance ) )
+  if ( !talents.sentinel.ok() && !specs.spotters_mark_data.ok() )
+    return;
+
+  if ( force )
   {
-    get_target_data( target )->debuffs.spotters_mark->trigger();
-    
-    if ( talents.ohnahran_winds.ok() )
-    {
-      for ( player_t* t : sim->target_non_sleeping_list )
-      {
-        if ( t->is_enemy() && t != target )
-        {
-          get_target_data( t )->debuffs.ohnahran_winds->trigger();
-          break;
-        }
-      }
-    }
+    auto td = get_target_data( target );
+    sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+    return;
+  }
+
+  /* Further testing is required on the calculation sequence for this chance. 
+     When is Feathered Frenzy's bonus applied?
+     How does Lunar Calling affect it?
+     TODO reconfirm before launch */
+  auto spec = specialization();
+  double chance = 0;
+  double lunar_calling_bonus = talents.lunar_calling->effectN( 1 ).percent();
+
+  if ( spec == HUNTER_MARKSMANSHIP )
+  {
+    chance += specs.spotters_mark_data->effectN( 1 ).percent();
+
+    if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
+      chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+  }
+  else if ( spec == HUNTER_SURVIVAL )
+  {
+    chance += talents.sentinel->effectN( 1 ).percent();
+  }
+
+  if ( rng().roll( chance ) )
+  {
+    auto td = get_target_data( target );
+    sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
   }
 }
 
 double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
 {
-
-  if ( talents.flankers_advantage.ok() )
-  {
-    // Seems that the amount of the bonus given is based on the ratio of player crit % out of a cap of 50% from effect 5.
-    double ratio = std::min( cache.attack_crit_chance(), talents.flankers_advantage->effectN( 5 ).percent() ) / talents.flankers_advantage->effectN( 5 ).percent();
-    tip_bonus += tip_bonus * ratio;
-  }
 
   //Better Together is seemingly unaffected by Flanker's Advantage bonus
   tip_bonus += talents.better_together->effectN( 3 ).percent();
@@ -3778,75 +3779,6 @@ void hunter_t::trigger_deathblow( bool activated )
   }
 
   talents.black_arrow.ok() ? cooldowns.black_arrow->reset( !activated ) : cooldowns.kill_shot->reset( !activated );
-}
-
-void hunter_t::trigger_sentinel( player_t* target, bool force, proc_t* proc )
-{
-  if ( force || buffs.eyes_closed->check() || rng().roll( 0.22 ) )
-  {
-    hunter_td_t* td = get_target_data( target );
-    buff_t* sentinel = td->debuffs.sentinel;
-
-    int stacks = sentinel->check();
-
-    if ( proc )
-      proc->occur();
-
-    sentinel->trigger();
-    if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
-    {
-      procs.release_and_reload_stacks->occur();
-      sentinel->trigger();
-    }
-
-    if ( !stacks && talents.extrapolated_shots.ok() )
-    {
-      procs.extrapolated_shots_stacks->occur();
-      sentinel->trigger( as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
-      // The stack from Extrapolated Shots has its own chance to roll a bonus stack from Release and Reload,
-      // possibly generating 4 stacks at once.
-      if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
-      {
-        procs.release_and_reload_stacks->occur();
-        sentinel->trigger();
-      }
-    }
-
-    // TODO: Seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly 
-    // overwriting or ticking in parallel, but for now model as just allowing one to tick at a time.
-    if ( !td->sentinel_imploding && sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
-    {
-      procs.sentinel_implosions->occur();
-      trigger_sentinel_implosion( td );
-    }
-  }
-}
-
-void hunter_t::trigger_sentinel_implosion( hunter_td_t* td )
-{
-  // Seems to tick one last time after it consumes the last Sentinel stack, resulting in a Sentinel 
-  // re-application shortly after expiration but before the next tick to continue being consumed.
-  if ( td->debuffs.sentinel->check() )
-  {
-    td->sentinel_imploding = true;
-    actions.sentinel->execute_on_target( td->target );
-    make_event( sim, 2_s, [ this, td ]() {
-      if ( td->sentinel_imploding )
-        trigger_sentinel_implosion( td );
-    } );
-  }
-  else
-  {
-    td->sentinel_imploding = false;
-  }
-}
-
-void hunter_t::trigger_symphonic_arsenal()
-{
-  if ( actions.symphonic_arsenal )
-    for ( player_t* t : sim->target_non_sleeping_list )
-      if ( t->is_enemy() && get_target_data( t )->debuffs.sentinel->check() )
-        actions.symphonic_arsenal->execute_on_target( t );
 }
 
 void hunter_t::trigger_lunar_storm( player_t* target )
@@ -4274,7 +4206,7 @@ struct arcane_shot_t : public arcane_shot_base_t
     arcane_shot_base_t::impact( s );
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
-      p()->trigger_spotters_mark( s->target );
+      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
   }
 
   double cost_pct_multiplier() const override
@@ -4632,9 +4564,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
           residual_action::trigger( razor_fragments, t, amount );
       }
     }
-
-    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
-      p()->trigger_spotters_mark( s->target );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5059,84 +4988,6 @@ struct boar_charge_t final : hunter_ranged_attack_t
   }
 };
 
-// Sentinel (Sentinel) ==================================================================
-
-struct sentinel_t : hunter_ranged_attack_t
-{
-  struct {
-    double chance = 0.0;
-    double gain = 0.0;
-  } invigorating_pulse;
-
-  struct {
-    timespan_t reduction = 0_s;
-    timespan_t limit = 0_s;
-    cooldown_t* cooldown = nullptr;
-  } sentinel_watch;
-
-  sentinel_t( hunter_t* p ) : hunter_ranged_attack_t( "sentinel", p, p->talents.sentinel_tick )
-  {
-    background = dual = true;
-
-    if ( p->tier_set.tww_s3_sentinel_4pc.ok() )
-    {
-      double mod = p->tier_set.tww_s3_sentinel_4pc->effectN( 2 ).percent();
-
-      base_dd_multiplier *= 1 + mod;
-    }
-
-    if ( p->talents.invigorating_pulse.ok() )
-    {
-      invigorating_pulse.chance = p->talents.invigorating_pulse->effectN( 2 ).percent();
-      invigorating_pulse.gain = p->talents.invigorating_pulse->effectN( 1 ).base_value();
-    }
-
-    if ( p->talents.sentinel_watch.ok() )
-    {
-      sentinel_watch.reduction = timespan_t::from_seconds( p->talents.sentinel_watch->effectN( 1 ).base_value() );
-      sentinel_watch.limit     = timespan_t::from_seconds( p->talents.sentinel_watch->effectN( 2 ).base_value() );
-
-      if ( p->specialization() == HUNTER_SURVIVAL )
-        sentinel_watch.cooldown = p->cooldowns.coordinated_assault;
-      else if ( p->specialization() == HUNTER_MARKSMANSHIP )
-        sentinel_watch.cooldown = p->cooldowns.trueshot;
-    }
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    td( target )->debuffs.sentinel->decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( rng().roll( invigorating_pulse.chance ) )
-      p()->resource_gain( RESOURCE_FOCUS, invigorating_pulse.gain, p()->gains.invigorating_pulse, this );
-
-    if ( sentinel_watch.cooldown && p()->state.sentinel_watch_reduction < sentinel_watch.limit )
-    {
-      p()->state.sentinel_watch_reduction += sentinel_watch.reduction;
-      sentinel_watch.cooldown->adjust( -sentinel_watch.reduction, true );
-    }
-  }
-};
-
-// Symphonic Arsenal (Sentinel) ============================================================
-
-struct symphonic_arsenal_t : hunter_ranged_attack_t
-{
-  symphonic_arsenal_t( hunter_t* p ) : hunter_ranged_attack_t( "symphonic_arsenal", p, p->talents.symphonic_arsenal_spell )
-  {
-    background = dual = true;
-    attack_power_mod.direct = p->specialization() == HUNTER_SURVIVAL ? p->talents.symphonic_arsenal_spell->effectN( 3 ).ap_coeff() : p->talents.symphonic_arsenal_spell->effectN( 1 ).ap_coeff();
-    aoe = 1 + as<int>( p->talents.symphonic_arsenal->effectN( 1 ).base_value() );
-  }
-};
-
 // Lunar Storm (Sentinel) ============================================================
 
 struct lunar_storm_initial_t : hunter_ranged_attack_t
@@ -5171,8 +5022,6 @@ struct lunar_storm_periodic_t : hunter_ranged_attack_t
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     hunter_ranged_attack_t::available_targets( tl );
-
-    range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->debuffs.sentinel->check(); } );
 
     return tl.size();
   }
@@ -5505,8 +5354,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     // TODO reconfirm before launch
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
       make_event( p()->sim, 10_ms, [ this ]() { p()->buffs.trick_shots->trigger(); } );
-
-    p()->trigger_symphonic_arsenal();
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -5520,7 +5367,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     // Multi-Shot only ever seems to trigger Spotter's Mark on the primary target
     if ( s->chain_target == 0 && debug_cast<state_t*>( s )->empowered_by_precise_shots )
-      p()->trigger_spotters_mark( s->target );
+      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5750,10 +5597,10 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       }
     }
 
-    if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.ohnahran_winds->check() )
+    if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
       target_data->debuffs.spotters_mark->expire();
-      target_data->debuffs.ohnahran_winds->expire();
+      target_data->debuffs.sentinels_mark->expire();
 
       if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
       {
@@ -6699,8 +6546,6 @@ struct butchery_t : public hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    p()->trigger_symphonic_arsenal();
-
     if ( p()->talents.frenzy_strikes.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
   }
@@ -6862,7 +6707,6 @@ struct coordinated_assault_t: public hunter_spell_t
 
     hunter_spell_t::execute();
 
-    p()->state.sentinel_watch_reduction = 0_s;
     p()->buffs.eyes_closed->trigger();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
@@ -7559,7 +7403,6 @@ struct trueshot_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p()->state.sentinel_watch_reduction = 0_s;
     p()->buffs.eyes_closed->trigger();
 
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
@@ -7569,7 +7412,7 @@ struct trueshot_t : public hunter_spell_t
     p()->buffs.withering_fire->trigger( p()->buffs.trueshot->data().duration() );
 
     if ( p()->talents.feathered_frenzy.ok() )
-      p()->trigger_spotters_mark( target, true );
+      p()->trigger_eagles_mark( target, p()->talents.sentinel.ok(), true );
 
     p()->buffs.double_tap->trigger();
 
@@ -7836,6 +7679,13 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
         p()->trigger_lunar_storm( target );
     }
 
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      td( s->target )->debuffs.sentinels_mark->expire();
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double am = hunter_ranged_attack_t::composite_da_multiplier( s );
@@ -7995,13 +7845,8 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.ohnahran_winds = make_buff( *this, "ohnahran_winds", p->talents.ohnahran_winds_debuff )
     ->set_default_value( p->talents.ohnahran_winds_debuff->effectN( 1 ).percent() );
 
-  debuffs.sentinel = make_buff( *this, "sentinel", p->talents.sentinel_debuff );
-
-  debuffs.crescent_steel = make_buff( *this, "crescent_steel", p->talents.crescent_steel_debuff )
-    -> set_tick_callback(
-      [ this, p ]( buff_t*, int, const timespan_t& ) {
-        p->trigger_sentinel( target, true, p->procs.crescent_steel_stacks );
-      } );
+  debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
+    ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
 
   debuffs.lunar_storm = make_buff( *this, "lunar_storm", p->talents.lunar_storm_periodic_spell->effectN( 2 ).trigger() )
     -> set_default_value_from_effect( 1 )
@@ -8025,7 +7870,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 void hunter_td_t::target_demise()
 {
   damaged = false;
-  sentinel_imploding = false;
 
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source -> sim -> event_mgr.canceled )
@@ -8679,6 +8523,7 @@ void hunter_t::init_spells()
   {
     // Sentinel
     talents.sentinel                = find_talent_spell( talent_tree::HERO, "Sentinel" );
+    talents.sentinels_mark          = talents.sentinel.ok() ? find_spell( 1253601 ) : spell_data_t::not_found();
 
     talents.dont_look_back          = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
     talents.moons_blessing          = find_talent_spell( talent_tree::HERO, "Moon's Blessing" );
@@ -8699,8 +8544,6 @@ void hunter_t::init_spells()
     talents.lunar_storm             = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
 
     //TODO Remove
-    talents.sentinel_debuff = talents.sentinel.ok() ? find_spell( 450387 ) : spell_data_t::not_found();
-    talents.sentinel_tick = talents.sentinel.ok() ? find_spell( 450412 ) : spell_data_t::not_found();
     talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
     talents.sentinel_precision = find_talent_spell( talent_tree::HERO, "Sentinel Precision" );
     talents.release_and_reload = find_talent_spell( talent_tree::HERO, "Release and Reload" );
@@ -8832,12 +8675,6 @@ void hunter_t::create_actions()
   
   if ( talents.howl_of_the_pack_leader.ok() )
     actions.boar_charge = new attacks::boar_charge_t( this );
-
-  if ( talents.sentinel.ok() )
-    actions.sentinel = new attacks::sentinel_t( this );
-
-  if ( talents.symphonic_arsenal.ok() )
-    actions.symphonic_arsenal = new attacks::symphonic_arsenal_t( this );
 
   if ( talents.lunar_storm.ok() )
   {
@@ -9296,12 +9133,6 @@ void hunter_t::init_procs()
   if ( tier_set.tww_s2_mm_4pc.ok() )
     procs.tww_s2_mm_4pc_explosive = get_proc( "TWW S2 MM 4pc Explosive" );
 
-  if ( talents.sentinel.ok() )
-  {
-    procs.sentinel_stacks = get_proc( "Sentinel Stacks" );
-    procs.sentinel_implosions = get_proc( "Sentinel Implosions" );
-  }
-
   if ( talents.extrapolated_shots.ok() )
     procs.extrapolated_shots_stacks = get_proc( "Extrapolated Shots Stacks" );
 
@@ -9337,31 +9168,6 @@ void hunter_t::init_assessors()
     assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( result_amount_type, action_state_t* s ) {
       if ( s -> result_amount > 0 )
         get_target_data( s -> target ) -> damaged = true;
-      return assessor::CONTINUE;
-    } );
-
-  if ( talents.overwatch.ok() )
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
-      hunter_td_t* target_data = get_target_data( s->target );
-      if ( !target_data->sentinel_imploding && target_data->debuffs.sentinel->check() > 3 && s->target->health_percentage() < talents.overwatch->effectN( 1 ).base_value() )
-      {
-        for ( player_t* t : sim->target_non_sleeping_list )
-        {
-          if ( t->is_enemy() && !t->demise_event )
-          {
-            hunter_td_t* td = get_target_data( t );
-            if ( !td->sentinel_imploding && td->cooldowns.overwatch->up() )
-            {
-              sim->print_debug( "Damage to {} with {} Sentinel stacks at {}% triggers Overwatch on {}", s->target->name(),
-                          target_data->debuffs.sentinel->check(), s->target->health_percentage(), t->name() );
-
-              procs.overwatch_implosions->occur();
-              trigger_sentinel_implosion( td );
-              td->cooldowns.overwatch->start();
-            }
-          }
-        }
-      }
       return assessor::CONTINUE;
     } );
 
@@ -9563,35 +9369,6 @@ void hunter_t::init_special_effects()
 
     auto cb = new master_marksman_cb_t( *effect, talents.master_marksman -> effectN( 1 ).percent(), new attacks::master_marksman_t( this ) );
     cb -> initialize();
-  }
-
-  if ( talents.sentinel.ok() )
-  {
-    struct sentinel_cb_t : public dbc_proc_callback_t
-    {
-      hunter_t* player;
-
-      sentinel_cb_t( const special_effect_t& e, hunter_t* p )
-        : dbc_proc_callback_t( p, e ), player( p )
-      {
-      }
-
-      void execute( action_t* a, action_state_t* s ) override
-      {
-        dbc_proc_callback_t::execute( a, s );
-
-        player->trigger_sentinel( s->target, false, player->procs.sentinel_stacks );
-      }
-    };
-
-    auto const effect    = new special_effect_t( this );
-    effect->name_str     = "sentinel";
-    effect->spell_id     = talents.sentinel->id();
-    effect->proc_flags2_ = PF2_ALL_HIT;
-    special_effects.push_back( effect );
-
-    auto cb = new sentinel_cb_t( *effect, this );
-    cb->initialize();
   }
 
   if ( tier_set.tww_s2_bm_2pc.ok() )
