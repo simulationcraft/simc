@@ -1035,7 +1035,6 @@ public:
         parse_effects( p()->mastery.master_of_arms );
 
       parse_effects( p()->buff.collateral_damage );
-      parse_effects( p()->buff.crushing_combo );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
@@ -3557,6 +3556,12 @@ struct cleave_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if( p()->buff.crushing_combo->up() )
+    {
+      p()->cooldown.cleave->reset( true );
+      p()->buff.crushing_combo->decrement();
+    }
   }
 };
 
@@ -3591,7 +3596,7 @@ struct colossus_smash_t : public warrior_attack_t
       p()->buff.tactical_edge->trigger();
 
     if ( p()->talents.arms.crushing_combo.ok() )
-      p()->buff.crushing_combo->trigger();
+      p()->buff.crushing_combo->trigger( p()->talents.arms.crushing_combo->effectN( 1 ).trigger()->max_stacks() );
 
     if ( p()->talents.arms.broad_strokes.ok() )
       p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
