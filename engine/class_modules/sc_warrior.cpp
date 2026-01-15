@@ -4033,6 +4033,7 @@ struct execute_arms_t : public warrior_attack_t
   execute_damage_t* trigger_attack;
   action_t* lightning_strike;
   action_t* slayers_strike;
+  action_t* reap_the_storm;
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
@@ -4041,6 +4042,7 @@ struct execute_arms_t : public warrior_attack_t
     trigger_attack( nullptr ),
     lightning_strike( nullptr ),
     slayers_strike( nullptr ),
+    reap_the_storm( nullptr ),
     max_rage( 40 ),
     execute_pct( 20 ),
     shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
@@ -4070,6 +4072,12 @@ struct execute_arms_t : public warrior_attack_t
     {
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -4106,9 +4114,17 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->buff.sudden_death->up() )
     {
       p()->buff.sudden_death->decrement();
+
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
-      {
         p()->buff.imminent_demise->trigger();
+
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      {
+        if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
+        {
+          reap_the_storm->execute();
+          p()->cooldown.reap_the_storm_icd->start();
+        }
       }
     }
 
@@ -4254,6 +4270,7 @@ struct execute_fury_t : public warrior_attack_t
   execute_off_hand_t* oh_attack;
   action_t* lightning_strike;
   action_t* slayers_strike;
+  action_t* reap_the_storm;
   bool improved_execute;
   double execute_pct;
   //double cost_rage;
@@ -4264,6 +4281,7 @@ struct execute_fury_t : public warrior_attack_t
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
       slayers_strike( nullptr ),
+      reap_the_storm( nullptr ),
       improved_execute( false ),
       execute_pct( 20 ),
       max_rage( 40 )
@@ -4287,6 +4305,12 @@ struct execute_fury_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -4314,9 +4338,17 @@ struct execute_fury_t : public warrior_attack_t
     if ( p() -> buff.sudden_death -> up() )
     {
       p()->buff.sudden_death->decrement();
+
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
-      {
         p()->buff.imminent_demise->trigger();
+
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      {
+        if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
+        {
+          reap_the_storm->execute();
+          p()->cooldown.reap_the_storm_icd->start();
+        }
       }
     }
 
@@ -7365,10 +7397,13 @@ void warrior_t::init_spells()
     register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
   }
 
-  register_passive_effect_override( talents.fury.spite->effectN( 1 ),
-                                      talents.fury.spite->effectN( 1 ).base_value() / 10 );
-  register_passive_effect_override( talents.fury.spite->effectN( 2 ),
-                                      talents.fury.spite->effectN( 2 ).base_value() / 10 );
+  if ( talents.fury.spite.ok() )
+  {
+    register_passive_effect_override( talents.fury.spite->effectN( 1 ),
+                                        talents.fury.spite->effectN( 1 ).base_value() / 10 );
+    register_passive_effect_override( talents.fury.spite->effectN( 2 ),
+                                        talents.fury.spite->effectN( 2 ).base_value() / 10 );
+  }
 
   parse_all_class_passives();
   parse_all_passive_talents();
