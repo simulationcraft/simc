@@ -383,6 +383,8 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* spearhead;
     dot_t* cull_the_herd;
 
+    dot_t* sanctified_armaments;
+
     dot_t* black_arrow;
   } dots;
 
@@ -1045,7 +1047,8 @@ public:
 
     spell_data_ptr_t dont_look_back; //Utility talent, won't implement
     spell_data_ptr_t moons_blessing;
-    spell_data_ptr_t sanctified_armaments; //TODO Not implemented
+    spell_data_ptr_t sanctified_armaments;
+    spell_data_ptr_t sanctified_armaments_dot;
     spell_data_ptr_t moonlight_chakram; //TODO Not implemented
 
     spell_data_ptr_t stargazer; //TODO Not implemented
@@ -4717,6 +4720,17 @@ struct bursting_shot_t : public hunter_ranged_attack_t
   }
 };
 
+// Sanctified Armaments (Sentinel) ===================================================
+struct sanctified_armaments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+{
+  sanctified_armaments_t( util::string_view n, hunter_t* p )
+    : residual_periodic_action_t( n, p, p->talents.sanctified_armaments_dot )
+  {
+    background = dual = true;
+    may_crit = false;
+  }
+};
+
 // Black Arrow (Dark Ranger) =========================================================
 
 struct black_arrow_base_t : public kill_shot_base_t
@@ -5848,6 +5862,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
 
+    sanctified_armaments_t* sanctified_armaments = nullptr;
+
     rapid_fire_tick_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p->talents.rapid_fire_tick ),
         trick_shots_targets( as<int>( p->talents.trick_shots_data->effectN( 3 ).base_value() ) )
@@ -5859,6 +5875,9 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
       // energize
       parse_effect_data( p->talents.rapid_fire_energize->effectN( 1 ) );
+
+      if ( p->talents.sanctified_armaments.ok() )
+        sanctified_armaments = p->get_background_action<sanctified_armaments_t>( "sanctified_armaments" );
     }
 
     int n_targets() const override
@@ -5884,6 +5903,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( state );
 
       p()->buffs.bulletstorm->trigger();
+
+      if ( sanctified_armaments )
+      {
+        double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 1 ).percent();
+        residual_action::trigger( sanctified_armaments, state->target, amount );
+      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6341,8 +6366,23 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
 struct raptor_strike_base_t : public melee_focus_spender_t
 {
+  sanctified_armaments_t* sanctified_armaments = nullptr;
+
   raptor_strike_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) : melee_focus_spender_t( n, p, s )
   {
+    if ( p->talents.sanctified_armaments.ok() )
+      sanctified_armaments = p->get_background_action<sanctified_armaments_t>( "sanctified_armaments" );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    melee_focus_spender_t::impact( state );
+
+    if ( sanctified_armaments )
+    {
+      double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 2 ).percent();
+      residual_action::trigger( sanctified_armaments, state->target, amount );
+    }
   }
 };
 
@@ -7864,6 +7904,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
   dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
+  dots.sanctified_armaments = t->get_dot( "sanctified_armaments", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
   dots.explosive_shot = t->get_dot( "explosive_shot", p );
@@ -8529,26 +8570,27 @@ void hunter_t::init_spells()
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_SURVIVAL )
   {
     // Sentinel
-    talents.sentinel                = find_talent_spell( talent_tree::HERO, "Sentinel" );
-    talents.sentinels_mark          = talents.sentinel.ok() ? find_spell( 1253601 ) : spell_data_t::not_found();
+    talents.sentinel                 = find_talent_spell( talent_tree::HERO, "Sentinel" );
+    talents.sentinels_mark           = talents.sentinel.ok() ? find_spell( 1253601 ) : spell_data_t::not_found();
 
-    talents.dont_look_back          = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
-    talents.moons_blessing          = find_talent_spell( talent_tree::HERO, "Moon's Blessing" );
-    talents.sanctified_armaments    = find_talent_spell( talent_tree::HERO, "Sanctified Armaments" );
-    talents.moonlight_chakram       = find_talent_spell( talent_tree::HERO, "Moonlight Chakram" );
+    talents.dont_look_back           = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
+    talents.moons_blessing           = find_talent_spell( talent_tree::HERO, "Moon's Blessing" );
+    talents.sanctified_armaments     = find_talent_spell( talent_tree::HERO, "Sanctified Armaments" );
+    talents.sanctified_armaments_dot = talents.sanctified_armaments.ok() ? find_spell( 1253836 ) : spell_data_t::not_found();
+    talents.moonlight_chakram        = find_talent_spell( talent_tree::HERO, "Moonlight Chakram" );
 
-    talents.stargazer               = find_talent_spell( talent_tree::HERO, "Stargazer" );
-    talents.open_fire               = find_talent_spell( talent_tree::HERO, "Open Fire" );
-    talents.cant_miss_wont_miss     = find_talent_spell( talent_tree::HERO, "Can't Miss Won't Miss" );
-    talents.invigorating_pulse      = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
-    talents.twilight_requiem        = find_talent_spell( talent_tree::HERO, "Twilight Requiem" );
-    talents.stalk_and_strike        = find_talent_spell( talent_tree::HERO, "Stalk and Strike" );
+    talents.stargazer                = find_talent_spell( talent_tree::HERO, "Stargazer" );
+    talents.open_fire                = find_talent_spell( talent_tree::HERO, "Open Fire" );
+    talents.cant_miss_wont_miss      = find_talent_spell( talent_tree::HERO, "Can't Miss Won't Miss" );
+    talents.invigorating_pulse       = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
+    talents.twilight_requiem         = find_talent_spell( talent_tree::HERO, "Twilight Requiem" );
+    talents.stalk_and_strike         = find_talent_spell( talent_tree::HERO, "Stalk and Strike" );
 
-    talents.arcane_talons           = find_talent_spell( talent_tree::HERO, "Arcane Talons" );
-    talents.lunar_calling           = find_talent_spell( talent_tree::HERO, "Lunar Calling" );
-    talents.radiant_edge            = find_talent_spell( talent_tree::HERO, "Radiant Edge" );
+    talents.arcane_talons            = find_talent_spell( talent_tree::HERO, "Arcane Talons" );
+    talents.lunar_calling            = find_talent_spell( talent_tree::HERO, "Lunar Calling" );
+    talents.radiant_edge             = find_talent_spell( talent_tree::HERO, "Radiant Edge" );
     
-    talents.lunar_storm             = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
+    talents.lunar_storm              = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
 
     //TODO Remove
     talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
