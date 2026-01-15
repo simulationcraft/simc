@@ -49,7 +49,7 @@ private:
     size_t count = relative_count( target );
     util::span<const trait_data_t* const> _data = reference_data( ptr );
     return { &_data[ start ], count };
-  };
+  }
 
 public:
   static util::span<const trait_data_t* const> children( const trait_data_t*, bool ptr = false );

@@ -408,6 +408,7 @@ public:
 
     // Arms
     const spell_data_t* heroic_strike;
+    const spell_data_t* master_of_warfare_2_buff;
 
     // Fury
 
@@ -1037,6 +1038,7 @@ public:
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
+      parse_effects( p()->buff.master_of_warfare );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -7007,6 +7009,7 @@ void warrior_t::init_spells()
   spell.deep_wounds_dot         = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.heroic_strike           = find_spell( 1269383 );
+  spell.master_of_warfare_2_buff= find_spell( 1269394 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -7403,6 +7406,14 @@ void warrior_t::init_spells()
                                         talents.fury.spite->effectN( 1 ).base_value() / 10 );
     register_passive_effect_override( talents.fury.spite->effectN( 2 ),
                                         talents.fury.spite->effectN( 2 ).base_value() / 10 );
+  }
+
+  if ( talents.arms.master_of_warfare_2.ok() )
+  {
+    register_passive_effect_override( spell.master_of_warfare_2_buff->effectN( 2 ),
+                                        talents.arms.master_of_warfare_2->effectN( 1 ).base_value() );
+    register_passive_effect_override( spell.master_of_warfare_2_buff->effectN( 3 ),
+                                        talents.arms.master_of_warfare_2->effectN( 2 ).base_value() );
   }
 
   parse_all_class_passives();
@@ -8008,7 +8019,7 @@ void warrior_t::create_buffs()
                                         ->set_trigger_spell( talents.arms.master_of_warfare_1 )
                                         ->set_cooldown( talents.arms.master_of_warfare_1->internal_cooldown() );
 
-  buff.master_of_warfare = make_buff( this, "master_of_warfare", find_spell( 1269394 ) )
+  buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
