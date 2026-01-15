@@ -479,8 +479,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   }
 };
 
-namespace spells
-{
 template <typename base_action_t>
 struct harmonic_surge_t : public base_action_t
 {
@@ -545,10 +543,7 @@ struct harmonic_surge_t : public base_action_t
     heal->execute();
   }
 };
-}  // namespace spells
 
-namespace attacks
-{
 namespace
 {
 struct high_impact_t : public monk_spell_t
@@ -746,7 +741,7 @@ struct overwhelming_force_t : base_action_t
   }
 };
 
-struct tiger_palm_t : public spells::harmonic_surge_t<overwhelming_force_t<monk_melee_attack_t>>
+struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_attack_t>>
 {
   bool face_palm;
 
@@ -1109,7 +1104,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
       rising_sun_kick->execute_on_target( target );
 
     if ( p()->specialization() == MONK_WINDWALKER )
-      p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
+      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
     p()->buff.whirling_dragon_punch->trigger();
     p()->action.chi_wave->execute();
   }
@@ -1500,7 +1495,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p()->specialization() == MONK_WINDWALKER )
-      p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
+      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
@@ -2546,10 +2541,7 @@ struct slicing_winds_t : public monk_melee_attack_t
       parse_effect_data( player->talent.windwalker.airborne_rhythm_energize->effectN( 1 ) );
   }
 };
-}  // namespace attacks
 
-namespace spells
-{
 struct chi_wave_t : public monk_spell_t
 {
   template <class TBase>
@@ -2968,7 +2960,7 @@ public:
 
     monk_spell_t::execute();
 
-    p()->action.flurry_strikes->execute( attacks::flurry_strikes_t::WISDOM_OF_THE_WALL );
+    p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
   }
 
   void impact( action_state_t *state ) override
@@ -3478,11 +3470,8 @@ struct zenith_t : public monk_spell_t
     p()->buff.stand_ready->trigger();
   }
 };
-}  // namespace spells
 
-namespace heals
-{
-struct vivify_t : public spells::harmonic_surge_t<monk_heal_t>
+struct vivify_t : public harmonic_surge_t<monk_heal_t>
 {
   vivify_t( monk_t *p, std::string_view options_str ) : base_t( p, "vivify", p->baseline.monk.vivify )
   {
@@ -3597,10 +3586,7 @@ struct celestial_fortune_t : public monk_heal_t
     snapshot_flags |= STATE_MUL_DA;
   }
 };
-}  // namespace heals
 
-namespace absorbs
-{
 struct absorb_brew_t : public brew_t<monk_absorb_t>
 {
   absorb_brew_t( monk_t *player, std::string_view options_str, std::string_view name, const spell_data_t *spell_data )
@@ -3650,7 +3636,6 @@ struct celestial_infusion_t : public absorb_brew_t
     return buff;
   }
 };
-}  // namespace absorbs
 
 template <class base_action_t>
 template <typename... Args>
@@ -4576,10 +4561,6 @@ void monk_t::parse_player_effects()
 action_t *monk_t::create_action( std::string_view name, std::string_view options_str )
 {
   using namespace actions;
-  using namespace actions::attacks;
-  using namespace actions::spells;
-  using namespace actions::heals;
-  using namespace actions::absorbs;
   // Monk
   if ( name == "snapshot_stats" )
     return new monk_snapshot_stats_t( this, options_str );
@@ -5295,7 +5276,7 @@ void monk_t::init_background_actions()
   new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
-  action.chi_wave = new actions::spells::chi_wave_t( this );
+  action.chi_wave = new actions::chi_wave_t( this );
 
   // Conduit of the Celestials
   bool uw  = talent.conduit_of_the_celestials.unity_within->ok();
@@ -5303,30 +5284,30 @@ void monk_t::init_background_actions()
   bool sbt = talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() || uw;
 
   if ( cwt )
-    action.courage_of_the_white_tiger = actions::spells::courage_of_the_white_tiger_t( this );
+    action.courage_of_the_white_tiger = actions::courage_of_the_white_tiger_t( this );
 
   if ( sbt )
-    action.strength_of_the_black_ox = actions::spells::strength_of_the_black_ox_t( this );
+    action.strength_of_the_black_ox = actions::strength_of_the_black_ox_t( this );
 
   // Shado-Pan
-  action.flurry_strikes = new actions::attacks::flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
+  action.flurry_strikes = new actions::flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
   {
-    action.special_delivery  = new actions::spells::special_delivery_t( this );
-    action.breath_of_fire    = new actions::spells::breath_of_fire_dot_t( this );
-    action.celestial_fortune = new actions::heals::celestial_fortune_t( this );
-    action.exploding_keg     = new actions::spells::exploding_keg_proc_t( this );
-    action.walk_with_the_ox  = new actions::attacks::stomp_t( this );
+    action.special_delivery  = new actions::special_delivery_t( this );
+    action.breath_of_fire    = new actions::breath_of_fire_dot_t( this );
+    action.celestial_fortune = new actions::celestial_fortune_t( this );
+    action.exploding_keg     = new actions::exploding_keg_proc_t( this );
+    action.walk_with_the_ox  = new actions::stomp_t( this );
   }
 
   // Windwalker
   if ( specialization() == MONK_WINDWALKER )
   {
-    action.empowered_tiger_lightning = new actions::spells::empowered_tiger_lightning_t( this );
-    action.flurry_of_xuen            = new actions::spells::flurry_of_xuen_t( this );
-    action.combat_wisdom_eh          = new actions::heals::expel_harm_t( this, "" );
+    action.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( this );
+    action.flurry_of_xuen            = new actions::flurry_of_xuen_t( this );
+    action.combat_wisdom_eh          = new actions::expel_harm_t( this, "" );
   }
 }
 
@@ -6034,7 +6015,7 @@ void monk_t::init_special_effects()
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.stand_ready->check(); } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          action.flurry_strikes->execute( actions::attacks::flurry_strikes_t::STAND_READY );
+          action.flurry_strikes->execute( actions::flurry_strikes_t::STAND_READY );
         } );
 
   if ( baseline.windwalker.empowered_tiger_lightning->ok() )

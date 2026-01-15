@@ -164,8 +164,6 @@ struct conduit_of_the_celestials_container_t
   }
 };
 
-namespace attacks
-{
 struct flurry_strikes_t : public monk_spell_t
 {
   struct flurry_strike_t : public monk_spell_t
@@ -191,7 +189,6 @@ struct flurry_strikes_t : public monk_spell_t
   using monk_spell_t::execute;
   void execute( source_e );
 };
-}  // namespace attacks
 }  // namespace actions
 
 namespace buffs
@@ -480,7 +477,7 @@ public:
     propagate_const<action_t *> harmonic_surge;
 
     // Shado-Pan
-    actions::attacks::flurry_strikes_t *flurry_strikes;
+    actions::flurry_strikes_t *flurry_strikes;
   } action;
 
   std::vector<action_t *> combo_strike_actions;
