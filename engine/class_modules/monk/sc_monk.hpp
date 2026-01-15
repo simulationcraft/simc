@@ -503,6 +503,7 @@ public:
     propagate_const<buff_t *> empty_the_cellar;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
+    propagate_const<buff_t *> fuel_on_the_fire;
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> invoke_niuzao;
@@ -837,6 +838,8 @@ public:
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       // row 10
       player_talent_t fuel_on_the_fire;
+      const spell_data_t *fuel_on_the_fire_buff;
+      const spell_data_t *fuel_on_the_fire_damage;
       player_talent_t empty_the_cellar;
       const spell_data_t *empty_the_cellar_buff;
       const spell_data_t *empty_the_cellar_driver;

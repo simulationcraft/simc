@@ -2166,9 +2166,28 @@ struct keg_smash_t : monk_melee_attack_t
     }
   };
 
+  struct fuel_on_the_fire_t : public monk_spell_t
+  {
+    fuel_on_the_fire_t( monk_t *player )
+      : monk_spell_t( player, "fuel_on_the_fire", player->talent.brewmaster.fuel_on_the_fire_damage )
+    {
+      aoe               = -1;
+      background = dual = true;
+    }
+
+    void impact( action_state_t *s ) override
+    {
+      // A "whirl of flame which spirals outwards" has a pretty high chance to hit, but doesn't always.
+      // TODO: Improve hit chance calculation from real world data
+      if ( rng().roll( 0.75 ) )
+        monk_spell_t::impact( s );
+    }
+  }
+
   cooldown_t *breath_of_fire;
   action_t *empty_barrel;
   action_t *extra_kick;
+  action_t *fuel_on_the_fire;
 
   keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
     : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ),
@@ -2211,6 +2230,12 @@ struct keg_smash_t : monk_melee_attack_t
       extra_kick = new extra_kick_t( player );
       add_child( extra_kick );
     }
+
+    if ( player->talent.brewmaster.fuel_on_the_fire->ok() )
+    {
+      fuel_on_the_fire = new fuel_on_the_fire_t( player );
+      add_child( fuel_on_the_fire );
+    }
   }
 
   void execute() override
@@ -2249,6 +2274,18 @@ struct keg_smash_t : monk_melee_attack_t
 
     if ( extra_kick )
       extra_kick->execute();
+
+    if ( p()->buff.fuel_on_the_fire->up() )
+    {
+      p()->buff.fuel_on_the_fire->decrement();
+
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+                                                     .target( target )
+                                                     .duration( data().duration() )
+                                                     .pulse_time( timespan_t::from_seconds( 1.0 ) )
+                                                     .n_pulses( 3 )
+                                                     .action( fuel_on_the_fire ), true );
+    }
   }
 
   void impact( action_state_t *state ) override
@@ -3063,6 +3100,11 @@ struct exploding_keg_t : public monk_spell_t
   {
     p()->buff.exploding_keg->trigger();
     p()->buff.empty_the_cellar->trigger();
+
+    if ( p()->talent.brewmaster.fuel_on_the_fire->ok() )
+      p()->buff.fuel_on_the_fire->trigger(
+          as<int>( p()->talent.brewmaster.fuel_on_the_fire->effectN( 1 ).base_value() ) );
+
     monk_spell_t::execute();
   }
 
@@ -5274,6 +5316,8 @@ void monk_t::init_spells()
     talent.brewmaster.invoke_niuzao_the_black_ox_npc   = find_spell( 123904 );
     talent.brewmaster.invoke_niuzao_the_black_ox_stomp = find_spell( 227291 );
     talent.brewmaster.fuel_on_the_fire                 = _ST( "Fuel on the Fire" );
+    talent.brewmaster.fuel_on_the_fire_buff            = find_spell( 1262035 );
+    talent.brewmaster.fuel_on_the_fire_damage          = find_spell( 1262159 );
     talent.brewmaster.empty_the_cellar                 = _ST( "Empty the Cellar" );
     talent.brewmaster.empty_the_cellar_buff            = find_spell( 1262768 );
     talent.brewmaster.empty_the_cellar_driver          = find_spell( 1263438 );
@@ -5793,6 +5837,9 @@ void monk_t::create_buffs()
   buff.elixir_of_determination = make_buff_fallback<buffs::elixir_of_determination_t>(
       talent.brewmaster.elixir_of_determination->ok(), this, "elixir_of_determination",
       talent.brewmaster.elixir_of_determination->effectN( 1 ).trigger() );
+
+  buff.fuel_on_the_fire = make_buff_fallback( talent.brewmaster.fuel_on_the_fire->ok(), this, "fuel_on_the_fire",
+                                              talent.brewmaster.fuel_on_the_fire_buff );
 
   buff.invoke_niuzao = make_buff_fallback( talent.brewmaster.invoke_niuzao_the_black_ox->ok(), this,
                                            "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
