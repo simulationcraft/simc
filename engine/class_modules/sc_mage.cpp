@@ -893,7 +893,7 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
-  void trigger_spellfire_sphere( bool background = false );
+  void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
@@ -1850,7 +1850,7 @@ public:
       p()->trigger_mana_cascade();
 
     if ( triggers.spellfire_sphere )
-      p()->trigger_spellfire_sphere( background );
+      p()->trigger_spellfire_sphere( MAGE_ARCANE, background );
   }
 
   void impact( action_state_t* s ) override
@@ -2386,7 +2386,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
 
-      p()->trigger_spellfire_sphere();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
     }
 
@@ -2397,7 +2397,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
       // TODO: Pyromaniac increments Sphere's BLP (and thus can proc Spheres w/ the cap), 
       // but it hasn't been tested whether it can roll the random chance.
-      p()->trigger_spellfire_sphere();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
       assert( pyromaniac_action );
@@ -6909,17 +6909,17 @@ void mage_t::trigger_meteor_burn( action_t* action, player_t* target, timespan_t
   e->expiration = expiration;
 }
 
-void mage_t::trigger_spellfire_sphere( bool background )
+void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background )
 {
-  if ( !talents.spellfire_spheres.ok() )
+  if ( !talents.spellfire_spheres.ok() || m_spec != specialization() )
     return;
   
   // https://www.desmos.com/calculator/7akzzy14fg;
   // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
   // Bug: Fire's total rate is 12%, not the tooltip's 20% -- Sphere's effectN1 in-game is (probably?) unmodified by 137019's effectN7.
   double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
-  if ( ( specialization() == MAGE_FIRE ) && bugs )
-    proc_chance -= find_spell( 137019 )->effectN( 7 ).percent();
+  if ( bugs )
+    proc_chance -= spec.fire_mage->effectN( 7 ).percent();
   proc_chance = ( -0.202381 * ( proc_chance * proc_chance ) ) + ( 0.550833 * proc_chance ) - 0.0481071;
 
   state.sphere_blp_count++;
