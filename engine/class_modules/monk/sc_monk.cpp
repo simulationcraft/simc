@@ -5269,6 +5269,7 @@ void monk_t::init_spells()
 
 void monk_t::init_background_actions()
 {
+  using namespace actions;
   base_t::init_background_actions();
 
   // we just look it up via `find_action` anyway, so it doesn't need to explicitly
@@ -5276,7 +5277,7 @@ void monk_t::init_background_actions()
   new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
-  action.chi_wave = new actions::chi_wave_t( this );
+  action.chi_wave = new chi_wave_t( this );
 
   // Conduit of the Celestials
   bool uw  = talent.conduit_of_the_celestials.unity_within->ok();
@@ -5284,30 +5285,30 @@ void monk_t::init_background_actions()
   bool sbt = talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() || uw;
 
   if ( cwt )
-    action.courage_of_the_white_tiger = actions::courage_of_the_white_tiger_t( this );
+    action.courage_of_the_white_tiger = courage_of_the_white_tiger_t( this );
 
   if ( sbt )
-    action.strength_of_the_black_ox = actions::strength_of_the_black_ox_t( this );
+    action.strength_of_the_black_ox = strength_of_the_black_ox_t( this );
 
   // Shado-Pan
-  action.flurry_strikes = new actions::flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
+  action.flurry_strikes = new flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
   {
-    action.special_delivery  = new actions::special_delivery_t( this );
-    action.breath_of_fire    = new actions::breath_of_fire_dot_t( this );
-    action.celestial_fortune = new actions::celestial_fortune_t( this );
-    action.exploding_keg     = new actions::exploding_keg_proc_t( this );
-    action.walk_with_the_ox  = new actions::stomp_t( this );
+    action.special_delivery  = new special_delivery_t( this );
+    action.breath_of_fire    = new breath_of_fire_dot_t( this );
+    action.celestial_fortune = new celestial_fortune_t( this );
+    action.exploding_keg     = new exploding_keg_proc_t( this );
+    action.walk_with_the_ox  = new stomp_t( this );
   }
 
   // Windwalker
   if ( specialization() == MONK_WINDWALKER )
   {
-    action.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( this );
-    action.flurry_of_xuen            = new actions::flurry_of_xuen_t( this );
-    action.combat_wisdom_eh          = new actions::expel_harm_t( this, "" );
+    action.empowered_tiger_lightning = new empowered_tiger_lightning_t( this );
+    action.flurry_of_xuen            = new flurry_of_xuen_t( this );
+    action.combat_wisdom_eh          = new expel_harm_t( this, "" );
   }
 }
 
