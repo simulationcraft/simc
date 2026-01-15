@@ -870,7 +870,6 @@ public:
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_player_multiplier( school_e s ) const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
@@ -8698,18 +8697,6 @@ double warrior_t::composite_attack_power_multiplier() const
   if ( talents.warrior.battlefield_commander.ok() )
     ap *= 1.0 + talents.warrior.battlefield_commander->effectN( 6 ).percent();
   return ap;
-}
-
-// warrior_t::composite_attack_power_multiplier ==============================
-double warrior_t::composite_player_multiplier( school_e s ) const
-{
-  double multi = parse_player_effects_t::composite_player_multiplier( s );
-
-  if ( mastery.master_of_arms->ok() )
-  {
-    multi *= 1.0 + mastery.master_of_arms->effectN( 1 ).mastery_value() * cache.mastery();
-  }
-  return multi;
 }
 
 // warrior_t::composite_crit_block =====================================
