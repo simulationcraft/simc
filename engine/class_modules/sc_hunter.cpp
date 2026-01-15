@@ -1044,7 +1044,7 @@ public:
     spell_data_ptr_t sentinels_mark;
 
     spell_data_ptr_t dont_look_back; //Utility talent, won't implement
-    spell_data_ptr_t moons_blessing; //TODO Not implemented
+    spell_data_ptr_t moons_blessing;
     spell_data_ptr_t sanctified_armaments; //TODO Not implemented
     spell_data_ptr_t moonlight_chakram; //TODO Not implemented
 
@@ -3719,6 +3719,10 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     chance += specs.spotters_mark_data->effectN( 1 ).percent();
 
+    /* 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
+       TODO reconfirm before launch */
+    chance += talents.moons_blessing->effectN( 1 ).percent();
+
     if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
       chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
   }
@@ -3731,6 +3735,9 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+
+    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
+    cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
   }
 }
 
