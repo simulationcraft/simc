@@ -2517,6 +2517,11 @@ struct bloodthirst_t : public warrior_attack_t
       am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
     }
 
+    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
+    {
+      am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -2762,6 +2767,11 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.fury.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
     {
       am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
+    }
+
+    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
+    {
+      am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
     }
 
     return am;
@@ -4652,7 +4662,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     dual                                         = true;
     background = true;
 
-    //base_multiplier *= 1.0 + p->talents.cruelty->effectN( 1 ).percent();
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
