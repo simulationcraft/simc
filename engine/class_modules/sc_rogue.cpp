@@ -2318,6 +2318,16 @@ public:
       }
     }
 
+    // Delivered Doom
+    if ( affected_by.delivered_doom && p()->talent.fatebound.delivered_doom->ok() )
+    {
+      if ( cast_state( state )->get_combo_points() >=
+           as<int>( p()->talent.fatebound.delivered_doom->effectN( 2 ).base_value() ) )
+      {
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+      }
+    }
+
     // MID1 Set Bonuses
     if ( affected_by.mid1_assassination_4pc && p()->set_bonuses.mid1_assassination_4pc->ok() &&
          td( state->target )->is_poisoned() )
