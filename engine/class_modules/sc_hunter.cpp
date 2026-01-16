@@ -567,8 +567,8 @@ public:
     cooldown_t* wildfire_bomb;
     cooldown_t* butchery;
     cooldown_t* harpoon;
+    cooldown_t* boomstick;
     cooldown_t* flanking_strike;
-    cooldown_t* fury_of_the_eagle;
     cooldown_t* ruthless_marauder;
     cooldown_t* coordinated_assault;
 
@@ -946,7 +946,6 @@ public:
     spell_data_ptr_t born_to_kill; //TODO Removed
     spell_data_ptr_t tactical_advantage; //TODO Removed
     spell_data_ptr_t contagious_reagents; //TODO Removed
-    spell_data_ptr_t fury_of_the_eagle; //TODO Removed
     spell_data_ptr_t coordinated_assault; //TODO Removed
     spell_data_ptr_t coordinated_assault_dmg; //TODO Removed
     spell_data_ptr_t spearhead; //TODO Removed
@@ -1179,8 +1178,8 @@ public:
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
     cooldowns.butchery            = get_cooldown( "butchery" );
     cooldowns.harpoon             = get_cooldown( "harpoon" );
+    cooldowns.boomstick           = get_cooldown( "boomstick" );
     cooldowns.flanking_strike     = get_cooldown( "flanking_strike");
-    cooldowns.fury_of_the_eagle   = get_cooldown( "fury_of_the_eagle" );
     cooldowns.ruthless_marauder   = get_cooldown( "ruthless_marauder" );
     cooldowns.coordinated_assault = get_cooldown( "coordinated_assault" );
 
@@ -6653,106 +6652,6 @@ struct butchery_t : public hunter_melee_attack_t
   }
 };
 
-// Fury of the Eagle ==============================================================
-
-struct fury_of_the_eagle_t : public hunter_spell_t
-{
-  bool procced_at_max_tip = false; 
-
-  struct fury_of_the_eagle_tick_t: public hunter_melee_attack_t
-  {
-    struct
-    {
-      double bonus = 0;
-      double threshold = 0;
-    } crit;
-
-    fury_of_the_eagle_tick_t( util::string_view n, hunter_t* p ) : hunter_melee_attack_t( n, p, p->talents.fury_of_the_eagle->effectN( 1 ).trigger() )
-    {
-      aoe = -1;
-      background = true;
-      may_crit = true;
-      radius = data().max_range();
-      reduced_aoe_targets = p->talents.fury_of_the_eagle->effectN( 5 ).base_value();
-
-      crit.threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value();
-      crit.bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
-
-      // Fury of the Eagle ticks do not decrement Tip of the Spear stacks.
-      decrements_tip_of_the_spear = false;
-    }
-
-    double composite_target_crit_chance( player_t* target ) const override
-    {
-      double c = hunter_melee_attack_t::composite_target_crit_chance( target );
-
-      if ( target -> health_percentage() < crit.threshold )
-        c += crit.bonus;
-
-      return c;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = hunter_melee_attack_t::composite_da_multiplier( s );
-    
-      // TODO 13/2/25: Casting Fury of the Eagle with more than one stack of Tip of the Spear 
-      // will result in a double application of the bonus damage, from both the generic buff
-      // and the new FotE specific hidden buff.
-
-      return m;
-    }
-  };
-
-  fury_of_the_eagle_tick_t* fote_tick;
-
-  fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ) :
-    hunter_spell_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle ),
-      fote_tick( p->get_background_action<fury_of_the_eagle_tick_t>( "fury_of_the_eagle_damage" ) )
-  {
-    parse_options( options_str );
-
-    channeled = true;
-    tick_zero = true;
-
-    add_child( fote_tick );
-
-    decrements_tip_of_the_spear = false;
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p()->buffs.tip_of_the_spear->up() )
-    {
-      p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_boomstick->trigger();
-    }
-  }
-
-  void tick( dot_t* dot ) override
-  {
-    hunter_spell_t::tick( dot );
-
-    fote_tick -> execute_on_target( dot -> target );
-
-    if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->up() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
-    {
-      p()->buffs.tip_of_the_spear->trigger();
-      p()->cooldowns.ruthless_marauder->start();
-    }
-  }
-
-  void last_tick( dot_t* dot ) override
-  {
-    hunter_spell_t::last_tick( dot );
-
-    p()->buffs.tip_of_the_spear_boomstick->decrement();
-    p()->buffs.ruthless_marauder->trigger();
-  }
-};
-
 // Coordinated Assault ==============================================================
 
 struct coordinated_assault_t: public hunter_spell_t
@@ -8089,7 +7988,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "boomstick"             ) return new              boomstick_t( this, options_str );
-  if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "harriers_cry"          ) return new           harriers_cry_t( this, options_str );
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
@@ -8516,7 +8414,6 @@ void hunter_t::init_spells()
     talents.born_to_kill                      = find_talent_spell( talent_tree::SPECIALIZATION, "Born to Kill", HUNTER_SURVIVAL );
     talents.tactical_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Advantage", HUNTER_SURVIVAL );
     talents.contagious_reagents               = find_talent_spell( talent_tree::SPECIALIZATION, "Contagious Reagents", HUNTER_SURVIVAL );
-    talents.fury_of_the_eagle                 = find_talent_spell( talent_tree::SPECIALIZATION, "Fury of the Eagle", HUNTER_SURVIVAL );
     talents.coordinated_assault               = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Assault", HUNTER_SURVIVAL );
     talents.coordinated_assault_dmg           = talents.coordinated_assault.ok() ? find_spell( 360969 ) : spell_data_t::not_found();
     talents.spearhead                         = find_talent_spell( talent_tree::SPECIALIZATION, "Spearhead", HUNTER_SURVIVAL );
