@@ -891,7 +891,7 @@ public:
     spell_data_ptr_t mongoose_fury;
     spell_data_ptr_t mongoose_rounds;
     spell_data_ptr_t wildfire_shells;
-    spell_data_ptr_t shellshock; //TODO Not implemented
+    spell_data_ptr_t shellshock;
     spell_data_ptr_t sic_em;
 
     spell_data_ptr_t bloody_claws;
@@ -6503,6 +6503,14 @@ struct boomstick_t : public hunter_spell_t
       // Boomstick has a unique Tip buff and is not affected by base Tip (260286) so apply it here.
       if ( p()->buffs.tip_of_the_spear_boomstick->up() )
         dm *= 1 + p()->talents.tip_of_the_spear_boomstick_buff->effectN( 1 ).percent();
+
+      double shellshock_bonus = p()->talents.shellshock->effectN( 1 ).percent();
+      if ( s->n_targets > 1 )
+      {
+        shellshock_bonus = 
+          std::max( 0.0, shellshock_bonus - s->n_targets * p()->talents.shellshock->effectN( 2 ).percent() );
+      }
+      dm *= 1 + shellshock_bonus;
 
       return dm;
     }
