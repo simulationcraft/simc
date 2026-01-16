@@ -886,11 +886,11 @@ public:
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
     spell_data_ptr_t flankers_advantage;
-    spell_data_ptr_t two_against_many; //TODO Not implemented
+    spell_data_ptr_t two_against_many;
 
     spell_data_ptr_t mongoose_fury;
-    spell_data_ptr_t mongoose_rounds; //TODO Not implemented
-    spell_data_ptr_t wildfire_shells; //TODO Not implemented
+    spell_data_ptr_t mongoose_rounds;
+    spell_data_ptr_t wildfire_shells;
     spell_data_ptr_t shellshock; //TODO Not implemented
     spell_data_ptr_t sic_em;
 
@@ -6550,6 +6550,12 @@ struct boomstick_t : public hunter_spell_t
     hunter_spell_t::tick( dot );
 
     boomstick_tick->execute_on_target( dot->target );
+
+    if ( p()->talents.mongoose_rounds.ok() )
+      p()->buffs.mongoose_fury->trigger( p()->talents.mongoose_rounds->effectN( 1 ).base_value() );
+
+    if ( p()->talents.wildfire_shells.ok() )
+      p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_shells->effectN( 1 ).time_value() );
   }
 
   void last_tick( dot_t* dot ) override
