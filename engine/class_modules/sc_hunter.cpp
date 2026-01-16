@@ -6155,13 +6155,6 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     may_crit           = true;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    auto_attack_base_t::impact( s );
-
-    p()->cooldowns.wildfire_bomb->adjust( -p()->talents.lunge->effectN( 2 ).time_value() );
-  }
-
   double action_multiplier() const override
   {
     double am = auto_attack_base_t::action_multiplier();
@@ -6170,6 +6163,10 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
       
     am *= 1 + bonus;
+
+    /* 2026-01-16: Spell effect not applying automatically, apply manually.
+       TODO reconfirm before launch */
+    am *= 1 + p()->talents.lunge->effectN( 1 ).percent();
 
     return am;
   }
