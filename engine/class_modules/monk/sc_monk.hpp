@@ -460,6 +460,7 @@ public:
     propagate_const<action_t *> special_delivery;
     propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
+    propagate_const<action_t *> empty_the_cellar;
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
@@ -495,6 +496,7 @@ public:
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elusive_brawler;
+    propagate_const<buff_t *> empty_the_cellar;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
@@ -827,6 +829,9 @@ public:
       // row 10
       player_talent_t fuel_on_the_fire;
       player_talent_t empty_the_cellar;
+      const spell_data_t *empty_the_cellar_buff;
+      const spell_data_t *empty_the_cellar_driver;
+      const spell_data_t *empty_the_cellar_damage;
       player_talent_t keg_volley;
       player_talent_t stormstouts_last_keg;
       player_talent_t heart_of_the_ox;

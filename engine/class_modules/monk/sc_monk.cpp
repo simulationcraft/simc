@@ -3041,6 +3041,7 @@ struct exploding_keg_t : public monk_spell_t
     cast_during_sck = true;
     aoe             = -1;
     add_child( p->action.exploding_keg );
+    add_child( p->action.empty_the_cellar );
   }
 
   timespan_t travel_time() const override
@@ -3052,6 +3053,7 @@ struct exploding_keg_t : public monk_spell_t
   void execute() override
   {
     p()->buff.exploding_keg->trigger();
+    p()->buff.empty_the_cellar->trigger();
     monk_spell_t::execute();
   }
 
@@ -3059,6 +3061,54 @@ struct exploding_keg_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
     get_td( s->target )->debuff.exploding_keg->trigger();
+  }
+};
+
+struct empty_the_cellar_damage_t : public monk_spell_t
+{
+  empty_the_cellar_damage_t( monk_t *p )
+    : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_damage )
+  {
+    background = dual = true;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.empty_the_cellar->effectN( 2 ).time_value() );
+  }
+};
+
+struct empty_the_cellar_t : public monk_spell_t
+{
+  empty_the_cellar_t( monk_t *p, std::string_view options_str )
+    : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_driver )
+  {
+    parse_options( options_str );
+  }
+
+  bool ready() override
+  {
+    return p()->buff.empty_the_cellar->up();
+  }
+
+  void execute() override
+  {
+    p()->buff.empty_the_cellar->expire();
+
+    size_t count = as<size_t>( p()->talent.brewmaster.empty_the_cellar->effectN( 1 ).base_value() );
+    timespan_t interval = data().effectN( 1 ).period();
+
+    for ( size_t i = 0; i < count; ++i )
+    {
+      make_event<events::delayed_cb_event_t>( *sim, p(), i * interval, [ & ]() {
+        auto &tl = target_list();
+        p()->action.empty_the_cellar->execute_on_target( tl[ i % tl.size() ] );
+      });
+    }
+
+    monk_spell_t::execute();
   }
 };
 
@@ -4606,6 +4656,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new celestial_brew_t( this, options_str );
   if ( name == "celestial_infusion" )
     return new celestial_infusion_t( this, options_str );
+  if ( name == "empty_the_cellar" )
+    return new empty_the_cellar_t( this, options_str );
   if ( name == "exploding_keg" )
     return new exploding_keg_t( this, options_str );
   if ( name == "invoke_niuzao" )
@@ -5004,6 +5056,9 @@ void monk_t::init_spells()
     talent.brewmaster.invoke_niuzao_the_black_ox_stomp = find_spell( 227291 );
     talent.brewmaster.fuel_on_the_fire                 = _ST( "Fuel on the Fire" );
     talent.brewmaster.empty_the_cellar                 = _ST( "Empty the Cellar" );
+    talent.brewmaster.empty_the_cellar_buff            = find_spell( 1262768 );
+    talent.brewmaster.empty_the_cellar_driver          = find_spell( 1263438 );
+    talent.brewmaster.empty_the_cellar_damage          = find_spell( 1262765 );
     talent.brewmaster.keg_volley                       = _ST( "Keg Volley" );
     talent.brewmaster.stormstouts_last_keg             = _ST( "Stormstout's Last Keg" );
     talent.brewmaster.heart_of_the_ox                  = _ST( "Heart of the Ox" );
@@ -5299,6 +5354,7 @@ void monk_t::init_background_actions()
     action.special_delivery  = new special_delivery_t( this );
     action.breath_of_fire    = new breath_of_fire_dot_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
+    action.empty_the_cellar  = new empty_the_cellar_damage_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
   }
@@ -5480,6 +5536,9 @@ void monk_t::create_buffs()
   buff.elusive_brawler = make_buff_fallback( specialization() == MONK_BREWMASTER, this, "elusive_brawler",
                                              baseline.brewmaster.mastery->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
+
+  buff.empty_the_cellar = make_buff_fallback( talent.brewmaster.empty_the_cellar->ok(), this, "empty_the_cellar",
+                                              talent.brewmaster.empty_the_cellar_buff );
 
   buff.exploding_keg = make_buff_fallback( talent.brewmaster.exploding_keg->ok(), this, "exploding_keg",
                                            talent.brewmaster.exploding_keg )
