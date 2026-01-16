@@ -3041,7 +3041,6 @@ struct exploding_keg_t : public monk_spell_t
     cast_during_sck = true;
     aoe             = -1;
     add_child( p->action.exploding_keg );
-    add_child( p->action.empty_the_cellar );
   }
 
   timespan_t travel_time() const override
@@ -3068,8 +3067,8 @@ struct empty_the_cellar_t : public monk_spell_t
 {
   struct damage_t : public monk_spell_t
   {
-    damage_t( monk_t *p )
-      : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_damage )
+    damage_t( monk_t *player )
+      : monk_spell_t( player, "empty_the_cellar", player->talent.brewmaster.empty_the_cellar_damage )
     {
       background = dual = true;
     }
@@ -3082,10 +3081,23 @@ struct empty_the_cellar_t : public monk_spell_t
     }
   };
 
-  empty_the_cellar_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_driver )
+  action_t *damage;
+
+  empty_the_cellar_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "empty_the_cellar", player->talent.brewmaster.empty_the_cellar_driver ), damage( nullptr )
   {
     parse_options( options_str );
+
+    if ( player->talent.brewmaster.empty_the_cellar->ok() )
+      damage = new damage_t( player );
+  }
+
+  void init() override
+  {
+    monk_spell_t::init();
+
+    if ( action_t *parent = p()->find_action( "exploding_keg" ); parent )
+      parent->add_child( this );
   }
 
   bool ready() override
@@ -3097,16 +3109,13 @@ struct empty_the_cellar_t : public monk_spell_t
   {
     p()->buff.empty_the_cellar->expire();
 
-    size_t count = as<size_t>( p()->talent.brewmaster.empty_the_cellar->effectN( 1 ).base_value() );
+    size_t count        = as<size_t>( p()->talent.brewmaster.empty_the_cellar->effectN( 1 ).base_value() );
     timespan_t interval = data().effectN( 1 ).period();
 
+    auto &tl = target_list();
+    p()->rng().shuffle( tl.begin(), tl.end() );
     for ( size_t i = 0; i < count; ++i )
-    {
-      make_event<events::delayed_cb_event_t>( *sim, p(), i * interval, [ & ]() {
-        auto &tl = target_list();
-        p()->action.empty_the_cellar->execute_on_target( tl[ i % tl.size() ] );
-      });
-    }
+      make_event<events::delayed_execute_event_t>( *sim, p(), damage, tl[ i % tl.size() ], i * interval );
 
     monk_spell_t::execute();
   }
@@ -5354,7 +5363,6 @@ void monk_t::init_background_actions()
     action.special_delivery  = new special_delivery_t( this );
     action.breath_of_fire    = new breath_of_fire_dot_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
-    action.empty_the_cellar  = new empty_the_cellar_t::damage_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
   }
@@ -5578,9 +5586,10 @@ void monk_t::create_buffs()
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
-  buff.swift_as_a_coursing_river = make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
-                                                       talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
-                                       ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
+  buff.swift_as_a_coursing_river =
+      make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
+                          talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
 
   // Windwalker
   buff.teachings_of_the_monastery =

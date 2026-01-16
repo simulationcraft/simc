@@ -460,7 +460,6 @@ public:
     propagate_const<action_t *> special_delivery;
     propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
-    propagate_const<action_t *> empty_the_cellar;
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
