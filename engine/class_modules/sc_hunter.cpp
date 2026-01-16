@@ -882,9 +882,9 @@ public:
     spell_data_ptr_t strike_as_one_dmg;
 
     spell_data_ptr_t shrapnel_bomb; //TODO Not implemented
-    spell_data_ptr_t flamebreaker; //TODO Not implemented
+    spell_data_ptr_t flamebreaker;
     spell_data_ptr_t bloodseeker;
-    spell_data_ptr_t quick_reload; //TODO Not implemented
+    spell_data_ptr_t quick_reload;
     spell_data_ptr_t flankers_advantage;
     spell_data_ptr_t two_against_many; //TODO Not implemented
 
@@ -2231,7 +2231,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
       if ( bugs )
         amount /= 2;
 
-      as *= 1 - amount;
+      as /= 1 + amount;
     }
 
     return as;
@@ -2954,6 +2954,16 @@ struct strike_as_one_t : public hunter_pet_attack_t<hunter_pet_t>
   strike_as_one_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "strike_as_one", p, p->o()->talents.strike_as_one_dmg )
   {
     background = dual = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double dm = hunter_pet_attack_t::composite_da_multiplier( s );
+
+    if ( s->n_targets > 1 )
+      dm *= 1 + ( s->n_targets - 1 ) * o()->talents.two_against_many->effectN( 2 ).percent();
+
+    return dm;
   }
 };
 
