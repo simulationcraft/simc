@@ -9179,12 +9179,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.gift_of_the_sanlayn->trigger();
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
-    {
       p()->buffs.exterminate->trigger();
-      // Currently bugged to give 2 stacks.
-      if ( p()->bugs )
-        p()->buffs.exterminate->trigger();
-    }
   }
 
 private:
