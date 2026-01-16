@@ -3064,24 +3064,24 @@ struct exploding_keg_t : public monk_spell_t
   }
 };
 
-struct empty_the_cellar_damage_t : public monk_spell_t
-{
-  empty_the_cellar_damage_t( monk_t *p )
-    : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_damage )
-  {
-    background = dual = true;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.empty_the_cellar->effectN( 2 ).time_value() );
-  }
-};
-
 struct empty_the_cellar_t : public monk_spell_t
 {
+  struct damage_t : public monk_spell_t
+  {
+    damage_t( monk_t *p )
+      : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_damage )
+    {
+      background = dual = true;
+    }
+
+    void execute() override
+    {
+      monk_spell_t::execute();
+
+      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.empty_the_cellar->effectN( 2 ).time_value() );
+    }
+  };
+
   empty_the_cellar_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "empty_the_cellar", p->talent.brewmaster.empty_the_cellar_driver )
   {
@@ -5354,7 +5354,7 @@ void monk_t::init_background_actions()
     action.special_delivery  = new special_delivery_t( this );
     action.breath_of_fire    = new breath_of_fire_dot_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
-    action.empty_the_cellar  = new empty_the_cellar_damage_t( this );
+    action.empty_the_cellar  = new empty_the_cellar_t::damage_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
   }
