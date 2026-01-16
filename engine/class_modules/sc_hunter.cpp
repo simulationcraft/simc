@@ -569,6 +569,7 @@ public:
     cooldown_t* harpoon;
     cooldown_t* boomstick;
     cooldown_t* flanking_strike;
+    cooldown_t* strike_as_one;
     cooldown_t* ruthless_marauder;
     cooldown_t* coordinated_assault;
 
@@ -876,8 +877,9 @@ public:
     spell_data_ptr_t tip_of_the_spear_boomstick_buff;
 
     spell_data_ptr_t lunge;
-    spell_data_ptr_t boomstick; //TODO Not implemented
-    spell_data_ptr_t strike_as_one; //TODO Not implemented
+    spell_data_ptr_t boomstick;
+    spell_data_ptr_t strike_as_one;
+    spell_data_ptr_t strike_as_one_dmg;
 
     spell_data_ptr_t shrapnel_bomb; //TODO Not implemented
     spell_data_ptr_t flamebreaker; //TODO Not implemented
@@ -1180,6 +1182,7 @@ public:
     cooldowns.harpoon             = get_cooldown( "harpoon" );
     cooldowns.boomstick           = get_cooldown( "boomstick" );
     cooldowns.flanking_strike     = get_cooldown( "flanking_strike");
+    cooldowns.strike_as_one       = get_cooldown( "strike_as_one" );
     cooldowns.ruthless_marauder   = get_cooldown( "ruthless_marauder" );
     cooldowns.coordinated_assault = get_cooldown( "coordinated_assault" );
 
@@ -1459,6 +1462,16 @@ public:
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->trigger_eagles_mark( p()->target, true );
+
+      if ( p()->cooldowns.strike_as_one->up() )
+      {
+        auto pet = p()->pets.main;
+        if ( pet )
+        {
+          pet->actions.strike_as_one->execute_on_target( p()->target );
+          p()->cooldowns.strike_as_one->start();
+        }
+      }
     }
   }
 
@@ -2300,7 +2313,8 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     action_t* brutal_companion_ba = nullptr;
     action_t* potent_mutagen = nullptr; // TWW S2 BM 4PC
 
-    action_t* flanking_strike = nullptr;
+    action_t* flanking_strike     = nullptr;
+    action_t* strike_as_one       = nullptr;
     action_t* coordinated_assault = nullptr;
 
     action_t* no_mercy_ba = nullptr;
@@ -2911,7 +2925,7 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
   }
 };
 
-// Wild Thrash  ==============================================================
+// Wild Thrash ===============================================================
 
 struct wild_thrash_t : public hunter_pet_attack_t<hunter_pet_t>
 {
@@ -2930,6 +2944,16 @@ struct wild_thrash_t : public hunter_pet_attack_t<hunter_pet_t>
       dm *= 1 + o()->talents.wild_thrash_player->effectN( 1 ).percent();
 
     return dm;
+  }
+};
+
+// Strike as One =============================================================
+
+struct strike_as_one_t : public hunter_pet_attack_t<hunter_pet_t>
+{
+  strike_as_one_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "strike_as_one", p, p->o()->talents.strike_as_one_dmg )
+  {
+    background = dual = true;
   }
 };
 
@@ -3447,6 +3471,9 @@ void hunter_main_pet_t::init_spells()
 
     if ( o()->talents.coordinated_assault.ok() )
       actions.coordinated_assault = new actions::coordinated_assault_t( this );
+
+    if ( o()->talents.strike_as_one.ok() )
+      actions.strike_as_one = new actions::strike_as_one_t( this );
   }
   else if ( o()->specialization() == HUNTER_BEAST_MASTERY )
   {
@@ -6478,6 +6505,16 @@ struct boomstick_t : public hunter_spell_t
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_boomstick->trigger();
+
+      if ( p()->cooldowns.strike_as_one->up() )
+      {
+        auto pet = p()->pets.main;
+        if ( pet )
+        {
+          p()->pets.main->actions.strike_as_one->execute_on_target( target );
+          p()->cooldowns.strike_as_one->start();
+        }
+      }
     }
   }
 
@@ -8345,6 +8382,7 @@ void hunter_t::init_spells()
     talents.lunge                             = find_talent_spell( talent_tree::SPECIALIZATION, "Lunge", HUNTER_SURVIVAL );
     talents.boomstick                         = find_talent_spell( talent_tree::SPECIALIZATION, "Boomstick", HUNTER_SURVIVAL );
     talents.strike_as_one                     = find_talent_spell( talent_tree::SPECIALIZATION, "Strike As One", HUNTER_SURVIVAL );
+    talents.strike_as_one_dmg                 = talents.strike_as_one.ok() ? find_spell( 1251779 ) : spell_data_t::not_found();
 
     talents.shrapnel_bomb                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Bomb", HUNTER_SURVIVAL );
     talents.flamebreaker                      = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreaker", HUNTER_SURVIVAL );
@@ -8608,6 +8646,8 @@ void hunter_t::init_spells()
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
   cooldowns.salvo->duration = talents.volley->duration();
+
+  cooldowns.strike_as_one->duration = talents.strike_as_one->internal_cooldown();
 
   cooldowns.ruthless_marauder->duration = talents.ruthless_marauder->internal_cooldown();
 
