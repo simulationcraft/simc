@@ -6388,6 +6388,13 @@ struct raptor_strike_base_t : public melee_focus_spender_t
       sanctified_armaments = p->get_background_action<sanctified_armaments_t>( "sanctified_armaments" );
   }
 
+  void execute() override
+  {
+    melee_focus_spender_t::execute();
+
+    p()->buffs.mongoose_fury->trigger();
+  }
+
   void impact( action_state_t* state ) override
   {
     melee_focus_spender_t::impact( state );
@@ -6397,6 +6404,15 @@ struct raptor_strike_base_t : public melee_focus_spender_t
       double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 2 ).percent();
       residual_action::trigger( sanctified_armaments, state->target, amount );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = melee_focus_spender_t::composite_da_multiplier( s );
+
+    am *= 1 + p()->buffs.mongoose_fury->stack_value();
+
+    return am;
   }
 };
 
@@ -6509,13 +6525,13 @@ struct boomstick_t : public hunter_spell_t
 
   void execute() override
   {
-    hunter_spell_t::execute();
-
+    // Run before inherited execute() so that tick 0 benefits from the Tip buff.
     if ( p()->buffs.tip_of_the_spear->up() )
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_boomstick->trigger();
-
+      p()->trigger_eagles_mark( target, true );
+      
       if ( p()->cooldowns.strike_as_one->up() )
       {
         auto pet = p()->pets.main;
@@ -6526,6 +6542,7 @@ struct boomstick_t : public hunter_spell_t
         }
       }
     }
+    hunter_spell_t::execute();
   }
 
   void tick( dot_t* dot ) override
