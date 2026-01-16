@@ -9710,7 +9710,7 @@ void rogue_t::init_spells()
 
   // Register passives ======================================================
 
-  // Extra CP from improved ambush is reported separatedly and manually handled within the action
+  // Extra CP from Improved Ambush is reported separatedly and manually handled within the action
   deregister_passive_spell( talent.rogue.improved_ambush );
 
   // Vigor value is divided by 10 due to ancient scripted support for the per-CP spend mechanics
@@ -9726,6 +9726,11 @@ void rogue_t::init_spells()
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
                                 effect_mask_t( false ).enable( 1 ) :
                                 effect_mask_t( false ).enable( 2 ) );
+
+  // Fatebound Tails modifier from Hand of Fate appears to be unused for Outlaw
+  register_passive_effect_mask( talent.fatebound.hand_of_fate, specialization() == ROGUE_OUTLAW ?
+                                effect_mask_t( true ).disable( 5 ) :
+                                effect_mask_t( true ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
