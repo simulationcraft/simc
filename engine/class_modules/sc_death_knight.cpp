@@ -8954,9 +8954,6 @@ struct consumption_leech_heal_t final : public death_knight_leech_damage_heal_t
   void impact( action_state_t* state ) override
   {
     death_knight_leech_damage_heal_t::impact( state );
-
-    if ( p()->talent.blood.carnage.ok() )
-      trigger_blood_shield( state );
   }
 };
 
@@ -9078,6 +9075,22 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( state );
       consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
       consumption_leech_damage->execute_on_target( state->target );
+
+      if ( p()->talent.blood.carnage.ok() )
+      {
+        double amount = state->result_raw * std::abs( p()->talent.blood.carnage->effectN( 1 ).percent() );
+        double current_value = p()->buffs.blood_shield->current_value;
+
+        double final_amount = amount + current_value;
+
+        // Blood Shield caps at 50% max health
+        if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent() ) )
+          final_amount = player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent();
+
+        sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})",
+                      player->name(), current_value, amount, final_amount, name(), this->data().id() );
+        p()->buffs.blood_shield->trigger( 1, final_amount );
+      }
     }
 
     void execute() override
