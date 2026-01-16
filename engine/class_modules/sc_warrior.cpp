@@ -134,6 +134,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_overwhelmed;
   buff_t* debuffs_wrecked;  // Dominance of the Colossus
+  buff_t* debuffs_devastating_focus;
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -413,6 +414,7 @@ public:
     // Fury
 
     // Protection
+    const spell_data_t* devastating_focus_debuff;
 
     // Extra Spells To Make Things Work
 
@@ -688,7 +690,7 @@ public:
       // Row 4
       player_talent_t disrupting_shout;  // NYI
       player_talent_t strategist;
-      player_talent_t devastating_focus;  // NYI
+      player_talent_t devastating_focus;
       // Row 5
       player_talent_t brutal_vitality;
       player_talent_t instigate;
@@ -1132,6 +1134,8 @@ public:
     // Protection
     parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ),
                           p()->talents.protection.demoralizing_shout );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_devastating_focus ),
+                          p()->spell.devastating_focus_debuff );
 
     // Colossus
     if ( p()->talents.colossus.demolish->ok() )
@@ -1825,6 +1829,31 @@ struct devastator_t : warrior_attack_t
     warrior_attack_t::init_finished();
 
     gain = p()->gain.instigate;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.protection.devastating_focus.ok() )
+    {
+      auto target_data = td( state->target );
+      // If we do not currently have devastating focus on our target, scan the list of enemies, if any of them have it
+      // Clear it, then apply it to our current target
+      if ( target_data )
+      {
+        if ( !target_data->debuffs_devastating_focus->up() )
+        {
+          for ( auto t : p()->sim->target_non_sleeping_list )
+          {
+            warrior_td_t* dev_focus_td = p()->get_target_data( t );
+            if ( dev_focus_td->debuffs_devastating_focus->up() )
+              dev_focus_td->debuffs_devastating_focus->expire();
+          }
+        }
+      }
+      target_data->debuffs_devastating_focus->trigger();
+    }
   }
 
   void execute() override
@@ -7032,6 +7061,7 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
   spell.devastator              = find_spell( 236279 );
+  spell.devastating_focus_debuff= find_spell( 1277983 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -7807,6 +7837,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
+
+  debuffs_devastating_focus = make_buff( *this, "devastating_focus", p.spell.devastating_focus_debuff );
 
   // Colossus
   debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
