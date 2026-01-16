@@ -492,8 +492,7 @@ public:
 
     // Survival Tree
     buff_t* tip_of_the_spear;
-    buff_t* tip_of_the_spear_explosive;
-    buff_t* tip_of_the_spear_fote;
+    buff_t* tip_of_the_spear_boomstick;
     buff_t* mongoose_fury;
     buff_t* frenzy_strikes;
     buff_t* sulfurlined_pockets_building;
@@ -874,8 +873,7 @@ public:
     spell_data_ptr_t guerrilla_tactics;
     spell_data_ptr_t tip_of_the_spear;
     spell_data_ptr_t tip_of_the_spear_buff;
-    spell_data_ptr_t tip_of_the_spear_explosive_buff;
-    spell_data_ptr_t tip_of_the_spear_fote_buff;
+    spell_data_ptr_t tip_of_the_spear_boomstick_buff;
 
     spell_data_ptr_t lunge;
     spell_data_ptr_t boomstick; //TODO Not implemented
@@ -1297,7 +1295,6 @@ public:
   void trigger_lunar_storm( player_t* target );
   void consume_precise_shots();
   void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false );
-  double calculate_tip_of_the_spear_value( double base_value ) const;
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
   void trigger_natures_ally_3();
@@ -1495,7 +1492,7 @@ public:
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.direct ).percent();
 
     if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() )
-      am *= 1 + p()->calculate_tip_of_the_spear_value( p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent() );
+      am *= 1 + p()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
     if ( affected_by.tww_s2_mm_2pc.direct )
       am *= 1 + p()->buffs.jackpot->value();
@@ -2650,7 +2647,7 @@ public:
       am *= 1 + o()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.direct ).percent();
 
     if ( affected_by.tip_of_the_spear.direct && o()->buffs.tip_of_the_spear->check() )
-      am *= 1 + o()->calculate_tip_of_the_spear_value( o()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent() );
+      am *= 1 + o()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
     if ( affected_by.wyverns_cry.direct )
       am *= 1 + o()->buffs.wyverns_cry->check_stack_value();
@@ -3744,18 +3741,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   }
 }
 
-double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
-{
-
-  //Better Together is seemingly unaffected by Flanker's Advantage bonus
-  tip_bonus += talents.better_together->effectN( 3 ).percent();
-
-  if ( buffs.relentless_primal_ferocity->check() )
-    tip_bonus *= 1 + talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
-
-  return tip_bonus;
-}
-
 void hunter_t::trigger_deathblow( bool activated )
 {
   if ( !talents.deathblow.ok() )
@@ -4330,8 +4315,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
       hunter_ranged_attack_t::execute();
       
-      p()->buffs.tip_of_the_spear_explosive->decrement();
-
       if ( p()->talents.thundering_hooves.ok() )
       {
         for ( auto pet : pets::active<pets::stable_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -4354,9 +4337,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     
       m *= 1.0 + p()->buffs.precision_detonation_hidden->check_value();
       
-      if ( p()->buffs.tip_of_the_spear_explosive->check() )
-        m *= 1.0 + p()->calculate_tip_of_the_spear_value( p()->talents.tip_of_the_spear->effectN( 1 ).percent() );
-
       return m;
     }
   };
@@ -4482,17 +4462,6 @@ struct explosive_shot_t : public explosive_shot_base_t
     {
       explosion->stats = stats;
       stats->action_list.push_back( explosion );
-    }
-  }
-  
-  void execute() override
-  {
-    explosive_shot_base_t::execute();
-
-    if ( p()->buffs.tip_of_the_spear->up() )
-    {
-      p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_explosive->trigger();
     }
   }
 };
@@ -6459,6 +6428,75 @@ struct mongoose_bite_eagle_t : mongoose_bite_base_t
   }
 };
 
+// Boomstick ===========================================================================
+struct boomstick_t : public hunter_spell_t
+{
+  struct boomstick_tick_t : public hunter_ranged_attack_t
+  {
+    boomstick_tick_t( util::string_view n, hunter_t* p ) 
+      : hunter_ranged_attack_t( n, p, p->talents.boomstick->effectN( 1 ).trigger() )
+    {
+      aoe                         = -1;
+      background                  = true;
+      may_crit                    = true;
+      radius                      = data().max_range();
+      reduced_aoe_targets         = p->talents.boomstick->effectN( 2 ).base_value();
+      decrements_tip_of_the_spear = false;
+    }
+    
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double dm = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // Boomstick has a unique Tip buff and is not affected by base Tip (260286) so apply it here.
+      if ( p()->buffs.tip_of_the_spear_boomstick->up() )
+        dm *= 1 + p()->talents.tip_of_the_spear_boomstick_buff->effectN( 1 ).percent();
+
+      return dm;
+    }
+  };
+
+  boomstick_tick_t* boomstick_tick = nullptr;
+
+  boomstick_t( hunter_t* p, util::string_view options_str ) 
+    : hunter_spell_t( "boomstick", p, p->talents.boomstick ),
+      boomstick_tick( p->get_background_action<boomstick_tick_t>( "boomstick_damage" ) )
+  {
+    parse_options( options_str );
+
+    channeled                   = true;
+    tick_zero                   = true;
+    decrements_tip_of_the_spear = false;
+
+    add_child( boomstick_tick );
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p()->buffs.tip_of_the_spear->up() )
+    {
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_boomstick->trigger();
+    }
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    hunter_spell_t::tick( dot );
+
+    boomstick_tick->execute_on_target( dot->target );
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    hunter_spell_t::last_tick( dot );
+
+    p()->buffs.tip_of_the_spear_boomstick->expire();
+  }
+};
+
 // Flanking Strike =====================================================================
 
 struct flanking_strike_t: hunter_spell_t
@@ -6661,8 +6699,6 @@ struct fury_of_the_eagle_t : public hunter_spell_t
       // TODO 13/2/25: Casting Fury of the Eagle with more than one stack of Tip of the Spear 
       // will result in a double application of the bonus damage, from both the generic buff
       // and the new FotE specific hidden buff.
-      if ( p()->buffs.tip_of_the_spear_fote->check() )
-        m *= 1.0 + p()->calculate_tip_of_the_spear_value( p()->talents.tip_of_the_spear->effectN( 1 ).percent() );
 
       return m;
     }
@@ -6691,7 +6727,7 @@ struct fury_of_the_eagle_t : public hunter_spell_t
     if ( p()->buffs.tip_of_the_spear->up() )
     {
       p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_fote->trigger();
+      p()->buffs.tip_of_the_spear_boomstick->trigger();
     }
   }
 
@@ -6712,7 +6748,7 @@ struct fury_of_the_eagle_t : public hunter_spell_t
   {
     hunter_spell_t::last_tick( dot );
 
-    p()->buffs.tip_of_the_spear_fote->decrement();
+    p()->buffs.tip_of_the_spear_boomstick->decrement();
     p()->buffs.ruthless_marauder->trigger();
   }
 };
@@ -8052,6 +8088,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
+  if ( name == "boomstick"             ) return new              boomstick_t( this, options_str );
   if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "harriers_cry"          ) return new           harriers_cry_t( this, options_str );
@@ -8405,8 +8442,7 @@ void hunter_t::init_spells()
     talents.guerrilla_tactics                 = find_talent_spell( talent_tree::SPECIALIZATION, "Guerrilla Tactics", HUNTER_SURVIVAL );
     talents.tip_of_the_spear                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tip of the Spear", HUNTER_SURVIVAL );
     talents.tip_of_the_spear_buff             = talents.tip_of_the_spear.ok() ? find_spell( 260286 ) : spell_data_t::not_found();
-    talents.tip_of_the_spear_explosive_buff   = talents.tip_of_the_spear.ok() ? find_spell( 460852 ) : spell_data_t::not_found();
-    talents.tip_of_the_spear_fote_buff        = talents.tip_of_the_spear.ok() ? find_spell( 471536 ) : spell_data_t::not_found();
+    talents.tip_of_the_spear_boomstick_buff   = talents.tip_of_the_spear.ok() ? find_spell( 471536 ) : spell_data_t::not_found();
 
     talents.lunge                             = find_talent_spell( talent_tree::SPECIALIZATION, "Lunge", HUNTER_SURVIVAL );
     talents.boomstick                         = find_talent_spell( talent_tree::SPECIALIZATION, "Boomstick", HUNTER_SURVIVAL );
@@ -8590,7 +8626,7 @@ void hunter_t::init_spells()
 
     talents.stargazer                = find_talent_spell( talent_tree::HERO, "Stargazer" );
     talents.open_fire                = find_talent_spell( talent_tree::HERO, "Open Fire" );
-    talents.cant_miss_wont_miss      = find_talent_spell( talent_tree::HERO, "Can't Miss Won't Miss" );
+    talents.cant_miss_wont_miss      = find_talent_spell( talent_tree::HERO, "Can't Miss, Won't Miss" );
     talents.invigorating_pulse       = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
     talents.twilight_requiem         = find_talent_spell( talent_tree::HERO, "Twilight Requiem" );
     talents.stalk_and_strike         = find_talent_spell( talent_tree::HERO, "Stalk and Strike" );
@@ -8909,12 +8945,8 @@ void hunter_t::create_buffs()
     make_buff( this, "tip_of_the_spear", talents.tip_of_the_spear_buff )
       ->set_chance( talents.tip_of_the_spear.ok() );
 
-  buffs.tip_of_the_spear_explosive =
-    make_buff( this, "tip_of_the_spear_explosive", talents.tip_of_the_spear_explosive_buff )
-      ->set_chance( talents.tip_of_the_spear.ok() );
-
-  buffs.tip_of_the_spear_fote =
-    make_buff( this, "tip_of_the_spear_fote", talents.tip_of_the_spear_fote_buff )
+  buffs.tip_of_the_spear_boomstick =
+    make_buff( this, "tip_of_the_spear_boomstick", talents.tip_of_the_spear_boomstick_buff )
       ->set_chance( talents.tip_of_the_spear.ok() );
   
   buffs.mongoose_fury =
