@@ -4894,6 +4894,9 @@ struct black_arrow_t final : public black_arrow_base_t
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
+
+    auto dot = p->find_action( "black_arrow_dot" );
+    add_child( dot );
   }
 
   void execute() override
@@ -5939,6 +5942,10 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+
+      auto arcane_shot = p->find_action( "arcane_shot" );
+      if ( arcane_shot )
+        arcane_shot->add_child( this );
     }
   };
 
@@ -5949,6 +5956,10 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+
+      auto kill_shot = p->find_action( "kill_shot" );
+      if ( kill_shot )
+        kill_shot->add_child( this );
     }
   };
 
@@ -5959,6 +5970,10 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
+
+      auto black_arrow = p->find_action( "black_arrow" );
+      if ( black_arrow )
+        black_arrow->add_child( this );
     }
   };
 
@@ -6015,22 +6030,19 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     if ( !p()->talents.unload.ok() )
       return;
 
-    bool executed = false;
-
     if ( unload.black_arrow && unload.black_arrow->target_ready( target ) )
     {
       unload.black_arrow->execute_on_target( target );
-      executed = true;
+      return;
     }
 
-    if ( !executed && unload.kill_shot && unload.kill_shot->target_ready( target ) )
+    if ( unload.kill_shot && unload.kill_shot->target_ready( target ) )
     {
       unload.kill_shot->execute_on_target( target );
-      executed = true;
+      return;
     }
 
-    if ( !executed )
-      unload.arcane_shot->execute_on_target( target );
+    unload.arcane_shot->execute_on_target( target );
   }
 
   void init() override
