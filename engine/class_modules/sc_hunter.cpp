@@ -921,7 +921,7 @@ public:
 
     spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
     spell_data_ptr_t flamefang_pitch; //TODO Not implemented
-    spell_data_ptr_t twin_fangs; //TODO Not implemented
+    spell_data_ptr_t twin_fangs;
     spell_data_ptr_t savagery_sv; //TODO Not implemented
     spell_data_ptr_t wildfire_infusion;
 
@@ -3257,6 +3257,10 @@ struct takedown_t : public hunter_pet_attack_t<hunter_main_pet_t>
   takedown_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "takedown", p, p->o()->talents.takedown_pet )
   {
     background = true;
+
+    /* 2026-01-17: Takedown's pet damage spell effect has an energize baked in which is not reflected in-game. 
+                   TODO reconfirm before launch */
+    energize_type = action_energize::NONE;
   }
 };
 
@@ -6899,6 +6903,9 @@ struct takedown_t : public hunter_spell_t
     energize_resource = RESOURCE_FOCUS;
     energize_amount   = p->talents.takedown_energize->effectN( 1 ).base_value();
 
+    // Only the background damage action consumes a Tip stack.
+    decrements_tip_of_the_spear = false;
+
     damage = p->get_background_action<damage_t>( "takedown_damage" );
     add_child( damage );
   }
@@ -6906,6 +6913,7 @@ struct takedown_t : public hunter_spell_t
   void execute() override
   {
     // With Twin Fangs, Takedown applies 3 Tip stacks and then consumes one for its damage
+    p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.twin_fangs->effectN( 1 ).base_value() ) );
 
     hunter_spell_t::execute();
 
