@@ -504,6 +504,7 @@ public:
     buff_t* ruthless_marauder;
     buff_t* relentless_primal_ferocity;
     buff_t* bombardier;
+    buff_t* wallop;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -897,7 +898,8 @@ public:
     spell_data_ptr_t sic_em_bleed;
 
     spell_data_ptr_t bloody_claws;
-    spell_data_ptr_t wallop; //TODO Not implemented
+    spell_data_ptr_t wallop;
+    spell_data_ptr_t wallop_buff;
     spell_data_ptr_t improved_wildfire_bomb;
     spell_data_ptr_t bonding; //TODO Not implemented
     spell_data_ptr_t sweeping_spear;
@@ -1341,6 +1343,7 @@ public:
     damage_affected_by tip_of_the_spear;
     damage_affected_by coordinated_assault;
     damage_affected_by mongoose_fury;
+    damage_affected_by wallop;
 
     // Sentinel
     damage_affected_by sentinels_mark;
@@ -1381,6 +1384,7 @@ public:
     affected_by.outland_venom = check_affected_by( this, p->talents.outland_venom_debuff->effectN( 1 ) );
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     affected_by.mongoose_fury = parse_damage_affecting_aura( this, p->talents.mongoose_fury_buff );
+    affected_by.wallop = parse_damage_affecting_aura( this, p->talents.wallop_buff );
     affected_by.spearhead = check_affected_by( this, p->talents.spearhead_bleed->effectN( 2 ) );
     affected_by.deadly_duo = check_affected_by( this, p->talents.spearhead_bleed->effectN( 3 ) );
 
@@ -1477,6 +1481,9 @@ public:
         }
       }
     }
+
+    if ( affected_by.wallop.direct )
+      p()->buffs.wallop->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1509,6 +1516,9 @@ public:
 
     if ( affected_by.mongoose_fury.direct && p()->buffs.mongoose_fury->check() )
       am *= 1 + p()->buffs.mongoose_fury->stack_value();
+
+    if ( affected_by.wallop.direct && p()->buffs.wallop->check() )
+      am *= 1 + p()->buffs.wallop->value();
 
     if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() )
       am *= 1 + p()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
@@ -1559,9 +1569,6 @@ public:
 
     if ( affected_by.coordinated_assault.tick && p()->buffs.coordinated_assault->check() )
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.tick ).percent();
-
-    if ( affected_by.mongoose_fury.tick && p()->buffs.mongoose_fury->check() )
-      am *= 1 + p()->buffs.mongoose_fury->stack_value();
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
@@ -2717,9 +2724,6 @@ public:
 
     if ( affected_by.coordinated_assault.tick && o()->buffs.coordinated_assault->check() )
       am *= 1 + o()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.tick ).percent();
-
-    if ( affected_by.mongoose_fury.tick && o()->buffs.mongoose_fury->check() )
-      am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + o()->buffs.wyverns_cry->check_stack_value();
@@ -8479,6 +8483,7 @@ void hunter_t::init_spells()
 
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
     talents.wallop                            = find_talent_spell( talent_tree::SPECIALIZATION, "Wallop", HUNTER_SURVIVAL );
+    talents.wallop_buff                       = talents.wallop.ok() ? find_spell( 1252741 ) : spell_data_t::not_found();
     talents.improved_wildfire_bomb            = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Wildfire Bomb", HUNTER_SURVIVAL );
     talents.bonding                           = find_talent_spell( talent_tree::SPECIALIZATION, "Bonding", HUNTER_SURVIVAL );
     talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
@@ -8969,7 +8974,11 @@ void hunter_t::create_buffs()
   buffs.mongoose_fury =
     make_buff( this, "mongoose_fury", talents.mongoose_fury_buff )
       ->set_default_value_from_effect( 1 )
-      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+        if ( cur > old && rng().roll( talents.wallop->effectN( 1 ).percent() ) )
+          buffs.wallop->trigger();
+      } );
 
   buffs.frenzy_strikes =
     make_buff( this, "frenzy_strikes", talents.frenzy_strikes_buff )
@@ -9027,6 +9036,10 @@ void hunter_t::create_buffs()
 
   buffs.bombardier = 
     make_buff( this, "bombardier", talents.bombardier_buff );
+
+  buffs.wallop = 
+    make_buff( this, "wallop", talents.wallop_buff )
+      ->set_default_value_from_effect( 1 );
 
   // Pet family buffs
 
