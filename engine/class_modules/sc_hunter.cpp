@@ -893,6 +893,7 @@ public:
     spell_data_ptr_t wildfire_shells;
     spell_data_ptr_t shellshock;
     spell_data_ptr_t sic_em;
+    spell_data_ptr_t sic_em_bleed;
 
     spell_data_ptr_t bloody_claws;
     spell_data_ptr_t wallop; //TODO Not implemented
@@ -2314,6 +2315,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     action_t* potent_mutagen = nullptr; // TWW S2 BM 4PC
 
     action_t* flanking_strike     = nullptr;
+    action_t* sic_em              = nullptr;
     action_t* strike_as_one       = nullptr;
     action_t* coordinated_assault = nullptr;
 
@@ -2909,6 +2911,14 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
 
     return da;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_attack_t::impact( s );
+
+    if ( o()->talents.sic_em.ok() && s->result == RESULT_CRIT )
+      p()->actions.sic_em->execute_on_target( s->target );
+  }
   
   void trigger_dot( action_state_t* s ) override
   {
@@ -2947,9 +2957,23 @@ struct wild_thrash_t : public hunter_pet_attack_t<hunter_pet_t>
   }
 };
 
+// Sic 'Em ===================================================================
+
+struct sic_em_t : public hunter_pet_attack_t<hunter_main_pet_t>
+{
+  sic_em_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "sic_em", p, p->o()->talents.sic_em_bleed )
+  {
+    background = dual = true;
+
+    auto kc = p->find_action( "kill_command" );
+    if ( kc )
+      kc->add_child( this );
+  }
+};
+
 // Strike as One =============================================================
 
-struct strike_as_one_t : public hunter_pet_attack_t<hunter_pet_t>
+struct strike_as_one_t : public hunter_pet_attack_t<hunter_main_pet_t>
 {
   strike_as_one_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "strike_as_one", p, p->o()->talents.strike_as_one_dmg )
   {
@@ -3484,6 +3508,9 @@ void hunter_main_pet_t::init_spells()
 
     if ( o()->talents.strike_as_one.ok() )
       actions.strike_as_one = new actions::strike_as_one_t( this );
+
+    if ( o()->talents.sic_em.ok() )
+      actions.sic_em = new actions::sic_em_t( this );
   }
   else if ( o()->specialization() == HUNTER_BEAST_MASTERY )
   {
@@ -7143,9 +7170,6 @@ struct kill_command_t: public hunter_spell_t
     if ( p()->talents.deathblow.ok() )
     {
       double chance = deathblow.chance;
-      // Sic 'Em doubles the chance of Deathblow during Coordinated Assault, but it is not in spell data.
-      if ( p()->talents.sic_em.ok() && p()->buffs.coordinated_assault->check() )
-        chance *= 2;
 
       if ( rng().roll( chance ) )
         p()->trigger_deathblow();
@@ -8437,6 +8461,7 @@ void hunter_t::init_spells()
     talents.wildfire_shells                   = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Shells", HUNTER_SURVIVAL );
     talents.shellshock                        = find_talent_spell( talent_tree::SPECIALIZATION, "Shellshock", HUNTER_SURVIVAL );
     talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
+    talents.sic_em_bleed                      = talents.sic_em.ok() ? find_spell( 1253138 ) : spell_data_t::not_found();
 
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
     talents.wallop                            = find_talent_spell( talent_tree::SPECIALIZATION, "Wallop", HUNTER_SURVIVAL );
