@@ -1919,7 +1919,7 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !damage || !result_is_hit( state->result ) )
         return;
 
-      if ( TBase::p()->buff.press_the_advantage->stack() == 10 )
+      if ( TBase::p()->buff.press_the_advantage->stack() < 10 )
         TBase::p()->buff.press_the_advantage->trigger();
       else
       {
