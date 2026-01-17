@@ -5814,6 +5814,9 @@ struct shield_charge_t : public warrior_attack_t
     // If we have more than one target, trigger aoe as well
     if ( sim -> target_non_sleeping_list.size() > 1 )
       shield_charge_damage_aoe->execute_on_target( target );
+
+    if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, MID1, B4 ) )
+      p()->buff.revenge->trigger();
   }
 
   bool ready() override
