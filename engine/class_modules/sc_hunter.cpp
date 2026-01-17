@@ -928,8 +928,8 @@ public:
     spell_data_ptr_t raptor_swipe_3; //TODO Not implemented
     spell_data_ptr_t grenade_juggler;
     spell_data_ptr_t wildfire_imbuement; //TODO Not implemented
-    spell_data_ptr_t flanked; //TODO Not implemented
-    spell_data_ptr_t lethal_calibration; //TODO Not implemented
+    spell_data_ptr_t flanked;
+    spell_data_ptr_t lethal_calibration;
     spell_data_ptr_t primal_surge; //TODO Not implemented
 
     spell_data_ptr_t quick_shot; //TODO Removed
@@ -7866,6 +7866,9 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       td( s->target )->debuffs.sentinels_mark->expire();
+
+      if ( s->chain_target < p()->talents.lethal_calibration->effectN( 2 ).base_value() )
+        p()->cooldowns.boomstick->adjust( -p()->talents.lethal_calibration->effectN( 1 ).time_value() );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
