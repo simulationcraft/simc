@@ -9103,6 +9103,7 @@ void hunter_t::create_buffs()
     make_buff( this, "takedown", talents.takedown )
       ->set_default_value_from_effect( 1 )
       ->set_cooldown( 0_ms )
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
       ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER );
 
   buffs.ruthless_marauder =
@@ -9726,8 +9727,12 @@ double hunter_t::composite_melee_auto_attack_speed() const
 {
   double s = player_t::composite_melee_auto_attack_speed();
 
-  if ( buffs.bloodseeker -> check() )
-    s /= 1 + buffs.bloodseeker -> check_stack_value();
+  if ( buffs.bloodseeker->check() )
+    s /= 1 + buffs.bloodseeker->check_stack_value();
+
+  // Only need to apply here as the pet inherits this bonus.
+  if ( buffs.takedown->check() )
+    s /= 1 + talents.takedown->effectN( 4 ).percent();
 
   s /= 1 + buffs.frenzy_strikes->check_value();
   
