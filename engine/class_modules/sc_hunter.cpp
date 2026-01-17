@@ -505,6 +505,7 @@ public:
     buff_t* relentless_primal_ferocity;
     buff_t* bombardier;
     buff_t* wallop;
+    buff_t* takedown;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -573,6 +574,7 @@ public:
     cooldown_t* strike_as_one;
     cooldown_t* ruthless_marauder;
     cooldown_t* coordinated_assault;
+    cooldown_t* takedown;
 
     cooldown_t* no_mercy;
 
@@ -911,7 +913,10 @@ public:
 
     spell_data_ptr_t raptor_swipe_1; //TODO Not implemented
     spell_data_ptr_t explosives_expert;
-    spell_data_ptr_t takedown; //TODO Not implemented
+    spell_data_ptr_t takedown;
+    spell_data_ptr_t takedown_energize;
+    spell_data_ptr_t takedown_dmg;
+    spell_data_ptr_t takedown_pet;
     spell_data_ptr_t killer_companion;
 
     spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
@@ -1189,6 +1194,7 @@ public:
     cooldowns.strike_as_one       = get_cooldown( "strike_as_one" );
     cooldowns.ruthless_marauder   = get_cooldown( "ruthless_marauder" );
     cooldowns.coordinated_assault = get_cooldown( "coordinated_assault" );
+    cooldowns.takedown            = get_cooldown( "takedown" );
 
     cooldowns.no_mercy = get_cooldown( "no_mercy" );
 
@@ -1344,6 +1350,7 @@ public:
     damage_affected_by coordinated_assault;
     damage_affected_by mongoose_fury;
     damage_affected_by wallop;
+    damage_affected_by takedown;
 
     // Sentinel
     damage_affected_by sentinels_mark;
@@ -1385,6 +1392,7 @@ public:
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     affected_by.mongoose_fury = parse_damage_affecting_aura( this, p->talents.mongoose_fury_buff );
     affected_by.wallop = parse_damage_affecting_aura( this, p->talents.wallop_buff );
+    affected_by.takedown = parse_damage_affecting_aura( this, p->talents.takedown );
     affected_by.spearhead = check_affected_by( this, p->talents.spearhead_bleed->effectN( 2 ) );
     affected_by.deadly_duo = check_affected_by( this, p->talents.spearhead_bleed->effectN( 3 ) );
 
@@ -1520,6 +1528,9 @@ public:
     if ( affected_by.wallop.direct && p()->buffs.wallop->check() )
       am *= 1 + p()->buffs.wallop->value();
 
+    if ( affected_by.takedown.direct && p()->buffs.takedown->check() )
+      am *= 1 + p()->talents.takedown->effectN( affected_by.takedown.direct ).percent();
+
     if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() )
       am *= 1 + p()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
@@ -1569,6 +1580,9 @@ public:
 
     if ( affected_by.coordinated_assault.tick && p()->buffs.coordinated_assault->check() )
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.tick ).percent();
+
+    if ( affected_by.takedown.tick && p()->buffs.takedown->check() )
+      am *= 1 + p()->talents.takedown->effectN( affected_by.takedown.tick ).percent();
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
@@ -2334,6 +2348,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     action_t* sic_em              = nullptr;
     action_t* strike_as_one       = nullptr;
     action_t* coordinated_assault = nullptr;
+    action_t* takedown            = nullptr;
 
     action_t* no_mercy_ba = nullptr;
   } actions;
@@ -3235,7 +3250,17 @@ struct coordinated_assault_t: public hunter_pet_attack_t<hunter_main_pet_t>
   }
 };
 
-// Stomp ===================================================================
+// Takedown ===============================================================
+
+struct takedown_t : public hunter_pet_attack_t<hunter_main_pet_t>
+{
+  takedown_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "takedown", p, p->o()->talents.takedown_pet )
+  {
+    background = true;
+  }
+};
+
+// Stomp ==================================================================
 
 struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 {
@@ -3537,6 +3562,9 @@ void hunter_main_pet_t::init_spells()
 
     if ( o()->talents.coordinated_assault.ok() )
       actions.coordinated_assault = new actions::coordinated_assault_t( this );
+
+    if ( o()->talents.takedown.ok() )
+      actions.takedown = new actions::takedown_t( this );
 
     if ( o()->talents.strike_as_one.ok() )
       actions.strike_as_one = new actions::strike_as_one_t( this );
@@ -6846,6 +6874,52 @@ struct coordinated_assault_t: public hunter_spell_t
   }
 };
 
+// Takedown =================================================================
+
+struct takedown_t : public hunter_spell_t
+{
+  struct damage_t final : hunter_melee_attack_t
+  {
+    damage_t( util::string_view n, hunter_t* p ) : hunter_melee_attack_t( n, p, p->talents.takedown_dmg )
+    {
+      background = true;
+    }
+  };
+
+  damage_t* damage = nullptr;
+
+  takedown_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "takedown", p, p->talents.takedown )
+  {
+    parse_options( options_str );
+
+    base_teleport_distance  = data().max_range();
+    movement_directionality = movement_direction_type::OMNI;
+
+    energize_type     = action_energize::ON_CAST;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount   = p->talents.takedown_energize->effectN( 1 ).base_value();
+
+    damage = p->get_background_action<damage_t>( "takedown_damage" );
+    add_child( damage );
+  }
+
+  void execute() override
+  {
+    // With Twin Fangs, Takedown applies 3 Tip stacks and then consumes one for its damage
+
+    hunter_spell_t::execute();
+
+    // Takedown's Buff is applied before the damage event
+    p()->buffs.takedown->trigger();
+
+    // For Coordinated Assault, some weapon group checking happened here, why?
+    // TODO reconfirm before launch
+    damage->execute_on_target( target );
+    if ( auto pet = p()->pets.main )
+      pet->actions.takedown->execute_on_target( target );
+  }
+};
+
 } // end namespace attacks
 
 // ==========================================================================
@@ -8117,6 +8191,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "call_pet_1"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "takedown"              ) return new               takedown_t( this, options_str );
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
@@ -8496,6 +8571,9 @@ void hunter_t::init_spells()
     talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259003, HUNTER_SURVIVAL );
     talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
     talents.takedown                          = find_talent_spell( talent_tree::SPECIALIZATION, "Takedown", HUNTER_SURVIVAL );
+    talents.takedown_energize                 = talents.takedown.ok() ? find_spell( 1258571 ) : spell_data_t::not_found();
+    talents.takedown_dmg                      = talents.takedown.ok() ? find_spell( 1253859 ) : spell_data_t::not_found();
+    talents.takedown_pet                      = talents.takedown.ok() ? find_spell( 1253862 ) : spell_data_t::not_found();
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
     talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259017, HUNTER_SURVIVAL );
@@ -9022,6 +9100,12 @@ void hunter_t::create_buffs()
           }
         }
       } );
+
+  buffs.takedown = 
+    make_buff( this, "takedown", talents.takedown )
+      ->set_default_value_from_effect( 1 )
+      ->set_cooldown( 0_ms )
+      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER );
 
   buffs.ruthless_marauder =
     make_buff( this, "ruthless_marauder", talents.ruthless_marauder_buff )
@@ -9698,6 +9782,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     if ( buffs.coordinated_assault->check() )
       m *= 1 + talents.coordinated_assault->effectN( 4 ).percent();
+
+    if ( buffs.takedown->check() )
+      m *= 1 + talents.takedown->effectN( 3 ).percent();
 
     m *= 1 + buffs.summon_hati->check_value();
     m *= 1 + buffs.serpentine_blessing->check_value();
