@@ -1616,7 +1616,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
     if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && 
-          p()->cooldown.slayers_dominance_icd->up() &&
+          p()->cooldown.slayers_dominance_icd->up() && !background &&
           p()->rng().roll( slayers_strike_proc_chance * ++p()->slayers_strike_attempts_since_last_proc ) )
     {
       p()->slayers_strike_attempts_since_last_proc = 0;
