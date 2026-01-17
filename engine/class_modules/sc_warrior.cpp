@@ -135,6 +135,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_overwhelmed;
   buff_t* debuffs_wrecked;  // Dominance of the Colossus
   buff_t* debuffs_devastating_focus;
+  buff_t* debuffs_phalanx;
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -270,6 +271,9 @@ public:
 
     // Fury Apex
     buff_t* berserk;
+
+    // Protection Apex
+    buff_t* phalanx;
 
     buff_t* seeing_red;
     buff_t* seeing_red_tracking;
@@ -415,6 +419,8 @@ public:
 
     // Protection
     const spell_data_t* devastating_focus_debuff;
+    const spell_data_t* phalanx_buff;
+    const spell_data_t* phalanx_debuff;
 
     // Extra Spells To Make Things Work
 
@@ -1136,6 +1142,8 @@ public:
                           p()->talents.protection.demoralizing_shout );
     parse_target_effects( d_fn( &warrior_td_t::debuffs_devastating_focus ),
                           p()->spell.devastating_focus_debuff );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_phalanx ),
+                          p()->spell.phalanx_debuff );
 
     // Colossus
     if ( p()->talents.colossus.demolish->ok() )
@@ -3874,6 +3882,8 @@ struct thunder_blast_t : public warrior_attack_t
     if ( p()->talents.mountain_thane.capacitance->ok() && p()->buff.avatar->up() )
       p()->buff.avatar->extend_duration_or_trigger( p()->talents.mountain_thane.capacitance->effectN( 1 ).time_value() );
 
+    if ( p()->talents.protection.phalanx_1.ok() )
+      p()->buff.phalanx->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -3978,6 +3988,9 @@ struct thunder_clap_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->talents.protection.phalanx_1.ok() )
+      p()->buff.phalanx->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5831,16 +5844,37 @@ struct shield_charge_t : public warrior_attack_t
 };
 
 // Shield Slam ==============================================================
+struct phalanx_t : public warrior_attack_t
+{
+  phalanx_t( std::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 1270116 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      warrior_attack_t::impact( state );
+
+      auto target_data = td( state->target );
+      if ( target_data )
+        target_data->debuffs_phalanx->trigger();
+    }
+};
 
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
   int aoe_targets;
   action_t* ignore_pain;
+  action_t* phalanx;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
     rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
+    ignore_pain( nullptr ),
+    phalanx( nullptr )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
@@ -5851,6 +5885,12 @@ struct shield_slam_t : public warrior_attack_t
     if ( p->talents.protection.violent_outburst->ok() )
     {
       ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
+    }
+
+    if ( p->talents.protection.phalanx_1.ok() )
+    {
+      phalanx = get_action<phalanx_t>( "phalanx", p );
+      add_child(phalanx);
     }
   }
 
@@ -5913,6 +5953,12 @@ struct shield_slam_t : public warrior_attack_t
     }
 
     p()->buff.celeritous_conclusion_crit->expire();
+
+    if ( p()->talents.protection.phalanx_1.ok() && p()->buff.phalanx->up() )
+    {
+      phalanx->execute_on_target( p()->target );
+      p()->buff.phalanx->expire();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7065,6 +7111,8 @@ void warrior_t::init_spells()
   spell.shield_wall             = find_spell( 871 );
   spell.devastator              = find_spell( 236279 );
   spell.devastating_focus_debuff= find_spell( 1277983 );
+  spell.phalanx_buff            = find_spell( 1278009 );
+  spell.phalanx_debuff          = find_spell( 1270116 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -7843,6 +7891,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_devastating_focus = make_buff( *this, "devastating_focus", p.spell.devastating_focus_debuff );
 
+  debuffs_phalanx = make_buff( *this, "phalanx", p.spell.phalanx_debuff );
+
   // Colossus
   debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -8056,6 +8106,9 @@ void warrior_t::create_buffs()
 
   buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  // Protection Apex
+  buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
 }
 
 // warrior_t::init_special_effects() ====================================
