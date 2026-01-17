@@ -922,7 +922,7 @@ public:
     spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
     spell_data_ptr_t flamefang_pitch; //TODO Not implemented
     spell_data_ptr_t twin_fangs;
-    spell_data_ptr_t savagery_sv; //TODO Not implemented
+    spell_data_ptr_t savagery_sv;
     spell_data_ptr_t wildfire_infusion;
 
     spell_data_ptr_t raptor_swipe_3; //TODO Not implemented
@@ -6384,15 +6384,11 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     proc_t* proc;
   } rylakstalkers_strikes;
 
-  double wildfire_infusion_chance = 0;
-
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s )
   {
     if ( p -> talents.vipers_venom.ok() )
       vipers_venom = p->get_background_action<serpent_sting_vipers_venom_t>( "serpent_sting_vipers_venom" );
-
-    wildfire_infusion_chance = p->talents.wildfire_infusion->effectN( 1 ).percent();
   }
 
   int n_targets() const override
@@ -6435,9 +6431,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p() -> cooldowns.wildfire_bomb -> reset( true );
       rylakstalkers_strikes.proc -> occur();
     }
-
-    if ( rng().roll( wildfire_infusion_chance ) )
-      p()->cooldowns.kill_command->reset( true );
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
 
@@ -6913,7 +6906,8 @@ struct takedown_t : public hunter_spell_t
   void execute() override
   {
     // With Twin Fangs, Takedown applies 3 Tip stacks and then consumes one for its damage
-    p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.twin_fangs->effectN( 1 ).base_value() ) );
+    if ( p()->talents.twin_fangs.ok() )
+      p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.twin_fangs->effectN( 1 ).base_value() ) );
 
     hunter_spell_t::execute();
 
@@ -7165,8 +7159,6 @@ struct kill_command_t: public hunter_spell_t
     timespan_t cap = 0_s;
   } fury_of_the_wyvern;
 
-  timespan_t wildfire_infusion_reduction = 0_s;
-
   kill_command_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) : hunter_spell_t( "kill_command", p, s )
   {
     parse_options( options_str );
@@ -7185,8 +7177,6 @@ struct kill_command_t: public hunter_spell_t
         if ( p->talents.sulfurlined_pockets.ok() )
           quick_shot.explosive_shot = p->get_background_action<explosive_shot_sulfurlined_pockets_t>( "explosive_shot_sulfurlined_pockets" );
       }
-
-      wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
 
       if ( p->talents.deathblow.ok() )
         deathblow.chance = p->talents.deathblow->effectN( 3 ).percent();
@@ -7275,7 +7265,7 @@ struct kill_command_t: public hunter_spell_t
         p()->trigger_deathblow();
     }
 
-    p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
+    p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_infusion->effectN( 1 ).time_value() );
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
@@ -8396,7 +8386,7 @@ void hunter_t::init_spells()
     talents.heart_of_the_pack_buff            = talents.heart_of_the_pack.ok() ? find_spell( 1282747 ) : spell_data_t::not_found();
     talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
     talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
-    talents.savagery_bm                        = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
+    talents.savagery_bm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
     talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
 
