@@ -1632,7 +1632,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.shared.sudden_death.ok() )
+    if ( ( p()->talents.shared.sudden_death.ok() && !background )
            && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
