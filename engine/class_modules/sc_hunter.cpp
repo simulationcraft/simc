@@ -7217,14 +7217,10 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
+    p()->consume_howl_of_the_pack_leader( target );
+
     int tip_stacks = 1;
-    
-    if ( p()->consume_howl_of_the_pack_leader( target ) )
-      tip_stacks++;
-
-    if ( p()->buffs.relentless_primal_ferocity->check() )
-      tip_stacks += as<int>( p()->talents.relentless_primal_ferocity_buff->effectN( 4 ).base_value() );
-
+    tip_stacks += p()->talents.primal_surge->effectN( 1 ).base_value();
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
 
     if ( rng().roll( quick_shot.chance ) )
@@ -9044,6 +9040,7 @@ void hunter_t::create_buffs()
 
   buffs.tip_of_the_spear =
     make_buff( this, "tip_of_the_spear", talents.tip_of_the_spear_buff )
+      ->set_default_value_from_effect( 1 )
       ->set_chance( talents.tip_of_the_spear.ok() );
 
   buffs.tip_of_the_spear_boomstick =
