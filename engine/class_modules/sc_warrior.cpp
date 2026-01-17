@@ -738,9 +738,9 @@ public:
       player_talent_t whirling_blade;
       player_talent_t ravager;
       // Apex
-      player_talent_t phalanx_1;  // NYI
-      player_talent_t phalanx_2;  // NYI
-      player_talent_t phalanx_3;  // NYI
+      player_talent_t phalanx_1;
+      player_talent_t phalanx_2;
+      player_talent_t phalanx_3;
     } protection;
 
     struct colossus_talents_t
@@ -1087,6 +1087,8 @@ public:
 
       parse_effects( p()->buff.best_served_cold );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
+
+      parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
     }
 
     // Colossus
@@ -2750,6 +2752,7 @@ struct bloodbath_t : public warrior_attack_t
   bloodbath_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
+      ragedrinker_heal( nullptr ),
       gushing_wound( nullptr ),
       bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
@@ -5903,19 +5906,6 @@ struct shield_slam_t : public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.shield_block->up() )
-    {
-      double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
-      am *= 1.0 + sb_increase;
-    }
-
-    return am;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -7891,7 +7881,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_devastating_focus = make_buff( *this, "devastating_focus", p.spell.devastating_focus_debuff );
 
-  debuffs_phalanx = make_buff( *this, "phalanx", p.spell.phalanx_debuff );
+  debuffs_phalanx = make_buff( *this, "phalanx_debuff", p.spell.phalanx_debuff );
 
   // Colossus
   debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
