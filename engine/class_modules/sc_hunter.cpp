@@ -889,6 +889,7 @@ public:
     spell_data_ptr_t two_against_many;
 
     spell_data_ptr_t mongoose_fury;
+    spell_data_ptr_t mongoose_fury_buff;
     spell_data_ptr_t mongoose_rounds;
     spell_data_ptr_t wildfire_shells;
     spell_data_ptr_t shellshock;
@@ -1339,6 +1340,7 @@ public:
     damage_affected_by spirit_bond;
     damage_affected_by tip_of_the_spear;
     damage_affected_by coordinated_assault;
+    damage_affected_by mongoose_fury;
 
     // Sentinel
     damage_affected_by sentinels_mark;
@@ -1378,6 +1380,7 @@ public:
     affected_by.tip_of_the_spear = parse_damage_affecting_aura( this, p->talents.tip_of_the_spear_buff );
     affected_by.outland_venom = check_affected_by( this, p->talents.outland_venom_debuff->effectN( 1 ) );
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
+    affected_by.mongoose_fury = parse_damage_affecting_aura( this, p->talents.mongoose_fury_buff );
     affected_by.spearhead = check_affected_by( this, p->talents.spearhead_bleed->effectN( 2 ) );
     affected_by.deadly_duo = check_affected_by( this, p->talents.spearhead_bleed->effectN( 3 ) );
 
@@ -1504,6 +1507,9 @@ public:
     if ( affected_by.coordinated_assault.direct && p()->buffs.coordinated_assault->check() )
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.direct ).percent();
 
+    if ( affected_by.mongoose_fury.direct && p()->buffs.mongoose_fury->check() )
+      am *= 1 + p()->buffs.mongoose_fury->stack_value();
+
     if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() )
       am *= 1 + p()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
@@ -1553,6 +1559,9 @@ public:
 
     if ( affected_by.coordinated_assault.tick && p()->buffs.coordinated_assault->check() )
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.tick ).percent();
+
+    if ( affected_by.mongoose_fury.tick && p()->buffs.mongoose_fury->check() )
+      am *= 1 + p()->buffs.mongoose_fury->stack_value();
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
@@ -2578,6 +2587,7 @@ public:
     damage_affected_by spirit_bond;
     damage_affected_by tip_of_the_spear;
     damage_affected_by coordinated_assault;
+    damage_affected_by mongoose_fury;
 
     // Pack Leader
     damage_affected_by wyverns_cry;
@@ -2611,6 +2621,7 @@ public:
     affected_by.spirit_bond = parse_damage_affecting_aura( this, o()->mastery.spirit_bond );
     affected_by.tip_of_the_spear = parse_damage_affecting_aura( this, o()->talents.tip_of_the_spear_buff );
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, o()->talents.coordinated_assault );
+    affected_by.mongoose_fury = parse_damage_affecting_aura( this, o()->talents.mongoose_fury_buff );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, o()->talents.howl_of_the_pack_leader_wyvern_buff );
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, o()->talents.lead_from_the_front_buff );
@@ -2661,6 +2672,20 @@ public:
     if ( affected_by.coordinated_assault.direct && o()->buffs.coordinated_assault->check() )
       am *= 1 + o()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.direct ).percent();
 
+    if ( affected_by.mongoose_fury.direct && o()->buffs.mongoose_fury->check() )
+    {
+      /* 2026-01-17: Strike as One has a unique spell effect in Mongoose Fury's buff, conditioned on a talent (Bloody Claws).
+                     So use that for the special case. */
+      if ( s->action->name_str == "strike_as_one" )
+      {
+        am *= 1 + o()->talents.mongoose_fury_buff->effectN( 2 ).percent() * o()->buffs.mongoose_fury->stack();
+      }
+      else
+      {
+        am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
+      }
+    }
+
     if ( affected_by.tip_of_the_spear.direct && o()->buffs.tip_of_the_spear->check() )
       am *= 1 + o()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
@@ -2692,6 +2717,9 @@ public:
 
     if ( affected_by.coordinated_assault.tick && o()->buffs.coordinated_assault->check() )
       am *= 1 + o()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.tick ).percent();
+
+    if ( affected_by.mongoose_fury.tick && o()->buffs.mongoose_fury->check() )
+      am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + o()->buffs.wyverns_cry->check_stack_value();
@@ -6344,8 +6372,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
-    am *= 1 + p() -> buffs.mongoose_fury -> stack_value();
-        
     if ( p()->buffs.strike_it_rich->check() )
       am *= 1 + p() -> buffs.strike_it_rich -> value();  
 
@@ -6431,15 +6457,6 @@ struct raptor_strike_base_t : public melee_focus_spender_t
       double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 2 ).percent();
       residual_action::trigger( sanctified_armaments, state->target, amount );
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = melee_focus_spender_t::composite_da_multiplier( s );
-
-    am *= 1 + p()->buffs.mongoose_fury->stack_value();
-
-    return am;
   }
 };
 
@@ -7063,7 +7080,6 @@ struct kill_command_t: public hunter_spell_t
   } fury_of_the_wyvern;
 
   timespan_t wildfire_infusion_reduction = 0_s;
-  timespan_t bloody_claws_extension = 0_s;
 
   kill_command_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) : hunter_spell_t( "kill_command", p, s )
   {
@@ -7085,7 +7101,6 @@ struct kill_command_t: public hunter_spell_t
       }
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
-      bloody_claws_extension = p->talents.bloody_claws->effectN( 2 ).time_value();
 
       if ( p->talents.deathblow.ok() )
         deathblow.chance = p->talents.deathblow->effectN( 3 ).percent();
@@ -7151,7 +7166,6 @@ struct kill_command_t: public hunter_spell_t
     {
       double chance = reset.chance;
 
-      chance += p()->buffs.mongoose_fury->check() * p()->talents.mongoose_fury->effectN( 2 ).percent();
       chance += p()->buffs.coordinated_assault->check_value();
 
       if ( rng().roll( chance ) )
@@ -7176,7 +7190,6 @@ struct kill_command_t: public hunter_spell_t
     }
 
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
-    p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
@@ -8456,7 +8469,8 @@ void hunter_t::init_spells()
     talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
     talents.two_against_many                  = find_talent_spell( talent_tree::SPECIALIZATION, "Two Against Many", HUNTER_SURVIVAL );
 
-    talents.mongoose_fury                     = find_spell( 259388 );
+    talents.mongoose_fury                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Fury", HUNTER_SURVIVAL );
+    talents.mongoose_fury_buff                = find_spell( 259388 ); // Mongoose Fury can be applied without being talented.
     talents.mongoose_rounds                   = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Rounds", HUNTER_SURVIVAL );
     talents.wildfire_shells                   = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Shells", HUNTER_SURVIVAL );
     talents.shellshock                        = find_talent_spell( talent_tree::SPECIALIZATION, "Shellshock", HUNTER_SURVIVAL );
@@ -8953,7 +8967,7 @@ void hunter_t::create_buffs()
       ->set_chance( talents.tip_of_the_spear.ok() );
   
   buffs.mongoose_fury =
-    make_buff( this, "mongoose_fury", talents.mongoose_fury )
+    make_buff( this, "mongoose_fury", talents.mongoose_fury_buff )
       ->set_default_value_from_effect( 1 )
       ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
