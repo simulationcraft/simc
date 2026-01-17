@@ -147,6 +147,7 @@ struct brews_t
   std::unordered_map<unsigned, cooldown_t *> cooldowns;
 
   void insert_cooldown( action_t *action );
+  bool contains( action_t *action ) const;
   void adjust( timespan_t reduction );
 };
 
@@ -492,6 +493,7 @@ public:
 
     // Brewmaster
     propagate_const<buff_t *> blackout_combo;
+    propagate_const<buff_t *> celestial_flames;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elixir_of_determination;
@@ -785,6 +787,7 @@ public:
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
       player_talent_t celestial_flames;
+      const spell_data_t *celestial_flames_damage;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
       player_talent_t elusive_footwork;
@@ -816,6 +819,7 @@ public:
       player_talent_t high_tolerance;
       player_talent_t press_the_advantage;
       const spell_data_t *press_the_advantage_damage;
+      const spell_data_t *press_the_advantage_tiger_palm;
       player_talent_t blackout_combo;
       player_talent_t anvil_and_stave;
       player_talent_t counterstrike;
