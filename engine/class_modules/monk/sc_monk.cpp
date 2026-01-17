@@ -3497,6 +3497,7 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
   {
     parse_options( options_str );
     cast_during_sck = true;
+    harmful         = false;
   }
 
   void execute() override
@@ -5892,7 +5893,8 @@ void monk_t::init_special_effects()
   };
 
   if ( talent.brewmaster.celestial_flames->ok() )
-    create_proc_callback( { talent.brewmaster.celestial_flames, PF_CAST_SUCCESSFUL } )
+    create_proc_callback( { talent.brewmaster.celestial_flames, PF_CAST_SUCCESSFUL,
+                            static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
                                               [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
                                                 return baseline.brewmaster.brews.contains( state->action );
