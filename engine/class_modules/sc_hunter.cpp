@@ -901,10 +901,10 @@ public:
     spell_data_ptr_t wallop;
     spell_data_ptr_t wallop_buff;
     spell_data_ptr_t improved_wildfire_bomb;
-    spell_data_ptr_t bonding; //TODO Not implemented
+    spell_data_ptr_t bonding;
     spell_data_ptr_t sweeping_spear;
-    spell_data_ptr_t vulnerability; //TODO Not implemented
-    spell_data_ptr_t blackrock_munitions; //TODO Moved from MM to SV and reworked
+    spell_data_ptr_t vulnerability;
+    spell_data_ptr_t blackrock_munitions;
     spell_data_ptr_t shower_of_blood; //TODO Not implemented
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
