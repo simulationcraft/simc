@@ -582,6 +582,8 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
+
+    cooldown_t* sentinel_owl;
   } cooldowns;
 
   struct gains_t
@@ -1209,6 +1211,8 @@ public:
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
 
+    cooldowns.sentinel_owl = get_cooldown( "sentinel_owl_icd" );
+
     base_gcd = 1.5_s;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -1482,10 +1486,30 @@ public:
   {
     ab::execute();
 
-    if ( decrements_tip_of_the_spear )
+    if ( decrements_tip_of_the_spear && p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
-      p()->trigger_eagles_mark( p()->target, true );
+
+      /* On Survival, Sentinel's Mark applies to a random target hit for AoE spells. 
+         For now, pick a random target in the target_list(), even if they were not hit.
+         Results should be unaffected but ideally it would be accurate.
+
+         Note: This same logic is used in boomstick_t::execute().
+
+         2026-01-18: Needs a revisit after class implementation is done, slice the vector probably.
+
+         TODO reconfirm before launch */
+      if ( this->aoe )
+      {
+        auto tl = this->target_list();
+        p()->rng().shuffle( tl.begin(), tl.end() );
+        p()->trigger_eagles_mark( tl.front(), true );
+        this->target_cache.is_valid = false;
+      }
+      else
+      {
+        p()->trigger_eagles_mark( this->target, true );
+      }
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -3876,6 +3900,9 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
     return;
   }
 
+  if ( cooldowns.sentinel_owl->down() )
+    return;
+
   /* Further testing is required on the calculation sequence for this chance. 
      When is Feathered Frenzy's bonus applied?
      How does Lunar Calling affect it?
@@ -3904,6 +3931,7 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+    cooldowns.sentinel_owl->start();
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
@@ -6678,7 +6706,11 @@ struct boomstick_t : public hunter_spell_t
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_boomstick->trigger();
-      p()->trigger_eagles_mark( target, true );
+      
+      auto tl = target_list();
+      p()->rng().shuffle( tl.begin(), tl.end() );
+      p()->trigger_eagles_mark( tl.front(), true );
+      target_cache.is_valid = false;
       
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -6700,7 +6732,7 @@ struct boomstick_t : public hunter_spell_t
     boomstick_tick->execute_on_target( dot->target );
 
     if ( p()->talents.mongoose_rounds.ok() )
-      p()->buffs.mongoose_fury->trigger( p()->talents.mongoose_rounds->effectN( 1 ).base_value() );
+      p()->buffs.mongoose_fury->trigger( as<int>( p()->talents.mongoose_rounds->effectN( 1 ).base_value() ) );
 
     if ( p()->talents.wildfire_shells.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_shells->effectN( 1 ).time_value() );
@@ -7345,7 +7377,7 @@ struct kill_command_t: public hunter_spell_t
     p()->consume_howl_of_the_pack_leader( target );
 
     int tip_stacks = 1;
-    tip_stacks += p()->talents.primal_surge->effectN( 1 ).base_value();
+    tip_stacks += as<int>( p()->talents.primal_surge->effectN( 1 ).base_value() );
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
 
     if ( rng().roll( quick_shot.chance ) )
@@ -8946,6 +8978,10 @@ void hunter_t::init_spells()
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
 
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
+
+  /* Sentinel Owl has an ICD but it doesn't seem to be in spelldata, using 500ms as an estimate. 
+     TODO reconfirm before launch */
+  cooldowns.sentinel_owl->duration = 500_ms;
 
   // Register passives
   register_passive_effect_mask( talents.better_together, 
