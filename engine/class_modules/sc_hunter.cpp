@@ -365,7 +365,6 @@ struct hunter_td_t: public actor_target_data_t
 
     buff_t* sentinels_mark;
     buff_t* crescent_steel;
-    buff_t* lunar_storm;
 
     buff_t* headshot;
   } debuffs;
@@ -542,8 +541,6 @@ public:
     // Sentinel
     buff_t* eyes_closed;
     buff_t* stargazer;
-    buff_t* lunar_storm_ready;
-    buff_t* lunar_storm_cooldown;
 
     // Dark Ranger
     buff_t* withering_fire;
@@ -584,7 +581,7 @@ public:
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
 
-    cooldown_t* sentinel_owl;
+    cooldown_t* sentinels_mark;
   } cooldowns;
 
   struct gains_t
@@ -1071,25 +1068,21 @@ public:
 
     spell_data_ptr_t stargazer;
     spell_data_ptr_t stargazer_buff;
-    spell_data_ptr_t open_fire; //TODO Not implemented
-    spell_data_ptr_t cant_miss_wont_miss; //TODO Not implemented
-    spell_data_ptr_t invigorating_pulse; //TODO Reworked
+    spell_data_ptr_t open_fire;
+    spell_data_ptr_t cant_miss_wont_miss;
+    spell_data_ptr_t invigorating_pulse;
     spell_data_ptr_t twilight_requiem; //TODO Not implemented
     spell_data_ptr_t stalk_and_strike; //TODO Not implemented
 
-    spell_data_ptr_t arcane_talons; //TODO Not implemented
+    spell_data_ptr_t arcane_talons;
     spell_data_ptr_t lunar_calling; //TODO Not implemented
     spell_data_ptr_t conditioning; //Utility talent, won't implement
     spell_data_ptr_t scouts_vigil; //Utility talent, won't implement
     spell_data_ptr_t radiant_edge; //TODO Not implemented
 
-    spell_data_ptr_t lunar_storm; //TODO Not implemented
+    spell_data_ptr_t lunar_storm;
+    spell_data_ptr_t lunar_storm_dmg;
 
-    spell_data_ptr_t lunar_storm_initial_spell; //TODO Removed/Reworked
-    spell_data_ptr_t lunar_storm_periodic_trigger; //TODO Removed/Reworked
-    spell_data_ptr_t lunar_storm_periodic_spell; //TODO Removed/Reworked
-    spell_data_ptr_t lunar_storm_ready_buff; //TODO Removed/Reworked
-    spell_data_ptr_t lunar_storm_cooldown_buff; //TODO Removed/Reworked
     spell_data_ptr_t extrapolated_shots; //TODO Removed/Reworked
     spell_data_ptr_t sentinel_precision; //TODO Removed/Reworked
     spell_data_ptr_t release_and_reload; //TODO Removed/Reworked
@@ -1147,8 +1140,8 @@ public:
     action_t* boar_charge = nullptr;
 
     action_t* symphonic_arsenal = nullptr;
-    action_t* lunar_storm_initial = nullptr;
-    action_t* lunar_storm_periodic = nullptr;
+
+    action_t* lunar_storm = nullptr;
 
     action_t* phantom_pain = nullptr;
 
@@ -1213,7 +1206,7 @@ public:
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
 
-    cooldowns.sentinel_owl = get_cooldown( "sentinel_owl_icd" );
+    cooldowns.sentinels_mark = get_cooldown( "sentinels_mark_icd" );
 
     base_gcd = 1.5_s;
 
@@ -3924,7 +3917,7 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
     return;
   }
 
-  if ( cooldowns.sentinel_owl->down() )
+  if ( cooldowns.sentinels_mark->down() )
     return;
 
   /* Further testing is required on the calculation sequence for this chance. 
@@ -3933,7 +3926,7 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
      TODO reconfirm before launch */
   auto spec = specialization();
   double chance = 0;
-  double lunar_calling_bonus = talents.lunar_calling->effectN( 1 ).percent();
+  double lunar_calling_bonus = talents.lunar_calling->effectN( spec == HUNTER_MARKSMANSHIP ? 1 : 2 ).percent();
 
   if ( spec == HUNTER_MARKSMANSHIP )
   {
@@ -3942,6 +3935,7 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
     /* 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
        TODO reconfirm before launch */
     chance += talents.moons_blessing->effectN( 1 ).percent();
+    chance += lunar_calling_bonus;
 
     if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
       chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
@@ -3949,13 +3943,14 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   else if ( spec == HUNTER_SURVIVAL )
   {
     chance += talents.sentinel->effectN( 1 ).percent();
+    chance += lunar_calling_bonus;
   }
 
   if ( rng().roll( chance ) )
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
-    cooldowns.sentinel_owl->start();
+    cooldowns.sentinels_mark->start();
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
@@ -3999,33 +3994,13 @@ void hunter_t::trigger_deathblow( bool activated )
 
 void hunter_t::trigger_lunar_storm( player_t* target )
 {
-  if ( talents.lunar_storm.ok() )
+  if ( !talents.lunar_storm.ok() )
+    return;
+
+  for ( int i = 1; i <= as<int>( talents.lunar_storm->effectN( 1 ).base_value() ); i++ )
   {
-    buffs.lunar_storm_ready->expire();
-    buffs.lunar_storm_cooldown->trigger();
-    actions.lunar_storm_initial->execute_on_target( target );
-
-    make_repeating_event(
-        sim, talents.lunar_storm_periodic_trigger->effectN( 2 ).period(),
-        [ this ] {
-          auto& tl = actions.lunar_storm_periodic->target_list();
-          if ( tl.size() )
-          {
-            rng().shuffle( tl.begin(), tl.end() );
-            actions.lunar_storm_periodic->execute_on_target( tl.front() );
-          }
-        },
-        as<int>( talents.lunar_storm_periodic_trigger->duration() / talents.lunar_storm_periodic_trigger->effectN( 2 ).period() ) );
-
-  if ( tier_set.tww_s3_sentinel_4pc.ok() )
-  {
-    buffs.boon_of_elune_2pc->expire();
-    buffs.boon_of_elune_4pc->trigger();
-    make_event( sim, talents.lunar_storm_periodic_trigger->duration(), [ this ]() { buffs.boon_of_elune_4pc->expire(); } );
-  }
-
-  if ( tier_set.tww_s3_sentinel_2pc.ok() )
-    make_event( sim, talents.lunar_storm_periodic_trigger->duration(), [ this ]() { buffs.boon_of_elune_2pc->trigger( tier_set.tww_s3_sentinel_2pc_buff->max_stacks() ); } );
+    // No spell data for the Lunar Storm interval, it was ~150ms in testing.
+    make_event( sim, 150_ms * i, [ this, target ]() { actions.lunar_storm->execute_on_target( target ); } );
   }
 }
 
@@ -5204,42 +5179,15 @@ struct boar_charge_t final : hunter_ranged_attack_t
 
 // Lunar Storm (Sentinel) ============================================================
 
-struct lunar_storm_initial_t : hunter_ranged_attack_t
+struct lunar_storm_t : hunter_ranged_attack_t
 {
-  lunar_storm_initial_t( hunter_t* p ) : hunter_ranged_attack_t( "lunar_storm_initial", p, p->talents.lunar_storm_initial_spell )
+  lunar_storm_t( hunter_t* p ) : hunter_ranged_attack_t( "lunar_storm", p, p->talents.lunar_storm_dmg )
   {
     background = dual = true;
     aoe = -1;
   }
 };
 
-struct lunar_storm_periodic_t : hunter_ranged_attack_t
-{
-  lunar_storm_periodic_t( hunter_t* p ) : hunter_ranged_attack_t( "lunar_storm_periodic", p, p->talents.lunar_storm_periodic_spell )
-  {
-    background = dual = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    td( s->target )->debuffs.lunar_storm->trigger();
-  }
-
-  std::vector<player_t*>& target_list() const override
-  {
-    target_cache.is_valid = false;
-    return hunter_ranged_attack_t::target_list();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    hunter_ranged_attack_t::available_targets( tl );
-
-    return tl.size();
-  }
-};
 // Stampede (Pack Leader) ============================================================
 
 struct stampede_t : hunter_ranged_attack_t
@@ -5818,6 +5766,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     {
       target_data->debuffs.spotters_mark->expire();
       target_data->debuffs.sentinels_mark->expire();
+      p()->trigger_lunar_storm( s->target );
 
       if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
       {
@@ -6258,9 +6207,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       p()->buffs.precise_shots->trigger();
 
     p()->buffs.bulletstorm->expire();
-
-    if ( p()->buffs.lunar_storm_ready->up() )
-      p()->trigger_lunar_storm( target );
 
     execute_unload();
   }
@@ -7038,6 +6984,9 @@ struct takedown_t : public hunter_spell_t
 
     // Takedown's Buff is applied before the damage event
     p()->buffs.takedown->trigger();
+
+    if ( p()->talents.lunar_calling.ok() )
+      p()->trigger_eagles_mark( target, true, true );
 
     // For Coordinated Assault, some weapon group checking happened here, why?
     // TODO reconfirm before launch
@@ -8035,16 +7984,19 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 
       if ( rng().roll( p()->talents.grenade_juggler->effectN( 2 ).percent() ) )
         p()->cooldowns.explosive_shot->reset( true );
-
-      if ( p()->buffs.lunar_storm_ready->up() )
-        p()->trigger_lunar_storm( target );
     }
 
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
 
-      td( s->target )->debuffs.sentinels_mark->expire();
+      auto target_data = td( s->target );
+
+      if ( target_data->debuffs.sentinels_mark->check() )
+      {
+        target_data->debuffs.sentinels_mark->expire();
+        p()->trigger_lunar_storm( s->target );
+      }
 
       if ( s->chain_target < p()->talents.lethal_calibration->effectN( 2 ).base_value() )
         p()->cooldowns.boomstick->adjust( -p()->talents.lethal_calibration->effectN( 1 ).time_value() );
@@ -8211,10 +8163,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
-
-  debuffs.lunar_storm = make_buff( *this, "lunar_storm", p->talents.lunar_storm_periodic_spell->effectN( 2 ).trigger() )
-    -> set_default_value_from_effect( 1 )
-    -> set_schools_from_effect( 1 );
 
   debuffs.headshot = make_buff( *this, "headshot", p->talents.headshot_debuff )
     -> set_default_value_from_effect( 1 );
@@ -8922,6 +8870,7 @@ void hunter_t::init_spells()
     talents.radiant_edge             = find_talent_spell( talent_tree::HERO, "Radiant Edge" );
     
     talents.lunar_storm              = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
+    talents.lunar_storm_dmg          = talents.lunar_storm.ok() ? find_spell( 1253733 ) : spell_data_t::not_found();
 
     //TODO Remove
     talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
@@ -8934,11 +8883,6 @@ void hunter_t::init_spells()
     talents.overwatch = find_talent_spell( talent_tree::HERO, "Overwatch" );
     talents.crescent_steel = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
     talents.crescent_steel_debuff = talents.crescent_steel.ok() ? find_spell( 451531 ) : spell_data_t::not_found();
-    talents.lunar_storm_initial_spell = talents.lunar_storm.ok() ? find_spell( 1217459 ) : spell_data_t::not_found();
-    talents.lunar_storm_periodic_trigger = talents.lunar_storm.ok() ? find_spell( 450978 ) : spell_data_t::not_found();
-    talents.lunar_storm_periodic_spell = talents.lunar_storm.ok() ? find_spell( 450883 ) : spell_data_t::not_found();
-    talents.lunar_storm_ready_buff = talents.lunar_storm.ok() ? find_spell( 451805 ) : spell_data_t::not_found();
-    talents.lunar_storm_cooldown_buff = talents.lunar_storm.ok() ? find_spell( 451803 ) : spell_data_t::not_found();
   }
 
   // Mastery
@@ -9008,7 +8952,7 @@ void hunter_t::init_spells()
 
   /* Sentinel Owl has an ICD but it doesn't seem to be in spelldata, using 500ms as an estimate. 
      TODO reconfirm before launch */
-  cooldowns.sentinel_owl->duration = 500_ms;
+  cooldowns.sentinels_mark->duration = 500_ms;
 
   // Register passives
   register_passive_effect_mask( talents.better_together, 
@@ -9063,10 +9007,7 @@ void hunter_t::create_actions()
     actions.boar_charge = new attacks::boar_charge_t( this );
 
   if ( talents.lunar_storm.ok() )
-  {
-    actions.lunar_storm_initial = new attacks::lunar_storm_initial_t( this );
-    actions.lunar_storm_periodic = new attacks::lunar_storm_periodic_t( this );
-  }
+    actions.lunar_storm = new attacks::lunar_storm_t( this );
 
   if ( talents.snakeskin_quiver.ok() )
     actions.snakeskin_quiver = new attacks::cobra_shot_snakeskin_quiver_t( this );
@@ -9449,21 +9390,6 @@ void hunter_t::create_buffs()
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
-
-  buffs.lunar_storm_ready = make_buff( this, "lunar_storm_ready", talents.lunar_storm_ready_buff )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  
-  buffs.lunar_storm_cooldown = make_buff( this, "lunar_storm_cooldown", talents.lunar_storm_cooldown_buff )
-    ->set_stack_change_callback(
-      [ this ]( buff_t*, int, int cur ) {
-        if ( cur == 0 ) {
-          buffs.lunar_storm_ready->trigger();
-          if ( specialization() == HUNTER_MARKSMANSHIP )
-            cooldowns.rapid_fire->reset( false );
-          if ( specialization() == HUNTER_SURVIVAL )
-            cooldowns.wildfire_bomb->reset( false );
-        }
-      } );
 
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff );
@@ -9876,8 +9802,6 @@ void hunter_t::combat_begin()
     make_repeating_event( *sim, talents.outland_venom_debuff->effectN( 2 ).period(),
                           [ this ] { trigger_outland_venom_update(); } );
 
-  buffs.lunar_storm_ready->trigger();
-
   buffs.howl_of_the_pack_leader_cooldown->trigger();
 
   player_t::combat_begin();
@@ -9968,9 +9892,6 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( td->debuffs.kill_zone->has_common_school( school ) )
     d *= 1 + td->debuffs.kill_zone->check_value();
 
-  if ( td->debuffs.lunar_storm->has_common_school( school ) )
-    d *= 1 + td->debuffs.lunar_storm->check_value();
-
   return d;
 }
 
@@ -10012,9 +9933,6 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   if ( td->debuffs.kill_zone->check() )
     m *= 1 + talents.kill_zone_debuff->effectN( guardian ? 4 : 3 ).percent();
-
-  if ( td->debuffs.lunar_storm->check() )
-    m *= 1 + talents.lunar_storm_periodic_spell->effectN( 2 ).trigger()->effectN( guardian ? 3 : 2 ).percent();
 
   return m;
 }
