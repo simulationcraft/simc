@@ -7156,10 +7156,10 @@ struct roll_the_bones_t : public buff_t
     if ( rogue->options.fixed_rtb_odds.empty() )
     {
       // RtB uses hardcoded probabilities even after the redesign
-      // Current beta testing appears to show 50%, 40%, 9%, 1% for the four states
+      // Current beta testing appears to show 55%, 30%, 10%, 5% for the four states
       // Loaded Dice appears to increase the rolled tier by one
       // Sleight of Hand is currently TBD, thought to mean a 20% increased chance to be elevated currently
-      rogue->options.fixed_rtb_odds = { 50.0, 40.0, 9.0, 1.0 };
+      rogue->options.fixed_rtb_odds = { 55.0, 30.0, 10.0, 5.0 };
       rogue->sim->print_log( "{} {} odds set to {:.1f}% / {:.1f}% / {:.1f}% / {:.1f}% buffs",
                              *rogue, *this, rogue->options.fixed_rtb_odds[ 0 ], rogue->options.fixed_rtb_odds[ 1 ],
                              rogue->options.fixed_rtb_odds[ 2 ], rogue->options.fixed_rtb_odds[ 3 ] );
