@@ -541,6 +541,7 @@ public:
 
     // Sentinel
     buff_t* eyes_closed;
+    buff_t* stargazer;
     buff_t* lunar_storm_ready;
     buff_t* lunar_storm_cooldown;
 
@@ -1068,7 +1069,8 @@ public:
     spell_data_ptr_t sanctified_armaments_dot;
     spell_data_ptr_t moonlight_chakram; //TODO Not implemented
 
-    spell_data_ptr_t stargazer; //TODO Not implemented
+    spell_data_ptr_t stargazer;
+    spell_data_ptr_t stargazer_buff;
     spell_data_ptr_t open_fire; //TODO Not implemented
     spell_data_ptr_t cant_miss_wont_miss; //TODO Not implemented
     spell_data_ptr_t invigorating_pulse; //TODO Reworked
@@ -1366,6 +1368,7 @@ public:
 
     // Sentinel
     damage_affected_by sentinels_mark;
+    bool stargazer = false;
 
     // Pack Leader
     damage_affected_by wyverns_cry;
@@ -1409,6 +1412,7 @@ public:
     affected_by.deadly_duo = check_affected_by( this, p->talents.spearhead_bleed->effectN( 3 ) );
 
     affected_by.sentinels_mark = parse_damage_affecting_aura( this, p->talents.sentinels_mark );
+    affected_by.stargazer      = check_affected_by( this, p->talents.stargazer_buff->effectN( 1 ) );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
@@ -1489,6 +1493,7 @@ public:
     if ( decrements_tip_of_the_spear && p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.stargazer->trigger();
 
       /* On Survival, Sentinel's Mark applies to a random target hit for AoE spells. 
          For now, pick a random target in the target_list(), even if they were not hit.
@@ -1647,6 +1652,9 @@ public:
 
     if ( affected_by.trueshot_crit_damage_bonus && p()->buffs.trueshot->check() )
       cm *= 1 + p()->talents.trueshot->effectN( 5 ).percent();
+
+    if ( affected_by.stargazer && p()->buffs.stargazer->check() )
+      cm *= 1 + p()->buffs.stargazer->stack_value();
 
     return cm;
   }
@@ -2646,6 +2654,9 @@ public:
     // Pack Leader
     damage_affected_by wyverns_cry;
     damage_affected_by lead_from_the_front;
+
+    // Sentinel
+    bool stargazer = false;
   } affected_by;
 
   hunter_pet_action_t( util::string_view n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -2679,6 +2690,8 @@ public:
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, o()->talents.howl_of_the_pack_leader_wyvern_buff );
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, o()->talents.lead_from_the_front_buff );
+
+    affected_by.stargazer = check_affected_by( this, o()->talents.stargazer_buff->effectN( 1 ) );
   }
   
   void init() override
@@ -2779,6 +2792,16 @@ public:
       am *= 1 + o()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.tick ).percent();
 
     return am;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.stargazer && o()->buffs.stargazer->check() )
+      cm *= 1 + o()->buffs.stargazer->stack_value();
+
+    return cm;
   }
 
   double composite_target_da_multiplier( player_t* target ) const override
@@ -3886,6 +3909,7 @@ void hunter_t::consume_precise_shots()
   }
 
   buffs.precise_shots->expire();
+  buffs.stargazer->trigger();
 }
 
 void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force )
@@ -6706,6 +6730,8 @@ struct boomstick_t : public hunter_spell_t
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_boomstick->trigger();
+
+      p()->buffs.stargazer->trigger();
       
       auto tl = target_list();
       p()->rng().shuffle( tl.begin(), tl.end() );
@@ -8884,6 +8910,7 @@ void hunter_t::init_spells()
     talents.moonlight_chakram        = find_talent_spell( talent_tree::HERO, "Moonlight Chakram" );
 
     talents.stargazer                = find_talent_spell( talent_tree::HERO, "Stargazer" );
+    talents.stargazer_buff           = talents.stargazer.ok() ? find_spell( 1253750 ) : spell_data_t::not_found();
     talents.open_fire                = find_talent_spell( talent_tree::HERO, "Open Fire" );
     talents.cant_miss_wont_miss      = find_talent_spell( talent_tree::HERO, "Can't Miss, Won't Miss" );
     talents.invigorating_pulse       = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
@@ -9415,6 +9442,11 @@ void hunter_t::create_buffs()
     make_buff( this, "lead_from_the_front", talents.lead_from_the_front_buff )
       ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_default_value_from_effect( specialization() == HUNTER_BEAST_MASTERY ? 4 : 5 );
+
+  buffs.stargazer = 
+    make_buff( this, "stargazer", talents.stargazer_buff )
+      ->set_default_value_from_effect( 1 )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
 
