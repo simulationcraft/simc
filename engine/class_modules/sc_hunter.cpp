@@ -506,6 +506,7 @@ public:
     buff_t* bombardier;
     buff_t* wallop;
     buff_t* takedown;
+    buff_t* wildfire_imbuement;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -923,7 +924,7 @@ public:
     spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
     spell_data_ptr_t flamefang_pitch;
     spell_data_ptr_t flamefang_pitch_data;
-    spell_data_ptr_t flamefang_pitch_damage;
+    spell_data_ptr_t flamefang_pitch_dmg;
     spell_data_ptr_t flamefang_pitch_aoe;
     spell_data_ptr_t twin_fangs;
     spell_data_ptr_t savagery_sv;
@@ -931,10 +932,12 @@ public:
 
     spell_data_ptr_t raptor_swipe_3; //TODO Not implemented
     spell_data_ptr_t grenade_juggler;
-    spell_data_ptr_t wildfire_imbuement; //TODO Not implemented
+    spell_data_ptr_t wildfire_imbuement;
+    spell_data_ptr_t wildfire_imbuement_dmg;
+    spell_data_ptr_t wildfire_imbuement_buff;
     spell_data_ptr_t flanked;
     spell_data_ptr_t lethal_calibration;
-    spell_data_ptr_t primal_surge; //TODO Not implemented
+    spell_data_ptr_t primal_surge;
 
     spell_data_ptr_t quick_shot; //TODO Removed
     spell_data_ptr_t mongoose_bite; //TODO Removed
@@ -3115,7 +3118,34 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
 
 struct main_pet_base_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
 {
-  main_pet_base_melee_t( util::string_view n, hunter_main_pet_base_t* p ) : hunter_pet_melee_t( n, p ) {}
+  struct wildfire_imbuement_t : public hunter_pet_attack_t<hunter_main_pet_base_t>
+  {
+    wildfire_imbuement_t( hunter_main_pet_base_t* p )
+      : hunter_pet_attack_t( "wildfire_imbuement", p, p->o()->talents.wildfire_imbuement_dmg )
+    {
+      background = dual = true;
+    }
+  };
+
+  wildfire_imbuement_t* wildfire_imbuement = nullptr;
+
+  main_pet_base_melee_t( util::string_view n, hunter_main_pet_base_t* p )
+    : hunter_pet_melee_t( n, p )
+  {
+    if ( o()->talents.wildfire_imbuement.ok() )
+    {
+      wildfire_imbuement = new wildfire_imbuement_t( p );
+      add_child( wildfire_imbuement );
+    }
+  }
+
+  void execute() override
+  {
+    hunter_pet_melee_t::execute();
+
+    if ( o()->buffs.wildfire_imbuement->check() )
+      wildfire_imbuement->execute_on_target( target );
+  }
 
   void impact( action_state_t* s ) override
   {
@@ -6247,13 +6277,35 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
 struct melee_t : public auto_attack_base_t<melee_attack_t>
 {
-  melee_t( hunter_t* player ) :
-    auto_attack_base_t( "auto_attack_mh", player )
+  struct wildfire_imbuement_t : public hunter_melee_attack_t
+  {
+    wildfire_imbuement_t( util::string_view n, hunter_t* p )
+      : hunter_melee_attack_t( "wildfire_imbuement", p, p->talents.wildfire_imbuement_dmg )
+    {
+      background = dual = true;
+    }
+  };
+
+  wildfire_imbuement_t* wildfire_imbuement = nullptr;
+
+  melee_t( hunter_t* player ) 
+    : auto_attack_base_t( "auto_attack_mh", player ),
+      wildfire_imbuement( player->get_background_action<wildfire_imbuement_t>( "wildfire_imbuement" ) )
   {
     school             = SCHOOL_PHYSICAL;
     weapon_multiplier  = 1;
     may_glance         = true;
     may_crit           = true;
+
+    add_child( wildfire_imbuement );
+  }
+
+  void execute() override
+  {
+    auto_attack_base_t::execute();
+
+    if ( p()->buffs.wildfire_imbuement->up() )
+      wildfire_imbuement->execute_on_target( target );
   }
 
   double action_multiplier() const override
@@ -6933,7 +6985,7 @@ struct flamefang_pitch_t : public hunter_spell_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
-    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.flamefang_pitch_damage )
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.flamefang_pitch_dmg )
     {
       background = dual = true;
       aoe = -1;
@@ -6966,6 +7018,8 @@ struct flamefang_pitch_t : public hunter_spell_t
   void execute() override
   {
     hunter_spell_t::execute();
+
+    p()->buffs.wildfire_imbuement->trigger();
 
     damage->execute_on_target( target );
     make_event<ground_aoe_event_t>( 
@@ -8639,7 +8693,7 @@ void hunter_t::init_spells()
     talents.flamefang_pitch                   = find_spell( 1251592 ); /* 2026-01-18: find_talent_spell() is returning nothing for "Flamefang Pitch". 
                                                                                       TODO reconfirm before launch */
     talents.flamefang_pitch_data              = talents.flamefang_pitch.ok() ? find_spell( 1251610 ) : spell_data_t::not_found();
-    talents.flamefang_pitch_damage            = talents.flamefang_pitch.ok() ? find_spell( 1251595 ) : spell_data_t::not_found();
+    talents.flamefang_pitch_dmg               = talents.flamefang_pitch.ok() ? find_spell( 1251595 ) : spell_data_t::not_found();
     talents.flamefang_pitch_aoe               = talents.flamefang_pitch.ok() ? find_spell( 1251614 ) : spell_data_t::not_found();
     talents.twin_fangs                        = find_talent_spell( talent_tree::SPECIALIZATION, "Twin Fangs", HUNTER_SURVIVAL );
     talents.savagery_sv                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_SURVIVAL );
@@ -8648,6 +8702,8 @@ void hunter_t::init_spells()
     talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259019, HUNTER_SURVIVAL );
     talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
     talents.wildfire_imbuement                = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Imbuement", HUNTER_SURVIVAL );
+    talents.wildfire_imbuement_dmg            = talents.wildfire_imbuement.ok() ? find_spell( 1252966 ) : spell_data_t::not_found();
+    talents.wildfire_imbuement_buff           = talents.wildfire_imbuement.ok() ? find_spell( 1252947 ) : spell_data_t::not_found();
     talents.flanked                           = find_talent_spell( talent_tree::SPECIALIZATION, "Flanked", HUNTER_SURVIVAL );
     talents.lethal_calibration                = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Calibration", HUNTER_SURVIVAL );
     talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
@@ -9189,6 +9245,9 @@ void hunter_t::create_buffs()
   buffs.wallop = 
     make_buff( this, "wallop", talents.wallop_buff )
       ->set_default_value_from_effect( 1 );
+
+  buffs.wildfire_imbuement = 
+    make_buff( this, "wildfire_imbuement", talents.wildfire_imbuement_buff );
 
   // Pet family buffs
 
