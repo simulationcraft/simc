@@ -3206,6 +3206,9 @@ struct basic_attack_main_t final : public basic_attack_base_t
     wild_hunt.benefit = p -> get_benefit( "wild_hunt" );
 
     p->actions.basic_attack = this;
+
+    if ( p->actions.brutal_companion_ba )
+      add_child( p->actions.brutal_companion_ba );
   }
 
   bool use_wild_hunt() const
@@ -3317,22 +3320,26 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 
     if ( o()->talents.wild_instincts.ok() && p() == o()->pets.main )
     {
-      /* Prioritise targets without Barbed Shot ticking.
-         If every target is debuffed, hit the main target. */
+      // Prioritise targets without Barbed Shot ticking.
       auto tl = target_list();
       range::erase_remove(
           tl, [ this ]( player_t* t ) { return t == target || o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
       target_cache.is_valid = false;
 
       if ( !tl.empty() )
-      {
         o()->actions.wild_instincts->execute_on_target( tl.front() );
-      }
-      else
-      {
-        o()->actions.wild_instincts->execute_on_target( target );
-      }
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_attack_t::impact( s );
+
+    /* Wild Instincts edge case in ST where the target, if unaffected by 
+       Barbed Shot, can receive a double Barbed Shot. */
+    if ( o()->talents.wild_instincts.ok() && s->n_targets == 1 )
+      if ( p() == o()->pets.main && !o()->get_target_data( s->target )->dots.barbed_shot->is_ticking() )
+        o()->actions.wild_instincts->execute_on_target( s->target );
   }
 };
 
@@ -5428,6 +5435,9 @@ struct barbed_shot_wild_instincts_t : public barbed_shot_base_t
     : barbed_shot_base_t( p, "barbed_shot_wild_instincts", p->talents.barbed_shot )
   {
     background = dual = true;
+
+    if ( auto barbed_shot = p->find_action( "barbed_shot" ) )
+      barbed_shot->add_child( this );
   }
 };
 
