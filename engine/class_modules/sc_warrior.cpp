@@ -2456,6 +2456,7 @@ struct bloodthirst_t : public warrior_attack_t
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
+      ragedrinker_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->talents.fury.bloodthirst->effectN( 3 ).percent() ),
