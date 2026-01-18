@@ -6976,6 +6976,10 @@ struct flamefang_pitch_t : public hunter_spell_t
             // No true pulse time exists in spell data for this spell
             .pulse_time( p()->talents.flamefang_pitch_data->effectN( 1 ).time_value() * 1000 )
             .action( aoe ) );
+
+    // 2026-01-18: Grenade Juggler is refunding the unhasted cooldown of a bomb instead of a charge.
+    if ( p()->talents.grenade_juggler.ok() )
+      p()->cooldowns.wildfire_bomb->adjust( p()->cooldowns.wildfire_bomb->base_duration );
   }
 };
 
