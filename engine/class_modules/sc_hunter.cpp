@@ -3979,9 +3979,6 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     actions.boar_charge->execute_on_target( target );
     buffs.howl_of_the_pack_leader_boar->expire();
     buffs.hasted_hooves->trigger();
-
-    if ( talents.hogstrider.ok() )
-      buffs.mongoose_fury->extend_duration( this, buffs.mongoose_fury->buff_duration() - buffs.mongoose_fury->remains() );
   }
 
   if ( buffs.howl_of_the_pack_leader_bear->check() )
@@ -5247,8 +5244,8 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    m *= 1.0 + p()->buffs.serpentine_rhythm->check_stack_value();
-    m *= 1 + p()->buffs.hogstrider->check_stack_value();
+    m *= 1 + p()->buffs.serpentine_rhythm->check_stack_value();
+    m *= 1 + p()->talents.hogstrider_buff->effectN( 1 ).percent() * p()->buffs.hogstrider->stack();
 
     return m;
   }
@@ -6357,6 +6354,31 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
   {
     parse_options( options_str );
   }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p()->buffs.hogstrider->expire();
+  }
+
+  int n_targets() const override
+  {
+    int n = hunter_ranged_attack_t::n_targets();
+
+    n += p()->buffs.hogstrider->check();
+
+    return n;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    am *= 1 + p()->talents.hogstrider_buff->effectN( 2 ).percent() * p()->buffs.hogstrider->stack();
+
+    return am;
+  }
 };
 
 // Raptor Strike/Mongoose Bite ================================================================
@@ -6407,15 +6429,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       vipers_venom = p->get_background_action<serpent_sting_vipers_venom_t>( "serpent_sting_vipers_venom" );
   }
 
-  int n_targets() const override
-  {
-    int n = hunter_melee_attack_t::n_targets();
-
-    n += p()->buffs.hogstrider->check();
-
-    return n;
-  }
-
   double action_multiplier() const override
   {
     double am = hunter_melee_attack_t::action_multiplier();
@@ -6449,8 +6462,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
-
-    p()->buffs.hogstrider->expire();
 
     if ( p()->tier_set.tww_s2_sv_4pc.ok() && p()->buffs.strike_it_rich->check() )
     {
