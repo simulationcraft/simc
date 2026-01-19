@@ -593,6 +593,8 @@ public:
     gain_t* invigorating_pulse;
 
     gain_t* serpentine_strikes;
+
+    gain_t* lethal_barbs;
   } gains;
 
   struct procs_t
@@ -1039,7 +1041,8 @@ public:
     spell_data_ptr_t fury_of_the_wyvern;
     spell_data_ptr_t hogstrider;
     spell_data_ptr_t hogstrider_buff;
-    spell_data_ptr_t lethal_barbs; //TODO Not implemented
+    spell_data_ptr_t lethal_barbs;
+    spell_data_ptr_t lethal_barbs_energize;
 
     spell_data_ptr_t no_mercy;
     spell_data_ptr_t shell_cover; //Utility talent, won't implement
@@ -4147,6 +4150,15 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
       p() -> cooldowns.barbed_shot -> reset( true );
       p() -> procs.wild_call -> occur();
     }
+
+    if ( p()->talents.lethal_barbs.ok() )
+    {
+      double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
+
+      p()->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+        pet->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+    }
   }
 
   double action_multiplier() const override
@@ -6251,6 +6263,19 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
     if ( p()->buffs.wildfire_imbuement->up() )
       wildfire_imbuement->execute_on_target( target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto_attack_base_t::impact( s );
+
+    if ( p()->talents.lethal_barbs.ok() )
+    {
+      double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
+
+      p()->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+      p()->pets.main->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+    }
   }
 
   double action_multiplier() const override
@@ -8791,6 +8816,7 @@ void hunter_t::init_spells()
     talents.hogstrider                                    = find_talent_spell( talent_tree::HERO, "Hogstrider" );
     talents.hogstrider_buff                               = talents.hogstrider.ok() ? find_spell( 472640 ) : spell_data_t::not_found();
     talents.lethal_barbs                                  = find_talent_spell( talent_tree::HERO, "Lethal Barbs" );
+    talents.lethal_barbs_energize                         = talents.lethal_barbs.ok() ? find_spell( 1264783 ) : spell_data_t::not_found();
 
     talents.no_mercy                                      = find_talent_spell( talent_tree::HERO, "No Mercy" );
     talents.hoof_and_blade                                = find_talent_spell( talent_tree::HERO, "Hoof and Blade" );
@@ -9374,6 +9400,8 @@ void hunter_t::init_gains()
   gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
 
   gains.serpentine_strikes        = get_gain( "Serpentine Strikes" );
+
+  gains.lethal_barbs              = get_gain( "Lethal Barbs" );
 }
 
 void hunter_t::init_position()
