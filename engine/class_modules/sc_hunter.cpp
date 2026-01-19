@@ -451,8 +451,6 @@ public:
     spell_data_ptr_t tww_s3_pack_leader_2pc_mastery_buff;
     spell_data_ptr_t tww_s3_pack_leader_2pc_crit_buff;
     spell_data_ptr_t tww_s3_pack_leader_4pc;
-    spell_data_ptr_t tww_s3_pack_leader_4pc_stampede_buff;
-    spell_data_ptr_t tww_s3_pack_leader_4pc_stampede_damage;
   } tier_set;
 
   struct buffs_t
@@ -524,7 +522,6 @@ public:
     buff_t* boon_of_elune_4pc; // Sentinel 4pc
     buff_t* grizzled_fur; // Pack Leader 2pc mastery
     buff_t* hasted_hooves; // Pack Leader 2pc haste
-    buff_t* stampede; // Pack Leader 4pc buff
 
     // Hero Talents 
 
@@ -535,6 +532,7 @@ public:
     buff_t* howl_of_the_pack_leader_cooldown;
     buff_t* wyverns_cry;
     buff_t* hogstrider;
+    buff_t* stampede;
     buff_t* lead_from_the_front;
 
     // Sentinel
@@ -1047,7 +1045,10 @@ public:
     spell_data_ptr_t wyverns_gaze;
     spell_data_ptr_t sharpened_fangs;
     
-    spell_data_ptr_t stampede; //TODO Not implemented
+    spell_data_ptr_t stampede;
+    spell_data_ptr_t stampede_buff;
+    spell_data_ptr_t stampede_trigger;
+    spell_data_ptr_t stampede_dmg;
     
     spell_data_ptr_t lead_from_the_front; //TODO Removed
     spell_data_ptr_t lead_from_the_front_buff; //TODO Removed
@@ -3984,8 +3985,11 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     cooldowns.barbed_shot->adjust( -talents.pack_mentality->effectN( 2 ).time_value() * up );
     cooldowns.wildfire_bomb->adjust( -talents.pack_mentality->effectN( 3 ).time_value() * up );
 
-    if ( actions.stampede && buffs.lead_from_the_front->check() )
+    if ( buffs.stampede->check() )
+    {
+      buffs.stampede->expire();
       actions.stampede->execute_on_target( target );
+    }
   }
 
   return up;
@@ -5117,16 +5121,16 @@ struct stampede_t : hunter_ranged_attack_t
 {
   struct damage_t : public hunter_ranged_attack_t
   {
-    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->tier_set.tww_s3_pack_leader_4pc_stampede_damage )
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.stampede_dmg )
     {
-      aoe = p->bugs ? -1 : as<int>( p->tier_set.tww_s3_pack_leader_4pc->effectN( 3 ).base_value() );
+      aoe = -1;
       background = dual = true;
     }
   };
 
   damage_t* damage;
 
-  stampede_t( hunter_t* p ) : hunter_ranged_attack_t( "stampede", p, p->tier_set.tww_s3_pack_leader_4pc_stampede_buff ),
+  stampede_t( hunter_t* p ) : hunter_ranged_attack_t( "stampede", p, p->talents.stampede_trigger ),
     damage( p->get_background_action<damage_t>( "stampede_tick" ) )
   {
     background = dual = true;
@@ -6954,6 +6958,9 @@ struct takedown_t : public hunter_spell_t
     damage->execute_on_target( target );
     if ( auto pet = p()->pets.main )
       pet->actions.takedown->execute_on_target( target );
+
+    if ( p()->talents.stampede.ok() )
+      p()->buffs.stampede->trigger();
   }
 };
 
@@ -7538,6 +7545,9 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     }
 
     p()->buffs.withering_fire->trigger( p()->buffs.bestial_wrath->buff_duration() );
+
+    if ( p()->talents.stampede.ok() )
+      p()->buffs.stampede->trigger();
   }
 
   bool ready() override
@@ -8797,7 +8807,13 @@ void hunter_t::init_spells()
     talents.wyverns_gaze                                  = find_talent_spell( talent_tree::HERO, "Wyvern's Gaze" );
     talents.sharpened_fangs                               = find_talent_spell( talent_tree::HERO, "Sharpened Fangs" );
 
-    talents.stampede                                      = find_talent_spell( talent_tree::HERO, "Stampede" );
+    talents.stampede                                      = find_talent_spell( talent_tree::HERO, "Stampede!" );
+    talents.stampede_buff                                 = talents.stampede.ok() ? find_spell( 1258338 ) : spell_data_t::not_found();
+    /* 2026-01-19: New trigger spell (1258344) is not currently in simc's spell data, use the old one for now.
+                   The spells are identical as of writing this so behaviour should be unaffected.
+                   TODO reconfirm before launch. */
+    talents.stampede_trigger                              = talents.stampede.ok() ? find_spell( 1250068 ) : spell_data_t::not_found();
+    talents.stampede_dmg                                  = talents.stampede.ok() ? find_spell( 201594 ) : spell_data_t::not_found();
 
     //TODO Remove
     talents.envenomed_fangs = find_talent_spell( talent_tree::HERO, "Envenomed Fangs" );
@@ -8896,8 +8912,6 @@ void hunter_t::init_spells()
   tier_set.tww_s3_pack_leader_2pc_haste_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236565 ) : spell_data_t::not_found();
   tier_set.tww_s3_pack_leader_2pc_crit_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236566 ) : spell_data_t::not_found();
   tier_set.tww_s3_pack_leader_4pc = sets->set( HERO_PACK_LEADER, TWW3, B4 );
-  tier_set.tww_s3_pack_leader_4pc_stampede_buff = tier_set.tww_s3_pack_leader_4pc.ok() ? find_spell( 1250068 ) : spell_data_t::not_found();
-  tier_set.tww_s3_pack_leader_4pc_stampede_damage = tier_set.tww_s3_pack_leader_4pc.ok() ? find_spell( 201594 ) : spell_data_t::not_found();
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
@@ -8980,7 +8994,7 @@ void hunter_t::create_actions()
   if ( talents.phantom_pain.ok() )
     actions.phantom_pain = new attacks::phantom_pain_t( this );
 
-  if ( tier_set.tww_s3_pack_leader_4pc.ok() )
+  if ( talents.stampede.ok() )
     actions.stampede = new attacks::stampede_t( this );
 
   if ( talents.wild_instincts.ok() )
@@ -9337,6 +9351,10 @@ void hunter_t::create_buffs()
 
   buffs.hogstrider =
     make_buff( this, "hogstrider", talents.hogstrider_buff )
+      ->set_default_value_from_effect( 1 );
+
+  buffs.stampede = 
+    make_buff( this, "stampede", talents.stampede_buff )
       ->set_default_value_from_effect( 1 );
   
   buffs.lead_from_the_front =
