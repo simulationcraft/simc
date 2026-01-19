@@ -242,9 +242,9 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
   finish->add_action( "pool_resource,for_next=1", "Finishers" );
+  finish->add_action( "between_the_eyes" );
   finish->add_action( "killing_spree" );
   finish->add_action( "coup_de_grace" );
-  finish->add_action( "between_the_eyes" );
   finish->add_action( "dispatch" );
 }
 //outlaw_apl_end
