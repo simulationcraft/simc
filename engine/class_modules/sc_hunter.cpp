@@ -1035,7 +1035,7 @@ public:
 
     spell_data_ptr_t ursine_fury;
     spell_data_ptr_t dire_beast_summon;
-    spell_data_ptr_t sharpened_claws; //TODO Not implemented
+    spell_data_ptr_t sharpened_claws;
     spell_data_ptr_t fury_of_the_wyvern;
     spell_data_ptr_t hogstrider;
     spell_data_ptr_t hogstrider_buff;
@@ -1114,6 +1114,7 @@ public:
     // SV
     spell_data_ptr_t aspect_of_the_eagle;
     spell_data_ptr_t harpoon;
+    spell_data_ptr_t hatchet_toss;
 
     // MM
     spell_data_ptr_t multishot;
@@ -6347,6 +6348,17 @@ struct harpoon_t : public hunter_ranged_attack_t
   }
 };
 
+// Hatchet Toss ===============================================================================
+
+struct hatchet_toss_t final : public hunter_ranged_attack_t
+{
+  hatchet_toss_t( hunter_t* p, util::string_view options_str )
+    : hunter_ranged_attack_t( "hatchet_toss", p, p->specs.hatchet_toss )
+  {
+    parse_options( options_str );
+  }
+};
+
 // Raptor Strike/Mongoose Bite ================================================================
 
 struct melee_focus_spender_t: hunter_melee_attack_t
@@ -8250,6 +8262,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "boomstick"             ) return new              boomstick_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
+  if ( name == "hatchet_toss"          ) return new           hatchet_toss_t( this, options_str );
   if ( name == "harriers_cry"          ) return new           harriers_cry_t( this, options_str );
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "implosive_trap"        ) return new         implosive_trap_t( this, options_str );
@@ -8587,6 +8600,7 @@ void hunter_t::init_spells()
     specs.aspect_of_the_eagle = find_spell( 186289 );
     specs.serpent_sting = find_spell( 259491 );
     specs.harpoon = find_spell( 190925 );
+    specs.hatchet_toss = find_spell( 193265 );
 
     talents.kill_command_sv_player            = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Command", HUNTER_SURVIVAL );
     talents.kill_command_sv_pet               = talents.kill_command_sv_player.ok() ? find_spell( 259277 ) : spell_data_t::not_found();
