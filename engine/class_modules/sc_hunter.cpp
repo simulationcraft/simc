@@ -1038,7 +1038,6 @@ public:
     spell_data_ptr_t ursine_fury_chance;
     spell_data_ptr_t sharpened_claws; //TODO Not implemented
     spell_data_ptr_t fury_of_the_wyvern;
-    spell_data_ptr_t fury_of_the_wyvern_proc;
     spell_data_ptr_t hogstrider;
     spell_data_ptr_t hogstrider_buff;
     spell_data_ptr_t lethal_barbs; //TODO Not implemented
@@ -2953,6 +2952,7 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
     double da = hunter_pet_attack_t::composite_da_multiplier( s );
 
     // TODO 16/2/25: Alpha Predator and Pack Mentality are being combined additively before being applied.
+    // 2026-01-18:   Still present.
     double bonus = o()->talents.alpha_predator->effectN( 2 ).percent();
 
     if ( o()->buffs.howl_of_the_pack_leader_wyvern->check()
@@ -2991,17 +2991,12 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
   {
     double da = hunter_pet_attack_t::composite_da_multiplier( s );
 
-    // TODO 16/2/25: Alpha Predator and Pack Mentality are being combined additively before being applied.
-    double bonus = o()->talents.alpha_predator->effectN( 2 ).percent();
-
     if ( o()->buffs.howl_of_the_pack_leader_wyvern->check()
       || o()->buffs.howl_of_the_pack_leader_boar->check()
       || o()->buffs.howl_of_the_pack_leader_bear->check() )
     {
-      bonus += o()->talents.pack_mentality->effectN( 1 ).percent();
+      da *= o()->talents.pack_mentality->effectN( 1 ).percent();
     }
-
-    da *= 1 + bonus;
 
     return da;
   }
@@ -7374,8 +7369,13 @@ struct kill_command_t: public hunter_spell_t
     
     if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
-      p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      /* 2026-01-19: Extending Wyvern's Cry is entirely bugged and not working. 
+                     TODO reconfirm before launch */
+      if ( !p()->bugs )
+      {
+        p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+        p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      }
     }
 
     p()->buffs.natures_ally_3->expire();
@@ -8013,7 +8013,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
     if ( p->talents.fury_of_the_wyvern.ok() )
     {
       fury_of_the_wyvern.extension = p->talents.fury_of_the_wyvern->effectN( 3 ).time_value();
-      fury_of_the_wyvern.cap = timespan_t::from_seconds( p->talents.fury_of_the_wyvern->effectN( 4 ).base_value() );
+      fury_of_the_wyvern.cap = timespan_t::from_seconds( p->talents.fury_of_the_wyvern->effectN( 5 ).base_value() );
     }
   }
 
@@ -8023,8 +8023,13 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
     if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
-      p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      /* 2026-01-19: Extending Wyvern's Cry is entirely bugged and not working.
+                     TODO reconfirm before launch */
+      if ( !p()->bugs )
+      {
+        p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+        p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      }
     }
 
     if ( p()->buffs.winning_streak->check() && rng().roll( p()->tier_set.tww_s2_sv_2pc->proc_chance() ) )
@@ -8790,7 +8795,6 @@ void hunter_t::init_spells()
     talents.ursine_fury_chance                            = talents.ursine_fury.ok() ? find_spell( 472478 ) : spell_data_t::not_found();
     talents.sharpened_claws                               = find_talent_spell( talent_tree::HERO, "Sharpened Claws" );
     talents.fury_of_the_wyvern                            = find_talent_spell( talent_tree::HERO, "Fury of the Wyvern" );
-    talents.fury_of_the_wyvern_proc                       = talents.fury_of_the_wyvern.ok() ? find_spell( 472552 ) : spell_data_t::not_found();
     talents.hogstrider                                    = find_talent_spell( talent_tree::HERO, "Hogstrider" );
     talents.hogstrider_buff                               = talents.hogstrider.ok() ? find_spell( 472640 ) : spell_data_t::not_found();
     talents.lethal_barbs                                  = find_talent_spell( talent_tree::HERO, "Lethal Barbs" );
