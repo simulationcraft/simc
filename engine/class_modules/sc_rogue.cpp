@@ -9750,6 +9750,11 @@ void rogue_t::init_spells()
                                 effect_mask_t( true ).disable( 5 ) :
                                 effect_mask_t( true ) );
 
+  // 01-18-2026 -- Ravenholdt Mint does not modify Fatebound Heads beyond one stack so it is essentially nonfunctional
+  register_passive_effect_mask( talent.fatebound.ravenholdt_mint, bugs ?
+                                effect_mask_t( false ).enable( 2 ) :
+                                effect_mask_t( true ) );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -10268,7 +10273,7 @@ void rogue_t::create_buffs()
                                                 1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
                                                   1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
-    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 3 ).percent(),
+    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 3, spell.fatebound_coin_heads_buff->effectN( 3 ).percent(),
                                                      1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
   }
 
