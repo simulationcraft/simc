@@ -524,7 +524,6 @@ public:
     buff_t* boon_of_elune_4pc; // Sentinel 4pc
     buff_t* grizzled_fur; // Pack Leader 2pc mastery
     buff_t* hasted_hooves; // Pack Leader 2pc haste
-    buff_t* sharpened_fangs; // Pack Leader 2pc crit
     buff_t* stampede; // Pack Leader 4pc buff
 
     // Hero Talents 
@@ -1044,9 +1043,9 @@ public:
 
     spell_data_ptr_t no_mercy;
     spell_data_ptr_t shell_cover; //Utility talent, won't implement
-    spell_data_ptr_t hoof_and_blade; //TODO Not implemented
-    spell_data_ptr_t wyverns_gaze; //TODO Not implemented
-    spell_data_ptr_t sharpened_fangs; //TODO Not implemented
+    spell_data_ptr_t hoof_and_blade;
+    spell_data_ptr_t wyverns_gaze;
+    spell_data_ptr_t sharpened_fangs;
     
     spell_data_ptr_t stampede; //TODO Not implemented
     
@@ -3955,7 +3954,6 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     up++;
     buffs.wyverns_cry->trigger( as<int>( talents.howl_of_the_pack_leader->effectN( 3 ).base_value() ) );
     buffs.howl_of_the_pack_leader_wyvern->expire();
-    buffs.sharpened_fangs->trigger();
   }
 
   if ( buffs.howl_of_the_pack_leader_boar->check() )
@@ -9292,11 +9290,6 @@ void hunter_t::create_buffs()
     make_buff( this, "hasted_hooves", tier_set.tww_s3_pack_leader_2pc_haste_buff )
       ->set_default_value_from_effect( 1 )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-
-  buffs.sharpened_fangs =
-    make_buff( this, "sharpened_fangs", tier_set.tww_s3_pack_leader_2pc_crit_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   // Hero Talents
 
