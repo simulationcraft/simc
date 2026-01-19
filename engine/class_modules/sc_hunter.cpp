@@ -8925,8 +8925,8 @@ void hunter_t::init_spells()
   // Register passives
   register_passive_effect_mask( talents.better_together, 
                                 specialization() == HUNTER_BEAST_MASTERY
-                                                    ? effect_mask_t( true ).disable( 2, 4 )
-                                                    : effect_mask_t( true ).disable( 1, 3 ) );
+                                                    ? effect_mask_t( true ).disable( 2, 3 )
+                                                    : effect_mask_t( true ).disable( 1, 4 ) );
 
   register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
                                 specialization() == HUNTER_BEAST_MASTERY
