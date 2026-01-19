@@ -576,8 +576,6 @@ public:
     cooldown_t* takedown;
     cooldown_t* flamefang_pitch;
 
-    cooldown_t* no_mercy;
-
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
 
@@ -1201,8 +1199,6 @@ public:
     cooldowns.coordinated_assault = get_cooldown( "coordinated_assault" );
     cooldowns.takedown            = get_cooldown( "takedown" );
     cooldowns.flamefang_pitch     = get_cooldown( "flamefang_pitch" );
-
-    cooldowns.no_mercy = get_cooldown( "no_mercy" );
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
@@ -2384,7 +2380,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     action_t* coordinated_assault = nullptr;
     action_t* takedown            = nullptr;
 
-    action_t* no_mercy_ba = nullptr;
   } actions;
 
   struct buffs_t
@@ -3276,16 +3271,6 @@ struct basic_attack_main_t final : public basic_attack_base_t
   }
 };
 
-struct no_mercy_ba_t : public basic_attack_base_t
-{
-  no_mercy_ba_t( hunter_main_pet_t* p, util::string_view n ) : basic_attack_base_t( p, n, "_no_mercy" )
-  {
-    background = true;
-  }
-
-  double cost() const override { return 0; }
-};
-
 struct brutal_companion_ba_t : public basic_attack_base_t
 {
   brutal_companion_ba_t( hunter_main_pet_t* p, util::string_view n ) : basic_attack_base_t( p, n, "_brutal_companion" )
@@ -3626,9 +3611,6 @@ void hunter_main_pet_t::init_spells()
     if ( o()->tier_set.tww_s2_bm_4pc.ok() )
       actions.potent_mutagen = new actions::potent_mutagen_t( this );
   }
-
-  if ( o()->talents.no_mercy.ok() )
-    actions.no_mercy_ba = new actions::no_mercy_ba_t( this, "Claw" );
 }
 
 void dire_critter_t::init_spells()
@@ -4789,12 +4771,6 @@ struct kill_shot_t : public kill_shot_base_t
   void impact( action_state_t* s ) override
   {
     kill_shot_base_t::impact( s );
-
-    if ( p()->talents.no_mercy.ok() && p()->cooldowns.no_mercy->up() )
-    {
-      p()->pets.main->actions.no_mercy_ba->execute_on_target( s->target );
-      p()->cooldowns.no_mercy->start();
-    }
 
     if ( cull_the_herd.dot )
       residual_action::trigger( cull_the_herd.dot, s->target, s->result_amount * cull_the_herd.result_mod );
@@ -8935,8 +8911,6 @@ void hunter_t::init_spells()
 
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
 
-  cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
-
   /* Sentinel Owl has an ICD but it doesn't seem to be in spelldata, using 500ms as an estimate. 
      TODO reconfirm before launch */
   cooldowns.sentinels_mark->duration = 500_ms;
@@ -8946,6 +8920,11 @@ void hunter_t::init_spells()
                                 specialization() == HUNTER_BEAST_MASTERY
                                                     ? effect_mask_t( true ).disable( 2, 3 )
                                                     : effect_mask_t( true ).disable( 1, 4 ) );
+
+  register_passive_effect_mask( talents.no_mercy, 
+                                specialization() == HUNTER_BEAST_MASTERY 
+                                                    ? effect_mask_t( true ).disable( 2 )
+                                                    : effect_mask_t( true ).disable( 1 ) );
 
   register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
                                 specialization() == HUNTER_BEAST_MASTERY
