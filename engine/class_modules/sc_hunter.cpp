@@ -703,7 +703,6 @@ public:
 
     spell_data_ptr_t alpha_predator;
     spell_data_ptr_t dire_beast;
-    spell_data_ptr_t dire_beast_summon;
     spell_data_ptr_t stomp;
     spell_data_ptr_t stomp_dmg;
     spell_data_ptr_t war_orders;
@@ -1035,7 +1034,7 @@ public:
     spell_data_ptr_t masterful_call; //Utility talent, won't implement
 
     spell_data_ptr_t ursine_fury;
-    spell_data_ptr_t ursine_fury_chance;
+    spell_data_ptr_t dire_beast_summon;
     spell_data_ptr_t sharpened_claws; //TODO Not implemented
     spell_data_ptr_t fury_of_the_wyvern;
     spell_data_ptr_t hogstrider;
@@ -3459,13 +3458,6 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
     }
   };
   
-  struct
-  {
-    double chance = 0;
-    timespan_t reduction = 0_s;
-    cooldown_t* cooldown = nullptr;
-  } ursine_fury;
-
   envenomed_fangs_t* envenomed_fangs = nullptr;
 
   rend_flesh_t( bear_t* p ) : hunter_pet_attack_t( "rend_flesh", p, p->o()->talents.howl_of_the_pack_leader_bear_bleed )
@@ -3473,28 +3465,6 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
     background = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
     dire_beast_chance = -1;
-
-    if ( o()->talents.ursine_fury.ok() )
-    {
-      ursine_fury.chance = o()->talents.ursine_fury_chance->proc_chance();
-
-      if ( o()->specialization() == HUNTER_SURVIVAL )
-      {
-        if ( o()->talents.butchery.ok() )
-          ursine_fury.cooldown = o()->cooldowns.butchery;
-
-        if ( o()->talents.flanking_strike.ok() )
-          ursine_fury.cooldown = o()->cooldowns.flanking_strike;
-
-        ursine_fury.reduction = -o()->talents.ursine_fury->effectN( 3 ).time_value();
-      }
-
-      if ( o()->specialization() == HUNTER_BEAST_MASTERY )
-      {
-        ursine_fury.cooldown = o()->cooldowns.kill_command;
-        ursine_fury.reduction = -o()->talents.ursine_fury->effectN( 2 ).time_value();
-      }
-    }
 
     if ( o()->talents.envenomed_fangs.ok() )
       envenomed_fangs = new envenomed_fangs_t( p );
@@ -3508,14 +3478,6 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
       return nullptr;
 
     return p()->get_target_data( t )->dots.rend_flesh;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    hunter_pet_attack_t::tick( d );
-
-    if ( ursine_fury.cooldown && rng().roll( ursine_fury.chance ) )
-      ursine_fury.cooldown->adjust( ursine_fury.reduction );
   }
 
   void impact( action_state_t* s ) override
@@ -4025,6 +3987,13 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
   {
     up++;
     pets.bear.spawn( talents.howl_of_the_pack_leader_bear_summon->duration() );
+
+    if ( talents.ursine_fury.ok() )
+    {
+      for ( int i = 0; i < as<int>( talents.ursine_fury->effectN( 1 ).base_value() ); i++ )
+        actions.dire_beast->execute();
+    }
+
     buffs.howl_of_the_pack_leader_bear->expire();
     buffs.grizzled_fur->trigger();
   }
@@ -7349,7 +7318,7 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
-    if ( p()->actions.dire_beast && rng().roll( dire_command.chance ) )
+    if ( p()->talents.dire_command && rng().roll( dire_command.chance ) )
     {
       p() -> actions.dire_beast -> execute();
       p() -> procs.dire_command -> occur();
@@ -8440,7 +8409,6 @@ void hunter_t::init_spells()
 
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
     talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
-    talents.dire_beast_summon                 = find_spell( 219199 );
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
     talents.stomp_dmg                         = find_spell( 201754 );
     talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY );
@@ -8792,7 +8760,7 @@ void hunter_t::init_spells()
     talents.better_together                               = find_talent_spell( talent_tree::HERO, "Better Together" );
 
     talents.ursine_fury                                   = find_talent_spell( talent_tree::HERO, "Ursine Fury" );
-    talents.ursine_fury_chance                            = talents.ursine_fury.ok() ? find_spell( 472478 ) : spell_data_t::not_found();
+    talents.dire_beast_summon                             = find_spell( 219199 );
     talents.sharpened_claws                               = find_talent_spell( talent_tree::HERO, "Sharpened Claws" );
     talents.fury_of_the_wyvern                            = find_talent_spell( talent_tree::HERO, "Fury of the Wyvern" );
     talents.hogstrider                                    = find_talent_spell( talent_tree::HERO, "Hogstrider" );
@@ -8965,7 +8933,8 @@ void hunter_t::create_actions()
 
   player_t::create_actions();
 
-  if ( talents.dire_beast.ok() )
+  // Dire Beasts can be summoned without the base talent being selected.
+  if ( talents.dire_beast.ok() || talents.dire_command.ok() || talents.ursine_fury.ok() )
     actions.dire_beast = new spells::dire_beast_summon_t( this );
 
   if ( talents.laceration.ok() )
