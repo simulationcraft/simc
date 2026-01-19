@@ -1157,7 +1157,6 @@ public:
     event_t* precision_detonation_expiry = nullptr;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
-    ground_aoe_event_t* current_boar_charge = nullptr;
   } state;
 
   struct options_t {
@@ -4019,28 +4018,7 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
   if ( buffs.howl_of_the_pack_leader_boar->check() )
   {
     up++;
-    state.current_boar_charge = make_event<ground_aoe_event_t>( *sim, this, 
-      ground_aoe_params_t()
-        .target( target )
-        .duration( talents.howl_of_the_pack_leader_boar_charge_trigger->duration() )
-        .pulse_time( talents.howl_of_the_pack_leader_boar_charge_trigger->effectN( 2 ).period() )
-        .action( actions.boar_charge )
-        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-            switch ( type )
-              {
-                case ground_aoe_params_t::EVENT_CREATED:
-                  state.current_boar_charge = event;
-                  break;
-                case ground_aoe_params_t::EVENT_STOPPED:
-                {
-                  state.current_boar_charge = nullptr;
-                  break;
-                }
-                default:
-                  break;
-              }
-          } ),
-      true );
+    actions.boar_charge->execute_on_target( target );
     buffs.howl_of_the_pack_leader_boar->expire();
     buffs.hasted_hooves->trigger();
 
@@ -5127,16 +5105,16 @@ struct phantom_pain_t final : hunter_ranged_attack_t
 
 struct boar_charge_t final : hunter_ranged_attack_t
 {
-  struct cleave_t : hunter_ranged_attack_t
+  struct cleave_t final : hunter_ranged_attack_t
   {
-    double hogstrider_mongoose_fury_chance;
-
-    cleave_t( hunter_t* p ) : hunter_ranged_attack_t( "boar_charge_cleave", p, p->talents.howl_of_the_pack_leader_boar_charge_cleave ),
-      hogstrider_mongoose_fury_chance( p->talents.hogstrider->effectN( 1 ).percent() )
+    cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.howl_of_the_pack_leader_boar_charge_cleave )
     {
       background = dual = true;
       aoe = as<int>( data().effectN( 2 ).base_value() );
+      travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
+
       // TODO 31/1/25: currently hits primary target
+      // 2026-01-19: still hits primary target
       // target_filter_callback = secondary_targets_only();
     }
 
@@ -5144,19 +5122,19 @@ struct boar_charge_t final : hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::impact( s );
 
-      if ( rng().roll( hogstrider_mongoose_fury_chance ) )
-        p()->buffs.mongoose_fury->trigger();
-
       p()->buffs.hogstrider->increment();
     }
   };
 
-  cleave_t* cleave;
+  cleave_t* cleave = nullptr;
 
-  boar_charge_t( hunter_t* p ) : hunter_ranged_attack_t( "boar_charge", p, p->talents.howl_of_the_pack_leader_boar_charge_impact ),
-    cleave( new cleave_t( p ) )
+  boar_charge_t( hunter_t* p ) : hunter_ranged_attack_t( "boar_charge", p, p->talents.howl_of_the_pack_leader_boar_charge_impact ), 
+    cleave( p->get_background_action<cleave_t>( "boar_charge_cleave" ) )
   {
     background = dual = true;
+    travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
+
+    add_child( cleave );
   }
 
   void execute() override
@@ -5169,9 +5147,6 @@ struct boar_charge_t final : hunter_ranged_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
-
-    if ( rng().roll( cleave->hogstrider_mongoose_fury_chance ) )
-      p()->buffs.mongoose_fury->trigger();
 
     p()->buffs.hogstrider->increment();
   }
@@ -8230,16 +8205,6 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
         } );
     }
   }
-  else if ( splits.size() == 2 && splits[ 0 ] == "boar_charge" )
-  {
-    if ( splits[ 1 ] == "remains" )
-      return make_fn_expr( expression_str,
-        [ this ]() -> timespan_t {
-          if ( !state.current_boar_charge )
-            return 0_s;
-          return state.current_boar_charge->remaining_time();
-        } );
-  }
   else if ( splits.size() >= 2 && splits[ 0 ] == "pet" && splits[ 1 ] == "main" &&
             !util::str_compare_ci( options.summon_pet_str, "disabled" ) )
   {
@@ -8810,7 +8775,6 @@ void hunter_t::init_spells()
     talents.howl_of_the_pack_leader_cooldown_buff         = talents.howl_of_the_pack_leader.ok() ? find_spell( 471877 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_wyvern_summon         = talents.howl_of_the_pack_leader.ok() ? find_spell( 1222271 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_wyvern_buff           = talents.howl_of_the_pack_leader.ok() ? find_spell( 471881 ) : spell_data_t::not_found();
-    //TODO change to child action?
     talents.howl_of_the_pack_leader_boar_charge_trigger   = talents.howl_of_the_pack_leader.ok() ? find_spell( 472020 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_boar_charge_impact    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471936 ) : spell_data_t::not_found();
     talents.howl_of_the_pack_leader_boar_charge_cleave    = talents.howl_of_the_pack_leader.ok() ? find_spell( 471938 ) : spell_data_t::not_found();
