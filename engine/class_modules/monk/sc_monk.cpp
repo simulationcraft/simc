@@ -2087,16 +2087,22 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::impact( state );
 
-      if ( !p()->talent.shado_pan.flurry_strikes->ok() )
+      if ( !p()->talent.shado_pan.flurry_strikes->ok() || result_is_miss( state->result ) )
         return;
 
-      int flurry_charges = 1;
-
-      if ( monk_melee_attack_t::weapon->group() == WEAPON_2H )
-        flurry_charges *= 2;
+      unsigned count = 0;
+      switch ( monk_melee_attack_t::weapon->group() )
+      {
+        case WEAPON_1H:
+          count = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value();
+          break;
+        case WEAPON_2H:
+          count = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
+          break;
+      }
 
       if ( state->result == RESULT_CRIT )
-        flurry_charges *= 2;
+        flurry_charges *= 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value();
 
       if ( flurry_charges )
         p()->buff.flurry_charge->trigger( flurry_charges );
@@ -5538,9 +5544,10 @@ void monk_t::create_buffs()
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
-  buff.swift_as_a_coursing_river = make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
-                                                       talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
-                                       ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
+  buff.swift_as_a_coursing_river =
+      make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
+                          talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
 
   // Windwalker
   buff.teachings_of_the_monastery =
