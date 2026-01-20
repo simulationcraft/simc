@@ -680,6 +680,8 @@ public:
     spell_data_ptr_t guardians_hide; //Utility talent, won't implement
     spell_data_ptr_t unnatural_causes;
     spell_data_ptr_t unnatural_causes_debuff;
+
+    spell_data_ptr_t deathblow_buff;
     
     spell_data_ptr_t harmonize; //TODO Removed
     spell_data_ptr_t explosive_shot; //TODO Removed
@@ -812,8 +814,7 @@ public:
     spell_data_ptr_t headshot;
     spell_data_ptr_t headshot_debuff;
     spell_data_ptr_t deadeye;
-    spell_data_ptr_t deathblow; //TODO Talent is unique to MM, but the effect can be achieved as DR
-    spell_data_ptr_t deathblow_buff; //TODO Moved baseline with hero talent tie ins
+    spell_data_ptr_t deathblow;
 
     spell_data_ptr_t take_aim_1;
     spell_data_ptr_t unmatched_precision;
@@ -847,7 +848,6 @@ public:
     spell_data_ptr_t unload;
 
     spell_data_ptr_t ammo_conservation; //TODO Removed 
-    spell_data_ptr_t improved_deathblow; //TODO Removed
     spell_data_ptr_t moving_target; //TODO Removed
     spell_data_ptr_t moving_target_buff; //TODO Removed
     spell_data_ptr_t precision_detonation; //TODO Removed
@@ -3901,7 +3901,7 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
 
 void hunter_t::trigger_deathblow( bool activated )
 {
-  if ( !talents.deathblow.ok() )
+  if ( !talents.deathblow_buff.ok() )
     return;
 
   procs.deathblow->occur();
@@ -5026,20 +5026,7 @@ struct black_arrow_t final : public black_arrow_base_t
 
 struct bleak_arrows_t : public auto_shot_base_t
 {
-  double deathblow_chance; 
-
-  bleak_arrows_t( hunter_t* p ) : auto_shot_base_t( "bleak_arrows", p, p->talents.bleak_arrows_spell ),
-    deathblow_chance( p->talents.bleak_arrows->effectN( p->specialization() == HUNTER_MARKSMANSHIP ? 2 : 1 ).percent() )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    auto_shot_base_t::impact( s );
-
-    if ( rng().roll( deathblow_chance ) )
-      p()->trigger_deathblow();
-  }
+  bleak_arrows_t( hunter_t* p ) : auto_shot_base_t( "bleak_arrows", p, p->talents.bleak_arrows_spell ) {}
 };
 
 // Phantom Pain (Dark Ranger) =========================================================
@@ -5335,10 +5322,19 @@ struct barbed_shot_base_t : public hunter_ranged_attack_t
 
 struct barbed_shot_t : public barbed_shot_base_t
 {
+  struct {
+    double chance = 0;
+  } deathblow;
+
   barbed_shot_t( hunter_t* p, util::string_view options_str )
     : barbed_shot_base_t( p, "barbed_shot", p->talents.barbed_shot )
   {
     parse_options( options_str );
+
+    if ( p->talents.soul_drinker.ok() )
+    {
+      deathblow.chance = p->talents.soul_drinker->effectN( 2 ).percent();
+    }
   }
 
   void execute() override
@@ -5352,6 +5348,12 @@ struct barbed_shot_t : public barbed_shot_base_t
     {
       if ( p()->talents.stomp.ok() )
         pet->stable_pet_t::actions.stomp->execute();
+    }
+
+    if ( p()->talents.soul_drinker.ok() )
+    {
+      if ( p()->rng().roll( deathblow.chance ) )
+        p()->trigger_deathblow();
     }
   }
 };
@@ -5804,7 +5806,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     if ( p->talents.deathblow.ok() )
-      deathblow.chance = p->talents.improved_deathblow.ok() ? p->talents.improved_deathblow->effectN( 2 ).percent() : p->talents.deathblow->effectN( 1 ).percent();
+      deathblow.chance = p->talents.deathblow->effectN( 1 ).percent();
   
     if ( p->tier_set.tww_s2_mm_4pc.ok() )
       tww_s2_mm_4pc = p->get_background_action<explosive_shot_tww_s2_mm_4pc_t>( "explosive_shot_tww_s2_mm_4pc" );
@@ -6070,8 +6072,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     may_miss = may_crit = false;
     channeled = true;
 
-    if ( p->talents.improved_deathblow.ok() )
-      deathblow.chance = p->talents.improved_deathblow->effectN( 1 ).percent();
+    if ( p->talents.deathblow.ok() )
+      deathblow.chance = p->talents.deathblow->effectN( 2 ).percent();
 
     if ( p->talents.aspect_of_the_hydra.ok() )
     {
@@ -7277,15 +7279,12 @@ struct kill_command_t: public hunter_spell_t
         if ( p->talents.sulfurlined_pockets.ok() )
           quick_shot.explosive_shot = p->get_background_action<explosive_shot_sulfurlined_pockets_t>( "explosive_shot_sulfurlined_pockets" );
       }
-
-      if ( p->talents.deathblow.ok() )
-        deathblow.chance = p->talents.deathblow->effectN( 3 ).percent();
     }
     
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
-      if ( p->talents.deathblow.ok() )
-        deathblow.chance = p->talents.deathblow->effectN( 2 ).percent();
+      if ( p->talents.soul_drinker.ok() )
+        deathblow.chance = p->talents.soul_drinker->effectN( 1 ).percent();
       
       if ( p->talents.fury_of_the_wyvern.ok() )
       {
@@ -7353,11 +7352,9 @@ struct kill_command_t: public hunter_spell_t
       p() -> procs.dire_command -> occur();
     }
 
-    if ( p()->talents.deathblow.ok() )
+    if ( p()->talents.soul_drinker.ok() )
     {
-      double chance = deathblow.chance;
-
-      if ( rng().roll( chance ) )
+      if ( rng().roll( deathblow.chance ) )
         p()->trigger_deathblow();
     }
 
@@ -8565,7 +8562,6 @@ void hunter_t::init_spells()
     talents.headshot_debuff                   = talents.headshot.ok() ? find_spell( 1277558 ) : spell_data_t::not_found();
     talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
-    talents.deathblow_buff                    = talents.deathblow.ok() ? find_spell( 378770 ) : spell_data_t::not_found();
 
     talents.take_aim_1                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273132, HUNTER_MARKSMANSHIP );
     talents.unmatched_precision               = find_talent_spell( talent_tree::SPECIALIZATION, "Unmatched Precision", HUNTER_MARKSMANSHIP );
@@ -8599,7 +8595,6 @@ void hunter_t::init_spells()
 
     //TODO Remove
     talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
-    talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
     talents.moving_target                     = find_talent_spell( talent_tree::SPECIALIZATION, "Moving Target", HUNTER_MARKSMANSHIP );
     talents.moving_target_buff                = talents.moving_target.ok() ? find_spell( 474293 ) : spell_data_t::not_found();
     talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
@@ -8747,6 +8742,7 @@ void hunter_t::init_spells()
     talents.bleak_arrows                = find_talent_spell( talent_tree::HERO, "Bleak Arrows" );
     talents.bleak_arrows_spell          = talents.bleak_arrows.ok() ? find_spell( 467718 ) : spell_data_t::not_found();
     talents.soul_drinker                = find_talent_spell( talent_tree::HERO, "Soul Drinker" );
+    talents.deathblow_buff              = ( talents.deathblow.ok() || talents.black_arrow.ok() ) ? find_spell( 378770 ) : spell_data_t::not_found();
     talents.bleak_powder                = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
     talents.bleak_powder_spell          = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
     talents.corpsecaller                = find_talent_spell( talent_tree::HERO, "Corpsecaller" );
@@ -9436,7 +9432,7 @@ void hunter_t::init_procs()
   if ( talents.lead_from_the_front.ok() )
     procs.bear_without_lftf = get_proc( "Bear without Lead From the Front" );
   
-  if ( talents.deathblow.ok() )
+  if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
 
   if ( talents.precision_detonation.ok() )
