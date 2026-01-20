@@ -709,7 +709,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
   std::vector<player_effect_t> damage_taken_multiplier_effects;
-  std::vector<target_effect_t> target_damage_taken_multiplier_effects;
+  std::vector<target_effect_t> target_damage_done_multiplier_effects;
   std::vector<player_effect_t> absorb_multiplier_effects;
   std::vector<player_effect_t> absorb_received_mult_effects;
   std::vector<player_effect_t> healing_received_effects;

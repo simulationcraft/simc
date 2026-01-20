@@ -1090,7 +1090,7 @@ void parse_player_effects_t::target_mitigation( school_e school, result_amount_t
       state->result_amount *= 1.0 + get_effect_value( i );
 
   auto td = get_target_data( state->target );
-  for ( const auto& i : target_damage_taken_multiplier_effects )
+  for ( const auto& i : target_damage_done_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
       state->result_amount *= 1.0 + get_effect_value( i, td );
 }
@@ -1382,7 +1382,7 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_DAMAGE_TO_CASTER:
       tmp.opt_enum = eff.misc_value1();
       str = opt_strings::school( tmp.opt_enum );
-      return &target_damage_taken_multiplier_effects;
+      return &target_damage_done_multiplier_effects;
 
     default:
       return nullptr;
@@ -1428,7 +1428,7 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, crit_bonus_effects, "Crit Damage Bonus" );
     print_parsed_type( os, dodge_effects, "Dodge" );
     print_parsed_type( os, damage_taken_multiplier_effects, "Damage Taken Multiplier", &opt_strings::school );
-    print_parsed_type( os, target_damage_taken_multiplier_effects, "Target Damage Taken Multiplier", &opt_strings::school );
+    print_parsed_type( os, target_damage_done_multiplier_effects, "Target Damage Done Multiplier", &opt_strings::school );
     print_parsed_type( os, expertise_effects, "Expertise" );
     print_parsed_type( os, haste_effects, "All Haste" );
     print_parsed_type( os, melee_haste_effects, "Melee Haste" );
@@ -1476,7 +1476,7 @@ size_t parse_player_effects_t::total_effects_count() const
          parry_rating_from_crit_effects.size() +
          dodge_effects.size() +
          damage_taken_multiplier_effects.size() +
-         target_damage_taken_multiplier_effects.size() +
+         target_damage_done_multiplier_effects.size() +
          absorb_multiplier_effects.size() +
          healing_received_effects.size() +
          absorb_received_mult_effects.size() +
