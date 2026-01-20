@@ -3155,6 +3155,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     double purify_percent = data().effectN( 1 ).percent();
     double purify_amount  = std::max( pool_size * purify_percent, p()->max_health() * data().effectN( 2 ).percent() );
     double cleared        = p()->find_stagger( "Stagger" )->purify_flat( purify_amount, "purifying_brew" );
+    p()->buff.elixir_of_determination->default_value = cleared;
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -3992,8 +3993,9 @@ struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
 {
   actions::monk_absorb_t *absorb;
 
-  elixir_of_determination_t( monk_t *p, std::string_view name, const spell_data_t *spell_data )
-    : monk_buff_t<absorb_buff_t>( p, name, spell_data ), absorb( new actions::monk_absorb_t( p, name, spell_data ) )
+  elixir_of_determination_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    : monk_buff_t<absorb_buff_t>( player, name, spell_data ),
+      absorb( new actions::monk_absorb_t( player, name, spell_data ) )
   {
     set_internal_cooldown( timespan_t::from_seconds( 15 ) );
     set_absorb_source( player->get_stats( name ) );
@@ -4001,8 +4003,9 @@ struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
 
   bool trigger( int stacks, double, double chance, timespan_t duration ) override
   {
-    double minimum = p().max_health() * p().talent.brewmaster.elixir_of_determination->effectN( 3 ).percent();
-    double amount  = minimum;  // TODO max( minimum, recently_purified * effectN( 2 ) )
+    double minimum    = p().max_health() * p().talent.brewmaster.elixir_of_determination->effectN( 3 ).percent();
+    double multiplier = p().talent.brewmaster.elixir_of_determination->effectN( 2 ).percent();
+    double amount     = std::max( minimum, default_value * multiplier );
 
     return base_t::trigger( stacks, amount, chance, duration );
   }
