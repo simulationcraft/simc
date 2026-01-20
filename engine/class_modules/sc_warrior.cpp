@@ -1036,8 +1036,10 @@ public:
 
     if ( p()->specialization() == WARRIOR_ARMS )
     {
-      // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
+      if ( p()->talents.warrior.stance_mastery->ok() )
+        parse_effects( p()->buff.battle_stance, effect_mask_t( false ).enable( 4 ) );
 
+      // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 6 ) );
       if( p()->main_hand_weapon.group() == WEAPON_2H )
         parse_effects( p()->mastery.master_of_arms );
@@ -1047,13 +1049,12 @@ public:
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
       parse_effects( p()->buff.master_of_warfare );
+
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
       parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
       parse_effects( p()->buff.berserker_stance, effect_mask_t( true ).disable( 6 ) );
-      if ( p()->talents.warrior.stance_mastery->ok() )
-        parse_effects( p()->buff.berserker_stance, effect_mask_t( false ).enable( 6 ) );
 
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 7 ) );
 
@@ -1079,6 +1080,8 @@ public:
     }
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
+      if ( p()->talents.warrior.stance_mastery->ok() )
+        parse_effects( p()->buff.battle_stance, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ) );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
@@ -2655,7 +2658,7 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() )
+    if ( p()->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
     {
       if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
       {
@@ -2912,7 +2915,7 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() )
+    if ( p()->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
     {
       if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
       {
@@ -4165,7 +4168,7 @@ struct execute_arms_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
         p()->buff.imminent_demise->trigger();
 
-      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() > wowv_t( 12, 0, 1 ) )
       {
         if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
         {
@@ -4389,7 +4392,7 @@ struct execute_fury_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
         p()->buff.imminent_demise->trigger();
 
-      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() > wowv_t( 12, 0, 1 ) )
       {
         if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
         {
@@ -9176,8 +9179,6 @@ void warrior_t::parse_player_effects()
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
 
   parse_effects( buff.battle_stance, effect_mask_t( true ).disable( 4 ) );
-  if ( talents.warrior.stance_mastery->ok() )
-    parse_effects( buff.battle_stance, effect_mask_t( false ).enable( 4 ) );
 
   // Stance Mastery for Defensive stance is not working in game as of Dec 04 2025
   parse_effects( buff.defensive_stance, effect_mask_t( true ).disable( 2, 5, 6 ) );
@@ -9196,6 +9197,9 @@ void warrior_t::parse_player_effects()
   {
     parse_effects( buff.frenzy, talents.fury.frenzy );
     parse_effects( buff.surge_of_adrenaline );
+
+    if ( talents.warrior.stance_mastery->ok() )
+      parse_effects( buff.berserker_stance, effect_mask_t( false ).enable( 6 ) );
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
