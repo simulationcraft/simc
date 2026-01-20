@@ -3991,23 +3991,23 @@ struct fortifying_brew_t : public monk_buff_t<>
 
 struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
 {
-  actions::monk_absorb_t *absorb;
-
   elixir_of_determination_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-    : monk_buff_t<absorb_buff_t>( player, name, spell_data ),
-      absorb( new actions::monk_absorb_t( player, name, spell_data ) )
+    : monk_buff_t<absorb_buff_t>( player, name, spell_data )
   {
     set_cooldown( player->talent.brewmaster.elixir_of_determination_cooldown->duration() );
     set_absorb_source( player->get_stats( name ) );
+
+    // absorb action is constructed for report buff-action linking
+    new actions::monk_absorb_t( player, name, spell_data );
   }
 
-  bool trigger( int stacks, double, double chance, timespan_t duration ) override
+  bool trigger( int stacks, double, double, timespan_t ) override
   {
     double minimum    = p().max_health() * p().talent.brewmaster.elixir_of_determination->effectN( 3 ).percent();
     double multiplier = p().talent.brewmaster.elixir_of_determination->effectN( 2 ).percent();
     double amount     = std::max( minimum, default_value * multiplier );
 
-    return base_t::trigger( stacks, amount, chance, duration );
+    return base_t::trigger( stacks, amount );
   }
 };
 
