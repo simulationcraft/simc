@@ -517,7 +517,7 @@ struct harmonic_surge_t : public base_action_t
   action_t *heal;
 
   template <typename... Args>
-  harmonic_surge_t( monk_t *player, std::string_view name, action_t *parent, Args &&...args )
+  harmonic_surge_t( monk_t *player, std::string_view name, Args &&...args )
     : base_action_t( player, name, std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
   {
     if ( !player->talent.master_of_harmony.harmonic_surge->ok() )
@@ -528,11 +528,8 @@ struct harmonic_surge_t : public base_action_t
     heal   = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
                                         player->talent.master_of_harmony.harmonic_surge_heal );
 
-    if ( parent )
-    {
-      parent->add_child( damage );
-      parent->add_child( heal );
-    }
+    base_action_t::add_child( damage );
+    base_action_t::add_child( heal );
   }
 
   void execute() override
@@ -750,7 +747,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
   bool face_palm;
 
   tiger_palm_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "tiger_palm", this, p->baseline.monk.tiger_palm ), face_palm( false )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
 
@@ -1795,13 +1792,14 @@ struct auto_attack_t : public monk_melee_attack_t
       double chance;
 
       damage_t( monk_t *player )
-        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
+        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ),
+          allowed( false ),
+          triggered( false ),
+          chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
       {
         background                = true;
         allow_class_ability_procs = false;
         may_miss                  = false;
-
-        chance = p()->talent.windwalker.dual_threat->effectN( 1 ).percent();
       }
 
       void reset() override
@@ -1844,7 +1842,6 @@ struct auto_attack_t : public monk_melee_attack_t
 
     void impact( action_state_t *state ) override
     {
-      // TODO: check if DT has any impact on melee success rate
       if ( damage && result_is_hit( state->result ) )
       {
         damage->execute_on_target( state->target );
@@ -1873,18 +1870,13 @@ struct auto_attack_t : public monk_melee_attack_t
 
     struct press_the_advantage_tiger_palm_t : public harmonic_surge_t<monk_melee_attack_t>
     {
-      press_the_advantage_tiger_palm_t( monk_t *player, action_t *parent )
-        : base_t( player, "tiger_palm_press_the_advantage", parent,
-                  player->talent.brewmaster.press_the_advantage_tiger_palm )
+      press_the_advantage_tiger_palm_t( monk_t *player )
+        : base_t( player, "tiger_palm_press_the_advantage", player->talent.brewmaster.press_the_advantage_tiger_palm )
       {
         background = dual = true;
 
         if ( const auto &effect = player->buff.press_the_advantage->data().effectN( 2 ); effect.ok() )
-          add_parse_entry( da_multiplier_effects )
-              .set_value( effect.percent() )
-              .set_eff( &effect );
-
-        parent->add_child( this );
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
       }
 
       void execute() override
@@ -1909,14 +1901,15 @@ struct auto_attack_t : public monk_melee_attack_t
       damage = new damage_t( player );
       TBase::add_child( damage );
 
-      tiger_palm = new press_the_advantage_tiger_palm_t( player, this );
+      tiger_palm = new press_the_advantage_tiger_palm_t( player );
+      TBase::add_child( tiger_palm );
     }
 
     void impact( action_state_t *state ) override
     {
       TBase::impact( state );
 
-      if ( !damage || !result_is_hit( state->result ) )
+      if ( !damage || !tiger_palm || !result_is_hit( state->result ) )
         return;
 
       if ( TBase::p()->buff.press_the_advantage->stack() < 10 )
@@ -2064,7 +2057,7 @@ struct auto_attack_t : public monk_melee_attack_t
     // these pointers register themselves in places which cause them to get properly destructed
     new dual_threat_t<press_the_advantage_t<thunderfist_t<melee_t>>>( player, &player->main_hand_weapon, this );
     if ( player->off_hand_weapon.type != WEAPON_NONE )
-      new dual_threat_t<thunderfist_t<melee_t>>( player, &player->off_hand_weapon, this );
+      new dual_threat_t<press_the_advantage_t<thunderfist_t<melee_t>>>( player, &player->off_hand_weapon, this );
   }
 
   bool ready() override
@@ -2809,18 +2802,18 @@ struct crackling_jade_lightning_t : public monk_spell_t
   }
 };
 
-struct breath_of_fire_dot_t : public monk_spell_t
-{
-  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
-  {
-    background    = true;
-    tick_may_crit = may_crit = true;
-    hasted_ticks             = false;
-  }
-};
-
 struct breath_of_fire_t : public monk_spell_t
 {
+  struct dot_t : public monk_spell_t
+  {
+    dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
+    {
+      background    = true;
+      tick_may_crit = may_crit = true;
+      hasted_ticks             = false;
+    }
+  };
+
   struct dragonfire_brew_t : monk_spell_t
   {
     dragonfire_brew_t( monk_t *player )
@@ -2837,7 +2830,8 @@ struct breath_of_fire_t : public monk_spell_t
     }
   };
 
-  dragonfire_brew_t *dragonfire_brew;
+  action_t *dot;
+  action_t *dragonfire_brew;
   bool no_bof_hit;
 
   breath_of_fire_t( monk_t *player, std::string_view options_str )
@@ -2853,12 +2847,14 @@ struct breath_of_fire_t : public monk_spell_t
     full_amount_targets = 1;
     cast_during_sck     = true;
 
-    if ( player->talent.brewmaster.dragonfire_brew->ok() )
-      dragonfire_brew = new dragonfire_brew_t( player );
+    dot = new dot_t( player );
+    add_child( dot );
 
-    add_child( player->action.breath_of_fire );
-    if ( dragonfire_brew )
+    if ( player->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      dragonfire_brew = new dragonfire_brew_t( player );
       add_child( dragonfire_brew );
+    }
   }
 
   void execute() override
@@ -2881,9 +2877,7 @@ struct breath_of_fire_t : public monk_spell_t
     monk_spell_t::impact( state );
 
     if ( get_td( state->target )->debuff.keg_smash->up() )
-    {
-      p()->action.breath_of_fire->execute();
-    }
+      dot->execute_on_target( state->target );
   }
 };
 
@@ -3376,12 +3370,12 @@ struct zenith_t : public monk_spell_t
 
 struct vivify_t : public harmonic_surge_t<monk_heal_t>
 {
-  vivify_t( monk_t *p, std::string_view options_str ) : base_t( p, "vivify", this, p->baseline.monk.vivify )
+  vivify_t( monk_t *player, std::string_view options_str ) : base_t( player, "vivify", player->baseline.monk.vivify )
   {
     parse_options( options_str );
 
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    base_execute_time += p->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
+    base_execute_time += player->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
 
     cast_during_sck = false;
   }
@@ -5247,7 +5241,6 @@ void monk_t::init_background_actions()
   if ( specialization() == MONK_BREWMASTER )
   {
     action.special_delivery  = new special_delivery_t( this );
-    action.breath_of_fire    = new breath_of_fire_dot_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
@@ -5899,9 +5892,8 @@ void monk_t::init_special_effects()
                                               [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
                                                 return baseline.brewmaster.brews.contains( state->action );
                                               } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.celestial_flames->trigger();
-        } );
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.celestial_flames->trigger(); } );
 
   if ( talent.brewmaster.exploding_keg.ok() )
     create_proc_callback( { talent.brewmaster.exploding_keg.spell() } )

@@ -459,7 +459,6 @@ public:
 
     // Brewmaster
     propagate_const<action_t *> special_delivery;
-    propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
