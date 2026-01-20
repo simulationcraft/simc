@@ -4967,6 +4967,7 @@ struct black_arrow_t final : public black_arrow_base_t
   struct
   {
     int count = 0;
+    timespan_t interval = 0_ms;
     withering_fire_t* action = nullptr;
   } withering_fire;
 
@@ -4977,6 +4978,7 @@ struct black_arrow_t final : public black_arrow_base_t
     if ( p->talents.withering_fire.ok() )
     {
       withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
+      withering_fire.interval = p->talents.withering_fire->effectN( 2 ).time_value();
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
@@ -4999,7 +5001,7 @@ struct black_arrow_t final : public black_arrow_base_t
       for ( int i = 1; i <= withering_fire.count; i++ )
       {
         int t = ( i + 1 ) % tl.size();
-        make_event( sim, 200_ms * i, [ this, tl, t ]() { withering_fire.action->execute_on_target( tl[ t ] ); } );
+        make_event( sim, withering_fire.interval * i, [ this, tl, t ]() { withering_fire.action->execute_on_target( tl[ t ] ); } );
       }
     }
 
