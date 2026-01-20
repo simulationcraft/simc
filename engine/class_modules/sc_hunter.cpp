@@ -541,7 +541,6 @@ public:
 
     // Dark Ranger
     buff_t* withering_fire;
-    buff_t* the_bell_tolls;
   } buffs;
 
   struct cooldowns_t
@@ -996,7 +995,6 @@ public:
     spell_data_ptr_t blighted_quiver;
     spell_data_ptr_t banshees_mark;
     spell_data_ptr_t the_bell_tolls;
-    spell_data_ptr_t the_bell_tolls_buff;
     spell_data_ptr_t umbral_reach;
     spell_data_ptr_t pact_of_the_hollow; // TODO Not implemented
 
@@ -1366,7 +1364,6 @@ public:
     damage_affected_by lead_from_the_front;    
 
     // Dark Ranger
-    damage_affected_by the_bell_tolls;
     damage_affected_by through_the_eyes;
 
     // Tier Set
@@ -1410,7 +1407,6 @@ public:
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
 
-    affected_by.the_bell_tolls = parse_damage_affecting_aura( this, p->talents.the_bell_tolls_buff );
     affected_by.through_the_eyes = parse_damage_affecting_aura( this, p->talents.black_arrow_dot );
 
     affected_by.tww_s2_mm_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() );
@@ -1574,9 +1570,6 @@ public:
     if ( affected_by.lead_from_the_front.direct && p()->buffs.lead_from_the_front->check() )
       am *= 1 + p()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.direct ).percent();
 
-    if ( affected_by.the_bell_tolls.direct )
-      am *= 1 + p()->buffs.the_bell_tolls->stack_value();
-
     if ( affected_by.tww_s2_sv_2pc.direct )
       am *= 1 + p()->buffs.winning_streak->stack_value();
 
@@ -1621,9 +1614,6 @@ public:
     if ( affected_by.lead_from_the_front.tick && p()->buffs.lead_from_the_front->check() )
       am *= 1 + p()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.tick ).percent();
     
-    if ( affected_by.the_bell_tolls.tick )
-      am *= 1 + p()->buffs.the_bell_tolls->stack_value();
-
     if ( affected_by.tww_s2_sv_2pc.tick )
       am *= 1 + p()->buffs.winning_streak->stack_value();
 
@@ -8755,7 +8745,6 @@ void hunter_t::init_spells()
     talents.blighted_quiver             = find_talent_spell( talent_tree::HERO, "Blighted Quiver" );
     talents.banshees_mark               = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
     talents.the_bell_tolls              = find_talent_spell( talent_tree::HERO, "The Bell Tolls" );
-    talents.the_bell_tolls_buff         = talents.the_bell_tolls.ok() ? find_spell( 1232992 ) : spell_data_t::not_found();
     talents.umbral_reach                = find_talent_spell( talent_tree::HERO, "Umbral Reach" );
     talents.pact_of_the_hollow          = find_talent_spell( talent_tree::HERO, "Pact of the Hollow" );
 
@@ -8935,6 +8924,11 @@ void hunter_t::init_spells()
                                 specialization() == HUNTER_BEAST_MASTERY 
                                                     ? effect_mask_t( true ).disable( 2 )
                                                     : effect_mask_t( true ).disable( 1 ) );
+
+  register_passive_effect_mask( talents.the_bell_tolls,
+                                specialization() == HUNTER_BEAST_MASTERY
+                                                    ? effect_mask_t( true ).disable( 1, 3 )
+                                                    : effect_mask_t( true ).disable( 2, 4 ) );
 
   register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
                                 specialization() == HUNTER_BEAST_MASTERY
@@ -9369,12 +9363,6 @@ void hunter_t::create_buffs()
 
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff );
-
-  buffs.the_bell_tolls = 
-    make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )
-      ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 void hunter_t::init_gains()
@@ -9896,8 +9884,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1 + buffs.wyverns_cry->check_stack_value();
     m *= 1 + buffs.lead_from_the_front->check_value();
     m *= 1 + buffs.harmonize->check_value();
-    
-    m *= 1 + buffs.the_bell_tolls->check_stack_value();
   }
 
   return m;
