@@ -3997,8 +3997,15 @@ struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
     set_cooldown( player->talent.brewmaster.elixir_of_determination_cooldown->duration() );
     set_absorb_source( player->get_stats( name ) );
 
-    // absorb action is constructed for report buff-action linking
+    // absorb action is constructed for report buff-action linking.
     new actions::monk_absorb_t( player, name, spell_data );
+  }
+
+  void reset() override
+  {
+    default_value = DEFAULT_VALUE();
+
+    monk_buff_t<absorb_buff_t>::reset();
   }
 
   bool trigger( int stacks, double, double, timespan_t ) override
