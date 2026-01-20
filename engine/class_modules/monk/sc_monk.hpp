@@ -770,6 +770,7 @@ public:
       player_talent_t staggering_strikes;
       player_talent_t quick_sip;
       player_talent_t elixir_of_determination;
+      const spell_data_t *elixir_of_determination_cooldown;
       player_talent_t improved_blackout_kick;
       player_talent_t swift_as_a_coursing_river;
       // row 4
