@@ -729,7 +729,7 @@ public:
     spell_data_ptr_t aspect_of_the_beast;
     spell_data_ptr_t dire_cleave;
     spell_data_ptr_t dire_command;
-    spell_data_ptr_t jagged_wounds; //TODO Not implemented
+    spell_data_ptr_t jagged_wounds;
     spell_data_ptr_t serpentine_strikes;
     spell_data_ptr_t serpentine_strikes_energize;
     spell_data_ptr_t snakeskin_quiver;
@@ -904,7 +904,7 @@ public:
     spell_data_ptr_t sweeping_spear;
     spell_data_ptr_t vulnerability;
     spell_data_ptr_t blackrock_munitions;
-    spell_data_ptr_t shower_of_blood; //TODO Not implemented
+    spell_data_ptr_t shower_of_blood;
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
 
@@ -1072,7 +1072,7 @@ public:
     spell_data_ptr_t stalk_and_strike; //TODO Not implemented
 
     spell_data_ptr_t arcane_talons;
-    spell_data_ptr_t lunar_calling; //TODO Not implemented
+    spell_data_ptr_t lunar_calling;
     spell_data_ptr_t conditioning; //Utility talent, won't implement
     spell_data_ptr_t scouts_vigil; //Utility talent, won't implement
     spell_data_ptr_t radiant_edge; //TODO Not implemented
