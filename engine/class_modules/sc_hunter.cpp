@@ -987,7 +987,7 @@ public:
     spell_data_ptr_t corpsecaller; // TODO Not implemented
 
     spell_data_ptr_t ebon_bowstring;
-    spell_data_ptr_t through_the_eyes; // TODO Not implemented
+    spell_data_ptr_t through_the_eyes;
     spell_data_ptr_t smoke_screen; //Utility talent, won't implement
     spell_data_ptr_t dark_chains; //Utility talent, won't implement
     spell_data_ptr_t shadow_dagger; //Utility talent, won't implement
@@ -1344,6 +1344,7 @@ public:
     bool bullseye_crit_chance = false;
     damage_affected_by lone_wolf;
     damage_affected_by sniper_training;
+    damage_affected_by headshot;
 
     // Survival
     bool outland_venom = false;
@@ -1366,6 +1367,7 @@ public:
 
     // Dark Ranger
     damage_affected_by the_bell_tolls;
+    damage_affected_by through_the_eyes;
 
     // Tier Set
     damage_affected_by tww_s2_mm_2pc;
@@ -1385,6 +1387,7 @@ public:
     affected_by.unnatural_causes = parse_damage_affecting_aura( this, p->talents.unnatural_causes_debuff );
     
     affected_by.sniper_training = parse_damage_affecting_aura( this, p->mastery.sniper_training );
+    affected_by.headshot = parse_damage_affecting_aura( this, p->talents.headshot_debuff );
     affected_by.trueshot_crit_damage_bonus = check_affected_by( this, p->talents.trueshot->effectN( 5 ) );
     affected_by.bullseye_crit_chance = check_affected_by( this, p->talents.bullseye->effectN( 1 ).trigger()->effectN( 1 ) );
 
@@ -1408,6 +1411,7 @@ public:
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
 
     affected_by.the_bell_tolls = parse_damage_affecting_aura( this, p->talents.the_bell_tolls_buff );
+    affected_by.through_the_eyes = parse_damage_affecting_aura( this, p->talents.black_arrow_dot );
 
     affected_by.tww_s2_mm_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() );
     affected_by.tww_s2_sv_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s2_sv_2pc->effectN( 1 ).trigger() );
@@ -1687,6 +1691,14 @@ public:
     if ( affected_by.sentinels_mark.direct )
       da *= 1 + td( target )->debuffs.sentinels_mark->check_value();
 
+    if ( affected_by.headshot.direct && td( target )->debuffs.headshot->check() )
+      da *= 1 + td( target )->debuffs.headshot->stack_value();
+
+    if ( p()->specialization() == HUNTER_BEAST_MASTERY 
+      && affected_by.through_the_eyes.direct 
+      && td( target )->dots.black_arrow->is_ticking() )
+      da *= 1 + p()->talents.black_arrow_dot->effectN( 2 ).percent();
+
     return da;
   }
 
@@ -1701,6 +1713,14 @@ public:
       if ( target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         ta *= 1.0476;
     }
+
+    if ( affected_by.headshot.tick && td( target )->debuffs.headshot->check() )
+      ta *= 1 + td( target )->debuffs.headshot->stack_value();
+
+    if ( p()->specialization() == HUNTER_BEAST_MASTERY 
+      && affected_by.through_the_eyes.tick 
+      && td( target )->dots.black_arrow->is_ticking() )
+      ta *= 1 + p()->talents.black_arrow_dot->effectN( 2 ).percent();
 
     return ta;
   }
@@ -4781,16 +4801,6 @@ struct kill_shot_t : public kill_shot_base_t
       td( s->target )->debuffs.headshot->trigger();
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    if ( p()->talents.headshot.ok() )
-      tdm *= 1 + p()->talents.headshot_debuff->effectN( 1 ).percent() * td( t )->debuffs.headshot->check();
-
-    return tdm;
-  }
-
   void execute() override
   {
     kill_shot_base_t::execute();
@@ -4939,15 +4949,6 @@ struct black_arrow_base_t : public kill_shot_base_t
       td( s->target )->debuffs.headshot->trigger();
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = kill_shot_base_t::composite_target_da_multiplier( t );
-
-    tdm *= 1 + p()->talents.headshot_debuff->effectN( 1 ).percent() * td( t )->debuffs.headshot->check();
-
-    return tdm;
-  }
-
   bool target_ready( player_t* candidate_target ) override
   {
     /* Black Arrow has different target ready conditionals than regular Kill Shot, so we don't call Kill Shot base.
@@ -5005,10 +5006,11 @@ struct black_arrow_t final : public black_arrow_base_t
       range::erase_remove( tl, [ this ]( player_t* t ) { return t != target && td( t )->dots.black_arrow->is_ticking(); } );
       target_cache.is_valid = false;
 
-      int count = withering_fire.count;
-      int t = 1;
-      while ( t <= count )
-        withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
+      for ( int i = 1; i <= withering_fire.count; i++ )
+      {
+        int t = ( i + 1 ) % tl.size();
+        make_event( sim, 200_ms * i, [ this, tl, t ]() { withering_fire.action->execute_on_target( tl[ t ] ); } );
+      }
     }
 
     p()->buffs.deathblow->expire();
