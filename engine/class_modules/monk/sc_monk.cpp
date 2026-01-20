@@ -3890,7 +3890,7 @@ struct fortifying_brew_t : public monk_buff_t<>
 {
   int health_gain;
   fortifying_brew_t( monk_t *player )
-    : monk_buff_t( player, "fortifying_brew", player->talent.monk.fortifying_brew ), health_gain( 0 )
+    : monk_buff_t( player, "fortifying_brew", player->talent.monk.fortifying_brew_buff ), health_gain( 0 )
   {
     cooldown->duration = timespan_t::zero();
     set_trigger_spell( player->talent.monk.fortifying_brew );
@@ -4504,6 +4504,7 @@ void monk_t::parse_player_effects()
    */
 
   // class and spec shared auras
+  parse_effects( buff.fortifying_brew );
 
   // brewmaster player auras
 
@@ -4523,6 +4524,7 @@ void monk_t::parse_player_effects()
       value *= 1.0 + talent.brewmaster.invoke_niuzao_the_black_ox->effectN( 6 ).percent();
     return value;
   } );
+  parse_target_effects( td_fn( &monk_td_t::dots_t::breath_of_fire ), talent.brewmaster.breath_of_fire_dot );
 
   // windwalker talent auras
   parse_effects( buff.memory_of_the_monastery );
@@ -5519,9 +5521,10 @@ void monk_t::create_buffs()
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
-  buff.swift_as_a_coursing_river = make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
-                                                       talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
-                                       ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
+  buff.swift_as_a_coursing_river =
+      make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
+                          talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
 
   // Windwalker
   buff.teachings_of_the_monastery =
@@ -6291,18 +6294,6 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t *s )
 {
   monk_td_t *target_td = get_target_data( s->action->player );
-
-  // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( target_td->dot.breath_of_fire->is_ticking() )
-  {
-    double mult = 1.0;
-    mult += action.breath_of_fire->data().effectN( 2 ).percent();
-    s->result_amount *= mult;
-  }
-
-  // Damage Reduction Cooldowns
-  if ( buff.fortifying_brew->up() )
-    s->result_amount *= ( 1.0 + talent.monk.fortifying_brew->effectN( 2 ).percent() );  // Saved as -20%
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
