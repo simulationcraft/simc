@@ -3993,8 +3993,7 @@ struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
   actions::monk_absorb_t *absorb;
 
   elixir_of_determination_t( monk_t *p, std::string_view name, const spell_data_t *spell_data )
-    : monk_buff_t<absorb_buff_t>( p, name, spell_data ),
-      absorb( new actions::monk_absorb_t( p, name, spell_data ) )
+    : monk_buff_t<absorb_buff_t>( p, name, spell_data ), absorb( new actions::monk_absorb_t( p, name, spell_data ) )
   {
     set_internal_cooldown( timespan_t::from_seconds( 15 ) );
     set_absorb_source( player->get_stats( name ) );
@@ -4626,6 +4625,7 @@ void monk_t::parse_player_effects()
 
   // Shadopan
   parse_effects( buff.whirling_steel );
+  parse_effects( buff.predictive_training );
 
   // Conduit of the Celestials
   parse_effects( buff.inner_compass_crane_stance );
@@ -5589,10 +5589,9 @@ void monk_t::create_buffs()
           ->set_duration( 1_ms )
           ->set_max_stack( 1 );
 
-  buff.elixir_of_determination =
-      make_buff_fallback<buffs::elixir_of_determination_t>(
-          talent.brewmaster.elixir_of_determination->ok(), this, "elixir_of_determination",
-          talent.brewmaster.elixir_of_determination->effectN( 1 ).trigger() );
+  buff.elixir_of_determination = make_buff_fallback<buffs::elixir_of_determination_t>(
+      talent.brewmaster.elixir_of_determination->ok(), this, "elixir_of_determination",
+      talent.brewmaster.elixir_of_determination->effectN( 1 ).trigger() );
 
   buff.invoke_niuzao = make_buff_fallback( talent.brewmaster.invoke_niuzao_the_black_ox->ok(), this,
                                            "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
@@ -5818,8 +5817,7 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_steel =
-      make_buff_fallback<buff_t>( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
+  buff.whirling_steel = make_buff_fallback<buff_t>( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
                                                     talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
 }
 
@@ -6150,14 +6148,13 @@ void monk_t::init_special_effects()
 
   if ( talent.shado_pan.whirling_steel->ok() )
     create_proc_callback( { talent.shado_pan.whirling_steel } )
-        ->register_callback_trigger_function(
-            dbc_proc_callback_t::trigger_fn_type::CONDITION,
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-              return health_percentage() < talent.shado_pan.whirling_steel->effectN( 1 ).base_value();
-            } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.whirling_steel->trigger();
-        } );
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+                                                return health_percentage() <
+                                                       talent.shado_pan.whirling_steel->effectN( 1 ).base_value();
+                                              } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.whirling_steel->trigger(); } );
 
   base_t::init_special_effects();
 }
