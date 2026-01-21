@@ -3991,7 +3991,8 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
 
 bool paladin_t::validate_actor()
 {
-  if ( sim->dbc->wowv() == wowv_t( 12, 0, 0 ) )
+  wowv_t v = sim->dbc->wowv();
+  if ( v.expansion == 12 && v.minor == 0 )
   {
     throw sc_invalid_player_argument( "Paladin sims are non functional for Midnight prepatch" );
     return false;

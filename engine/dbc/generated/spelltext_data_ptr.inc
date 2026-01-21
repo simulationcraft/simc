@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65337
-static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28596> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27701,6 +27701,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1264351, "When you consume a Rune you have a chance to call a Dancing Rune Weapon to your aid for $1264353d.", 0, 0 },
   { 1264353, "$@spelldesc49028", 0, 0 },
   { 1264355, "$@spelldesc1264359", 0, 0 },
+  { 1264357, "The caster shoots an arrow at a unit, inflicting $s1 Physical damage.", 0, 0 },
   { 1264359, "Command your pet to thrash all enemies within $1264355A1 yds, dealing $1264355s1 Physical damage to them. Damage is increased by $s1% if Wild Thrash hits $s2 or more $L enemy:enemies;.\r\n\r\nDeals reduced damage beyond $1264355s2 $Ltarget:targets;.", 0, 0 },
   { 1264364, "$@spelldesc1264690", 0, 0 },
   { 1264365, "Fire Breath's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },

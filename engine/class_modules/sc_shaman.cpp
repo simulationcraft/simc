@@ -12860,7 +12860,7 @@ double shaman_t::composite_player_critical_damage_multiplier( const action_state
   // TODO-midnight: Do target-based multipliers work?
   if ( talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, school ) )
   {
-    m *= 1.0 + talent.overcharge->effectN( 2 ).percent() * state->crit_chance;
+    m += talent.overcharge->effectN( 2 ).percent() * state->crit_chance;
   }
 
   return m;

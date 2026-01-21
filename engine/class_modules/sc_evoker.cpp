@@ -4236,7 +4236,7 @@ struct living_flame_base_t : public Base
   living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
     : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
   {
-    base_t::dual = true;
+    base_t::background = base_t::dual = true;
 
     if ( !p->talent.ruby_embers.ok() )
       base_t::dot_duration = 0_ms;

@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.65390
+Class Spell ID List, wow build 12.0.0.65459
 
 Death Knight
 3714     Path of Frost
@@ -8684,7 +8684,7 @@ Hunter
 1264291  Blighted Quiver
 1264345  Dark Minion
 1264355  Wild Thrash
-1264357 *Shoot
+1264357  Shoot
 1264359  Wild Thrash
 1264364  Blighted Arrow
 1264485  Shadow Thrash

@@ -218,8 +218,8 @@ void potion_of_recklessness( special_effect_t& effect )
 
     void start( int s, double v, timespan_t d ) override
     {
-      auto high = util::highest_stat( player, secondary_ratings );
-      auto low = util::lowest_stat( player, secondary_ratings );
+      auto high = util::highest_stat( source, secondary_ratings );
+      auto low = util::lowest_stat( source, secondary_ratings );
 
       if ( !manual_stats_added )
       {

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -188625,7 +188625,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1119179)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 72838.25 (coefficient=569.9239) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 696528.9 (coefficient=5450) | Target: Self (1)
+Hotfixed         : Coefficient (569.923889 -> 5450)
 #2 (id=1119180)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s2} health.
@@ -188641,7 +188642,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1119182)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 9193242 (coefficient=49.03062) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.4375e+07 (coefficient=450) | Resource: mana | Target: Self (1)
+Hotfixed         : Coefficient (49.030624 -> 450)
 Description      : Restores $s1 mana.
 
 Name             : Cavedweller's Delight (id=431419) 
@@ -188655,9 +188657,11 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1119186)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 53118.42 (coefficient=415.6258) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 747650.3 (coefficient=5850) | Target: Self (1)
+Hotfixed         : Coefficient (415.625763 -> 5850)
 #2 (id=1119187)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 6894932 (coefficient=36.77297) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.625e+07 (coefficient=460) | Resource: mana | Target: Self (1)
+Hotfixed         : Coefficient (36.772972 -> 460)
 #3 (id=1119188)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s3} health and $s2 mana.
@@ -203799,6 +203803,7 @@ Description      : $@spelldesc443533
 Tooltip          : Reading through "The 50 Verses of Radiance"
 
 Name             : Inner Resilience (id=450706) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Holy
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -203808,6 +203813,7 @@ Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1150776)  : Apply Aura (6) | Increase Armor (465)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -203836,6 +203842,7 @@ Description      : $@spelldesc443533
 Tooltip          : Absorb $w1 magic damage.
 
 Name             : Inner Radiance (id=450720) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Holy
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -203845,6 +203852,7 @@ Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1150796)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -204194,6 +204202,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 443527
 
 Name             : Empowering Darkness (id=451369) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -204201,6 +204210,7 @@ Labels           : 3959: Item Effects
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1151907)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
@@ -205126,7 +205136,6 @@ Effects          :
 Description      : $@spelldesc443541
 
 Name             : Food (id=452276) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 70
@@ -205137,7 +205146,6 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1153334)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 6778919 (coefficient=301.2853) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (2.5 -> 301.285278)
 #2 (id=1153335)  : Apply Aura (6) | Periodic Dummy (226): every 2.2 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restores ${$m1/5*$d} health over $d. Must remain seated while eating.
@@ -205182,7 +205190,6 @@ Effects          :
 Description      : $@spelldesc443378
 
 Name             : Food (id=452319) 
-Hotfixed         : Max Scaling Level (70 -> 75), Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 75
@@ -205193,10 +205200,8 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1153417)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 1.545532e+07 (coefficient=343.4516) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (6 -> 343.451569)
 #2 (id=1153418)  : Apply Aura (6) | Periodic Dummy (226): every 2.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (6 -> 0), Scaling Class (-2 -> 0)
 Description      : Restores ${$m1/5*$d} health over $d.
 Must remain seated while eating.
 Tooltip          : Restores ${$m1/5} health per second.
@@ -205391,7 +205396,6 @@ Effects          :
 Description      : Your damaging spells have a chance to cast Chain Lightning between $452380x1 enemies, dealing $s1 Nature damage to each of them.
 
 Name             : Drink (id=452382) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 70
@@ -205403,12 +205407,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1153512)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 6009014 (coefficient=267.0673) | Target: Self (1)
-Hotfixed         : Coefficient (2.5 -> 267.067291)
 Description      : Restores ${$m2/5*$d} mana over $d. Must remain seated while drinking.
 Tooltip          : Restores ${$w1/5} mana per second.
 
 Name             : Drink (id=452384) 
-Hotfixed         : Max Scaling Level (70 -> 75), Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 75
@@ -205421,7 +205423,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1153516)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 1.401843e+07 (coefficient=311.5207) | Target: Self (1)
-Hotfixed         : Coefficient (3.5 -> 311.520691)
 Description      : Restores ${$m2/5*$d} mana over $d. Must remain seated while drinking.
 Tooltip          : Restores ${$w1/5} mana per second.
 
@@ -210580,7 +210581,6 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1162221)  : Trigger Spell (64): Food & Drink
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 462179 | Target: Self (1)
-Hotfixed         : Trigger Spell (462174 -> 462179)
 #2 (id=1162222)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 456961 | Target: Self (1)
 Description      : $@spelldesc462179|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$456961s8*($456961s1/10)} Stamina and ${$456961s3*($456961s1/10)} Agility for $461960d.
@@ -216159,7 +216159,6 @@ Effects          :
 Description      : $@spelldesc462165
 
 Name             : Food (id=462174) 
-Hotfixed         : Max Scaling Level (70 -> 80), Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -216170,15 +216169,12 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1171438)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 1.452323e+07 (coefficient=387.2862) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (9 -> 387.286194)
 #2 (id=1171439)  : Apply Aura (6) | Periodic Dummy (226): every 2.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (9 -> 0), Scaling Class (-2 -> 0)
 Description      : Restores ${$m1/5*$d} health over $d. Must remain seated while eating.
 Tooltip          : Restores ${$m1/5} health per second.
 
 Name             : Food and Drink (id=462177) 
-Hotfixed         : Max Scaling Level (70 -> 80), Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -216189,17 +216185,14 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1171443)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 1.563826e+07 (coefficient=417.0202) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (15 -> 417.020233)
 #2 (id=1171444)  : Apply Aura (6) | Periodic Dummy (226): every 2.2 seconds | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 187500 (coefficient=5) | Target: Self (1)
 #3 (id=1171445)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 1.393784e+07 (coefficient=371.6758) | Target: Self (1)
-Hotfixed         : Coefficient (5 -> 371.675751)
 Description      : Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.
 Tooltip          : Restores ${$m1/5} health and ${$m3/5} mana per second.
 
 Name             : Food & Drink (id=462179) 
-Hotfixed         : Max Scaling Level (70 -> 80), Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -216210,12 +216203,10 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1171448)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 1.452323e+07 (coefficient=387.2862) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (9 -> 387.286163)
 #2 (id=1171449)  : Apply Aura (6) | Periodic Dummy (226): every 2.2 seconds | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 168750 (coefficient=4.5) | Target: Self (1)
 #3 (id=1171450)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 1.393784e+07 (coefficient=371.6758) | Target: Self (1)
-Hotfixed         : Coefficient (4.5 -> 371.675781)
 Description      : Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.
 Tooltip          : Restores ${$m1/5} health and ${$m3/5} mana per second.
 
@@ -219759,7 +219750,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 504.4357 (coefficient=3.946964) | Target: Targeted Enemy (6)
 #2 (id=1190121)  : Apply Aura (6) | Periodic Mana Leech (64) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 12.78035 (coefficient=0.1) | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : Coefficient (3.946963 -> 0.1), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc472174
 Tooltip          : Drains $s1 health and mana every 3 sec.
 
@@ -225012,6 +225002,7 @@ Description      : Brann's spells and abilities have a chance to commission the 
 Tooltip          : Brann's spells and abilities have a chance to commission the Pocket Factory to build $w1 turrets to assist for $w2 sec.
 
 Name             : Hyped (id=1216212) 
+Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -225020,7 +225011,7 @@ Labels           : 292
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1199600)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
@@ -226643,7 +226634,8 @@ Effects          :
 #2 (id=1207395)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207396)  : Dummy (3)
-                   Base Value: 684 | Scaled Value: 684
+                   Base Value: 124 | Scaled Value: 124
+Hotfixed         : Base Value (684 -> 124)
 Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Prized Jeweler's Settings.
@@ -226657,7 +226649,8 @@ Effects          :
 #2 (id=1207402)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207403)  : Dummy (3)
-                   Base Value: 684 | Scaled Value: 684
+                   Base Value: 124 | Scaled Value: 124
+Hotfixed         : Base Value (684 -> 124)
 Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Ringing Ritual Mud (id=1221145) [Passive] 
@@ -239419,7 +239412,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1234950)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 95852.61 (coefficient=750) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 763085.2 (coefficient=5970.77) | Target: Self (1)
+Hotfixed         : Coefficient (750 -> 5970.77002)
 #2 (id=1234951)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s2} health.
@@ -247014,7 +247008,8 @@ Effects          :
 #2 (id=1265660)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1265661)  : Dummy (3)
-                   Base Value: 730 | Scaled Value: 730
+                   Base Value: 170 | Scaled Value: 170
+Hotfixed         : Base Value (730 -> 170)
 Description      : Increase the minimum item level of Manaforge Omega set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Astral Jeweler's Settings.
@@ -247028,7 +247023,8 @@ Effects          :
 #2 (id=1265663)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1265664)  : Dummy (3)
-                   Base Value: 730 | Scaled Value: 730
+                   Base Value: 170 | Scaled Value: 170
+Hotfixed         : Base Value (730 -> 170)
 Description      : Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Rotting Globule (id=1257925) [Passive] 

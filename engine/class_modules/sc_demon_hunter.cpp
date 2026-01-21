@@ -11293,7 +11293,7 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 bool demon_hunter_t::validate_actor()
 {
 #ifdef NDEBUG
-  if ( sim->dbc->wowv() == wowv_t( 12, 0, 0 ) )
+  if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
   {
     throw sc_invalid_player_argument( "Demon Hunter sims are non-functional for Midnight prepatch" );
     return false;

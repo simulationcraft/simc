@@ -21932,6 +21932,22 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1264359
 
+Name             : Shoot (id=1264357) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Ranged
+Range            : 60 yards
+Cast Time        : 2 seconds
+Velocity         : 60 yards/sec
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Attributes       : Is Ability (4), AI Primary Ranged Attack (206), Uses Ranged Slot (Cosmetic Only) (322)
+Effects          :
+#1 (id=1275670)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | Target: Current Target (25)
+Description      : The caster shoots an arrow at a unit, inflicting $s1 Physical damage.
+
 Name             : Wild Thrash (id=1264359) [Spell Family (9)] 
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Hunter

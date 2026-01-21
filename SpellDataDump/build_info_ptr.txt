@@ -1,1 +1,1 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA (hotfix 2026-01-16/65337, no-networking)
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA (hotfix 2026-01-20/65337)
