@@ -4197,8 +4197,8 @@ void aspect_of_harmony_t::trigger( action_state_t *state )
 
   if ( !spender->check() )
     accumulator->trigger_with_state( state );
-  if ( spender->check() )
-    spender->trigger_with_state( state );
+
+  spender->trigger_with_state( state );
 }
 
 void aspect_of_harmony_t::trigger_flat( double amount )
@@ -4244,6 +4244,9 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
 
 void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *state )
 {
+  if ( p().talent.master_of_harmony.coalescence->ok() && state->action->id == p().talent.brewmaster.keg_smash->id() )
+    return;
+
   size_t result_type_offset = 0;
   switch ( state->result_type )
   {
@@ -4274,6 +4277,9 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
 
   if ( const auto &effect = p().talent.master_of_harmony.way_of_a_thousand_strikes->effectN( 1 );
        effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
+    multiplier *= 1.0 + effect.percent();
+
+  if ( const auto &effect = p().talent.master_of_harmony.coalescence->effectN( 3 ); effect.ok() )
     multiplier *= 1.0 + effect.percent();
 
   double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
@@ -4316,6 +4322,19 @@ bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance,
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 {
+  if ( !check() )
+  {
+    if ( p().talent.master_of_harmony.coalescence->ok() && state->action->id == p().talent.brewmaster.keg_smash->id() )
+    {
+      double amount = std::min( state->result_amount * p().talent.master_of_harmony.coalescence->effectN( 2 ).percent(),
+                                aspect_of_harmony->accumulator->check_value() );
+      aspect_of_harmony->accumulator->current_value -= amount;
+      residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
+    }
+
+    return;
+  }
+
   const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
                            p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
 
@@ -4325,20 +4344,27 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
   };
 
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
-  double amount     = std::min( state->result_amount * multiplier, current_value );
 
   action_t *spend_target = nullptr;
   switch ( state->result_type )
   {
     case result_amount_type::DMG_DIRECT:
     case result_amount_type::DMG_OVER_TIME:
-      if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
+      if ( p().specialization() == MONK_BREWMASTER )
         spend_target = aspect_of_harmony->damage;
+      else if ( in_hg_whitelist() )
+      {
+        spend_target = aspect_of_harmony->damage;
+        multiplier   = p().talent.master_of_harmony.harmonic_gambit->effectN( 2 ).percent();
+      }
       break;
     case result_amount_type::HEAL_DIRECT:
     case result_amount_type::HEAL_OVER_TIME:
       if ( in_hg_whitelist() )
+      {
         spend_target = aspect_of_harmony->heal;
+        multiplier   = p().talent.master_of_harmony.harmonic_gambit->effectN( 1 ).percent();
+      }
       break;
     default:
       break;
@@ -4347,12 +4373,15 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
   double bonus = 0.0;
   if ( spend_target )
   {
+    double amount = std::min( state->result_amount * multiplier, current_value );
     current_value -= amount;
 
-    // approximation of coalescence intensification mechanic
+    // TODO: Determine chance to intensify
     dot_t *dot = spend_target->get_dot( state->target );
-    if ( dot && dot->state && dot->is_ticking() )
-      bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() * 0.5, current_value );
+    if ( p().talent.master_of_harmony.coalescence->ok() && dot && dot->state && dot->is_ticking() && rng().roll( 0.0 ) )
+      bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() *
+                            p().talent.master_of_harmony.aspect_of_harmony->effectN( 9 ).percent(),
+                        current_value );
     current_value -= bonus;
 
     sim->print_debug( "AoH does_spend: {} {}", state->action->name(), state->action->id );
