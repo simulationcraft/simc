@@ -1753,6 +1753,16 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
+
+    if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
+      p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
+
+    if ( p()->talent.windwalker.echo_technique->ok() )
+      p()->buff.combo_breaker->increment();
+
+    // TODO: is docj a prereq
+    if ( p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
+      p()->buff.dance_of_chiji->increment();
   }
 };
 
