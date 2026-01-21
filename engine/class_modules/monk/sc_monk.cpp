@@ -1642,9 +1642,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       p()->buff.teachings_of_the_monastery->trigger( stacks );
     }
 
-    // TODO: Check if this can proc without being talented into DoCJ
-    if ( p()->talent.windwalker.dance_of_chiji->ok() &&
-         p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
+    if ( p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
   }
 
@@ -1760,7 +1758,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.echo_technique->ok() )
       p()->buff.combo_breaker->increment();
 
-    // TODO: is docj a prereq
     if ( p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();
   }
