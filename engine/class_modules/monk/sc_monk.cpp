@@ -2090,15 +2090,17 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !p()->talent.shado_pan.flurry_strikes->ok() || result_is_miss( state->result ) )
         return;
 
-      unsigned count = 0;
+      unsigned flurry_charges = 0;
       switch ( monk_melee_attack_t::weapon->group() )
       {
         case WEAPON_1H:
-          count = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value();
+          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value();
           break;
         case WEAPON_2H:
-          count = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
+          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
           break;
+        default:
+          assert( false );
       }
 
       if ( state->result == RESULT_CRIT )
