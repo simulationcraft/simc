@@ -6046,9 +6046,7 @@ void monk_t::init_special_effects()
                             static_cast<proc_flag2>( 0ull ), action.courage_of_the_white_tiger.base } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
                                               [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                if ( state->action->id == baseline.monk.tiger_palm->id() )
-                                                  return true;
-                                                return false;
+                                                return state->action->id == baseline.monk.tiger_palm->id();
                                               } );
 
   if ( talent.brewmaster.walk_with_the_ox.ok() )
