@@ -39,7 +39,7 @@ void elemental( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
 
-  prcombat->add_action( "snapshot_stats" );
+  precombat->add_action( "snapshot_stats" );
 
   default_->add_action( "lightning_bolt" );
 }
