@@ -149,7 +149,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.heart_of_the_jade_serpent_yulons_avatar );
   parse_effects( p()->buff.heart_of_the_jade_serpent_unity_within );
   parse_effects( p()->buff.jade_sanctuary );
-  parse_effects( p()->buff.strength_of_the_black_ox );
   if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
     parse_effects( p()->buff.invoke_xuen, effect_mask_t( false ).enable( 4, 5 ), "Restore Balance" );
 
@@ -1193,9 +1192,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
     ww_mastery       = true;
     may_combo_strike = true;
     cast_during_sck  = true;
-
-    if ( player->talent.windwalker.obsidian_spiral->ok() )
-      parse_effect_data( player->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
   }
 
   void execute() override
@@ -1212,6 +1208,19 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( !result_is_hit( execute_state->result ) )
       return;
+
+    timespan_t reduction = 0_s;
+    reduction += timespan_t::from_seconds( p()->talent.windwalker.sharp_reflexes->effectN( 1 ).base_value() );
+
+    if ( p()->buff.zenith->up() )
+    {
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.obsidian_spiral_energize->effectN( 1 ).base_value() );
+
+      if ( reduction != 0_s )
+        reduction -= p()->talent.windwalker.zenith->effectN( 3 ).time_value();
+    }
+    p()->cooldown.rising_sun_kick->adjust( reduction );
+    p()->cooldown.fists_of_fury->adjust( reduction );
 
     if ( p()->buff.combo_breaker->up() )
     {
