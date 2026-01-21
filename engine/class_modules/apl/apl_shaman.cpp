@@ -56,6 +56,7 @@ void elemental_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
 
   default_->add_action( "lightning_bolt");
+}
 //elemental_ptr_apl_end
 
 } //namespace shaman_apl
