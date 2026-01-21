@@ -1680,6 +1680,7 @@ class SpellDataGenerator(DataGenerator):
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5 ), # Dire Beast Kill Command
           ( 459834, 3 ), # Sulfur-Lined Pockets (Explosive Shot buff)
+          ( 1264357, 0), # Shoot
           # Hero Talents
           ( 444354, 0 ), # Shadow Lash
           ( 444269, 0 ), # Shadow Surge

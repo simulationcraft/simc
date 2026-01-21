@@ -109,6 +109,7 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
+  parse_effects( p()->buff.celestial_flames );
   parse_effects(
       p()->buff.counterstrike,
       affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
@@ -816,94 +817,6 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     base_t::impact( s );
 
     p()->buff.teachings_of_the_monastery->trigger();
-  }
-};
-
-template <class base_action_t>
-struct press_the_advantage_t : base_action_t
-{
-  using base_t = press_the_advantage_t<base_action_t>;
-  struct damage_t : base_action_t
-  {
-    const double mod;
-    bool face_palm;
-
-    damage_t( monk_t *player, std::string_view name )
-      : base_action_t( player, {}, name ),
-        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() ),
-        face_palm( false )
-    {
-      base_action_t::proc        = true;
-      base_action_t::trigger_gcd = 0_s;
-      base_action_t::background  = true;
-      base_action_t::dual        = true;
-
-      base_action_t::parse_effects( player->buff.counterstrike,
-                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
-                                    player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
-      base_action_t::parse_effects( player->buff.blackout_combo,
-                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
-                                    player->buff.blackout_combo->data().effectN( 1 ).percent() * mod );
-
-      // effect must still be rolled in execute so it triggers brew cdr
-      if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
-        add_parse_entry( base_action_t::da_multiplier_effects )
-            .set_func( [ & ] { return face_palm; } )
-            .set_value( ( effect.percent() - 1.0 ) * mod )
-            .set_eff( &effect );
-    }
-
-    void init_finished() override
-    {
-      base_action_t::init_finished();
-
-      if ( action_t *pta = base_action_t::p()->find_action( "press_the_advantage" );
-           pta && base_action_t::p()->talent.brewmaster.press_the_advantage->ok() )
-        pta->add_child( this );
-    }
-
-    void execute() override
-    {
-      base_action_t::p()->buff.press_the_advantage->expire();
-
-      if ( ( face_palm = true ) )
-      {
-        base_action_t::p()->baseline.brewmaster.brews.adjust(
-            base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-      }
-
-      base_action_t::execute();
-
-      base_action_t::p()->buff.blackout_combo->expire();
-    }
-  };
-
-  propagate_const<damage_t *> press_the_advantage_action;
-  propagate_const<proc_t *> press_the_advantage_proc;
-
-  template <typename... Args>
-  press_the_advantage_t( monk_t *player, Args &&...args )
-    : base_action_t( player, std::forward<Args>( args )... ), press_the_advantage_action( nullptr )
-  {
-    if ( !player->talent.brewmaster.press_the_advantage->ok() )
-      return;
-
-    press_the_advantage_action =
-        new damage_t( player, fmt::format( "{}_press_the_advantage", base_action_t::name_str ) );
-    press_the_advantage_proc = player->get_proc( fmt::format( "{} - Press The Advantage", base_action_t::name_str ) );
-  }
-
-  void impact( action_state_t *state ) override
-  {
-    base_action_t::impact( state );
-
-    if ( base_action_t::p()->buff.press_the_advantage->stack() != 10 )
-      return;
-
-    // TODO: Schedule execute with the appropriate delay.
-    base_action_t::p()->buff.press_the_advantage->expire();
-    press_the_advantage_proc->occur();
-    press_the_advantage_action->execute();
   }
 };
 
@@ -1879,13 +1792,14 @@ struct auto_attack_t : public monk_melee_attack_t
       double chance;
 
       damage_t( monk_t *player )
-        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
+        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ),
+          allowed( false ),
+          triggered( false ),
+          chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
       {
         background                = true;
         allow_class_ability_procs = false;
         may_miss                  = false;
-
-        chance = p()->talent.windwalker.dual_threat->effectN( 1 ).percent();
       }
 
       void reset() override
@@ -1928,7 +1842,6 @@ struct auto_attack_t : public monk_melee_attack_t
 
     void impact( action_state_t *state ) override
     {
-      // TODO: check if DT has any impact on melee success rate
       if ( damage && result_is_hit( state->result ) )
       {
         damage->execute_on_target( state->target );
@@ -1955,7 +1868,28 @@ struct auto_attack_t : public monk_melee_attack_t
       }
     };
 
+    struct press_the_advantage_tiger_palm_t : public harmonic_surge_t<monk_melee_attack_t>
+    {
+      press_the_advantage_tiger_palm_t( monk_t *player )
+        : base_t( player, "tiger_palm_press_the_advantage", player->talent.brewmaster.press_the_advantage_tiger_palm )
+      {
+        background = dual = true;
+
+        if ( const auto &effect = player->buff.press_the_advantage->data().effectN( 2 ); effect.ok() )
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
+      }
+
+      void execute() override
+      {
+        if ( p()->buff.counterstrike->up() )
+          p()->proc.counterstrike_tp->occur();
+
+        base_t::execute();
+      }
+    };
+
     action_t *damage;
+    action_t *tiger_palm;
 
     template <typename... Args>
     press_the_advantage_t( monk_t *player, weapon_t *weapon, Args &&...args )
@@ -1966,16 +1900,26 @@ struct auto_attack_t : public monk_melee_attack_t
 
       damage = new damage_t( player );
       TBase::add_child( damage );
+
+      tiger_palm = new press_the_advantage_tiger_palm_t( player );
+      TBase::add_child( tiger_palm );
     }
 
     void impact( action_state_t *state ) override
     {
       TBase::impact( state );
 
-      if ( !damage || !result_is_hit( state->result ) )
+      if ( !damage || !tiger_palm || !result_is_hit( state->result ) )
         return;
 
-      TBase::p()->buff.press_the_advantage->trigger();
+      if ( TBase::p()->buff.press_the_advantage->stack() < 10 )
+        TBase::p()->buff.press_the_advantage->trigger();
+      else
+      {
+        TBase::p()->buff.press_the_advantage->expire();
+        tiger_palm->execute_on_target( state->target );
+      }
+
       TBase::p()->baseline.brewmaster.brews.adjust(
           TBase::p()->talent.brewmaster.press_the_advantage->effectN( 2 ).time_value() );
       damage->execute_on_target( state->target );
@@ -2677,6 +2621,18 @@ struct chi_burst_t : monk_spell_t
 
 struct special_delivery_t : public monk_spell_t
 {
+  struct celestial_flames_t : public monk_spell_t
+  {
+    celestial_flames_t( monk_t *player )
+      : monk_spell_t( player, "celestial_flames", player->talent.brewmaster.celestial_flames_damage )
+    {
+      background = dual = true;
+      aoe               = player->talent.brewmaster.celestial_flames->effectN( 2 ).base_value();
+    }
+  };
+
+  action_t *celestial_flames;
+
   special_delivery_t( monk_t *player )
     : monk_spell_t( player, "special_delivery",
                     player->talent.brewmaster.special_delivery_missile->effectN( 1 ).trigger() )
@@ -2684,6 +2640,12 @@ struct special_delivery_t : public monk_spell_t
     background   = true;
     travel_delay = player->talent.brewmaster.special_delivery_missile->missile_speed();
     aoe          = -1;
+
+    if ( player->talent.brewmaster.celestial_flames->ok() )
+    {
+      celestial_flames = new celestial_flames_t( player );
+      add_child( celestial_flames );
+    }
   }
 
   void execute() override
@@ -2691,6 +2653,9 @@ struct special_delivery_t : public monk_spell_t
     if ( !p()->talent.brewmaster.special_delivery->ok() )
       return;
     monk_spell_t::execute();
+
+    if ( p()->buff.celestial_flames->up() )
+      celestial_flames->execute();
   }
 };
 
@@ -2837,70 +2802,18 @@ struct crackling_jade_lightning_t : public monk_spell_t
   }
 };
 
-struct breath_of_fire_state_t : public action_state_t
-{
-  bool blackout_combo;
-
-  breath_of_fire_state_t( action_t *a, player_t *t ) : action_state_t( a, t ), blackout_combo( false )
-  {
-  }
-
-  std::ostringstream &debug_str( std::ostringstream &s ) override
-  {
-    action_state_t::debug_str( s );
-    fmt::print( s, " blackout_combo={}", blackout_combo );
-    return s;
-  }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    blackout_combo = false;
-  }
-
-  void copy_state( const action_state_t *o ) override
-  {
-    action_state_t::copy_state( o );
-    auto other_sa_state = debug_cast<const breath_of_fire_state_t *>( o );
-    blackout_combo      = other_sa_state->blackout_combo;
-  }
-};
-
-struct breath_of_fire_dot_t : public monk_spell_t
-{
-protected:
-  using custom_state_t = breath_of_fire_state_t;
-
-public:
-  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
-  {
-    background    = true;
-    tick_may_crit = may_crit = true;
-    hasted_ticks             = false;
-  }
-
-  double composite_persistent_multiplier( const action_state_t *state ) const override
-  {
-    double cpm = monk_spell_t::composite_persistent_multiplier( state );
-
-    if ( auto cs = debug_cast<const custom_state_t *>( state ); cs && cs->blackout_combo )
-      cpm *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-
-    return cpm;
-  }
-
-  action_state_t *new_state() override
-  {
-    return new custom_state_t( this, target );
-  }
-};
-
 struct breath_of_fire_t : public monk_spell_t
 {
-protected:
-  using custom_state_t = breath_of_fire_state_t;
+  struct dot_t : public monk_spell_t
+  {
+    dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
+    {
+      background    = true;
+      tick_may_crit = may_crit = true;
+      hasted_ticks             = false;
+    }
+  };
 
-public:
   struct dragonfire_brew_t : monk_spell_t
   {
     dragonfire_brew_t( monk_t *player )
@@ -2917,15 +2830,14 @@ public:
     }
   };
 
-  dragonfire_brew_t *dragonfire_brew;
+  action_t *dot;
+  action_t *dragonfire_brew;
   bool no_bof_hit;
-  bool blackout_combo;
 
   breath_of_fire_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "breath_of_fire", player->talent.brewmaster.breath_of_fire ),
       dragonfire_brew( nullptr ),
-      no_bof_hit( false ),
-      blackout_combo( false )
+      no_bof_hit( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
     parse_options( options_str );
@@ -2935,17 +2847,14 @@ public:
     full_amount_targets = 1;
     cast_during_sck     = true;
 
+    dot = new dot_t( player );
+    add_child( dot );
+
     if ( player->talent.brewmaster.dragonfire_brew->ok() )
+    {
       dragonfire_brew = new dragonfire_brew_t( player );
-
-    add_child( player->action.breath_of_fire );
-    if ( dragonfire_brew )
       add_child( dragonfire_brew );
-  }
-
-  action_state_t *new_state() override
-  {
-    return new custom_state_t( this, target );
+    }
   }
 
   void execute() override
@@ -2967,21 +2876,8 @@ public:
   {
     monk_spell_t::impact( state );
 
-    propagate_const<action_t *> dot = p()->action.breath_of_fire;
-
-    auto dot_state    = debug_cast<custom_state_t *>( dot->get_state() );
-    dot_state->target = state->target;
-
-    // blackout combo buffs only one of the breath of fire dot applications from
-    // a single cast
-    if ( get_td( dot_state->target )->debuff.keg_smash->up() && blackout_combo )
-    {
-      dot_state->blackout_combo = true;
-      blackout_combo            = false;
-    }
-
-    dot->snapshot_state( dot_state, dot->amount_type( dot_state ) );
-    dot->schedule_execute( dot_state );
+    if ( get_td( state->target )->debuff.keg_smash->up() )
+      dot->execute_on_target( state->target );
   }
 };
 
@@ -3474,12 +3370,12 @@ struct zenith_t : public monk_spell_t
 
 struct vivify_t : public harmonic_surge_t<monk_heal_t>
 {
-  vivify_t( monk_t *p, std::string_view options_str ) : base_t( p, "vivify", p->baseline.monk.vivify )
+  vivify_t( monk_t *player, std::string_view options_str ) : base_t( player, "vivify", player->baseline.monk.vivify )
   {
     parse_options( options_str );
 
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    base_execute_time += p->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
+    base_execute_time += player->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
 
     cast_during_sck = false;
   }
@@ -3595,6 +3491,7 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
   {
     parse_options( options_str );
     cast_during_sck = true;
+    harmful         = false;
   }
 
   void execute() override
@@ -3658,6 +3555,11 @@ void brew_t<base_action_t>::execute()
 void brews_t::insert_cooldown( action_t *action )
 {
   cooldowns.insert( { action->id, action->cooldown } );
+}
+
+bool brews_t::contains( action_t *action ) const
+{
+  return cooldowns.find( action->id ) != cooldowns.end();
 }
 
 void brews_t::adjust( timespan_t reduction )
@@ -4647,7 +4549,7 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
   if ( name == "invoke_niuzao_the_black_ox" )
     return new niuzao_spell_t( this, options_str );
   if ( name == "keg_smash" )
-    return new press_the_advantage_t<keg_smash_t>( this, options_str );
+    return new keg_smash_t( this, options_str );
   if ( name == "purifying_brew" )
     return new purifying_brew_t( this, options_str );
   if ( name == "chi_burst" )
@@ -4719,6 +4621,11 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 bool monk_t::validate_actor()
 {
+#ifdef NDEBUG
+  throw sc_invalid_player_argument( "Monk sims are non-functional for Midnight prepatch." );
+  return false;
+#endif
+
   if ( specialization() == MONK_MISTWEAVER )
   {
     if ( !quiet )
@@ -4998,6 +4905,7 @@ void monk_t::init_spells()
     talent.brewmaster.celestial_infusion               = _ST( "Celestial Infusion" );
     talent.brewmaster.niuzaos_resolve                  = _ST( "Niuzao's Resolve" );
     talent.brewmaster.celestial_flames                 = _ST( "Celestial Flames" );
+    talent.brewmaster.celestial_flames_damage          = find_spell( 1263667 );
     talent.brewmaster.shadowboxing_treads              = _ST( "Shadowboxing Treads" );
     talent.brewmaster.fluidity_of_motion               = _ST( "Fluidity of Motion" );
     talent.brewmaster.elusive_footwork                 = _ST( "Elusive Footwork" );
@@ -5026,6 +4934,7 @@ void monk_t::init_spells()
     talent.brewmaster.high_tolerance                   = _ST( "High Tolerance" );
     talent.brewmaster.press_the_advantage              = _ST( "Press the Advantage" );
     talent.brewmaster.press_the_advantage_damage       = find_spell( 418360 );
+    talent.brewmaster.press_the_advantage_tiger_palm   = find_spell( 331433 );
     talent.brewmaster.blackout_combo                   = _ST( "Blackout Combo" );
     talent.brewmaster.anvil_and_stave                  = _ST( "Anvil and Stave" );
     talent.brewmaster.counterstrike                    = _ST( "Counterstrike" );
@@ -5257,7 +5166,7 @@ void monk_t::init_spells()
                                                                  261682,  // Chi Burst Energize
                                                                  280184,  // Unknown Leg Sweep?
                                                                  322111,  // Touch of Death Damage
-                                                                 331433,  // Unknown Tiger Palm?
+                                                                 331433,  // Press the Advantage Tiger Palm
                                                                  392959,  // Glory of the Dawn
                                                                  450342,  // Crashing Momentum
                                                                  451968,  // Combat Wisdom Expel Harm Heal
@@ -5279,7 +5188,7 @@ void monk_t::init_spells()
                                                                  261682,  // Chi Burst Energize
                                                                  280184,  // Old Leg Sweep Modifier
                                                                  322111,  // Touch of Death Damage
-                                                                 331433,  // Some Weird Tiger Palm
+                                                                 331433,  // Press the Advantage Tiger Palm
                                                                  392959,  // Glory of the Dawn
                                                                  450342,  // Crashing Momentum
                                                                  451968,  // Combat Wisdom Expel Harm Heal
@@ -5332,7 +5241,6 @@ void monk_t::init_background_actions()
   if ( specialization() == MONK_BREWMASTER )
   {
     action.special_delivery  = new special_delivery_t( this );
-    action.breath_of_fire    = new breath_of_fire_dot_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
@@ -5503,6 +5411,9 @@ void monk_t::create_buffs()
 
   buff.blackout_combo = make_buff_fallback( talent.brewmaster.blackout_combo->ok(), this, "blackout_combo",
                                             talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
+
+  buff.celestial_flames = make_buff_fallback( talent.brewmaster.celestial_flames->ok(), this, "celestial_flames",
+                                              talent.brewmaster.celestial_flames->effectN( 1 ).trigger() );
 
   buff.charred_passions = make_buff_fallback( talent.brewmaster.charred_passions->ok(), this, "charred_passions",
                                               talent.brewmaster.charred_passions->effectN( 1 ).trigger() )
@@ -5973,6 +5884,16 @@ void monk_t::init_special_effects()
       return false;
     };
   };
+
+  if ( talent.brewmaster.celestial_flames->ok() )
+    create_proc_callback( { talent.brewmaster.celestial_flames, PF_CAST_SUCCESSFUL,
+                            static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                return baseline.brewmaster.brews.contains( state->action );
+                                              } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.celestial_flames->trigger(); } );
 
   if ( talent.brewmaster.exploding_keg.ok() )
     create_proc_callback( { talent.brewmaster.exploding_keg.spell() } )

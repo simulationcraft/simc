@@ -708,6 +708,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
+  std::vector<player_effect_t> damage_taken_multiplier_effects;
+  std::vector<target_effect_t> target_damage_done_multiplier_effects;
   std::vector<player_effect_t> absorb_multiplier_effects;
   std::vector<player_effect_t> absorb_received_mult_effects;
   std::vector<player_effect_t> healing_received_effects;
@@ -749,6 +751,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_player_absorb_received_multiplier() const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
+
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
   void invalidate_cache( cache_e c ) override;
 

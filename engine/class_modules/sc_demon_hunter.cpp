@@ -1197,6 +1197,7 @@ public:
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
+  bool validate_actor() override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -8925,7 +8926,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->resources.current[ RESOURCE_FURY ] = 0;
       p()->buff.collapsing_star_ready->expire();
-      if ( p()->talent.devourer.rolling_torment->ok() )
+      if ( p()->talent.devourer.rolling_torment->ok() && p()->buff.collapsing_star_stack->up() )
       {
         p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
         rolling_torment_energize->execute_on_target( p() );
@@ -10945,14 +10946,14 @@ void demon_hunter_t::init_spells()
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256304 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
-      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256618 );
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
-      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256616 );
       break;
     default:
@@ -11267,6 +11268,7 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
   {
     throw sc_invalid_fight_style(
         "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
+    return false;
   }
 #endif
 
@@ -11284,6 +11286,20 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
     default:
       return false;
   }
+}
+
+// demon_hunter_t::validate_actor =====================================
+
+bool demon_hunter_t::validate_actor()
+{
+#ifdef NDEBUG
+  if ( sim->dbc->wowv() == wowv_t( 12, 0, 0 ) )
+  {
+    throw sc_invalid_player_argument( "Demon Hunter sims are non-functional for Midnight prepatch" );
+    return false;
+  }
+#endif
+  return player_t::validate_actor();
 }
 
 // demon_hunter_t::invalidate_cache =========================================

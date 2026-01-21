@@ -9633,7 +9633,8 @@ struct lights_judgment_t : public racial_spell_t
 struct arcane_pulse_t : public racial_spell_t
 {
   arcane_pulse_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ) )
+    // Prevent name conflict with the Mage's Arcane Pulse action
+    racial_spell_t( p, p->type == MAGE ? "arcane_pulse_racial" : "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ) )
   {
     parse_options( options_str );
     may_crit = true;
@@ -11337,7 +11338,7 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
 {
   if ( name == "ancestral_call" )
     return new ancestral_call_t( this, options_str );
-  if ( name == "arcane_pulse" )
+  if ( name == "arcane_pulse" || name == "arcane_pulse_racial" )
     return new arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent" )
     return new arcane_torrent_t( this, options_str );
