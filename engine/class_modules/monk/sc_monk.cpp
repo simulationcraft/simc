@@ -1095,8 +1095,7 @@ struct base_blackout_kick_t : monk_melee_attack_t
     : monk_melee_attack_t( player, name, spell_data ), rising_sun_kick( nullptr ), rising_sun_kick_reset( nullptr )
   {
     // TODO: check this
-    ap_type    = attack_power_type::WEAPON_BOTH;
-    ww_mastery = true;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( const auto &effect = player->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
       add_parse_entry( target_multiplier_effects )
@@ -1195,7 +1194,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    // only bok not totm
     if ( player->talent.windwalker.obsidian_spiral->ok() )
       parse_effect_data( player->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
   }
@@ -1237,12 +1235,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
   {
     base_t::impact( s );
 
+    unsigned eb_count = 1;
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
     {
-      p()->buff.elusive_brawler->trigger(
-          as<int>( p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() ) );
+      eb_count += as<unsigned>( p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
       p()->proc.elusive_footwork_proc->occur();
     }
+    p()->buff.elusive_brawler->trigger( eb_count );
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
