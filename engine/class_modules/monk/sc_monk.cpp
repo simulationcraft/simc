@@ -1659,84 +1659,73 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   }
 };
 
-struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
-{
-  strike_of_the_windlord_main_hand_t( monk_t *p, const char *name, const spell_data_t *s )
-    : monk_melee_attack_t( p, name, s )
-  {
-    ww_mastery = true;
-    ap_type    = attack_power_type::WEAPON_MAINHAND;
-
-    aoe       = -1;
-    may_dodge = may_parry = may_block = may_miss = true;
-    dual = background = true;
-  }
-
-  // Damage must be divided on non-main target by the number of targets
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    if ( state->target != target )
-    {
-      return 1.0 / state->n_targets;
-    }
-
-    return 1.0;
-  }
-};
-
-struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
-{
-  strike_of_the_windlord_off_hand_t( monk_t *p, const char *name, const spell_data_t *s )
-    : monk_melee_attack_t( p, name, s )
-  {
-    ww_mastery = true;
-    ap_type    = attack_power_type::WEAPON_OFFHAND;
-
-    aoe       = -1;
-    may_dodge = may_parry = may_block = may_miss = true;
-    dual = background = true;
-  }
-
-  // Damage must be divided on non-main target by the number of targets
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    if ( state->target != target )
-    {
-      return 1.0 / state->n_targets;
-    }
-
-    return 1.0;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.windwalker.thunderfist.ok() )
-    {
-      int thunderfist_stacks = 1;
-
-      if ( s->chain_target == 0 )
-        // The first target will trigger the 4 stacks of the Thunderfist buff, all others will trigger 1 stack
-        thunderfist_stacks = as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
-
-      p()->buff.thunderfist->trigger( thunderfist_stacks );
-    }
-  }
-};
-
 struct strike_of_the_windlord_t : public monk_melee_attack_t
 {
+  struct damage_t : monk_melee_attack_t
+  {
+    slot_e slot;
+    damage_t( monk_t *player, slot_e slot )
+      : monk_melee_attack_t(
+            player, fmt::format( "strike_of_the_windlord_{}", util::slot_type_string( slot ) ),
+            player->talent.windwalker.strike_of_the_windlord->effectN( slot == SLOT_MAIN_HAND ? 3 : 4 ).trigger() ),
+        slot( slot )
+    {
+      ww_mastery = true;
+      dual = background = true;
+      aoe               = -1;
+
+      switch ( slot )
+      {
+        case SLOT_MAIN_HAND:
+          ap_type = attack_power_type::WEAPON_MAINHAND;
+          break;
+        case SLOT_OFF_HAND:
+          ap_type = attack_power_type::WEAPON_OFFHAND;
+          break;
+        default:
+          assert( false );
+      }
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+
+      if ( state->chain_target )
+        cam /= state->n_targets;
+
+      return cam;
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      monk_melee_attack_t::impact( state );
+
+      if ( slot != SLOT_OFF_HAND )
+        return;
+
+      if ( p()->talent.windwalker.thunderfist.ok() )
+      {
+        unsigned count = 1;
+
+        if ( !state->chain_target )
+          // The first target will trigger the 4 stacks of the Thunderfist buff, all others will trigger 1 stack
+          count = as<unsigned>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
+
+        p()->buff.thunderfist->trigger( count );
+      }
+    }
+  };
   // Off hand hits first followed by main hand
   // The ability does NOT require an off-hand weapon to be executed.
   // The ability uses the main-hand weapon damage for both attacks
-  strike_of_the_windlord_main_hand_t *mh_attack;
-  strike_of_the_windlord_off_hand_t *oh_attack;
+  action_t *main_hand;
+  action_t *off_hand;
 
-  strike_of_the_windlord_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "strike_of_the_windlord", p->talent.windwalker.strike_of_the_windlord ),
-      mh_attack( nullptr ),
-      oh_attack( nullptr )
+  strike_of_the_windlord_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "strike_of_the_windlord", player->talent.windwalker.strike_of_the_windlord ),
+      main_hand( nullptr ),
+      off_hand( nullptr )
   {
     may_combo_strike = true;
     cast_during_sck  = true;
@@ -1745,13 +1734,11 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     parse_options( options_str );
 
-    oh_attack =
-        new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
-    mh_attack =
-        new strike_of_the_windlord_main_hand_t( p, "strike_of_the_windlord_mainhand", data().effectN( 3 ).trigger() );
+    main_hand = new damage_t( player, SLOT_MAIN_HAND );
+    off_hand  = new damage_t( player, SLOT_OFF_HAND );
 
-    add_child( oh_attack );
-    add_child( mh_attack );
+    add_child( main_hand );
+    add_child( off_hand );
   }
 
   void execute() override
@@ -1759,10 +1746,10 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Off-hand attack hits first
-    oh_attack->execute();
+    off_hand->execute();
 
-    if ( result_is_hit( oh_attack->execute_state->result ) )
-      mh_attack->execute();
+    if ( result_is_hit( off_hand->execute_state->result ) )
+      main_hand->execute();
 
     p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
