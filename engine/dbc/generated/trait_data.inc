@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 12.0.0.65390
+// Player trait definitions, wow build 12.0.0.65459
 static constexpr std::array<trait_data_t, 3301> __trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  1,  -1,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },   0, 0, {     0, 2}, {     2, 0} },
   { 1,  1, 112179,  90322, 2, 20, 117184,  382896,      0,      0,  9,  2,  -1,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0, {     2, 2}, {     4, 2} },
@@ -3303,7 +3303,7 @@ static constexpr std::array<trait_data_t, 3301> __trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,       0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 },  37, 3, {  9676, 0}, {  9676, 0} },
 } };
 
-// Player trait child and parent references, wow build 12.0.0.65390
+// Player trait child and parent references, wow build 12.0.0.65459
 static constexpr std::array<const trait_data_t*, 9676> __trait_data_references_data { {
 	   &__trait_data_data[13],    &__trait_data_data[6],   &__trait_data_data[31],   &__trait_data_data[39],
 	   &__trait_data_data[46],   &__trait_data_data[50],   &__trait_data_data[31],   &__trait_data_data[39],
@@ -5726,7 +5726,7 @@ static constexpr std::array<const trait_data_t*, 9676> __trait_data_references_d
 	 &__trait_data_data[3220], &__trait_data_data[3194], &__trait_data_data[3218], &__trait_data_data[3219],
 	} };
 
-// Player trait definition effect entries, wow build 12.0.0.65390
+// Player trait definition effect entries, wow build 12.0.0.65459
 static constexpr std::array<trait_definition_effect_entry_t, 418> __trait_definition_effect_data { {
   { 85158, 0, 1, 88312 },
   { 85162, 0, 1, 94588 },
@@ -6566,7 +6566,7 @@ static const std::array<uint16_t, 3301> __trait_spell_id_index { {
 
 #define MAX_HERO_TREES_PER_CLASS (4)
 
-// Hero trees, wow build 12.0.0.65390
+// Hero trees, wow build 12.0.0.65459
 static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },
