@@ -312,7 +312,7 @@ void frost( player_t* p )
   ss_st->add_action( "comet_storm" );
   ss_st->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
   ss_st->add_action( "ray_of_frost" );
-  ss_st->add_action( "ice_lance,if=buff.thermal_void.down" );
+  ss_st->add_action( "ice_lance,if=buff.thermal_void.up" );
   ss_st->add_action( "glacial_spike" );
   ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
   ss_st->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
