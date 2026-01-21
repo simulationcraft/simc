@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -19726,7 +19726,6 @@ Effects          :
 Description      : Your Hearthstone cooldown is reduced by ${$s2/-60000} min and gains an additional charge.
 
 Name             : Carnage (id=458752) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (40 -> 664232)
 Talent Entry     : Blood [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
@@ -22880,7 +22879,6 @@ Effects          :
 Tooltip          : Damage of Sanguinary Burst increased by $w1%.
 
 Name             : Consumption (id=1263824) [Spell Family (15)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Blood [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -24073,6 +24071,27 @@ Effects          :
 Description      : $?a137008[Blood Plague deals up to $s2%][Your plagues deal up to $s1%] increased damage based on the target's missing health.$?a137007[
 
 Vampiric Strike grants maximum stacks of Clawing Shadows.][]
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (id=1283621) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight

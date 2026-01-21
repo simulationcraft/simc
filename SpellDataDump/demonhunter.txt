@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1072,7 +1072,6 @@ Effects          :
 Description      : Disrupt generates $218903s1 Fury on a successful interrupt.
 
 Name             : Throw Glaive (id=185123) [Spell Family (107)] 
-Hotfixed         : Learn Level (16 -> 12), Required Level (16 -> 12)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1230,7 +1229,6 @@ Armor increased by $w8%.
 $?s235893[Versatility increased by $w5%. ][]$?s263642[Fracture][Shear] generates $w4 additional Fury and one additional Lesser Soul Fragment.
 
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
-Hotfixed         : Learn Level (0 -> 14), Required Level (12 -> 14)
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -5994,7 +5992,6 @@ Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agilit
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
 Name             : Void Reaver (id=268175) [Spell Family (107), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Vengeance [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
@@ -6007,7 +6004,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=715329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Trigger Spell (247456 -> 0)
 #2 (id=1028405)  : Apply Aura (6) | Dummy (4)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
 Description      : Frailty now also reduces all damage you take from afflicted targets by $s2%.
@@ -15909,7 +15905,6 @@ You ascend to a higher state of being, substantially empowering your abilities.
 While in Void Metamorphosis, your Consume and Reap are enhanced and your Fury will slowly drain. Additionally, Void Ray reduces your Fury drain, deals increased damage, and no longer consumes Fury.
 
 Name             : Void Metamorphosis (id=1217607) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
@@ -16271,7 +16266,6 @@ Effects          :
 Description      : $?a427775[Chaos][Fire]
 
 Name             : Void Metamorphosis (id=1225789) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -16473,7 +16467,6 @@ $@spellicon1223412 $@spellname1223412:
 $@spelldesc1223412
 
 Name             : Collapsing Star (id=1227702) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -19932,6 +19925,27 @@ Begins a well-practiced pattern of glaivework, enhancing your next $?a212612[Cha
 The enhanced ability you cast first deals $442290s3% increased damage, and the second deals $442290s4% increased damage.$?a442497[
 
 |CFFffffffGenerates $s2 Fury.|R][]
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (id=1283625) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter

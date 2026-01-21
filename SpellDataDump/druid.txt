@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -24552,6 +24552,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Heart of the Wild (id=1261867) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Nature
@@ -24564,7 +24565,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Category Cooldown: 120 seconds
-Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), No Aura Icon (60), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1271759)  : Dummy (3)
@@ -24592,6 +24593,7 @@ Call down waves of empowered falling stars upon enemies within $50286A1 yds, dea
 Increase your maximum health by $1261872s1% for $1261872d.]
 
 Name             : Heart of the Wild (id=1261868) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -24604,7 +24606,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 120 seconds
 Triggered By     : Cat Form (768)
-Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), No Caster Aura Icon (187), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1271771)  : Dummy (3)
@@ -25852,6 +25854,27 @@ Effects          :
 #1 (id=1293275)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1280316
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Druid - Midnight PrePatch - 11.2 Class Set 2pc (id=1283647) [Spell Family (7), Passive, Hidden] 
 Class            : Druid

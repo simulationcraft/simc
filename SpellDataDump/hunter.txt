@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -7467,7 +7467,6 @@ Effects          :
 Description      : $@spelldesc259381
 
 Name             : Kill Command (id=259489) [Spell Family (9)] 
-Hotfixed         : Charges (1 -> 2), Charge Cooldown (0 -> 5000)
 Talent Entry     : Survival [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Steady Shot" (id=56641)]
 Class            : Hunter
 School           : Physical
@@ -7508,7 +7507,7 @@ Talent Entry     : Survival [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
-Resource         : 10 Focus (2) (id=313122)[Hotfixed: NEW POWER]
+Resource         : 10 Focus (2) (id=313122)
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -11518,7 +11517,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=808436)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 75 | Scaled Value: 75 | Resource: focus | Target: Self (1)
-Hotfixed         : Base Value (50 -> 75)
 Description      : Barbed Shot now instantly grants $1282660s1 Focus.
 
 Passive Focus generation increased by $s1%.
@@ -20342,7 +20340,7 @@ Talent Entry     : Survival [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Fire
 Spell Type       : Magic
-Resource         : 20 Focus (2) (id=313119)[Hotfixed: NEW POWER]
+Resource         : 20 Focus (2) (id=313119)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
@@ -21548,7 +21546,7 @@ Talent Entry     : Survival [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Resource         : 50 Focus (2) (id=312325)[Hotfixed: Cost (30 -> 50)]
+Resource         : 50 Focus (2) (id=312325)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -21870,6 +21868,22 @@ Effects          :
 #2 (id=1275666)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1264359
+
+Name             : Shoot (id=1264357) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Ranged
+Range            : 60 yards
+Cast Time        : 2 seconds
+Velocity         : 60 yards/sec
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Attributes       : Is Ability (4), AI Primary Ranged Attack (206), Uses Ranged Slot (Cosmetic Only) (322)
+Effects          :
+#1 (id=1275670)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | Target: Current Target (25)
+Description      : The caster shoots an arrow at a unit, inflicting $s1 Physical damage.
 
 Name             : Wild Thrash (id=1264359) [Spell Family (9)] 
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=1, max_rank=1, req_points=0]
@@ -23040,7 +23054,6 @@ Attributes       : Do Not Display Range (126), Not In Spellbook (143), Allow Cla
 Effects          :
 #1 (id=1296583)  : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Resource: focus | Target: Self (1)
-Hotfixed         : Base Value (20 -> 25)
 Description      : $@spelldesc321014
 
 Name             : Serpentine Strikes (id=1282710) [Spell Family (9)] 
@@ -23073,6 +23086,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1265052
 Tooltip          : Haste increased by $W1%.
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Hunter- Midnight PrePatch - 11.2 Class Set 2pc (id=1283629) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter

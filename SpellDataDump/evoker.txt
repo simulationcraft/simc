@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -3356,7 +3356,8 @@ Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.8847 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.8847 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Targeted Enemy (6)
+Hotfixed         : Chain Targets (6 -> 8)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -7782,7 +7783,6 @@ Effects          :
 #1 (id=1012789)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2308 (Category) | Radius: 100 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
-Hotfixed         : Sub Type (218 -> 454), Misc Value (11 -> 2308), Misc Value 2 (1381 -> 0)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
@@ -15216,7 +15216,6 @@ Description      : $@spelldesc1242745
 Tooltip          : Healing over time increased by $s1%. Chance to trigger Essence Burst increased by $s2%.
 
 Name             : Twin Echoes (desc=Bronze) (id=1242759) [Spell Family (224)] 
-Hotfixed         : Max stacks (0 -> 2), Proc Stacks (1 -> 0), Attributes
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15231,10 +15230,8 @@ Attributes       : Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1242457)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Hotfixed         : Attribute (0 -> 64)
 #2 (id=1242458)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100
-Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1242031
 Tooltip          : Your next Echo applies to $s1 additional target at $s2% effectiveness.
 
@@ -15943,7 +15940,6 @@ Effects          :
 Description      : Twin Flame bounces to up to $s1 additional targets.
 
 Name             : Essence Well (desc=Red) (id=1265993) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Internal Cooldown (0 -> 100)
 Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -16089,6 +16085,27 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 1265872 | Target: Self (1)
 Description      : $@spelldesc1265867
 Tooltip          : Azure Strike is upgraded to Azure Sweep.
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Evoker - Midnight PrePatch - 11.2 Class Set 2pc (id=1283651) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
