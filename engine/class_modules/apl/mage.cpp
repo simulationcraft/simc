@@ -279,25 +279,23 @@ void frost( player_t* p )
   cds->add_action( "ancestral_call" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
 
-  ff_aoe->add_action( "comet_storm,target_if=min:debuff.freezing.stack,if=debuff.freezing.stack>=16|fight_remains<15|cooldown.ray_of_frost.charges=2|!talent.glacial_assault|talent.heart_of_ice|talent.glaciate|talent.white_out" );
-  ff_aoe->add_action( "ray_of_frost,if=prev_gcd.1.frozen_orb|cooldown.ray_of_frost.charges=2|fight_remains<15" );
+  ff_aoe->add_action( "comet_storm,target_if=min:debuff.freezing.stack,if=debuff.freezing.stack>=16|cooldown.ray_of_frost.full_recharge_time<3|fight_remains<15|!talent.glacial_assault|talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
   ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_aoe->add_action( "frozen_orb" );
   ff_aoe->add_action( "blizzard" );
+  ff_aoe->add_action( "ray_of_frost" );
   ff_aoe->add_action( "ice_lance,if=buff.thermal_void.up" );
-  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react&talent.fractured_frost" );
-  ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10&talent.fractured_frost&(talent.heart_of_ice|talent.glaciate|talent.white_out)" );
+  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
+  ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
   ff_aoe->add_action( "frostbolt" );
 
   ff_st->add_action( "comet_storm" );
-  ff_st->add_action( "ray_of_frost,if=prev_gcd.1.frozen_orb|fight_remains<15|cooldown.ray_of_frost.charges=2" );
   ff_st->add_action( "glacial_spike" );
   ff_st->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_st->add_action( "frozen_orb" );
+  ff_st->add_action( "ray_of_frost" );
   ff_st->add_action( "ice_lance,if=buff.thermal_void.up" );
-  ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react&!talent.thermal_void&(talent.heart_of_ice|talent.glaciate)" );
-  ff_st->add_action( "ice_lance,if=debuff.freezing.stack>=10&!talent.thermal_void&(talent.heart_of_ice&talent.glaciate)" );
   ff_st->add_action( "frostbolt" );
 
   ss_aoe->add_action( "comet_storm" );
@@ -312,14 +310,13 @@ void frost( player_t* p )
   ss_aoe->add_action( "frostbolt" );
 
   ss_st->add_action( "comet_storm" );
-  ss_st->add_action( "ray_of_frost,if=talent.thermal_void&(prev_gcd.1.frozen_orb|fight_remains<15)" );
   ss_st->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
-  ss_st->add_action( "ice_lance,if=buff.thermal_void.react" );
+  ss_st->add_action( "ray_of_frost" );
+  ss_st->add_action( "ice_lance,if=buff.thermal_void.down" );
   ss_st->add_action( "glacial_spike" );
   ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
   ss_st->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
   ss_st->add_action( "flurry,if=cooldown_react" );
-  ss_st->add_action( "ray_of_frost,if=!talent.thermal_void|talent.crystalline_refraction" );
   ss_st->add_action( "frostbolt" );
 }
 //frost_apl_end
