@@ -743,10 +743,8 @@ struct overwhelming_force_t : base_action_t
 
 struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_attack_t>>
 {
-  bool face_palm;
-
-  tiger_palm_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
+  tiger_palm_t( monk_t *player, std::string_view options_str )
+    : base_t( player, "tiger_palm", player->baseline.monk.tiger_palm )
   {
     parse_options( options_str );
 
@@ -754,20 +752,10 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    spell_power_mod.direct = 0.0;
+    if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
 
-    std::function<bool()> fp_condition;
-    if ( p->wowv_l( { 11, 2, 0 } ) )
-      fp_condition = [ & ] { return face_palm; };
-    else
-      fp_condition = [] { return true; };
-
-    if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
-      add_parse_entry( da_multiplier_effects )
-          .set_func( fp_condition )
-          .set_value( effect.percent() - ( p->wowv_l( { 11, 2, 0 } ) ? 1.0 : 0.0 ) )
-          .set_eff( &effect );
-    parse_effects( p->buff.combat_wisdom );
+    parse_effects( player->buff.combat_wisdom );
   }
 
   bool ready() override
@@ -781,9 +769,6 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
   {
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_tiger_palm->occur();
-
-    if ( p()->buff.counterstrike->up() )
-      p()->proc.counterstrike_tp->occur();
 
     if ( p()->buff.courage_of_the_white_tiger->up() )
       p()->action.courage_of_the_white_tiger.base->execute();
@@ -801,8 +786,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
-    if ( face_palm || p()->wowv_ge( { 11, 2, 0 } ) )
-      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+    p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
     {
@@ -1433,9 +1417,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     p()->buff.dance_of_chiji_hidden->expire();
 
     p()->buff.chi_energy->expire();
-
-    if ( p()->buff.counterstrike->up() )
-      p()->proc.counterstrike_sck->occur();
   }
 };
 
@@ -1886,14 +1867,6 @@ struct auto_attack_t : public monk_melee_attack_t
         if ( const auto &effect = player->buff.press_the_advantage->data().effectN( 2 ); effect.ok() )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
       }
-
-      void execute() override
-      {
-        if ( p()->buff.counterstrike->up() )
-          p()->proc.counterstrike_tp->occur();
-
-        base_t::execute();
-      }
     };
 
     action_t *damage;
@@ -2166,6 +2139,8 @@ struct keg_smash_t : monk_melee_attack_t
     {
       reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
       p()->proc.blackout_combo_keg_smash->occur();
+
+      reduction -= p()->talent.master_of_harmony.meditative_focus->effectN( 3 ).time_value();
     }
     p()->buff.blackout_combo->expire();
     p()->baseline.brewmaster.brews.adjust( reduction );
@@ -5806,8 +5781,6 @@ void monk_t::init_procs()
   proc.blackout_combo_tiger_palm  = get_proc( "Blackout Combo - Tiger Palm" );
   proc.blackout_combo_keg_smash   = get_proc( "Blackout Combo - Keg Smash" );
   proc.charred_passions           = get_proc( "Charred Passions" );
-  proc.counterstrike_tp           = get_proc( "Counterstrike - Tiger Palm" );
-  proc.counterstrike_sck          = get_proc( "Counterstrike - Spinning Crane Kick" );
   proc.elusive_footwork_proc      = get_proc( "Elusive Footwork" );
   proc.salsalabims_strength       = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
