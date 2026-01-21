@@ -466,7 +466,6 @@ public:
     buff_t* trueshot;
     buff_t* moving_target;
     buff_t* precision_detonation_hidden;
-    buff_t* razor_fragments;
     buff_t* bullseye;
     buff_t* bulletstorm;
     buff_t* volley;
@@ -511,8 +510,6 @@ public:
     buff_t* predators_thirst;
 
     // Tier Set Bonuses
-    // TWW - S1
-    buff_t* harmonize; // BM 4pc
     // TWW - S2
     buff_t* jackpot; // MM 2pc
     buff_t* winning_streak; // SV 2pc - Wildfire Bomb damage stacking buff
@@ -603,7 +600,6 @@ public:
     proc_t* precision_detonation;
     proc_t* tww_s2_mm_4pc_explosive;
 
-    proc_t* extrapolated_shots_stacks;
     proc_t* release_and_reload_stacks;
     proc_t* crescent_steel_stacks;
     proc_t* overwatch_implosions;
@@ -682,11 +678,9 @@ public:
 
     spell_data_ptr_t deathblow_buff;
     
-    spell_data_ptr_t harmonize; //TODO Removed
     spell_data_ptr_t explosive_shot; //TODO Removed
     spell_data_ptr_t explosive_shot_cast; //TODO Removed
     spell_data_ptr_t explosive_shot_damage; //TODO Removed
-    spell_data_ptr_t bursting_shot; //TODO Removed
     spell_data_ptr_t high_explosive_trap; //TODO Removed
     spell_data_ptr_t implosive_trap; //TODO Removed
     spell_data_ptr_t explosive_trap_damage; //TODO Removed
@@ -851,9 +845,6 @@ public:
     spell_data_ptr_t moving_target_buff; //TODO Removed
     spell_data_ptr_t precision_detonation; //TODO Removed
     spell_data_ptr_t precision_detonation_buff; //TODO Removed
-    spell_data_ptr_t razor_fragments; //TODO Removed
-    spell_data_ptr_t razor_fragments_bleed; //TODO Removed
-    spell_data_ptr_t razor_fragments_buff; //TODO Removed
     spell_data_ptr_t magnetic_gunpowder; //TODO Removed
     spell_data_ptr_t ohnahran_winds; //TODO Removed
     spell_data_ptr_t ohnahran_winds_debuff; //TODO Removed
@@ -934,7 +925,6 @@ public:
     spell_data_ptr_t lethal_calibration;
     spell_data_ptr_t primal_surge;
 
-    spell_data_ptr_t quick_shot; //TODO Removed
     spell_data_ptr_t mongoose_bite; //TODO Removed
     spell_data_ptr_t mongoose_bite_eagle; //TODO Removed
     spell_data_ptr_t sulfurlined_pockets; //TODO Removed
@@ -1080,7 +1070,6 @@ public:
     spell_data_ptr_t lunar_storm;
     spell_data_ptr_t lunar_storm_dmg;
 
-    spell_data_ptr_t extrapolated_shots; //TODO Removed/Reworked
     spell_data_ptr_t sentinel_precision; //TODO Removed/Reworked
     spell_data_ptr_t release_and_reload; //TODO Removed/Reworked
     spell_data_ptr_t sentinel_watch; //TODO Removed/Reworked
@@ -3195,9 +3184,6 @@ struct main_pet_base_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
 
     trigger_beast_cleave( s );
 
-    if ( o()->rng().roll( o()->tier_set.tww_s1_bm_4pc->effectN( 1 ).percent() ) )
-      o()->buffs.harmonize->trigger();
-
     if ( o()->buffs.wyverns_cry->check() )
       o()->buffs.wyverns_cry->increment( 1, buff_t::DEFAULT_VALUE(), o()->buffs.wyverns_cry->remains() );
 
@@ -3925,20 +3911,10 @@ void hunter_t::trigger_deathblow( bool activated )
     buffs.deathblow->trigger();
     buffs.deathblow->reactable = true;
     buffs.deathblow->activated = false;
-
-    // This should just need to avoid the aura delay.
-    if (talents.razor_fragments.ok())
-    {
-      buffs.razor_fragments->activated = true;
-      buffs.razor_fragments->trigger();
-      buffs.razor_fragments->activated = false;
-    }
   }
   else
   {
     buffs.deathblow->trigger();
-    if ( talents.razor_fragments.ok() )
-      buffs.razor_fragments->trigger();
   }
 
   talents.black_arrow.ok() ? cooldowns.black_arrow->reset( !activated ) : cooldowns.kill_shot->reset( !activated );
@@ -4621,40 +4597,11 @@ struct explosive_shot_background_t : public explosive_shot_base_t
 
 struct kill_shot_base_t : hunter_ranged_attack_t
 {
-  struct state_data_t
-  {
-    bool razor_fragments_up = false;
-    bool empowered_by_precise_shots = false;
-
-    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "razor_fragments_up={}, empowered_by_precise_shots={}", data.razor_fragments_up, data.empowered_by_precise_shots );
-    }
-  };
-  using state_t = hunter_action_state_t<state_data_t>;
-
-  // Razor Fragments (Marksmanship Talent)
-  struct razor_fragments_t : residual_bleed_base_t
-  {
-    double result_mod;
-
-    razor_fragments_t( util::string_view n, hunter_t* p )
-      : residual_bleed_base_t( n, p, p -> talents.razor_fragments_bleed )
-    {
-      result_mod = p -> talents.razor_fragments_buff -> effectN( 3 ).percent();
-      aoe = as<int>( p -> talents.razor_fragments_buff -> effectN( 2 ).base_value() );
-    }
-  };
-
   double health_threshold_pct;
-  razor_fragments_t* razor_fragments = nullptr;
 
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
-    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
-  {
-    if ( p->talents.razor_fragments.ok() )
-      razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
-  }
+    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() ) {}
 
   double cost() const override
   {
@@ -4662,29 +4609,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
       return 0;
 
     return hunter_ranged_attack_t::cost();
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->buffs.razor_fragments->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up && s -> chain_target < 1 )
-    {
-      double amount = s -> result_amount * razor_fragments -> result_mod;
-      if ( amount > 0 )
-      {
-        std::vector<player_t*>& tl = target_list();
-        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
-          residual_action::trigger( razor_fragments, t, amount );
-      }
-    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4696,7 +4620,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am *= 1 + p()->buffs.razor_fragments->check_value();
     if ( p()->talents.hunters_prey.ok() )
     {
       int active = 0; 
@@ -4709,17 +4632,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     }
 
     return am;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type type ) override
-  {
-    hunter_ranged_attack_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s )->razor_fragments_up = p()->buffs.razor_fragments->check();
   }
 
   bool ready() override
@@ -4773,13 +4685,6 @@ struct kill_shot_t : public kill_shot_base_t
     }
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = kill_shot_base_t::composite_target_multiplier( target );
-
-    return m;
-  }
-
   void impact( action_state_t* s ) override
   {
     kill_shot_base_t::impact( s );
@@ -4801,17 +4706,6 @@ struct kill_shot_t : public kill_shot_base_t
   bool target_ready( player_t* candidate_target ) override
   {
     return kill_shot_base_t::target_ready( candidate_target ) || p()->buffs.deathblow->may_react();
-  }
-};
-
-// Bursting Shot ======================================================================
-
-struct bursting_shot_t : public hunter_ranged_attack_t
-{
-  bursting_shot_t( hunter_t* p, util::string_view options_str ) :
-    hunter_ranged_attack_t( "bursting_shot", p, p -> talents.bursting_shot )
-  {
-    parse_options( options_str );
   }
 };
 
@@ -7189,25 +7083,6 @@ struct implosive_trap_t : public trap_base_t
 
 struct kill_command_t: public hunter_spell_t
 {
-  struct arcane_shot_quick_shot_t final : public attacks::arcane_shot_base_t
-  {
-    arcane_shot_quick_shot_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
-    {
-      background = dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-      base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
-
-      // Don't consume a stack or buff the damage.
-      affected_by.tip_of_the_spear.direct = 0;
-      decrements_tip_of_the_spear = false;
-    }
-
-    void execute() override
-    {
-      arcane_shot_base_t::execute();
-    }
-  };
-
   struct explosive_shot_sulfurlined_pockets_t : public attacks::explosive_shot_background_t
   {
     explosive_shot_sulfurlined_pockets_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p ) {}
@@ -7231,17 +7106,6 @@ struct kill_command_t: public hunter_spell_t
 
   struct {
     double chance = 0;
-    proc_t* proc = nullptr;
-  } reset;
-
-  struct {
-    double chance = 0;
-    arcane_shot_quick_shot_t* arcane_shot = nullptr;
-    explosive_shot_sulfurlined_pockets_t* explosive_shot = nullptr;
-  } quick_shot;
-
-  struct {
-    double chance = 0;
     proc_t* proc;
   } dire_command;
 
@@ -7259,22 +7123,6 @@ struct kill_command_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    if ( p -> specialization() == HUNTER_SURVIVAL )
-    {
-      reset.chance = data().effectN( 2 ).percent();
-      reset.proc = p -> get_proc( "Kill Command Reset" );
-
-      if ( p -> talents.quick_shot.ok() )
-      {
-        quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
-        quick_shot.arcane_shot = p->get_background_action<arcane_shot_quick_shot_t>( "arcane_shot_quick_shot" );
-        add_child( quick_shot.arcane_shot );
-
-        if ( p->talents.sulfurlined_pockets.ok() )
-          quick_shot.explosive_shot = p->get_background_action<explosive_shot_sulfurlined_pockets_t>( "explosive_shot_sulfurlined_pockets" );
-      }
-    }
-    
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       if ( p->talents.soul_drinker.ok() )
@@ -7315,30 +7163,6 @@ struct kill_command_t: public hunter_spell_t
     int tip_stacks = 1;
     tip_stacks += as<int>( p()->talents.primal_surge->effectN( 1 ).base_value() );
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
-
-    if ( rng().roll( quick_shot.chance ) )
-    {
-      if ( p()->buffs.sulfurlined_pockets_ready->up() )
-      {
-        p()->buffs.sulfurlined_pockets_ready->expire();
-        quick_shot.explosive_shot->execute_on_target( target );
-      }
-      else
-        quick_shot.arcane_shot->execute_on_target( target );
-    }
-
-    if ( reset.chance != 0 )
-    {
-      double chance = reset.chance;
-
-      chance += p()->buffs.coordinated_assault->check_value();
-
-      if ( rng().roll( chance ) )
-      {
-        reset.proc -> occur();
-        cooldown -> reset( true );
-      }
-    }
 
     if ( p()->talents.dire_command && rng().roll( dire_command.chance ) )
     {
@@ -8261,7 +8085,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
-  if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new       call_of_the_wild_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
@@ -8409,11 +8232,9 @@ void hunter_t::init_spells()
 
   //TODO Remove 
 
-  talents.harmonize                         = find_talent_spell( talent_tree::CLASS, "Harmonize" );
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
   talents.explosive_shot_cast               = find_spell( 212431 );
   talents.explosive_shot_damage             = find_spell( 212680 );
-  talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
@@ -8593,9 +8414,6 @@ void hunter_t::init_spells()
     talents.moving_target_buff                = talents.moving_target.ok() ? find_spell( 474293 ) : spell_data_t::not_found();
     talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
     talents.precision_detonation_buff         = talents.precision_detonation.ok() ? find_spell( 474199 ) : spell_data_t::not_found();
-    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
-    talents.razor_fragments_bleed             = talents.razor_fragments.ok() ? find_spell( 385638 ) : spell_data_t::not_found();
-    talents.razor_fragments_buff              = talents.razor_fragments.ok() ? find_spell( 388998 ) : spell_data_t::not_found();
     talents.magnetic_gunpowder                = find_talent_spell( talent_tree::SPECIALIZATION, "Magnetic Gunpowder", HUNTER_MARKSMANSHIP );
     talents.ohnahran_winds                    = find_talent_spell( talent_tree::SPECIALIZATION, "Ohn'ahran Winds", HUNTER_MARKSMANSHIP );
     talents.ohnahran_winds_debuff             = talents.ohnahran_winds.ok() ? find_spell( 1215057 ) : spell_data_t::not_found();
@@ -8686,7 +8504,6 @@ void hunter_t::init_spells()
     talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
 
     //TODO Removed
-    talents.quick_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Shot", HUNTER_SURVIVAL );
     talents.mongoose_bite                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Bite", HUNTER_SURVIVAL );
     talents.mongoose_bite_eagle               = talents.mongoose_bite.ok() ? find_spell( 265888 ) : spell_data_t::not_found();
     talents.sulfurlined_pockets               = find_talent_spell( talent_tree::SPECIALIZATION, "Sulfur-Lined Pockets", HUNTER_SURVIVAL );
@@ -8839,7 +8656,6 @@ void hunter_t::init_spells()
     talents.lunar_storm_dmg          = talents.lunar_storm.ok() ? find_spell( 1253733 ) : spell_data_t::not_found();
 
     //TODO Remove
-    talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
     talents.sentinel_precision = find_talent_spell( talent_tree::HERO, "Sentinel Precision" );
     talents.release_and_reload = find_talent_spell( talent_tree::HERO, "Release and Reload" );
     talents.sentinel_watch = find_talent_spell( talent_tree::HERO, "Sentinel Watch" );
@@ -9042,11 +8858,6 @@ void hunter_t::create_buffs()
     make_buff( this, "precision_detonation", talents.precision_detonation_buff )
       ->set_default_value_from_effect( 1 )
       ->set_quiet( true );
-
-  buffs.razor_fragments =
-    make_buff( this, "razor_fragments", talents.razor_fragments_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_activated( false );
 
   buffs.bullseye =
     make_buff( this, "bullseye", talents.bullseye_buff )
@@ -9263,11 +9074,6 @@ void hunter_t::create_buffs()
 
   // Tier Set Bonuses
 
-  buffs.harmonize =
-    make_buff( this, "harmonize", find_spell( 457072 ) )
-      -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
-      -> set_default_value_from_effect( 1 );
-
   buffs.jackpot
     = make_buff( this, "jackpot", tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );
@@ -9432,9 +9238,6 @@ void hunter_t::init_procs()
 
   if ( tier_set.tww_s2_mm_4pc.ok() )
     procs.tww_s2_mm_4pc_explosive = get_proc( "TWW S2 MM 4pc Explosive" );
-
-  if ( talents.extrapolated_shots.ok() )
-    procs.extrapolated_shots_stacks = get_proc( "Extrapolated Shots Stacks" );
 
   if ( talents.release_and_reload.ok() )
     procs.release_and_reload_stacks = get_proc( "Release and Reload Stacks" );
@@ -9885,7 +9688,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1 + buffs.serpentine_blessing->check_value();
     m *= 1 + buffs.wyverns_cry->check_stack_value();
     m *= 1 + buffs.lead_from_the_front->check_value();
-    m *= 1 + buffs.harmonize->check_value();
   }
 
   return m;
