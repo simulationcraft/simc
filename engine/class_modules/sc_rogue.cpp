@@ -9750,8 +9750,8 @@ void rogue_t::init_spells()
                                 effect_mask_t( true ).disable( 5 ) :
                                 effect_mask_t( true ) );
 
-  // 01-18-2026 -- Ravenholdt Mint does not modify Fatebound Heads beyond one stack so it is essentially nonfunctional
-  register_passive_effect_mask( talent.fatebound.ravenholdt_mint, bugs ?
+  // 2026-01-21 -- Disable Ravenhold Mint Heads modifier in pre-patch, fixed and scripted in beta
+  register_passive_effect_mask( talent.fatebound.ravenholdt_mint, !is_ptr() ?
                                 effect_mask_t( false ).enable( 2 ) :
                                 effect_mask_t( true ) );
 
@@ -10267,14 +10267,15 @@ void rogue_t::create_buffs()
   if ( spell.fatebound_coin_heads_buff->ok() )
   {
     // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff
-    // Ravenholdt Mint modifies stacking buff to 6%
     // As of Midnight, the initial stack value is scripted
+    // MIDNIGHT TOCHECK -- Ravenholdt Mint correctly modifies initial value on beta
+    double mint_value = is_ptr() ? talent.fatebound.ravenholdt_mint->effectN( 1 ).percent() : 0.0;
     buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
+                                                1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() + mint_value );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
+                                                  1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() + mint_value );
     buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 3, spell.fatebound_coin_heads_buff->effectN( 3 ).percent(),
-                                                     1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() );
+                                                     1.0 + spell.fatebound_coin_heads_buff->effectN( 4 ).percent() + mint_value );
   }
 
   buffs.fatebound_coin_heads
