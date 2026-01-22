@@ -224,6 +224,7 @@ public:
     buff_t* avatar;
     buff_t* battle_stance;
     buff_t* battle_shout_highlight;
+    buff_t* battlelord;
     buff_t* berserker_rage;
     buff_t* berserker_stance;
     buff_t* best_served_cold;
@@ -414,6 +415,7 @@ public:
     // Arms
     const spell_data_t* heroic_strike;
     const spell_data_t* master_of_warfare_2_buff;
+    const spell_data_t* battlelord_buff;
 
     // Fury
 
@@ -1049,7 +1051,7 @@ public:
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
       parse_effects( p()->buff.master_of_warfare );
-
+      parse_effects( p()->buff.battlelord );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -3056,6 +3058,9 @@ struct mortal_strike_t : public warrior_attack_t
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
     }
+
+    if ( !background )
+      p()->buff.battlelord->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3483,7 +3488,7 @@ struct heroic_strike_t : public slam_base_t
     p()->buff.master_of_warfare->trigger();
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
-      p()->cooldown.colossus_smash->adjust( -timespan_t::from_seconds( p()->talents.arms.master_of_warfare_3->effectN( 1 ).base_value() ) );
+      p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
   }
 };
 
@@ -5280,6 +5285,7 @@ struct overpower_t : public warrior_attack_t
         p()->proc.battlelord->occur();
 
       p()->cooldown.mortal_strike->reset( true );
+      p()->buff.battlelord->trigger();
     }
 
     p()->buff.opportunist->expire();
@@ -7082,6 +7088,7 @@ void warrior_t::init_spells()
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.heroic_strike           = find_spell( 1269383 );
   spell.master_of_warfare_2_buff= find_spell( 1269394 );
+  spell.battlelord_buff         = find_spell( 386631 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -7965,6 +7972,8 @@ void warrior_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.battle_shout_highlight = make_buff( this, "battle_shout_highlight", find_spell( 1271909 ) );
+
+  buff.battlelord = make_buff( this, "battlelord", spell.battlelord_buff );
 
   buff.crushing_combo = make_buff( this, "crushing_combo", talents.arms.crushing_combo->effectN( 1 ).trigger() );
 
