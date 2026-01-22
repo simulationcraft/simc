@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.65512
-static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26479,7 +26479,6 @@ static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
   { 1244444, "$@spelldesc1235566\r\n\r\n", 0, 0 },
   { 1244448, "$@spelldesc1235566", 0, 0 },
   { 1244460, "Increases the duration of Havoc by ${$s1/1000} sec and increases the damage Havoc victims are dealt by an additional $s2%.", 0, 0 },
-  { 1244475, "Mastery increased by $s1%.", 0, 0 },
   { 1244483, "$@spelldesc384667", "The direct damage of your next Rake, Shred, or Swipe in increased by $w2% and will critically strike.", 0 },
   { 1244519, "$@spelldesc377514", "Soul Reaper can be used on any target, regardless of their health.", 0 },
   { 1244532, "Ferocious Bite's damage to its primary target increased by $s1% for each enemy affected by your Rip, up to $s2.", 0, 0 },

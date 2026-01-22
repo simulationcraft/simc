@@ -1,5 +1,5 @@
 // Active class spells, wow build 12.0.0.65512
-static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
+static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -228,6 +228,7 @@ static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
   {  8,   62, 1229376,       0, "Single-Button Assistant"            },
   {  8,   63,     133,     116, "Fireball"                           },
   {  8,   63, 1229376,       0, "Single-Button Assistant"            },
+  {  8,   64,     116,       0, "Frostbolt"                          },
   {  8,   64, 1229376,       0, "Single-Button Assistant"            },
   {  9,    0,     126,       0, "Eye of Kilrogg"                     },
   {  9,    0,     172,       0, "Corruption"                         },
