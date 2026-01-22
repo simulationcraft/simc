@@ -1540,96 +1540,60 @@ struct fists_of_fury_t : monk_melee_attack_t
   }
 };
 
-struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
-{
-  timespan_t delay;
-  whirling_dragon_punch_aoe_tick_t( std::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
-    : monk_melee_attack_t( p, name, s ), delay( delay )
-  {
-    ww_mastery = true;
-
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
-
-    name_str_reporting = "wdp_aoe";
-  }
-};
-
-struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
-{
-  whirling_dragon_punch_st_tick_t( std::string_view name, monk_t *p, const spell_data_t *s )
-    : monk_melee_attack_t( p, name, s )
-  {
-    ww_mastery = true;
-
-    background = true;
-
-    name_str_reporting = "wdp_st";
-  }
-};
-
 struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
-  std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
-  whirling_dragon_punch_st_tick_t *st_tick;
-
-  struct whirling_dragon_punch_tick_event_t : public event_t
+  struct damage_t : monk_melee_attack_t
   {
-    whirling_dragon_punch_aoe_tick_t *tick;
-
-    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
-      : event_t( *tick->player, delay ), tick( tick )
+    damage_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : monk_melee_attack_t( player, fmt::format( "whirling_dragon_punch_{}", name ), spell_data )
     {
-    }
-
-    void execute() override
-    {
-      tick->execute();
+      ww_mastery = true;
+      background = dual = true;
+      // aoe                 = -1;
+      // reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
     }
   };
 
-  whirling_dragon_punch_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "whirling_dragon_punch", p->talent.windwalker.whirling_dragon_punch )
+  action_t *aoe;
+  action_t *singletarget;
+
+  whirling_dragon_punch_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch ),
+      aoe( nullptr ),
+      singletarget( nullptr )
   {
     parse_options( options_str );
-    interrupt_auto_attack = false;
-    channeled             = false;
-    may_combo_strike      = true;
-    cast_during_sck       = true;
 
-    spell_power_mod.direct = 0.0;
+    // ticks 0, 1, 2, but skips ticking on 4th tick. as a result, implmenting this
+    // action using `tick_action` is nonviable. ticks must be scheduled manually.
 
-    // 3 server-side hardcoded ticks
-    for ( size_t i = 0; i < aoe_ticks.size(); ++i )
-    {
-      auto delay     = base_tick_time * i;
-      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t(
-          "whirling_dragon_punch_aoe_tick", p, p->talent.windwalker.whirling_dragon_punch_aoe_tick, delay );
+    may_combo_strike = true;
+    cast_during_sck  = true;
 
-      add_child( aoe_ticks[ i ] );
-    }
+    aoe                      = new damage_t( player, "aoe", player->talent.windwalker.whirling_dragon_punch_aoe_tick );
+    aoe->aoe                 = -1;
+    aoe->reduced_aoe_targets = player->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
+    add_child( aoe );
 
-    st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
-                                                   p->talent.windwalker.whirling_dragon_punch_st_tick );
-    add_child( st_tick );
+    singletarget = new damage_t( player, "singletarget", player->talent.windwalker.whirling_dragon_punch_st_tick );
+    add_child( singletarget );
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
 
-    for ( auto &tick : aoe_ticks )
-      make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
+    singletarget->execute();
 
-    st_tick->execute();
+    // -1 to compensate for zero index, -1 to skip last tick
+    for ( unsigned i = 0; i < dot_duration / base_tick_time - 2.0; i++ )
+      make_event<events::delayed_execute_event_t>( *p()->sim, p(), aoe, target, i * base_tick_time );
 
-    if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
-         p()->talent.windwalker.teachings_of_the_monastery->ok() )
-    {
-      int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
-      p()->buff.teachings_of_the_monastery->trigger( stacks );
-    }
+    if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
+      p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
+
+    if ( p()->talent.windwalker.echo_technique->ok() )
+      p()->buff.combo_breaker->increment();
 
     if ( p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
