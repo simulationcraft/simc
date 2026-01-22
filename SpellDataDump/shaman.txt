@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -13309,8 +13309,8 @@ Description      : Reduces the cooldown of Flame Shock and Voltaic Blaze by ${$s
 Flame Shock deals damage ${100*(1/(1+$m1/100)-1)}% faster.
 
 Name             : Deeply Rooted Elements (id=378270) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
-                 : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+                 : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18469,8 +18469,8 @@ Effects          :
 Description      : The cooldown of Ascendance$?a137039[ and Healing Tide Totem][] is reduced by ${$s1/-1000} sec.
 
 Name             : Preeminence (id=462443) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
-                 : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+                 : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Physical
 Spell Type       : None

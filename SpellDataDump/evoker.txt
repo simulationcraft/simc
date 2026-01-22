@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -2298,8 +2298,8 @@ Description      : Switch between your Dracthyr and Visage forms.
 Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
 
 Name             : Quell (id=351338) [Spell Family (224)] 
-Talent Entry     : Devastation [tree=spec, row=3, col=2, max_rank=1, req_points=0]
-                 : Augmentation [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+                 : Devastation [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : Ranged
@@ -3357,7 +3357,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.8847 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Targeted Enemy (6)
-Hotfixed         : Chain Targets (6 -> 8)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -9883,7 +9882,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=1174498) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Self (1)
-                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573), Tranquility (1264659)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573)
 Description      : Evoke a paradox for you and a friendly healer, allowing casting while moving and increasing the range of most spells by $s4% for $d.
 
 Affects the nearest healer within $407497A1 yds, if you do not have a healer targeted.
@@ -9930,7 +9929,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #10 (id=1085313) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Targeted Ally (21)
-                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573), Tranquility (1264659)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573)
 #11 (id=1085336) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 1223 (Label) | Target: Targeted Ally (21)
                    Affected Spells (Label): Devotion Aura (465), Crusader Aura (32223), Retribution Aura (183435), Concentration Aura (317920)

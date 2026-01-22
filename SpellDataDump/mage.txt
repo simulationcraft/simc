@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -29,7 +29,7 @@ Increases your movement speed by $382293s1% for $337278d.][]
 Tooltip          : Fading.
 
 Name             : Frostbolt (id=116) [Spell Family (3)] 
-Class            : Mage
+Class            : Frost Mage
 School           : Frost
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=25)
@@ -3920,7 +3920,6 @@ Description      : Increases your Haste by 1% during the night.
 Increases your Critical Strike by 1% during the day.
 
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -22588,8 +22588,8 @@ Effects          :
 Description      : $@spelldesc1262017
 
 Name             : Empty the Cellar (id=1262329) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
-                 : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+                 : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None

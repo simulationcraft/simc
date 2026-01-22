@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3176,8 +3176,8 @@ $@spellname111897 Interrupts its target.$?c2[
 $@spellname111898 Stuns its target.][]
 
 Name             : Grimoire of Sacrifice (id=108503) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
-                 : Destruction [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Destruction [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+                 : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None

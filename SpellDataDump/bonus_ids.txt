@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8174,3 +8174,4 @@ bonus_id={ 13646 }, base_ilevel={ 133 }, quality={ epic }
 bonus_id={ 13647 }, base_ilevel={ 1 }, quality={ uncommon }
 bonus_id={ 13648 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13649 }, base_ilevel={ 180 }, req_ilevel={ 81 }, quality={ rare }
+bonus_id={ 13670 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }

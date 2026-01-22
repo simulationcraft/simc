@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1436,9 +1436,9 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
+                 : Arms [tree=spec, row=2, col=2, max_rank=1, req_points=0]
                  : Fury [tree=spec, row=3, col=1, max_rank=1, req_points=0]
-                 : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
 Class            : Warrior
 School           : Physical
 Spell Type       : None

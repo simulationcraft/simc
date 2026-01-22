@@ -5229,7 +5229,7 @@ Druid
 1244393  Chomp Enabler
 1244394  Chomp Disabler
 1244470 *Everbloom
-1244475  Panther's Guile
+1244475 *Panther's Guile
 1244483  Sudden Ambush
 1244532  Blood Spattered
 1244544  Focused Frenzy
@@ -5347,7 +5347,7 @@ Druid
 1271222  Starsurge
 1271261  Penumbral Swell
 1271305  Bask in Moonlight
-1271400  Battle Resurrection Highlight
+1271400 *Battle Resurrection Highlight
 1271540  Limb from Limb
 1271635  Twin Claw
 1271636  Twin Claw

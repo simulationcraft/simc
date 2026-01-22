@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -7100,8 +7100,8 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Divine Purpose (id=223817) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
-                 : Holy [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Holy [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+                 : Protection [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
