@@ -538,6 +538,7 @@ public:
 
     // Dark Ranger
     buff_t* withering_fire;
+    buff_t* wailing_arrow;
   } buffs;
 
   struct cooldowns_t
@@ -981,6 +982,9 @@ public:
     spell_data_ptr_t dark_chains; //Utility talent, won't implement
     spell_data_ptr_t shadow_dagger; //Utility talent, won't implement
     spell_data_ptr_t wailing_dead; // TODO Not implemented
+    spell_data_ptr_t wailing_arrow;
+    spell_data_ptr_t wailing_arrow_buff;
+    spell_data_ptr_t wailing_arrow_damage;
 
     spell_data_ptr_t blighted_quiver;
     spell_data_ptr_t banshees_mark;
@@ -4917,6 +4921,68 @@ struct bleak_arrows_t : public auto_shot_base_t
   bleak_arrows_t( hunter_t* p ) : auto_shot_base_t( "bleak_arrows", p, p->talents.bleak_arrows_spell ) {}
 };
 
+// Wailing Arrow (Dark Ranger) ========================================================
+
+struct wailing_arrow_t final : public hunter_ranged_attack_t
+{
+  struct primary_t final : hunter_ranged_attack_t
+  {
+    primary_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.wailing_arrow_damage )
+    {
+      background = dual = true;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    }
+  };
+
+  struct cleave_t final : hunter_ranged_attack_t
+  {
+    cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.wailing_arrow_damage )
+    {
+      background = dual = true;
+      attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+      aoe = -1;
+
+      // 2026-01-22: Wailing Arrow's cleave also hits the primary target.
+      //target_filter_callback = secondary_targets_only();
+    }
+  };
+
+  primary_t* primary = nullptr;
+  cleave_t* cleave = nullptr;
+
+  wailing_arrow_t( hunter_t* p, util::string_view options_str )
+    : hunter_ranged_attack_t( "wailing_arrow", p, p->talents.wailing_arrow ),
+      primary( p->get_background_action<primary_t>( "wailing_arrow_primary" ) ),
+      cleave( p->get_background_action<cleave_t>( "wailing_arrow_cleave" ) )
+  {
+    parse_options( options_str );
+    add_child( primary );
+    add_child( cleave );
+  }
+
+  bool ready() override
+  {
+    return hunter_ranged_attack_t::ready() && p()->buffs.wailing_arrow->check();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p()->buffs.wailing_arrow->expire();
+
+    p()->trigger_deathblow( true );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    hunter_ranged_attack_t::impact( state );
+
+    primary->execute_on_target( state->target );
+    cleave->execute_on_target( state->target );
+  }
+};
+
 // Phantom Pain (Dark Ranger) =========================================================
 
 struct phantom_pain_t final : hunter_ranged_attack_t
@@ -7359,7 +7425,14 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
         pet->actions.bloodshed->execute_on_target( target );
     }
 
-    p()->buffs.withering_fire->trigger( p()->buffs.bestial_wrath->buff_duration() );
+    if ( p()->talents.withering_fire.ok() )
+    {
+      p()->buffs.withering_fire->trigger();
+      p()->trigger_deathblow( true );
+    }
+    
+    if ( p()->talents.wailing_dead.ok() )
+      p()->buffs.wailing_arrow->trigger();
 
     if ( p()->talents.stampede.ok() )
       p()->buffs.stampede->trigger();
@@ -7510,7 +7583,14 @@ struct trueshot_t : public hunter_spell_t
     p() -> buffs.trueshot -> expire();
     p() -> buffs.trueshot -> trigger();
     
-    p()->buffs.withering_fire->trigger( p()->buffs.trueshot->data().duration() );
+    if ( p()->talents.withering_fire.ok() )
+    {
+      p()->buffs.withering_fire->trigger( p()->buffs.trueshot->data().duration() );
+      p()->trigger_deathblow( true );
+    }
+
+    if ( p()->talents.wailing_dead.ok() )
+      p()->buffs.wailing_arrow->trigger();
 
     if ( p()->talents.feathered_frenzy.ok() )
       p()->trigger_eagles_mark( target, p()->talents.sentinel.ok(), true );
@@ -8110,6 +8190,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
+  if ( name == "wailing_arrow"         ) return new          wailing_arrow_t( this, options_str );
   if ( name == "wild_thrash"           ) return new            wild_thrash_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
@@ -8560,6 +8641,9 @@ void hunter_t::init_spells()
 
     talents.ebon_bowstring              = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
     talents.wailing_dead                = find_talent_spell( talent_tree::HERO, "Wailing Dead" );
+    talents.wailing_arrow               = talents.wailing_dead.ok() ? find_spell( 392060 ) : spell_data_t::not_found();
+    talents.wailing_arrow_buff          = talents.wailing_dead.ok() ? find_spell( 459808 ) : spell_data_t::not_found();
+    talents.wailing_arrow_damage        = talents.wailing_dead.ok() ? find_spell( 392058 ) : spell_data_t::not_found();
 
     talents.blighted_quiver             = find_talent_spell( talent_tree::HERO, "Blighted Quiver" );
     talents.banshees_mark               = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
@@ -9171,6 +9255,9 @@ void hunter_t::create_buffs()
 
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff );
+
+  buffs.wailing_arrow = 
+    make_buff( this, "wailing_arrow", talents.wailing_arrow_buff );
 }
 
 void hunter_t::init_gains()
