@@ -9750,7 +9750,7 @@ void rogue_t::init_spells()
                                 effect_mask_t( true ).disable( 5 ) :
                                 effect_mask_t( true ) );
 
-  // 2026-01-21 -- Disable Ravenhold Mint Heads modifier in pre-patch, fixed and scripted in beta
+  // 2026-01-21 -- Disable Ravenholdt Mint Heads modifier in pre-patch, fixed and scripted in beta
   register_passive_effect_mask( talent.fatebound.ravenholdt_mint, !is_ptr() ?
                                 effect_mask_t( false ).enable( 2 ) :
                                 effect_mask_t( true ) );
