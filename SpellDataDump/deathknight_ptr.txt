@@ -22242,7 +22242,7 @@ Description      : Army of the Dead now summons a Gargoyle into the battlefield 
 The Gargoyle gains $211947s1% increased damage for every $49206s4 Runic Power you spend and always critically strikes.
 
 Name             : Forbidden Knowledge (id=1242158) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -22842,7 +22842,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Forbidden Knowledge (id=1256565) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Death Knight
 School           : Physical
@@ -22861,7 +22861,7 @@ Description      : Putrefy causes your next $s2 Scourge $LStrike:Strikes; to sum
 Multiple applications may overlap.
 
 Name             : Forbidden Knowledge (id=1256566) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -23436,7 +23436,7 @@ Description      : $@spelldesc1264296
 Tooltip          : Healing for $w1 health every $t sec.
 
 Name             : Dance of Midnight (id=1264351) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -23473,7 +23473,7 @@ Effects          :
 Description      : $@spelldesc49028
 
 Name             : Dance of Midnight (id=1264405) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(3, 6)]
                  : Effect#2 [op=set, values=(3, 6)]
                  : Effect#3 [op=set, values=(3, 6)]
@@ -23547,7 +23547,7 @@ Description      : $@spelldesc49028
 Tooltip          : Damage dealt increased by $s1% and damage taken decreased by $s4%.
 
 Name             : Dance of Midnight (id=1264506) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Blood [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -23796,7 +23796,7 @@ Description      : $@spelldesc1265632
 Tooltip          : Haste increased by ${$w1}.1%.
 
 Name             : Chosen of Frostbrood (id=1265632) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -23813,7 +23813,7 @@ Effects          :
 Description      : Frostwyrm's Fury deals $s1% increased damage to the first enemy it hits and grants you $1265630s1% Haste for $1265630d.
 
 Name             : Chosen of Frostbrood (id=1265633) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(2000, 4000)]
                  : Effect#2 [op=set, values=(4, 8)]
 Class            : Death Knight
@@ -23837,7 +23837,7 @@ Description      : Frostwyrm's Fury extends the duration of an active Pillar of 
 Enduring Strength grants an additional $s2% Strength.
 
 Name             : Chosen of Frostbrood (id=1265637) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None

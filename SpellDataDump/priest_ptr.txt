@@ -19504,7 +19504,7 @@ Description      : $@spelldesc1252215
 Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
 Name             : Master the Darkness (id=1253590) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19635,7 +19635,7 @@ Description      : $@spelldesc1253724
 Tooltip          : $?a450193[Void Blast][Smite] damage increased by $w1%.
 
 Name             : Master the Darkness (id=1253827) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19666,7 +19666,7 @@ Effects          :
 Description      : $@spelldesc1253593
 
 Name             : Master the Darkness (id=1253845) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
@@ -19786,7 +19786,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Benediction (id=1262755) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19805,7 +19805,7 @@ Effects          :
 Description      : Prayer of Mending healing has a chance to upgrade your next Flash Heal to Benediction, healing the target for $s1% more and causing a Cosmic Ripple.
 
 Name             : Benediction (id=1262758) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -19840,7 +19840,7 @@ Description      : Cosmic Ripple healing increased by $s1%.
 All healing done increased by $s2%.
 
 Name             : Benediction (id=1262760) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19914,7 +19914,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Void Apparitions (id=1264096) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19931,7 +19931,7 @@ Effects          :
 Description      : When an effect from an Idol is activated, conjure Shadowy Apparitions.
 
 Name             : Void Apparitions (id=1264104) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Shadow
@@ -19953,7 +19953,7 @@ $@spellicon1264177 $@spellname1264177
 $@spelldesc1264177
 
 Name             : Void Apparitions (id=1264107) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : None

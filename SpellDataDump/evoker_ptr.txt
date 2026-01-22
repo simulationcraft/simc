@@ -2298,8 +2298,8 @@ Description      : Switch between your Dracthyr and Visage forms.
 Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
 
 Name             : Quell (id=351338) [Spell Family (224)] 
-Talent Entry     : Devastation [tree=spec, row=3, col=2, max_rank=1, req_points=0]
-                 : Augmentation [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+                 : Devastation [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : Ranged
@@ -9885,7 +9885,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=1174498) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Self (1)
-                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573), Tranquility (1264659)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573)
 Description      : Evoke a paradox for you and a friendly healer, allowing casting while moving and increasing the range of most spells by $s4% for $d.
 
 Affects the nearest healer within $407497A1 yds, if you do not have a healer targeted.
@@ -9932,7 +9932,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #10 (id=1085313) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Targeted Ally (21)
-                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573), Tranquility (1264659)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Ancient Teachings (388025), Restoral (388615), Fire Breath (444249), Tranquility (1236573)
 #11 (id=1085336) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Misc Value 2: 1223 (Label) | Target: Targeted Ally (21)
                    Affected Spells (Label): Devotion Aura (465), Crusader Aura (32223), Retribution Aura (183435), Concentration Aura (317920)
@@ -15311,7 +15311,7 @@ Effects          :
 Description      : Motes of Possibility may now grant Prescience to allies and have a $s1% increased chance to activate.
 
 Name             : Merithra's Blessing (id=1256577) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15376,7 +15376,7 @@ Description      : Spring a bloom of life from your target, healing them and up 
 Variables        : $cap=${6}
 
 Name             : Merithra's Blessing (id=1256682) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Evoker
 School           : Physical
@@ -15405,7 +15405,7 @@ Effects          :
 Description      : $@spelldesc1256682
 
 Name             : Merithra's Blessing (id=1256689) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15552,7 +15552,7 @@ Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1
 Increases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]
 
 Name             : Duplicate (id=1259173) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -15567,7 +15567,7 @@ Effects          :
 Description      : Breath of Eons summons a version of you from the future to assist you in battle, lasting $1259171d. Your duplicate casts Eruption, Fire Breath, and Upheaval.
 
 Name             : Duplicate (id=1259174) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Evoker
 School           : Arcane
@@ -15583,7 +15583,7 @@ Effects          :
 Description      : Any time you extend Ebon Might, your duplicate is also extended, equal to $s1% of the amount you extended Ebon Might by.
 
 Name             : Duplicate (id=1259175) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -16227,7 +16227,7 @@ Effects          :
 Description      : Defy Fate healing increased by $s1% and its cooldown is reduced by $s2 min.
 
 Name             : Rising Fury (id=1271687) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -16268,7 +16268,7 @@ Description      : $@spelldesc1271687
 Tooltip          : Haste increased by ${$w1}.1%.$?$w3>0[ Damage increased by $w3%.][]
 
 Name             : Rising Fury (id=1271788) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -16284,7 +16284,7 @@ Description      : When Dragonrage ends, gain Risen Fury for ${$s1/1000} sec for
 Risen Fury grants the damage and haste bonuses accumulated from Rising Fury and generates Essence Burst every $1271799t4 sec.
 
 Name             : Rising Fury (id=1271796) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(8, 15)]
 Class            : Evoker
 School           : Physical

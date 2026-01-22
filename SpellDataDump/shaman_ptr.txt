@@ -13299,8 +13299,8 @@ Description      : Reduces the cooldown of Flame Shock and Voltaic Blaze by ${$s
 Flame Shock deals damage ${100*(1/(1+$m1/100)-1)}% faster.
 
 Name             : Deeply Rooted Elements (id=378270) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
-                 : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+                 : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18460,8 +18460,8 @@ Effects          :
 Description      : The cooldown of Ascendance$?a137039[ and Healing Tide Totem][] is reduced by ${$s1/-1000} sec.
 
 Name             : Preeminence (id=462443) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
-                 : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+                 : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20847,7 +20847,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
 Name             : Storm Unleashed (id=1252373) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -21469,7 +21469,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning deal $s1% increased damage and have a $s2% chance to refund the Maelstrom Weapon spent.
 
 Name             : Storm Unleashed (id=1262713) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21483,7 +21483,7 @@ Effects          :
 Description      : Each Maelstrom Weapon spent has a ${$s1/10}% chance to cause your next Crash Lightning to ignore its cooldown. The weapon enhancement effect of Crash Lightning may now overlap.
 
 Name             : Storm Unleashed (id=1262761) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -21733,7 +21733,7 @@ Effects          :
 Description      : Unleash Life affects an additional spell cast at $s1% effectiveness.
 
 Name             : Stormstream Totem (id=1267016) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21811,7 +21811,7 @@ Description      : $@spelldesc1267016
 Tooltip          : Healing Stream Totem is upgraded to Stormstream Totem.
 
 Name             : Stormstream Totem (id=1267093) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(20, 40)]
 Class            : Shaman
 School           : Physical
@@ -21831,7 +21831,7 @@ Effects          :
 Description      : Healing Stream and Stormstream Totem healing increased by $s1%.
 
 Name             : Stormstream Totem (id=1267120) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21982,7 +21982,7 @@ Effects          :
 Description      : Increases your Intellect by $s1%.
 
 Name             : Feedback Loop (id=1270061) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21999,7 +21999,7 @@ Effects          :
 Description      : Elemental Overload damage increased by $s1%.
 
 Name             : Feedback Loop (id=1270062) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=400]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Shaman
@@ -22022,7 +22022,7 @@ Effects          :
 Description      : Spell critical strike chance increased by $s1%. Elemental Fury increases spell critical strike damage by an additional $s2%.
 
 Name             : Feedback Loop (id=1270064) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=500]
 Class            : Shaman
 School           : Physical
 Spell Type       : None

@@ -7109,8 +7109,8 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Divine Purpose (id=223817) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
-                 : Holy [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Holy [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+                 : Protection [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -23584,7 +23584,7 @@ Effects          :
 Description      : Casting Avenger's Shield causes Consecration to deal its damage and healing again immediately at $s1% effectiveness.
 
 Name             : Beacon of the Savior (id=1244878) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23671,7 +23671,7 @@ Effects          :
 Description      : Consecration deals $s1% increased damage when it strikes a single target.
 
 Name             : Beacon of the Savior (id=1245367) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Paladin
@@ -23691,7 +23691,7 @@ Effects          :
 Description      : Beacon of the Savior transfers an additional $s1% of the amount healed and allies with Beacon of the Savior receive $s2% more healing from you.
 
 Name             : Beacon of the Savior (id=1245368) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -24272,7 +24272,7 @@ Description      : Divine Toll casts $s1 additional $ltime:times; on your target
 Variables        : $dmg=${$198137s1*$ceil($198034d/$198034t1)}
 
 Name             : Light Within (id=1261111) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Paladin
 School           : Physical
@@ -24287,7 +24287,7 @@ Effects          :
 Description      : Avenging Wrath further increases the damage of $?s383328[Final Verdict][Templar's Verdict] and Divine Storm by $s1%.
 
 Name             : Light Within (id=1261113) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24302,7 +24302,7 @@ Effects          :
 Description      : $?s402912[Righteous Cause][Art of War] increases the damage of your next Blade of Justice by $s1%.
 
 Name             : Light Within (id=1261159) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24697,7 +24697,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Glory of the Vanguard (id=1267203) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24713,7 +24713,7 @@ Effects          :
 Description      : Judgment has a chance to grant you Vanguard, causing your next Avenger's Shield to leave an echoing bolt of light in a line between you and the initial target, piercing any enemies for $1269175s1 Holy damage.
 
 Name             : Glory of the Vanguard (id=1267211) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=100]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(1, 3)]
 Class            : Paladin
@@ -24736,7 +24736,7 @@ Effects          :
 Description      : Judgment deals $s1% increased damage. When you consume Vanguard you gain $s2 Holy Power.
 
 Name             : Glory of the Vanguard (id=1267215) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

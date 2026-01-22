@@ -17187,7 +17187,7 @@ Effects          :
 Description      : $@spelldesc1241937
 
 Name             : Midnight (id=1242486) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17986,7 +17986,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Midnight (id=1250088) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#4 [op=mul, values=(1, 2)]
                  : Effect#5 [op=mul, values=(1, 2)]
@@ -18019,7 +18019,7 @@ Description      : All Cosmic damage dealt increased by $s4%.
 Collapsing Star's critical strike damage is increased by $s3% of your critical strike chance.
 
 Name             : Midnight (id=1250094) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -19539,7 +19539,7 @@ Effects          :
 Description      : Your movement speed is increased by $s1%.
 
 Name             : Untethered Rage (id=1270444) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19553,7 +19553,7 @@ Effects          :
 Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec.
 
 Name             : Untethered Rage (id=1270448) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Demon Hunter
 School           : Physical
@@ -19574,7 +19574,7 @@ Effects          :
 Description      : Soul Cleave and Spirit Bomb can consume an additional soul fragment and deal an additional $s1% damage for each consumed.
 
 Name             : Untethered Rage (id=1270449) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19635,7 +19635,7 @@ Tooltip          : Agility increased by $w1%.
 Chance to gain Untethered Rage is growing...
 
 Name             : Eternal Hunt (id=1270898) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19649,7 +19649,7 @@ Effects          :
 Description      : The Hunt empowers your next Eye Beam, increasing damage by $s1% and affecting enemies in a wider area.
 
 Name             : Eternal Hunt (id=1270900) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -19678,7 +19678,7 @@ Effects          :
 Description      : The Hunt has ${$s2/-1000} sec reduced cooldown, deals $s1% more damage, and its damage over time effect applies to $s3 additional enemies.
 
 Name             : Eternal Hunt (id=1270901) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Havoc [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None

@@ -22460,7 +22460,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Spiritfont (id=1260511) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22542,7 +22542,7 @@ Description      : $@spelldesc1260511
 Tooltip          : Channeling Soothing Mists onto nearby allies.
 
 Name             : Spiritfont (id=1260677) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Monk
@@ -22569,7 +22569,7 @@ Effects          :
 Description      : Rising Sun Kick damage increased by $s2% and Enveloping Mist healing increased by $s1%. These bonuses are increased by $s3% while Spiritfont is active.
 
 Name             : Spiritfont (id=1260680) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22608,7 +22608,7 @@ Description      : Blackout Kick deals $s1% increased damage. Spinning Crane Kic
 
 
 Name             : Tigereye Brew (id=1261703) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22640,7 +22640,7 @@ Description      : $@spelldesc1261703
 Tooltip          : Your critical strike chance is increased by $w1% during your next Zenith.
 
 Name             : Tigereye Brew (id=1261844) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Monk
 School           : Physical
@@ -22657,7 +22657,7 @@ Effects          :
 Description      : Your critical strike damage is increased by $s1%.
 
 Name             : Tigereye Brew (id=1261849) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22756,8 +22756,8 @@ Effects          :
 Description      : $@spelldesc1262017
 
 Name             : Empty the Cellar (id=1262329) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
-                 : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+                 : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23312,7 +23312,7 @@ Effects          :
 Description      : The cooldowns of Strike of the Windlord and Whirling Dragon Punch are reduced by ${$s1/-1000} sec. 
 
 Name             : Bring Me Another (id=1265129) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23345,7 +23345,7 @@ Effects          :
 Description      : $@spelldesc1265129
 
 Name             : Bring Me Another (id=1265138) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-50, -100)]
                  : Effect#3 [op=set, values=(10, 20)]
@@ -23391,7 +23391,7 @@ Description      : $@spelldesc1265145
 Tooltip          : Upon taking damage, automatically consume a refreshing drink to heal for $1265145o1 over $1265145d.
 
 Name             : Bring Me Another (id=1265141) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
 Class            : Monk
 School           : Physical
 Spell Type       : None

@@ -19717,7 +19717,7 @@ Effects          :
 Description      : Shadow Blades has ${$s1/1000}.1 sec increased duration and causes your attacks to deal an additional ${$s2}.1% damage as Shadow.
 
 Name             : Implacable (id=1265385) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19742,7 +19742,7 @@ Description      : Nothing will save your target from you. Envenom damage increa
 Gain an additional $s2% increased Energy generation for each Envenom you used while Envenom's bonus was active, up to ${$s1+4*$s2}% total.
 
 Name             : Implacable (id=1265386) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -19773,7 +19773,7 @@ Effects          :
 Description      : Your Nature and Bleed ability damage is increased by $s1%.
 
 Name             : Implacable (id=1265387) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19874,7 +19874,7 @@ Effects          :
 Description      : $@spelldesc1265387
 
 Name             : Gravedigger (id=1265861) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19888,7 +19888,7 @@ Effects          :
 Description      : Between the Eyes has a $s1% chance to apply 2 stacks of its bonus to your damage dealt.
 
 Name             : Gravedigger (id=1265862) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=set, values=(0, 100)]
                  : Effect#3 [op=mul, values=(1, 2)]
 Class            : Rogue
@@ -19913,7 +19913,7 @@ Effects          :
 Description      : When you spend $s1 or more combo points on Dispatch, immediately strike your target with an underhanded Scoundrel Strike for $s3 Physical damage.
 
 Name             : Gravedigger (id=1265863) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20104,7 +20104,7 @@ Effects          :
 Description      : You have a $s2% chance to partially evade any damage dealt to you, reducing the damage it deals by $s3%.
 
 Name             : Ancient Arts (id=1268932) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20122,7 +20122,7 @@ Effects          :
 Description      : Damaging attacks that expend Shadow Techniques to generate combo points have a $s1% chance per stack expended to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.
 
 Name             : Ancient Arts (id=1268936) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -20149,7 +20149,7 @@ Description      : Shadow damage increased by $s2%.
 Shadow Clones have a $s1% chance to trigger Shadow Techniques' effect.
 
 Name             : Ancient Arts (id=1268939) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Rogue
 School           : Physical
 Spell Type       : None

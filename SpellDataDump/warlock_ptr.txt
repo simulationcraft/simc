@@ -3180,8 +3180,8 @@ $@spellname111897 Interrupts its target.$?c2[
 $@spellname111898 Stuns its target.][]
 
 Name             : Grimoire of Sacrifice (id=108503) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
-                 : Destruction [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Destruction [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+                 : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19786,7 +19786,7 @@ Description      : $@spelldesc1259790
 Tooltip          : $@spellaura1259790
 
 Name             : Shadow of Nathreza (id=1261984) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -19806,7 +19806,7 @@ Description      : Haunt now calls upon a demonic soul from within the Twisting 
 The soul is unstable and ravenous, dealing ${$1262710s1*($48181d/$48181t5)} Shadow damage to its host and ${$1262710x1-1} enemies within $1278047a1 yards suffering from your $?a445465[Wither][Corruption] over its duration.
 
 Name             : Shadow of Nathreza (id=1261990) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -19838,7 +19838,7 @@ Effects          :
 Description      : Increases the initial damage of Haunt by $s1% and Haunt increases damage dealt to its host by an additional $s2%.
 
 Name             : Shadow of Nathreza (id=1261992) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -20121,7 +20121,7 @@ Effects          :
 Description      : Conflagrate generates $s1 additional Soul Shard fragments and its damage is increased by $s2%.
 
 Name             : Embers of Nihilam (id=1265770) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -20141,7 +20141,7 @@ $@spellicon1265884 $@spellname1265884
 $@spelldesc1265884
 
 Name             : Embers of Nihilam (id=1265772) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -20163,7 +20163,7 @@ Effects          :
 Description      : Memories of the Titans' destruction flash in your mind when you evoke the Dark Titan's power, increasing critical strike by $s2% and haste by $s1% for $1265939d.
 
 Name             : Embers of Nihilam (id=1265774) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -20931,7 +20931,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Dominion of Argus (id=1276163) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -20986,7 +20986,7 @@ Effects          :
 Description      : $@spelldesc1276163
 
 Name             : Dominion of Argus (id=1276190) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -21009,7 +21009,7 @@ Effects          :
 Description      : Increases the duration of Dominion of Argus by ${$s1/1000} sec and increases damage dealt by Hand of Gul'dan by $s2%.
 
 Name             : Dominion of Argus (id=1276222) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None

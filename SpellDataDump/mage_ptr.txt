@@ -19961,7 +19961,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 5069 (Label) | Target: Self (1)
 
 Name             : Fired Up (id=1257343) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -19984,7 +19984,7 @@ Effects          :
 Description      : Consuming Hot Streak has a $s1% chance to grant you a stack of Fired Up, increasing your Fire damage by $1257350s1% for $1257350d. Multiple applications may overlap.
 
 Name             : Fired Up (id=1257348) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -20005,7 +20005,7 @@ Description      : Combustion significantly increases your chance of gaining Fir
 Additionally Fired Up now extends Combustion's duration by ${$s2/1000}.1 sec.
 
 Name             : Fired Up (id=1257349) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Fire [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Mage
@@ -20049,7 +20049,7 @@ Description      : $@spelldesc1257349
 Tooltip          : Fire damage increased by $s1%.
 
 Name             : Touch of the Archmage (id=1257942) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -20066,7 +20066,7 @@ Effects          :
 Description      : Touch of the Magi increases the damage your target receives from you by $s1%.
 
 Name             : Touch of the Archmage (id=1257947) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -20099,7 +20099,7 @@ Description      : Arcane Charges further increase the damage of Arcane Blast, A
 Arcane Missiles damage increased by $s3%.
 
 Name             : Touch of the Archmage (id=1257950) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -20477,7 +20477,7 @@ Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
 Movement speed reduced by $w3%.][]
 
 Name             : Hand of Frost (id=1262935) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -20495,7 +20495,7 @@ Effects          :
 Description      : Shattering an enemy has a $s1% chance to summon a Hand of Frost to pursue your target, dealing $1262769s1 Frost damage and applying $s2 $Lstack:stacks; of Freezing on contact.
 
 Name             : Hand of Frost (id=1262981) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -20522,7 +20522,7 @@ Description      : Each stack of Freezing you Shatter increases your chance to s
 Damage from Hand of Frost increases your spell damage by $s2% for $1263263d. Multiple applications may overlap.
 
 Name             : Hand of Frost (id=1263249) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Mage
 School           : Physical
 Spell Type       : None

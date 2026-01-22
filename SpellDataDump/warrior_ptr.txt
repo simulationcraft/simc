@@ -1433,9 +1433,9 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
+                 : Arms [tree=spec, row=2, col=2, max_rank=1, req_points=0]
                  : Fury [tree=spec, row=3, col=1, max_rank=1, req_points=0]
-                 : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19019,7 +19019,7 @@ Effects          :
 Description      : $@spelldesc1265361
 
 Name             : Master of Warfare (id=1269306) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -19038,7 +19038,7 @@ Effects          :
 Description      : Each stack of Master of Warfare increases Mortal Strike, Cleave, and Overpower damage by ${$s1/10}.1% and critical strike damage by ${$s2/10}.1%.
 
 Name             : Master of Warfare (id=1269307) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19053,7 +19053,7 @@ Effects          :
 Description      : Heroic Strike reduces the cooldown of Colossus Smash by ${$s1/-1000}.1 sec.
 
 Name             : Rampaging Berserker (id=1269308) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19075,7 +19075,7 @@ Effects          :
 Description      : Rampage damage increased by $s1% and Rampage makes you go Berserk, increasing your Strength by $1269349s1% for $1269349d. Multiple applications of Berserk may overlap.
 
 Name             : Rampaging Berserker (id=1269309) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -19094,7 +19094,7 @@ Effects          :
 Description      : Rampage's Rage cost is reduced by ${$s1/-10} and damage is increased by a further $s2% during Recklessness.
 
 Name             : Rampaging Berserker (id=1269310) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19115,7 +19115,7 @@ Effects          :
 Description      : Recklessness grants $s2 stacks of Berserk and duration of Recklessness increased by $s1%.
 
 Name             : Phalanx (id=1269311) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19132,7 +19132,7 @@ Effects          :
 Description      : Thunder Clap causes your next Shield Slam to unleash a wave of force, dealing $1270116s1 Physical damage to all enemies in front of you, and reducing the damage they deal to you by $1270116s2% for $1270116d.
 
 Name             : Phalanx (id=1269312) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -19156,7 +19156,7 @@ Effects          :
 Description      : Damage dealt by Thunder Clap and Phalanx's wave of force is increased by $s1%.
 
 Name             : Phalanx (id=1269313) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19177,7 +19177,7 @@ Effects          :
 Description      : While Shield Block is active, Shield Slam deals 10% additional damage and has a 20% increased chance to critically strike.
 
 Name             : Master of Warfare (id=1269314) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Arms [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None

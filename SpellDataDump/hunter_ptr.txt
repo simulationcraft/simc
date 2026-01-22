@@ -21494,7 +21494,7 @@ Effects          :
 Description      : $@spelldesc343244
 
 Name             : Raptor Swipe (id=1259003) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -21516,7 +21516,7 @@ Effects          :
 Description      : Raptor Strike has a $s1% chance to upgrade itself to a Raptor Swipe, dealing $1262293s1 Physical damage to all enemies within $s3 yds in front of you. Damage reduced beyond $s2 targets.
 
 Name             : Raptor Swipe (id=1259017) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Hunter
@@ -21544,7 +21544,7 @@ Description      : Raptor Strike, Wildfire Bomb, and Raptor Swipe damage increas
 Raptor Swipe deals $s2% increased damage to its primary target.
 
 Name             : Raptor Swipe (id=1259019) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -22814,7 +22814,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Nature's Ally (id=1273043) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -22830,7 +22830,7 @@ Effects          :
 Description      : Bestial Wrath summons an Animal Companion from your Stable to fight alongside you for $1282474d. The summoned Animal Companion obeys your Kill Command, Wild Thrash, and Stomps alongside your other pets.
 
 Name             : Nature's Ally (id=1273065) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Hunter
@@ -22853,7 +22853,7 @@ Description      : Damage dealt by your pets increased by $s1%.
 Bestial Wrath strikes $s2 additional targets.
 
 Name             : Nature's Ally (id=1273126) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -22883,7 +22883,7 @@ Description      : Barbed Shot and Cobra Shot damage increased by $s1%.
 Barbed Shot, Cobra Shot, and Black Arrow increases the damage of your next Kill Command by $1276720s1%.
 
 Name             : Take Aim (id=1273128) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -22903,7 +22903,7 @@ Effects          :
 Description      : Aimed Shot always critically strikes.
 
 Name             : Take Aim (id=1273129) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
                  : Effect#4 [op=mul, values=(1, 2)]
@@ -22936,7 +22936,7 @@ Description      : Aimed Shot's critical strike damage is increased by $s4% of y
 The damage of your other ranged abilities is increased by $s2%.
 
 Name             : Take Aim (id=1273132) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
