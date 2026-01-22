@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -986,7 +986,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Category Cooldown: 45 seconds
 Affecting Spells : Cat Form (768 effect#5), Starfall (191034 effect#2), Time Spiral (375230 effects: #1, #2)
@@ -2617,22 +2617,22 @@ Effects          :
                    Affected Spells: Living Flame (361509)
                    Family Flags: 22
 #20 (id=1123736) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
 #21 (id=1143151) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916)
                    Family Flags: 49
 #22 (id=1143153) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 2669 (Label) | Target: Self (1)
                    Affected Spells (Label): Panacea (387763)
 #23 (id=1257862) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 46 | Scaled Value: 46 | Target: Self (1)
+                   Base Value: 63 | Scaled Value: 63 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
 #24 (id=1257863) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 69 | Scaled Value: 69 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 63 | Scaled Value: 63 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
 #25 (id=1294546) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2860,7 +2860,7 @@ Resource         : 2.6% Base Mana (0) (id=232525) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Interwoven Threads (412713 effect#9), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
@@ -3356,7 +3356,7 @@ Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.8847 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.8847 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Targeted Enemy (6)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -6316,7 +6316,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
 Family Flags     : 44
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (491)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001313)  : Apply Aura (6) | Dummy (4)
@@ -7782,9 +7782,9 @@ Labels           : 16: Class Spells
 Triggered By     : Blessing of the Bronze (364342)
 Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1012789)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid in Area (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Gust of Wind (192063), Tiger Dash (252216)
+#1 (id=1012789)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 2308 (Category) | Radius: 100 yards | Target: Raid in Area (56)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
@@ -7939,7 +7939,7 @@ Resource         : 2.6% Base Mana (0) (id=265448) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Interwoven Threads (412713 effect#9), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
@@ -8517,7 +8517,7 @@ Family Flags     : 1
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022768)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | Target: Self (1)
 Description      : $@spelldesc387761
 
 Name             : Regenerative Magic (id=387787) [Spell Family (224), Passive] 
@@ -8874,7 +8874,7 @@ Labels           : 16: Class Spells
                  : 1468: Black Evoker Spells
 Affecting Spells : Hover (358267 effect#5), Hover (393271 effect#1), Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1), Arcane Reach (454983 effect#4)
 Family Flags     : 2, 56, 65, 67
-Attributes       : Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : No Aura Cancel (31), Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -9062,11 +9062,11 @@ Effects          :
                    Affected Spells: Living Flame (361509)
                    Family Flags: 22
 #14 (id=1081001) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
 #15 (id=1081002) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916)
                    Family Flags: 49
 #16 (id=1082681) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -9869,7 +9869,7 @@ Effects          :
                    Affected Spells (Label): Class Spells (16)
 #5 (id=1081268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 3957 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dwarven Medicine (416224), Brann's Epic Egg (432647), Idol of the Earthmother (439237), Brute Force Idol (458465), Idol of the Earthmother (458918), Idol of the Earthmother (458923), Idol of the Earthmother (458927), Dwarven Medicine (460909), Veteran of Ironforge (473250), L00T RAID-R (473679), L00T RAID-R (1213486), L00T RAID-R (1213487), L00T RAID-R (1213488), Pinged Augment Chip (1214502), Automatic Footbomb Dispenser (1214572), Pinged Augment Chip (1214796), Pinged Augment Chip (1214802), Three Dimensional Bioprinter (1214857), Three Dimensional Bioprinter (1214873), Biofuel Rocket Gear (1214882), Concussion (1214893), Pinged Augment Chip (1214905), Pinged Augment Chip (1214906), Pinged Augment Chip (1214907), Reverse Engineered Goblin Death Bomb (1214930), Reverse Engineered Goblin Death Bomb (1214932), Reverse Engineered Goblin Death Bomb (1214972), Reverse Engineered Goblin Death Bomb (1214994), Bomb Potion (1215011), Pacifist Rig (1215045), LifeLink Emergency Activator (1215051), Reverse Engineered Goblin Death Bomb (1215108), Reverse Engineered Goblin Death Bomb (1215109), Reverse Engineered Goblin Death Bomb (1215110), Reverse Engineered Goblin Death Bomb (1215111), Reverse Engineered Goblin Death Bomb (1215112), Reverse Engineered Goblin Death Bomb (1215114), Reverse Engineered Goblin Death Bomb (1215115), Reverse Engineered Goblin Death Bomb (1215116), Reverse Engineered Goblin Death Bomb (1215117), Silencing Potion (1215127), Three Dimensional Bioprinter (1215251), Three Dimensional Bioprinter (1215253), Three Dimensional Bioprinter (1215255), Three Dimensional Bioprinter (1215257), Mechasaur EZ-Build Kit (1215339), Mechasaur EZ-Build Kit (1215365), Mechasaur EZ-Build Kit (1215368), Mechasaur EZ-Build Kit (1215369), Pacifist Rig (1215958), Pacifist Rig (1215959), Pacifist Rig (1215960), Automatic Footbomb Dispenser (1216123), Automatic Footbomb Dispenser (1216129), Automatic Footbomb Dispenser (1216130), Biofuel Rocket Gear (1216680), Biofuel Rocket Gear (1216681), Biofuel Rocket Gear (1216682), Dwarven Medicine (1226262)
+                   Affected Spells (Label): Dwarven Medicine (416224), Brann's Epic Egg (432647), Idol of the Earthmother (439237), Brute Force Idol (458465), Idol of the Earthmother (458918), Idol of the Earthmother (458923), Idol of the Earthmother (458927), Dwarven Medicine (460909), Veteran of Ironforge (473250), L00T RAID-R (473679), L00T RAID-R (1213486), L00T RAID-R (1213487), L00T RAID-R (1213488), Pinged Augment Chip (1214502), Automatic Footbomb Dispenser (1214572), Pinged Augment Chip (1214796), Pinged Augment Chip (1214802), Three Dimensional Bioprinter (1214857), Three Dimensional Bioprinter (1214873), Biofuel Rocket Gear (1214882), Concussion (1214893), Pinged Augment Chip (1214905), Pinged Augment Chip (1214906), Pinged Augment Chip (1214907), Reverse Engineered Goblin Death Bomb (1214930), Reverse Engineered Goblin Death Bomb (1214932), Reverse Engineered Goblin Death Bomb (1214972), Reverse Engineered Goblin Death Bomb (1214994), Bomb Potion (1215011), Pacifist Rig (1215045), LifeLink Emergency Activator (1215051), Reverse Engineered Goblin Death Bomb (1215108), Reverse Engineered Goblin Death Bomb (1215109), Reverse Engineered Goblin Death Bomb (1215110), Reverse Engineered Goblin Death Bomb (1215111), Reverse Engineered Goblin Death Bomb (1215112), Reverse Engineered Goblin Death Bomb (1215114), Reverse Engineered Goblin Death Bomb (1215115), Reverse Engineered Goblin Death Bomb (1215116), Reverse Engineered Goblin Death Bomb (1215117), Silencing Potion (1215127), Three Dimensional Bioprinter (1215251), Three Dimensional Bioprinter (1215253), Three Dimensional Bioprinter (1215255), Three Dimensional Bioprinter (1215257), Mechasaur EZ-Build Kit (1215339), Mechasaur EZ-Build Kit (1215365), Mechasaur EZ-Build Kit (1215368), Mechasaur EZ-Build Kit (1215369), Pacifist Rig (1215958), Pacifist Rig (1215959), Pacifist Rig (1215960), Automatic Footbomb Dispenser (1216123), Automatic Footbomb Dispenser (1216129), Automatic Footbomb Dispenser (1216130), Biofuel Rocket Gear (1216680), Biofuel Rocket Gear (1216681), Biofuel Rocket Gear (1216682), Dwarven Medicine (1226262), Vampiric Reaping (1285825)
 #6 (id=1081995)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #7 (id=1083267)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -11299,9 +11299,6 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 2207 (Category) | Target: Self (1)
                    Affected Spells (Category): Prescience (409311)
 #8 (id=1294448)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2456 (Category) | Target: Self (1)
-                   Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
-#9 (id=1298605)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 2456 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
 Description      : The cooldowns of your spells are reduced by $s1%.
@@ -15238,7 +15235,7 @@ Attributes       : Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1242457)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1242458)  : Dummy (3)
+#2 (id=1242458)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc1242031
 Tooltip          : Your next Echo applies to $s1 additional target at $s2% effectiveness.

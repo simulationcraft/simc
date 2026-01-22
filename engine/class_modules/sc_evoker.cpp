@@ -2300,7 +2300,7 @@ public:
 
     if ( p()->talent.imminent_destruction.enabled() )
     {
-      parse_effects( p()->buff.imminent_destruction, IGNORE_STACKS, CONSUME_BUFF );
+      parse_effects( p()->buff.imminent_destruction, IGNORE_STACKS );
     }
 
     parse_effects( p()->buff.emerald_trance_stacking );
@@ -2537,6 +2537,13 @@ struct essence_base_t : public BASE
       {
         BASE::p()->buff.essence_burst->trigger();
         BASE::p()->proc.hoarded_power->occur();
+      }
+    }
+    else
+    {
+      if ( BASE::p()->buff.imminent_destruction->up() )
+      {
+        BASE::p()->buff.imminent_destruction->decrement();
       }
     }
   }
@@ -4236,7 +4243,7 @@ struct living_flame_base_t : public Base
   living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
     : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
   {
-    base_t::dual = true;
+    base_t::background = base_t::dual = true;
 
     if ( !p->talent.ruby_embers.ok() )
       base_t::dot_duration = 0_ms;
@@ -5336,10 +5343,22 @@ struct deep_breath_t : public evoker_spell_t
         p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
+      if ( p()->talent.duplicate1.enabled() )
+      {
+        p()->pets.duplicate_pet.spawn();
+      }
+
+      if ( p()->buff.ebon_might_self_buff->check() )
+      {
+        p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
+      }
+      else if ( ebon )
+      {
+        ebon->execute();
+      }
+
       evoker_spell_t::execute();
 
-      if ( ebon )
-        ebon->execute();
 
       if ( upheaval_set )
       {
@@ -5449,6 +5468,13 @@ struct deep_breath_t : public evoker_spell_t
 
     evoker_spell_t::execute();
     main_spell->execute();
+
+    if ( !( p()->talent.scalecommander.maneuverability.ok() &&
+            p()->talent.scalecommander.command_squadron.enabled() ) &&
+         p()->talent.imminent_destruction.ok() )
+    {
+      p()->buff.imminent_destruction->trigger();
+    }
 
     if ( p()->talent.strafing_run.enabled() && !is_strafing_run )
     {
@@ -7005,15 +7031,28 @@ struct breath_of_eons_t : public evoker_spell_t
         p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
+      if ( p()->buff.ebon_might_self_buff->check() )
+      {
+        p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
+      }
+
       if ( p()->talent.duplicate1.enabled() )
       {
         p()->pets.duplicate_pet.spawn();
       }
+      else if ( ebon )
+      {
+        ebon->execute();
+      }
 
       evoker_spell_t::execute();
 
-      if ( ebon )
-        ebon->execute();
+      if ( !( p()->talent.scalecommander.maneuverability.ok() &&
+              p()->talent.scalecommander.command_squadron.enabled() ) &&
+           p()->talent.imminent_destruction.ok() )
+      {
+        p()->buff.imminent_destruction->trigger();
+      }
 
       if ( upheaval_set )
       {
@@ -7653,9 +7692,11 @@ public:
   prescience_buff_t( evoker_td_t& td )
     : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
   {
-    set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
+    set_default_value( p()->talent.prescience->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_chance( 1.0 );
+    set_duration( p()->talent.prescience_buff->duration() *
+                  ( 1.0 + p()->talent.chronowarden.golden_opportunity->effectN( 2 ).percent() ) );
   };
 
   timespan_t buff_duration() const override
@@ -9375,6 +9416,8 @@ void evoker_t::init_spells()
 
   register_passive_effect_mask( spec.close_as_clutchmates, effect_mask_t( true ).disable( 1, 2 ) );
 
+  register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
+
   // Register passives
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -10365,9 +10408,8 @@ void evoker_t::extend_ebon( timespan_t extend )
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
-  parse_effects( evoker()->buff.ebon_might_self_buff );
-  parse_effects( evoker()->buff.burnout );
-  parse_effects( evoker()->buff.essence_burst );
+  // parse_effects( evoker()->buff.ebon_might_self_buff );
+  parse_effects( evoker()->buff.essence_burst, effect_mask_t( true ).disable( 5 ) );
 
   if ( evoker()->talent.scalecommander.unrelenting_siege.enabled() )
   {

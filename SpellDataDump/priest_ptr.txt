@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -558,7 +558,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Improved Psychic Scream (44297 effect#1), Petrifying Scream (55676 effect#1), Psychic Voice (196704 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=3304)     : Apply Aura (6) | Fear (7)
@@ -748,7 +748,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Silence
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=7356)     : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Targeted Enemy (6)
@@ -1436,6 +1436,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 5419: Deathspeaker (392507 effect#4), Subservient Shadows (1228516 effect#5)
+                 : 6366: Discipline Priest (137032 effect#24)
 Attributes       : Passive (6), Do Not Log (8), No Aura Icon (60), Do Not Log on Learn (355)
 Effects          :
 #1 (id=24424)    : Apply Aura (6) | Dummy (4)
@@ -1446,6 +1447,7 @@ Effects          :
                    Modified By: Deathspeaker (392507 effect#4)
 #3 (id=1293160)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Modified By: Discipline Priest (137032 effect#24)
 Description      : Shadow Word: Death has a $s3% chance to summon a Shadowfiend for $s1 sec when damaging targets below $s2% health.
 
 $@spellicon1280172 $@spellname1280172
@@ -2419,12 +2421,12 @@ Range            : 40 yards
 Duration         : 4 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Blessing of the Bronze (381753 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Stance Mask      : 0x88000000
 Mechanic         : Knockback
@@ -2569,7 +2571,8 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 45)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Power Word: Shield, Flash Heal, Plea, Penance, and Power Word: Radiance apply Atonement to your target for $194384d.
@@ -3341,7 +3344,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x88000000
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Multi-Click Ground Targeting (340), Allow Class Ability Procs (416)
@@ -3810,6 +3813,10 @@ Effects          :
                    Base Value: -59 | Scaled Value: -59 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
+#24 (id=1302601) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 23 | Misc Value 2: 6366 (Label) | Target: Self (1)
+                   Affected Spells (Label): Shadowfiend (34433)
+Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -3851,11 +3858,11 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 12 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
 #11 (id=1040379) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
 #12 (id=1040380) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4294,7 +4301,8 @@ Family Flags     : 52, 126
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 11 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 16 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (11 -> 16)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
@@ -10496,7 +10504,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Blessing of the Bronze (381753 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -11982,8 +11990,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -12276,7 +12282,7 @@ Effects          :
 Description      : $@spelldesc373129
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(1, 2)]
 Class            : Priest
 School           : Holy
@@ -13360,8 +13366,8 @@ Effects          :
 Description      : Increases the damage of Shadow Word: Pain by $s1% and increases its duration by ${$s3/1000} sec.
 
 Name             : Borrowed Time (id=390691) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=7, col=1, max_rank=2, req_points=8]
-                 : Effect#2 [op=set, values=(4, 8)]
+Talent Entry     : Discipline [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13375,8 +13381,9 @@ Effects          :
 #1 (id=1027699)  : Apply Aura (6) | Proc Trigger Spell (42): Borrowed Time
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390692 | Target: Self (1)
 #2 (id=1027700)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 3 | Misc Value 2: 1946 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 1946 (Label) | Target: Self (1)
                    Affected Spells (Label): Borrowed Time (390692)
+Hotfixed         : Base Value (4 -> 5)
 Description      : Casting Power Word: Shield increases your Haste by $s2% for $390692d.
 
 Name             : Borrowed Time (id=390692) [Spell Family (6)] 
@@ -16418,7 +16425,8 @@ Family Flags     : 7, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150048)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.1 -> 1.5)
 #2 (id=1150204)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -17772,6 +17780,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
+                 : 3023
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
@@ -19496,8 +19505,6 @@ Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
 Name             : Master the Darkness (id=1253590) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20]
-                 : Effect#1 [op=mul, values=(1, 2)]
-                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19660,6 +19667,8 @@ Description      : $@spelldesc1253593
 
 Name             : Master the Darkness (id=1253845) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Shadow
@@ -20192,7 +20201,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
-Description      : $?c3[Void Torrent deals $s1% increased damage.][Mind Blast deals $s1% increased damage.]
+Description      : $?c3[Void Torrent deals $s1% increased damage.][Mind Blast deals $s2% increased damage.]
 
 Name             : Power Word: Fortitude Highlight (id=1271911) [Spell Family (6), Hidden] 
 Class            : Priest
@@ -20483,7 +20492,8 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1292915)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 20)
 Description      : Your Penance bolts sear the enemy, dealing $s1% of its damage over 8 sec.
 
 Name             : Searing Light (id=1280134) [Spell Family (6)] 
@@ -20651,24 +20661,4 @@ Effects          :
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0, 4, 99
 Description      : Healing is increased by $s1%.
-
-Name             : Benediction (id=1284817) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Type       : None
-Duration         : 1.5 seconds
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
-                 : 5671
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
-Proc Flags       : Magic Heal
-Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
-Effects          :
-#1 (id=1300372)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Benediction overrides Flash Heal
-                   Base Value: 1262763 | Scaled Value: 1262763 | Misc Value: 2061 | Misc Value 2: 2 | Target: Self (1)
-Description      : $@spelldesc1262755
-Tooltip          : Flash Heal is upgraded to Benediction.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16868,7 +16868,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1282470)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
                    Modified By: Ancestral Influence (1270446 effect#1)
 Description      : $@spelldesc443450
 Tooltip          : An Ancestor is at your side. Whenever you cast a spell, the Ancestor will cast a similar spell.$?$W2>0[
@@ -21029,7 +21028,6 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Healing Wave (77472)
                    Family Flags: 80
-Hotfixed         : Misc Value (0 -> 7)
 Description      : Healing Wave's critical strike chance is increased by $s1%.
 
 Name             : Current Control (id=1253093) [Spell Family (11), Passive, Hidden] 
@@ -21062,7 +21060,6 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
-Hotfixed         : Affects Spells
 Description      : Healing Stream Totem heals ${100*(1/(1+$s1/100)-1)}% more often.
 
 Name             : Earthweaver (id=1254210) [Spell Family (11), Passive, Hidden] 
@@ -21778,7 +21775,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1281157)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Instinctive Imbuements (id=1270350) [Spell Family (11), Passive, Hidden] 
@@ -22018,6 +22014,27 @@ Effects          :
 #1 (id=1292427)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your Earth Elemental no longer taunts nearby enemies or generates threat and instead increases your maximum health by $381755s1% while active.
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Shaman - Midnight PrePatch - 11.2 Class Set 2pc (id=1283655) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman

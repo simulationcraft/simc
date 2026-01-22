@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65459 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -3608,7 +3608,7 @@ bonus_id={ 6408 }, stats={ 100% RunSpeed [0.3000] }
 bonus_id={ 6409 }, stats={ 100% Leech [0.3000] }
 bonus_id={ 6410 }, stats={ 100% Avoidance [0.3000] }
 bonus_id={ 6411 }, stats={ 100% unknown [0.3000] }
-bonus_id={ 6416 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
+bonus_id={ 6416 }, recursive_bonus_ids={ 4790 }
 bonus_id={ 6423 }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6424 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6425 }, desc={ Warforged }, ilevel={ 5 @plvl 1 - 90 @plvl 50 }
@@ -8166,7 +8166,7 @@ bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
 bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
-bonus_id={ 13642 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
+bonus_id={ 13642 }, recursive_bonus_ids={ 13617 }
 bonus_id={ 13643 }, desc={ Beginner Crafted }, ilevel={ 1 @plvl 1 - 90 @plvl 90 }
 bonus_id={ 13644 }, base_ilevel={ 201 }, req_ilevel={ 90 }
 bonus_id={ 13645 }, base_ilevel={ 126 }, quality={ rare }

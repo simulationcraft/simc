@@ -1,5 +1,5 @@
-// Rank class spells, wow build 12.0.1.65337
-static constexpr std::array<rank_class_spell_t, 42> __ptr_rank_spells_data { {
+// Rank class spells, wow build 12.0.1.65448
+static constexpr std::array<rank_class_spell_t, 40> __ptr_rank_spells_data { {
   {  1,    0,  319158,       0, "Victory Rush"                      , "Rank 2" },
   {  2,    0,  327977,       0, "Judgment"                          , "Rank 2" },
   {  2,   65,  315867,       0, "Judgment"                          , "Rank 3" },
@@ -12,7 +12,6 @@ static constexpr std::array<rank_class_spell_t, 42> __ptr_rank_spells_data { {
   {  2,   70,  342348,       0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70,  315867,       0, "Judgment"                          , "Rank 3" },
   {  4,  259,  319473,       0, "Mastery: Potent Assassin"          , "Rank 2" },
-  {  4,  260,  331851,       0, "Blade Flurry"                      , "Rank 2" },
   {  4,  261, 1279401,       0, "Shuriken Storm"                    , "Rank 2" },
   {  6,  252,  325554,       0, "Dark Transformation"               , "Rank 2" },
   {  7,    0,  318044,       0, "Lightning Bolt"                    , "Rank 2" },
@@ -28,7 +27,6 @@ static constexpr std::array<rank_class_spell_t, 42> __ptr_rank_spells_data { {
   { 10,  269,  343731,       0, "Disable"                           , "Rank 2" },
   { 10,  269,  343730,       0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  269,  325215,       0, "Touch of Death"                    , "Rank 3" },
-  { 10,  270,  322104,       0, "Expel Harm"                        , "Rank 2" },
   { 11,    0,  343238,       0, "Entangling Roots"                  , "Rank 2" },
   { 11,    0,  159456,       0, "Travel Form"                       , "Rank 2" },
   { 11,  102,  326646,       0, "Moonfire"                          , "Rank 2" },

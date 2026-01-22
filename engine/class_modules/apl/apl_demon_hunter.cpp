@@ -13,7 +13,7 @@ std::string potion( const player_t* p )
 
 std::string flask_devourer( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
 }
 
 std::string flask_havoc( const player_t* p )
@@ -28,7 +28,7 @@ std::string flask_vengeance( const player_t* p )
 
 std::string food_devourer( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 
 std::string food_havoc( const player_t* p )
@@ -43,12 +43,12 @@ std::string food_vengeance( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "void_touched" : "crystallized";
 }
 
 std::string temporary_enchant_devourer( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2" : "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
 }
 
 std::string temporary_enchant_havoc( const player_t* p )
@@ -67,26 +67,56 @@ void devourer( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* illicit_doping = p->get_action_priority_list( "illicit_doping" );
+  action_priority_list_t* math_for_wizards = p->get_action_priority_list( "math_for_wizards" );
   action_priority_list_t* melee_combo = p->get_action_priority_list( "melee_combo" );
   action_priority_list_t* reaps = p->get_action_priority_list( "reaps" );
 
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=use_cstar,default=0,value=0,op=reset" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.signet_of_the_priory" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.signet_of_the_priory" );
+  precombat->add_action( "variable,name=weapon_buffs,value=equipped.bestinslots" );
+  precombat->add_action( "variable,name=weapon_sync,op=setif,value=1,value_else=0.5,condition=equipped.bestinslots" );
+  precombat->add_action( "variable,name=weapon_stat_value,value=equipped.bestinslots*5142*15" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.spymasters_web" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.spymasters_web" );
+  precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=0" );
+  precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=0" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.proc.any_dps.duration)*trinket.2.proc.any_dps.default_value)>((trinket.1.proc.any_dps.duration)*trinket.1.proc.any_dps.default_value)" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,if=variable.weapon_buffs,value=3,value_else=variable.trinket_priority,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs|variable.weapon_stat_value>(((trinket.2.proc.any_dps.duration)*trinket.2.proc.any_dps.default_value)<?((trinket.1.proc.any_dps.duration)*trinket.1.proc.any_dps.default_value))" );
+  precombat->add_action( "variable,name=trinket_priority,op=set,value=trinket.1.is.signet_of_the_priory+2*trinket.2.is.signet_of_the_priory,if=equipped.signet_of_the_priory&variable.trinket_priority=3" );
+  precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
+  precombat->add_action( "variable,name=should_use_star,default=0,value=0,op=reset" );
+  precombat->add_action( "arcane_torrent" );
   precombat->add_action( "consume" );
 
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up" );
-  default_->add_action( "potion,if=buff.metamorphosis.up|fight_remains<=30" );
+  default_->add_action( "call_action_list,name=math_for_wizards" );
+  default_->add_action( "call_action_list,name=illicit_doping" );
   default_->add_action( "metamorphosis" );
   default_->add_action( "void_ray" );
-  default_->add_action( "collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&!variable.use_cstar" );
+  default_->add_action( "collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&variable.should_use_star" );
   default_->add_action( "call_action_list,name=melee_combo,if=talent.devourers_bite" );
   default_->add_action( "eradicate,if=buff.voidfall_spending.react|active_enemies>1" );
   default_->add_action( "call_action_list,name=melee_combo" );
   default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.react" );
-  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(talent.scythes_embrace|!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30))" );
+  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(talent.scythes_embrace|!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30)&variable.should_use_star)" );
   default_->add_action( "soul_immolation,if=refreshable&!buff.metamorphosis.up" );
   default_->add_action( "devour" );
   default_->add_action( "consume" );
+
+  illicit_doping->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up&!buff.power_infusion.up" );
+  illicit_doping->add_action( "potion,if=buff.metamorphosis.up|fight_remains<=30" );
+  illicit_doping->add_action( "use_item,slot=trinket1,if=buff.metamorphosis.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains" );
+  illicit_doping->add_action( "use_item,slot=trinket2,if=buff.metamorphosis.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains" );
+  illicit_doping->add_action( "use_item,slot=main_hand,if=variable.weapon_buffs&(variable.trinket_2_buffs&(trinket.2.cooldown.remains|trinket.2.cooldown.duration<=20)|!variable.trinket_2_buffs|variable.trinket_2_exclude|variable.trinket_priority=3)&(variable.trinket_1_buffs&(trinket.1.cooldown.remains|trinket.1.cooldown.duration<=20)|!variable.trinket_1_buffs|variable.trinket_1_exclude|variable.trinket_priority=3)" );
+  illicit_doping->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(gcd.remains>0.1)" );
+  illicit_doping->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(gcd.remains>0.1)" );
+  illicit_doping->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)" );
+  illicit_doping->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)" );
+
+  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=1,if=talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.otherworldly_focus|talent.star_fragments&talent.emptiness)" );
 
   melee_combo->add_action( "vengeful_retreat,if=buff.voidstep.up" );
   melee_combo->add_action( "hungering_slash" );

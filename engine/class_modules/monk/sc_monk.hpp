@@ -576,8 +576,6 @@ public:
     propagate_const<proc_t *> blackout_combo_tiger_palm;
     propagate_const<proc_t *> blackout_combo_keg_smash;
     propagate_const<proc_t *> charred_passions;
-    propagate_const<proc_t *> counterstrike_tp;
-    propagate_const<proc_t *> counterstrike_sck;
     propagate_const<proc_t *> elusive_footwork_proc;
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;

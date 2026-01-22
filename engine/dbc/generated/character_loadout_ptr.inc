@@ -1,7 +1,7 @@
 static constexpr int PTR_MYTHIC_TARGET_ITEM_LEVEL = 265;
 
-// Character Loadout data, wow build 12.0.1.65337
-static constexpr std::array<character_loadout_data_t, 599> __ptr_character_loadout_data { {
+// Character Loadout data, wow build 12.0.1.65448
+static constexpr std::array<character_loadout_data_t, 615> __ptr_character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
   { 1809, 1, 0, 154027 },
@@ -556,6 +556,22 @@ static constexpr std::array<character_loadout_data_t, 599> __ptr_character_loado
   { 1777, 12, 1, 154748 },
   { 1777, 12, 1, 160513 },
   { 1777, 12, 1, 160513 },
+  { 2409, 12, 2, 154735 },
+  { 2409, 12, 2, 154736 },
+  { 2409, 12, 2, 154737 },
+  { 2409, 12, 2, 154738 },
+  { 2409, 12, 2, 154739 },
+  { 2409, 12, 2, 154740 },
+  { 2409, 12, 2, 154741 },
+  { 2409, 12, 2, 154742 },
+  { 2409, 12, 2, 154743 },
+  { 2409, 12, 2, 154744 },
+  { 2409, 12, 2, 154745 },
+  { 2409, 12, 2, 154746 },
+  { 2409, 12, 2, 154747 },
+  { 2409, 12, 2, 154748 },
+  { 2409, 12, 2, 160513 },
+  { 2409, 12, 2, 160513 },
   { 1785, 13, 0, 194522 },
   { 1785, 13, 0, 194523 },
   { 1785, 13, 0, 194524 },
@@ -603,7 +619,7 @@ static constexpr std::array<character_loadout_data_t, 599> __ptr_character_loado
   { 1787, 13, 2, 194536 },
 } };
 
-// Trait Loadout data, wow build 12.0.1.65337
+// Trait Loadout data, wow build 12.0.1.65448
 static constexpr std::array<trait_loadout_data_t, 2728> __ptr_trait_loadout_data { {
   { 0, 119137, 1, 0 },
   { 0, 119132, 1, 1 },

@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 12.0.1.65337
+// Item enchantment data, wow build 12.0.1.65448
 static constexpr std::array<item_enchantment_data_t, 5330> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
@@ -5309,10 +5309,10 @@ static constexpr std::array<item_enchantment_data_t, 5330> __ptr_spell_item_ench
   { 8553,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Galaxy"                            },
   { 8554, 240970, -1,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {     71,     50,      0 }, {  0.5352f,  0.2973f,  0.0000f },       0, "+$k1 Primary Stat and +$k2 Armor"  },
   { 8555, 240971, -1,   0,  80, 80, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {     71,     50,      0 }, {  0.6839f,  0.3865f,  0.0000f },       0, "+$k1 Primary Stat and +$k2 Armor"  },
-  { 8556, 240967, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258209,      0 }, {  0.5352f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color" },
-  { 8557, 240966, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258209,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color" },
-  { 8558, 240969, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258210,      0 }, {  0.5352f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color" },
-  { 8559, 240968, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258210,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color" },
+  { 8556, 240967, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258209,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color" },
+  { 8557, 240966, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258209,      0 }, {  0.5352f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color" },
+  { 8558, 240969, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258210,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color" },
+  { 8559, 240968, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 1258210,      0 }, {  0.5352f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color" },
   { 8575,      0, -4,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1258769,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Pristine Everchill Pearl"          },
   { 8576,      0, -4,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1258770,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Intricate Everchill Pearl"         },
   { 8577,      0, -4,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1258771,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Flawed Everchill Pearl"            },

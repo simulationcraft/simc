@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -753,6 +753,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 124
                  : 292
+                 : 690: Major Cooldowns
                  : 1220
                  : 2309: First of the Illidari (235893 effect#2)
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -4310,7 +4311,7 @@ Mechanic         : Sap
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Devourer Demon Hunter (1213636 effect#5)
 Family Flags     : 32, 48
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Can Proc From Suppressed Target Procs (254), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
@@ -4756,14 +4757,13 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Immolation Aura (427913 effect#6), Immolation Aura (427914 effect#6), Immolation Aura (427915 effect#6), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Demon Hunter Vengeance 11.0 Class Set 2pc (453707 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Untethered Rage (1270448 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Immolation Aura (427913 effect#6), Immolation Aura (427914 effect#6), Immolation Aura (427915 effect#6), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Demon Hunter Vengeance 11.0 Class Set 2pc (453707 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Untethered Rage (1270448 effect#2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Soul Cleave (228477), Soul Sunder (452436)
 Family Flags     : 31, 34, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Active Threat (94), Not a Proc (105), No Cast Log (128), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=344032)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.08 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
-                   Modified By: Untethered Rage (1270448 effect#1)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
                    Modified By: Untethered Rage (1270448 effect#2)
@@ -15919,6 +15919,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 124
                  : 292
+                 : 690: Major Cooldowns
                  : 1220
                  : 2309: First of the Illidari (235893 effect#2)
                  : 5161: Mastery: Monster Within (1238855 effect#3), Mastery: Monster Within (1238855 effect#4)
@@ -16076,11 +16077,12 @@ Spell Type       : None
 Range            : 25 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
+Cooldown         : 5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 105
-Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Action (Delayed) (17)
 Effects          :
 #1 (id=1207505)  : Dummy (3)
@@ -16104,7 +16106,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Impending Apocalypse (1227338 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Midnight (1242486 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #1, #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Demon Hunter Devourer 12.0 Class Set 4pc (1264882 effect#1), Blind Focus (1272364 effects: #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 103
-Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186)
+Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.625 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -16304,7 +16306,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Devourer's Edge (1244222 effects: #1, #2), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 99
-Attributes       : Can Proc From Procs (122)
+Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.847 | Target: Targeted Enemy (6)
@@ -16324,7 +16326,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Devourer Demon Hunter (1213636 effect#5)
 Family Flags     : 32, 102
-Attributes       : No Aura Icon (60), Can Proc From Procs (122), Enforce Facing on Primary Target Only (351), Unknown (467)
+Attributes       : No Aura Icon (60), Can Proc From Procs (122), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Unknown (467)
 Effects          :
 #1 (id=1215274)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -16347,7 +16349,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Devourer's Edge (1244222 effects: #1, #2), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 99
-Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292)
+Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.846 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
@@ -16368,7 +16370,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Devourer Demon Hunter (1213636 effects: #5, #6)
 Family Flags     : 32, 85, 102
-Attributes       : No Aura Icon (60), Can Proc From Procs (122)
+Attributes       : No Aura Icon (60), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215620)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -16609,7 +16611,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 16, 17, 32, 43, 70
-Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1228435)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -16870,6 +16872,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 107
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1236606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -16887,7 +16890,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Flamebound (452413 effects: #4, #5), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Demonsurge (1245496 effect#5), Demonic Instinct (1247538 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Soulforged Blades (1272432 effect#1), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 106
-Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs (122)
+Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1236611)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.475 | PvP Coefficient: 1.15 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -16902,7 +16905,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 5754
-Attributes       : Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1237332)  : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Resource: fury | Target: Self (1)
@@ -17469,7 +17472,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Devourer Demon Hunter (1213636 effects: #5, #6)
 Family Flags     : 32, 85, 102
-Attributes       : No Aura Icon (60), Can Proc From Procs (122)
+Attributes       : No Aura Icon (60), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246503)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -17494,7 +17497,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Devourer's Edge (1244222 effects: #1, #2), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 99
-Attributes       : Can Proc From Procs (122)
+Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.95 | Target: Targeted Enemy (6)
@@ -17511,6 +17514,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3597
 Family Flags     : 107
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246525)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -17823,7 +17827,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Roaring Fire (391178 effect#1), Demon Hide (428241 effects: #1, #3), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Demonsurge (1245496 effects: #3, #6), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Eternal Hunt (1270900 effect#1), Blind Focus (1272364 effects: #1, #2, #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : The Hunt (1246167), Predator's Wake (1259431)
 Family Flags     : 43, 82, 95
-Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Is Ability (4), Do Not Sheath (18), Allow Cast While Casting (135), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1247657)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
@@ -18320,6 +18324,8 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Heal
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1263732)  : Apply Aura (6) | Dummy (4)
@@ -19559,8 +19565,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1282478)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Spirit Bomb (247454), Soul Sunder (452436)
-                   Family Flags: 34, 98
+                   Affected Spells: Soul Cleave (228477), Spirit Bomb (247454), Soul Sunder (452436)
+                   Family Flags: 60, 98
 #2 (id=1282767)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Spirit Bomb (247454), Soul Sunder (452436)
@@ -20144,7 +20150,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Devourer's Edge (1244222 effects: #1, #2), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 95, 99
-Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292)
+Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.95 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)

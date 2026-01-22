@@ -293,6 +293,7 @@ public:
     buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
+    buff_t* pyroclasm;
     buff_t* wildfire;
 
 
@@ -1427,17 +1428,18 @@ struct touch_of_the_magi_t final : public buff_t
 
 struct combustion_t final : public buff_t
 {
-  double current_amount; // Amount of mastery rating granted by the buff
-  double multiplier;
+  double current_mastery_amount; // amount of mastery rating gained by Slow Burn
+  double current_sp_amount; // amount of spell damage gained by Burn it All
 
   combustion_t( mage_t* p ) :
     buff_t( p, "combustion", p->find_spell( 190319 ) ),
-    current_amount(),
-    multiplier() // TODO: slow burn
+    current_mastery_amount(),
+    current_sp_amount()
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 3 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_freeze_stacks( true );
 
     if ( p->talents.fires_ire.ok() )
       add_invalidate( CACHE_CRIT_CHANCE );
@@ -1450,8 +1452,9 @@ struct combustion_t final : public buff_t
       }
       else if ( cur == 0 )
       {
-        player->stat_loss( STAT_MASTERY_RATING, current_amount );
-        current_amount = 0.0;
+        player->stat_loss( STAT_MASTERY_RATING, current_mastery_amount );
+        current_mastery_amount = 0.0;
+        current_sp_amount = 0.0;
         p->buffs.fiery_rush->expire();
         if ( p->talents.burnout.ok() )
         {
@@ -1466,22 +1469,36 @@ struct combustion_t final : public buff_t
       }
     } );
 
-    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+    set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
     {
-      double new_amount = multiplier * player->composite_spell_crit_rating();
-      double diff = new_amount - current_amount;
+      if ( p->talents.slow_burn.ok() )
+      {
+        double new_amount = p->talents.slow_burn->effectN( 1 ).percent() * p->composite_spell_crit_rating();
+        double diff = new_amount - current_mastery_amount;
 
-      if ( diff > 0.0 ) player->stat_gain( STAT_MASTERY_RATING,  diff );
-      if ( diff < 0.0 ) player->stat_loss( STAT_MASTERY_RATING, -diff );
+        if ( diff > 0.0 ) player->stat_gain( STAT_MASTERY_RATING,  diff );
+        if ( diff < 0.0 ) player->stat_loss( STAT_MASTERY_RATING, -diff );
 
-      current_amount = new_amount;
+        current_mastery_amount = new_amount;
+      }
+
+      if ( p->talents.burn_it_all.ok() )
+      {
+        double new_amount = p->talents.burn_it_all->effectN( 1 ).percent() * p->composite_spell_crit_chance();
+        double diff = new_amount - current_sp_amount;
+        sim->print_debug( "{} adjusts Burn It All SP from {} to {} ({} + {})", p->name(), current_sp_amount, new_amount, current_value, diff );
+        current_value += diff; // The buff's value is applied as spell damage.
+        current_sp_amount = new_amount;
+      }
+
     } );
   }
 
   void reset() override
   {
     buff_t::reset();
-    current_amount = 0.0;
+    current_mastery_amount = 0.0;
+    current_sp_amount = 0.0;
   }
 };
 }  // buffs
@@ -1959,6 +1976,9 @@ public:
   {
     double m = base_ignite_multiplier;
 
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.slow_burn->effectN( 2 ).percent();
+
     if ( !p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
 
@@ -2151,7 +2171,7 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.from_the_ashes && p()->talents.from_the_ashes.ok() && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        p()->cooldowns.fire_blast->adjust( -p()->talents.from_the_ashes->effectN( 1 ).time_value(), false, false );
+        p()->cooldowns.fire_blast->adjust( p()->talents.from_the_ashes->effectN( 1 ).time_value(), false, false );
       }
     }
   }
@@ -2393,6 +2413,9 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     m *= 1.0 + p()->buffs.hyperthermia_damage->check_stack_value();
 
+    if ( time_to_execute > 0_ms )
+      m *= 1.0 + p()->buffs.pyroclasm->check_value();
+
     return m;
   }
 
@@ -2419,9 +2442,16 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
   {
     custom_state_spell_t::execute();
 
+    if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
+      p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
+
+    if ( time_to_execute > 0_ms )
+      p()->buffs.pyroclasm->decrement();
+
     if ( last_hot_streak )
     {
       p()->buffs.hot_streak->decrement();
+      p()->buffs.pyroclasm->trigger();
 
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
@@ -3731,6 +3761,8 @@ struct fireball_t final : public fire_mage_spell_t
   }
 };
 
+// TODO: Check if Fuel the Fire's damage bonus applies here
+// TODO: Check if Ignition's Ignite bonus applies here.
 struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
 {
   flamestrike_pyromaniac_t( std::string_view n, mage_t* p ) :
@@ -3755,6 +3787,27 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
+  }
+
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_da_multiplier( s );
+
+    unsigned scaling_targets = std::min( s->n_targets, as<unsigned>( p()->talents.fuel_the_fire->effectN( 3 ).base_value() ) );
+    m *= 1.0 + p()->talents.fuel_the_fire->effectN( 2 ).percent() * scaling_targets;
+
+    return m;
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
+
+    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
+    m *= 1.0 + p()->talents.ignition->effectN( 2 ).percent();
+
+    return m;
   }
 
   void execute() override
@@ -4399,7 +4452,10 @@ struct fire_blast_t final : public fire_mage_spell_t
     }
 
     if ( p->talents.conflagration.ok() )
+    {
       conflagration = get_action<conflagration_t>( "conflagration", p );
+      add_child( conflagration );
+    }
   }
 
   void execute() override
@@ -6120,6 +6176,9 @@ void mage_t::init_spells()
   // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
   deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
 
+  // Fire's Ire is dynamic and should not be applied as a passive
+  deregister_passive_spell( talents.fires_ire );
+
   register_passive_effect_mask( talents.elemental_affinity,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( false ).enable( 3 ) );
 
@@ -6242,6 +6301,9 @@ void mage_t::create_buffs()
                                      ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
+  buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
                                      ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
                                      ->set_chance( talents.wildfire.ok() );
@@ -6519,7 +6581,7 @@ void mage_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
 
 std::vector<std::string> mage_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 116 ) // Frostbolt
+  if ( spell_id == 116 && specialization() == MAGE_FROST ) // Frostbolt actions also need to cast Glacial Spike for Frost Mage
     return { "glacial_spike", "frostbolt" };
 
   return player_t::action_names_from_spell_id( spell_id );
@@ -6619,7 +6681,6 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  // TODO: Check the passive parsing and make sure we don't apply it twice
   if ( !buffs.combustion->check() && talents.fires_ire.ok() )
   {
     if ( bugs )

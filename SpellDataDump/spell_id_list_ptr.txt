@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65337
+Class Spell ID List, wow build 12.0.1.65448
 
 Death Knight
 3714     Path of Frost
@@ -3224,6 +3224,8 @@ Demon Hunter
 1283344  Reaver's Glaive
 1283625  Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc
 1283628  Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc
+1285383 *Initial Demon Hunter
+1285387 *Shattered Souls
 
 Druid
 99       Incapacitating Roar
@@ -8688,7 +8690,7 @@ Hunter
 1264291  Blighted Quiver
 1264345  Dark Minion
 1264355  Wild Thrash
-1264357 *Shoot
+1264357  Shoot
 1264359  Wild Thrash
 1264364  Blighted Arrow
 1264485  Shadow Thrash
@@ -8775,6 +8777,7 @@ Hunter
 1283818 *Dire Beast
 1283872  Fortitude of the Bear
 1284992 *Pet Damage
+1285912  Bestial Wrath
 
 Mage
 66       Invisibility
@@ -11108,6 +11111,7 @@ Mage
 1283634  Mage - Midnight PrePatch - 11.2 Class Set 2pc
 1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
 1284108 *Conjure Refreshment Table
+1285457 *Frost Mage
 
 Monk
 8647     Mystic Touch
@@ -11878,7 +11882,7 @@ Monk
 314473  *Weapons of Order
 322101   Expel Harm
 322102   Expel Harm
-322104   Expel Harm
+322104  *Expel Harm
 322109   Touch of Death
 322111   Touch of Death
 322113   Improved Touch of Death
@@ -12964,6 +12968,7 @@ Monk
 1283665  Monk - Midnight PrePatch - 11.2 Class Set 4pc
 1283666  Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283667  Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1285660  Serene Vitality
 
 Paladin
 465      Devotion Aura
@@ -14476,6 +14481,7 @@ Paladin
 386598  *Execution Sentence
 386652   Bulwark of Righteous Fury
 386653   Bulwark of Righteous Fury
+386730   Divine Resonance
 386731   Divine Resonance
 386732   Divine Resonance
 386738   Divine Resonance
@@ -17105,7 +17111,6 @@ Priest
 1283669  Priest - Midnight PrePatch - 11.2 Class Set 4pc
 1283670  Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283671  Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing
-1284817  Benediction
 
 Rogue
 53       Backstab
@@ -17986,7 +17991,7 @@ Rogue
 330469  *Kidney Shot
 330542  *Improved Poisons
 331850   Blade Flurry
-331851   Blade Flurry
+331851  *Blade Flurry
 333500  *Rogue Power
 333501  *Pouch of Soul-Ash
 333502  *Slippery Wraithcoil

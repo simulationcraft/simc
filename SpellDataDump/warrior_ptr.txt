@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65337 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -107,7 +107,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Resource         : 20 Rage (1) (id=94)
-Spell Level      : 1
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
@@ -165,7 +164,6 @@ Talent Entry     : Protection [tree=spec, row=5, col=3, max_rank=1, req_points=8
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 1
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (180 seconds cooldown)
@@ -340,6 +338,7 @@ Cooldown         : 90 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+                 : 690: Major Cooldowns
 Affecting Spells : Warrior (137047 effect#2), Reckless Abandon (396749 effect#1), Rampaging Berserker (1269310 effect#1)
 Family Flags     : 4, 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
@@ -444,7 +443,6 @@ Talent Entry     : Protection [tree=class, row=4, col=6, max_rank=1, req_points=
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 43
 Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
@@ -481,7 +479,6 @@ Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, 
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 34
 Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -630,7 +627,6 @@ Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 33
 Range            : 8 - 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
@@ -828,7 +824,6 @@ Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, 
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 21
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
@@ -1462,7 +1457,6 @@ Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 1
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -1620,7 +1614,6 @@ Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 21
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
 Labels           : 16: Class Spells
@@ -2522,7 +2515,6 @@ Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 46
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Class Spells
@@ -2568,7 +2560,6 @@ Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 1
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -2702,7 +2693,6 @@ Talent Entry     : Fury [tree=spec, row=10, col=3, max_rank=1, req_points=20, se
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 16: Class Spells
@@ -2898,7 +2888,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Enraged Regeneration (184364 effect#2), Field Dressing (1271926 effect#2)
 Family Flags     : 66, 80
-Attributes       : Not Shapeshifted (16), Can't Crit (93), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Not Shapeshifted (16), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=132982)   : Direct Heal% (136)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.666667 | Target: Self (1)
@@ -2946,8 +2936,8 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Proc Chance      : 101%
-Affecting Spells : Glyph of Mighty Victory (58104 effect#1), Victory Rush (319158 effect#1), Protection Warrior (1258163 effect#7)
-Family Flags     : 81
+Affecting Spells : Glyph of Mighty Victory (58104 effect#1), Victory Rush (319158 effect#1), Protection Warrior (1258163 effect#7), Field Dressing (1271926 effect#2)
+Family Flags     : 66, 81
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Discount Power On Miss (59), No Aura Icon (60), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=135435)   : Direct Heal% (136)
@@ -4429,7 +4419,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Field Dressing (1271926 effect#2)
 Family Flags     : 66
-Attributes       : Is Ability (4), Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Ignore Healing Modifiers (219), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=297920)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
@@ -4481,7 +4471,7 @@ Labels           : 16: Class Spells
                  : 3989
 Affecting Spells : Victorious (32216 effect#2), Field Dressing (1271926 effect#2)
 Family Flags     : 66, 118
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Discount Power On Miss (59), No Aura Icon (60), Can't Crit (93), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Discount Power On Miss (59), No Aura Icon (60), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=297953)   : Direct Heal% (136)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.67 | Target: Self (1)
@@ -5583,6 +5573,7 @@ Category         : 2270 (Type 0x1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+                 : 690: Major Cooldowns
 Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Fury Warrior (137050 effect#8), Arms Warrior (1256919 effect#3), Fury Warrior (1257520 effect#3)
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416)
@@ -5623,6 +5614,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 52
                  : 292
+                 : 690: Major Cooldowns
                  : 881
 Affecting Spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#12)
 Family Flags     : 8, 107
@@ -11477,7 +11469,6 @@ Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 48
 Range            : 25 yards
 GCD              : 1.5 seconds
 Travel Time      : 0.4 seconds
@@ -12037,7 +12028,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Field Dressing (1271926 effect#2)
 Family Flags     : 66
-Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Do Not Log Full Overheal (323), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1014808)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12739,8 +12730,8 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Mechanic         : Bleed
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodborne (383287 effects: #1, #2), Impale (383430 effect#1), Battle Stance (386164 effect#4), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Bloodborne (1265406 effect#1), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2)
-Family Flags     : 9, 120
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodborne (383287 effects: #1, #2), Impale (383430 effect#1), Battle Stance (386164 effect#4), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Bloodborne (1265406 effect#1), Field Dressing (1271926 effect#2), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2)
+Family Flags     : 9, 66, 120
 Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1018044)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
@@ -13487,21 +13478,24 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1020847)  : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 386631 | Target: Self (1)
+#2 (id=1301881)  : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 386632 | Target: Self (1)
-Description      : Overpower has a $h% chance to reset the cooldown of Mortal Strike.
+Description      : Overpower has a $h% chance to reset the cooldown of Mortal Strike and reduce the cost of your next Mortal Strike by $386631s1%.
 
 Name             : Battlelord (id=386631) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+Triggered By     : Battlelord (386630)
 Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (268)
 Effects          :
 #1 (id=1020849)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294), Mortal Strike (339385)
                    Family Flags: 25
 Description      : $@spelldesc386630
@@ -13942,7 +13936,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
-Description      : $@spelldesc393930
+Description      : $@spelldesc393950
 Tooltip          : Bloodthirst damage is increased by $w1%.
 
 Name             : Vanguard's Determination (id=394056) [Spell Family (4)] 
@@ -15793,7 +15787,7 @@ Family Flags     : 9, 52, 126
 Attributes       : Is Ability (4), Chain From Caster (76), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135042)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.9959 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.31455 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440886) [Spell Family (4)] 
@@ -15811,7 +15805,7 @@ Family Flags     : 9, 52, 126
 Attributes       : Is Ability (4), Chain From Caster (76), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135045)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.9959 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.31455 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440888) [Spell Family (4)] 
@@ -15830,7 +15824,7 @@ Family Flags     : 9, 126
 Attributes       : Is Ability (4), Allow Dead Target (64), Always AOE Line of Sight (186), No Attack Parry (248), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135047)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 11.5823 | Radius: 0 - 8 yards | Target: at Enemy in Area (16) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 15.4045 | Radius: 0 - 8 yards | Target: at Enemy in Area (16) -> at Enemy in Area (16)
 Description      : $@spelldesc436358
 
 Name             : Colossal Might (id=440989) [Spell Family (4)] 
@@ -15846,10 +15840,10 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Colossal Might (429634), Precise Might (431548)
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Challenge Mode Start (54)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Challenge Mode Start (54)
 Effects          :
 #1 (id=1135197)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Demolish (436358), Demolish (440884), Demolish (440886), Demolish (440888)
                    Family Flags: 126
 #2 (id=1135579)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -15932,7 +15926,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Field Dressing (1271926 effect#2)
 Triggered By     : Veteran Vitality (440993)
 Family Flags     : 66
-Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Not In Spellbook (143), Suppress Weapon Procs (151), Extra Initial Period (169), Ignore Caster Healing Modifiers (312), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Not In Spellbook (143), Suppress Weapon Procs (151), Extra Initial Period (169), Ignore Healing Modifiers (219), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1135805)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -16279,7 +16273,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Field Dressing (1271926 effect#2)
 Family Flags     : 66
-Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1142598)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16964,7 +16958,7 @@ Proc Chance      : 101%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Affecting Spells : Field Dressing (1271926 effect#2)
 Family Flags     : 66
-Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Suppress Weapon Procs (151), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Ignore Caster Modifiers (125), Suppress Weapon Procs (151), Aura Points On Client (268), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1164094)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
@@ -17988,7 +17982,6 @@ Talent Entry     : Fury [tree=class, row=4, col=6, max_rank=1, req_points=0, sel
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 43
 Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
@@ -18369,7 +18362,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1270656)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Tactician (184783)
                    Family Flags: 90
 Description      : Tactician has a $s1% increased chance to trigger.
@@ -18615,7 +18608,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1276485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1285907)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062)
@@ -19056,8 +19049,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1281053)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Heroic Strike reduces the cooldown of Colossus Smash by $s1 sec.
+                   Base Value: -2000 | Scaled Value: -2000 | Target: Self (1)
+Description      : Heroic Strike reduces the cooldown of Colossus Smash by ${$s1/-1000}.1 sec.
 
 Name             : Rampaging Berserker (id=1269308) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=11, col=1, max_rank=1, req_points=20]
@@ -19231,7 +19224,7 @@ Name             : Heroic Strike (id=1269383) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Resource         : 20 Rage (1) (id=312515)
+Resource         : 20 Rage (1) (id=313125)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -19546,7 +19539,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=1284965)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Bloodthirst Heal (117313), Second Wind (202147), Impending Victory (202166), Indomitable (316643), Pain and Gain (382551), Fueled by Violence (383104), Second Wind (441387), Death Drive (445630), Second Wind (458245), Bloodthirst Heal (1283442)
+                   Affected Spells: Bloodthirst Heal (117313), Victory Rush (118779), Second Wind (202147), Impending Victory (202166), Indomitable (316643), Pain and Gain (382551), Fueled by Violence (383104), Gushing Wound (385042), Second Wind (441387), Death Drive (445630), Second Wind (458245), Bloodthirst Heal (1283442)
                    Family Flags: 66
 Description      : Healing received increased by $s1% and all self-healing increased by an additional $s2%.
 
@@ -19833,7 +19826,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Field Dressing (1271926 effect#2)
 Triggered By     : Ragedrinker (1265356)
 Family Flags     : 66
-Attributes       : Not Shapeshifted (16), Can't Crit (93), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Not Shapeshifted (16), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1297772)  : Direct Heal% (136)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.666667 | Target: Self (1)
