@@ -4378,7 +4378,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 
     // TODO: Determine chance to intensify
     dot_t *dot = spend_target->get_dot( state->target );
-    if ( p().talent.master_of_harmony.coalescence->ok() && dot && dot->state && dot->is_ticking() && rng().roll( 0.0 ) )
+    if ( p().talent.master_of_harmony.coalescence->ok() && dot && dot->state && dot->is_ticking() && rng().roll( 0.5 ) )
       bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() *
                             p().talent.master_of_harmony.aspect_of_harmony->effectN( 9 ).percent(),
                         current_value );
