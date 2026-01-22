@@ -8723,8 +8723,7 @@ struct blood_boil_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if( !background )
-      p()->buffs.hemostasis->trigger();
+    p()->buffs.hemostasis->trigger();
   }
 };
 
@@ -15669,9 +15668,9 @@ void death_knight_t::create_buffs()
             ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
     buffs.bloodied_blade_final = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
-                                     ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-                                     ->add_invalidate( CACHE_STRENGTH );
-    // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+                                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                                     ->add_invalidate( CACHE_STRENGTH )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
     buffs.blood_mist = make_fallback( talent.blood.blood_mist->ok(), this, "blood_mist", spell.blood_mist_buff )
           ->set_tick_callback(
@@ -16425,9 +16424,9 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
     switch ( specialization() )
     {
       case DEATH_KNIGHT_BLOOD:
-        if ( buffs.bloodied_blade_final->check() )
-          a += dbc->race_base( race ).strength +
-               dbc->attribute_base( type, level() ).strength * buffs.bloodied_blade_final->check_value();
+        // if ( buffs.bloodied_blade_final->check() )
+        //   a += dbc->race_base( race ).strength +
+        //        dbc->attribute_base( type, level() ).strength * buffs.bloodied_blade_final->check_value();
         break;
       case DEATH_KNIGHT_UNHOLY:
         break;
