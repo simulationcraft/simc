@@ -4568,8 +4568,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
     p()->trigger_meteor_burn( meteor_burn, target, meteor_burn_pulse_time, meteor_burn_duration );
-    
-    
   }
 
   void impact( action_state_t* s ) override
