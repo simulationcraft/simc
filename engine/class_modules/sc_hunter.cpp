@@ -6352,10 +6352,6 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
       
     am *= 1 + bonus;
 
-    /* 2026-01-16: Spell effect not applying automatically, apply manually.
-       TODO reconfirm before launch */
-    am *= 1 + p()->talents.lunge->effectN( 1 ).percent();
-
     return am;
   }
 };
