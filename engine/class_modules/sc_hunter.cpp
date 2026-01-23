@@ -883,7 +883,8 @@ public:
     spell_data_ptr_t strike_as_one;
     spell_data_ptr_t strike_as_one_dmg;
 
-    spell_data_ptr_t shrapnel_bomb; //TODO Not implemented
+    spell_data_ptr_t shrapnel_bomb;
+    spell_data_ptr_t shrapnel_bomb_bleed;
     spell_data_ptr_t flamebreaker;
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
@@ -7952,7 +7953,7 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     struct bomb_dot_t final : public hunter_spell_t
     {
       bomb_dot_t( util::string_view n, hunter_t* p ) :
-        hunter_spell_t( n, p, p->talents.wildfire_bomb_dot )
+        hunter_spell_t( n, p, p->talents.shrapnel_bomb.ok() ? p->talents.shrapnel_bomb_bleed : p->talents.wildfire_bomb_dot )
       {
         background = dual = true;
 
@@ -7992,7 +7993,7 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     bomb_dot_t* bomb_dot;
 
     bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_base_t* a ) : hunter_ranged_attack_t( n, p, p->talents.wildfire_bomb_dmg ),
-      bomb_dot( p->get_background_action<bomb_dot_t>( "wildfire_bomb_dot" ) )
+      bomb_dot( p->get_background_action<bomb_dot_t>( p->talents.shrapnel_bomb.ok() ? "wildfire_bomb_bleed" : "wildfire_bomb_dot" ) )
     {
       background = dual = true;
 
@@ -8725,6 +8726,7 @@ void hunter_t::init_spells()
     talents.strike_as_one_dmg                 = talents.strike_as_one.ok() ? find_spell( 1251779 ) : spell_data_t::not_found();
 
     talents.shrapnel_bomb                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Bomb", HUNTER_SURVIVAL );
+    talents.shrapnel_bomb_bleed               = talents.shrapnel_bomb.ok() ? find_spell( 1253171 ) : spell_data_t::not_found();
     talents.flamebreaker                      = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreaker", HUNTER_SURVIVAL );
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
     talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
