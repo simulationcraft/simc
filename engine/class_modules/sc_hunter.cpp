@@ -1076,7 +1076,7 @@ public:
     spell_data_ptr_t lunar_calling;
     spell_data_ptr_t conditioning; //Utility talent, won't implement
     spell_data_ptr_t scouts_vigil; //Utility talent, won't implement
-    spell_data_ptr_t radiant_edge; //TODO Not implemented
+    spell_data_ptr_t radiant_edge;
 
     spell_data_ptr_t lunar_storm;
     spell_data_ptr_t lunar_storm_dmg;
@@ -4751,6 +4751,9 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       // Moonlight Chakram has a unique Tip buff and is not affected by base Tip (260286) so apply it here.
       if ( p()->buffs.tip_of_the_spear_chakram->up() )
         am *= 1 + p()->talents.tip_of_the_spear_chakram_buff->effectN( 1 ).percent();
+
+      if ( p()->talents.radiant_edge.ok() )
+        am *= pow( 1 + p()->talents.radiant_edge->effectN( 1 ).percent(), bounce_tally );
 
       return am;
     }
