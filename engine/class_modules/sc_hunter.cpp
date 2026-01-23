@@ -1068,7 +1068,8 @@ public:
     spell_data_ptr_t open_fire;
     spell_data_ptr_t cant_miss_wont_miss;
     spell_data_ptr_t invigorating_pulse;
-    spell_data_ptr_t twilight_requiem; //TODO Not implemented
+    spell_data_ptr_t twilight_requiem;
+    spell_data_ptr_t twilight_requiem_damage;
     spell_data_ptr_t stalk_and_strike; //TODO Not implemented
 
     spell_data_ptr_t arcane_talons;
@@ -4755,14 +4756,27 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     }
   };
 
+  struct twilight_requiem_t final : hunter_ranged_attack_t
+  {
+    twilight_requiem_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.twilight_requiem_damage )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = p->talents.twilight_requiem->effectN( 1 ).base_value();
+    }
+  };
+
   damage_t* damage = nullptr;
+  twilight_requiem_t* twilight_requiem = nullptr;
 
   moonlight_chakram_t( hunter_t* p, util::string_view options_str ) 
     : hunter_ranged_attack_t( "moonlight_chakram", p, p->talents.moonlight_chakram_spell ),
-      damage( p->get_background_action<damage_t>( "moonlight_chakram_damage" ) )
+      damage( p->get_background_action<damage_t>( "moonlight_chakram_damage" ) ), 
+      twilight_requiem( p->get_background_action<twilight_requiem_t>( "twilight_requiem" ) ) 
   {
     parse_options( options_str );
     add_child( damage );
+    add_child( twilight_requiem );
 
     aoe = 0;
   }
@@ -4795,18 +4809,20 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     auto tl = target_list();
-    unsigned int bounce_count = as<unsigned int>( p()->talents.moonlight_chakram_spell->effectN( 2 ).base_value() );
+    unsigned int bounce_limit = as<unsigned int>( p()->talents.moonlight_chakram_spell->effectN( 2 ).base_value() );
 
     // 2026-01-23: Spell data count doesn't include the initial hit so use <= in the loop.
-    for ( unsigned int i = 0; i <= bounce_count; i++ )
+    for ( unsigned int bounce = 0; bounce <= bounce_limit; bounce++ )
     {
-      // 200ms is an estimation based on log data.
-      timespan_t time = 200_ms * i;
-      make_event( sim, time, [ this, tl, i ]() { damage->execute_on_target( tl[ i % tl.size() ] ); } );
+      // 200ms estimation based on log data.
+      timespan_t time = 200_ms * bounce;
+      make_event( sim, time, [ this, tl, bounce ]() { damage->execute_on_target( tl[ bounce % tl.size() ] ); } );
 
-      // Final bounce
-      if ( i == bounce_count )
+      if ( bounce == bounce_limit )
+      {
+        make_event( sim, time, [ this, s ]() { twilight_requiem->execute_on_target( s->target ); } );
         make_event( sim, time, [ this ]() { p()->buffs.tip_of_the_spear_chakram->expire(); } );
+      }
     }
   }
 };
@@ -8839,6 +8855,7 @@ void hunter_t::init_spells()
     talents.cant_miss_wont_miss      = find_talent_spell( talent_tree::HERO, "Can't Miss, Won't Miss" );
     talents.invigorating_pulse       = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
     talents.twilight_requiem         = find_talent_spell( talent_tree::HERO, "Twilight Requiem" );
+    talents.twilight_requiem_damage  = talents.twilight_requiem.ok() ? find_spell( 1266096 ) : spell_data_t::not_found();
     talents.stalk_and_strike         = find_talent_spell( talent_tree::HERO, "Stalk and Strike" );
 
     talents.arcane_talons            = find_talent_spell( talent_tree::HERO, "Arcane Talons" );
