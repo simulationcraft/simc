@@ -8756,7 +8756,7 @@ Name             : Raptor Strike (id=265189) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
-Resource         : 40 Focus (2) (id=191506)
+Resource         : 30 Focus (2) (id=191506)[Hotfixed: Cost (40 -> 30)]
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -8770,7 +8770,8 @@ Family Flags     : 1, 55, 80, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.86 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.575 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.86 -> 3.575)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Fireblood (desc=Racial) (id=265221) 
