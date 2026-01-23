@@ -489,6 +489,7 @@ public:
     // Survival Tree
     buff_t* tip_of_the_spear;
     buff_t* tip_of_the_spear_boomstick;
+    buff_t* tip_of_the_spear_chakram;
     buff_t* mongoose_fury;
     buff_t* frenzy_strikes;
     buff_t* sulfurlined_pockets_building;
@@ -535,6 +536,7 @@ public:
     // Sentinel
     buff_t* eyes_closed;
     buff_t* stargazer;
+    buff_t* moonlight_chakram;
 
     // Dark Ranger
     buff_t* withering_fire;
@@ -867,6 +869,7 @@ public:
     spell_data_ptr_t tip_of_the_spear;
     spell_data_ptr_t tip_of_the_spear_buff;
     spell_data_ptr_t tip_of_the_spear_boomstick_buff;
+    spell_data_ptr_t tip_of_the_spear_chakram_buff;
 
     spell_data_ptr_t lunge;
     spell_data_ptr_t boomstick;
@@ -1055,7 +1058,10 @@ public:
     spell_data_ptr_t moons_blessing;
     spell_data_ptr_t sanctified_armaments;
     spell_data_ptr_t sanctified_armaments_dot;
-    spell_data_ptr_t moonlight_chakram; //TODO Not implemented
+    spell_data_ptr_t moonlight_chakram;
+    spell_data_ptr_t moonlight_chakram_spell;
+    spell_data_ptr_t moonlight_chakram_damage;
+    spell_data_ptr_t moonlight_chakram_buff;
 
     spell_data_ptr_t stargazer;
     spell_data_ptr_t stargazer_buff;
@@ -4713,6 +4719,98 @@ struct kill_shot_t : public kill_shot_base_t
   }
 };
 
+// Moonlight Chakram (Sentinel) ======================================================
+
+struct moonlight_chakram_t final : public hunter_ranged_attack_t
+{
+  static inline unsigned int bounce_tally = 0;
+
+  struct damage_t final : hunter_ranged_attack_t
+  {
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.moonlight_chakram_damage )
+    {
+      background = dual = true;
+
+      /* Seems to be an additional hidden AP modifier in Chakram's spell data, further testing required.
+         TODO reconfirm before launch */
+      //attack_power_mod.direct *= 1 + p->talents.moonlight_chakram_spell->effectN( 1 ).ap_coeff();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      bounce_tally++;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // Moonlight Chakram has a unique Tip buff and is not affected by base Tip (260286) so apply it here.
+      if ( p()->buffs.tip_of_the_spear_chakram->up() )
+        am *= 1 + p()->talents.tip_of_the_spear_chakram_buff->effectN( 1 ).percent();
+
+      return am;
+    }
+  };
+
+  damage_t* damage = nullptr;
+
+  moonlight_chakram_t( hunter_t* p, util::string_view options_str ) 
+    : hunter_ranged_attack_t( "moonlight_chakram", p, p->talents.moonlight_chakram_spell ),
+      damage( p->get_background_action<damage_t>( "moonlight_chakram_damage" ) )
+  {
+    parse_options( options_str );
+    add_child( damage );
+
+    aoe = 0;
+  }
+
+  bool ready() override
+  {
+    return hunter_ranged_attack_t::ready() && p()->buffs.moonlight_chakram->check();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p()->buffs.tip_of_the_spear->check() )
+    {
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_chakram->trigger();
+
+      /* 2026-01-23: Chakram cannot proc Sentinel's Mark
+                     TODO reconfirm before launch */
+    }
+
+    bounce_tally = 0;
+
+    p()->buffs.moonlight_chakram->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    auto tl = target_list();
+    unsigned int bounce_count = as<unsigned int>( p()->talents.moonlight_chakram_spell->effectN( 2 ).base_value() );
+
+    // 2026-01-23: Spell data count doesn't include the initial hit so use <= in the loop.
+    for ( unsigned int i = 0; i <= bounce_count; i++ )
+    {
+      // 200ms is an estimation based on log data.
+      timespan_t time = 200_ms * i;
+      make_event( sim, time, [ this, tl, i ]() { damage->execute_on_target( tl[ i % tl.size() ] ); } );
+
+      // Final bounce
+      if ( i == bounce_count )
+        make_event( sim, time, [ this ]() { p()->buffs.tip_of_the_spear_chakram->expire(); } );
+    }
+  }
+};
+
 // Sanctified Armaments (Sentinel) ===================================================
 struct sanctified_armaments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
 {
@@ -6917,6 +7015,9 @@ struct takedown_t : public hunter_spell_t
 
     if ( p()->talents.stampede.ok() )
       p()->buffs.stampede->trigger();
+
+    if ( p()->talents.moonlight_chakram.ok() )
+      p()->buffs.moonlight_chakram->trigger();
   }
 };
 
@@ -7595,6 +7696,9 @@ struct trueshot_t : public hunter_spell_t
     if ( p()->talents.feathered_frenzy.ok() )
       p()->trigger_eagles_mark( target, p()->talents.sentinel.ok(), true );
 
+    if ( p()->talents.moonlight_chakram.ok() )
+      p()->buffs.moonlight_chakram->trigger();
+
     p()->buffs.double_tap->trigger();
 
     p()->buffs.jackpot->trigger();
@@ -8180,6 +8284,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "harriers_cry"          ) return new           harriers_cry_t( this, options_str );
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "implosive_trap"        ) return new         implosive_trap_t( this, options_str );
+  if ( name == "moonlight_chakram"     ) return new      moonlight_chakram_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
@@ -8524,6 +8629,7 @@ void hunter_t::init_spells()
     talents.tip_of_the_spear                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tip of the Spear", HUNTER_SURVIVAL );
     talents.tip_of_the_spear_buff             = talents.tip_of_the_spear.ok() ? find_spell( 260286 ) : spell_data_t::not_found();
     talents.tip_of_the_spear_boomstick_buff   = talents.tip_of_the_spear.ok() ? find_spell( 471536 ) : spell_data_t::not_found();
+    talents.tip_of_the_spear_chakram_buff     = talents.tip_of_the_spear.ok() ? find_spell( 1280140 ) : spell_data_t::not_found();
 
     talents.lunge                             = find_talent_spell( talent_tree::SPECIALIZATION, "Lunge", HUNTER_SURVIVAL );
     talents.boomstick                         = find_talent_spell( talent_tree::SPECIALIZATION, "Boomstick", HUNTER_SURVIVAL );
@@ -8723,6 +8829,9 @@ void hunter_t::init_spells()
     talents.sanctified_armaments     = find_talent_spell( talent_tree::HERO, "Sanctified Armaments" );
     talents.sanctified_armaments_dot = talents.sanctified_armaments.ok() ? find_spell( 1253836 ) : spell_data_t::not_found();
     talents.moonlight_chakram        = find_talent_spell( talent_tree::HERO, "Moonlight Chakram" );
+    talents.moonlight_chakram_spell  = talents.moonlight_chakram.ok() ? find_spell( 1264949 ) : spell_data_t::not_found();
+    talents.moonlight_chakram_damage = talents.moonlight_chakram.ok() ? find_spell( 1266081 ) : spell_data_t::not_found();
+    talents.moonlight_chakram_buff   = talents.moonlight_chakram.ok() ? find_spell( 1264946 ) : spell_data_t::not_found();
 
     talents.stargazer                = find_talent_spell( talent_tree::HERO, "Stargazer" );
     talents.stargazer_buff           = talents.stargazer.ok() ? find_spell( 1253750 ) : spell_data_t::not_found();
@@ -9049,6 +9158,12 @@ void hunter_t::create_buffs()
 
   buffs.tip_of_the_spear_boomstick =
     make_buff( this, "tip_of_the_spear_boomstick", talents.tip_of_the_spear_boomstick_buff )
+      ->set_default_value_from_effect( 1 )
+      ->set_chance( talents.tip_of_the_spear.ok() );
+
+  buffs.tip_of_the_spear_chakram = 
+    make_buff( this, "tip_of_the_spear_chakram", talents.tip_of_the_spear_chakram_buff )
+      ->set_default_value_from_effect( 1 )
       ->set_chance( talents.tip_of_the_spear.ok() );
   
   buffs.mongoose_fury =
@@ -9250,6 +9365,9 @@ void hunter_t::create_buffs()
     make_buff( this, "stargazer", talents.stargazer_buff )
       ->set_default_value_from_effect( 1 )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.moonlight_chakram = 
+    make_buff( this, "moonlight_chakram", talents.moonlight_chakram_buff );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
 
