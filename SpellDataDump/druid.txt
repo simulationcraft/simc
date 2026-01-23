@@ -3911,7 +3911,6 @@ Name             : Grove Guardians (id=102693) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Resource         : 1.2% Base Mana (0) (id=305377)
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 1 seconds
