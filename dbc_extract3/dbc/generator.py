@@ -1680,7 +1680,8 @@ class SpellDataGenerator(DataGenerator):
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5 ), # Dire Beast Kill Command
           ( 459834, 3 ), # Sulfur-Lined Pockets (Explosive Shot buff)
-          ( 1264357, 0), # Shoot
+          ( 1259017, 3), # Raptor Swipe 2
+          ( 1259019, 3), # Raptor Swipe 3
           # Hero Talents
           ( 444354, 0 ), # Shadow Lash
           ( 444269, 0 ), # Shadow Surge
@@ -1693,6 +1694,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1249464, 0 ), # Boon of Elune (Sentinel 4pc buff)
           ( 1236564, 0 ), ( 1236565, 0 ), ( 1236566, 0 ), # Grizzled Fur, Hasted Hooves, Sharpened Fangs (Pack Leader 2pc buffs)
           ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
+          ( 1258344, 0 ), # Stampede (Pack Leader)
+          ( 1264357, 0), # Shoot (Dark Minion)
         ),
 
         # Rogue:
