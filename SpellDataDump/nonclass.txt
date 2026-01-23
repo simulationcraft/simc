@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65512 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65535 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -205430,13 +205430,10 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1153521)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 8750.003 (coefficient=0.388889) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (7.5 -> 0.388889)
 #2 (id=1153522)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 7499.992 (coefficient=0.333333) | Target: Self (1)
-Hotfixed         : Coefficient (6.3004 -> 0.333333)
 #3 (id=1153523)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 7499.992 (coefficient=0.333333) | Target: Self (1)
-Hotfixed         : Coefficient (6.3004 -> 0.333333)
 Description      : Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.
 Tooltip          : Restores ${$w1/5} health and ${$w2/5} mana per second.
 
@@ -206761,7 +206758,6 @@ Description      : Increases Movement speed by $s1% and gain water walking, whil
 Tooltip          : Increases Movement speed by $s1%, while in Light's Blooming and nearby keyflame areas.
 
 Name             : Radiant Focus (id=454558) [Passive] 
-Hotfixed         : Max Scaling Level (80 -> 0)
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -206770,17 +206766,14 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1157194)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Radiant Focus | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 106.4033 (coefficient=0.832554) | Trigger Spell: 454559 | Target: Self (1)
-Hotfixed         : Coefficient (1341.499023 -> 0.832554)
 #2 (id=1173082)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 28.5821 (coefficient=0.21805) | Target: Self (1)
-Hotfixed         : Coefficient (37.692955 -> 0.21805)
 Description      : Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for $454560d. 
 
 After dealing up to $454560s1 damage to the target, the focused energies ignite you with Radiance, granting between ${$s2*.5} to $s2 of your highest Secondary stat based on damage dealt for $454560d. 
 
 
 Name             : Radiant Focus (id=454559) [Hidden] 
-Hotfixed         : Max Scaling Level (80 -> 0)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -207580,7 +207573,6 @@ Effects          :
                    Affected School(s): All
 
 Name             : Refreshment (id=455368) 
-Hotfixed         : Min Scaling Level (0 -> 75)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -207596,11 +207588,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452276 | Target: Self (1)
 #2 (id=1158745)  : Apply Aura (6) | Periodic Trigger Spell (23): Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 2.428118 (coefficient=0.446011) | Trigger Spell: 455369 | Target: Self (1)
-Hotfixed         : Coefficient (42.07922 -> 0.446011)
 Description      : $@spelldesc452276|n|n$@spellicon461960 $@spellname461960|nIf you spend at least 10 seconds eating, you will become $@spellname461960  and gain $455369s1 Speed for $455369d.
 
 Name             : Well Fed (id=455369) 
-Hotfixed         : Min Scaling Level (0 -> 75)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -207615,7 +207605,6 @@ Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include
 Effects          :
 #1 (id=1158747)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 15 (coefficient=0.446011) | Rating: RunSpeed | Target: Self (1)
-Hotfixed         : Coefficient (42.07922 -> 0.446011)
 Description      : Increases your Speed by $s1 for $d.
 Tooltip          : Your Speed is increased by $w1.
 
@@ -212420,7 +212409,6 @@ Description      : $@spelldesc453572
 Tooltip          : Mastery increased by $w1.
 
 Name             : Ascendance (id=458573) [Passive] 
-Hotfixed         : Max Scaling Level (80 -> 0)
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -216848,16 +216836,13 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=1173480)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ascendance | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 1.999996 (coefficient=0.059468) | Trigger Spell: 453575 | Target: Self (1)
-Hotfixed         : Coefficient (0.02542 -> 0.059468)
 #2 (id=1173481)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2.999994 (coefficient=0.118936) | Target: Self (1)
-Hotfixed         : Coefficient (0.057081 -> 0.118936)
 Description      : Gain $@spellname453575 every $457594t seconds spent in combat.
 
 $@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.
 
 Name             : Radiant Focus (id=463108) [Passive] 
-Hotfixed         : Max Scaling Level (80 -> 0)
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -216866,10 +216851,8 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1173502)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Radiant Focus | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 54.56579 (coefficient=0.416277) | Trigger Spell: 454559 | Target: Self (1)
-Hotfixed         : Coefficient (137.131012 -> 0.416277)
 #2 (id=1173503)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 28.5821 (coefficient=0.21805) | Target: Self (1)
-Hotfixed         : Coefficient (37.692951 -> 0.21805)
 Description      : Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for $454560d. 
 
 After dealing up to $454560s1 damage to the target, the focused energies ignite you with Radiance, granting between ${$s1*.5} to $s1 of your highest secondary stat based on damage dealt for $454560d. 
@@ -216889,7 +216872,6 @@ Description      : $@spelldesc421382
 Tooltip          : Casting $@spellname421382 next.
 
 Name             : Symbiosis (id=463232) [Passive] 
-Hotfixed         : Max Scaling Level (80 -> 0)
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -216898,10 +216880,8 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1173729)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Symbiosis | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 25.3341 (coefficient=0.198227) | Trigger Spell: 455534 | Target: Self (1)
-Hotfixed         : Coefficient (118.353691 -> 0.198227)
 #2 (id=1173730)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 2.598408 (coefficient=0.019823) | Target: Self (1)
-Hotfixed         : Coefficient (7.037303 -> 0.019823)
 Description      : Every $455535t seconds in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d stacking up to 5 times.
 
 This is a Nerubian embellishment.
@@ -216997,14 +216977,11 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1174393)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Symbiosis | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 3.333349 (coefficient=0.099114) | Trigger Spell: 455534 | Target: Self (1)
-Hotfixed         : Coefficient (0.043702 -> 0.099114)
 #2 (id=1174394)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4.999998 (coefficient=0.198227) | Target: Self (1)
-Hotfixed         : Coefficient (0.098133 -> 0.198227)
 Description      : Every $455535t sec in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d  stacking up to 5 times.
 
 Name             : Vivacity (id=463611) [Passive] 
-Hotfixed         : Max Scaling Level (90 -> 0)
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -217013,10 +216990,8 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=1174396)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Vivacity | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 162.1383 (coefficient=1.268653) | Trigger Spell: 454859 | Target: Self (1)
-Hotfixed         : Coefficient (651.420471 -> 1.268653), Trigger Spell (1244332 -> 454859)
 #2 (id=1303089)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 40.53453 (coefficient=0.317163)
-Hotfixed         : NEW EFFECT
 Description      : Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.
 
 Name             : Illusory Adornment: Runes (id=463677) [Hidden] 
