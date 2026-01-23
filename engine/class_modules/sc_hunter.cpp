@@ -504,6 +504,7 @@ public:
     buff_t* wallop;
     buff_t* takedown;
     buff_t* wildfire_imbuement;
+    buff_t* raptor_swipe;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -865,6 +866,12 @@ public:
     spell_data_ptr_t raptor_strike;
     spell_data_ptr_t raptor_strike_eagle;
 
+    spell_data_ptr_t raptor_swipe_1;
+    spell_data_ptr_t raptor_swipe_2;  // TODO Not implemented
+    spell_data_ptr_t raptor_swipe_3;  // TODO Not implemented
+    spell_data_ptr_t raptor_swipe_spell;
+    spell_data_ptr_t raptor_swipe_buff;
+
     spell_data_ptr_t guerrilla_tactics;
     spell_data_ptr_t tip_of_the_spear;
     spell_data_ptr_t tip_of_the_spear_buff;
@@ -903,7 +910,6 @@ public:
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
 
-    spell_data_ptr_t raptor_swipe_1; //TODO Not implemented
     spell_data_ptr_t explosives_expert;
     spell_data_ptr_t takedown;
     spell_data_ptr_t takedown_energize;
@@ -911,7 +917,6 @@ public:
     spell_data_ptr_t takedown_pet;
     spell_data_ptr_t killer_companion;
 
-    spell_data_ptr_t raptor_swipe_2; //TODO Not implemented
     spell_data_ptr_t flamefang_pitch;
     spell_data_ptr_t flamefang_pitch_data;
     spell_data_ptr_t flamefang_pitch_dmg;
@@ -920,7 +925,6 @@ public:
     spell_data_ptr_t savagery_sv;
     spell_data_ptr_t wildfire_infusion;
 
-    spell_data_ptr_t raptor_swipe_3; //TODO Not implemented
     spell_data_ptr_t grenade_juggler;
     spell_data_ptr_t wildfire_imbuement;
     spell_data_ptr_t wildfire_imbuement_dmg;
@@ -6603,12 +6607,62 @@ struct raptor_strike_base_t : public melee_focus_spender_t
 
 struct raptor_strike_t : public raptor_strike_base_t
 {
+  struct swipe_t final : raptor_strike_base_t
+  {
+    swipe_t( hunter_t* p ) : raptor_strike_base_t( "raptor_swipe", p, p->talents.raptor_swipe_spell )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->talents.raptor_swipe_spell->effectN( 2 ).base_value();
+    }
+
+    void execute() override
+    {
+      raptor_strike_base_t::execute();
+
+      p()->buffs.raptor_swipe->expire();
+    }
+  };
+
+  struct
+  {
+    double chance = 0;
+    swipe_t* action = nullptr;
+  } swipe;
+
   raptor_strike_t( hunter_t* p, util::string_view options_str )
     : raptor_strike_base_t( "raptor_strike", p, p->talents.raptor_strike )
   {
     parse_options( options_str );
+
+    if ( p->talents.raptor_swipe_spell.ok() )
+    {
+      swipe.action = new swipe_t( p );
+      add_child( swipe.action );
+
+      // Raptor Swipe 3 doesn't modify Raptor Swipe 1's spell data
+      swipe.chance = p->talents.raptor_swipe_3.ok() 
+                   ? p->talents.raptor_swipe_3->effectN( 1 ).percent()
+                   : p->talents.raptor_swipe_1->effectN( 1 ).percent();
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->buffs.raptor_swipe->up() )
+    {
+      swipe.action->execute();
+    }
+    else
+    {
+      raptor_strike_base_t::execute();
+      
+      if ( p()->rng().roll( swipe.chance ) )
+        p()->buffs.raptor_swipe->trigger();
+    }
   }
 };
+
+// 2026-01-23: TODO add swipe to eagle after testing
 
 struct raptor_strike_eagle_t : public raptor_strike_base_t
 {
@@ -8653,6 +8707,12 @@ void hunter_t::init_spells()
     talents.raptor_strike                     = find_talent_spell( talent_tree::SPECIALIZATION, "Raptor Strike", HUNTER_SURVIVAL );
     talents.raptor_strike_eagle               = talents.raptor_strike.ok() ? find_spell( 265189 ) : spell_data_t::not_found();
 
+    talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259003, HUNTER_SURVIVAL );
+    talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259017, HUNTER_SURVIVAL );
+    talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259019, HUNTER_SURVIVAL );
+    talents.raptor_swipe_spell                = talents.raptor_swipe_1.ok() ? find_spell( 1262293 ) : spell_data_t::not_found();
+    talents.raptor_swipe_buff                 = talents.raptor_swipe_1.ok() ? find_spell( 1273155 ) : spell_data_t::not_found();
+
     talents.guerrilla_tactics                 = find_talent_spell( talent_tree::SPECIALIZATION, "Guerrilla Tactics", HUNTER_SURVIVAL );
     talents.tip_of_the_spear                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tip of the Spear", HUNTER_SURVIVAL );
     talents.tip_of_the_spear_buff             = talents.tip_of_the_spear.ok() ? find_spell( 260286 ) : spell_data_t::not_found();
@@ -8691,7 +8751,6 @@ void hunter_t::init_spells()
     talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
     talents.outland_venom_debuff              = talents.outland_venom.ok() ? find_spell( 459941 ) : spell_data_t::not_found();
 
-    talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259003, HUNTER_SURVIVAL );
     talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
     talents.takedown                          = find_talent_spell( talent_tree::SPECIALIZATION, "Takedown", HUNTER_SURVIVAL );
     talents.takedown_energize                 = talents.takedown.ok() ? find_spell( 1258571 ) : spell_data_t::not_found();
@@ -8699,7 +8758,6 @@ void hunter_t::init_spells()
     talents.takedown_pet                      = talents.takedown.ok() ? find_spell( 1253862 ) : spell_data_t::not_found();
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
-    talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259017, HUNTER_SURVIVAL );
     talents.flamefang_pitch                   = find_spell( 1251592 ); /* 2026-01-18: find_talent_spell() is returning nothing for "Flamefang Pitch". 
                                                                                       TODO reconfirm before launch */
     talents.flamefang_pitch_data              = talents.flamefang_pitch.ok() ? find_spell( 1251610 ) : spell_data_t::not_found();
@@ -8709,7 +8767,6 @@ void hunter_t::init_spells()
     talents.savagery_sv                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_SURVIVAL );
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
 
-    talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259019, HUNTER_SURVIVAL );
     talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
     talents.wildfire_imbuement                = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Imbuement", HUNTER_SURVIVAL );
     talents.wildfire_imbuement_dmg            = talents.wildfire_imbuement.ok() ? find_spell( 1252966 ) : spell_data_t::not_found();
@@ -9274,6 +9331,9 @@ void hunter_t::create_buffs()
 
   buffs.wildfire_imbuement = 
     make_buff( this, "wildfire_imbuement", talents.wildfire_imbuement_buff );
+
+  buffs.raptor_swipe = 
+    make_buff( this, "raptor_swipe", talents.raptor_swipe_buff );
 
   // Pet family buffs
 
