@@ -4547,7 +4547,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     if ( p->talents.elemental_conduit.ok() )
       triggers.molten_chill_ignite = true;
 
-        // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
+    // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
     if ( p->bugs )
       meteor_burn_duration -= 1.0_s;
   }
