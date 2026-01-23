@@ -1070,7 +1070,7 @@ public:
     spell_data_ptr_t invigorating_pulse;
     spell_data_ptr_t twilight_requiem;
     spell_data_ptr_t twilight_requiem_damage;
-    spell_data_ptr_t stalk_and_strike; //TODO Not implemented
+    spell_data_ptr_t stalk_and_strike;
 
     spell_data_ptr_t arcane_talons;
     spell_data_ptr_t lunar_calling;
@@ -4793,6 +4793,7 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     if ( p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.stargazer->trigger();
       p()->buffs.tip_of_the_spear_chakram->trigger();
 
       /* 2026-01-23: Chakram cannot proc Sentinel's Mark
@@ -4802,6 +4803,12 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     bounce_tally = 0;
 
     p()->buffs.moonlight_chakram->expire();
+
+    if ( p()->talents.stalk_and_strike.ok() )
+    {
+      p()->buffs.lock_and_load->trigger();
+      p()->cooldowns.wildfire_bomb->adjust( -p()->talents.stalk_and_strike->effectN( 1 ).time_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4820,7 +4827,9 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
 
       if ( bounce == bounce_limit )
       {
-        make_event( sim, time, [ this, s ]() { twilight_requiem->execute_on_target( s->target ); } );
+        if ( p()->talents.twilight_requiem.ok() )
+          make_event( sim, time, [ this, s ]() { twilight_requiem->execute_on_target( s->target ); } );
+
         make_event( sim, time, [ this ]() { p()->buffs.tip_of_the_spear_chakram->expire(); } );
       }
     }
