@@ -4376,13 +4376,14 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     double amount = std::min( state->result_amount * multiplier, current_value );
     current_value -= amount;
 
-    // TODO: Determine chance to intensify
-    dot_t *dot = spend_target->get_dot( state->target );
-    if ( p().talent.master_of_harmony.coalescence->ok() && dot && dot->state && dot->is_ticking() && rng().roll( 0.0 ) )
-      bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() *
-                            p().talent.master_of_harmony.aspect_of_harmony->effectN( 9 ).percent(),
-                        current_value );
-    current_value -= bonus;
+    // (bug) No evidence currently exists to support the idea that the intensify mechanic functions.
+    // dot_t *dot = spend_target->get_dot( state->target );
+    // if ( p().talent.master_of_harmony.coalescence->ok() && dot && dot->state && dot->is_ticking() && rng().roll( 0.0
+    // ) )
+    //   bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() *
+    //                         p().talent.master_of_harmony.aspect_of_harmony->effectN( 9 ).percent(),
+    //                     current_value );
+    // current_value -= bonus;
 
     sim->print_debug( "AoH does_spend: {} {}", state->action->name(), state->action->id );
     sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}, A: {}, B: {}", amount + bonus,
