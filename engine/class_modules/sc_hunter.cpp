@@ -1838,8 +1838,12 @@ struct hunter_melee_attack_t : public hunter_action_t<melee_attack_t>
   {
     hunter_action_t::init();
 
-    if ( weapon && weapon->group() != WEAPON_2H )
-      background = true;
+    if ( weapon )
+    {
+      const weapon_e group = weapon->group();
+      if ( group != WEAPON_2H && group != WEAPON_1H )
+        background = true;
+    }
   }
 };
 
@@ -6337,10 +6341,10 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
 struct melee_t : public auto_attack_base_t<melee_attack_t>
 {
-  struct wildfire_imbuement_t : public hunter_melee_attack_t
+  struct wildfire_imbuement_t final : hunter_melee_attack_t
   {
     wildfire_imbuement_t( util::string_view n, hunter_t* p )
-      : hunter_melee_attack_t( "wildfire_imbuement", p, p->talents.wildfire_imbuement_dmg )
+      : hunter_melee_attack_t( n, p, p->talents.wildfire_imbuement_dmg )
     {
       background = dual = true;
     }
@@ -6348,8 +6352,8 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
   wildfire_imbuement_t* wildfire_imbuement = nullptr;
 
-  melee_t( hunter_t* player ) 
-    : auto_attack_base_t( "auto_attack_mh", player ),
+  melee_t( util::string_view n, hunter_t* player ) 
+    : auto_attack_base_t( n, player ),
       wildfire_imbuement( player->get_background_action<wildfire_imbuement_t>( "wildfire_imbuement" ) )
   {
     school             = SCHOOL_PHYSICAL;
@@ -6357,7 +6361,9 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     may_glance         = true;
     may_crit           = true;
 
-    add_child( wildfire_imbuement );
+    // Dual wielders have a -19% chance to hit on melee attacks
+    if ( player->dual_wield() )
+      base_hit -= 0.19;
   }
 
   void execute() override
@@ -6371,6 +6377,9 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   void impact( action_state_t* s ) override
   {
     auto_attack_base_t::impact( s );
+
+    if ( p()->buffs.wildfire_imbuement->up() && s->result == RESULT_HIT )
+      wildfire_imbuement->execute_on_target( s->target );
 
     if ( p()->talents.lethal_barbs.ok() )
     {
@@ -6447,7 +6456,8 @@ struct harpoon_t : public hunter_ranged_attack_t
       add_child( terms_of_engagement );
     }
 
-    if ( p->main_hand_weapon.group() != WEAPON_2H )
+    const weapon_e group = p->main_hand_weapon.group();
+    if ( group != WEAPON_2H && group != WEAPON_1H )
       background = true;
   }
 
@@ -8249,27 +8259,41 @@ struct auto_attack_t: public action_t
     ignore_false_positive = true;
     trigger_gcd = 0_ms;
 
-    if ( p -> main_hand_weapon.type == WEAPON_NONE )
-    {
-      background = true;
-    }
-    else if ( p -> main_hand_weapon.group() == WEAPON_RANGED )
+    assert( p->main_hand_weapon.type != WEAPON_NONE );
+
+    if ( p->main_hand_weapon.group() == WEAPON_RANGED )
     {
       if ( p->talents.bleak_arrows.ok() )
-        p -> main_hand_attack = new attacks::bleak_arrows_t( p );
+        p->main_hand_attack = new attacks::bleak_arrows_t( p );
       else
-        p -> main_hand_attack = new attacks::auto_shot_t( p );
+        p->main_hand_attack = new attacks::auto_shot_t( p );
     }
     else
     {
-      p -> main_hand_attack = new attacks::melee_t( p );
+      p->main_hand_attack                    = new attacks::melee_t( "auto_attack_mh", p );
+      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+      if ( p->off_hand_weapon.type != WEAPON_NONE )
+      {
+        p->off_hand_attack                    = new attacks::melee_t( "auto_attack_oh", p );
+        p->off_hand_attack->weapon            = &( p->off_hand_weapon );
+        p->off_hand_attack->base_execute_time = p->off_hand_weapon.swing_time;
+        p->off_hand_attack->id                = 1;
+      }
+
       range = 5;
     }
   }
 
   void execute() override
   {
-    player -> main_hand_attack -> schedule_execute();
+    player->main_hand_attack->schedule_execute();
+
+    /* 2026-01-24: Sync swings by default, with more log data maybe add some delay for accuracy.
+                   TODO reconfirm before launch */
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
   }
 
   bool ready() override
@@ -8277,7 +8301,7 @@ struct auto_attack_t: public action_t
     if ( player->is_moving() && !usable_moving() )
       return false;
 
-    return player -> main_hand_attack -> execute_event == nullptr; // not swinging
+    return player->main_hand_attack->execute_event == nullptr; // not swinging
   }
 };
 
@@ -9681,10 +9705,11 @@ void hunter_t::init_action_list()
     }
   }
 
-  if ( specialization() == HUNTER_SURVIVAL && main_hand_weapon.group() != WEAPON_2H )
+  if ( specialization() == HUNTER_SURVIVAL )
   {
-    sim -> error( "Player {} does not have a proper weapon at the Main Hand slot: {}.",
-                  name(), main_hand_weapon.type );
+    const weapon_e group = main_hand_weapon.group();
+    if ( group != WEAPON_2H && group != WEAPON_1H )
+      sim->error( "Player {} does not have a proper weapon at the Main Hand slot: {}.", name(), main_hand_weapon.type );
   }
 
   if ( action_list_str.empty() )
