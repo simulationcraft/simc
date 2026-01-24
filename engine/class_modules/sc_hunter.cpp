@@ -327,6 +327,7 @@ struct hunter_t;
 
 namespace pets
 {
+struct natures_ally_pet_t;
 struct dire_critter_t;
 struct dire_beast_t;
 struct dark_hound_t;
@@ -400,6 +401,7 @@ public:
   {
     pets::hunter_main_pet_t* main = nullptr;
     pets::animal_companion_t* animal_companion = nullptr;
+    spawner::pet_spawner_t<pets::natures_ally_pet_t, hunter_t> natures_ally_pet;
     spawner::pet_spawner_t<pets::dire_beast_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::dark_hound_t, hunter_t> dark_hound;
     spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
@@ -408,6 +410,7 @@ public:
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
 
     pets_t( hunter_t* p ) : 
+      natures_ally_pet( "natures_ally_pet", p ),
       dire_beast( "dire_beast", p ),
       dark_hound( "dark_hound", p ),
       fenryr( "fenryr", p ),
@@ -627,7 +630,7 @@ public:
     spell_data_ptr_t hunters_avoidance; //Utility talent, won't implement
 
     spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
-    spell_data_ptr_t combat_experience; //TODO Not implemented
+    spell_data_ptr_t combat_experience; //TODO fix runtime error
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
     spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
 
@@ -733,7 +736,7 @@ public:
     spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
 
-    spell_data_ptr_t natures_ally_1; //TODO Not implemented
+    spell_data_ptr_t natures_ally_1;
     spell_data_ptr_t dire_frenzy;
     spell_data_ptr_t frenzy;
     spell_data_ptr_t killer_instinct;
@@ -885,7 +888,7 @@ public:
 
     spell_data_ptr_t shrapnel_bomb;
     spell_data_ptr_t shrapnel_bomb_bleed;
-    spell_data_ptr_t flamebreaker;
+    spell_data_ptr_t flamebreak;
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
     spell_data_ptr_t flankers_advantage;
@@ -2187,6 +2190,7 @@ struct bear_t final : public dire_critter_t
 };
 
 // Base class for pets from player stable
+// TODO move code to hunter_main_pet_base_t and remove
 struct stable_pet_t : public hunter_pet_t
 {
   struct actions_t
@@ -2364,6 +2368,32 @@ struct animal_companion_t final : public hunter_main_pet_base_t
   }
 
   void init_spells() override;
+};
+
+// ==========================================================================
+// Nature's Ally Pet
+// ==========================================================================
+
+/* 2026-01-24: Nature's Ally pets suck and take a lifetime to reach the target. 
+               Assuming for now that this is beta behaviour and will be fixed. 
+               If this goes live, have them spawn far away and run to the target. 
+               See DK's pets::base_ghoul_pet_t::arise() code for an example. 
+               TODO reconfirm before launch */
+
+struct natures_ally_pet_t final : public hunter_main_pet_base_t
+{
+  natures_ally_pet_t( hunter_t* owner ) : hunter_main_pet_base_t( owner, "natures_ally_pet", PET_HUNTER )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_main_pet_base_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+  }
 };
 
 // ==========================================================================
@@ -4448,16 +4478,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       }
 
       hunter_ranged_attack_t::execute();
-      
-      if ( p()->talents.thundering_hooves.ok() )
-      {
-        for ( auto pet : pets::active<pets::stable_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-        {
-          pet->actions.thundering_hooves->execute();
-        }
-        for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
-          pet->actions.thundering_hooves->execute();
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -4806,6 +4826,16 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
 
       /* 2026-01-23: Chakram cannot proc Sentinel's Mark
                      TODO reconfirm before launch */
+
+      if ( p()->cooldowns.strike_as_one->up() )
+      {
+        auto pet = p()->pets.main;
+        if ( pet )
+        {
+          p()->pets.main->actions.strike_as_one->execute_on_target( target );
+          p()->cooldowns.strike_as_one->start();
+        }
+      }
     }
 
     bounce_tally = 0;
@@ -5434,6 +5464,9 @@ struct barbed_shot_t : public barbed_shot_base_t
       if ( p()->talents.stomp.ok() )
         pet->stable_pet_t::actions.stomp->execute();
     }
+
+    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+      pet->stable_pet_t::actions.stomp->execute();
 
     if ( p()->talents.soul_drinker.ok() )
     {
@@ -7394,6 +7427,9 @@ struct kill_command_t: public hunter_spell_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> actions.kill_command -> execute_on_target( target );
 
+    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+      pet->actions.kill_command->execute_on_target( target );
+
     if ( p()->talents.wildspeaker.ok() )
     {
       for ( auto pet : p()->active_pets )
@@ -7558,12 +7594,26 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     trigger_buff( p() -> buffs.bestial_wrath, precast_time );
 
+    if ( p()->talents.natures_ally_1.ok() )
+      // Use the summon spell's (1282474) duration when it's in spell data
+      // TODO reconfirm before launch
+      p()->pets.natures_ally_pet.spawn( p()->talents.bestial_wrath->duration() );
+
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
+
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
+    }
+
+    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+    {
+      if ( !is_precombat )
+        pet->actions.bestial_wrath->execute_on_target( target );
+
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )
@@ -7603,6 +7653,18 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     {
       for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->actions.bloodshed->execute_on_target( target );
+
+      if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+        pet->actions.bloodshed->execute_on_target( target );
+    }
+
+    if ( p()->talents.thundering_hooves.ok() )
+    {
+      for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+        pet->actions.thundering_hooves->execute();
+
+      if ( auto pet = p()->pets.natures_ally_pet.active_pet() ) 
+        pet->stable_pet_t::actions.thundering_hooves->execute();
     }
 
     if ( p()->talents.withering_fire.ok() )
@@ -7670,6 +7732,12 @@ struct wild_thrash_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+      pet->actions.wild_thrash->execute();
+
+    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+      pet->actions.wild_thrash->execute();
+
     if ( p()->talents.beast_cleave->ok() )
     {
       p()->buffs.beast_cleave->trigger();
@@ -7677,9 +7745,6 @@ struct wild_thrash_t : public hunter_spell_t
       for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->buffs.beast_cleave->trigger();
     }
-
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
-      pet->actions.wild_thrash->execute();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -8553,12 +8618,10 @@ void hunter_t::init_spells()
     talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
 
-    talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273043, HUNTER_BEAST_MASTERY );
     talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
     talents.frenzy                            = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy", HUNTER_BEAST_MASTERY );
     talents.killer_instinct                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Instinct", HUNTER_BEAST_MASTERY );
 
-    talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273065, HUNTER_BEAST_MASTERY );
     talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
     talents.heart_of_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Pack", HUNTER_BEAST_MASTERY );
@@ -8569,8 +8632,6 @@ void hunter_t::init_spells()
     talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
 
-    talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
-    talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
     talents.wildspeaker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wildspeaker", HUNTER_BEAST_MASTERY );
     talents.wildspeaker_bestial_wrath         = talents.wildspeaker.ok() ? find_spell( 1235388 ) : spell_data_t::not_found();
     talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
@@ -8578,6 +8639,11 @@ void hunter_t::init_spells()
     talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
     talents.bloody_frenzy_buff                = talents.bloody_frenzy.ok() ? find_spell( 1265063 ) : spell_data_t::not_found();
     talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
+
+    talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273043, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273065, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
 
     //TODO Removed
     talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
@@ -8723,7 +8789,7 @@ void hunter_t::init_spells()
 
     talents.shrapnel_bomb                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Bomb", HUNTER_SURVIVAL );
     talents.shrapnel_bomb_bleed               = talents.shrapnel_bomb.ok() ? find_spell( 1253171 ) : spell_data_t::not_found();
-    talents.flamebreaker                      = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreaker", HUNTER_SURVIVAL );
+    talents.flamebreak                        = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreak", HUNTER_SURVIVAL );
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
     talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
     talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
