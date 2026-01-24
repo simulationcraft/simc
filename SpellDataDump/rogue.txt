@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65535 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -3261,16 +3261,13 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mutilate (1329), Gouge (1776), Cheap Shot (1833), Ambush (8676), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Gloomblade (200758), Flagellation (323654), Sinister Strike (341541), Shadowstrike (345121), Flagellation (384631), Ambush (385897), Ambush (430023), Gloomblade (1269214), Shadowstrike (1269336), Shuriken Toss (1269343)
                    Family Flags: 3, 9, 10, 19, 53, 75, 98, 101, 104, 109, 124
-Hotfixed         : Base Value (2 -> 100)
 #3 (id=150620)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Backstab (1269209)
                    Family Flags: 2, 8, 29, 82
-Hotfixed         : Base Value (2 -> 100)
 #4 (id=902463)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 2942 (Label) | Target: Self (1)
                    Affected Spells (Label): Goremaw's Bite (426593)
-Hotfixed         : Base Value (2 -> 100)
 #5 (id=1291976)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Eviscerate (1269205), Secret Technique (1269560), Black Powder (1269565)
@@ -20392,7 +20389,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1288797)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells
 #2 (id=1288798)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Tails) (452538)
