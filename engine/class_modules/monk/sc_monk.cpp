@@ -4279,8 +4279,7 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
        effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
     multiplier *= 1.0 + effect.percent();
 
-  if ( const auto &effect = p().talent.master_of_harmony.coalescence->effectN( 3 ); effect.ok() )
-    multiplier *= 1.0 + effect.percent();
+  multiplier *= 1.0 + p().talent.master_of_harmony.coalescence->effectN( 3 ).percent();
 
   double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
   sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", state->result_amount * multiplier, check_value(),
