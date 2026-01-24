@@ -870,7 +870,7 @@ public:
     spell_data_ptr_t raptor_strike_eagle;
 
     spell_data_ptr_t raptor_swipe_1;
-    spell_data_ptr_t raptor_swipe_2;  // TODO Not implemented
+    spell_data_ptr_t raptor_swipe_2;
     spell_data_ptr_t raptor_swipe_3;  // TODO Not implemented
     spell_data_ptr_t raptor_swipe_spell;
     spell_data_ptr_t raptor_swipe_buff;
@@ -6650,6 +6650,14 @@ struct raptor_strike_t : public raptor_strike_base_t
       raptor_strike_base_t::execute();
 
       p()->buffs.raptor_swipe->expire();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = raptor_strike_base_t::composite_da_multiplier( s );
+
+      if ( p()->talents.raptor_swipe_2.ok() && s->chain_target == 0 )
+        am *= 1 + p()->talents.raptor_swipe_2->effectN( 2 ).percent();
     }
   };
 
