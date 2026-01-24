@@ -452,6 +452,7 @@ public:
     bool trigger_overpowered_missiles;
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    bool cant_trigger_brainstorm; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
@@ -7202,8 +7203,21 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
     if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
-    // TODO: double check timing
-    buffs.brainstorm->trigger();
+    if ( talents.brainstorm.ok() )
+    {
+      // TODO: double check timing
+      if ( chance < 1.0 || !state.cant_trigger_brainstorm )
+        buffs.brainstorm->trigger();
+      sim->print_debug("Brainstorm Trigger: {}", !state.cant_trigger_brainstorm );
+
+      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
+      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
+      if ( chance >= 1.0 )
+        state.cant_trigger_brainstorm = false;
+      else
+        state.cant_trigger_brainstorm = true;
+    }
+
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
 
     if ( rng().roll( talents.overpowered_missiles->effectN( 1 ).percent() ) )
