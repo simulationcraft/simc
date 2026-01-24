@@ -454,6 +454,10 @@ public:
     spell_data_ptr_t tww_s3_pack_leader_2pc_mastery_buff;
     spell_data_ptr_t tww_s3_pack_leader_2pc_crit_buff;
     spell_data_ptr_t tww_s3_pack_leader_4pc;
+
+    // Midnight Season 1 - Whatever the raid is called
+    spell_data_ptr_t mid_s1_bm_2pc;
+    spell_data_ptr_t mid_s1_bm_4pc;
   } tier_set;
 
   struct buffs_t
@@ -1320,6 +1324,7 @@ public:
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
   void trigger_natures_ally_3();
+  void trigger_huntmasters_call();
 };
 
 // Template for common hunter action code.
@@ -1904,7 +1909,9 @@ struct hunter_pet_t: public pet_t
   void init_spells() override;
 };
 
-static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
+static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p, 
+                                                       bool force_duration = false, 
+                                                       timespan_t forced_duration_time = 0_ms )
 {
   // Dire beast gets a chance for an extra attack based on haste
   // rather than discrete plateaus.  At integer numbers of attacks,
@@ -1915,7 +1922,7 @@ static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
   // isn't important and combat log testing shows some variation in
   // attack speeds.  This is not quite perfect but more accurate
   // than plateaus.
-  const timespan_t base_duration    = p->talents.dire_beast_summon->duration();
+  const timespan_t base_duration    = force_duration ? forced_duration_time : p->talents.dire_beast_summon->duration();
   const timespan_t swing_time       = 2_s * p->cache.auto_attack_speed();
   double partial_attacks_per_summon = base_duration / swing_time;
   int base_attacks_per_summon       = static_cast<int>( partial_attacks_per_summon );
@@ -2307,16 +2314,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     double as = stable_pet_t::composite_melee_auto_attack_speed();
 
     if ( o()->talents.frenzy.ok() )
-    {
-      double amount = o()->talents.frenzy->effectN( 1 ).percent();
-
-      /* Frenzy only gains half of the amount in spelldata 2026-01-09
-         TODO reconfirm before launch */
-      if ( bugs )
-        amount /= 2;
-
-      as /= 1 + amount;
-    }
+      as /= 1 + o()->talents.frenzy->effectN( 1 ).percent();
 
     return as;
   }
@@ -3947,6 +3945,30 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
+  }
+}
+
+void hunter_t::trigger_huntmasters_call()
+{
+  if ( !talents.huntmasters_call.ok() )
+    return;
+
+  buffs.huntmasters_call->trigger();
+  if ( buffs.huntmasters_call->at_max_stacks() )
+  {
+    buffs.huntmasters_call->expire();
+    if ( rng().roll( 0.5 ) )
+    {
+      buffs.summon_fenryr->trigger();
+      pets.fenryr.despawn();
+      make_event( sim, [ this ]() { pets.fenryr.spawn( buffs.summon_fenryr->buff_duration() ); } );
+    }
+    else
+    {
+      buffs.summon_hati->trigger();
+      pets.hati.despawn();
+      pets.hati.spawn( buffs.summon_hati->buff_duration() );
+    }
   }
 }
 
@@ -7572,26 +7594,7 @@ struct dire_beast_summon_t final : hunter_spell_t
 
     p()->pets.dire_beast.spawn( summon_duration );
     
-    if ( p()->talents.huntmasters_call.ok() )
-    {
-      p()->buffs.huntmasters_call->trigger();
-      if ( p()->buffs.huntmasters_call->at_max_stacks() )
-      {
-        p()->buffs.huntmasters_call->expire();
-        if ( rng().roll( 0.5 ) )
-        {
-          p()->buffs.summon_fenryr->trigger();
-          p()->pets.fenryr.despawn();
-          make_event( p()->sim, [ this ]() { p()->pets.fenryr.spawn( p()->buffs.summon_fenryr->buff_duration() ); } );
-        }
-        else
-        {
-          p()->buffs.summon_hati->trigger();
-          p()->pets.hati.despawn();
-          p()->pets.hati.spawn( p()->buffs.summon_hati->buff_duration() );
-        }
-      }
-    }
+    p()->trigger_huntmasters_call();
   }
 };
 
@@ -7628,6 +7631,23 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       // Use the summon spell's (1282474) duration when it's in spell data
       // TODO reconfirm before launch
       p()->pets.natures_ally_pet.spawn( p()->talents.bestial_wrath->duration() );
+
+    if ( p()->tier_set.mid_s1_bm_4pc->ok() ) 
+    {
+      // Can spawn shadow hounds, add check when implemented.
+      // TODO reconfirm before launch
+
+      timespan_t summon_duration;
+      int base_attacks_per_summon;
+      std::tie( summon_duration, base_attacks_per_summon ) 
+        = pets::dire_beast_duration( p(), true, p()->tier_set.mid_s1_bm_4pc->effectN( 1 ).time_value() );
+
+      sim->print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
+
+      p()->pets.dire_beast.spawn( summon_duration );
+
+      p()->trigger_huntmasters_call();
+    }
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
@@ -8315,9 +8335,13 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   cooldowns.overwatch = t->get_cooldown( "overwatch" );
   cooldowns.overwatch->duration = timespan_t::from_seconds( p->talents.overwatch->effectN( 2 ).base_value() );
 
+  double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
+  if ( p->bugs )
+    outland_venom_value /= 2; /* 2026-01-24: Outland Venom is only giving half of its value.
+                                             TODO reconfirm before launch */
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
-    -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
-    -> disable_ticking( true );
+    ->set_default_value( outland_venom_value )
+    ->disable_ticking( true );
 
   debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff )
     -> set_default_value_from_effect( 2 )
@@ -9104,6 +9128,9 @@ void hunter_t::init_spells()
   tier_set.tww_s3_pack_leader_2pc_haste_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236565 ) : spell_data_t::not_found();
   tier_set.tww_s3_pack_leader_2pc_crit_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236566 ) : spell_data_t::not_found();
   tier_set.tww_s3_pack_leader_4pc = sets->set( HERO_PACK_LEADER, TWW3, B4 );
+
+  tier_set.mid_s1_bm_2pc = sets->set( HUNTER_BEAST_MASTERY, MID1, B2 );
+  tier_set.mid_s1_bm_4pc = sets->set( HUNTER_BEAST_MASTERY, MID1, B4 );
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
