@@ -871,7 +871,7 @@ public:
 
     spell_data_ptr_t raptor_swipe_1;
     spell_data_ptr_t raptor_swipe_2;
-    spell_data_ptr_t raptor_swipe_3;  // TODO Not implemented
+    spell_data_ptr_t raptor_swipe_3;
     spell_data_ptr_t raptor_swipe_spell;
     spell_data_ptr_t raptor_swipe_buff;
 
@@ -2422,6 +2422,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     action_t* flanking_strike     = nullptr;
     action_t* sic_em              = nullptr;
     action_t* strike_as_one       = nullptr;
+    action_t* strike_as_one_swipe = nullptr;
     action_t* coordinated_assault = nullptr;
     action_t* takedown            = nullptr;
 
@@ -2777,7 +2778,7 @@ public:
     {
       /* 2026-01-17: Strike as One has a unique spell effect in Mongoose Fury's buff, conditioned on a talent (Bloody Claws).
                      So use that for the special case. */
-      if ( s->action->name_str == "strike_as_one" )
+      if ( s->action->name_str == "strike_as_one" || s->action->name_str == "strike_as_one_swipe" )
       {
         am *= 1 + o()->talents.mongoose_fury_buff->effectN( 2 ).percent() * o()->buffs.mongoose_fury->stack();
       }
@@ -3107,9 +3108,10 @@ struct sic_em_t : public hunter_pet_attack_t<hunter_main_pet_t>
 
 struct strike_as_one_t : public hunter_pet_attack_t<hunter_main_pet_t>
 {
-  strike_as_one_t( hunter_main_pet_t* p ) : hunter_pet_attack_t( "strike_as_one", p, p->o()->talents.strike_as_one_dmg )
+  strike_as_one_t( hunter_main_pet_t* p, double effectiveness = 1.0 ) : hunter_pet_attack_t( "strike_as_one", p, p->o()->talents.strike_as_one_dmg )
   {
     background = dual = true;
+    base_dd_multiplier *= effectiveness;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -3641,6 +3643,9 @@ void hunter_main_pet_t::init_spells()
 
     if ( o()->talents.strike_as_one.ok() )
       actions.strike_as_one = new actions::strike_as_one_t( this );
+
+    if ( o()->talents.raptor_swipe_3.ok() && o()->talents.strike_as_one.ok() )
+      actions.strike_as_one_swipe = new actions::strike_as_one_t( this, o()->talents.raptor_swipe_3->effectN( 2 ).percent() );
 
     if ( o()->talents.sic_em.ok() )
       actions.sic_em = new actions::sic_em_t( this );
@@ -6647,6 +6652,11 @@ struct raptor_strike_t : public raptor_strike_base_t
 
     void execute() override
     {
+      // Run before execute() as Tip is decremented in the base class
+      if ( p()->talents.raptor_swipe_3.ok() && p()->buffs.tip_of_the_spear->check() )
+        if ( auto pet = p()->pets.main )
+          pet->actions.strike_as_one_swipe->execute_on_target( target );
+
       raptor_strike_base_t::execute();
 
       p()->buffs.raptor_swipe->expire();
@@ -6658,6 +6668,8 @@ struct raptor_strike_t : public raptor_strike_base_t
 
       if ( p()->talents.raptor_swipe_2.ok() && s->chain_target == 0 )
         am *= 1 + p()->talents.raptor_swipe_2->effectN( 2 ).percent();
+
+      return am;
     }
   };
 
