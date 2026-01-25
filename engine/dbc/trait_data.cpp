@@ -111,7 +111,7 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
           return trait;
 
         // if this is the first entry on the node, assume it's the correct one
-            if ( trait->id_trait_node_entry == _entries.front().id_trait_node_entry )
+        if ( trait->id_trait_node_entry == _entries.front().id_trait_node_entry )
           return trait;
       }
     }
