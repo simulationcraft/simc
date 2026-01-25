@@ -11583,27 +11583,17 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
   return { player, trait, rank };
 }
 
-player_talent_t player_t::find_hero_talent_spell( std::string_view name, hero_tree_e tree, bool name_tokenized,
-                                                  unsigned index ) const
+player_talent_t player_t::find_talent_spell( hero_tree_e tree, std::string_view name, bool name_tokenized,
+                                             unsigned index ) const
 {
-  auto trait = trait_data_t::find( talent_tree::HERO, name, util::class_id( type ), _spec, dbc->ptr, name_tokenized,
-                                   index, static_cast<unsigned>( tree ) );
-
-  if ( trait == &trait_data_t::nil() )
-  {
-    sim->print_debug( "Player {}: Can't find Hero talent with name '{}' for tree {}.", this->name(), name,
-                      static_cast<unsigned>( tree ) );
-    return {};  // Invalid trait
-  }
-
-  return create_talent_obj( this, trait );
+  return find_talent_spell( talent_tree::HERO, name, _spec, name_tokenized, index, tree );
 }
 
 player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, specialization_e s,
-                                             bool name_tokenized, unsigned index ) const
+                                             bool name_tokenized, unsigned index, hero_tree_e hero_tree ) const
 {
   auto trait = trait_data_t::find( tree, name, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr,
-                                   name_tokenized, index );
+                                   name_tokenized, index, static_cast<unsigned>( hero_tree ) );
 
   if ( trait == &trait_data_t::nil() )
   {

@@ -10777,7 +10777,7 @@ void demon_hunter_t::init_spells()
     talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Voidsurge" );
 
   auto HT_FS = [ this ]( std::string_view n ) {
-    return find_hero_talent_spell( n, specialization() == DEMON_HUNTER_HAVOC ? HERO_FELSCARRED : HERO_VOID_SCARRED );
+    return find_talent_spell( specialization() == DEMON_HUNTER_HAVOC ? HERO_FELSCARRED : HERO_VOID_SCARRED, n );
   };
 
   talent.scarred.wave_of_debilitation = HT_FS( "Wave of Debilitation" );
