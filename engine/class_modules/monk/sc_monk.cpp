@@ -1425,11 +1425,6 @@ struct fists_of_fury_t : monk_melee_attack_t
             .set_eff( &effect );
 
       parse_effects( player->buff.tigereye_brew_3 );
-      if ( const auto &effect = player->talent.windwalker.tigereye_brew_3->effectN( 1 ); effect.ok() )
-        add_parse_entry( da_multiplier_effects )
-            .set_value_func(
-                [ & ]( double ) { return ( p()->composite_melee_crit_chance() ) * effect.percent(); } )
-            .set_eff( &effect );
 
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
@@ -1453,7 +1448,8 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
-      p()->buff.tigereye_brew_3->trigger();
+      if ( p()->rng().roll( p()->composite_melee_crit_chance() ) )
+        p()->buff.tigereye_brew_3->trigger();
     }
   };
 
@@ -5641,14 +5637,14 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
-  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith )
-                    ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
 
   buff.tigereye_brew_1 = make_buff_fallback( talent.windwalker.tigereye_brew_1->ok(), this, "tigereye_brew_1",
-                                             talent.windwalker.tigereye_brew_1_buff );
+                                             talent.windwalker.tigereye_brew_1_buff )
+    ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
 
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
                                              talent.windwalker.tigereye_brew_3_buff );
@@ -6322,6 +6318,9 @@ void monk_t::combat_begin()
     // ... and then regains the buff in time intervals while in combat
     make_repeating_event( sim, talent.monk.chi_wave->effectN( 1 ).period(), [ this ]() { buff.chi_wave->trigger(); } );
   }
+
+  if ( talent.windwalker.tigereye_brew_1->ok() )
+    make_repeating_event( sim, talent.windwalker.tigereye_brew_1->effectN( 1 ).period(), [ & ] { buff.tigereye_brew_1->trigger(); } );
 
   if ( specialization() == MONK_WINDWALKER )
   {
