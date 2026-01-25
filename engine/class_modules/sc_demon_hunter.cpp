@@ -10771,28 +10771,37 @@ void demon_hunter_t::init_spells()
   talent.annihilator.world_killer = find_talent_spell( talent_tree::HERO, "World Killer" );
 
   // Scarred talents
-  talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+    talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+  else
+    talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Voidsurge" );
 
-  talent.scarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
-  talent.scarred.pursuit_of_angriness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
-  talent.scarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
-  talent.scarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
-  talent.scarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
+  
+  auto HT_FS = [ this ]( std::string_view n ) {
+    return find_hero_talent_spell( n, specialization() == DEMON_HUNTER_HAVOC ? HERO_FELSCARRED : HERO_VOID_SCARRED );
+  };
 
-  talent.scarred.burning_blades         = find_talent_spell( talent_tree::HERO, "Burning Blades" );
-  talent.scarred.violent_transformation = find_talent_spell( talent_tree::HERO, "Violent Transformation" );
-  talent.scarred.enduring_torment       = find_talent_spell( talent_tree::HERO, "Enduring Torment" );
+  talent.scarred.wave_of_debilitation = HT_FS( "Wave of Debilitation" );
 
-  talent.scarred.untethered_fury      = find_talent_spell( talent_tree::HERO, "Untethered Fury" );
-  talent.scarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
-  talent.scarred.flamebound           = find_talent_spell( talent_tree::HERO, "Flamebound" );
-  talent.scarred.monster_rising       = find_talent_spell( talent_tree::HERO, "Monster Rising" );
+  talent.scarred.pursuit_of_angriness  = HT_FS( "Pursuit of Angriness" );
+  talent.scarred.focused_hatred        = HT_FS( "Focused Hatred" );
+  talent.scarred.set_fire_to_the_pain  = HT_FS( "Set Fire to the Pain" );
+  talent.scarred.improved_soul_rending = HT_FS( "Improved Soul Rending" );
 
-  talent.scarred.blind_focus       = find_talent_spell( talent_tree::HERO, "Blind Focus" );
-  talent.scarred.undying_embers    = find_talent_spell( talent_tree::HERO, "Undying Embers" );
-  talent.scarred.volatile_instinct = find_talent_spell( talent_tree::HERO, "Volatile Instinct" );
+  talent.scarred.burning_blades         = HT_FS( "Burning Blades" );
+  talent.scarred.violent_transformation = HT_FS( "Violent Transformation" );
+  talent.scarred.enduring_torment       = HT_FS( "Enduring Torment" );
 
-  talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
+  talent.scarred.untethered_fury      = HT_FS( "Untethered Fury" );
+  talent.scarred.student_of_suffering = HT_FS( "Student of Suffering" );
+  talent.scarred.flamebound           = HT_FS( "Flamebound" );
+  talent.scarred.monster_rising       = HT_FS( "Monster Rising" );
+
+  talent.scarred.blind_focus       = HT_FS( "Blind Focus" );
+  talent.scarred.undying_embers    = HT_FS( "Undying Embers" );
+  talent.scarred.volatile_instinct = HT_FS( "Volatile Instinct" );
+
+  talent.scarred.demonic_intensity = HT_FS( "Demonic Intensity" );
 
   // Class Background Spells
   spell.felblade_damage        = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );

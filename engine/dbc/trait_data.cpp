@@ -38,6 +38,15 @@ util::span<const trait_data_t> trait_data_t::data( unsigned class_id, talent_tre
   return { _class_range.first, _class_range.second };
 }
 
+util::span<const trait_data_t> trait_data_t::data_sub_tree( unsigned sub_tree_id, unsigned class_id, talent_tree tree,
+                                                            bool ptr )
+{
+  auto _tree_span   = data( class_id, tree, ptr );
+  auto _class_range = range::equal_range( _tree_span, sub_tree_id, {}, &trait_data_t::id_sub_tree );
+
+  return { _class_range.first, _class_range.second };
+}
+
 util::span<const trait_data_t> trait_data_t::data( unsigned node_id, unsigned class_id, talent_tree tree, bool ptr )
 {
   auto _class_span = data( class_id, tree, ptr );
@@ -60,11 +69,11 @@ const trait_data_t* trait_data_t::find( unsigned trait_node_entry_id, bool ptr )
 }
 
 const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name, unsigned class_id,
-                                        specialization_e spec, bool ptr, bool tokenize, unsigned index )
+                                        specialization_e spec, bool ptr, bool tokenize, unsigned index, unsigned sub_tree_id )
 {
   std::vector<const trait_data_t*> _traits;
 
-  auto _data = data( class_id, tree, ptr );
+  auto _data = sub_tree_id > 0 ? data_sub_tree( sub_tree_id, class_id, tree, ptr ) : data( class_id, tree, ptr );
 
   for ( const auto& entry : _data )
   {
@@ -106,7 +115,7 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
           return trait;
 
         // if this is the first entry on the node, assume it's the correct one
-        if ( trait->id_trait_node_entry == _entries.front().id_trait_node_entry )
+            if ( trait->id_trait_node_entry == _entries.front().id_trait_node_entry )
           return trait;
       }
     }

@@ -1083,6 +1083,8 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
+  player_talent_t find_hero_talent_spell( std::string_view name, hero_tree_e t = HERO_NONE,
+                                          bool name_tokenized = false, unsigned index = 0 ) const;
   player_talent_t find_talent_spell( talent_tree tree, std::string_view name, specialization_e s = SPEC_NONE,
                                      bool name_tokenized = false, unsigned index = 0 ) const;
   player_talent_t find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const;
