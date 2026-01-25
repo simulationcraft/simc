@@ -458,6 +458,10 @@ public:
     // Midnight Season 1 - Whatever the raid is called
     spell_data_ptr_t mid_s1_bm_2pc;
     spell_data_ptr_t mid_s1_bm_4pc;
+
+    spell_data_ptr_t mid_s1_mm_2pc;
+    spell_data_ptr_t mid_s1_mm_4pc;
+    spell_data_ptr_t mid_s1_mm_4pc_damage;
   } tier_set;
 
   struct buffs_t
@@ -620,6 +624,8 @@ public:
   {
     real_ppm_t* shadow_hounds;
     real_ppm_t* shadow_surge;
+
+    real_ppm_t* let_fly;
   } rppm;
 
   struct talents_t
@@ -1157,6 +1163,8 @@ public:
 
     action_t* stampede = nullptr;
     action_t* wild_instincts = nullptr;
+
+    action_t* let_fly = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -3880,17 +3888,14 @@ void hunter_t::consume_trick_shots()
 
 void hunter_t::consume_precise_shots()
 {
-  if ( buffs.precise_shots->check() )
-  {
-    if ( talents.moving_target.ok() )
-    {
-      buffs.moving_target->trigger();
-    }
+  if ( !buffs.precise_shots->check() )
+    return;
 
-    cooldowns.explosive_shot->adjust( -talents.magnetic_gunpowder->effectN( 1 ).time_value() * buffs.precise_shots->check() );
+  if ( talents.moving_target.ok() )
+    buffs.moving_target->trigger();
 
-    cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
-  }
+  cooldowns.explosive_shot->adjust( -talents.magnetic_gunpowder->effectN( 1 ).time_value() * buffs.precise_shots->check() );
+  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
@@ -4396,7 +4401,12 @@ struct arcane_shot_t : public arcane_shot_base_t
     arcane_shot_base_t::impact( s );
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+    {
       p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+
+      if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
+        make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -5286,6 +5296,17 @@ struct stampede_t : hunter_ranged_attack_t
   }
 };
 
+// Let Fly (Marksmanship Midnight Season 1 4pc) ===============================
+
+struct let_fly_t final : hunter_ranged_attack_t
+{
+  let_fly_t( hunter_t* p ) : hunter_ranged_attack_t( "let_fly", p, p->tier_set.mid_s1_mm_4pc_damage )
+  {
+    background = dual = true;
+    aoe = -1;
+  }
+};
+
 //==============================
 // Beast Mastery attacks
 //==============================
@@ -5608,9 +5629,15 @@ struct multishot_mm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    // Multi-Shot only ever seems to trigger Spotter's Mark on the primary target
-    if ( s->chain_target == 0 && debug_cast<state_t*>( s )->empowered_by_precise_shots )
-      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+    {
+      // Multi-Shot only ever seems to trigger Spotter's Mark on the primary target
+      if ( s->chain_target == 0 )
+        p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+
+      if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
+        make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -6166,6 +6193,15 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       auto arcane_shot = p->find_action( "arcane_shot" );
       if ( arcane_shot )
         arcane_shot->add_child( this );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      arcane_shot_base_t::impact( s );
+
+      // Despite not consuming Precise Shots, these Arcanes can trigger Let Fly.
+      if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() && p()->rppm.let_fly->trigger() )
+        make_event( sim, 300_ms, [ this, s ]() { p()->actions.let_fly->execute_on_target( s->target ); } );
     }
   };
 
@@ -9129,8 +9165,12 @@ void hunter_t::init_spells()
   tier_set.tww_s3_pack_leader_2pc_crit_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236566 ) : spell_data_t::not_found();
   tier_set.tww_s3_pack_leader_4pc = sets->set( HERO_PACK_LEADER, TWW3, B4 );
 
-  tier_set.mid_s1_bm_2pc = sets->set( HUNTER_BEAST_MASTERY, MID1, B2 );
-  tier_set.mid_s1_bm_4pc = sets->set( HUNTER_BEAST_MASTERY, MID1, B4 );
+  tier_set.mid_s1_bm_2pc        = sets->set( HUNTER_BEAST_MASTERY, MID1, B2 );
+  tier_set.mid_s1_bm_4pc        = sets->set( HUNTER_BEAST_MASTERY, MID1, B4 );
+
+  tier_set.mid_s1_mm_2pc        = sets->set( HUNTER_MARKSMANSHIP, MID1, B2 );
+  tier_set.mid_s1_mm_4pc        = sets->set( HUNTER_MARKSMANSHIP, MID1, B4 );
+  tier_set.mid_s1_mm_4pc_damage = tier_set.mid_s1_mm_4pc.ok() ? find_spell( 1271682 ) : spell_data_t::not_found();
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
@@ -9223,6 +9263,9 @@ void hunter_t::create_actions()
 
   if ( talents.wild_instincts.ok() )
     actions.wild_instincts = new attacks::barbed_shot_wild_instincts_t( this );
+
+  if ( tier_set.mid_s1_mm_4pc.ok() )
+    actions.let_fly = new attacks::let_fly_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -9683,6 +9726,7 @@ void hunter_t::init_rng()
   player_t::init_rng();
   
   rppm.shadow_hounds = get_rppm( "Shadow Hounds", talents.shadow_hounds );
+  rppm.let_fly       = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
 }
 
 void hunter_t::init_scaling()
