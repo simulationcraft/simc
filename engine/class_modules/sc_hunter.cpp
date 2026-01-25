@@ -1256,6 +1256,7 @@ public:
   void merge( player_t& other ) override;
   void arise() override;
   void combat_begin() override;
+  bool validate_actor() override;
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -10060,6 +10061,17 @@ void hunter_t::combat_begin()
   buffs.howl_of_the_pack_leader_cooldown->trigger();
 
   player_t::combat_begin();
+}
+
+bool hunter_t::validate_actor()
+{
+  if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
+  {
+    throw sc_unsupported_specialization( "Hunter sims are unsupported for the Midnight prepatch." );
+    return false;
+  }
+
+  return true;
 }
 
 void hunter_t::datacollection_begin()
