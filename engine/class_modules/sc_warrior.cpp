@@ -3490,6 +3490,14 @@ struct heroic_strike_t : public slam_base_t
     if ( p()->talents.arms.master_of_warfare_3.ok() )
       p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
   }
+
+  bool ready() override
+  {
+    if ( !p()->buff.master_of_warfare_proc->up() )
+      return false;
+
+    return slam_base_t::ready();
+  }
 };
 
 struct slam_t : public slam_base_t
@@ -3498,7 +3506,11 @@ struct slam_t : public slam_base_t
     : slam_base_t( "slam", p, p->spell.slam )
   {
     parse_options( options_str );
-    set_replacement_action( new heroic_strike_t( p, options_str ), p->buff.master_of_warfare_proc );
+    // If we have heroic strike used in the apl, re-use that one, if not, create a new one
+    if ( p->find_action( "heroic_strike" ) )
+      set_replacement_action( "heroic_strike", p->buff.master_of_warfare_proc );
+    else
+      set_replacement_action( new heroic_strike_t( p, options_str ), p->buff.master_of_warfare_proc );
   }
 
   slam_t( util::string_view name, warrior_t* p )
@@ -6965,6 +6977,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new heroic_charge_t( this, options_str );
   if ( name == "heroic_leap" )
     return new heroic_leap_t( this, options_str );
+  if ( name == "heroic_strike" )
+    return new heroic_strike_t( this, options_str );
   if ( name == "heroic_throw" )
     return new heroic_throw_t( this, options_str );
   if ( name == "impending_victory" )
