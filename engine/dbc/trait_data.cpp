@@ -68,7 +68,7 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
 
   for ( const auto& entry : _data )
   {
-    if ( sub_tree_id != 0 && entry.id_sub_tree != sub_tree_id )
+    if ( sub_tree_id != 0 && entry.id_sub_tree != 0 && entry.id_sub_tree != sub_tree_id )
     {
       continue;
     }
