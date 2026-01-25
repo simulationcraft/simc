@@ -462,6 +462,9 @@ public:
     spell_data_ptr_t mid_s1_mm_2pc;
     spell_data_ptr_t mid_s1_mm_4pc;
     spell_data_ptr_t mid_s1_mm_4pc_damage;
+
+    spell_data_ptr_t mid_s1_sv_2pc;
+    spell_data_ptr_t mid_s1_sv_4pc;
   } tier_set;
 
   struct buffs_t
@@ -8262,6 +8265,10 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
       }
     }
 
+    if ( p()->tier_set.mid_s1_sv_4pc.ok() )
+      if ( auto pet = p()->pets.main )
+        pet->actions.strike_as_one->execute_on_target( target );
+
     if ( p()->buffs.winning_streak->check() && rng().roll( p()->tier_set.tww_s2_sv_2pc->proc_chance() ) )
     {
       p()->buffs.winning_streak->expire();  // Consume 2pc buff
@@ -9171,6 +9178,9 @@ void hunter_t::init_spells()
   tier_set.mid_s1_mm_2pc        = sets->set( HUNTER_MARKSMANSHIP, MID1, B2 );
   tier_set.mid_s1_mm_4pc        = sets->set( HUNTER_MARKSMANSHIP, MID1, B4 );
   tier_set.mid_s1_mm_4pc_damage = tier_set.mid_s1_mm_4pc.ok() ? find_spell( 1271682 ) : spell_data_t::not_found();
+
+  tier_set.mid_s1_sv_2pc        = sets->set( HUNTER_SURVIVAL, MID1, B2 );
+  tier_set.mid_s1_sv_4pc        = sets->set( HUNTER_SURVIVAL, MID1, B4 );
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
