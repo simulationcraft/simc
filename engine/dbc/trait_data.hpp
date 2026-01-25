@@ -47,7 +47,6 @@ struct trait_data_t
   static bool is_granted( const trait_data_t* trait, player_e type, specialization_e spec, bool ptr = false );
   static std::vector<unsigned> get_valid_hero_tree_ids( specialization_e spec, bool ptr = false );
   static bool is_hero_tree_valid( hero_tree_e hero, specialization_e spec, bool ptr = false );
-  static util::span<const trait_data_t> data_sub_tree( unsigned sub_tree_id, unsigned class_id, talent_tree tree, bool ptr = false );
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
   static util::span<const trait_data_t> data( unsigned class_id, talent_tree tree, bool ptr = false );

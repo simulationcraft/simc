@@ -10776,7 +10776,6 @@ void demon_hunter_t::init_spells()
   else
     talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Voidsurge" );
 
-  
   auto HT_FS = [ this ]( std::string_view n ) {
     return find_hero_talent_spell( n, specialization() == DEMON_HUNTER_HAVOC ? HERO_FELSCARRED : HERO_VOID_SCARRED );
   };

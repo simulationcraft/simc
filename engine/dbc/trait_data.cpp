@@ -38,15 +38,6 @@ util::span<const trait_data_t> trait_data_t::data( unsigned class_id, talent_tre
   return { _class_range.first, _class_range.second };
 }
 
-util::span<const trait_data_t> trait_data_t::data_sub_tree( unsigned sub_tree_id, unsigned class_id, talent_tree tree,
-                                                            bool ptr )
-{
-  auto _tree_span   = data( class_id, tree, ptr );
-  auto _class_range = range::equal_range( _tree_span, sub_tree_id, {}, &trait_data_t::id_sub_tree );
-
-  return { _class_range.first, _class_range.second };
-}
-
 util::span<const trait_data_t> trait_data_t::data( unsigned node_id, unsigned class_id, talent_tree tree, bool ptr )
 {
   auto _class_span = data( class_id, tree, ptr );
@@ -73,10 +64,15 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
 {
   std::vector<const trait_data_t*> _traits;
 
-  auto _data = sub_tree_id > 0 ? data_sub_tree( sub_tree_id, class_id, tree, ptr ) : data( class_id, tree, ptr );
+  auto _data = data( class_id, tree, ptr );
 
   for ( const auto& entry : _data )
   {
+    if ( sub_tree_id != 0 && entry.id_sub_tree != sub_tree_id )
+    {
+      continue;
+    }
+
     if ( util::str_compare_ci( name, tokenize ? util::tokenize_fn( entry.name ) : entry.name ) )
     {
       if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
