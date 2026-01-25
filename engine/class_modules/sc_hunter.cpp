@@ -7245,6 +7245,7 @@ struct flamefang_pitch_t : public hunter_spell_t
     {
       background = dual = ground_aoe = true;
       aoe = -1;
+      decrements_tip_of_the_spear = false;
     }
   };
 
@@ -8934,8 +8935,7 @@ void hunter_t::init_spells()
     talents.takedown_pet                      = talents.takedown.ok() ? find_spell( 1253862 ) : spell_data_t::not_found();
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
-    talents.flamefang_pitch                   = find_spell( 1251592 ); /* 2026-01-18: find_talent_spell() is returning nothing for "Flamefang Pitch". 
-                                                                                      TODO reconfirm before launch */
+    talents.flamefang_pitch                   = find_talent_spell( talent_tree::SPECIALIZATION, 1251592, HUNTER_SURVIVAL );
     talents.flamefang_pitch_data              = talents.flamefang_pitch.ok() ? find_spell( 1251610 ) : spell_data_t::not_found();
     talents.flamefang_pitch_dmg               = talents.flamefang_pitch.ok() ? find_spell( 1251595 ) : spell_data_t::not_found();
     talents.flamefang_pitch_aoe               = talents.flamefang_pitch.ok() ? find_spell( 1251614 ) : spell_data_t::not_found();
