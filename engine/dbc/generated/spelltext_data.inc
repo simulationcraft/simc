@@ -28619,7 +28619,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  321677, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321685, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321686, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
-  {  322507, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
   {  324143, "$rage=$?c1[${4}]?c2[${6}][${4}]" },
@@ -28775,7 +28775,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  424564, "$dmg=${$57841s2+$57842s1}" },
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {  425804, "$healing=$?c2[${$s1*1.95}][${$s1}]" },
-  {  425965, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  425965, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  426516, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
   {  427031, "$apsp=${$cond($gt($SP,$AP),$SP,$AP)*(1)}" },
   {  427913, "$havocFury=${$s2}\r\n$vengeFury=${$s3+($258922s3*$d)}\r\n$havocTalentFury=${$s2+($258922s2*$d)}" },
@@ -28844,7 +28844,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  451036, "$value=${($AP*$s3/100)*(1+$@versadmg)}" },
   {  451055, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451181, "$value=$?a137023[${($AP*$451017s1/100)*(1+$@versadmg)}][${($SP*$451017s1/100)*(1+$@versadmg)}]" },
-  {  451253, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  451253, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  451299, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s2/100*(1+$@versadmg)}" },
   {  451882, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451901, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -28965,7 +28965,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   { 1237721, "$damageValue=${($max($AP,$SP)*($1250003w8/100))}" },
   { 1237885, "$damage=${$cond($gt($SP,$AP),$SP*0.5,$AP*0.5)*$pctD*(1+$@versadmg)}\r\n$damageovertime=${$cond($gt($SP,$AP),$SP*0.125,$AP*0.125)*$pctD*(1+$@versadmg)}\r\n$healing=${$cond($gt($SP,$AP),$SP*0.65,$AP*0.65)*$pctD*(1+$@versadmg)}\r\n$healingovertime=${$cond($gt($SP,$AP),$SP*0.15,$AP*0.15)*$pctD*(1+$@versadmg)}" },
   { 1240700, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
-  { 1241059, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  { 1241059, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   { 1241240, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241244, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241413, "$pvp=$?a134735[${1.15}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
@@ -29026,6 +29026,10 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 12.0.0.65560
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
+  {  322507,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  {  425965,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  {  451253,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  { 1241059,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
 } };
 
