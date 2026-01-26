@@ -331,6 +331,7 @@ struct natures_ally_pet_t;
 struct dire_critter_t;
 struct dire_beast_t;
 struct dark_hound_t;
+struct dark_minion_t;
 struct fenryr_t;
 struct hati_t;
 struct bear_t;
@@ -404,6 +405,7 @@ public:
     spawner::pet_spawner_t<pets::natures_ally_pet_t, hunter_t> natures_ally_pet;
     spawner::pet_spawner_t<pets::dire_beast_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::dark_hound_t, hunter_t> dark_hound;
+    spawner::pet_spawner_t<pets::dark_minion_t, hunter_t> dark_minion;
     spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
     spawner::pet_spawner_t<pets::hati_t, hunter_t> hati;
     spawner::pet_spawner_t<pets::bear_t, hunter_t> bear;
@@ -413,6 +415,7 @@ public:
       natures_ally_pet( "natures_ally_pet", p ),
       dire_beast( "dire_beast", p ),
       dark_hound( "dark_hound", p ),
+      dark_minion( "dark_minion", p ),
       fenryr( "fenryr", p ),
       hati( "hati", p ),
       bear( "bear", p ),
@@ -622,7 +625,7 @@ public:
 
   struct rppm_t
   {
-    real_ppm_t* shadow_hounds;
+    real_ppm_t* corpsecaller;
     real_ppm_t* shadow_surge;
 
     real_ppm_t* let_fly;
@@ -996,7 +999,8 @@ public:
     spell_data_ptr_t soul_drinker;
     spell_data_ptr_t bleak_powder;
     spell_data_ptr_t bleak_powder_spell;
-    spell_data_ptr_t corpsecaller; // TODO Not implemented
+    spell_data_ptr_t corpsecaller;
+    spell_data_ptr_t corpsecaller_minion_summon;
 
     spell_data_ptr_t ebon_bowstring;
     spell_data_ptr_t through_the_eyes;
@@ -1966,6 +1970,62 @@ struct dark_hound_t final : public hunter_pet_t
   }
   
   void init_spells() override;
+};
+
+// ==========================================================================
+// Dark Minion (Corpsecaller)
+// ==========================================================================
+
+struct dark_minion_t final : public pet_t
+{
+  struct 
+  {
+    action_t* shoot          = nullptr;
+    action_t* blighted_arrow = nullptr;
+  } actions;
+
+  dark_minion_t( hunter_t* owner, util::string_view n = "dark_minion" ) 
+    : pet_t( owner->sim, owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
+  {
+    resource_regeneration = regen_type::DISABLED;
+    owner_coeff.ap_from_ap = 1;
+  }
+
+  void update_stats() override
+  {
+    /* 2026-01-25: Dark Minions only seem to inherit AP and Crit from the player.
+                   TODO reconfirm before launch */
+    current_pet_stats.attack_power_from_ap = owner->composite_total_attack_power_by_type( owner->default_ap_type() ) * owner_coeff.ap_from_ap;
+    sim->print_debug( "{} refreshed AP from owner (ap={})", name(), composite_melee_attack_power() );
+
+    current_pet_stats.composite_melee_crit = owner->cache.attack_crit_chance();
+    current_pet_stats.composite_spell_crit = owner->cache.spell_crit_chance();
+    sim->print_debug( "{} refreshed Critical Strike from owner (crit={})", name(), current_pet_stats.composite_melee_crit, owner->cache.attack_crit_chance() );
+
+    this->adjust_dynamic_cooldowns();
+  }
+
+  void init_action_list() override
+  {
+    pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "shoot" );
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+
+    /* 2026-01-25: Dark Minions don't cast Shoot for ~1.25s after they spawn.
+                   Further log data required for more accurate range.
+                   TODO reconfirm before launch */
+    actions.shoot->cooldown->start( owner->rng().range( 1000_ms, 1500_ms ) );
+  }
+
+  void init_spells() override;
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 // ==========================================================================
@@ -3558,6 +3618,30 @@ struct potent_mutagen_t : public hunter_pet_attack_t<hunter_main_pet_base_t>
   }
 };
 
+// Shoot (Dark Minion) =============================================================
+
+struct shoot_t final : public ranged_attack_t
+{
+  shoot_t( dark_minion_t* p ) : ranged_attack_t( "shoot", p, p->find_spell( 1264357 ) ) 
+  {
+    /* 2026-01-25: The pet stands around for a variable amount of time between casts.
+                   Log testing puts it between 350ms and 650ms but longer testing required.
+                   TODO reconfirm before launch */
+    cooldown->duration = rng().range( 350_ms, 650_ms );
+  }
+};
+
+// Blighted Arrow (Dark Minion) ====================================================
+
+struct blighted_arrow_t final : public ranged_attack_t
+{
+  blighted_arrow_t( pet_t* p ) : ranged_attack_t( "blighted_arrow", p, p->find_spell( 1264364 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
 } // end namespace pets::actions
 
 fenryr_td_t::fenryr_td_t( player_t* target, fenryr_t* p ) : actor_target_data_t( target, p ), dots()
@@ -3685,6 +3769,24 @@ void dark_hound_t::init_spells()
   hunter_pet_t::init_spells();
 
   main_hand_attack->school = SCHOOL_SHADOW;
+}
+
+void dark_minion_t::init_spells()
+{ 
+  pet_t::init_spells();
+
+  actions.blighted_arrow = new actions::blighted_arrow_t( this );
+}
+
+action_t* dark_minion_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "shoot" )
+  {
+    actions.shoot = new actions::shoot_t( this );
+    return actions.shoot;
+  }
+
+  return pet_t::create_action( name, options_str );
 }
 
 void fenryr_t::init_spells()
@@ -4934,27 +5036,18 @@ struct black_arrow_base_t : public kill_shot_base_t
 {
   struct black_arrow_dot_t : public hunter_ranged_attack_t
   {
-    timespan_t dark_hound_duration;
-
     black_arrow_dot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.black_arrow_dot )
     {
       background = dual = true;
       hasted_ticks = false;
-
-      if ( p->talents.shadow_hounds.ok() )
-        dark_hound_duration = p->talents.shadow_hounds_summon->duration();
     }
 
     void tick( dot_t* d ) override
     {
       hunter_ranged_attack_t::tick( d );
 
-      if ( p()->talents.shadow_hounds.ok() && p()->rppm.shadow_hounds->trigger() )
-      {
-        p()->pets.dark_hound.spawn( dark_hound_duration );
-        if ( !p()->pets.dark_hound.active_pets().empty() )
-          p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( dark_hound_duration );
-      }
+      if ( p()->talents.corpsecaller_minion_summon.ok() && p()->rppm.corpsecaller->trigger() )
+        p()->pets.dark_minion.spawn( p()->talents.corpsecaller_minion_summon->duration() );
     }
   };
 
@@ -6072,6 +6165,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
       p()->buffs.double_tap->expire();
     }
+
+    for ( auto pet : p()->pets.dark_minion.active_pets() )
+      pet->actions.blighted_arrow->execute();
 
     if ( lock_and_loaded )
     {
@@ -7927,7 +8023,12 @@ struct trueshot_t : public hunter_spell_t
     }
 
     if ( p()->talents.wailing_dead.ok() )
+    {
+      if ( p()->talents.corpsecaller_minion_summon.ok() )
+        p()->pets.dark_minion.spawn( p()->talents.corpsecaller_minion_summon->duration() );
+
       p()->buffs.wailing_arrow->trigger();
+    }
 
     if ( p()->talents.feathered_frenzy.ok() )
       p()->trigger_eagles_mark( target, p()->talents.sentinel.ok(), true );
@@ -9007,6 +9108,7 @@ void hunter_t::init_spells()
     talents.bleak_powder                = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
     talents.bleak_powder_spell          = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
     talents.corpsecaller                = find_talent_spell( talent_tree::HERO, "Corpsecaller" );
+    talents.corpsecaller_minion_summon  = specialization() == HUNTER_MARKSMANSHIP && talents.corpsecaller.ok() ? find_spell( 1264345 ) : spell_data_t::not_found();
 
     talents.ebon_bowstring              = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
     talents.wailing_dead                = find_talent_spell( talent_tree::HERO, "Wailing Dead" );
@@ -9735,7 +9837,7 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
   
-  rppm.shadow_hounds = get_rppm( "Shadow Hounds", talents.shadow_hounds );
+  rppm.corpsecaller  = get_rppm( "Corpsecaller", talents.corpsecaller );
   rppm.let_fly       = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
 }
 
