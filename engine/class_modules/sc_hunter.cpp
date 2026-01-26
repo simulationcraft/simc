@@ -1977,7 +1977,7 @@ struct dark_hound_t final : public hunter_pet_t
 // Dark Minion (Corpsecaller)
 // ==========================================================================
 
-struct dark_minion_t final : public pet_t
+struct dark_minion_t final : public hunter_pet_t
 {
   struct 
   {
@@ -1986,7 +1986,7 @@ struct dark_minion_t final : public pet_t
   } actions;
 
   dark_minion_t( hunter_t* owner, util::string_view n = "dark_minion" ) 
-    : pet_t( owner->sim, owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
+    : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration = regen_type::DISABLED;
     owner_coeff.ap_from_ap = 1;
@@ -3621,9 +3621,9 @@ struct potent_mutagen_t : public hunter_pet_attack_t<hunter_main_pet_base_t>
 
 // Shoot (Dark Minion) =============================================================
 
-struct shoot_t final : public ranged_attack_t
+struct shoot_t final : public hunter_pet_attack_t<dark_minion_t>
 {
-  shoot_t( dark_minion_t* p ) : ranged_attack_t( "shoot", p, p->find_spell( 1264357 ) ) 
+  shoot_t( dark_minion_t* p ) : hunter_pet_attack_t( "shoot", p, p->find_spell( 1264357 ) ) 
   {
     /* 2026-01-25: The pet stands around for a variable amount of time between casts.
                    Log testing puts it between 350ms and 650ms but longer testing required.
@@ -3634,9 +3634,9 @@ struct shoot_t final : public ranged_attack_t
 
 // Blighted Arrow (Dark Minion) ====================================================
 
-struct blighted_arrow_t final : public ranged_attack_t
+struct blighted_arrow_t final : public hunter_pet_attack_t<dark_minion_t>
 {
-  blighted_arrow_t( pet_t* p ) : ranged_attack_t( "blighted_arrow", p, p->find_spell( 1264364 ) )
+  blighted_arrow_t( dark_minion_t* p ) : hunter_pet_attack_t( "blighted_arrow", p, p->find_spell( 1264364 ) )
   {
     background = true;
     aoe = -1;
