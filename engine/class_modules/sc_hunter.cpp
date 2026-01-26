@@ -7372,7 +7372,7 @@ struct flamefang_pitch_t : public hunter_spell_t
             .target( execute_state->target )
             .duration( p()->talents.flamefang_pitch_data->duration() )
             // No true pulse time exists in spell data for this spell
-            .pulse_time( p()->talents.flamefang_pitch_data->effectN( 1 ).time_value() * 1000 )
+            .pulse_time( timespan_t::from_seconds( p()->talents.flamefang_pitch_data->effectN( 1 ).base_value() ) )
             .action( aoe ) );
 
     // 2026-01-18: Grenade Juggler is refunding the unhasted cooldown of a bomb instead of a charge.
@@ -7654,13 +7654,8 @@ struct kill_command_t: public hunter_spell_t
     
     if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      /* 2026-01-19: Extending Wyvern's Cry is entirely bugged and not working. 
-                     TODO reconfirm before launch */
-      if ( !p()->bugs )
-      {
-        p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
-        p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
-      }
+      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
     }
 
     p()->buffs.natures_ally_3->expire();
@@ -9890,9 +9885,16 @@ void hunter_t::init_action_list()
 
   if ( specialization() == HUNTER_SURVIVAL )
   {
-    const weapon_e group = main_hand_weapon.group();
-    if ( group != WEAPON_2H && group != WEAPON_1H )
+    const weapon_e mh_group = main_hand_weapon.group();
+    if ( mh_group != WEAPON_2H && mh_group != WEAPON_1H && mh_group != WEAPON_DAGGER )
       sim->error( "Player {} does not have a proper weapon at the Main Hand slot: {}.", name(), main_hand_weapon.type );
+
+    if ( const weapon_e oh_group = off_hand_weapon.group() )
+    {
+      if ( oh_group != WEAPON_1H && oh_group != WEAPON_DAGGER )
+        sim->error( "Player {} does not have a proper weapon at the Off Hand slot: {}.", name(), off_hand_weapon.type );
+    }
+    
   }
 
   if ( action_list_str.empty() )
