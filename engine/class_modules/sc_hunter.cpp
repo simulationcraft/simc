@@ -4525,18 +4525,6 @@ struct arcane_shot_t : public arcane_shot_base_t
     return c;
   }
 
-  double composite_crit_chance() const override
-  {
-      double cc = arcane_shot_base_t::composite_crit_chance();
-
-      if ( p()->talents.critical_precision.ok() )
-      {
-        cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
-      }
-
-      return cc;
-  }
-
   timespan_t gcd() const override
   {
     timespan_t g = arcane_shot_base_t::gcd();
