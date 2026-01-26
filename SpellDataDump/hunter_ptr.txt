@@ -21367,6 +21367,24 @@ Effects          :
 Description      : $@spelldesc472741
 Tooltip          : Consuming Howl of the Pack Leader will summon a Stampede!
 
+Name             : Stampede (id=1258344) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Duration         : 4 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 117
+                 : 292
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Extra Initial Period (169)
+Effects          :
+#1 (id=1266942)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 4 yards | Target: Back of Self (48) -> at Radius in Area (91)
+#2 (id=1266943)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
+
 Name             : Touch of Grass (id=1258402) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
