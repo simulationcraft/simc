@@ -751,12 +751,10 @@ public:
     spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
 
-    spell_data_ptr_t natures_ally_1;
     spell_data_ptr_t dire_frenzy;
     spell_data_ptr_t frenzy;
     spell_data_ptr_t killer_instinct;
 
-    spell_data_ptr_t natures_ally_2;
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t heart_of_the_pack;
@@ -767,8 +765,6 @@ public:
     spell_data_ptr_t killer_cobra;
     spell_data_ptr_t master_handler;
 
-    spell_data_ptr_t natures_ally_3;
-    spell_data_ptr_t natures_ally_3_buff;
     spell_data_ptr_t wildspeaker;
     spell_data_ptr_t wildspeaker_kill_command;
     spell_data_ptr_t wildspeaker_bestial_wrath;
@@ -776,6 +772,12 @@ public:
     spell_data_ptr_t bloody_frenzy;
     spell_data_ptr_t bloody_frenzy_buff;
     spell_data_ptr_t piercing_fangs;
+
+    spell_data_ptr_t natures_ally_1;
+    spell_data_ptr_t natures_ally_1_summon;
+    spell_data_ptr_t natures_ally_2;
+    spell_data_ptr_t natures_ally_3;
+    spell_data_ptr_t natures_ally_3_buff;
 
     spell_data_ptr_t multishot_bm; //TODO removed
     spell_data_ptr_t wild_call; //TODO removed
@@ -5599,14 +5601,11 @@ struct barbed_shot_t : public barbed_shot_base_t
     if ( p()->talents.war_orders.ok() )
       p()->cooldowns.kill_command->adjust( -p()->talents.war_orders->effectN( 3 ).time_value() );
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
       if ( p()->talents.stomp.ok() )
         pet->stable_pet_t::actions.stomp->execute();
     }
-
-    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
-      pet->stable_pet_t::actions.stomp->execute();
 
     if ( p()->talents.soul_drinker.ok() )
     {
@@ -6256,8 +6255,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     {
       double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-      // Spell data for buff is invalid and doesn't work as of 2026-01-04 so applying manually
-      // TODO reconfirm before launch
       if ( p()->buffs.focus_fire->up() )
         m *= 1 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
 
@@ -7604,11 +7601,8 @@ struct kill_command_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
       pet -> actions.kill_command -> execute_on_target( target );
-
-    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
-      pet->actions.kill_command->execute_on_target( target );
 
     if ( p()->talents.wildspeaker.ok() )
     {
@@ -7751,9 +7745,7 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     trigger_buff( p() -> buffs.bestial_wrath, precast_time );
 
     if ( p()->talents.natures_ally_1.ok() )
-      // Use the summon spell's (1282474) duration when it's in spell data
-      // TODO reconfirm before launch
-      p()->pets.natures_ally_pet.spawn( p()->talents.bestial_wrath->duration() );
+      p()->pets.natures_ally_pet.spawn( p()->talents.natures_ally_1_summon->duration() );
 
     if ( p()->tier_set.mid_s1_bm_4pc->ok() ) 
     {
@@ -7772,21 +7764,13 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       p()->trigger_huntmasters_call();
     }
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
 
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
-    }
-
-    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
-    {
-      if ( !is_precombat )
-        pet->actions.bestial_wrath->execute_on_target( target );
-
-      trigger_buff( pet->buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )
@@ -7824,20 +7808,14 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     if ( p()->talents.bloodshed.ok() )
     {
-      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
-        pet->actions.bloodshed->execute_on_target( target );
-
-      if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
         pet->actions.bloodshed->execute_on_target( target );
     }
 
     if ( p()->talents.thundering_hooves.ok() )
     {
-      for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+      for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
         pet->actions.thundering_hooves->execute();
-
-      if ( auto pet = p()->pets.natures_ally_pet.active_pet() ) 
-        pet->stable_pet_t::actions.thundering_hooves->execute();
     }
 
     if ( p()->talents.withering_fire.ok() )
@@ -7905,10 +7883,7 @@ struct wild_thrash_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
-      pet->actions.wild_thrash->execute();
-
-    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
       pet->actions.wild_thrash->execute();
 
     if ( p()->talents.beast_cleave->ok() )
@@ -8828,6 +8803,7 @@ void hunter_t::init_spells()
     talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
 
     talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273043, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_1_summon             = talents.natures_ally_1.ok() ? find_spell( 1282474 ) : spell_data_t::not_found();
     talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273065, HUNTER_BEAST_MASTERY );
     talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
     talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
@@ -9484,6 +9460,7 @@ void hunter_t::create_buffs()
 
   buffs.heart_of_the_pack = 
     make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
+      -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
       -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) /* Spelldata is scuffed as of 2026-01-08
                                                                                         TODO: reconfirm before launch */
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
