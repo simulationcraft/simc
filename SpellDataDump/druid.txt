@@ -4663,7 +4663,8 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Affecting Spells : Starfall (191034 effect#2), Ailuro Pouncers (208209 effect#1), Nature's Splendor (392288 effect#1)
+Affecting Spells : Starfall (191034 effect#2), Ailuro Pouncers (208209 effect#1), Passing Seasons (382550 effect#1), Nature's Splendor (392288 effect#1)
+Triggered By     : Passing Seasons (382550)
 Family Flags     : 51
 Attributes       : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
@@ -15181,8 +15182,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1013940)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -12000 | Scaled Value: -12000 | Misc Value: 2336 (Category) | Target: Self (1)
+#1 (id=1013940)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -12000 | Scaled Value: -12000 | Misc Value: 11 | Trigger Spell: 132158 | Target: Self (1)
+                   Affected Spells: Nature's Swiftness (132158)
+                   Family Flags: 51
+Hotfixed         : Sub Type (453 -> 107), Misc Value (2336 -> 11), Affects Spells, Trigger Spell (0 -> 132158)
 Description      : Nature's Swiftness's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Improved Ironbark (id=382552) [Spell Family (7), Passive] 
