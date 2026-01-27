@@ -20394,6 +20394,7 @@ Effects          :
 Description      : $@spelldesc196884
 
 Name             : Surging Totem (id=1221347) [Spell Family (11), Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 24 seconds
@@ -20401,7 +20402,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1207831)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Surging Totem overrides Surging Totem
                    Base Value: 1221348 | Scaled Value: 1221348 | Misc Value: 444995 | Target: Self (1)
