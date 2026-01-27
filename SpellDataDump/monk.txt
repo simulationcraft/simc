@@ -1668,7 +1668,8 @@ Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel 
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Damage Channel Duration (15), Standing (19), Invulnerability (22)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 3 | Scaled Value: 4500 (coefficient=0.024) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 5400 (coefficient=0.0288) | Target: Self (1)
+Hotfixed         : Coefficient (0.024 -> 0.0288)
                    Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
@@ -2064,13 +2065,14 @@ Description      : Causes a surge of invigorating mists, healing the target for 
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
+Hotfixed         : Charge Cooldown (45000 -> 30000)
 Talent Entry     : Mistweaver [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
 Cooldown         : 1 seconds
-Charges          : 1 (45 seconds cooldown)
+Charges          : 1 (30 seconds cooldown)
 Category         : 2294 (Type 0x0): Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1), Heart of the Jade Serpent (1238904 effect#7)
 Labels           : 16: Class Spells
                  : 22: Monk Spells

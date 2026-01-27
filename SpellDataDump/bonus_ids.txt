@@ -8164,7 +8164,7 @@ bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
 bonus_id={ 13635 }, base_ilevel={ 1 }
 bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
-bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
+bonus_id={ 13638 }, base_ilevel={ 102 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
 bonus_id={ 13642 }, recursive_bonus_ids={ 13617 }
 bonus_id={ 13643 }, desc={ Beginner Crafted }, ilevel={ 1 @plvl 1 - 90 @plvl 90 }
