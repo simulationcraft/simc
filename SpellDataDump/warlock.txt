@@ -212,6 +212,7 @@ Description      : Increases the time between an enemy's attacks by $s1% for $d.
 Tooltip          : Time between attacks increased by $w1%. $?e1[Chance to critically strike reduced by $w2%.][]
 
 Name             : Banish (id=710) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -229,7 +230,7 @@ Proc Chance      : 101%
 Mechanic         : Banish
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 59
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Immunity to Hostile & Friendly Effects (48), Aura Stays After Combat (57), Cannot cast on tapped (70), Limit N (165), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Immunity to Hostile & Friendly Effects (48), Aura Stays After Combat (57), Cannot cast on tapped (70), Limit N (165), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=283)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -468,6 +469,7 @@ Description      : Your attacks and damaging spells have a chance to drain the t
 Variables        : $damage=${$max($AP*1.25,$SPH)*0.25*$pctD*(1+$@versadmg)}
 
 Name             : Howl of Terror (id=5484) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -487,7 +489,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Annihilan's Bellow (429072 effects: #1, #2), Oppressive Darkness (1270255 effects: #3, #4)
 Family Flags     : 35
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=1964)     : Apply Aura (6) | Fear (7)
@@ -639,6 +641,7 @@ Description      : Burns the enemy's soul, dealing $s1 Fire damage and applying 
 Variables        : $cdr=${$s2/1000}
 
 Name             : Seduction (desc=Command Demon Ability) (id=6358) [Spell Family (57)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -655,7 +658,7 @@ Proc Chance      : 100%
 Mechanic         : Sleep
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 25
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), No Threat (42), Track Target in Channel (46), No AutoCast (AI) (49), Aura Stays After Combat (57), Name in Channel Bar (61), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), No Threat (42), Track Target in Channel (46), No AutoCast (AI) (49), Aura Stays After Combat (57), Name in Channel Bar (61), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Channel Interrupt: Damage (2), Action (3), Moving (4), Turning (5), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
@@ -707,6 +710,7 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Mortal Coil (id=6789) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -724,7 +728,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting Spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Improved Mortal Coil (1265816 effect#1)
 Family Flags     : 19, 118
-Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=2449)     : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 1 | Mechanic: Horrify | Target: Targeted Enemy (6)
@@ -1322,6 +1326,7 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Infernal Awakening (id=22703) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -1334,7 +1339,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Crashing Chaos (277705 effect#2), Inferno (1280483 effect#1)
 Triggered By     : Summon Infernal (1122), Blasphemy (367680)
 Family Flags     : 50
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=12912)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -1691,6 +1696,7 @@ Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.816*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -1708,7 +1714,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Oppressive Darkness (1270255 effects: #1, #2)
 Family Flags     : 44
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=19880)    : Apply Aura (6) | Stun (12)
@@ -2585,6 +2591,7 @@ Effects          :
 Description      : $@spelldesc89751
 
 Name             : Axe Toss (desc=Special Ability) (id=89766) [Spell Family (57)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Ranged
@@ -2598,7 +2605,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Felstorm (89751 effect#3)
 Family Flags     : 34
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=92676)    : Trigger Spell (64): Axe Toss
@@ -3626,6 +3633,7 @@ Description      : $@spelldesc196406
 Tooltip          : Incinerate, Soul Fire, and Chaos Bolt cast times reduced by $s1%.
 
 Name             : Fear (id=118699) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3642,7 +3650,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Increased Fear Break Threshold (95677 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Always Hit (114), Can Proc From Procs (122), No Cast Log (128), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Nameplate Enemy Debuffs (426), Update Fall Speed After Aura Removal (447)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Always Hit (114), Can Proc From Procs (122), No Cast Log (128), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Enemy Debuffs (426), Update Fall Speed After Aura Removal (447)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #2 (id=907046)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -3828,6 +3836,7 @@ Effects          :
 Description      : $@spelldesc5227
 
 Name             : Fear (id=130616) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3843,7 +3852,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Increased Fear Break Threshold (95677 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Aura Stays After Combat (57), Always Hit (114), Can Proc From Procs (122), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Aura Stays After Combat (57), Always Hit (114), Can Proc From Procs (122), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #2 (id=168012)   : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -4367,6 +4376,7 @@ Taunts the current target if it is not attacking the $?s108499[Abyssal][Infernal
 Tooltip          : Taunted.
 
 Name             : Meteor Strike (id=171017) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -4379,7 +4389,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Destructive Rapidity (1244928 effect#2)
 Family Flags     : 17
-Attributes       : No Redirection (35), No Reflection (39), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : No Redirection (35), No Reflection (39), Do Not Display Range (126), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=242715)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.125 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -4466,6 +4476,7 @@ Effects          :
 Description      : $@spelldesc171017
 
 Name             : Meteor Strike (desc=Command Demon Ability) (id=171156) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -4479,7 +4490,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 117
-Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Always Hit (114), Do Not Display Range (126), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=242945)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.25 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -4908,6 +4919,7 @@ Effects          :
 Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 
 Name             : Unstable Affliction (id=196364) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -4919,7 +4931,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Xavius' Gambit (416615 effect#2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2), Jackpot! (1219034 effect#2), Potent Soul Shards (1259815 effect#1), Warlock Affliction 12.0 Class Set 2pc (1264869 effect#1), Through the Felvine (1266799 effects: #1, #2), Demonic Touch (1269221 effect#1), Darkglare Presence (1280663 effects: #1, #2)
 Family Flags     : 43
-Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -15998,6 +16010,7 @@ Effects          :
 Description      : Deals $s1 Fire damage to a target.
 
 Name             : Felseeker (id=438973) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Chaos
 Spell Type       : Magic
@@ -16009,7 +16022,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 2pc (1283640 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 4pc (1283641 effects: #1, #2)
 Family Flags     : 49
-Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131904)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)

@@ -2400,6 +2400,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Landslide (desc=Black) (id=355689) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -2412,7 +2413,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
+Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=889008)   : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -5841,6 +5842,7 @@ Effects          :
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Melee
@@ -5852,7 +5854,7 @@ Labels           : 16: Class Spells
                  : 1468: Black Evoker Spells
 Mechanic         : Stun
 Triggered By     : Terror of the Skies (371032)
-Attributes       : No Active Defense (21), Do Not Display Range (126), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : No Active Defense (21), Do Not Display Range (126), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=996752)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)

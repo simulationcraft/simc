@@ -3122,7 +3122,7 @@ bonus_id={ 5805 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5806 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5807 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5808 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
-bonus_id={ 5817 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 5817 }, recursive_bonus_ids={ 5805 }
 bonus_id={ 5821 }, quality={ epic }
 bonus_id={ 5825 }, desc={ Combatant I }, quality={ epic }
 bonus_id={ 5830 }, desc={ Challenger I }, quality={ epic }
@@ -4360,7 +4360,7 @@ bonus_id={ 7920 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7921 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7922 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7923 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
-bonus_id={ 7924 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 7924 }, recursive_bonus_ids={ 7920 }
 bonus_id={ 7930 }, effects={ Unknown Effect (id=0) }
 bonus_id={ 7932 }, effects={ Dimensional Translators (id=363327, index=0, type=use), Dimensional Translators (id=363328, index=0, type=equip) }
 bonus_id={ 7933 }, effects={ Raw Speed (id=363329, index=0, type=equip) }

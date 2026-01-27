@@ -81,6 +81,7 @@ $piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
 Name             : Frost Nova (id=122) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -97,7 +98,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Improved Frost Nova (343183 effect#1), Arcane Surge (365362 effects: #1, #2), Time Manipulation (387807 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#1), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Dualcasting Adept (1248014 effect#2), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 6
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=83)       : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -1462,6 +1463,7 @@ $fingersMult=${(2.00*$<masteryMult>)}
 
 
 Name             : Dragon's Breath (id=31661) [Spell Family (3)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Fire
@@ -1481,7 +1483,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Darckli's Dragonfire Diadem (207547 effects: #1, #2), Alexstrasza's Fury (235870 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Time Manipulation (387807 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Dualcasting Adept (1248014 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 23
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=21276)    : Apply Aura (6) | Confuse (5) | Attributes: Area Effects Use Target Radius (17)
@@ -1564,6 +1566,7 @@ Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Freeze (id=33395) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1581,7 +1584,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Frost Mage (137020 effect#6)
 Family Flags     : 73
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=23237)    : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Root | Target: at Enemy in Area (16)
@@ -1893,6 +1896,7 @@ Description      : Unleash a flurry of ice, striking the target $s1 times for a 
 |CFFffffffApplies ${$1246769s2*$s1} $lstack:stacks; of Freezing.|R
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
@@ -1908,7 +1912,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Cryo-Freeze (382292 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Unknown (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=37396)    : Apply Aura (6) | Stun (12)
@@ -2588,6 +2592,7 @@ Description      : Cannot benefit from Time Warp or other similar effects.
 Tooltip          : Cannot benefit from Time Warp or other similar effects.
 
 Name             : Ring of Frost (id=82691) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -2603,7 +2608,7 @@ Mechanic         : Freeze
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Time Manipulation (387807 effect#1), Elemental Affinity (431067 effect#1)
 Family Flags     : 70
-Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=82979)    : Apply Aura (6) | Stun (12)
@@ -4100,6 +4105,7 @@ Description      : Causes an explosion around yourself, dealing $s1 Fire damage 
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Ice Nova (id=157997) [Spell Family (3)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=200, replace="Cone of Cold" (id=120)]
 Class            : Mage
 School           : Frost
@@ -4116,7 +4122,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Time Manipulation (387807 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#1), Frostfire Infusion (431166 effects: #3, #4), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Mastery: Freeze and Shatter (1246752 effects: #1, #3), Dualcasting Adept (1248014 effect#2), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 119
-Attributes       : Not Shapeshifted (16), Can Proc From Procs (122), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Can Proc From Procs (122), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=220383)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -13154,6 +13160,7 @@ Description      : Enemies hit by Cone of Cold are frozen in place for $386770d 
 When your roots expire or are dispelled, your target is snared by $394255s1%, decaying over $394255d.
 
 Name             : Freezing Cold (id=386770) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -13164,7 +13171,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Do Not Display Range (126), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Do Not Display Range (126), Aura Bounce Fails Spell (157), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1021069)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)

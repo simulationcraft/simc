@@ -137,6 +137,7 @@ Effects          :
 Description      : Reduces Arcane damage taken by $s1%.
 
 Name             : Hammer of Justice (id=853) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -156,7 +157,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Improved Hammer of Justice (24188 effect#1), Fist of Justice (234299 effect#1)
 Family Flags     : 11
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Prevents Anim (50), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Prevents Anim (50), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=362)      : Apply Aura (6) | Stun (12)
@@ -401,6 +402,7 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Turn Evil (id=10326) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -420,7 +422,7 @@ Mechanic         : Turn
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#2)
 Family Flags     : 96
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Can Proc From Procs (122), Limit N (165), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Can Proc From Procs (122), Limit N (165), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #2 (id=200198)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -1106,6 +1108,7 @@ $damage=$?a137027[${$s2*$<retribution>}][$s2]
 $crit=$?a137027[${$s4*$<retribution>}][$s4]
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -1124,7 +1127,7 @@ Labels           : 16: Class Spells
                  : 4252
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effects: #3, #4), First Avenger (203776 effect#1), Ferren Marcus's Strength (207614 effects: #1, #2), Avenging Wrath (231895 effects: #1, #2), Soaring Shield (278951 effect#2), Blessing of Dawn (337747 effects: #1, #2), Soaring Shield (378457 effect#1), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Holy Paladin (1258016 effect#1), Light-Blessed Shield (1272298 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Family Flags     : 14, 65
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=21607)    : School Damage (2): holy | Attributes: Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.55 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
@@ -8414,6 +8417,7 @@ Demon and Undead enemies are also stunned for $255941d.
 |cFFFFFFFFGenerates $s2 Holy Power.
 
 Name             : Wake of Ashes (id=255941) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -8423,7 +8427,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Mechanic         : Stun
-Attributes       : Aura Is Debuff (26), Allow Cast While Casting (135), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
+Attributes       : Aura Is Debuff (26), Allow Cast While Casting (135), Show Mechanic as Combat Text (213), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=478187)   : Apply Aura (6) | Stun (12)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Stun | Target: Targeted Enemy (6)

@@ -166,6 +166,7 @@ Description      : Shows the location of all nearby beasts on the minimap.
 Tooltip          : Tracking Beasts.
 
 Name             : Scare Beast (id=1513) [Spell Family (9)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Nature
@@ -184,7 +185,7 @@ Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 31
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Discount Power On Miss (59), Limit N (165), Delay Combat Timer During Cast (211), Taps immediately (215), Allow Defense While Casting (337), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Discount Power On Miss (59), Limit N (165), Delay Combat Timer During Cast (211), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Defense While Casting (337), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478)      : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 1 | Target: Targeted Enemy (6)
@@ -330,6 +331,7 @@ Description      : Your pet growls at the target, generating threat, taunting th
 Tooltip          : Taunted.
 
 Name             : Freezing Trap (id=3355) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Frost
 Spell Type       : Magic
@@ -345,7 +347,7 @@ Mechanic         : Freeze
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6)
 Family Flags     : 36
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), No Partial Immunity (139), Aura Bounce Fails Spell (157), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), No Partial Immunity (139), Aura Bounce Fails Spell (157), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1071)     : Apply Aura (6) | Stun (12)
@@ -1157,6 +1159,7 @@ Description      : Infuses you with Arcane energy, causing your next Arcane Shot
 Tooltip          : Your next Arcane Shot will create an Arcane Detonation.
 
 Name             : Intimidation (id=24394) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -1167,7 +1170,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=14624)    : Apply Aura (6) | Stun (12)
@@ -2641,6 +2644,7 @@ Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Rest (desc=Bonus Ability) (id=94019) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2652,7 +2656,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
-Attributes       : Is Ability (4), Not In Combat (Only Peaceful) (28), No Threat (42), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not In Combat (Only Peaceful) (28), No Threat (42), No AutoCast (AI) (49), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=98716)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2932,6 +2936,7 @@ Description      : $@spelldesc109248
 Tooltip          : Tethered to the magical arrow. Moving $109248s2 yards from the arrow will stun you for $117526d.
 
 Name             : Binding Shot (id=117526) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -2944,7 +2949,7 @@ Labels           : 16: Class Spells
                  : 3830: Tar-Coated Bindings (459460 effect#1)
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Prevents Anim (50), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
+Attributes       : Do Not Sheath (18), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Prevents Anim (50), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=133385)   : Apply Aura (6) | Stun (12)
@@ -3236,6 +3241,7 @@ Description      : Place a tar trap that creates a slick around itself for $1381
 Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Narrow Escape (id=136634) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -3248,7 +3254,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Not Shapeshifted (16), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=178929)   : Apply Aura (6) | Root (Respects Threat Table) (455) | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3796,6 +3802,7 @@ Effects          :
 Description      : $@spelldesc159788
 
 Name             : Steel Trap (id=162480) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -3811,7 +3818,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6)
 Family Flags     : 36
-Attributes       : Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=228143)   : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -4479,6 +4486,7 @@ Effects          :
 Description      : Place a Saberstalkers Battle Standard. In Draenor, the standard increases damage dealt against Beasts for players within $190637A1 yards of the Battle Standard by $190637s1%.  Lasts $d.
 
 Name             : Harpoon (id=190925) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4497,7 +4505,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 1 seconds
 Affecting Spells : Hunter (137014 effect#3)
 Family Flags     : 1, 50
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Auto Select Target with Initiates Combat (220), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=279987)   : Trigger Missiles (32): Harpoon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186260 | Target: Targeted Enemy (6)
@@ -4507,6 +4515,7 @@ Description      : Hurls a harpoon at an enemy, rooting them in place for $19092
 Tooltip          : Rooted.
 
 Name             : Harpoon (id=190927) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4519,7 +4528,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Mechanic         : Root
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=279990)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5549,6 +5558,7 @@ Description      : $@spelldesc208912
 Tooltip          : Increases the damage of your next Aimed Shot by $s1%.
 
 Name             : Play Dead (id=209997) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5560,7 +5570,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Triggered By     : Wake Up (210000)
-Attributes       : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Allow While Mounted (24), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Always Hit (114), No Caster Aura Icon (187), Allow Spell Reflection (224), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Attributes       : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Allow While Mounted (24), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Always Hit (114), No Caster Aura Icon (187), Allow Spell Reflection (224), Aura Points On Client (268), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Login (29)
 Effects          :
 #1 (id=310880)   : Apply Aura (6) | Feign Death (66)
@@ -5702,6 +5712,7 @@ Effects          :
 Description      : Your pet gains the passive abilities of all pet specializations and deals ${$s2/3}% increased damage.
 
 Name             : Harpoon (id=212331) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5715,7 +5726,7 @@ Cooldown         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=314796)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5723,6 +5734,7 @@ Description      : $@spelldesc190925
 Tooltip          : Rooted
 
 Name             : Harpoon (id=212353) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5736,7 +5748,7 @@ Cooldown         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=314825)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -13066,6 +13078,7 @@ Effects          :
 Description      : Fire an enchanted arrow, dealing $354831s1 Shadow damage to your target and an additional $354831s2 Shadow damage to all enemies within $354831A2 yds of your target. Targets struck by a Wailing Arrow are silenced for $355596d.
 
 Name             : Wailing Arrow (id=355596) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -13080,7 +13093,7 @@ Mechanic         : Silence
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Triggered By     : Wailing Arrow (354831)
 Family Flags     : 1, 106, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=888815)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -14866,6 +14879,7 @@ Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to y
 |cFFFFFFFFGrants Deathblow.|r
 
 Name             : Wailing Arrow (id=392061) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -14880,7 +14894,7 @@ Mechanic         : Silence
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Triggered By     : Wailing Arrow (392060)
 Family Flags     : 1, 106, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1029947)  : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Targeted Enemy (6)
@@ -16798,6 +16812,7 @@ Description      : $@spelldesc459552
 Tooltip          : Bleeding for $w1 damage every $t sec.
 
 Name             : Spearhead (id=459690) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -16810,7 +16825,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 106
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166693)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -21459,6 +21474,7 @@ Effects          :
 Description      : The cooldown of Feign Death is reduced by ${-$s1/1000} sec.
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -21469,7 +21485,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1267200)  : Apply Aura (6) | Stun (12)

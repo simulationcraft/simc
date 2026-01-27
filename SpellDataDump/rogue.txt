@@ -31,6 +31,7 @@ Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Dama
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -51,7 +52,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#5), Shadow Dance (185313 effect#2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2), Crescendo of Violence (1259499 effects: #1, #2), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=152)      : Apply Aura (6) | Stun (12)
@@ -158,6 +159,7 @@ Description      : Attack with both weapons, dealing a total of $<dmg> Physical 
 Variables        : $dmg=${$5374s2+$27576s2*0.5}
 
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -170,7 +172,7 @@ Labels           : 16: Class Spells
 Mechanic         : Silence
 Affecting Spells : Iron Wire (196861 effect#1)
 Family Flags     : 61
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=450)      : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Silence | Target: Targeted Enemy (6)
@@ -246,6 +248,7 @@ Effects          :
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -269,7 +272,7 @@ Mechanic         : Incapacitate
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=538)      : Apply Aura (6) | Stun (12)
@@ -338,6 +341,7 @@ Effects          :
 Description      : Allows opening of locked chests and doors that require a skill level of up to $PL.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -358,7 +362,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Stun
 Affecting Spells : Shadow Blades (121471 effect#2), Shadow Dance (185313 effect#6), Broadside (193356 effect#2), Shot in the Dark (257506 effect#1), Sepsis (347037 effect#1), Heavy Hitter (381885 effects: #1, #2), Danse Macabre (393969 effects: #1, #2)
 Family Flags     : 10
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=564)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -492,6 +496,7 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2
 ][.]
 
 Name             : Blind (id=2094) [Spell Family (8)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Outlaw), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -511,7 +516,7 @@ Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=616)      : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -865,6 +870,7 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Sap (id=6770) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -885,7 +891,7 @@ Mechanic         : Sap
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Shadow Dance (185313 effect#6), Sepsis (347037 effect#1), Don't Be Suspicious (441415 effect#2)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=2442)     : Apply Aura (6) | Stun (12)
@@ -14872,6 +14878,7 @@ Description      : Kidney Shot has $s1% increased cooldown and Energy cost, and 
 
 
 Name             : Kidney Shot (id=426589) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -14885,7 +14892,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#5), Shadow Dance (185313 effect#2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2), Crescendo of Violence (1259499 effects: #1, #2), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1105204)  : Apply Aura (6) | Stun (12)
@@ -15032,6 +15039,7 @@ Effects          :
 Description      : $@spelldesc378996
 
 Name             : Blind (id=427773) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Ranged
@@ -15048,7 +15056,7 @@ Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1107522)  : Apply Aura (6) | Decrease Movement Speed% (33)

@@ -3098,6 +3098,7 @@ $sweepingclawsecond= ${1*($AP*0.201825)*(1+$@versadmg)*2*$<mastery>}
 $damage=${1*($AP*0.3)*(1+$@versadmg)*$<mastery>}
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3109,7 +3110,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Stance Mask      : 0x00000040
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=95537)    : Apply Aura (6) | Stun (12)
@@ -3120,6 +3121,7 @@ Description      : Strike an enemy with a smashing attack, dealing $s2 Physical 
 Tooltip          : Stunned.
 
 Name             : Gnaw (id=91800) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3131,7 +3133,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Stance Mask      : 0x00000040
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=95541)    : Apply Aura (6) | Stun (12)
@@ -3162,6 +3164,7 @@ Effects          :
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $91807d.
 
 Name             : Shambling Rush (id=91807) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3175,7 +3178,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000040
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered By     : Shambling Rush (91802)
-Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), No Attack Miss (249), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), No Attack Miss (249), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -5567,6 +5570,7 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Tremble Before Me (id=206961) 
+Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
@@ -5578,7 +5582,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Allow Cast While Casting (135), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=306090)   : Apply Aura (6) | Stun (12)
@@ -5781,6 +5785,7 @@ Effects          :
 Description      : $@spelldesc207142
 
 Name             : Blinding Sleet (id=207167) [Spell Family (15)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Frost
@@ -5798,7 +5803,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=306388)   : Apply Aura (6) | Confuse (5)
@@ -6737,6 +6742,7 @@ Effects          :
 Description      : Your Heart Strike generates ${$210738s1/10} additional Runic Power per target hit.
 
 Name             : Asphyxiate (id=221562) [Spell Family (15)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
@@ -6753,7 +6759,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x01000000
 Mechanic         : Stun
 Family Flags     : 84
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=330559)   : Apply Aura (6) | Modify Stun Effects - Disable Gravity (298)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -13521,6 +13527,7 @@ Description      : $@spelldesc374747
 Tooltip          : Versatility increased by $w1%
 
 Name             : Tightening Grasp (id=374776) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -13531,7 +13538,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1629
 Mechanic         : Silence
-Attributes       : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000805)  : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Mechanic: Silence | Target: Targeted Enemy (6)
@@ -13663,6 +13670,7 @@ Description      : $@spelldesc376938
 Tooltip          : Damage taken from Remorseless Winter increased by $w1%.
 
 Name             : Absolute Zero (id=377048) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -13672,7 +13680,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Mechanic         : Stun
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1004685)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -18940,6 +18948,7 @@ Effects          :
 Description      : Chains of Ice now also roots enemies for $454787d but its cooldown is increased to ${$s2/1000} sec.
 
 Name             : Ice Prison (id=454787) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -18953,7 +18962,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Is Ability (4), Do Not Sheath (18), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Suppress Weapon Procs (151), Can Cause Interrupt (235), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Suppress Weapon Procs (151), Can Cause Interrupt (235), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1157676)  : Apply Aura (6) | Root (Respects Threat Table) (455)

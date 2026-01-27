@@ -1002,6 +1002,7 @@ Effects          :
 Description      : Increases your Agility by $s1% while wearing only leather armor.
 
 Name             : Chaos Nova (id=179057) [Spell Family (107)] 
+Hotfixed         : Attributes
 Talent Entry     : Havoc [tree=class, row=4, col=1, max_rank=1, req_points=0]
                  : Vengeance [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Demon Hunter
@@ -1016,7 +1017,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 16, 17, 32, 43, 70
-Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=257307)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: at Self (18) -> at Enemy in Area (16)
@@ -1752,6 +1753,7 @@ Effects          :
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -1761,7 +1763,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 16, 43, 56
-Attributes       : Bypass Visibility Check (320), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Source (22) -> Enemy in Area (15)
@@ -2652,6 +2654,7 @@ Effects          :
 Description      : $@spelldesc203783
 
 Name             : Sigil of Silence (id=204490) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -2662,7 +2665,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2)
 Family Flags     : 33
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Can Cause Interrupt (235), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Can Cause Interrupt (235), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=301807)   : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Radius: 8 yards | Mechanic: Silence | Target: at Enemy in Area (16)
@@ -3008,6 +3011,7 @@ Description      : Place a Sigil of Misery at the target location that activates
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
 
 Name             : Sigil of Misery (id=207685) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -3021,7 +3025,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2)
 Family Flags     : 33
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #2 (id=307162)   : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -4291,6 +4295,7 @@ Description      : $@spelldesc217735
 Tooltip          : Magic damage taken reduced by $s1%.
 
 Name             : Imprison (id=217832) [Spell Family (107)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Shadow
@@ -4310,7 +4315,7 @@ Mechanic         : Sap
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Devourer Demon Hunter (1213636 effect#5)
 Family Flags     : 32, 48
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Can Proc From Suppressed Target Procs (254), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
@@ -8585,6 +8590,7 @@ Effects          :
 Description      : Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.
 
 Name             : The Hunt (desc=Night Fae) (id=333762) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -8596,7 +8602,7 @@ Labels           : 16: Class Spells
                  : 292
 Mechanic         : Stun
 Triggered By     : The Hunt (323802)
-Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Not In Spellbook Until Learned (269), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=829085)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -10278,6 +10284,7 @@ Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 
 Name             : The Hunt (id=370970) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Melee
@@ -10289,7 +10296,7 @@ Labels           : 16: Class Spells
                  : 292
 Mechanic         : Root
 Triggered By     : The Hunt (370966), The Hunt (1246169)
-Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Not In Spellbook Until Learned (269), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=982587)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -12404,6 +12411,7 @@ Description      : $@spelldesc255260
 Tooltip          : Magic damage taken increased by $s1%.
 
 Name             : Metamorphosis - Alex S Copy (id=418583) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -12413,7 +12421,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 16, 43, 56
-Attributes       : Bypass Visibility Check (320), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1090966)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Source (22) -> Enemy in Area (15)
@@ -16588,6 +16596,7 @@ Description      : $@spelldesc1237270
 Tooltip          : Damage increased by $s1%.
 
 Name             : Void Nova (id=1234195) [Spell Family (107)] 
+Hotfixed         : Attributes
 Talent Entry     : Devourer [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Cosmic
@@ -16601,7 +16610,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 16, 17, 32, 43, 70
-Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1228435)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Enemy (53) -> at Enemy in Area (16)

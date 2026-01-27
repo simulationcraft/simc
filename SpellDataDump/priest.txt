@@ -35,6 +35,7 @@ Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Renew (id=139) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -51,7 +52,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x88000000
 Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #9, #14), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 6, 126
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.46 | Target: Targeted Ally (21)
@@ -188,6 +189,7 @@ Tooltip          : Reduced threat level. Enemies have a reduced detection range 
 Damage taken reduced by $s4%.][]
 
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -206,7 +208,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 15, 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (454)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (454)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.168 | Target: Targeted Enemy (6)
@@ -250,6 +252,7 @@ Effects          :
 Description      : A powerful prayer that heals your target and ${$s3-1} injured allies within $A2 yards for $s2.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
@@ -268,7 +271,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Channel Interrupt: Damage (2), Action (3), Turning (5), Sheathing (10), Interacting (11), Attacking (13), Use Item (14), Change Glyph (48)
 Effects          :
 #1 (id=247)      : Apply Aura (6) | Possess (2)
@@ -541,6 +544,7 @@ Description      : Blast the target's mind for $s1 Shadow damage.$?c1[ Costs a h
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=8, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
@@ -558,7 +562,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Improved Psychic Scream (44297 effect#1), Petrifying Scream (55676 effect#1), Psychic Voice (196704 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=3304)     : Apply Aura (6) | Fear (7)
@@ -572,6 +576,7 @@ Description      : Lets out a psychic scream, causing all enemies within $A1 yar
 Tooltip          : Disoriented.
 
 Name             : Shackle Undead (id=9484) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=9, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
@@ -590,7 +595,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Shackle
 Family Flags     : 58
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Allow While Not Shapeshifted (caster form) (83), PvP Enabling (96), Limit N (165), Taps immediately (215), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Allow While Not Shapeshifted (caster form) (83), PvP Enabling (96), Limit N (165), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=4041)     : Apply Aura (6) | Stun (12)
@@ -630,6 +635,7 @@ Tooltip          : Haste increased by $w1%.$?$w2>0[
 Mind Blast and Void Bolt damage increased by $w2%.][]
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Holy [tree=class, row=1, col=7, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
 Class            : Priest
 School           : Holy
@@ -649,7 +655,7 @@ Proc Chance      : 101%
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Burning Vehemence (372307 effects: #1, #2), Empyreal Blaze (372617 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Preventive Measures (440662 effects: #4, #5), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Triggered By     : Empyreal Blaze (372617)
 Family Flags     : 20, 72
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.1112 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
@@ -733,6 +739,7 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
 Name             : Silence (id=15487) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
@@ -748,7 +755,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Silence
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=7356)     : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Targeted Enemy (6)
@@ -1487,6 +1494,7 @@ Description      : Releases miraculous light at a target location, healing up to
 |cFFFFFFFFCooldown reduced by $s3 sec when you cast Prayer of Healing.|r
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
@@ -1502,7 +1510,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 42, 72
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
@@ -3114,6 +3122,7 @@ Description      : $@spelldesc109186
 Tooltip          : Your next Flash Heal$?a1247178[ or Prayer of Healing][] is instant$?$w5>0[, heals for $w5% more,][] and costs $s2% less mana.
 
 Name             : Void Tendrils (id=114404) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -3126,7 +3135,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=127678)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5183,6 +5192,7 @@ Tooltip          : Effects that reduce Holy Word cooldowns increased by $s1%. Co
 All healing done increased by $w3%. ][]$?$w5>0[ Heal and Prayer of Healing are instant and heal for $s5% more.][]
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5198,7 +5208,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
-Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
@@ -5222,6 +5232,7 @@ Effects          :
 Description      : Holy Word: Chastise stuns the target for $200200d and is not broken by damage.
 
 Name             : Holy Word: Chastise (id=200200) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5234,7 +5245,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
-Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
@@ -5962,6 +5973,7 @@ Effects          :
 Description      : The damage of Smite and Penance is increased by $m1%, and Penance increases or decreases your target's movement speed by $s2% for $355851d.
 
 Name             : Spirit of Redemption (desc=PvP Talent) (id=215769) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -5974,7 +5986,7 @@ Labels           : 16: Class Spells
                  : 1419
 Affecting Spells : Afterlife (196707 effects: #1, #2, #3), Heightened Alteration (453729 effect#1)
 Family Flags     : 5
-Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Looting (11), Enter World (22)
 Effects          :
 #2 (id=320862)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)

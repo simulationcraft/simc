@@ -1389,6 +1389,7 @@ Description      : Hurls molten lava at the target, dealing $285452s1 Fire damag
 |cFFFFFFFFGenerates $343725s3 Maelstrom.|r][]
 
 Name             : Hex (desc=Frog) (id=51514) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Nature
@@ -1410,7 +1411,7 @@ Mechanic         : Polymorph
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Voodoo Mastery (204268 effect#1)
 Family Flags     : 47
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Damage (Script) (27)
 Effects          :
 #1 (id=43856)    : Apply Aura (6) | Change Model (56)
@@ -2128,6 +2129,7 @@ Description      : Causes the earth within $a1 yards of the target location to t
 |cFFFFFFFFThis spell is cast at a selected location.|r
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -2141,7 +2143,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered By     : Earthgrab (116943)
 Family Flags     : 78
-Attributes       : No Redirection (35), No Reflection (39), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Always Line of Sight (185), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : No Redirection (35), No Reflection (39), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Always Line of Sight (185), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=58971)    : Apply Aura (6) | Root (Respects Threat Table) (455)
@@ -3398,6 +3400,7 @@ Description      : Burns an enemy, then inflicts additional Fire damage every $t
 Tooltip          : Fire damage inflicted every $t2 sec.
 
 Name             : Pulverize (id=118345) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -3407,7 +3410,7 @@ Cooldown         : 40 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Attributes       : No Redirection (35), No Reflection (39), AutoCast Off By Default (305), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Display Large Aura Icon On Unit Frames (Boss Aura) (286), AutoCast Off By Default (305), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=134743)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Stun | Target: Targeted Enemy (6)
@@ -3433,6 +3436,7 @@ Description      : Critical Strike increased by $s1%.
 Tooltip          : Critical Strike increased by $s1%.
 
 Name             : Capacitor Totem (id=118905) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -3444,7 +3448,7 @@ Labels           : 16: Class Spells
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
 Mechanic         : Stun
 Family Flags     : 74
-Attributes       : Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=135646)   : Apply Aura (6) | Stun (12)
@@ -10235,6 +10239,7 @@ Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
 Name             : Lightning Lasso (desc=PvP Talent) (id=305485) [Spell Family (11)] 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 5
@@ -10247,7 +10252,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Elemental Tempo (1250364 effects: #1, #2), Natural Gift (1264691 effect#1)
 Family Flags     : 56, 82, 121, 126
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782730)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
@@ -21170,6 +21175,7 @@ Effects          :
 Description      : Lava Burst deals $s1% additional damage.
 
 Name             : Encasing Cold (id=1258862) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : Magic
@@ -21183,7 +21189,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Allow Cast While Casting (135), Floating Combat Text On Cast (198), Allow Cast While Channeling (308)
+Attributes       : Allow Cast While Casting (135), Floating Combat Text On Cast (198), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1267691)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Freeze | Target: Targeted Enemy (6)
