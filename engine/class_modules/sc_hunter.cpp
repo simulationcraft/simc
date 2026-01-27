@@ -7302,7 +7302,10 @@ struct takedown_t : public hunter_spell_t
       pet->actions.takedown->execute_on_target( target );
 
     if ( p()->talents.stampede.ok() )
+    {
       p()->buffs.stampede_incoming->trigger();
+      p()->trigger_howl_of_the_pack_leader();
+    }
 
     if ( p()->talents.moonlight_chakram.ok() )
       p()->buffs.moonlight_chakram->trigger();
@@ -7788,12 +7791,6 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     if ( p()->talents.scent_of_blood.ok() )
       p()->cooldowns.barbed_shot->reset( true, as<int>( p()->talents.scent_of_blood->effectN( 1 ).base_value() ) );
 
-    if ( p()->talents.lead_from_the_front->ok() )
-    {
-      p()->buffs.lead_from_the_front->trigger();
-      p()->trigger_howl_of_the_pack_leader();
-    }
-
     if ( !is_precombat )
     {
       if ( barbed_shot_tww_s2_bm_2pc )
@@ -7828,7 +7825,10 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       p()->buffs.wailing_arrow->trigger();
 
     if ( p()->talents.stampede.ok() )
+    {
       p()->buffs.stampede_incoming->trigger();
+      p()->trigger_howl_of_the_pack_leader();
+    }
   }
 
   bool ready() override
@@ -9842,12 +9842,12 @@ void hunter_t::init_action_list()
     if ( mh_group != WEAPON_2H && mh_group != WEAPON_1H && mh_group != WEAPON_DAGGER )
       sim->error( "Player {} does not have a proper weapon at the Main Hand slot: {}.", name(), main_hand_weapon.type );
 
-    if ( const weapon_e oh_group = off_hand_weapon.group() )
+    if ( off_hand_attack )
     {
+      const weapon_e oh_group = off_hand_weapon.group();
       if ( oh_group != WEAPON_1H && oh_group != WEAPON_DAGGER )
         sim->error( "Player {} does not have a proper weapon at the Off Hand slot: {}.", name(), off_hand_weapon.type );
     }
-    
   }
 
   if ( action_list_str.empty() )
