@@ -1004,13 +1004,14 @@ public:
     spell_data_ptr_t bleak_powder_spell;
     spell_data_ptr_t corpsecaller;
     spell_data_ptr_t corpsecaller_minion_summon;
+    spell_data_ptr_t corpsecaller_hound_summon;
 
     spell_data_ptr_t ebon_bowstring;
     spell_data_ptr_t through_the_eyes;
     spell_data_ptr_t smoke_screen; //Utility talent, won't implement
     spell_data_ptr_t dark_chains; //Utility talent, won't implement
     spell_data_ptr_t shadow_dagger; //Utility talent, won't implement
-    spell_data_ptr_t wailing_dead; // TODO Not implemented
+    spell_data_ptr_t wailing_dead;
     spell_data_ptr_t wailing_arrow;
     spell_data_ptr_t wailing_arrow_buff;
     spell_data_ptr_t wailing_arrow_damage;
@@ -1019,7 +1020,7 @@ public:
     spell_data_ptr_t banshees_mark;
     spell_data_ptr_t the_bell_tolls;
     spell_data_ptr_t umbral_reach;
-    spell_data_ptr_t pact_of_the_hollow; // TODO Not implemented
+    spell_data_ptr_t pact_of_the_hollow;
 
     spell_data_ptr_t withering_fire;
     spell_data_ptr_t withering_fire_black_arrow;
@@ -1027,8 +1028,6 @@ public:
 
     spell_data_ptr_t phantom_pain; //TODO Removed
     spell_data_ptr_t phantom_pain_spell; //TODO Removed
-    spell_data_ptr_t shadow_hounds; //TODO Removed - similiar to corpsecaller
-    spell_data_ptr_t shadow_hounds_summon; //TODO Removed - similiar to corpsecaller
 
     // Pack Leader
     spell_data_ptr_t howl_of_the_pack_leader;
@@ -1158,7 +1157,6 @@ public:
   struct {
     action_t* barbed_shot = nullptr;
     action_t* snakeskin_quiver = nullptr;
-    action_t* dire_beast = nullptr;
     action_t* laceration = nullptr;
 
     action_t* boar_charge = nullptr;
@@ -1342,6 +1340,7 @@ public:
   void trigger_howl_of_the_pack_leader();
   void trigger_natures_ally_3();
   void trigger_huntmasters_call();
+  void spawn_dire_beast( timespan_t base_duration, bool force_hound = false );
 };
 
 // Template for common hunter action code.
@@ -1750,7 +1749,7 @@ public:
     ab::tick( dot );
 
     if ( p()->rng().roll( dire_beast_chance ) )
-      p()->actions.dire_beast->execute();
+      p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
   }
 
   void update_ready( timespan_t cd ) override
@@ -1926,9 +1925,7 @@ struct hunter_pet_t: public pet_t
   void init_spells() override;
 };
 
-static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p, 
-                                                       bool force_duration = false, 
-                                                       timespan_t forced_duration_time = 0_ms )
+static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p, timespan_t base_duration )
 {
   // Dire beast gets a chance for an extra attack based on haste
   // rather than discrete plateaus.  At integer numbers of attacks,
@@ -1939,7 +1936,6 @@ static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p,
   // isn't important and combat log testing shows some variation in
   // attack speeds.  This is not quite perfect but more accurate
   // than plateaus.
-  const timespan_t base_duration    = force_duration ? forced_duration_time : p->talents.dire_beast_summon->duration();
   const timespan_t swing_time       = 2_s * p->cache.auto_attack_speed();
   double partial_attacks_per_summon = base_duration / swing_time;
   int base_attacks_per_summon       = static_cast<int>( partial_attacks_per_summon );
@@ -1950,30 +1946,6 @@ static std::pair<timespan_t, int> dire_beast_duration( hunter_t* p,
 
   return { base_attacks_per_summon * swing_time, base_attacks_per_summon };
 }
-
-// ==========================================================================
-// Shadow Hounds
-// ==========================================================================
-
-struct dark_hound_t final : public hunter_pet_t
-{
-  dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" )
-    : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
-  {
-    resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 3;
-  }
-
-  void summon( timespan_t duration = 0_ms ) override
-  {
-    hunter_pet_t::summon( duration );
-
-    if ( main_hand_attack )
-      main_hand_attack->execute();
-  }
-  
-  void init_spells() override;
-};
 
 // ==========================================================================
 // Dark Minion (Corpsecaller)
@@ -2084,6 +2056,29 @@ struct dire_critter_t : public hunter_pet_t
       m *= 1 + buffs.bestial_wrath->check_value();
 
     return m;
+  }
+
+  void init_spells() override;
+};
+
+// ==========================================================================
+// Dark Hound (Corpsecaller)
+// ==========================================================================
+
+struct dark_hound_t final : public dire_critter_t
+{
+  struct
+  {
+    action_t* shadow_thrash = nullptr;
+  } actions;
+
+  dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
+  {
+    resource_regeneration  = regen_type::DISABLED;
+    owner_coeff.ap_from_ap = 2.006;
+    auto_attack_multiplier = 3.99;
+    // Best guess estimates based on logs and testing
+    // TODO reconfirm before launch
   }
 
   void init_spells() override;
@@ -2949,7 +2944,7 @@ public:
     ab::tick( dot );
 
     if ( o()->rng().roll( dire_beast_chance ) )
-      o()->actions.dire_beast->execute();
+      o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
   }
 
   T_PET* p() { return static_cast<T_PET*>( ab::player ); }
@@ -3645,6 +3640,17 @@ struct blighted_arrow_t final : public hunter_pet_attack_t<dark_minion_t>
   }
 };
 
+// Shadow Thrash (Dark Hound) ======================================================
+
+struct shadow_thrash_t final : public hunter_pet_attack_t<dark_hound_t>
+{
+  shadow_thrash_t( dark_hound_t* p ) : hunter_pet_attack_t( "shadow_thrash", p, p->find_spell( 1264485 ) )
+  {
+    background = true;
+    aoe = data().max_targets();
+  }
+};
+
 } // end namespace pets::actions
 
 fenryr_td_t::fenryr_td_t( player_t* target, fenryr_t* p ) : actor_target_data_t( target, p ), dots()
@@ -3769,13 +3775,16 @@ void dire_critter_t::init_spells()
 
 void dark_hound_t::init_spells()
 {
-  hunter_pet_t::init_spells();
+  dire_critter_t::init_spells();
 
   main_hand_attack->school = SCHOOL_SHADOW;
+
+  actions.shadow_thrash = new actions::shadow_thrash_t( this );
 }
 
 void dark_minion_t::init_spells()
 { 
+  // Calling pet_t's init_spells() to skip the autoattack setup
   pet_t::init_spells();
 
   actions.blighted_arrow = new actions::blighted_arrow_t( this );
@@ -3789,7 +3798,7 @@ action_t* dark_minion_t::create_action( util::string_view name, util::string_vie
     return actions.shoot;
   }
 
-  return pet_t::create_action( name, options_str );
+  return hunter_pet_t::create_action( name, options_str );
 }
 
 void fenryr_t::init_spells()
@@ -4148,7 +4157,7 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     if ( talents.ursine_fury.ok() )
     {
       for ( int i = 0; i < as<int>( talents.ursine_fury->effectN( 1 ).base_value() ); i++ )
-        actions.dire_beast->execute();
+        spawn_dire_beast( talents.dire_beast_summon->duration() );
     }
 
     buffs.howl_of_the_pack_leader_bear->expire();
@@ -4194,6 +4203,34 @@ void hunter_t::trigger_natures_ally_3()
 {
   if ( talents.natures_ally_3.ok() )
     buffs.natures_ally_3->trigger();
+}
+
+void hunter_t::spawn_dire_beast( timespan_t base_duration, bool force_hound )
+{
+  util::string_view name = "Dire Beast";
+
+  bool dark_hound = false;
+
+  timespan_t summon_duration  = 0_ms;
+  int base_attacks_per_summon = 0;
+
+  if ( talents.corpsecaller_hound_summon.ok() 
+    && ( force_hound || rng().roll( talents.corpsecaller->effectN( 1 ).percent() ) ) )
+  {
+    dark_hound = true;
+    name = "Dark Hound";
+  }
+
+  std::tie( summon_duration, base_attacks_per_summon ) = pets::dire_beast_duration( this, base_duration );
+
+  if ( dark_hound )
+    pets.dark_hound.spawn( summon_duration );
+  else
+    pets.dire_beast.spawn( summon_duration );
+
+  sim->print_debug( "{} summoned with {} autoattacks", name, base_attacks_per_summon );
+
+  trigger_huntmasters_call();
 }
 
 // ==========================================================================
@@ -6155,8 +6192,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->buffs.double_tap->expire();
     }
 
-    for ( auto pet : p()->pets.dark_minion.active_pets() )
-      pet->actions.blighted_arrow->execute();
+    if ( p()->talents.pact_of_the_hollow.ok() )
+      for ( auto pet : p()->pets.dark_minion.active_pets() )
+        pet->actions.blighted_arrow->execute();
 
     if ( lock_and_loaded )
     {
@@ -6278,6 +6316,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
+      // Can't guarantee action exists here, find a better solution
+      // TODO reconfirm before launch
       auto arcane_shot = p->find_action( "arcane_shot" );
       if ( arcane_shot )
         arcane_shot->add_child( this );
@@ -6301,6 +6341,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
+      // Can't guarantee action exists here, find a better solution
+      // TODO reconfirm before launch
       auto kill_shot = p->find_action( "kill_shot" );
       if ( kill_shot )
         kill_shot->add_child( this );
@@ -6315,6 +6357,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
+      // Can't guarantee action exists here, find a better solution
+      // TODO reconfirm before launch
       auto black_arrow = p->find_action( "black_arrow" );
       if ( black_arrow )
         black_arrow->add_child( this );
@@ -7617,6 +7661,10 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
+    if ( p()->talents.pact_of_the_hollow.ok() )
+      for ( auto pet : p()->pets.dark_hound.active_pets() )
+        pet->actions.shadow_thrash->execute();
+
     p()->consume_howl_of_the_pack_leader( target );
 
     int tip_stacks = 1;
@@ -7625,8 +7673,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p()->talents.dire_command && rng().roll( dire_command.chance ) )
     {
-      p() -> actions.dire_beast -> execute();
-      p() -> procs.dire_command -> occur();
+      p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
+      p()->procs.dire_command->occur();
     }
 
     if ( p()->talents.soul_drinker.ok() )
@@ -7689,35 +7737,6 @@ struct kill_command_t: public hunter_spell_t
 // Beast Mastery spells
 //==============================
 
-// Dire Beast =============================================================
-
-struct dire_beast_summon_t final : hunter_spell_t
-{
-
-  dire_beast_summon_t( hunter_t* p ) : hunter_spell_t( "dire_beast_summon", p, p->talents.dire_beast_summon )
-  {
-    cooldown -> duration = 0_ms;
-    track_cd_waste = false;
-    background = true;
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    timespan_t summon_duration;
-    int base_attacks_per_summon;
-    std::tie( summon_duration, base_attacks_per_summon ) = pets::dire_beast_duration( p() );
-    
-    sim->print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
-
-    p()->pets.dire_beast.spawn( summon_duration );
-    
-    p()->trigger_huntmasters_call();
-  }
-};
-
 // Bestial Wrath ============================================================
 
 struct bestial_wrath_t: public hunter_ranged_attack_t
@@ -7751,21 +7770,7 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       p()->pets.natures_ally_pet.spawn( p()->talents.natures_ally_1_summon->duration() );
 
     if ( p()->tier_set.mid_s1_bm_4pc->ok() ) 
-    {
-      // Can spawn shadow hounds, add check when implemented.
-      // TODO reconfirm before launch
-
-      timespan_t summon_duration;
-      int base_attacks_per_summon;
-      std::tie( summon_duration, base_attacks_per_summon ) 
-        = pets::dire_beast_duration( p(), true, p()->tier_set.mid_s1_bm_4pc->effectN( 1 ).time_value() );
-
-      sim->print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
-
-      p()->pets.dire_beast.spawn( summon_duration );
-
-      p()->trigger_huntmasters_call();
-    }
+      p()->spawn_dire_beast( p()->tier_set.mid_s1_bm_4pc->effectN( 1 ).time_value() );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
@@ -7822,7 +7827,12 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     }
     
     if ( p()->talents.wailing_dead.ok() )
+    {
+      bool force_hound = true;
+      p()->spawn_dire_beast( p()->talents.corpsecaller_hound_summon->duration(), force_hound );
       p()->buffs.wailing_arrow->trigger();
+    }
+      
 
     if ( p()->talents.stampede.ok() )
     {
@@ -7984,9 +7994,7 @@ struct trueshot_t : public hunter_spell_t
 
     if ( p()->talents.wailing_dead.ok() )
     {
-      if ( p()->talents.corpsecaller_minion_summon.ok() )
-        p()->pets.dark_minion.spawn( p()->talents.corpsecaller_minion_summon->duration() );
-
+      p()->pets.dark_minion.spawn( p()->talents.corpsecaller_minion_summon->duration() );
       p()->buffs.wailing_arrow->trigger();
     }
 
@@ -9056,6 +9064,7 @@ void hunter_t::init_spells()
     talents.bleak_powder_spell          = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
     talents.corpsecaller                = find_talent_spell( talent_tree::HERO, "Corpsecaller" );
     talents.corpsecaller_minion_summon  = specialization() == HUNTER_MARKSMANSHIP && talents.corpsecaller.ok() ? find_spell( 1264345 ) : spell_data_t::not_found();
+    talents.corpsecaller_hound_summon   = specialization() == HUNTER_BEAST_MASTERY && talents.corpsecaller.ok() ? find_spell( 442419 ) : spell_data_t::not_found();
 
     talents.ebon_bowstring              = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
     talents.wailing_dead                = find_talent_spell( talent_tree::HERO, "Wailing Dead" );
@@ -9076,8 +9085,6 @@ void hunter_t::init_spells()
     // TODO Remove
     talents.phantom_pain = find_talent_spell( talent_tree::HERO, "Phantom Pain" );
     talents.phantom_pain_spell = talents.phantom_pain.ok() ? find_spell( 468019 ) : spell_data_t::not_found();
-    talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
-    talents.shadow_hounds_summon = talents.shadow_hounds.ok() ? find_spell( 442419 ) : spell_data_t::not_found();
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
@@ -9297,10 +9304,6 @@ void hunter_t::create_actions()
   get_background_action<attacks::serpent_sting_t>( "serpent_sting" );
 
   player_t::create_actions();
-
-  // Dire Beasts can be summoned without the base talent being selected.
-  if ( talents.dire_beast.ok() || talents.dire_command.ok() || talents.ursine_fury.ok() )
-    actions.dire_beast = new spells::dire_beast_summon_t( this );
 
   if ( talents.laceration.ok() )
     actions.laceration = new attacks::laceration_t( this );
