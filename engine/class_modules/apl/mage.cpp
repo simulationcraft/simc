@@ -127,8 +127,8 @@ void fire( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
   precombat->add_action( "variable,name=pooling_time,value=10*gcd.max" );
-  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=talent.frostfire_bolt,value=2" );
-  precombat->add_action( "variable,name=ff_filler_flamestrike,if=talent.frostfire_bolt,value=2" );
+  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=2" );
+  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=2" );
   precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=2" );
   precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=2" );
   precombat->add_action( "snapshot_stats" );
