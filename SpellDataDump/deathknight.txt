@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65614 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -19874,7 +19874,6 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class
 Effects          :
 #1 (id=1168230)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 10 | Scaled Value: 10 | Stat: Str | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value 2 (0 -> 1)
 Description      : $@spelldesc458753
 Tooltip          : Strength increased by ${$W1}.1%.
 

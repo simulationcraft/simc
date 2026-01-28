@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65614 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -231154,7 +231154,6 @@ $@spellicon1231984 $@spellname1231984
 Every $t2 seconds, the targets bursts, damaging nearby enemies for |CFFffffff$1231981s0%|R of damage taken over the last $t2 seconds.
 
 Name             : Fel Touched (id=1231982) 
-Hotfixed         : Proc Chance (101 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -242311,7 +242310,6 @@ Description      : $@spelldesc1244402
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Touch of Malice (id=1245385) [Hidden] 
-Hotfixed         : Proc Chance (33 -> 0), Internal Cooldown (2000 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards

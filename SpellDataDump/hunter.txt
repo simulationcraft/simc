@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65614 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -8768,7 +8768,7 @@ Name             : Raptor Strike (id=265189) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
-Resource         : 30 Focus (2) (id=191506)[Hotfixed: Cost (40 -> 30)]
+Resource         : 30 Focus (2) (id=191506)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -8783,7 +8783,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.575 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.86 -> 3.575)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Fireblood (desc=Racial) (id=265221) 
@@ -13014,6 +13013,7 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -13022,8 +13022,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 101%
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=884754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
