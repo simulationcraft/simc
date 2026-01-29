@@ -461,6 +461,7 @@ public:
     propagate_const<action_t *> special_delivery;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
+    propagate_const<heal_t *> refreshing_drink;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
@@ -497,6 +498,7 @@ public:
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elixir_of_determination;
     propagate_const<buff_t *> elusive_brawler;
+    propagate_const<buff_t *> empty_barrel;
     propagate_const<buff_t *> empty_the_cellar;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
@@ -505,6 +507,7 @@ public:
     propagate_const<buff_t *> invoke_niuzao;
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
+    propagate_const<buff_t *> refreshing_drink;
     propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> swift_as_a_coursing_river;
     propagate_const<buff_t *> training_of_niuzao;
@@ -845,6 +848,9 @@ public:
       player_talent_t bring_me_another_1;
       player_talent_t bring_me_another_2;
       player_talent_t bring_me_another_3;
+      const spell_data_t *empty_barrel_damage;
+      const spell_data_t *refreshing_drink_buff;
+      const spell_data_t *refreshing_drink_hot;
     } brewmaster;
 
     // Windwalker

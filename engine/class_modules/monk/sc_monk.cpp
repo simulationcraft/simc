@@ -115,6 +115,7 @@ void monk_action_t<Base>::apply_buff_effects()
       p()->buff.counterstrike,
       affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
       CONSUME_BUFF );
+  parse_effects( p()->buff.empty_barrel );
 
   // Windwalker
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
@@ -2072,10 +2073,88 @@ struct auto_attack_t : public monk_melee_attack_t
 
 struct keg_smash_t : monk_melee_attack_t
 {
+  struct empty_barrel_t : monk_spell_t
+  {
+    struct state_t : action_state_t
+    {
+      int count;
+
+      state_t( action_t *a, player_t *t ) : action_state_t( a, t ), count( 0 )
+      {
+      }
+
+      std::ostringstream &debug_str( std::ostringstream &s ) override
+      {
+        action_state_t::debug_str( s );
+        fmt::print( s, " count={}", count );
+        return s;
+      }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        count = 0;
+      }
+
+      void copy_state( const action_state_t *o ) override
+      {
+        action_state_t::copy_state( o );
+        auto other = debug_cast<const state_t *>( o );
+        count      = other->count;
+      }
+    };
+
+    empty_barrel_t( monk_t *player )
+      : monk_spell_t( player, "empty_barrel", player->talent.brewmaster.empty_barrel_damage )
+    {
+      background = dual = true;
+      aoe               = 0;
+    }
+
+    double composite_da_multiplier( const action_state_t *state ) const override
+    {
+      double mul = monk_spell_t::composite_da_multiplier( state );
+
+      auto chain_state = debug_cast<const state_t *>( state );
+      mul *= pow( chain_multiplier, chain_state->count );
+
+      return mul;
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      monk_spell_t::impact( state );
+
+      auto &tl          = target_list();
+      auto target_count = tl.size();
+
+      if ( target_count == 1 )
+        return;
+
+      auto chain_state = debug_cast<state_t *>( get_state( state ) );
+
+      if ( ++chain_state->count == data().effectN( 1 ).chain_target() )
+        return;
+
+      chain_state->target = tl[ chain_state->count % target_count ];
+
+      snapshot_state( chain_state, amount_type( chain_state ) );
+      schedule_execute( chain_state );
+    }
+
+    action_state_t *new_state() override
+    {
+      return new state_t( this, target );
+    }
+  };
+
   cooldown_t *breath_of_fire;
+  action_t *empty_barrel;
 
   keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
-    : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ), breath_of_fire( nullptr )
+    : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ),
+      breath_of_fire( nullptr ),
+      empty_barrel( nullptr )
   {
     parse_options( options_str );
     // TODO: can cast_during_sck be automated?
@@ -2100,6 +2179,12 @@ struct keg_smash_t : monk_melee_attack_t
 
     if ( player->talent.brewmaster.salsalabims_strength->ok() )
       breath_of_fire = player->get_cooldown( "breath_of_fire" );
+
+    if ( player->talent.brewmaster.bring_me_another_1->ok() )
+    {
+      empty_barrel = new empty_barrel_t( player );
+      add_child( empty_barrel );
+    }
   }
 
   void execute() override
@@ -2129,6 +2214,12 @@ struct keg_smash_t : monk_melee_attack_t
 
     if ( p()->talent.master_of_harmony.potential_energy->ok() )
       p()->buff.harmonic_surge->trigger();
+
+    if ( p()->buff.empty_barrel->up() )
+    {
+      p()->buff.empty_barrel->expire();
+      empty_barrel->execute_on_target( target );
+    }
   }
 
   void impact( action_state_t *state ) override
@@ -3587,6 +3678,17 @@ struct celestial_infusion_t : public absorb_brew_t
   }
 };
 
+struct refreshing_drink_t : public monk_heal_t
+{
+  refreshing_drink_t( monk_t *player )
+    : monk_heal_t( player, "refreshing_drink", player->talent.brewmaster.refreshing_drink_hot )
+  {
+    background = true;
+    proc       = true;
+    target     = player;
+  }
+};
+
 template <class base_action_t>
 template <typename... Args>
 brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
@@ -3903,6 +4005,26 @@ struct elixir_of_determination_t : monk_buff_t<absorb_buff_t>
     double amount     = std::max( minimum, default_value * multiplier );
 
     return base_t::trigger( stacks, amount );
+  }
+};
+
+struct empty_barrel_buff_t : buffs::monk_buff_t<>
+{
+  cooldown_t *keg_smash;
+
+  empty_barrel_buff_t( monk_t *player )
+    : monk_buff_t( player, "empty_barrel", player->talent.brewmaster.bring_me_another_1->effectN( 1 ).trigger() )
+  {
+    if ( player->talent.brewmaster.bring_me_another_2->ok() )
+      keg_smash = player->get_cooldown( "keg_smash" );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( keg_smash )
+      keg_smash->reset( true );
+
+    return monk_buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -5042,6 +5164,9 @@ void monk_t::init_spells()
     talent.brewmaster.bring_me_another_1               = _ST( "Bring Me Another" );
     talent.brewmaster.bring_me_another_2               = _STID( 1265138 );
     talent.brewmaster.bring_me_another_3               = _STID( 1265141 );
+    talent.brewmaster.empty_barrel_damage              = find_spell( 1265133 );
+    talent.brewmaster.refreshing_drink_buff            = find_spell( 1265140 );
+    talent.brewmaster.refreshing_drink_hot             = find_spell( 1265145 );
   }
 
   // monk_t::talent::windwalker
@@ -5335,6 +5460,7 @@ void monk_t::init_background_actions()
     action.special_delivery  = new special_delivery_t( this );
     action.celestial_fortune = new celestial_fortune_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
+    action.refreshing_drink  = new refreshing_drink_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
   }
 
@@ -5519,6 +5645,9 @@ void monk_t::create_buffs()
                                              baseline.brewmaster.mastery->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
+  buff.empty_barrel = make_buff_fallback<buffs::empty_barrel_buff_t>( talent.brewmaster.bring_me_another_1->ok(), this,
+                                                                      "empty_barrel" );
+
   buff.empty_the_cellar = make_buff_fallback( talent.brewmaster.empty_the_cellar->ok(), this, "empty_the_cellar",
                                               talent.brewmaster.empty_the_cellar_buff );
 
@@ -5560,6 +5689,9 @@ void monk_t::create_buffs()
                           talent.brewmaster.pretense_of_instability->effectN( 1 ).trigger() )
           ->set_trigger_spell( talent.brewmaster.pretense_of_instability )
           ->add_invalidate( CACHE_DODGE );
+
+  buff.refreshing_drink = make_buff_fallback( talent.brewmaster.bring_me_another_3->ok(), this, "refreshing_drink",
+                                              talent.brewmaster.refreshing_drink_buff );
 
   // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
@@ -6136,6 +6268,48 @@ void monk_t::init_special_effects()
             } )
         ->register_callback_execute_function(
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.whirling_steel->trigger(); } );
+
+  if ( talent.brewmaster.bring_me_another_1->ok() )
+    create_proc_callback( { talent.brewmaster.bring_me_another_1, PF_CAST_SUCCESSFUL,
+                            static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                return baseline.brewmaster.brews.contains( state->action );
+                                              } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.empty_barrel->trigger(); } );
+
+  if ( talent.brewmaster.bring_me_another_3->ok() )
+  {
+    create_proc_callback( { talent.brewmaster.bring_me_another_3, PF_CAST_SUCCESSFUL,
+                            static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                auto id = state->action->id;
+                                                return id == talent.brewmaster.celestial_brew->id() ||
+                                                       id == talent.brewmaster.celestial_infusion->id() ||
+                                                       id == talent.monk.fortifying_brew->id();
+                                              } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.refreshing_drink->trigger();
+          buff.empty_barrel->trigger();
+        } )
+        ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
+          cb->proc_chance                       = 1.0;
+          cb->can_proc_from_procs               = true;
+          cb->can_only_proc_from_class_abilites = true;
+        } );
+
+    create_proc_callback( { &buff.refreshing_drink->data(), PF_DAMAGE_TAKEN,
+                            static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.refreshing_drink->up(); } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.refreshing_drink->expire();
+          action.refreshing_drink->execute();
+        } );
+  }
 
   base_t::init_special_effects();
 }
