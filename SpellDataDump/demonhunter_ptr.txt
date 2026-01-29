@@ -9085,7 +9085,8 @@ Effects          :
 #1 (id=844163)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21832 | Target: at Ground (62)
 #2 (id=900270)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8
+                   Base Value: 8 | Scaled Value: 8 | Target: at Ground (62)
+Hotfixed         : Target 1 (0 -> 62)
 Description      : $@spelldesc1244557
 
 Name             : Glaive Tempest (id=342857) [Spell Family (107)] 
