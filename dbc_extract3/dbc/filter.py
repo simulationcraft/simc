@@ -487,6 +487,7 @@ class TraitSet(DataSet):
                     _traits[key]['spell'] = definition.ref('id_spell')
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
+                    _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
@@ -500,6 +501,8 @@ class TraitSet(DataSet):
                     _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
         _coords = {}
+        _x_map = {}
+        _y_map = {}
         for entry in _traits.values():
             if entry['tree'] == 0:
                 continue
@@ -515,8 +518,11 @@ class TraitSet(DataSet):
 
                 if key not in _coords:
                     _coords[key] = {
-                        0: set()
+                        "y": set(),
+                        "x": set()
                     }
+                    _x_map[key] = {}
+                    _y_map[key] = {}
 
                 pos_x = round(entry['node'].pos_x, -2)
                 pos_y = round(entry['node'].pos_y, -2)
@@ -525,11 +531,32 @@ class TraitSet(DataSet):
                 if pos_y < 0:
                     continue
 
-                _coords[key][0].add(pos_y)
-                if pos_y not in _coords[key]:
-                    _coords[key][pos_y] = set()
+                # assume up to +/-50 pixel variance in data coordinate values
+                # _coords[key]["x"] and ["y"] contains all potential grid coordinates of the tree
+                # _x_map and _y_map are used to fast access the nearest grid coordinate to the data coordinate
+                if pos_x not in _x_map[key]:
+                    new_x = True
+                    for _x in _coords[key]["x"]:
+                        if abs(_x - pos_x) < 50:
+                            _x_map[key][pos_x] = _x
+                            new_x = False
+                            continue
 
-                _coords[key][pos_y].add(pos_x)
+                    if new_x:
+                        _coords[key]["x"].add(pos_x)
+                        _x_map[key][pos_x] = pos_x
+
+                if pos_y not in _y_map[key]:
+                    new_y = True
+                    for _y in _coords[key]["y"]:
+                        if abs(_y - pos_y) < 50:
+                            _y_map[key][pos_y] = _y
+                            new_y = False
+                            continue
+
+                    if new_y:
+                        _coords[key]["y"].add(pos_y)
+                        _y_map[key][pos_y] = pos_y
 
         for v in _coords.values():
             for key, data in v.items():
@@ -564,8 +591,8 @@ class TraitSet(DataSet):
                 if pos_y < 0:
                     continue
 
-                entry['row'] = _coords[key][0].index(pos_y) + 1
-                entry['col'] = _coords[key][pos_y].index(pos_x) + 1
+                entry['row'] = _coords[key]["y"].index(_y_map[key][pos_y]) + 1
+                entry['col'] = _coords[key]["x"].index(_x_map[key][pos_x]) + 1
 
         return _traits
 

@@ -3504,7 +3504,7 @@ class SpellDataGenerator(DataGenerator):
                 else:
                     essences = list(set(essences))
                     if len(essences) > 1:
-                        logging.warn('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
+                        logging.warning('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
                             spell.name, spell.id, ', '.join(essences))
 
                     fields.append(essences[0])
@@ -4078,7 +4078,7 @@ class SetBonusListGenerator(DataGenerator):
 
 
             if len(class_) == 0:
-                logging.warn('Could not determine class information for required item set "%s" (id=%d)',
+                logging.warning('Could not determine class information for required item set "%s" (id=%d)',
                     item_set.name, item_set.id)
                 continue
 

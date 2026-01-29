@@ -614,18 +614,18 @@ class WDC1Column:
                 self.__default_value = Struct('<f').unpack(packed)[0]
 
             if ext_data[5] > 0 or ext_data[6] > 0:
-                logging.warn('Sparse data field has unexpted non-zero values (%d, %d)',
+                logging.warning('Sparse data field has unexpted non-zero values (%d, %d)',
                     ext_data[5], ext_data[6])
 
         elif self.__block_type == COLUMN_TYPE_INDEXED or self.__block_type == COLUMN_TYPE_ARRAY:
             self.__packed_bit_offset = ext_data[4]
 
             if self.__field_size != ext_data[5]:
-                logging.warn('Column %s field sizes differ (%d vs %d)',
+                logging.warning('Column %s field sizes differ (%d vs %d)',
                     self.__index, self.__field_size, ext_data[5])
 
             if self.__block_type == COLUMN_TYPE_INDEXED and ext_data[6] != 0:
-                logging.warn('Column %s for %s has non-zero elements (%d)',
+                logging.warning('Column %s for %s has non-zero elements (%d)',
                     self.__index, self.__parser.file_name(), ext_data[6])
 
             self.__field_size = ext_data[5]
@@ -1132,7 +1132,7 @@ class WDC1Parser(DBCParserBase):
 
             source = self.id_table[source_id]
             if not source:
-                logging.warn('Unable to find source data with dbc_id %d for cloning for id %d', source_id, target_id)
+                logging.warning('Unable to find source data with dbc_id %d for cloning for id %d', source_id, target_id)
                 record_id += 1
                 continue
 

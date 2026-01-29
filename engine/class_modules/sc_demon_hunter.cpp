@@ -683,7 +683,7 @@ public:
       player_talent_t monster_rising;
 
       player_talent_t blind_focus;     // Partial implementation (no Meta)
-      player_talent_t undying_embers;  // Partial implementation (Devourer)
+      player_talent_t undying_embers;
       player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
@@ -922,7 +922,7 @@ public:
 
     // Vengeance
     const spell_data_t* mid1_vengeance_4pc;
-    const spell_data_t* mid1_vengeance_4pc_damage;
+    const spell_data_t* explosion_of_the_soul;
     // Auxilliary
   } set_bonuses;
 
@@ -975,6 +975,7 @@ public:
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_silence;
     cooldown_t* volatile_flameblood_icd;
+    cooldown_t* explosion_of_the_soul_icd;
 
     // Aldrachi Reaver
     cooldown_t* art_of_the_glaive_consumption_icd;
@@ -5241,6 +5242,11 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     damage = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     add_child( damage );
+
+    if ( p->talent.annihilator.dark_matter->ok() && p->active.meteor_shower )
+    {
+      add_child( p->active.meteor_shower );
+    }
   }
 
   void execute() override
@@ -5968,7 +5974,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   {
     cooldown = p->cooldown.reap;
 
-    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_reap", p->spec.eradicate_damage );
     damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
     add_child( damage_action );
@@ -5976,7 +5982,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     if ( p->talent.devourer.void_metamorphosis->ok() )
     {
       damage_action_meta =
-          p->get_background_action<eradicate_damage_t>( "eradicate_damage_meta", p->spec.eradicate_damage_meta );
+          p->get_background_action<eradicate_damage_t>( "eradicate_cull", p->spec.eradicate_damage_meta );
       damage_action_meta->aoe                 = -1;
       damage_action_meta->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
       add_child( damage_action_meta );
@@ -6303,6 +6309,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
       execute_energize_action =
           p->get_background_action<demon_hunter_energize_t>( "stars_fury", p->set_bonuses.stars_fury );
     }
+
+    if ( p->talent.annihilator.dark_matter->ok() && p->active.meteor_shower )
+    {
+      add_child( p->active.meteor_shower );
+    }
   }
 
   void execute() override
@@ -6349,6 +6360,10 @@ struct voidfall_meteor_t : public voidfall_meteor_base_t
   voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
     : voidfall_meteor_base_t( n, p, p->hero_spec.voidfall_meteor )
   {
+    if ( p->talent.annihilator.world_killer->ok() && p->active.world_killer )
+    {
+      add_child( p->active.world_killer );
+    }
   }
 };
 
@@ -6414,6 +6429,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, p->hero_spec.meteor_shower_driver )
   {
     damage = p->get_background_action<meteor_shower_damage_t>( fmt::format( "{}_damage", name() ) );
+    add_child( damage );
   }
 
   void execute() override
@@ -6538,9 +6554,10 @@ struct hungering_slash_t : public hungering_slash_base_t
 struct explosion_of_the_soul_t : public demon_hunter_spell_t
 {
   explosion_of_the_soul_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->set_bonuses.mid1_vengeance_4pc_damage )
+    : demon_hunter_spell_t( n, p, p->set_bonuses.explosion_of_the_soul )
   {
     background = dual   = true;
+    aoe                 = -1;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
   }
 };
@@ -7825,11 +7842,12 @@ struct fracture_t : public voidfall_building_trigger_t<
         p()->buff.warblades_hunger->expire();
       }
 
-      double percent = p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent();
       if ( p()->set_bonuses.mid1_vengeance_4pc->ok() &&
-           rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) )
+           rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) &&
+           p()->cooldown.explosion_of_the_soul_icd->up() )
       {
         explosion_of_the_soul->execute_on_target( target );
+        p()->cooldown.explosion_of_the_soul_icd->start( p()->set_bonuses.mid1_vengeance_4pc->internal_cooldown() );
       }
     }
   }
@@ -8287,11 +8305,10 @@ struct vengeful_retreat_t
     }
   };
 
-    voidstep_damage_t* voidstep;
+  voidstep_damage_t* voidstep;
 
   vengeful_retreat_t( demon_hunter_t* p, util::string_view options_str )
-  : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str ),
-      voidstep( nullptr )
+    : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str ), voidstep( nullptr )
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
@@ -8375,7 +8392,7 @@ struct vengeful_retreat_t
   {
     // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up. Do this before calling reset as that will also reset the cooldown.
-    cooldown->charges = std::max(data().charges(), 1U);
+    cooldown->charges = std::max( data().charges(), 1U );
 
     base_t::reset();
   }
@@ -8687,7 +8704,9 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   };
 
   std::vector<immolation_aura_functional_buff_t*> immos;
-  immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos()
+  double undying_embers_proc_chance;
+  immolation_aura_buff_t( demon_hunter_t* p )
+    : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos(), undying_embers_proc_chance( 0.0 )
   {
     set_cooldown( timespan_t::zero() );
     set_tick_behavior( buff_tick_behavior::NONE );
@@ -8715,9 +8734,30 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       set_max_stack( 1 );
     }
 
+    if ( p->talent.scarred.undying_embers->ok() )
+    {
+      undying_embers_proc_chance = p->talent.scarred.undying_embers->effectN( 1 ).percent();
+    }
+
     for ( int i = 0; i < max_stack(); i++ )
     {
-      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) ) );
+      auto functional_buff = new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) );
+      // this talent is a pain
+      if ( p->talent.scarred.undying_embers->ok() )
+      {
+        functional_buff->set_expire_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+          if ( rng().roll( undying_embers_proc_chance ) && p->cooldown.immolation_aura->up() )
+          {
+            p->proc.undying_embers->occur();
+            // retriggers the buff and consumes a cooldown charge but does not count as a cast
+            make_event( sim, [ this, p ] {
+              trigger();
+              p->cooldown.immolation_aura->start( p->cooldown.immolation_aura->action );
+            } );
+          }
+        } );
+      }
+      immos.push_back( functional_buff );
     }
   }
 
@@ -10771,28 +10811,36 @@ void demon_hunter_t::init_spells()
   talent.annihilator.world_killer = find_talent_spell( talent_tree::HERO, "World Killer" );
 
   // Scarred talents
-  talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+    talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+  else
+    talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Voidsurge" );
 
-  talent.scarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
-  talent.scarred.pursuit_of_angriness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
-  talent.scarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
-  talent.scarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
-  talent.scarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
+  auto HT_FS = [ this ]( std::string_view n ) {
+    return find_talent_spell( specialization() == DEMON_HUNTER_HAVOC ? HERO_FELSCARRED : HERO_VOID_SCARRED, n );
+  };
 
-  talent.scarred.burning_blades         = find_talent_spell( talent_tree::HERO, "Burning Blades" );
-  talent.scarred.violent_transformation = find_talent_spell( talent_tree::HERO, "Violent Transformation" );
-  talent.scarred.enduring_torment       = find_talent_spell( talent_tree::HERO, "Enduring Torment" );
+  talent.scarred.wave_of_debilitation = HT_FS( "Wave of Debilitation" );
 
-  talent.scarred.untethered_fury      = find_talent_spell( talent_tree::HERO, "Untethered Fury" );
-  talent.scarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
-  talent.scarred.flamebound           = find_talent_spell( talent_tree::HERO, "Flamebound" );
-  talent.scarred.monster_rising       = find_talent_spell( talent_tree::HERO, "Monster Rising" );
+  talent.scarred.pursuit_of_angriness  = HT_FS( "Pursuit of Angriness" );
+  talent.scarred.focused_hatred        = HT_FS( "Focused Hatred" );
+  talent.scarred.set_fire_to_the_pain  = HT_FS( "Set Fire to the Pain" );
+  talent.scarred.improved_soul_rending = HT_FS( "Improved Soul Rending" );
 
-  talent.scarred.blind_focus       = find_talent_spell( talent_tree::HERO, "Blind Focus" );
-  talent.scarred.undying_embers    = find_talent_spell( talent_tree::HERO, "Undying Embers" );
-  talent.scarred.volatile_instinct = find_talent_spell( talent_tree::HERO, "Volatile Instinct" );
+  talent.scarred.burning_blades         = HT_FS( "Burning Blades" );
+  talent.scarred.violent_transformation = HT_FS( "Violent Transformation" );
+  talent.scarred.enduring_torment       = HT_FS( "Enduring Torment" );
 
-  talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
+  talent.scarred.untethered_fury      = HT_FS( "Untethered Fury" );
+  talent.scarred.student_of_suffering = HT_FS( "Student of Suffering" );
+  talent.scarred.flamebound           = HT_FS( "Flamebound" );
+  talent.scarred.monster_rising       = HT_FS( "Monster Rising" );
+
+  talent.scarred.blind_focus       = HT_FS( "Blind Focus" );
+  talent.scarred.undying_embers    = HT_FS( "Undying Embers" );
+  talent.scarred.volatile_instinct = HT_FS( "Volatile Instinct" );
+
+  talent.scarred.demonic_intensity = HT_FS( "Demonic Intensity" );
 
   // Class Background Spells
   spell.felblade_damage        = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
@@ -11006,7 +11054,7 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  spell.sigil_of_flame = conditional_spell_lookup( specialization() != DEMON_HUNTER_DEVOURER, 204596 );
+  spell.sigil_of_flame = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
 
   spec.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
   spec.sigil_of_misery       = talent.demon_hunter.sigil_of_misery;
@@ -11018,9 +11066,9 @@ void demon_hunter_t::init_spells()
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
 
   // Set Bonus Auxilliary ===================================================
-  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
-                                                     1271663 );  // Stars' Fury (set bonus)
-  set_bonuses.mid1_vengeance_4pc_damage = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
+  set_bonuses.stars_fury            = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                                1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.explosion_of_the_soul = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
 
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
@@ -11154,6 +11202,10 @@ void demon_hunter_t::init_spells()
     active.wounded_quarry = get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
 
+  if ( talent.annihilator.world_killer->ok() )
+  {
+    active.world_killer = get_background_action<world_killer_t>( "world_killer" );
+  }
   if ( talent.annihilator.voidfall->ok() )
   {
     active.voidfall_meteor = get_background_action<voidfall_meteor_t>( "voidfall_meteor" );
@@ -11165,10 +11217,6 @@ void demon_hunter_t::init_spells()
   if ( talent.annihilator.dark_matter->ok() )
   {
     active.meteor_shower = get_background_action<meteor_shower_t>( "meteor_shower" );
-  }
-  if ( talent.annihilator.world_killer->ok() )
-  {
-    active.world_killer = get_background_action<world_killer_t>( "world_killer" );
   }
 
   if ( talent.scarred.burning_blades->ok() )
@@ -11474,12 +11522,13 @@ void demon_hunter_t::create_cooldowns()
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
 
   // Vengeance
-  cooldown.demon_spikes            = get_cooldown( "demon_spikes" );
-  cooldown.spirit_bomb             = get_cooldown( "demon_spikes" );
-  cooldown.sigil_of_chains         = get_cooldown( "sigil_of_chains" );
-  cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
-  cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
-  cooldown.volatile_flameblood_icd = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.demon_spikes              = get_cooldown( "demon_spikes" );
+  cooldown.spirit_bomb               = get_cooldown( "demon_spikes" );
+  cooldown.sigil_of_chains           = get_cooldown( "sigil_of_chains" );
+  cooldown.sigil_of_silence          = get_cooldown( "sigil_of_silence" );
+  cooldown.fel_devastation           = get_cooldown( "fel_devastation" );
+  cooldown.volatile_flameblood_icd   = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.explosion_of_the_soul_icd = get_cooldown( "explosion_of_the_soul_icd" );
 
   // Aldrachi Reaver
   cooldown.art_of_the_glaive_consumption_icd = get_cooldown( "art_of_the_glaive_consumption_icd" );

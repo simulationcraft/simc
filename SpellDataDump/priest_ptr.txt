@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -22,7 +22,7 @@ Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.638 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -51,7 +51,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x88000000
 Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 6, 126
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60928 | PvP Coefficient: 1.46 | Target: Targeted Ally (21)
@@ -77,7 +77,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #2 (id=1033406)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: at Area (87)
@@ -112,7 +112,7 @@ Effects          :
 Description      : Dispels harmful effects on the target, removing all Magic$?s390632[ and Disease][] effects.
 
 Name             : Dispel Magic (id=528) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -159,7 +159,7 @@ Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -206,7 +206,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 15, 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (454)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (454)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.168 | Target: Targeted Enemy (6)
@@ -223,7 +223,7 @@ Description      : A word of darkness that causes $?a390707[${$s1*(1+$390707s1/1
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
 Name             : Prayer of Healing (id=596) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -250,7 +250,7 @@ Effects          :
 Description      : A powerful prayer that heals your target and ${$s3-1} injured allies within $A2 yards for $s2.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -268,7 +268,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Show Mechanic as Combat Text (213), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Channel Interrupt: Damage (2), Action (3), Turning (5), Sheathing (10), Interacting (11), Attacking (13), Use Item (14), Change Glyph (48)
 Effects          :
 #1 (id=247)      : Apply Aura (6) | Possess (2)
@@ -314,7 +314,7 @@ Description      : Levitates a party or raid member for $111759d, floating a few
 Tooltip          : Levitating.
 
 Name             : Holy Word: Serenity (id=2050) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -507,7 +507,7 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mind Blast (id=8092) [Spell Family (6)] 
-Talent Entry     : Discipline, Shadow [free=(Discipline, Shadow), tree=class, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline, Shadow [free=(Discipline, Shadow), tree=class, row=1, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -541,7 +541,7 @@ Description      : Blast the target's mind for $s1 Shadow damage.$?c1[ Costs a h
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
-Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=8, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -572,7 +572,7 @@ Description      : Lets out a psychic scream, causing all enemies within $A1 yar
 Tooltip          : Disoriented.
 
 Name             : Shackle Horror (id=9484) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=9, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -590,7 +590,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Shackle
 Family Flags     : 58
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Allow While Not Shapeshifted (caster form) (83), PvP Enabling (96), Limit N (165), Taps immediately (215), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Allow While Not Shapeshifted (caster form) (83), PvP Enabling (96), Limit N (165), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=4041)     : Apply Aura (6) | Stun (12)
@@ -599,7 +599,7 @@ Description      : Shackles an aberration or undead enemy for $d, preventing all
 Tooltip          : Shackled.
 
 Name             : Power Infusion (id=10060) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -630,7 +630,7 @@ Tooltip          : Haste increased by $w1%.$?$w2>0[
 Mind Blast and Void Bolt damage increased by $w2%.][]
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
-Talent Entry     : Holy [tree=class, row=1, col=3, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
+Talent Entry     : Holy [tree=class, row=1, col=7, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -649,7 +649,7 @@ Proc Chance      : 101%
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Burning Vehemence (372307 effects: #1, #2), Empyreal Blaze (372617 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Preventive Measures (440662 effects: #4, #5), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Triggered By     : Empyreal Blaze (372617)
 Family Flags     : 20, 72
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.1112 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
@@ -756,7 +756,7 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1223,7 +1223,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Mass Dispel (id=32375) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1256,7 +1256,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful Magic from $s4 friendly targets and $32592m1 beneficial Magic $leffect:effects; from $s4 enemy targets. Potent enough to remove Magic that is normally undispellable.
 
 Name             : Shadow Word: Death (id=32379) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -1385,7 +1385,7 @@ Effects          :
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -1427,7 +1427,7 @@ Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
 Name             : Shadowfiend (id=34433) [Spell Family (6), Passive] 
-Talent Entry     : Discipline [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=8, col=7, max_rank=1, req_points=20]
                  : Shadow [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
@@ -1458,7 +1458,7 @@ Summons a Shadowfiend to attack your target for $1280172d.$?c3[
 |cFFFFFFFFGenerates ${$343727m1/100}.1% mana each time the Shadowfiend attacks.|r]
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1504,7 +1504,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 42, 72
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
@@ -1809,7 +1809,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -1850,14 +1850,14 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
 Family Flags     : 59
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Spellbook (143), Ignore Healing Modifiers (219)
+Attributes       : Ignore Line of Sight (66), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Spellbook (143), Ignore Healing Modifiers (219), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=40320)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc47788
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mechagnome (0x4000)
 School           : Arcane
@@ -1892,7 +1892,7 @@ Taking direct damage will cause one of your images to dissipate
 Tooltip          : Mirror Images are reducing your threat generated.
 
 Name             : Petrifying Scream (id=55676) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=3, col=9, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2134,7 +2134,7 @@ Effects          :
 Description      : Removes all stun effects. $?s195710[This effect shares a 90 sec cooldown with other similar effects.][]
 
 Name             : Power Word: Barrier (id=62618) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -2195,7 +2195,7 @@ Prayer of Healing reduces the cooldown on Holy Word: Sanctify by $34861s3 sec.
 Smite and Holy Nova reduce the cooldown of Holy Word: Chastise by $88625s2 sec.
 
 Name             : Body and Soul (id=64129) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2211,7 +2211,7 @@ Effects          :
 Description      : $?c2[Prayer of Mending][Power Word: Shield] and Leap of Faith increase your target's movement speed by $65081s1% for $65081d.
 
 Name             : Divine Hymn (id=64843) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2411,7 +2411,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful spells from each friendly target and $32592m1 beneficial $lspell:spells; from each enemy target.  Affects a maximum of $32375i friendly targets and $32375i enemy targets.  This dispel is potent enough to remove Magic effects that are normally undispellable.
 
 Name             : Leap of Faith (id=73325) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2558,7 +2558,7 @@ Description      : $@spelldesc197862
 Tooltip          : Healing and absorption increased by $s1%.
 
 Name             : Atonement (id=81749) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2572,7 +2572,6 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 45)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Power Word: Shield, Flash Heal, Plea, Penance, and Power Word: Radiance apply Atonement to your target for $194384d.
@@ -2636,7 +2635,7 @@ Description      : $@spelldesc131556
 Tooltip          : Fleeing in terror.
 
 Name             : Holy Word: Chastise (id=88625) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2844,7 +2843,7 @@ Effects          :
 Description      : Reduces the effects of your Shadowform.
 
 Name             : Phantasm (id=108942) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=7, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2860,7 +2859,7 @@ Effects          :
 Description      : Activating Fade removes all snare effects.
 
 Name             : Angelic Bulwark (id=108945) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2900,7 +2899,7 @@ Effects          :
 Description      : Swap health percentages with your ally. Increases the lower health percentage of the two to $s1% if below that amount.
 
 Name             : Surge of Light (id=109186) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2927,7 +2926,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 690: Major Cooldowns
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=121670)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 14 | Target: Self (1)
@@ -3129,7 +3128,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=127678)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3184,7 +3183,7 @@ Effects          :
 Description      : $@spelldesc108968
 
 Name             : Halo (id=120517) [Spell Family (6)] 
-Talent Entry     : Archon (Holy) [free=(Holy), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy) [free=(Holy), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3237,7 +3236,7 @@ Effects          :
 Description      : Your Levitate targets will appear to be riding on a cloud for the duration of the spell.
 
 Name             : Halo (id=120644) [Spell Family (6)] 
-Talent Entry     : Archon (Shadow) [free=(Shadow), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Shadow) [free=(Shadow), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -3331,7 +3330,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3609,7 +3608,7 @@ Effects          :
 Description      : When your Vampiric Touch is dispelled, the dispeller is instantly feared in horror for $87204d.
 
 Name             : Holy Nova (id=132157) [Spell Family (6)] 
-Talent Entry     : Generic [free=(Holy), tree=class, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Holy), tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3816,7 +3815,6 @@ Effects          :
 #24 (id=1302601) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 23 | Misc Value 2: 6366 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadowfiend (34433)
-Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4027,7 +4025,7 @@ Description      : Increases your Haste by 1% during the night.
 Increases your Critical Strike by 1% during the day.
 
 Name             : Auspicious Spirits (id=155271) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -4302,7 +4300,6 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not S
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 16 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (11 -> 16)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
@@ -4397,7 +4394,7 @@ Description      : $@spelldesc186263
 Tooltip          : Losing $w1 temporary health per $t1 sec.
 
 Name             : Protective Light (id=193063) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4430,7 +4427,7 @@ Description      : $@spelldesc193063
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4447,7 +4444,7 @@ Effects          :
 Description      : Penance fires one additional bolt of holy light over its duration.
 
 Name             : Enlightenment (id=193155) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4461,7 +4458,7 @@ Effects          :
 Description      : You regenerate mana $s1% faster.
 
 Name             : Light's Resurgence (id=193157) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4578,8 +4575,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Not an Attack (194), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
-Aura Interrupt   : Leave World (19)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Aura Is Buff (140), Not an Attack (194), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Unknown (456)
 Effects          :
 #1 (id=285346)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Targeted Ally (21)
@@ -4593,7 +4589,7 @@ Description      : $@spelldesc81749
 Tooltip          : Healed whenever $@auracaster damages an enemy.
 
 Name             : Power Word: Radiance (id=194509) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holyfire
 Spell Type       : Magic
@@ -4687,7 +4683,7 @@ Effects          :
 Description      : $@spelldesc196684
 
 Name             : Psychic Voice (id=196704) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4722,7 +4718,7 @@ Effects          :
 Description      : $@spelldesc196684
 
 Name             : Afterlife (id=196707) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4899,7 +4895,7 @@ Effects          :
 Description      : The cooldowns of your Holy Words are reduced by an additional $s1% when you cast the relevant spells.
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -4933,7 +4929,7 @@ Effects          :
 Description      : When you heal with Penance, everyone with your Atonement is healed for $s2.
 
 Name             : Archangel (id=197862) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -4948,7 +4944,7 @@ Effects          :
 Description      : Evangelism increases your healing and absorption effects by $81700s1% for $81700d.
 
 Name             : Power of the Dark Side (id=198068) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -5017,7 +5013,7 @@ Effects          :
 Description      : $@spelldesc199428
 
 Name             : Psychic Link (id=199484) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5131,7 +5127,7 @@ Description      : Summons a Mindbender to attack the target for $d.
 |cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
 
 Name             : Apotheosis (id=200183) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5198,7 +5194,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
-Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
@@ -5207,7 +5203,7 @@ Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
 Name             : Censure (id=200199) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5234,7 +5230,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
-Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
@@ -5243,7 +5239,7 @@ Description      : $@spelldesc88625
 Tooltip          : Stunned.
 
 Name             : Guardian Angel (id=200209) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5379,7 +5375,7 @@ Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
 Insanity drain temporarily stopped.
 
 Name             : Dominate Mind (id=205364) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -5819,7 +5815,7 @@ Description      : Wards the friendly target against the next full loss of contr
 Tooltip          : Warded against the next full loss of control effect.
 
 Name             : Purify Disease (id=213634) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5938,7 +5934,7 @@ Description      : $@spelldesc215209
 Tooltip          : The damage of your next Void Bolt is increased by $s1%.
 
 Name             : Blaze of Light (id=215768) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(25, 50)]
 Class            : Priest
@@ -5974,7 +5970,7 @@ Labels           : 16: Class Spells
                  : 1419
 Affecting Spells : Afterlife (196707 effects: #1, #2, #3), Heightened Alteration (453729 effect#1)
 Family Flags     : 5
-Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), Allow Dead Target (64), No shapeshift UI (65), Allow Aura While Dead (116), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Looting (11), Enter World (22)
 Effects          :
 #2 (id=320862)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
@@ -6208,7 +6204,7 @@ Effects          :
 Description      : $@spelldesc228049
 
 Name             : Voidform (id=228260) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -6310,7 +6306,7 @@ Effects          :
 Description      : $@spelldesc228260
 
 Name             : Sanctuary (id=231682) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -6509,14 +6505,14 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 4161: Phantom Reach (459559 effect#9)
-Attributes       : Can't Crit (93), Ignore Caster Modifiers (125)
+Attributes       : Can't Crit (93), Ignore Caster Modifiers (125), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=355080)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Targeted Ally (21)
 Description      : $@spelldesc200128
 
 Name             : Miracle Worker (id=235587) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6597,7 +6593,7 @@ Description      : $@spelldesc236545
 Tooltip          : Shadow Word: Death deals $s2% increased damage and can be used on any target.
 
 Name             : Lenience (id=238063) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6613,8 +6609,8 @@ Effects          :
 Description      : Atonement reduces damage taken by $s1%.
 
 Name             : Angel's Mercy (id=238100) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=class, row=8, col=1, max_rank=1, req_points=23]
-                 : Discipline, Holy [tree=class, row=8, col=1, max_rank=1, req_points=23]
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=23]
+                 : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6629,7 +6625,7 @@ Effects          :
 Description      : Reduces the cooldown of Desperate Prayer by ${$s1/-1000} sec.
 
 Name             : Eternal Barrier (id=238135) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6649,7 +6645,7 @@ Effects          :
 Description      : Power Word: Shield absorbs $s1% additional damage and lasts ${$s2/1000} sec longer.
 
 Name             : Cosmic Ripple (id=238136) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6663,7 +6659,7 @@ Effects          :
 Description      : When Holy Word: Serenity $?a1246517[finishes its][or Holy Word: Sanctify finish their] cooldown, you emit a burst of light that heals up to $s1 injured targets within $243241A1 yards for $243241s1.
 
 Name             : Misery (id=238558) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6787,7 +6783,7 @@ Labels           : 16: Class Spells
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
 Affecting Spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Spirit of Redemption (215769 effect#3), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Phantom Reach (459559 effect#2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Cosmic Wave (1248418 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #1, #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 93, 126
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=369498)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.22693 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -7493,7 +7489,7 @@ Effects          :
 Description      : $@spelldesc262484
 
 Name             : Void Torrent (id=263165) [Spell Family (6)] 
-Talent Entry     : Voidweaver (Shadow) [free=(Shadow), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Shadow) [free=(Shadow), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -8361,7 +8357,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=737907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
@@ -8880,7 +8876,7 @@ Description      : $@spelldesc272788
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Intangibility (id=288733) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -9527,7 +9523,7 @@ Description      : $@spelldesc315879
 Tooltip          : Movement speed increased by $w2%.
 
 Name             : Death and Madness (id=321291) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -9636,7 +9632,7 @@ School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=810033)   : Energize Power (30)
                    Base Value: 800 | Scaled Value: 800 | Resource: insanity | Target: Self (1)
@@ -9652,7 +9648,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Triggered By     : Death and Madness (321291)
-Attributes       : Allow While Sitting (27), No Threat (42), Ignore Line of Sight (66), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Attributes       : Allow While Sitting (27), No Threat (42), Ignore Line of Sight (66), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=810231)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -9674,7 +9670,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Inner Light (355897 effect#1)
 Family Flags     : 104
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Show Mechanic as Combat Text (213), Aura Points On Client (268), Spellcast Override In Spellbook (310), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Show Mechanic as Combat Text (213), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=810243)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -9705,7 +9701,7 @@ Tooltip          : Shadow spells damage and healing increased by $w2%.
 Halo, Divine Star, and Penance are converted to Shadow spells.
 
 Name             : Light's Promise (id=322115) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -9859,7 +9855,7 @@ Labels           : 16: Class Spells
                  : 1403
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 126
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Not In Spellbook Until Learned (269)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=814521)   : Trigger Missiles (32): Unholy Nova
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Trigger Spell: 347788 | Target: at Target (63)
@@ -9889,7 +9885,7 @@ Labels           : 16: Class Spells
 Stacks           : 99 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=814983)   : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10005,7 +10001,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Triggered By     : Unholy Nova (324724)
 Family Flags     : 72, 114
-Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330), Nameplate Personal Buffs/Debuffs (423), Unknown (450)
+Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (450)
 Effects          :
 #1 (id=815346)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56 | Radius: 0 - 15 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -10052,7 +10048,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=815508)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
@@ -10098,7 +10094,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x88000000
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Family Flags     : 105
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=819246)   : Dummy (3)
@@ -10128,7 +10124,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1096
 Family Flags     : 105
-Attributes       : Limit N (165), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Limit N (165), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=819281)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -10150,7 +10146,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 1096
-Attributes       : Not In Spellbook Until Learned (269)
+Attributes       : Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819295)   : Energize Power% (137)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Resource: mana | Target: Self (1)
@@ -10173,7 +10169,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1096
 Family Flags     : 105
-Attributes       : Limit N (165), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Limit N (165), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
@@ -10200,7 +10196,7 @@ Tooltip          : The cooldown of a major ability recovers $s1% faster.
 Follows $@auracaster's $?c2[Flash Heal][Shadow Mend].
 
 Name             : Shadow Word: Madness (id=335467) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -10258,6 +10254,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Ended
 Triggered By     : The Penitent One (336011)
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=832983)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 19 | Target: Self (1)
@@ -10541,6 +10538,7 @@ Labels           : 16: Class Spells
                  : 931
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 126
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=833988)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.42 | Target: Targeted Ally (21)
@@ -10622,7 +10620,7 @@ Effects          :
 Description      : Unholy Transfusion lasts ${$m2/1000} sec longer and deals |cFFFFFFFF${$s1}.1%|r more damage and healing.
 
 Name             : Mental Agility (id=341167) [Spell Family (6), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -10699,7 +10697,7 @@ Effects          :
 Description      : $@spelldesc341491
 
 Name             : Shadowy Apparitions (id=341491) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -10757,7 +10755,7 @@ Description      : $@spelldesc341804
 Tooltip          : Increase the healing of your next Flash Heal by $w1%.
 
 Name             : Renewed Faith (id=341997) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -10789,7 +10787,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Family Flags     : 105
-Attributes       : No Threat (42), DoT Stacking Rule (103), Limit N (165), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Threat (42), DoT Stacking Rule (103), Limit N (165), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=842979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
@@ -10839,7 +10837,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : No Aura Icon (60), Not an Action (92)
+Attributes       : No Aura Icon (60), Not an Action (92), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844976)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
@@ -10883,7 +10881,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 999
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Ignore Caster Absorb Modifiers (370)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868003)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11054,7 +11052,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Triggered By     : Unholy Nova (324724)
 Family Flags     : 126
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Not In Spellbook Until Learned (269)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=875387)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 15 yards | Target: at Area (87) -> At Ally in Area (31)
@@ -11127,8 +11125,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 101%
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=884754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11355,7 +11353,7 @@ Labels           : 16: Class Spells
                  : 1345
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Can Proc From Procs (122), Limit N (165), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Can Proc From Procs (122), Limit N (165), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=891148)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
@@ -11887,7 +11885,7 @@ Effects          :
 Description      : $@spelldesc363469
 
 Name             : Binding Heals (id=368275) [Spell Family (6), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -11914,7 +11912,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Healing Trance (37706 effect#1), Light of T'uure (208065 effect#1), Divine Conversation (363727 effect#2)
 Family Flags     : 34
-Attributes       : Can't Crit (93), Ignore Caster Modifiers (125)
+Attributes       : Can't Crit (93), Ignore Caster Modifiers (125), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=912576)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
@@ -11983,7 +11981,7 @@ Description      : $@spelldesc351239
 Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
 
 Name             : Burning Vehemence (id=372307) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12007,7 +12005,7 @@ Description      : Increases the damage of Holy Fire by $s1%.
 Holy Fire deals $s3% of its initial damage to all nearby enemies within $400370A1 yards of your target. Damage reduced beyond $400370s2 targets.
 
 Name             : Gales of Song (id=372370) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12025,7 +12023,7 @@ Effects          :
 Description      : While channeling Divine Hymn, place $s2 stacks of Prayer of Mending on up to $s3 allies within its range every ${$64843d/$64843s5}.1 sec.
 
 Name             : Empyreal Blaze (id=372616) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12074,7 +12072,7 @@ Description      : $@spelldesc372616
 Tooltip          : Your next Holy Fire costs no mana, incurs no cooldown, and is cast instantly.
 
 Name             : Holy Ray (id=372969) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12088,7 +12086,7 @@ Effects          :
 Description      : Each successive Penance bolt during a channel deals $s1% increased damage and healing.
 
 Name             : Dark Indulgence (id=372972) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12106,7 +12104,7 @@ Effects          :
 Description      : Mind Blast has a $s1% chance to grant Power of the Dark Side and deals $s2% additional damage.
 
 Name             : Pain Transformation (id=372991) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12127,14 +12125,14 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=997934)   : Direct Heal% (136)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21)
 Description      : $@spelldesc372991
 
 Name             : Revel in Darkness (id=373003) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12156,7 +12154,7 @@ Effects          :
 Description      : Shadow Word: Pain deals $s1% additional damage and spreads to $s2 additional $Ltarget:targets; when you cast Penance to its target.
 
 Name             : Protector of the Frail (id=373035) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=300]
+Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12186,14 +12184,14 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Triggered By     : Protector of the Frail (373035)
-Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=998008)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc373035
 
 Name             : Indemnity (id=373049) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12207,7 +12205,7 @@ Effects          :
 Description      : Atonements granted by Power Word: Shield last an additional $s1 sec.
 
 Name             : Abyssal Reverie (id=373054) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=7, col=3, max_rank=2, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Priest
 School           : Shadow
@@ -12282,7 +12280,7 @@ Effects          :
 Description      : $@spelldesc373129
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=7, col=1, max_rank=2, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(1, 2)]
 Class            : Priest
 School           : Holy
@@ -12309,7 +12307,7 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Ended
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=998225)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19 | Target: Self (1)
@@ -12321,7 +12319,7 @@ Description      : $@spelldesc373180
 Tooltip          : Penance bolts increased by $w2.
 
 Name             : Mind Devourer (id=373202) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12343,7 +12341,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=998262)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -12392,7 +12390,7 @@ Description      : $@spelldesc342415
 Tooltip          : Increases the damage done by Mind Blast, Void Torrent, Mind Flay, and Void Volley by $s1%.
 
 Name             : Sanguine Teachings (id=373218) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=8, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12407,7 +12405,7 @@ Effects          :
 Description      : Increases your Leech by $s1%.
 
 Name             : Tithe Evasion (id=373223) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12421,7 +12419,7 @@ Effects          :
 Description      : Shadow Word: Death deals $s1% less damage to you.
 
 Name             : Idol of Yogg-Saron (id=373273) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12450,6 +12448,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Idol of Yogg-Saron (373273)
+Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=998383)   : Apply Aura (6) | Dummy (4)
@@ -12468,6 +12467,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4779: Subservient Shadows (1228516 effect#2)
                  : 5814
+Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=998384)   : Summon Guardian (28)
@@ -12502,7 +12502,7 @@ Effects          :
 Description      : Hurls a bolt of dark magic, dealing $s1 Shadow damage and ${$s1*$s2/100} Shadow damage to all enemies within $a1 yards of the target. Damage reduced beyond $s3 targets.
 
 Name             : Idol of N'Zoth (id=373280) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12549,7 +12549,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 5814
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998445)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -12558,7 +12558,7 @@ Tooltip          : Haste increased by $w1%.
 
 Name             : Inescapable Torment (id=373427) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=1, max_rank=1, req_points=20]
-                 : Discipline [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+                 : Discipline [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -12626,7 +12626,7 @@ Effects          :
 Description      : $@spelldesc373427
 
 Name             : Translucent Image (id=373446) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=8, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12648,7 +12648,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 999
-Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354)
+Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998666)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
@@ -12657,7 +12657,7 @@ Description      : Damage taken reduced.
 Tooltip          : Damage taken reduced by $w%.
 
 Name             : Light's Inspiration (id=373450) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12677,7 +12677,7 @@ Effects          :
 Description      : Increases the maximum health gained from Desperate Prayer by $s1%.
 
 Name             : Unwavering Will (id=373456) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-5, -10)]
                  : Effect#2 [op=set, values=(75, 75)]
                  : Effect#3 [op=set, values=(-5, -10)]
@@ -12702,7 +12702,7 @@ Effects          :
 Description      : While above $s2% health, the cast time of your $?a137033[Flash Heal is]?a137032[Flash Heal and Smite are][Flash Heal, Prayer of Healing, and Smite are] reduced by $s1%.
 
 Name             : Twins of the Sun Priestess (id=373466) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12766,7 +12766,7 @@ Effects          :
 Description      : Shadow Word: Madness causes your Shadow Word: Pain and Vampiric Touch to deal damage $s1% faster on all targets for $393919d.
 
 Name             : Shadowy Insight (id=375888) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12902,7 +12902,7 @@ Labels           : 16: Class Spells
                  : 2610: Priest Shadow 10.1 Class Set 2pc (405557 effect#1), Priest Shadow 10.1 Class Set 2pc (405557 effect#2), Dark Thoughts (1240388 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -12928,7 +12928,7 @@ Description      : $@spelldesc375888
 Tooltip          : Your next Mind Blast is instant cast.
 
 Name             : Mental Decay (id=375994) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12981,7 +12981,7 @@ Description      : Flap upward, gaining height at the cost of some momentum.
 |cFFFFFFFFMax 1 Charge|r
 
 Name             : Mental Fortitude (id=377065) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12998,7 +12998,7 @@ Effects          :
 Description      : Healing from Vampiric Touch and Shadow Word: Madness when you are at maximum health will shield you for the same amount. The shield cannot exceed $s1% of your maximum health.
 
 Name             : Idol of C'Thun (id=377349) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13061,6 +13061,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005149)  : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Resource: insanity | Target: Self (1)
@@ -13177,7 +13178,7 @@ Effects          :
 Description      : $@spelldesc376744
 
 Name             : Move with Grace (id=390620) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13201,13 +13202,13 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2296
-Attributes       : Do Not Log (8), Allow While Sitting (27), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Attributes       : Do Not Log (8), Allow While Sitting (27), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1027593)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Improved Purify (id=390632) [Passive, Hidden] 
-Talent Entry     : Discipline, Holy [tree=class, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline, Holy [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13221,7 +13222,7 @@ Effects          :
 Description      : Purify additionally removes all Disease effects.
 
 Name             : Spell Warding (id=390667) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-2, -4)]
 Class            : Priest
 School           : Physical
@@ -13237,7 +13238,7 @@ Effects          :
 Description      : Reduces all magic damage taken by $s1%.
 
 Name             : Improved Fade (id=390670) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=8, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-5000, -10000)]
 Class            : Priest
 School           : Physical
@@ -13254,7 +13255,7 @@ Effects          :
 Description      : Reduces the cooldown of Fade by ${$s1/-1000)} sec.
 
 Name             : Inspiration (id=390676) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13323,7 +13324,7 @@ Effects          :
 Description      : Reduces the cast time of Power Word: Radiance by $s2% and causes it to apply Atonement at an additional $s1% of its normal duration.
 
 Name             : Painful Punishment (id=390686) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13339,7 +13340,7 @@ Effects          :
 Description      : Each Penance bolt extends the duration of Shadow Word: Pain on enemies hit by ${$s1/1000}.1 sec.
 
 Name             : Pain and Suffering (id=390689) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=4, max_rank=2, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(15, 30)]
                  : Effect#3 [op=set, values=(2000, 4000)]
@@ -13383,7 +13384,6 @@ Effects          :
 #2 (id=1027700)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 1946 (Label) | Target: Self (1)
                    Affected Spells (Label): Borrowed Time (390692)
-Hotfixed         : Base Value (4 -> 5)
 Description      : Casting Power Word: Shield increases your Haste by $s2% for $390692d.
 
 Name             : Borrowed Time (id=390692) [Spell Family (6)] 
@@ -13398,7 +13398,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Borrowed Time (390691)
-Attributes       : Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1027701)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13407,7 +13407,7 @@ Description      : $@spelldesc390691
 Tooltip          : Haste increased by $w1%.
 
 Name             : Inner Focus (id=390693) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13450,7 +13450,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : Do Not Log on Learn (355)
+Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1027717)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -13470,7 +13470,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : Aura Points On Client (268), Do Not Log on Learn (355)
+Attributes       : Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1027719)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -13480,7 +13480,7 @@ Description      : $@spelldesc390705
 Tooltip          : The damage of your next Shadow spell is increased by $s1%.
 
 Name             : Weal and Woe (id=390786) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13509,7 +13509,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Triggered By     : Weal and Woe (390786)
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1027856)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
@@ -13520,7 +13520,7 @@ Description      : $@spelldesc390786
 Tooltip          : The absorption of your next Power Word: Shield is increased by $w1%.
 
 Name             : Expiation (id=390832) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=4, max_rank=2, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 1)]
 Class            : Priest
@@ -13570,7 +13570,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Sheer Terror (id=390919) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=3, col=9, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -13655,7 +13655,7 @@ Effects          :
 Description      : $@spelldesc120517
 
 Name             : Twist of Fate (id=390972) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Priest
@@ -13682,7 +13682,7 @@ Effects          :
 Description      : After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.
 
 Name             : Prayers of the Virtuous (id=390977) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -13745,7 +13745,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Lightweaver (id=390992) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -13792,7 +13792,7 @@ Description      : $@spelldesc390992
 Tooltip          : The cast time of your next Heal or Prayer of Healing is reduced by $w2% and its healing is increased by $w1%.
 
 Name             : Voice of Harmony (id=390994) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13847,7 +13847,7 @@ Stacks           : 12 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Shattered Psyche (391090)
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028379)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
@@ -13914,7 +13914,7 @@ Description      : Increases your non-periodic Shadow damage by $s1% for $d.
 Tooltip          : Your non-periodic Shadow damage is increased by $w1%$?$w2>0[ and all damage is increased by $w2%][]. $?s341240[Critical strike chance increased by ${$W4}.1%.][]
 
 Name             : Restitution (id=391124) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13982,7 +13982,7 @@ Effects          :
 Description      : $@spelldesc391154
 
 Name             : Say Your Prayers (id=391186) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14038,7 +14038,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2585: Maddening Touch (391228 effect#2)
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1028592)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
@@ -14046,7 +14046,7 @@ Effects          :
 Description      : $@spelldesc391228
 
 Name             : Divine Service (id=391233) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14076,7 +14076,7 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Desperate Times (id=391381) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Priest
 School           : Physical
@@ -14093,7 +14093,7 @@ Effects          :
 Description      : Increases healing by $s1% on friendly targets at or below $s2% health.
 
 Name             : Surge of Insanity (id=391399) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14123,7 +14123,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 4 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Spellcast Override In Spellbook (310)
+Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028893)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 2 | Target: Self (1)
@@ -14170,7 +14170,7 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
 Name             : Deathspeaker (id=392507) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14199,7 +14199,7 @@ Description      : Shadow Word: Death damage increased by $s1%.
 Shadow Word: Death gains its damage and talent bonuses against targets below ${$s2+$s3}% health instead of $s3%.
 
 Name             : Divine Image (id=392988) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
@@ -14335,7 +14335,7 @@ Description      : Devouring Plague increases your haste by $394963s1% for $3949
 
 
 Name             : Improved Flash Heal (id=393870) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -14360,7 +14360,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2327: Screams of the Void (375767 effect#1), Screams of the Void (375767 effect#2)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033161)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19 | Target: Self (1)
@@ -14888,7 +14888,7 @@ Effects          :
 Description      : Enables Worgen to switch between Worgen and Human forms.
 
 Name             : Thought Harvester (id=406788) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -14903,7 +14903,7 @@ Effects          :
 Description      : Mind Blast gains an additional charge.
 
 Name             : Voidtouched (id=407430) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14922,7 +14922,7 @@ Effects          :
 Description      : Increases your Shadow Word: Madness damage by $s2% and increases your maximum Insanity by ${$s1/100}.
 
 Name             : Spectral Horrors (id=407469) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -14938,7 +14938,7 @@ Effects          :
 Description      : Shadow Apparitions deal $s1% increased damage to targets affected by your Shadow Word: Madness.
 
 Name             : Mind's Eye (id=407470) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -14969,7 +14969,7 @@ Description      : $@spelldesc403385
 Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
 
 Name             : Distorted Reality (id=409044) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15026,6 +15026,7 @@ Labels           : 16: Class Spells
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
+Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1074362)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15046,7 +15047,7 @@ Labels           : 16: Class Spells
                  : 2557
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1074409)  : Apply Aura (6) | Dummy (4)
@@ -15067,6 +15068,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
+Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1076494)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15091,7 +15093,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2557
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1076950)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15109,7 +15111,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2557
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077414)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: at Ground (62) -> at any in Area (8)
@@ -15163,7 +15165,7 @@ Effects          :
 Description      : $@spelldesc231644
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15203,7 +15205,7 @@ Description      : $@spelldesc414553
 Tooltip          : Your next Prayer of Mending incurs no cooldown.
 
 Name             : Benevolence (id=415416) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15292,7 +15294,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 
 Name             : Seraphic Crescendo (id=419110) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15332,7 +15334,7 @@ Effects          :
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421453) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -15524,7 +15526,7 @@ Internal Cooldown: 0.3 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal
-Attributes       : Aura Is Buff (140)
+Attributes       : Aura Is Buff (140), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1099548)  : Apply Aura (6) | Dummy (4)
@@ -15550,7 +15552,7 @@ Labels           : 16: Class Spells
 Stacks           : 12 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
+Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1099946)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15571,7 +15573,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2848
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100003)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15649,7 +15651,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1119433)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
@@ -15786,7 +15788,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1131495)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (428930) overrides (428924)
@@ -15801,7 +15803,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131496)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (428933) overrides (428924)
                    Base Value: 428933 | Scaled Value: 428933 | Misc Value: 428924 | Target: Self (1)
@@ -15815,7 +15817,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1131724)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (428934) overrides (428924)
@@ -15830,7 +15832,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1131725)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (440725) overrides (428924)
@@ -15878,7 +15880,7 @@ Effects          :
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 7, 47, 49
 #4 (id=1170142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15965,7 +15967,7 @@ Description      : $?a137032[Increases the duration of Atonement by ${$s1/1000} 
 
 
 Name             : Waste No Time (id=440681) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15997,14 +15999,14 @@ Labels           : 16: Class Spells
                  : 3022
 Category Cooldown: 1 seconds
 Family Flags     : 17
-Attributes       : Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
+Attributes       : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134805)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Grants Premonition of Insight, Piety, and Solace at $428940s2% effectiveness.
 
 Name             : Foreseen Circumstances (id=440738) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16024,7 +16026,7 @@ Effects          :
 Description      : $?a137032[Pain Suppression reduces damage taken by an additional $s1%.][Guardian Spirit lasts an additional ${$s2/1000} sec.]
 
 Name             : Twinsight (id=440742) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16098,7 +16100,7 @@ Effects          :
 Description      : $@spelldesc1246802
 
 Name             : Entropic Rift (id=447444) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline) [free=(Discipline), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline) [free=(Discipline), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16125,7 +16127,7 @@ Labels           : 16: Class Spells
                  : 3678: Void Torrent (263165 effect#2), Void Torrent (263165 effect#4)
 Affecting Spells : Discipline Priest (137032 effect#23), Shadow Priest (137033 effect#20), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1), Quickened Pulse (1266845 effect#1)
 Family Flags     : 44
-Attributes       : Allow Client Targeting (133), No Jump Pathing (208), Force Dest Location (288), Do Not Log on Learn (355)
+Attributes       : Allow Client Targeting (133), No Jump Pathing (208), Force Dest Location (288), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1145409)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 33200 | Radius: 15 yards | Target: in Area From Target to Self (148)
@@ -16151,7 +16153,7 @@ Effects          :
 Description      : $@spelldesc447444
 
 Name             : Inner Quietus (id=448278) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16197,7 +16199,7 @@ Effects          :
 Description      : $@spelldesc448278
 
 Name             : Collapsing Void (id=448403) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16232,7 +16234,7 @@ Labels           : 16: Class Spells
                  : 3022
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #22), Shadow Priest (137033 effects: #1, #2, #21), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5, #11), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 30, 72
-Attributes       : Ignore Line of Sight (66), Active Threat (94), Always AOE Line of Sight (186)
+Attributes       : Ignore Line of Sight (66), Active Threat (94), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1146867)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4 | Radius: 0 - 15 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -16250,7 +16252,7 @@ Effects          :
 Description      : When you gain experience for exploring a location, gain $s1% additional exploration experience.
 
 Name             : Divine Halo (id=449806) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -16282,7 +16284,7 @@ Effects          :
 Description      : Halo damage and healing is increased by $s1%.
 
 Name             : Voidheart (id=449880) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16369,7 +16371,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Log on Learn (355)
+Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1149953)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -16397,7 +16399,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Discipline Priest (137032 effect#23), Shadow Priest (137033 effect#20), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1), Quickened Pulse (1266845 effect#1)
 Family Flags     : 44
-Attributes       : Do Not Log on Learn (355)
+Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150022)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16426,7 +16428,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150048)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.1 -> 1.5)
 #2 (id=1150204)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -16587,7 +16588,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Mechanic         : Snare
-Attributes       : Do Not Log (8), Do Not Display Duration (170), Aura Points On Client (268)
+Attributes       : Do Not Log (8), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151650)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 0.715 | Target: Targeted Enemy (6)
@@ -16595,7 +16596,7 @@ Description      : $@spelldesc451204
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Voidwraith (id=451234) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16638,7 +16639,7 @@ Description      : Summon a Voidwraith that casts Void Flay from afar. Void Flay
 |cFFFFFFFFGenerates ${$34433s4/10}.1% Mana each time the Voidwraith attacks.|r]
 
 Name             : Void Leech (id=451311) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16679,7 +16680,7 @@ Effects          :
 Description      : Flays the enemy, causing $s1 Shadow damage. Deals up to $s2% additional damage, dealing more damage to higher health enemies.
 
 Name             : Embrace the Shadow (id=451569) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16706,7 +16707,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Ignore Caster Healing Modifiers (312)
+Attributes       : Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152250)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16787,7 +16788,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Log on Learn (355)
+Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152617)  : Energize Power% (137)
                    Base Value: 1 | Scaled Value: 1 | Resource: mana | Target: Self (1)
@@ -16850,7 +16851,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
                  : 3022
-Attributes       : No Threat (42), Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
+Attributes       : No Threat (42), Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152783)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -16864,7 +16865,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Can't Crit (93), Ignore Healing Modifiers (219)
+Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152784)  : Direct Heal% (136)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -16948,7 +16949,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 5998: Energy Conservation (1272308 effect#1)
-Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1154709)  : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
@@ -16968,7 +16969,7 @@ Labels           : 16: Class Spells
                  : 5998: Energy Conservation (1272308 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
-Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1154710)  : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
@@ -17080,7 +17081,7 @@ Effects          :
 Description      : Devouring Plague increases your damage done by $454638s1% for $454638d, multiple applications may overlap.
 
 Name             : Word of Supremacy (id=453726) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17095,7 +17096,7 @@ Effects          :
 Description      : Power Word: Fortitude grants you an additional $s1% stamina.
 
 Name             : Heightened Alteration (id=453729) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17116,7 +17117,7 @@ Effects          :
 Description      : $?a137031[Increases the duration of Spirit of Redemption by ${$s1/1000} sec.][Increases the duration of Dispersion by ${$s2/1000} sec.]
 
 Name             : Manifested Power (id=453783) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17140,7 +17141,7 @@ $@spellicon109186 $@spellname109186
 $@spelldesc109186]
 
 Name             : Empowered Surges (id=453799) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17158,10 +17159,10 @@ Effects          :
                    Affected Spells (Label): Mind Flay: Insanity (391403)
 Description      : $?a137033[Increases the damage done by Mind Flay: Insanity by $s2%.
 
-][Your spells affected by Surge of Light heal for $s1% while Surge of Light is active.]
+][Your spells affected by Surge of Light heal for $s1% more while Surge of Light is active.]
 
 Name             : Energy Cycle (id=453828) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17211,7 +17212,7 @@ Labels           : 16: Class Spells
                  : 5170
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
+Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1155949)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
@@ -17240,7 +17241,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1155952)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -5 | Scaled Value: -5 | Mechanic: Snare | Target: Targeted Enemy (6)
@@ -17261,7 +17262,7 @@ Labels           : 16: Class Spells
                  : 5169
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1155954)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
@@ -17354,6 +17355,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1156104)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 225672 | Misc Value 2: 5971 | Target: at Self (18)
@@ -17369,7 +17371,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1156118)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17409,7 +17411,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1156228)  : Apply Aura (6) | Dummy (4)
@@ -17431,7 +17433,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Priest Shadow 11.0 Class Set 4pc (453682)
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1157345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17461,7 +17463,7 @@ Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Triggered By     : Priest Discipline 11.0 Class Set 4pc (453679)
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1158139)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17547,7 +17549,7 @@ Labels           : 16: Class Spells
                  : 3556: Dark Energy (451018 effect#2), Quickened Pulse (1266845 effect#2)
 Affecting Spells : Discipline Priest (137032 effect#23), Shadow Priest (137033 effect#20), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1), Quickened Pulse (1266845 effect#1)
 Family Flags     : 44
-Attributes       : No Aura Icon (60), Spell Haste Affects Periodic (173), Do Not Log on Learn (355)
+Attributes       : No Aura Icon (60), Spell Haste Affects Periodic (173), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166003)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17555,7 +17557,7 @@ Effects          :
 Description      : $@spelldesc447444
 
 Name             : Phantom Reach (id=459559) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=6, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17697,7 +17699,7 @@ Effects          :
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Lasting Words (id=471504) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17768,7 +17770,7 @@ Effects          :
 Description      : Smite extends the duration of an active Atonement by ${$s1/1000}.1 sec.
 
 Name             : Evangelism (id=472433) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17805,7 +17807,7 @@ Description      : Immediately Power Word: Radiance your target at $s2% effectiv
 Tooltip          : Power Word: Radiance is instant cast and mana cost reduced by $s3%.
 
 Name             : Encroaching Shadows (id=472568) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -17820,7 +17822,7 @@ Effects          :
 Description      : Shadow Word: Pain Spreads to $?s373003[${1+$373003s2} nearby enemies][a nearby enemy] when you cast Penance on the target.
 
 Name             : Divinity (id=1215241) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -17844,7 +17846,7 @@ Description      : Your healing is increased by $s1% while Apotheosis is active.
 Casting Apotheosis causes your next $1216314U Prayer of Healing casts to be instant and heal for $1216314s2% more.
 
 Name             : Eternal Sanctity (id=1215245) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -17888,14 +17890,14 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 4161: Phantom Reach (459559 effect#9)
-Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Healing Modifiers (312), Do Not Display Cast Time (441)
+Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1198113)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : $@spelldesc1215265
 
 Name             : Holy Celerity (id=1215275) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -18171,7 +18173,7 @@ Effects          :
 Description      : $@spelldesc1215500
 
 Name             : Tentacle Slam (id=1227280) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -18186,7 +18188,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Dark Ascension (391109 effect#1), Descending Darkness (1242666 effect#1), Crushing Void (1279354 effect#2)
 Family Flags     : 31
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1217596)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 700 | Target: Targeted Enemy (6)
@@ -18256,7 +18258,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Allow Class Ability Procs (416), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Current Target (25)
@@ -18507,7 +18509,7 @@ Description      : $@spelldesc372969
 Tooltip          : Penance damage and healing increased by $s1%.
 
 Name             : Shadow Tap (id=1235211) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18558,7 +18560,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=1234387)  : Apply Aura (6) | Dummy (4)
@@ -18635,7 +18637,7 @@ Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t
 
 Name             : Death's Torment (id=1240364) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=3, max_rank=1, req_points=20]
-                 : Discipline [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+                 : Discipline [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -18697,7 +18699,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x08000000
 Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1), Focused Outburst (1272320 effects: #3, #4), Crushing Void (1279354 effect#1), Crushing Void (1279437 effect#2)
 Family Flags     : 41
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241581)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -18720,13 +18722,14 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Focused Outburst (1272320 effects: #3, #4), Crushing Void (1279354 effect#1), Crushing Void (1279437 effect#2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 41, 72
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18764,7 +18767,7 @@ Effects          :
 Description      : Increases the critical strike chance of Shadowy Apparitions by $s1% and their critical strike damage by $s2%.
 
 Name             : Instilled Doubt (id=1242862) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=2, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=7, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(20, 40)]
 Class            : Priest
@@ -18796,7 +18799,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103)
+Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1242980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -18814,7 +18817,7 @@ Labels           : 16: Class Spells
                  : 5814
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 72, 85
-Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
+Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1243031)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
@@ -18831,7 +18834,7 @@ Labels           : 16: Class Spells
                  : 5814
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 72, 85
-Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
+Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1243033)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.3 | Target: Targeted Enemy (6)
@@ -18847,7 +18850,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Do Not Display Cast Time (441), Unknown (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Unknown (490)
 Effects          :
 #1 (id=1243041)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self (1)
@@ -18865,7 +18868,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Do Not Display Cast Time (441), Unknown (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Unknown (490)
 Effects          :
 #1 (id=1243042)  : Apply Aura (6) | Periodic Energize Power (24): every 0.25 seconds
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self (1)
@@ -18874,7 +18877,7 @@ Effects          :
 Description      : $@spelldesc373280
 
 Name             : Ultimate Serenity (id=1246517) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -18937,7 +18940,7 @@ Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1248517)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.638 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -18957,7 +18960,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Family Flags     : 126
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Do Not Display Cast Time (441)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1248558)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.4 | Target: Targeted Ally (21)
@@ -18982,7 +18985,7 @@ Effects          :
 Description      : $?a137032[The first bolt of each Penance cast damages or heals for $s1% more.][$@spelldesc1246798]
 
 Name             : Piety (id=1246802) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -18995,7 +18998,7 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1248567)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1248568)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : $s1% of overhealing done is redistributed to up to $s2 nearby injured allies.
@@ -19017,7 +19020,7 @@ Effects          :
 Description      : Reduces the mana cost of Prayer of Healing by $s1%.
 
 Name             : Healing Focus (id=1247166) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19033,7 +19036,7 @@ Effects          :
 Description      : Reduces the mana cost of Flash Heal by $s1%.
 
 Name             : Spiritwell (id=1247178) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -19087,7 +19090,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Cosmic Wave (id=1248418) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19103,7 +19106,7 @@ Effects          :
 Description      : Increases Cosmic Ripple healing by $s1%.
 
 Name             : Guiding Light (id=1248423) [Spell Family (6), Passive] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19122,7 +19125,7 @@ Description      : $?a137032[Penance][Prayer of Mending] gains an additional cha
 
 
 Name             : Focused Power (id=1249230) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19142,7 +19145,7 @@ Effects          :
 Description      : Increases the damage of your spells by $s1%.
 
 Name             : Everlasting Light (id=1249233) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19173,7 +19176,7 @@ Effects          :
 Description      : Holy damage increased by $s1%.
 
 Name             : Occultist (id=1250293) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19193,7 +19196,7 @@ Effects          :
 Description      : Shadow damage and healing done increased by $s1%.
 
 Name             : Spectral Illusion (id=1250378) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19227,7 +19230,7 @@ Description      : $@spelldesc1250378
 Tooltip          : An illusion of you is drawing enemy attention.
 
 Name             : Tormenting Whispers (id=1250492) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19260,7 +19263,7 @@ Effects          :
 Description      : $@spelldesc1246517
 
 Name             : Uplifting Words (id=1250562) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19276,7 +19279,7 @@ Effects          :
 Description      : Increases the critical strike chance of your Holy Word: Serenity$?a1246517[] [ and Holy Word: Sanctify] by $s1%.
 
 Name             : Angelic Touch (id=1250565) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19315,7 +19318,7 @@ Effects          :
 Description      : $@spelldesc1246517
 
 Name             : Radiant Plea (id=1250684) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19331,7 +19334,7 @@ Effects          :
 Description      : Increases Prayer of Mending healing by $s1%.
 
 Name             : Void Tendrils (id=1250691) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19347,7 +19350,7 @@ Effects          :
 Description      : Call shadowy tendrils to constrict enemies when Psychic Scream ends, rooting them in place for $114404d.
 
 Name             : False Autonomy (id=1250806) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=8, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19361,7 +19364,7 @@ Effects          :
 Description      : Increases the duration of Mind Control and Dominate Mind against enemy creatures by ${$s1/1000} sec.
 
 Name             : Spiritual Guidance (id=1250818) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19375,7 +19378,7 @@ Effects          :
 Description      : Increases your Intellect by $s1%.
 
 Name             : Strength of Soul (id=1250820) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19389,7 +19392,7 @@ Effects          :
 Description      : Increases your Stamina by $s1%.
 
 Name             : Dark Enlightenment (id=1250835) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19403,7 +19406,7 @@ Effects          :
 Description      : Increases your haste by $s1%.
 
 Name             : Mindpierce (id=1251029) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19423,7 +19426,7 @@ Effects          :
 Description      : Increases the damage of $?a137033[Mind Flay][Smite] by $s1%.
 
 Name             : Painful Invocation (id=1251030) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19443,7 +19446,7 @@ Effects          :
 Description      : Increases the damage of $?a137031&?s14914[Holy Fire]?a137031&!s14914[Holy Fire and Shadow Word: Pain][Shadow Word: Pain] by $s1%.
 
 Name             : Twin Disciplines (id=1251077) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19467,7 +19470,7 @@ Effects          :
 Description      : Increases the damage and healing of your Holy and Shadow spells by $s1%.
 
 Name             : Shadow Mend (id=1252215) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19504,7 +19507,7 @@ Description      : $@spelldesc1252215
 Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
 Name             : Master the Darkness (id=1253590) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19541,7 +19544,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
-Attributes       : Spellcast Override In Spellbook (310)
+Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1259449)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Shield overrides Power Word: Shield
@@ -19578,7 +19581,7 @@ Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Chain by Most Hit (440)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1259452)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
@@ -19625,7 +19628,7 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Greater Smite (1253724)
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1259714)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -19635,7 +19638,7 @@ Description      : $@spelldesc1253724
 Tooltip          : $?a450193[Void Blast][Smite] damage increased by $w1%.
 
 Name             : Master the Darkness (id=1253827) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19666,7 +19669,7 @@ Effects          :
 Description      : $@spelldesc1253593
 
 Name             : Master the Darkness (id=1253845) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
@@ -19786,7 +19789,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Benediction (id=1262755) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19805,7 +19808,7 @@ Effects          :
 Description      : Prayer of Mending healing has a chance to upgrade your next Flash Heal to Benediction, healing the target for $s1% more and causing a Cosmic Ripple.
 
 Name             : Benediction (id=1262758) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
+Talent Entry     : Holy [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -19840,7 +19843,7 @@ Description      : Cosmic Ripple healing increased by $s1%.
 All healing done increased by $s2%.
 
 Name             : Benediction (id=1262760) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
+Talent Entry     : Holy [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=400]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19881,7 +19884,7 @@ Family Flags     : 11, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1273235)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.4104 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 6.82 | Target: Targeted Ally (21)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : A divine spell that heals an ally for $s1.
 
@@ -19914,7 +19917,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Void Apparitions (id=1264096) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19931,7 +19934,7 @@ Effects          :
 Description      : When an effect from an Idol is activated, conjure Shadowy Apparitions.
 
 Name             : Void Apparitions (id=1264104) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Shadow
@@ -19953,7 +19956,7 @@ $@spellicon1264177 $@spellname1264177
 $@spelldesc1264177
 
 Name             : Void Apparitions (id=1264107) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20032,7 +20035,7 @@ Labels           : 16: Class Spells
                  : 5671
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 72
-Attributes       : Do Not Display Range (126)
+Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275350)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Target: Targeted Enemy (6)
@@ -20167,7 +20170,7 @@ Effects          :
 Description      : Shadow Word: Pain and Entropic Rift deal damage ${100*(1/(1+$m1/100)-1)}% more often.
 
 Name             : Touch of the Void (id=1266856) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -20182,7 +20185,7 @@ Effects          :
 Description      : Voidheart now persists for $s1 sec after Entropic Rift ends.
 
 Name             : Overwhelming Shadows (id=1266883) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -20215,7 +20218,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Power Word: Fortitude (21562)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1284923)  : Apply Aura (6) | Dummy (4)
@@ -20239,7 +20242,7 @@ Effects          :
 Description      : Power Surge lasts an additional ${$s1/1000} sec.
 
 Name             : Focused Outburst (id=1272320) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20269,7 +20272,7 @@ Effects          :
 Description      : $?c2[Prayer of Healing mana cost reduced by $s1% and its cast time is reduced by $s2%.][Void Volley damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
 
 Name             : Realized Potential (id=1272326) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20299,7 +20302,7 @@ Description      : $?c2[Flash Heal healing increased by $s1%.
 Healing spells and Smite have an additional $s2% chance to grant Surge of Light.][Shadow Word: Death damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
 
 Name             : Words of the Wise (id=1272352) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20321,7 +20324,7 @@ Description      : $?a137031&?a1246517[Holy Word: Serenity healing increased by 
 
 
 Name             : Prophet's Insight (id=1272359) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20347,7 +20350,7 @@ Description      : $?c2[Reduces the cooldown of your Holy Words by ${$s1/-1000} 
 
 
 Name             : Unfolding Vision (id=1272363) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20376,7 +20379,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Invoked Nightmare (id=1279350) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20396,7 +20399,7 @@ Effects          :
 Description      : Shadow Word: Pain deals $s1% increased damage.
 
 Name             : Maddening Tentacles (id=1279353) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20436,7 +20439,7 @@ Description      : Tentacle Slam deals $s2% increased damage and Void Volley dea
 When Voidform ends, you can cast Void Volley $1279437U additional $Ltime:times; within $1279437d.
 
 Name             : Haunting Shadows (id=1279355) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20468,7 +20471,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1291927)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Volley overrides Voidform | Attributes: Suppress Points Stacking (6)
                    Base Value: 1242173 | Scaled Value: 1242173 | Misc Value: 228260 | Misc Value 2: 2 | Target: Self (1)
@@ -20480,7 +20483,7 @@ Description      : $@spelldesc1279354
 Tooltip          : Void Volley is available!
 
 Name             : Searing Light (id=1280131) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -20493,7 +20496,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292915)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 20)
 Description      : Your Penance bolts sear the enemy, dealing $s1% of its damage over 8 sec.
 
 Name             : Searing Light (id=1280134) [Spell Family (6)] 
@@ -20515,7 +20517,7 @@ Description      : $@spelldesc47540
 Tooltip          : Suffering $w1 Holy damage every $t1 sec.
 
 Name             : Mindbender (id=1280137) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -20556,6 +20558,27 @@ Effects          :
 #4 (id=1293002)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc34433
+
+Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297649)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
+
+Name             : Equip Transmog Outfit (id=1283376) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+School           : Physical
+Spell Type       : None
+Cooldown         : 0.1 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Riding Vehicle (204), Skip Is Known Check (282), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1297650)  : Unknown(347)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 7 | Target: Self (1)
 
 Name             : Priest - Midnight PrePatch - 11.2 Class Set 2pc (id=1283668) [Spell Family (6), Passive, Hidden] 
 Class            : Priest

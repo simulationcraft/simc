@@ -144,7 +144,7 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
             flag_value = flags[i]
 
             if format_value not in _DB_FIELD_FORMATS:
-                logging.warn('Format value type %s not known', format_value)
+                logging.warning('Format value type %s not known', format_value)
                 struct_formats.append(('unknown', 'z'))
             else:
                 fmt = _DB_FIELD_FORMATS[format_value]
@@ -392,7 +392,7 @@ class PeStructParser:
         elements = header.elements(self)
 
         if len(formats) != len(field_formats):
-            logging.warn('Field count mismatch for {}, binary={}, format_file={}'.format(
+            logging.warning('Field count mismatch for {}, binary={}, format_file={}'.format(
                 dbfile.class_name(), len(formats), len(field_formats)))
 
         for field_idx in range(0, len(formats)):
@@ -406,7 +406,7 @@ class PeStructParser:
             # should have. The actual data size in the db2 file is in the field
             # width.
             if field_file_format != formats[field_idx][1].lower():
-                logging.warn(('Field type discrepancy for {} field {} "{}", '
+                logging.warning(('Field type discrepancy for {} field {} "{}", '
                               'wow_file={}, format_file={}').format(
                     os.path.basename(dbfile.file_name), field_idx + 1,
                     field_formats[field_idx].base_name(), formats[field_idx][0],
@@ -418,7 +418,7 @@ class PeStructParser:
             format_is_signed = field_formats[field_idx].data_type.islower()
 
             if check_signed and col.is_signed() != format_is_signed:
-                logging.warn(('Field signedness discrepancy for {} field {} "{}", '
+                logging.warning(('Field signedness discrepancy for {} field {} "{}", '
                               'wow_file={}, format_file={}').format(
                     os.path.basename(dbfile.file_name), field_idx + 1,
                     field_formats[field_idx].base_name(),
@@ -428,7 +428,7 @@ class PeStructParser:
             # Check field counts
             format_elements = field_formats[field_idx].elements
             if format_elements != elements[field_idx]:
-                logging.warn(('Element count discrepancy for {} field {} "{}", '
+                logging.warning(('Element count discrepancy for {} field {} "{}", '
                               'wow_file={}, format_file={}').format(
                     os.path.basename(dbfile.file_name), field_idx + 1,
                     field_formats[field_idx].base_name(),

@@ -220,6 +220,7 @@ public:
       buff_t* rite_of_adjuration;
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
       buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
+      buff_t* fake_solidarity_bulwark; // Stackable buff that fakes other people having a Holy Bulwark Buff (Only for Reflection of Radiance)
       buff_t* masterwork_weapon;
       buff_t* masterwork_bulwark;
       buff_t* lesser_weapon;
@@ -747,6 +748,7 @@ public:
     int min_dg_heal_targets               = 1;
     int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
+    double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
   } options;
   player_t* beacon_target;
@@ -964,8 +966,13 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
   void absorb_used( double absorbed, player_t* source ) override
   {
     absorb_buff_t::absorb_used( absorbed, source );
-    if ( caster->talents.lightsmith.reflection_of_radiance->ok() &&
-         caster->rng().roll( caster->reflection_of_radiance_proc_chance ) )
+    double chance = caster->reflection_of_radiance_proc_chance;
+    double stacks = caster->buffs.lightsmith.fake_solidarity_bulwark->stack();
+    // Holy Bulwarks on the group don't trigger all that often, so it shouldn't be a 100% increased chance
+    double increasedChance = stacks * caster->options.ror_bulwark_additional_proc_chance;  
+    if ( caster->options.fake_solidarity )
+      chance = 1.0 - ( std::pow( 1.0 - chance, increasedChance  + 1 ) );
+    if ( caster->talents.lightsmith.reflection_of_radiance->ok() && caster->rng().roll( chance ) )
     {
       caster->trigger_grand_crusader( GC_ROR );
       caster->procs.grand_crusader_ror_hb->occur();

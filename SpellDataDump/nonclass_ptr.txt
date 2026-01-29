@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -119803,7 +119803,7 @@ Labels           : 16: Class Spells
                  : 1379
                  : 1776
 Stance Mask      : 0x40000011
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Cheap Missile AOI (374)
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Cheap Missile AOI (374), Allow Class Ability Procs (416)
 Effects          :
 #2 (id=826307)   : Trigger Spell (64): (331866)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 331866 | Target: Self (1) -> at Area (87)
@@ -161277,7 +161277,7 @@ Max Scaling Level: 70
 Range            : 100 yards
 Labels           : 1530
                  : 1694
-Triggered By     : Breath of Neltharion (385520), B1P, Scorcher of Souls (1246309)
+Triggered By     : Breath of Neltharion (385520)
 Attributes       : No Active Defense (21), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1018825)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
@@ -162953,6 +162953,7 @@ Effects          :
 #1 (id=1020948)  : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Empty out the Dragon Games kickballs onto the field. Running into them kicks them at your enemy target, dealing $383950s1 Physical damage.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Dragon Games Equipment (id=386708) 
 School           : Physical
@@ -188595,7 +188596,7 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1119179)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 72838.25 (coefficient=569.9239) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 696528.9 (coefficient=5450) | Target: Self (1)
 #2 (id=1119180)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s2} health.
@@ -188611,7 +188612,7 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1119182)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 9193242 (coefficient=49.03062) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.4375e+07 (coefficient=450) | Resource: mana | Target: Self (1)
 Description      : Restores $s1 mana.
 
 Name             : Cavedweller's Delight (id=431419) 
@@ -188625,9 +188626,9 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1119186)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 53118.42 (coefficient=415.6258) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 747650.3 (coefficient=5850) | Target: Self (1)
 #2 (id=1119187)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 6894932 (coefficient=36.77297) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.625e+07 (coefficient=460) | Resource: mana | Target: Self (1)
 #3 (id=1119188)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s3} health and $s2 mana.
@@ -203778,6 +203779,7 @@ Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1150776)  : Apply Aura (6) | Increase Armor (465)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -203815,6 +203817,7 @@ Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1150796)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -204171,6 +204174,7 @@ Labels           : 3959: Item Effects
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1151907)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
@@ -205396,11 +205400,11 @@ Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sit
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1153521)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 168750 (coefficient=7.5) | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8750.003 (coefficient=0.388889) | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1153522)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7499.992 (coefficient=0.333333) | Target: Self (1)
 #3 (id=1153523)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7499.992 (coefficient=0.333333) | Target: Self (1)
 Description      : Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.
 Tooltip          : Restores ${$w1/5} health and ${$w2/5} mana per second.
 
@@ -206727,15 +206731,14 @@ Tooltip          : Increases Movement speed by $s1%, while in Light's Blooming a
 Name             : Radiant Focus (id=454558) [Passive] 
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 80
 Range            : 30 yards
 Labels           : 2859
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1157194)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Radiant Focus | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 33837.43 (coefficient=1341.499) | Trigger Spell: 454559 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 106.4033 (coefficient=0.832554) | Trigger Spell: 454559 | Target: Self (1)
 #2 (id=1173082)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1267.669 (coefficient=37.69295) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28.5821 (coefficient=0.21805) | Target: Self (1)
 Description      : Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for $454560d. 
 
 After dealing up to $454560s1 damage to the target, the focused energies ignite you with Radiance, granting between ${$s2*.5} to $s2 of your highest Secondary stat based on damage dealt for $454560d. 
@@ -206744,7 +206747,6 @@ After dealing up to $454560s1 damage to the target, the focused energies ignite 
 Name             : Radiant Focus (id=454559) [Hidden] 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
 Duration         : Aura (infinite)
 Labels           : 969
                  : 3232
@@ -206756,7 +206758,7 @@ Triggered By     : Radiant Focus (454558), Radiant Focus (463108)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1157196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 100000 | Scaled Value: 18842.39 (coefficient=747.0143) | Target: Self (1)
+                   Base Value: 100000 | Scaled Value: 95471.02 (coefficient=747.0143) | Target: Self (1)
 #2 (id=1157197)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc454558
@@ -207545,6 +207547,7 @@ Name             : Refreshment (id=455368)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
+Min Scaling Level: 75
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Labels           : 2395
@@ -207555,13 +207558,14 @@ Effects          :
 #1 (id=1158744)  : Trigger Spell (64): Food
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452276 | Target: Self (1)
 #2 (id=1158745)  : Apply Aura (6) | Periodic Trigger Spell (23): Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
-                   Base Value: 0 | Scaled Value: 229.0824 (coefficient=42.07922) | Trigger Spell: 455369 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.428118 (coefficient=0.446011) | Trigger Spell: 455369 | Target: Self (1)
 Description      : $@spelldesc452276|n|n$@spellicon461960 $@spellname461960|nIf you spend at least 10 seconds eating, you will become $@spellname461960  and gain $455369s1 Speed for $455369d.
 
 Name             : Well Fed (id=455369) 
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
+Min Scaling Level: 75
 Duration         : 3600 seconds
 Labels           : 959
                  : 3601: Pausing Pylon (453003 effect#1)
@@ -207571,7 +207575,7 @@ Triggered By     : Refreshment (455368)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1158747)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1415.186 (coefficient=42.07922) | Rating: RunSpeed | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15 (coefficient=0.446011) | Rating: RunSpeed | Target: Self (1)
 Description      : Increases your Speed by $s1 for $d.
 Tooltip          : Your Speed is increased by $w1.
 
@@ -212378,15 +212382,14 @@ Tooltip          : Mastery increased by $w1.
 Name             : Ascendance (id=458573) [Passive] 
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 80
 Range            : 30 yards
 Labels           : 2859
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1164653)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ascendance | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 0.8490599 (coefficient=0.025246) | Trigger Spell: 453575 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.309258 (coefficient=0.025246) | Trigger Spell: 453575 | Target: Self (1)
 #2 (id=1173075)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 0.8776802 (coefficient=0.034796) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.44705 (coefficient=0.034796) | Target: Self (1)
 Description      : $@spelldesc453575
 
 Name             : Siphoning Stiletto (id=458624) 
@@ -216803,9 +216806,9 @@ Labels           : 2859
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1173480)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ascendance | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 0.8549117 (coefficient=0.02542) | Trigger Spell: 453575 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.999996 (coefficient=0.059468) | Trigger Spell: 453575 | Target: Self (1)
 #2 (id=1173481)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1.439788 (coefficient=0.057081) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.999994 (coefficient=0.118936) | Target: Self (1)
 Description      : Gain $@spellname453575 every $457594t seconds spent in combat.
 
 $@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.
@@ -216813,15 +216816,14 @@ $@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking u
 Name             : Radiant Focus (id=463108) [Passive] 
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 80
 Range            : 30 yards
 Labels           : 2859
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1173502)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Radiant Focus | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 4611.916 (coefficient=137.131) | Trigger Spell: 454559 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.56579 (coefficient=0.416277) | Trigger Spell: 454559 | Target: Self (1)
 #2 (id=1173503)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1267.669 (coefficient=37.69295) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28.5821 (coefficient=0.21805) | Target: Self (1)
 Description      : Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for $454560d. 
 
 After dealing up to $454560s1 damage to the target, the focused energies ignite you with Radiance, granting between ${$s1*.5} to $s1 of your highest secondary stat based on damage dealt for $454560d. 
@@ -216843,15 +216845,14 @@ Tooltip          : Casting $@spellname421382 next.
 Name             : Symbiosis (id=463232) [Passive] 
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 80
 Range            : 30 yards
 Labels           : 2859
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1173729)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Symbiosis | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2985.306 (coefficient=118.3537) | Trigger Spell: 455534 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 25.3341 (coefficient=0.198227) | Trigger Spell: 455534 | Target: Self (1)
 #2 (id=1173730)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 236.6748 (coefficient=7.037303) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.598408 (coefficient=0.019823) | Target: Self (1)
 Description      : Every $455535t seconds in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d stacking up to 5 times.
 
 This is a Nerubian embellishment.
@@ -216946,23 +216947,22 @@ Triggered By     : Symbiosis (455536)
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1174393)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Symbiosis | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.469762 (coefficient=0.043702) | Trigger Spell: 455534 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.333349 (coefficient=0.099114) | Trigger Spell: 455534 | Target: Self (1)
 #2 (id=1174394)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2.475267 (coefficient=0.098133) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.999998 (coefficient=0.198227) | Target: Self (1)
 Description      : Every $455535t sec in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d  stacking up to 5 times.
 
 Name             : Vivacity (id=463611) [Passive] 
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 80
 Range            : 30 yards
 Labels           : 2859
-Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
+Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1174396)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Vivacity | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 13.24541 (coefficient=0.39384) | Trigger Spell: 454859 | Target: Self (1)
-#2 (id=1174397)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2.75213 (coefficient=0.081832) | Trigger Spell: 454859 | Target: Self (1)
+#1 (id=1174396)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Vivacity | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 162.1383 (coefficient=1.268653) | Trigger Spell: 454859 | Target: Self (1)
+#2 (id=1303089)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 40.53453 (coefficient=0.317163)
 Description      : Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.
 
 Name             : Illusory Adornment: Runes (id=463677) [Hidden] 
@@ -224973,7 +224973,7 @@ Labels           : 292
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1199600)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
@@ -226605,7 +226605,7 @@ Effects          :
 #2 (id=1207395)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207396)  : Dummy (3)
-                   Base Value: 684 | Scaled Value: 684
+                   Base Value: 124 | Scaled Value: 124
 Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Prized Jeweler's Settings.
@@ -226619,7 +226619,7 @@ Effects          :
 #2 (id=1207402)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207403)  : Dummy (3)
-                   Base Value: 684 | Scaled Value: 684
+                   Base Value: 124 | Scaled Value: 124
 Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Ringing Ritual Mud (id=1221145) [Passive] 
@@ -230381,7 +230381,7 @@ Triggered By     : Arcanoweave Lining (1283697)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
 Effects          :
 #1 (id=1220836)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 51.00001 (coefficient=0.389074) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.54583 (coefficient=0.24066) | Target: Self (1)
 #2 (id=1283608)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
 #3 (id=1283609)  : Dummy (3)
@@ -230393,7 +230393,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), Aura Is Buff (140), Allow While Stunned (163), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), Aura Is Buff (140), Allow While Stunned (163), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1221150)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Current Target (25)
@@ -230534,7 +230534,7 @@ Proc Chance      : 101%
 Real PPM         : 5
 Proc Flags       : Periodic, Helpful Periodic
 Triggered By     : Sunfire Silk Lining (1241711)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1221910)  : Apply Aura (6) | Proc Trigger Spell (42): Radiant Acumen
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1230366 | Target: Self (1)
@@ -231126,7 +231126,6 @@ Range            : 100 yards
 Duration         : 20 seconds
 Labels           : 5018
 Stacks           : 1 maximum
-Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered By     : Legion's Brand (1231981), Touch of Malice (1245385)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Required by Client (262), Aura Points On Client (268), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -231197,7 +231196,7 @@ Name             : Food & Drink (id=1232065)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Triggered By     : Refreshment (1232489), Refreshment (1232917), Refreshment (1232919), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1280485), Refreshment (1283374)
+Triggered By     : Refreshment (1232488), Refreshment (1232489), Refreshment (1232917), Refreshment (1232919), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1280485), Refreshment (1283374)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -232132,8 +232131,8 @@ Labels           : 2395
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
-#1 (id=1225196)  : Trigger Spell (64): Food
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269921 | Target: Self (1)
+#1 (id=1225196)  : Trigger Spell (64): Food & Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232065 | Target: Self (1)
 #2 (id=1225197)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
 Description      : $@spelldesc1232065
@@ -232231,7 +232230,7 @@ Effects          :
 #8 (id=1225219)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225220)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 #10 (id=1225221) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225222) : Apply Aura (6) | Attribute (29)
@@ -232270,7 +232269,7 @@ Effects          :
 #8 (id=1225230)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225231)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #10 (id=1225232) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225233) : Apply Aura (6) | Attribute (29)
@@ -232426,7 +232425,7 @@ Effects          :
 #8 (id=1225278)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225279)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste, Avoidance | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #10 (id=1225280) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225281) : Apply Aura (6) | Attribute (29)
@@ -233078,7 +233077,7 @@ Effects          :
 Description      : $@spelldesc1232065
 
 $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s2 primary stat for $462209d.
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s2 primary stat for $462209d.
 
 Name             : Refreshment (id=1232919) 
 School           : Physical
@@ -233098,7 +233097,7 @@ Effects          :
 Description      : $@spelldesc1232065
 
 $@spellicon457049 $@spellname457049  
-If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
+If you spend at least 10 seconds eating you will become $@spellname457049 gaining $1219179s4 of your highest secondary stat for $462209d.
 
 Name             : Refreshment (id=1232920) 
 School           : Physical
@@ -234400,6 +234399,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234418,6 +234418,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234436,6 +234437,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234454,6 +234456,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234472,6 +234475,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234490,6 +234494,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4900
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234508,6 +234513,7 @@ Duration         : 20 seconds
 Labels           : 4377
                  : 4899
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234516,7 +234522,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269917 | Target: Self (1)
 #2 (id=1227676)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269917|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s8*.5} Stamina and ${$1219179s3*.5} primary stat for $1232324d.|n|nThis food persists through death.
+Description      : $@spelldesc1269917
+
+$@spellicon1232076  $@spellname1232076
+If you spend at least 10 seconds eating you will become $@spellname1232076 and gain ${$1219179s2*.5} primary stat for $1232324d.
+
+This food persists through death.
 
 Name             : Hearty Refreshment (id=1233745) 
 School           : Physical
@@ -234525,6 +234536,7 @@ Max Scaling Level: 60
 Duration         : 20 seconds
 Labels           : 4377
                  : 4905
+                 : 4913
                  : 6100
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
@@ -234533,7 +234545,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269922 | Target: Self (1)
 #2 (id=1227678)  : Apply Aura (6) | Periodic Trigger Spell (23): Become Well Fed every 10 seconds | Scaling Class: Food/Gems Attribute (-4)
                    Base Value: 0 | Scaled Value: 6.911297 (coefficient=1.75) | Trigger Spell: 1219179 | Target: Self (1)
-Description      : $@spelldesc1269922|n|n$@spellicon1232076  $@spellname1232076|nIf you spend at least 10 seconds eating you will become $@spellname1232076 gaining ${$1219179s3*.5} primary stat for $461924d.|n|nThis food persists through death.
+Description      : $@spelldesc1269922
+
+$@spellicon1232076  $@spellname1232076
+If you spend at least 10 seconds eating you will become $@spellname1232076 gaining ${$1219179s2*.5} primary stat for $461924d.
+
+This food persists through death.
 
 Name             : Hearty Refreshment (id=1233746) 
 School           : Physical
@@ -237054,8 +237071,8 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231760)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3804 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Amani Perception, increasing Perception by $ec1. Cannot be applied to items lower than level $ecim.
-
+Description      : Permanently enchants a profession tool with Amani Perception, increasing Perception by $ec1. Cannot be applied to items above level $ecix.
+
 |cnNORMAL_FONT_COLOR:Amani Augments - Trollish Tools|R 
 
 Name             : Enchant Tool - Amani Resourcefulness (id=1236064) 
@@ -237073,7 +237090,7 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231761)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3805 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Amani Resourcefulness, increasing Resourcefulness by $ec1. Cannot be applied to items lower than level $ecim.
+Description      : Permanently enchants a profession tool with Amani Resourcefulness, increasing Resourcefulness by $ec1. Cannot be applied to items above level $ecix.
 
 |cnNORMAL_FONT_COLOR:Amani Augments - Trollish Tools|R 
 
@@ -237333,8 +237350,8 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231774)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3818 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Haranir Finesse, increasing Finesse by $ec1. Cannot be applied to items lower than level $ecim.
-
+Description      : Permanently enchants a profession tool with Haranir Finesse, increasing Finesse by $ec1. Cannot be applied to items above level $ecix.
+
 |cnNORMAL_FONT_COLOR:Haranir Heightening - Nature's Novelties|R 
 
 Name             : Enchant Tool - Haranir Multicrafting (id=1236078) 
@@ -237352,7 +237369,7 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231775)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3819 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Haranir Multicrafting, increasing Multicraft by $ec1. Cannot be applied to items lower than level $ecim.
+Description      : Permanently enchants a profession tool with Haranir Multicrafting, increasing Multicraft by $ec1. Cannot be applied to items above level $ecix.
 
 |cnNORMAL_FONT_COLOR:Haranir Heightening - Nature's Novelties|R 
 
@@ -237632,7 +237649,7 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231789)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3833 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Sin'dorei Deftness, increasing Deftness by $ec1. Cannot be applied to items lower than level $ecim.
+Description      : Permanently enchants a profession tool with Sin'dorei Deftness, increasing Deftness by $ec1. Cannot be applied to items above level $ecix.
 
 |cnNORMAL_FONT_COLOR:Thalassian Talents - Quel'Thalas Quality|R 
 
@@ -237651,7 +237668,7 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1231790)  : Craft Enchantment (301)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3834 | Misc Value 2: 11
-Description      : Permanently enchants a profession tool with Ren'dorei Ingenuity, increasing Ingenuity by $ec1. Cannot be applied to items lower than level $ecim.
+Description      : Permanently enchants a profession tool with Ren'dorei Ingenuity, increasing Ingenuity by $ec1. Cannot be applied to items above level $ecix.
 
 |cnNORMAL_FONT_COLOR:Thalassian Talents - Quel'Thalas Quality|R 
 
@@ -238856,7 +238873,7 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1233480)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506298) | Target: Self (1)
 #2 (id=1233912)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506299) | Rating: Crit | Target: Self (1)
 #3 (id=1233913)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -238873,9 +238890,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: -125.6926 (coefficient=-0.958896) | Rating: Vers | Target: Self (1)
 #9 (id=1234010)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -125.6926 (coefficient=-0.958896) | Rating: Mastery | Target: Self (1)
+#10 (id=1302805) : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: -125.6926 (coefficient=-0.958896) | Target: Self (1)
 Description      : Gain $s2 of your highest secondary stat while losing $s6 of your lowest secondary stat for $d.
-Tooltip          : Granting $w5 $?e1[Critical Strike]?e2[Haste]?e3[Versatility]?e4[Mastery][Highest secondary stat].
-Reducing $?e5[Critical Strike]?e6[Haste]?e7[Versatility]?e8[Mastery][lowest secondary stat] by $w1.
+Tooltip          : Granting $w1 $?e1[Critical Strike]?e2[Haste]?e3[Versatility]?e4[Mastery][Highest secondary stat].
+Reducing $?e5[Critical Strike]?e6[Haste]?e7[Versatility]?e8[Mastery][lowest secondary stat] by $w10.
 
 Name             : Draught of Rampant Abandon (id=1236998) 
 School           : Shadow
@@ -239235,7 +239254,7 @@ Triggered By     : Knight-Commander's Palisade (1237608)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1234382)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 971.5726 (coefficient=7.602083) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1612.029 (coefficient=12.61334) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc1237608
 Tooltip          : Absorbing $w1 damage.
@@ -239385,7 +239404,7 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1234950)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 95852.61 (coefficient=750) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 763085.2 (coefficient=5970.77) | Target: Self (1)
 #2 (id=1234951)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s2} health.
@@ -239586,7 +239605,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #5 (id=1239381)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0
-Description      : Your damaging abilities have a chance to deal $s3 Holy damage and mark the target with $@spellname1237886. $@spellname1237886 increases the damage taken from $@spellname1237158 by $s4%. Damaging a new target will remove $@spellname1237886 from the previous target.
+Description      : For the next $d your damaging abilities have a chance to deal $s3 Holy damage and mark the target with $@spellname1237886. $@spellname1237886 increases the damage taken from $@spellname1237158 by $s4%. Damaging a new target will remove $@spellname1237886 from the previous target.
 Tooltip          : Abilities have a chance to deal $s3 Holy damage.
 
 Name             : Thorn Bloom (id=1238467) 
@@ -240404,7 +240423,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Labels           : 4386
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
+Attributes       : Passive (6), No Threat (42), Not an Action (92), Not a Proc (105), Not an Attack (194), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1240856)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Silk Lining | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 11.00001 (coefficient=0.083918) | Trigger Spell: 1230364 | Target: Self (1)
@@ -240433,7 +240452,7 @@ Labels           : 969
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Strength of Halazzi (1236733), Strength of Halazzi (1236734)
 Attributes       : Passive (6)
 Effects          :
@@ -240551,10 +240570,9 @@ Spell Type       : None
 Labels           : 969
                  : 974
                  : 3959: Item Effects
-Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Flames of the Sin'dorei (1236739), Flames of the Sin'dorei (1236740)
 Attributes       : Passive (6)
 Effects          :
@@ -241638,7 +241656,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 55.74481 (coefficient=0.436176) | Trigger Spell: 1258590 | Target: Self (1)
 #2 (id=1267316)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
-Description      : Your damaging spells and abilities have a chance to afflict your target with a Necrotic Hex, inflicting ${$<rolemult>*$s1} Nature damage over $1258590d.
+Description      : Your damaging spells and abilities have a chance to afflict your target with a Necrotic Hex, inflicting ${$<rolemult>*$s1*$1258590d} Nature damage over $1258590d.
 
 This hex spreads to enemies near your original victim every time it deals damage, up to $s2 times.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -241746,7 +241764,6 @@ Labels           : 4124
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
-Triggered By     : Murder Row Shiv (1259264), Slightly-Stabilized Arcanocrystal (1259273), Emergency Healing Tonic (1259276)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1244529)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -241839,10 +241856,11 @@ Effects          :
 Name             : Devouring Banding (id=1244238) [Passive] 
 School           : Cosmic
 Spell Type       : None
+Triggered By     : Devouring Bolt (1259218)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1244879)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Devouring Banding | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 496.382 (coefficient=3.883948) | Trigger Spell: 1259213 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 496.3538 (coefficient=3.883727) | Trigger Spell: 1259213 | Target: Self (1)
 Description      : Your damaging spells and abilities can cause you to heed the whispers and fire a Devouring Bolt at your target, dealing ${$<rolemult>*$s1} Cosmic damage. This bolt devours their strength, seizing $1259230s1 of your highest secondary stat for you for $1259230d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -241854,11 +241872,11 @@ Labels           : 4124
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
-Triggered By     : Blessed Pango Charm (1259060), Favored by Kulzi (1259061)
+Triggered By     : Blessed Pango Charm (1259060)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1244889)  : Apply Aura (6) | Proc Trigger Spell (42): Favored by Kulzi | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 67.16197 (coefficient=0.512372) | Trigger Spell: 1259061 | Target: Self (1)
+#1 (id=1244889)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 67.16197 (coefficient=0.512372) | Target: Self (1)
 Description      : $@spelldesc1259060
 
 Name             : Void (id=1244253) 
@@ -241870,20 +241888,20 @@ Proc Chance      : 101%
 Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Void (1244254), Void (1245052)
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
+Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=1244905)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3596.364 (coefficient=28.1398) | Target: Self (1)
+#1 (id=1244905)  : Apply Aura (6) | Proc Trigger Spell (42): Void Glass | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 3596.364 (coefficient=28.1398) | Trigger Spell: 1244617 | Target: Self (1)
 #2 (id=1270866)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 94.09096 (coefficient=0.736216) | Target: Self (1)
 
-Name             : Void (id=1244254) [Passive] 
+Name             : Void (id=1244254) [Passive, Hidden] 
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
 Labels           : 4126
 Triggered By     : Decimate! (1244620)
-Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244908)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Void | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 14.09008 (coefficient=0.110248) | Trigger Spell: 1244253 | Target: Self (1)
@@ -241894,6 +241912,7 @@ This effect is augmented by Darkmoon Sigil: Void.
 Name             : Primal Spore Binding (id=1244276) [Passive] 
 School           : Physical
 Spell Type       : None
+Triggered By     : Primal Spore Explosion (1259128), Primal Spore Explosion (1259130)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1244943)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
@@ -242045,6 +242064,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
+Triggered By     : Void (1244253)
 Attributes       : Item Cast With Owner Skill (88), DoT Stacking Rule (103), Aura Points On Client (268), Recompute Aura On Level Scale (446), Unknown (490)
 Effects          :
 #1 (id=1245511)  : Apply Aura (6) | Modify Rating (189)
@@ -242296,8 +242316,6 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 4957
-Internal Cooldown: 2 seconds
-Proc Chance      : 33%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Triggered By     : Touch of Malice (1242992)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Ignore Target Requirements (181), Ignore Caster Requirements (184), Can Assist Immune PC (195), Can Target Untargetable (216), Aura Points On Client (268), Proc cooldown on a per target basis (330), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Apply Zone Aura Spell To Pets (383), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
@@ -242524,14 +242542,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 6 seconds
+Cooldown         : 90 seconds
 Labels           : 4753
                  : 4755
                  : 4759
 Triggered By     : B1P, Scorcher of Souls (1279407)
 Attributes       : Not In Arena or Rated Battleground (144), Not In Arena (297)
 Effects          :
-#1 (id=1247862)  : Apply Aura (6) | Periodic Trigger Spell (23): Breath of Neltharion every 0.5 seconds
-                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 385519 | Target: Self (1)
+#1 (id=1247862)  : Apply Aura (6) | Periodic Trigger Spell (23): B1P, Scorcher of Souls every 0.5 seconds
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1279407 | Target: Self (1)
 Description      : Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.
 Tooltip          : Setting souls ablaze.
 
@@ -242541,28 +242560,30 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : Death
-Attributes       : Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Do Not Log Aura Refresh (291)
+Attributes       : Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), Only Proc Outdoors (117), No Aura Log (202), Do Not Log Aura Refresh (291)
 Effects          :
-#1 (id=1247867)  : Apply Aura (6) | Proc Trigger Spell (42): Summon Mini-Medical Team
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1246313 | Target: Self (1)
+#1 (id=1247867)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!
 
 This effect can only occur every 30 minutes.
 
-Name             : Summon Mini-Medical Team (id=1246313) 
+Name             : Summon Meddy (id=1246335) 
 School           : Physical
 Spell Type       : None
 Range            : 10 yards
-Cast Time        : 10 seconds
+Cast Time        : 5 seconds
 Duration         : 900 seconds
 Cooldown         : 300 seconds
 Category         : 2078 (Type 0x0)
 Category Cooldown: 300 seconds
-Triggered By     : Meddy, Pocket-Sized (1246312)
-Attributes       : Not In Arena or Rated Battleground (144), Check Required Target Aura By Caster (382), Not In Proving Grounds (401)
+Attributes       : Not In Arena or Rated Battleground (144), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Not In Proving Grounds (401), Unknown (508)
 Effects          :
-#1 (id=1247868)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 248526 | Misc Value 2: 5514 | Radius: 5 yards | Target: at Random (72)
+#1 (id=1247904)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 248535 | Misc Value 2: 5514 | Radius: 5 yards | Target: Front of Self (47)
+Description      : Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!
+
+Does not work on players whose spirits have been released and are above level $ctrmax3322.
 
 Name             : Delver's Bounty (id=1246363) 
 School           : Physical
@@ -244757,16 +244778,14 @@ Your damaging spells and abilities can call a beam of radiant light nearby. Stan
 Name             : Murder Row Fishhook (id=1250528) 
 School           : Physical
 Spell Type       : Melee
-Max Scaling Level: 90
-Min Scaling Level: 90
 Range            : 50 yards
 Duration         : 10 seconds
 Triggered By     : Murder Row Fishhook (1250529)
 Attributes       : Extra Initial Period (169), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1254624)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 36289.26 (coefficient=283.9458) | Trigger Spell: 1250529 | Target: Targeted Enemy (6)
-Tooltip          : Bleeding for $w1 every $t sec.
+#1 (id=1254624)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250529 | Target: Targeted Enemy (6)
+Tooltip          : Bleeding for $1250529w1 every $t sec.
 
 Name             : Murder Row Fishhook (id=1250529) [Passive] 
 School           : Physical
@@ -244778,8 +244797,8 @@ Triggered By     : Murder Row Fishhook (1250528)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254625)  : Apply Aura (6) | Proc Trigger Spell (42): Murder Row Fishhook | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1765.582 (coefficient=13.81482) | Trigger Spell: 1250528 | Target: Self (1)
-Description      : Your harmful spells and abilities have a chance to bleed your target for ${$<rolemult>*$1250528s1} Physical damage over $1250528d.
+                   Base Value: 0 | Scaled Value: 455.6848 (coefficient=3.565512) | Trigger Spell: 1250528 | Target: Self (1)
+Description      : Your harmful spells and abilities have a chance to bleed your target for ${$<rolemult>*$s1} Physical damage over $1250528d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Freightrunner's Flask (id=1250533) 
@@ -245250,7 +245269,7 @@ Labels           : 4132
 Attributes       : Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Can't Crit (93), Not In Arena or Rated Battleground (144), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Arena (297), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1255682)  : Create Item (157)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 128835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 139971 | Target: Self (1)
 Description      : Gut the Shimmersiren. You monster.
 
 Name             : Chum (id=1251229) 
@@ -246961,7 +246980,7 @@ Triggered By     : Nalorakk's Call to War (1252832)
 Attributes       : Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
 #1 (id=1265057)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 3.711937 (coefficient=0.028318) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.951552 (coefficient=0.030146) | Rating: Crit | Target: Self (1)
 Description      : Nalorakk's Call to War spurs you on, increasing your Critical Strike by $s1, stacking up to $u times.
 Tooltip          : Nalorakk's Call to War spurs you on, increasing your Critical Strike by $w1.
 
@@ -246988,7 +247007,7 @@ Effects          :
 #2 (id=1265660)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1265661)  : Dummy (3)
-                   Base Value: 730 | Scaled Value: 730
+                   Base Value: 170 | Scaled Value: 170
 Description      : Increase the minimum item level of Manaforge Omega set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Astral Jeweler's Settings.
@@ -247002,7 +247021,7 @@ Effects          :
 #2 (id=1265663)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1265664)  : Dummy (3)
-                   Base Value: 730 | Scaled Value: 730
+                   Base Value: 170 | Scaled Value: 170
 Description      : Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Rotting Globule (id=1257925) [Passive] 
@@ -247496,7 +247515,7 @@ $@spelldesc1258587
 
 Name             : Necrotic Hex (id=1258845) 
 School           : Nature
-Spell Type       : None
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : Ignore Line of Sight (66)
 Effects          :
@@ -247563,6 +247582,7 @@ School           : None
 Spell Type       : Magic
 Max Scaling Level: 90
 Labels           : 4124
+Triggered By     : Favored by Kulzi (1259061)
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1267968)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blessed Pango Charm | Scaling Class: Secondary Rating (-7)
@@ -247575,13 +247595,12 @@ Spell Type       : None
 Max Scaling Level: 90
 Range            : 100 yards
 Duration         : 15 seconds
-Triggered By     : Blessed Pango Charm (1244243)
 Attributes       : Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
 #1 (id=1267971)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 67.16197 (coefficient=0.512372) | Rating: Vers | Target: Targeted Ally (21)
 #2 (id=1269083)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244243
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259060
 Description      : $@spelldesc1259060
 Tooltip          : Blessed with vigor by Kulzi, the Pango Loa. Your Versatility is increased by $w1.
 
@@ -247608,7 +247627,7 @@ Labels           : 4124
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Triggered By     : Primal Spore Binding (1244276), Primal Spore Explosion (1259128)
+Triggered By     : Primal Spore Binding (1244276)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
@@ -247621,7 +247640,7 @@ Name             : Primal Spore Binding (id=1259127) [Passive, Hidden]
 School           : Nature
 Spell Type       : None
 Labels           : 4124
-Triggered By     : Primal Spore Binding (1244276), Primal Spore Explosion (1259130)
+Triggered By     : Primal Spore Binding (1244276)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268070)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
@@ -247637,7 +247656,7 @@ Effects          :
 #1 (id=1268071)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1269111)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259124
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244276
 Description      : $@spelldesc1244276
 
 Name             : Primal Spore Explosion (id=1259130) 
@@ -247649,7 +247668,7 @@ Effects          :
 #1 (id=1268074)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=1269110)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259127
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244276
 
 Name             : Wraps of Cosmic Madness (id=1259153) 
 School           : Cosmic
@@ -247688,11 +247707,11 @@ Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Triggered By     : Devouring Banding (1244238), Devouring Bolt (1259218)
+Triggered By     : Devouring Banding (1244238)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1268197)  : Apply Aura (6) | Proc Trigger Spell (42): Devouring Banding | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 496.382 (coefficient=3.883948) | Trigger Spell: 1259216 | Target: Targeted Enemy (6)
+#1 (id=1268197)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 496.3538 (coefficient=3.883727) | Target: Targeted Enemy (6)
 Description      : $@spelldesc1244238
 
 Name             : Devouring Banding (id=1259216) [Hidden] 
@@ -247700,7 +247719,6 @@ School           : Cosmic
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Triggered By     : Devouring Banding (1259213)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1268201)  : Trigger Missile Spell w/ Value (148): Devouring Bolt
@@ -247716,7 +247734,7 @@ Effects          :
 #1 (id=1268207)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1269120)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259213
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244238
 Description      : $@spelldesc1244238
 
 Name             : Gift of Light (id=1259228) 
@@ -247772,7 +247790,7 @@ Effects          :
 #1 (id=1268282)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1268994)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244005
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259297
 Description      : $@spelldesc1244005
 
 Name             : Slightly-Stabilized Arcanocrystal (id=1259273) 
@@ -247785,7 +247803,7 @@ Effects          :
 #1 (id=1268293)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Target (63) -> at Enemy in Area (16)
 #2 (id=1269021)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244005
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259297
 Description      : $@spelldesc1244005
 
 Name             : Emergency Healing Tonic (id=1259276) 
@@ -247797,7 +247815,7 @@ Effects          :
 #1 (id=1268298)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1269019)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244005
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1259297
 Description      : $@spelldesc1244005
 
 Name             : Murder Row Swiftstrike Phial (id=1259280) 
@@ -247829,6 +247847,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
+Triggered By     : Murder Row Shiv (1259264), Slightly-Stabilized Arcanocrystal (1259273), Emergency Healing Tonic (1259276)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268346)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -250493,7 +250512,7 @@ Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Im
 Effects          :
 #1 (id=1273629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4105.006 (coefficient=32.11968) | Target: Self (1)
-Description      : Restores ${$s1-$s1%$s2} health over $d.
+Description      : Restores ${$s1*10} health over $d.
 Tooltip          : Restoring $s1 health every $ts.
 
 Name             : Uprooted Lasher (id=1263077) 
@@ -252146,7 +252165,10 @@ Max Scaling Level: 80
 Min Scaling Level: 80
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Labels           : 4376: Pausing Pylon 2.0 (1259647 effect#1)
+Labels           : 4127
+                 : 4132
+                 : 4134
+                 : 4376: Pausing Pylon 2.0 (1259647 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Death
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
@@ -252354,7 +252376,7 @@ Name             : Food (id=1269921)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Triggered By     : Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751)
+Triggered By     : Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -252968,6 +252990,7 @@ Spell Type       : Melee
 Max Scaling Level: 90
 Min Scaling Level: 90
 Range            : 100 yards
+Triggered By     : B1P, Scorcher of Souls (1246309)
 Attributes       : No Active Defense (21), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1291896)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
@@ -253308,10 +253331,10 @@ Description      : $@spelldesc1283380
 Name             : Arcanoweave Lining (id=1283697) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1298243)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcanoweave Lining | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 181.0911 (coefficient=1.381526) | Trigger Spell: 1229511 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.54583 (coefficient=0.24066) | Trigger Spell: 1229511 | Target: Self (1)
 #2 (id=1298244)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
 #3 (id=1298245)  : Dummy (3)
@@ -253319,52 +253342,4 @@ Effects          :
 Description      : Your spells and abilities have a chance to draw in a mana wyrm that will empower you and an ally with $@spellname1229746, increasing your $pri by ${$s1*$s2/100} and your ally's Primary Stat by ${$s1*$s3/100}.
 
 Name             : Voidtinged (id=1284260) 
-School           : Shadow
-Spell Type       : Magic
-Duration         : 13 seconds
-Cooldown         : 300 seconds
-Category         : 4 (Type 0x0)
-Labels           : 4875
-                 : 4880
-Category Cooldown: 300 seconds
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
-Effects          :
-#1 (id=1299144)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 97.19303 (coefficient=0.741476) | Target: Self (1)
-#2 (id=1299145)  : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6
-Description      : Opens your mind to the touch of the Void. This effect enhances your appearance for $d but has no bearing on your combat abilities.
-Tooltip          : Communing with the Void.
-
-Name             : Pointed Spikesnail (id=1284999) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67)
-Effects          :
-#1 (id=1300693)  : Enchant Item Temporary (54)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8675
-Description      : When applied to your fishing pole, increases Midnight Fishing by $450401s1 for 10 min.
-
-Name             : Vampiric Reaping (id=1285825) [Hidden] 
-School           : Nature
-Spell Type       : None
-Range            : 50000 yards
-Duration         : 15 seconds
-Labels           : 3957: Spatial Paradox (406732 effect#5)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Suppress Target Procs (113), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1302165)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Targeted Ally (21)
-                   Affected School(s): All
-Description      : $@spelldesc421373
-Tooltip          : Heals $w2 every $t2 sec.
-
-Name             : Seed of Radiant Hope (id=1285918) [Passive] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1302330)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 25044.73 (coefficient=195.9629) | PvP Coefficient: 0.5 | Target: Self (1)
-
+School           : Shad

@@ -1843,38 +1843,29 @@ std::string base64_to_url( std::string_view s )
   return str;
 }
 
-// for mini render
-int raidbots_talent_render_width( specialization_e spec, int height, bool mini = false )
+short class_columns( specialization_e spec, bool ptr )
 {
-  double mult = 1.4;
+  auto class_data = trait_data_t::data( util::class_id( dbc::get_class_from_spec( spec ) ), talent_tree::CLASS, ptr );
+  short class_max_col = 0;
 
-  switch ( spec )
-  {
-    // narrower trees
+  for ( const auto& trait : class_data )
+    if ( ( trait.id_spec[ 0 ] == 0 || range::contains( trait.id_spec, spec ) ) && trait.col > class_max_col )
+      class_max_col = trait.col;
 
-    // wider trees
-    case DRUID_RESTORATION: mult = 1.6; break;
-    default: break;
-  }
-
-  return static_cast<int>( height * mult );
+  return class_max_col;
 }
 
-// for main render
-int raidbots_talent_render_height( specialization_e spec, int width )
+short spec_columns( specialization_e spec, bool ptr )
 {
-  double mult = 0.65;
+  auto spec_data =
+    trait_data_t::data( util::class_id( dbc::get_class_from_spec( spec ) ), talent_tree::SPECIALIZATION, ptr );
+  short spec_max_col = 0;
 
-  switch ( spec )
-  {
-    // narrower trees
+  for ( const auto& trait : spec_data )
+    if ( ( trait.id_spec[ 0 ] == 0 || range::contains( trait.id_spec, spec ) ) && trait.col > spec_max_col )
+      spec_max_col = trait.col;
 
-    // wider trees
-    case DRUID_RESTORATION: mult = 0.6; break;
-    default: break;
-  }
-
-  return static_cast<int>( width * mult );
+  return spec_max_col;
 }
 
 std::string raidbots_domain( [[maybe_unused]] bool ptr )
@@ -1893,25 +1884,55 @@ std::string raidbots_talent_render_src( std::string_view talent_str, unsigned le
 }
 
 template <typename T>
-void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std::string_view title, size_t points, const T& traits )
+void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std::string_view title, size_t points,
+                              const T& traits, short max_col, bool hero_tree = false )
 {
-  os.format( "<table class=\"sc\"><tr><th></th><th>{} Talents [{}]</th></tr>\n", title, points );
+  os.format( "<table class=\"sc talents\"><tr><th></th><th colspan=\"{}\">{} Talents [{}]</th></tr>\n", max_col, title,
+             points );
+
+  unsigned offset = hero_tree && max_col % 2 == 1 ? ( max_col - 1 ) / 2 : 0;
 
   for ( unsigned row = 0; row < traits.size(); row++ )
   {
-    os.format( "<tr><th class=\"right\" style=\"width: 1em\">{}</th><td class=\"left\"><ul class=\"float\">\n", row + 1 );
+    os.format( "<tr><th class=\"right\">{}</th>\n", row + 1 );
 
-    for ( const auto& [ trait, rank ] : traits[ row ] )
+    if ( offset && ( row == 0 || row == traits.size() - 1 ) )
     {
-      bool partial = rank != trait->max_ranks;
-
-      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
-                 partial ? " filler" : "",
-                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ),
-                 rank,
-                 partial ? "<b>*</b>" : "" );
+      const auto& entry = traits[ row ][ offset ];
+      if ( !entry.first )
+        os.format( "<td colspan=\"{}\"></td>\n", max_col );
+      else
+        os.format( "<td colspan=\"{}\">{} [{}]</td>\n", max_col,
+                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                   entry.second );
+      continue;
     }
-    os << "</ul></td></tr>\n";
+
+    for ( short col = 0; col < max_col; col++ )
+    {
+      const auto& trait = traits[ row ][ col ].first;
+      const auto& rank = traits[ row ][ col ].second;
+
+      if ( offset && col == offset )
+      {
+        os << "<td style=\"padding: 0px;width: 0px\"></td>\n";
+      }
+      else if ( !trait )
+      {
+        os << "<td></td>\n";
+      }
+      else if ( rank != trait->max_ranks )
+      {
+        os.format( "<td class=\"filler\">{} [{}]<b>*</b></td>\n",
+                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
+      }
+      else
+      {
+        os.format( "<td>{} [{}]</td>\n",
+                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
+      }
+    }
+    os << "</tr>\n";
   }
   os << "</table>\n";
 }
@@ -1924,6 +1945,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   static constexpr unsigned CLASS_TREE_ROWS = 10;
   static constexpr unsigned SPEC_TREE_ROWS = 11;
   static constexpr unsigned HERO_TREE_ROWS = 5;
+  static constexpr short HERO_TREE_COLUMNS = 5;  // include the middle 'half' column for first & last rows
   using talentrank_t = std::pair<const trait_data_t*, unsigned>;
 
   std::array<std::vector<talentrank_t>, CLASS_TREE_ROWS> class_traits;
@@ -1933,50 +1955,60 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   size_t spec_points = 0;
   std::map<unsigned, size_t> hero_points;
 
+  auto class_col = class_columns( p.specialization(), p.is_ptr() );
+  auto spec_col = spec_columns( p.specialization(), p.is_ptr() );
+
+  range::for_each( class_traits, [ class_col ]( auto& row ) { row.resize( class_col ); } );
+  range::for_each( spec_traits, [ spec_col ]( auto& row ) { row.resize( spec_col ); } );
+
   for ( const auto& [ _tree, _id, _rank ] : p.player_traits )
   {
     auto trait = trait_data_t::find( _id, maybe_ptr( p.dbc->ptr ) );
+    talentrank_t* cell_ptr = nullptr;
+    size_t* points_ptr = nullptr;
 
     switch ( _tree )
     {
       case talent_tree::CLASS:
-        class_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
-          class_points += _rank;
+        assert( class_traits.at( trait->row - 1 ).size() >= trait->col );
+        cell_ptr = &class_traits.at( trait->row - 1 ).at( trait->col - 1 );
+        points_ptr = &class_points;
         break;
 
       case talent_tree::SPECIALIZATION:
-        spec_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
-          spec_points += _rank;
+        assert( spec_traits.at( trait->row - 1 ).size() >= trait->col );
+        cell_ptr = &spec_traits.at( trait->row - 1 ).at( trait->col - 1 );
+        points_ptr = &spec_points;
         break;
 
       case talent_tree::HERO:
+      {
+        auto id = trait->id_sub_tree;
+        if ( p.player_sub_trees.count( id ) || range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
         {
-          auto id = trait->id_sub_tree;
-          if ( p.player_sub_trees.count( id ) || range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
-          {
-            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
-            if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
-              hero_points[ id ] += _rank;
-          }
+          if ( !hero_traits.count( id ) )
+            range::for_each( hero_traits[ id ], []( auto& row ) { row.resize( HERO_TREE_COLUMNS ); } );
+
+          assert( hero_traits[ id ].at( trait->row - 1 ).size() >= trait->col );
+          cell_ptr = &hero_traits[ id ].at( trait->row - 1 ).at( trait->col - 1 );
+          points_ptr = &hero_points[ id ];
+          break;
         }
-        break;
+        continue;
+      }
 
       default:
         continue;
     }
+
+    assert( cell_ptr && points_ptr );
+
+    cell_ptr->first = trait;
+    cell_ptr->second = _rank;
+
+    if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
+      *points_ptr += _rank;
   }
-
-  for ( auto &row : class_traits )
-    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
-
-  for ( auto &row : spec_traits )
-    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
-
-  for ( auto& [ id, traits ] : hero_traits )
-    for ( auto &row : traits )
-      range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
 
   os << "<div class=\"player-section talents\">\n"
      << "<h3 class=\"toggle\">Talents</h3>\n"
@@ -1985,7 +2017,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   auto num_players = p.sim->players_by_name.size();
   if ( num_players == 1 )
   {
-    auto h_ = raidbots_talent_render_height( p.specialization(), 1165 );
+    auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
+    auto h_ = static_cast<int>( 1165 - max_col * 29.125 );
     os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
                raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
@@ -1995,18 +2028,29 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   }
 
   if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
-    print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
+  {
+    print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits,
+                             class_columns( p.specialization(), p.is_ptr() ) );
+  }
 
   if ( range::accumulate( spec_traits, 0, &std::vector<talentrank_t>::size ) )
-    print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
+  {
+    print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits,
+                             spec_columns( p.specialization(), p.is_ptr() ) );
+  }
 
   if ( !hero_traits.empty() )
   {
     os << "<div class=\"flexwrap\">\n";
 
     for ( const auto& [ id, traits ] : hero_traits )
+    {
       if ( range::accumulate( traits, 0, &std::vector<talentrank_t>::size ) )
-        print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
+      {
+        print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits,
+                                 HERO_TREE_COLUMNS, true );
+      }
+    }
 
     os << "</div>\n";
   }
@@ -3756,9 +3800,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
+    auto w_ = static_cast<int>( max_col * 12.5 - 25 );
     os.format(
-      R"(<iframe src="{}" width="{}" height="131" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
+      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
 
     os << "\n";

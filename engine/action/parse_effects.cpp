@@ -78,6 +78,11 @@ std::string pet_type( uint32_t opt )
   return opt ? "Guardian" : "Pet";
 }
 
+std::string cooldown_type( uint32_t opt )
+{
+  return opt ? "Category" : "";
+}
+
 std::string parse_cb_str( parse_callback_e type )
 {
   switch ( type )
@@ -1629,6 +1634,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   }
   else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
   {
+    tmp.opt_enum = 1;
     str = "cooldown";
     return &recharge_multiplier_effects;
   }
@@ -1893,7 +1899,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os ) cons
     print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
     print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::tick_time_effects, "Percent Tick Time" );
-    print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
+    print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier", &opt_strings::cooldown_type );
     print_parsed_type( os, &VEC::recharge_rate_effects, "Recharge Rate" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", nullptr, flat_fn );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );

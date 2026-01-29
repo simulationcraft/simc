@@ -1926,7 +1926,9 @@ void raid_event_t::combat_begin()
       if ( !target )
         sim->error( "Unknown pull target '{}'", pull_target_str );
 
-      target->register_resource_callback( RESOURCE_HEALTH, last_pct, [ this ]() { deactivate( "last_pct reached" ); }, true );
+      target->register_resource_callback( RESOURCE_HEALTH, last_pct, [ this ]( bool ) {
+        deactivate( "last_pct reached" );
+      }, true );
     }
     else if ( sim->current_iteration == 0 || sim->fixed_time )
     {
@@ -1949,7 +1951,9 @@ void raid_event_t::combat_begin()
       if ( !target )
         sim->error( "Unknown pull target '{}'", pull_target_str );
 
-      target->register_resource_callback( RESOURCE_HEALTH, first_pct, [ this ]() { activate( "first_pct reached" ); }, true );
+      target->register_resource_callback( RESOURCE_HEALTH, first_pct, [ this ]( bool ) {
+        activate( "first_pct reached" );
+      }, true );
     }
     else if ( sim->current_iteration == 0 || sim->fixed_time )
     {
@@ -2107,15 +2111,17 @@ void raid_event_t::parse_options( util::string_view options_str )
     if ( last_pct != -1 && !sim->fixed_time )
     {
       assert( sim->target );
-      sim->target->register_resource_callback(
-          RESOURCE_HEALTH, last_pct, [ this ]() { deactivate( "last_pct reached" ); }, true );
+      sim->target->register_resource_callback( RESOURCE_HEALTH, last_pct, [ this ]( bool ) {
+        deactivate( "last_pct reached" );
+      }, true );
     }
 
     if ( first_pct != -1 && !sim->fixed_time )
     {
       assert( sim->target );
-      sim->target->register_resource_callback(
-          RESOURCE_HEALTH, first_pct, [ this ]() { activate( "first_pct reached" ); }, true );
+      sim->target->register_resource_callback( RESOURCE_HEALTH, first_pct, [ this ]( bool ) {
+        activate( "first_pct reached" );
+      }, true );
     }
   }
   else

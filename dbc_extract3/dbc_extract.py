@@ -25,7 +25,7 @@ def parse_version(value):
     except ValueError as e:
         # User may have given just a build number, try a workaround and warn
         if value.isdigit():
-            logging.warn('Presuming -b input "{}" as a build number for World of Warcraft 8.0.1, this will become an error in 8.1.0'.format(
+            logging.warning('Presuming -b input "{}" as a build number for World of Warcraft 8.0.1, this will become an error in 8.1.0'.format(
                 value))
             return dbc.WowVersion('8.0.1.{}'.format(value))
         raise argparse.ArgumentTypeError(e)

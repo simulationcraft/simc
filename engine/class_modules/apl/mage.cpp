@@ -124,24 +124,20 @@ void fire( player_t* p )
   action_priority_list_t* sf_combustion = p->get_action_priority_list( "sf_combustion" );
   action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" );
 
-
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
   precombat->add_action( "variable,name=pooling_time,value=10*gcd.max" );
-  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=talent.frostfire_bolt,value=4" );
-  precombat->add_action( "variable,name=ff_filler_flamestrike,if=talent.frostfire_bolt,value=4" );
-  precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=4" );
-  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4" );
+  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=2" );
+  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=2" );
+  precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=2" );
+  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=2" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "frostfire_bolt,if=talent.frostfire_bolt" );
   precombat->add_action( "pyroblast" );
 
-
   default_->add_action( "call_action_list,name=cds" );
-  precombat->add_action( "pyroblast"  );
-  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready)"  );
-  precombat->add_action( "pyroblast"  );
+  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready)" );
   default_->add_action( "run_action_list,name=sf_combustion,if=cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready" );
   default_->add_action( "run_action_list,name=ff_filler,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=sf_filler" );

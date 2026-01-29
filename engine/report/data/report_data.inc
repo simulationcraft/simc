@@ -1877,9 +1877,10 @@ static const char* __html_stylesheet[] = {
 "n tr:hover:not(.petrow),table.stripebody tbody:not(.petrow) tr:hover,table.stripetoprow .toprow:hover,table.stripeto",
 "prow .toprow:hover + .childrow:not(.toprow),table.stripetoprow .childrow:hover { background-color: #444 !important;}",
 "table.sort tbody td { transition: background-color 300ms ease-in;}table.sort tr.details td table.details { width: 90",
-"0px;}table.sort tr.details td table.details tr th:first-of-type { width: 90px;}.player-thumbnail { float: right; pos",
-"ition: absolute; right: 8px; top: 8px; -moz-border-radius: 12px; -khtml-border-radius: 12px; -webkit-border-radius: ",
-"12px; border-radius: 12px;}",
+"0px;}table.sort tr.details td table.details tr th:first-of-type { width: 90px;}table.talents th.right { width: 1em; ",
+"vertical-align: middle;}table.talents td { height: 40px; width: 80px; font-size: 11px;}.player-thumbnail { float: ri",
+"ght; position: absolute; right: 8px; top: 8px; -moz-border-radius: 12px; -khtml-border-radius: 12px; -webkit-border-",
+"radius: 12px; border-radius: 12px;}",
 };
 
 // Automatically generated from file highcharts.js

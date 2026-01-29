@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65448
+Class Spell ID List, wow build 12.0.1.65617
 
 Death Knight
 3714     Path of Frost
@@ -1462,7 +1462,6 @@ Death Knight
 459238   Festering Scythe
 459269  *Carnage
 459283  *Carnage
-459733   Summon Fenryr
 459739   Summon Hati
 460049   Infliction of Sorrow
 460448  *Unholy Blight
@@ -5377,6 +5376,8 @@ Druid
 1283648  Druid - Midnight PrePatch - 11.2 Class Set 4pc
 1283649  Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283650  Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1286243  Starfall
+1286247  Starfall
 
 Evoker
 351338   Quell
@@ -6230,6 +6231,7 @@ Evoker
 1283652  Evoker - Midnight PrePatch - 11.2 Class Set 4pc
 1283653  Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283654  Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1286123  Devastation Evoker
 
 Hunter
 75       Auto Shot
@@ -7703,7 +7705,7 @@ Hunter
 272651   Command Pet
 272676  *Override Command Pet
 272678   Primal Rage
-272679  *Fortitude of the Bear
+272679   Fortitude of the Bear
 272682   Master's Call
 272717   Serrated Jaws
 272726   Serrated Jaws
@@ -8342,6 +8344,7 @@ Hunter
 459726   Mastery: Spirit Bond
 459730   Huntmaster's Call
 459731   Huntmaster's Call
+459733   Summon Fenryr
 459735   Summon Fenryr
 459738   Summon Hati
 459741  *Contagious Reagents
@@ -8655,7 +8658,7 @@ Hunter
 1257011  Vulnerability
 1257703  Precise Shots
 1258338  Stampede!
-1258344 *Stampede
+1258344  Stampede
 1258345 *Stampede
 1258402  Touch of Grass
 1258404  Catlike Reflexes
@@ -8775,9 +8778,9 @@ Hunter
 1283816 *Dire Beast
 1283817 *Dire Beast
 1283818 *Dire Beast
-1283872  Fortitude of the Bear
 1284992 *Pet Damage
 1285912  Bestial Wrath
+1286400  Heart of the Pack
 
 Mage
 66       Invisibility
@@ -11112,6 +11115,7 @@ Mage
 1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
 1284108 *Conjure Refreshment Table
 1285457 *Frost Mage
+1286314 *Arcane Phoenix - Dissolve Delay and Transport
 
 Monk
 8647     Mystic Touch
@@ -15131,7 +15135,7 @@ Paladin
 1277162  Instrument of the Divine
 1277443  Armory of Light
 1277651  Rising Sunlight
-1279187  Crusader Strike
+1279187 *Crusader Strike
 1279302 *Beacon of Light
 1279303 *Beacon of Fath
 1279408  Hammer of Wrath
@@ -18923,13 +18927,13 @@ Shaman
 51505    Lava Burst
 51514    Hex
 51533    Feral Spirit
-51564   *Tidal Waves
+51564    Tidal Waves
 51847   *The Brewmaiden's Blessing
 51886    Cleanse Spirit
 52042    Healing Stream Totem
 52127    Water Shield
 52128    Water Shield
-53390   *Tidal Waves
+53390    Tidal Waves
 54843    Lightning Bolt
 55613   *Flame Shock
 56188    Emerald Boar
@@ -20599,8 +20603,8 @@ Shaman
 1215712  Shaman Enhancement 11.1 Class Set 4pc
 1217092 *Storm Conduit
 1217525 *Mana Tide
-1217598  Whispering Waves
-1217600  Whispering Waves
+1217598 *Whispering Waves
+1217600 *Whispering Waves
 1217622  Therazane's Resilience
 1218047  Primordial Storm
 1218090  Primordial Storm
@@ -20631,7 +20635,7 @@ Shaman
 1223332  Electrostatic Wager
 1223391 *Healing Wave
 1223410  Electrostatic Wager
-1223524  Whispering Waves
+1223524 *Whispering Waves
 1223529 *Storm Conduit
 1223916 *Lightning Strikes
 1223917 *Stormstrike

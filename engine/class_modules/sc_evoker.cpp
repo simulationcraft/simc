@@ -7267,6 +7267,7 @@ public:
     background                        = true;
     aoe                               = -1;
     split_aoe_damage                  = true;
+
   }
 
   void init() override
@@ -7343,11 +7344,19 @@ public:
     if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
-
-      timespan_t cdr = -timespan_t::from_seconds(
-          std::min( p( s )->talent.scalecommander.wingleader->effectN( 1 ).base_value() * s->n_targets,
-                    p( s )->talent.scalecommander.wingleader->effectN( 2 ).base_value() ) );
-
+      timespan_t cdr;
+      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
+      {
+        cdr = -timespan_t::from_seconds(
+            std::min( p( s )->talent.scalecommander.wingleader->effectN( 1 ).base_value() * s->n_targets,
+                      p( s )->talent.scalecommander.wingleader->effectN( 2 ).base_value() ) );
+      }
+      else
+      {
+        size_t idx = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
+        cdr        = -std::min( p( s )->talent.scalecommander.wingleader->effectN( idx ).time_value() * s->n_targets,
+                                p( s )->talent.scalecommander.wingleader->effectN( idx + 1 ).time_value() );
+      }
       cd->adjust( cdr );
     }
   }

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65535 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -31,6 +31,7 @@ Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Dama
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -51,7 +52,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#5), Shadow Dance (185313 effect#2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2), Crescendo of Violence (1259499 effects: #1, #2), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=152)      : Apply Aura (6) | Stun (12)
@@ -158,6 +159,7 @@ Description      : Attack with both weapons, dealing a total of $<dmg> Physical 
 Variables        : $dmg=${$5374s2+$27576s2*0.5}
 
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -170,7 +172,7 @@ Labels           : 16: Class Spells
 Mechanic         : Silence
 Affecting Spells : Iron Wire (196861 effect#1)
 Family Flags     : 61
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=450)      : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Silence | Target: Targeted Enemy (6)
@@ -246,7 +248,8 @@ Effects          :
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Hotfixed         : Attributes
+Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -269,7 +272,7 @@ Mechanic         : Incapacitate
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=538)      : Apply Aura (6) | Stun (12)
@@ -338,6 +341,7 @@ Effects          :
 Description      : Allows opening of locked chests and doors that require a skill level of up to $PL.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -358,7 +362,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Stun
 Affecting Spells : Shadow Blades (121471 effect#2), Shadow Dance (185313 effect#6), Broadside (193356 effect#2), Shot in the Dark (257506 effect#1), Sepsis (347037 effect#1), Heavy Hitter (381885 effects: #1, #2), Danse Macabre (393969 effects: #1, #2)
 Family Flags     : 10
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=564)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -492,7 +496,8 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2
 ][.]
 
 Name             : Blind (id=2094) [Spell Family (8)] 
-Talent Entry     : Generic [free=(Outlaw), tree=class, row=1, col=2, max_rank=1, req_points=0]
+Hotfixed         : Attributes
+Talent Entry     : Generic [free=(Outlaw), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Ranged
@@ -511,7 +516,7 @@ Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=616)      : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -570,7 +575,7 @@ Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
 Name             : Deadly Poison (id=2823) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -787,7 +792,7 @@ Description      : $@spelldesc5761
 Tooltip          : Attack and casting speed slowed by $s1%.
 
 Name             : Numbing Poison (id=5761) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -812,7 +817,7 @@ Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
-Talent Entry     : Generic [free=(Assassination), tree=class, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Assassination), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -865,6 +870,7 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Sap (id=6770) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -885,7 +891,7 @@ Mechanic         : Sap
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Shadow Dance (185313 effect#6), Sepsis (347037 effect#1), Don't Be Suspicious (441415 effect#2)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=2442)     : Apply Aura (6) | Stun (12)
@@ -1039,7 +1045,7 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
-Talent Entry     : Outlaw [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -1126,7 +1132,7 @@ Description      : Strikes up to $?a272026[$331850i][${$331850i-3}] nearby targe
 Tooltip          : Attacks striking nearby enemies.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1158,7 +1164,7 @@ Effects          :
 Description      : $@spelldesc14190
 
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1191,7 +1197,7 @@ Effects          :
 Tooltip          : Target takes $s1 nature damage every $t1 seconds.
 
 Name             : Vigor (id=14983) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(50, 100)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Rogue
@@ -1623,7 +1629,7 @@ Effects          :
 Description      : Attacks made while stealthed and for $s1 seconds after breaking stealth cause an additional $31665s1% damage.
 
 Name             : Cloak of Shadows (id=31224) [Spell Family (8)] 
-Talent Entry     : Generic [free=(Subtlety), tree=class, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Subtlety), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1650,7 +1656,7 @@ Description      : Provides a moment of magic immunity, instantly removing all h
 Tooltip          : Resisting all harmful spells.$?a457034[ Physical damage taken reduced by $w3%.][]
 
 Name             : Cheat Death (id=31230) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1781,7 +1787,7 @@ Effects          :
 Description      : $@spelldesc35551
 
 Name             : Fatal Flourish (id=35551) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1941,7 +1947,7 @@ Effects          :
 Description      : $?a137037[Envenom]?a137036[Dispatch][Eviscerate] grants $s1 sec of Slice and Dice per combo point spent.
 
 Name             : Killing Spree (id=51690) [Spell Family (8)] 
-Talent Entry     : Outlaw [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -2006,7 +2012,7 @@ Description      : Sprays knives at all enemies within $A1 yards, dealing $s1 Ph
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mechagnome (0x4000)
 School           : Arcane
@@ -2095,7 +2101,7 @@ Effects          :
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2125,7 +2131,7 @@ Description      : $?s221622[Increases the target's damage by $221622m1%, and re
 Tooltip          : Threat redirected from Rogue.
 
 Name             : Relentless Strikes (id=58423) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2360,7 +2366,7 @@ Effects          :
 Description      : Removes all stun effects. $?s195710[This effect shares a 90 sec cooldown with other similar effects.][]
 
 Name             : Combat Potency (id=61329) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2593,7 +2599,7 @@ Effects          :
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
 Name             : Elusiveness (id=79008) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2636,7 +2642,7 @@ Affected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Gr
 Variables        : $cdr=${$s1/10}.1
 
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2755,7 +2761,7 @@ Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
 Name             : Find Weakness (id=91023) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2874,7 +2880,7 @@ Description      : Strikes the target with lightning speed, incapacitating them 
 Tooltip          : Incapacitated.
 
 Name             : Subterfuge (id=108208) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(115191, 115191)]
                  : Effect#2 [op=set, values=(3000, 6000)]
                  : Effect#3 [op=set, values=(-100, -100)]
@@ -2905,7 +2911,7 @@ Description      : Abilities requiring Stealth can be used for $?a137035[${$s4/1
 Combat benefits requiring Stealth persist for an additional $?a137035[${$s4/1000}][${$s2/1000}] sec after Stealth breaks.
 
 Name             : Shadow Focus (id=108209) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3237,7 +3243,7 @@ Description      : Makes you look like someone else.
 Tooltip          : Copying another's appearance.
 
 Name             : Shadow Blades (id=121471) [Spell Family (8)] 
-Talent Entry     : Subtlety [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3261,16 +3267,13 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mutilate (1329), Gouge (1776), Cheap Shot (1833), Ambush (8676), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Gloomblade (200758), Flagellation (323654), Sinister Strike (341541), Shadowstrike (345121), Flagellation (384631), Ambush (385897), Ambush (430023), Gloomblade (1269214), Shadowstrike (1269336), Shuriken Toss (1269343)
                    Family Flags: 3, 9, 10, 19, 53, 75, 98, 101, 104, 109, 124
-Hotfixed         : Base Value (2 -> 100)
 #3 (id=150620)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Shiv (5938), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Backstab (1269209)
                    Family Flags: 2, 8, 29, 82
-Hotfixed         : Base Value (2 -> 100)
 #4 (id=902463)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 2942 (Label) | Target: Self (1)
                    Affected Spells (Label): Goremaw's Bite (426593)
-Hotfixed         : Base Value (2 -> 100)
 #5 (id=1291976)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Eviscerate (1269205), Secret Technique (1269560), Black Powder (1269565)
@@ -3883,7 +3886,7 @@ Effects          :
 Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking.
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4268,7 +4271,7 @@ Tooltip          : Finishing moves reduce the remaining cooldown of many of your
 Variables        : $cdr=${$s1/10}.1
 
 Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4338,7 +4341,7 @@ Effects          :
 Description      : $?s200758[Gloomblade][Backstab] and Shadowstrike have a $s1% chance to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.
 
 Name             : Alacrity (id=193539) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Rogue
 School           : Physical
@@ -4543,7 +4546,7 @@ Description      : Your auto attacks have a $s2% chance to generate $196911s2 En
 Attacks that generate combo points can expend those stored to generate additional combo points, up to your maximum.
 
 Name             : Hit and Run (id=196922) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Outlaw [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4559,7 +4562,7 @@ Effects          :
 Description      : Movement speed increased by $s1%.
 
 Name             : Quick Draw (id=196938) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4575,7 +4578,7 @@ Effects          :
 Description      : Opportunity increases the damage of Pistol Shot by an additional $s1%. Each charge of Opportunity consumed by Pistol Shot generates $1254567s1 combo $Lpoint:points;.
 
 Name             : Master of Shadows (id=196976) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4840,7 +4843,7 @@ Description      : You can sense nearby treasure, making it appear on the minima
 Tooltip          : Finding treasure.
 
 Name             : Airborne Irritant (id=200733) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4877,7 +4880,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Gloomblade (id=200758) [Spell Family (8)] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=2, max_rank=1, req_points=8, replace="Backstab" (id=53)]
+Talent Entry     : Subtlety [tree=spec, row=5, col=3, max_rank=1, req_points=8, replace="Backstab" (id=53)]
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -5522,7 +5525,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Improved Sprint (id=231691) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5553,7 +5556,7 @@ Effects          :
 Description      : Shadowstrike deals $245623s2% increased damage and will now teleport you to a target up to ${$245623s1+5} yards away when used while Stealth is active.
 
 Name             : Deadened Nerves (id=231719) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5596,7 +5599,7 @@ Description      : $@spelldesc235022
 Tooltip          : Critical Strike chance increased by $s1%.
 
 Name             : Improved Between the Eyes (id=235484) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5697,7 +5700,7 @@ Description      : $@spelldesc231718
 Tooltip          : Shadowstrike deals $s2% increased damage and has $s1 yds increased range.
 
 Name             : Dark Shadow (id=245687) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=9, col=2, max_rank=2, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Rogue
@@ -6226,7 +6229,7 @@ Description      : $@spelldesc196861
 Tooltip          : Damage done reduced by $s1%.
 
 Name             : Blinding Powder (id=256165) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Outlaw [tree=spec, row=2, col=6, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6246,7 +6249,7 @@ Effects          :
 Description      : Reduces the cooldown of Blind by $s1% and increases its range by $s2 yds.
 
 Name             : Loaded Dice (id=256170) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6283,7 +6286,7 @@ Description      : $@spelldesc256170
 Tooltip          : The result of your next Roll the Bones will be improved by one level.
 
 Name             : Retractable Hook (id=256188) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Outlaw [tree=spec, row=2, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6396,7 +6399,7 @@ Effects          :
 Description      : Rip a hole in space and time, transporting you to the targeted location.
 
 Name             : Shot in the Dark (id=257505) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Subtlety [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6630,7 +6633,7 @@ Effects          :
 Description      : $@spelldesc269308
 
 Name             : Blade Rush (id=271877) [Spell Family (8)] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -6712,7 +6715,7 @@ Description      : $@spelldesc271877
 Tooltip          : Generates $s1 Energy every sec.
 
 Name             : Dancing Steel (id=272026) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=7, col=9, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7111,7 +7114,7 @@ Description      : $@spelldesc1264764
 Tooltip          : Releasing a Shuriken Storm after ${$d}.1 sec.
 
 Name             : Night Terrors (id=277953) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Subtlety [tree=spec, row=4, col=7, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7353,7 +7356,7 @@ Description      : $@spelldesc275896
 Tooltip          : Shadowstrike damage increased by $w1.
 
 Name             : Opportunity (id=279876) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7407,7 +7410,7 @@ Description      : $@spelldesc280020
 Tooltip          : Heal for $w1.
 
 Name             : Leeching Poison (id=280716) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -8768,7 +8771,7 @@ Description      : $@spelldesc195457
 Tooltip          : Stunned.
 
 Name             : Improved Backstab (id=319949) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -8790,7 +8793,7 @@ Description      : $?s200758[Gloomblade][Backstab] has $s2% increased critical s
 While behind your target, Backstab critical strikes grant Find Weakness for $s1 sec.
 
 Name             : Improved Shuriken Storm (id=319951) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -9122,7 +9125,7 @@ Effects          :
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -10046,7 +10049,7 @@ Description      : $@spelldesc341549
 Tooltip          : Shadow damage dealt increased by ${$w1}.1%.
 
 Name             : Premeditation (id=343160) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -10297,6 +10300,7 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -10305,8 +10309,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 101%
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=884754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10704,7 +10708,7 @@ Effects          :
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -11234,7 +11238,7 @@ Description      : Flap upward, gaining height at the cost of some momentum.
 |cFFFFFFFFMax 1 Charge|r
 
 Name             : Nimble Fingers (id=378427) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11250,7 +11254,7 @@ Effects          :
 Description      : Energy cost of Feint and Crimson Vial reduced by $s1.
 
 Name             : Master Poisoner (id=378436) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11272,7 +11276,7 @@ Effects          :
 Description      : Increases the non-damaging effects of your weapon poisons by $s1%.
 
 Name             : Shadowrunner (id=378807) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11291,7 +11295,7 @@ Effects          :
 Description      : While Stealth or Shadow Dance is active, you move $s1% faster.
 
 Name             : Fleet Footed (id=378813) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11307,7 +11311,7 @@ Effects          :
 Description      : Movement speed increased by $s1%.
 
 Name             : Recuperator (id=378996) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11322,7 +11326,7 @@ Effects          :
 Description      : Slice and Dice heals you for up to $s1% of your maximum health per $426605t sec.
 
 Name             : Blackjack (id=379005) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11381,7 +11385,7 @@ $@spellicon376744 $@spellname376744
 $@spelldesc376744
 
 Name             : Deadly Precision (id=381542) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11420,7 +11424,7 @@ Effects          :
 Description      : Increases the damage of your weapon poisons by $s1%.
 
 Name             : Thief's Versatility (id=381619) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Outlaw [tree=spec, row=6, col=8, max_rank=1, req_points=8, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11434,7 +11438,7 @@ Effects          :
 Description      : Versatility increased by $s1%.
 
 Name             : Improved Ambush (id=381620) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11454,7 +11458,7 @@ Effects          :
 Description      : $?s185438[Shadowstrike damage increased by $s2%][Ambush generates $s1 additional combo point].
 
 Name             : Tight Spender (id=381621) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=7, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11492,7 +11496,7 @@ Description      : Restore $s1 Energy.
 When your Energy is reduced below $469779s2, drink a Thistle Tea.
 
 Name             : Improved Poisons (id=381624) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11509,7 +11513,7 @@ Effects          :
 Description      : Increases the application chance of your weapon poisons by $s1%.
 
 Name             : Bloody Mess (id=381626) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11525,7 +11529,7 @@ Effects          :
 Description      : Garrote and Rupture damage increased by $s1%.
 
 Name             : Internal Bleeding (id=381627) [Passive] 
-Talent Entry     : Assassination [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Assassination [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11620,7 +11624,7 @@ Effects          :
 Description      : Fan of Knives has its radius increased to $?a196924[${$196924s1+$s4}][$s4] yds, deals $s5% more damage, and an additional $s1% when striking $s2 or more targets.
 
 Name             : Improved Garrote (id=381632) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11653,7 +11657,7 @@ Effects          :
 Description      : Ambush and Mutilate cost $s2 more Energy and deal $s1% additional damage as Nature.
 
 Name             : Atrophic Poison (id=381637) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11692,7 +11696,7 @@ Effects          :
 Description      : Your weapon poisons and Nature or Bleed damage over time abilities deal $s1% increased damage to targets for each of your lethal poison or damage over time effects on them.
 
 Name             : Systemic Failure (id=381652) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11706,7 +11710,7 @@ Effects          :
 Description      : Garrote increases the damage of Ambush and Mutilate on the target by $s1%.
 
 Name             : Amplifying Poison (id=381664) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11754,7 +11758,7 @@ Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
 
 Name             : Doomblade (id=381673) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11770,7 +11774,7 @@ Effects          :
 Description      : Mutilate deals an additional $s1% Bleed damage over ${$381672d+2} sec.
 
 Name             : Dashing Scoundrel (id=381797) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11789,7 +11793,7 @@ Effects          :
 Description      : Envenom's effect also increases the critical strike chance of your weapon poisons by $s1%, and their critical strikes generate $s2 Energy.
 
 Name             : Zoldyck Recipe (id=381798) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Rogue
 School           : Physical
@@ -11806,7 +11810,7 @@ Effects          :
 Description      : Your Bleed, weapon poison, and other Nature damage is increased by $s1% against targets below $s2% health.
 
 Name             : Scent of Blood (id=381799) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Rogue
 School           : Physical
@@ -11823,7 +11827,7 @@ Effects          :
 Description      : Each enemy afflicted by your Rupture increases your Agility by $S1%, up to a maximum of $394080u%.
 
 Name             : Dragon-Tempered Blades (id=381801) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11856,7 +11860,7 @@ Effects          :
 Description      : Garrote and Rupture apply to ${$m1-1} additional nearby $Lenemy:enemies; when used from Stealth and for $385747d after breaking Stealth.
 
 Name             : Ace Up Your Sleeve (id=381828) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=7, col=7, max_rank=2, req_points=8]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Rogue
 School           : Physical
@@ -11876,7 +11880,7 @@ Effects          :
 Description      : Between the Eyes has a $s1% chance per combo point spent to grant $s2 combo points and reset its own cooldown.
 
 Name             : Sleight of Hand (id=381839) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11906,7 +11910,7 @@ Description      : Using Pistol Shot with Opportunity has a $279876s1% chance to
 Chance to trigger this effect matches the chance for Sinister Strike to grant Opportunity.
 
 Name             : Fan the Hammer (id=381846) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=9, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Rogue
 School           : Physical
@@ -11932,7 +11936,7 @@ Description      : When you gain Opportunity, gain $m1 additional $Lcharge:charg
 Pistol Shot consumes $m1 additional $Lcharge:charges; of Opportunity to fire $m1 additional $Lbullet:bullets;. Additional shots deal $s3% reduced damage.
 
 Name             : Combat Stamina (id=381877) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Outlaw [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11950,7 +11954,7 @@ Variables        : $pvp=$?a134735[${$s2}][${1}]
 $stam=${$s1*$<pvp>}
 
 Name             : Deft Maneuvers (id=381878) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11971,7 +11975,7 @@ Effects          :
 Description      : Blade Flurry's initial damage is increased by $s1% and generates $m2 $Lcombo point:combo points; per target struck, but its Energy cost is increased by $s3.
 
 Name             : Heavy Hitter (id=381885) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=7, col=2, max_rank=2, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -12001,7 +12005,7 @@ Effects          :
 Description      : Attacks that generate combo points deal $s1% increased damage.
 
 Name             : Swift Slasher (id=381988) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12019,7 +12023,7 @@ Effects          :
 Description      : Slice and Dice grants additional attack speed equal to $s2% of your Haste.
 
 Name             : Keep It Rolling (id=381989) [Spell Family (8)] 
-Talent Entry     : Outlaw [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12036,7 +12040,7 @@ Effects          :
 Description      : Increase the remaining duration of your active Roll the Bones combat enhancement by ${$s1/1000} sec.
 
 Name             : Summarily Dispatched (id=381990) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -12063,7 +12067,7 @@ Effects          :
 Description      : Dispatch deals $s1% increased damage and costs $s3 less Energy. This damage bonus is increased by $315341s4% while your damage is enhanced by your Between the Eyes.
 
 Name             : The Rotten (id=382015) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12079,7 +12083,7 @@ Effects          :
 Description      : After activating Shadow Dance, your next $@switch<$s1>[attack][$s1 attacks] that $@switch<$s1>[generates][generate] combo points $@switch<$s1>[deals][deal] $394203s3% increased damage.
 
 Name             : Veiltouched (id=382017) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12111,7 +12115,7 @@ Effects          :
 Description      : Your abilities deal $s1% increased magic damage.
 
 Name             : Lethality (id=382238) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(10, 20)]
@@ -12135,7 +12139,7 @@ Effects          :
 Description      : Critical strike chance increased by $s1%. Critical strike damage bonus of your attacks that generate combo points increased by $s2%.
 
 Name             : Cold Blooded Killer (id=382245) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12155,7 +12159,7 @@ Effects          :
 Description      : Critically striking with an attack that generates combo points increases the critical strike chance of your next finishing move by $1264297s1%.
 
 Name             : Quick Decisions (id=382503) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Subtlety [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12175,7 +12179,7 @@ Effects          :
 Description      : Shadowstep's cooldown is reduced by $s3%, and its maximum range is increased by $s1%.
 
 Name             : Dark Brew (id=382504) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12217,7 +12221,7 @@ Description      : Your weapon poisons have $s8% increased application chance an
 Shadow damage increased by $s2%.
 
 Name             : The First Dance (id=382505) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12231,7 +12235,7 @@ Effects          :
 Description      : Remaining out of combat for $470677d increases the duration of your next Shadow Dance by ${$470678s1/1000} sec.
 
 Name             : Replicating Shadows (id=382506) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12281,7 +12285,7 @@ Effects          :
 Description      : Shadow Dance increases the critical strike damage bonus of your abilities by $185313s9%.
 
 Name             : Shadowed Finishers (id=382511) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12295,7 +12299,7 @@ Effects          :
 Description      : Eviscerate and Black Powder deal an additional $s1% damage as Shadow while Find Weakness is active.
 
 Name             : Improved Find Weakness (id=382512) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12310,7 +12314,7 @@ Effects          :
 Description      : Find Weakness causes your attacks to ignore an additional $s1% armor.
 
 Name             : Without a Trace (id=382513) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12325,7 +12329,7 @@ Effects          :
 Description      : Vanish has $s1 additional $lcharge:charges;.
 
 Name             : Fade to Nothing (id=382514) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Subtlety [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12339,7 +12343,7 @@ Effects          :
 Description      : Movement speed increased by $386237s1% and damage taken reduced by $386237s2% for $386237d after gaining Stealth, Vanish, or Shadow Dance.
 
 Name             : Cloaked in Shadows (id=382515) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Subtlety [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12353,7 +12357,7 @@ Effects          :
 Description      : Vanish grants you a shield for $386165d, absorbing damage equal to $s1% of your maximum health.
 
 Name             : Deeper Daggers (id=382517) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12388,7 +12392,7 @@ Effects          :
 Description      : Shadow damage increased by $383405s1%.
 
 Name             : Perforated Veins (id=382518) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12405,7 +12409,7 @@ Effects          :
 Description      : $?s200758[Gloomblade][Backstab], Shuriken Storm, and Shadowstrike have $1264521s3% increased damage while Find Weakness is active.
 
 Name             : Lingering Shadow (id=382524) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12424,7 +12428,7 @@ Effects          :
 Description      : After Shadow Dance ends, $?s200758[Gloomblade][Backstab] deals an additional $s1% damage as Shadow, fading by ${$s1/$s3}.1% per sec.
 
 Name             : Finality (id=382525) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Rogue
 School           : Physical
@@ -12443,7 +12447,7 @@ Effects          :
 Description      : Eviscerate and Black Powder have $s1% increased critical strike damage bonus.
 
 Name             : Danse Macabre (id=382528) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12487,7 +12491,7 @@ Effects          :
 Description      : $@spelldesc351239
 
 Name             : Hidden Opportunity (id=383281) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12611,7 +12615,7 @@ Description      : Lash the target for $s1 Shadow damage, causing each combo poi
 Tooltip          : $?$W2>0[$@auracaster is tormenting the target, dealing $394757s1 Shadow damage for each combo point spent.][Combo points spent deal $394757s1 Shadow damage to $@auracaster's tormented target. Mastery increased by ${$W3*$mas}.1%.]
 
 Name             : Shrouded Suffocation (id=385478) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12629,7 +12633,7 @@ Effects          :
 Description      : Garrote damage increased by $s1%. Garrote generates $s2 additional combo points when used from Stealth.
 
 Name             : Kingsbane (id=385627) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Nature
 Spell Type       : Melee
@@ -12667,7 +12671,7 @@ Each time you apply a Lethal Poison to a target affected by Kingsbane, Kingsbane
 Tooltip          : Suffering $w4 Nature damage every $t4 sec.
 
 Name             : Silent Storm (id=385722) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13217,7 +13221,7 @@ Description      : $@spelldesc382528
 Tooltip          : Attacks that generate or spend combo points deal $w1% increased damage.
 
 Name             : Soothing Darkness (id=393970) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13433,7 +13437,7 @@ Description      : $@spelldesc382518
 Tooltip          : At $u stacks, your next attack that generates combo points deals $426602s1% increased damage.
 
 Name             : Secret Stratagem (id=394320) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13466,7 +13470,7 @@ Description      : Gain $s1 additional max combo point.
 Your finishing moves that consume more than $s3 combo points have increased effects, and your finishing moves deal $s4% increased damage.
 
 Name             : Devious Stratagem (id=394321) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13751,7 +13755,7 @@ Effects          :
 Description      : Shadow Dance has $s1 additional charge.
 
 Name             : Thrill Seeking (id=394931) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13818,7 +13822,7 @@ Description      : $@spelldesc393730
 Tooltip          : Eviscerate and Rupture damage increased by $w1%. Black Powder damage increased by $w2%.
 
 Name             : Improved Adrenaline Rush (id=395422) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Outlaw [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13914,7 +13918,7 @@ Description      : $@spelldesc245388
 Tooltip          : $w3% increased Bleed damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
 Name             : Unbreakable Stride (id=400804) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14301,7 +14305,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Caustic Spatter (id=421975) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Assassination [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14488,7 +14492,7 @@ Effects          :
 Description      : Using Eviscerate, Rupture, or Black Powder has a chance to summon a shadow clone to echo your finishing move for $s1% additional Shadow damage.
 
 Name             : Path of Blood (id=423054) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14502,7 +14506,7 @@ Effects          :
 Description      : Increases maximum Energy by $s1.
 
 Name             : Sudden Demise (id=423136) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14788,7 +14792,7 @@ Effects          :
 Description      : Shadow Dance increases attack speed by $185313s8%.
 
 Name             : Ephemeral Bond (id=426563) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Subtlety [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14875,6 +14879,7 @@ Description      : Kidney Shot has $s1% increased cooldown and Energy cost, and 
 
 
 Name             : Kidney Shot (id=426589) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -14888,7 +14893,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#5), Shadow Dance (185313 effect#2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2), Crescendo of Violence (1259499 effects: #1, #2), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=1105204)  : Apply Aura (6) | Stun (12)
@@ -14897,7 +14902,7 @@ Description      : $@spelldesc408
 Tooltip          : Stunned.
 
 Name             : Goremaw's Bite (id=426591) [Spell Family (8)] 
-Talent Entry     : Subtlety [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -14963,7 +14968,7 @@ Description      : $@spelldesc426591
 Tooltip          : Your finishing moves cost no Energy.
 
 Name             : Shadowcraft (id=426594) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15035,6 +15040,7 @@ Effects          :
 Description      : $@spelldesc378996
 
 Name             : Blind (id=427773) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Ranged
@@ -15051,7 +15057,7 @@ Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1107522)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -15060,7 +15066,7 @@ Description      : $@spelldesc2094
 Tooltip          : Disoriented.
 
 Name             : Precision Shot (id=428377) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15081,7 +15087,7 @@ Effects          :
 Description      : Between the Eyes and Pistol Shot have $s1 yd increased range and deal $s1% increased damage.
 
 Name             : Terrifying Pace (id=428387) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Subtlety [tree=spec, row=4, col=7, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15110,7 +15116,7 @@ Description      : $@spelldesc428387
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Exhilarating Execution (id=428486) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Subtlety [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15339,7 +15345,7 @@ Effects          :
 Description      : $@spelldesc441146
 
 Name             : Unseen Blade (id=441146) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15485,7 +15491,7 @@ Effects          :
 Description      : $?a137036[Killing Spree][Secret Technique] has $s1% reduced cooldown and allows your next $s2 strikes of Unseen Blade to ignore its cooldown.
 
 Name             : Flawless Form (id=441321) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15527,7 +15533,7 @@ Description      : $@spelldesc441321
 Tooltip          : Finishing moves deal $s1% increased damage.
 
 Name             : Thousand Cuts (id=441346) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15547,7 +15553,7 @@ Effects          :
 Description      : Slice and Dice grants $s1% additional attack speed and gives your auto-attacks a chance to refresh your opportunity to strike with Unseen Blade.
 
 Name             : Flickerstrike (id=441359) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15567,7 +15573,7 @@ Description      : Taking damage from an area-of-effect attack while Feint is ac
 This effect may only occur once every $proccooldown sec.
 
 Name             : Nimble Flurry (id=441367) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15650,7 +15656,7 @@ Description      : Blind and Shroud of Concealment have $s1% reduced cooldown.
 Pick Pocket and Sap have $s2 yd increased range.
 
 Name             : Coup de Grace (id=441423) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15874,7 +15880,7 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Hand of Fate (id=452536) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16232,7 +16238,7 @@ Effects          :
 Description      : Fatebound Coins flipped by $?a137036[Dispatch][Envenom] are $s1% more likely to match the same face as the last flip.
 
 Name             : Edge Case (id=453457) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16400,7 +16406,7 @@ Effects          :
 Description      : $@spelldesc454419
 
 Name             : Inexorable March (id=454432) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16416,7 +16422,7 @@ Effects          :
 Description      : You cannot be slowed below $s1% of normal movement speed while your Fatebound Coin flips have an active streak of at least $s2 flips matching the same face.
 
 Name             : Death's Arrival (id=454433) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16458,7 +16464,7 @@ Effects          :
 Description      : $?a137037[Weapon poisons have $s1% increased application chance][Sinister Strike has $s2% increased chance to strike an additional time and grant Opportunity] and your Fatebound Coins flipped have an additional $s3% chance to match the same face as the last flip. 
 
 Name             : Rapid Injection (id=455072) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=8, col=3, max_rank=2, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Rogue
 School           : Physical
@@ -16477,7 +16483,7 @@ Effects          :
 Description      : Envenom's effect increases the damage of Envenom by $s1%.
 
 Name             : Acrobatic Strikes (id=455143) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16623,7 +16629,7 @@ Description      : Evasion reduces magical damage taken by ${-$s1}%.
 Cloak of Shadows reduces physical damage taken by ${-$s2}%.
 
 Name             : Deathstalker's Mark (id=457052) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16661,7 +16667,7 @@ Effects          :
 Description      : Auto-attacks against Marked targets deal an additional $457193s1 Plague damage.
 
 Name             : Singular Focus (id=457055) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16679,7 +16685,7 @@ Description      : Damage dealt to targets other than your Marked target deals $
 
 
 Name             : Lingering Darkness (id=457056) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16694,7 +16700,7 @@ Effects          :
 Description      : After $?c1[Deathmark][Shadow Blades] expires, gain $?c1[$457273s1][$457273s2]% increased $?c1[Nature][Shadow] damage for $457273d.
 
 Name             : Shadewalker (id=457057) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16709,7 +16715,7 @@ Effects          :
 Description      : Each time you consume a stack of Deathstalker's Mark, reduce the cooldown of Shadowstep by ${$s1/-1000} sec.
 
 Name             : Darkest Night (id=457058) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16726,7 +16732,7 @@ Description      : When you consume the final Deathstalker's Mark from a target 
 $?c1[Envenom][Eviscerate] cast with Darkest Night does not consume a stack of active Deathstalker's Marks.
 
 Name             : Symbolic Victory (id=457062) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16743,7 +16749,7 @@ Effects          :
 Description      : $?a137037 [Kingsbane][Shadow Dance] additionally increases the damage of your next $?a137037 [two Envenoms][Eviscerate or Black Powder] by $?a137037[$457167s1][$457167s2]%.
 
 Name             : Shroud of Night (id=457063) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17511,7 +17517,7 @@ Tooltip          : Your next $?c1[Envenom][Eviscerate] cast with 5 or more combo
 $?c1[Garrote][Shadowstrike] does not apply Deathstalker's Mark while you have Darkest Night.
 
 Name             : Death Perception (id=469642) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
                  : Effect#3 [op=set, values=(5, 10)]
@@ -17541,7 +17547,7 @@ Shadow Dance increases the damage of finishing moves by $s2%.
 Shadow Blades increases the damage of finishing moves by $s3%.
 
 Name             : Thistle Tea (id=469779) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, override="Thistle Tea" (id=381623)]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, override="Thistle Tea" (id=381623)]
 Class            : Rogue
 School           : Physical
 Spell Type       : Magic
@@ -17557,7 +17563,7 @@ Effects          :
 Description      : $@spelldesc381623
 
 Name             : Supercharger (id=470347) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Rogue
 School           : Physical
@@ -17732,7 +17738,7 @@ Tooltip          : Rogue's seventh combo point is supercharged.
 Damaging finishing moves consume a supercharged combo point to function as if they spent $470347s2 additional combo points.
 
 Name             : Forced Induction (id=470668) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17746,7 +17752,7 @@ Effects          :
 Description      : Increase the bonus granted when a damaging finishing move consumes a supercharged combo point by $s1.
 
 Name             : Echoing Reprimand (id=470669) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -18542,7 +18548,7 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Crimson Tempest (id=1247227) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -18604,7 +18610,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Motivated Murderer (id=1247993) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -18731,7 +18737,7 @@ Effects          :
 Description      : $?c1[Fan of Knives][Shuriken Storm] damage increased by 50%.
 
 Name             : Lucky Coin (id=1248970) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -18861,7 +18867,7 @@ Effects          :
 Description      : $@spelldesc1249201
 
 Name             : Rush to the Inevitable (id=1249204) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -18915,7 +18921,7 @@ Effects          :
 Description      : $?c1[Caustic Spatter][Blade Flurry] causes an additional $?c1[$s1% of Nature][$s2% of attack] damage dealt to be dealt to affected enemies.
 
 Name             : Razor Wire (id=1249802) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -18968,7 +18974,7 @@ Description      : $@spelldesc1249809
 Tooltip          : Damage dealt increased by $w1% while your Deathmark is active.
 
 Name             : Inspiring Strike (id=1250036) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Assassination [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19012,7 +19018,7 @@ Effects          :
 Description      : $@spelldesc1250141
 
 Name             : Deadly Momentum (id=1250271) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19045,7 +19051,7 @@ Description      : $@spelldesc1250271
 Tooltip          : Critical strike chance increased by $w1%.
 
 Name             : Poisoner's Drive (id=1250318) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Assassination [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19075,7 +19081,7 @@ Effects          :
 Description      : $@spelldesc1250318
 
 Name             : Regicide's Reward (id=1250325) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19108,7 +19114,7 @@ Description      : $@spelldesc1250325
 Tooltip          : Haste increased by $w1%.
 
 Name             : Avulsion (id=1250358) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19124,7 +19130,7 @@ Effects          :
 Description      : Rupture damage increased by $s1%.
 
 Name             : Canny Strikes (id=1250359) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Assassination [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19151,7 +19157,7 @@ Effects          :
 Description      : $@spelldesc196938
 
 Name             : Menacing Rush (id=1256630) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Outlaw [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19252,7 +19258,7 @@ Effects          :
 Description      : $@spelldesc14161
 
 Name             : Find an Opening (id=1259457) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19267,7 +19273,7 @@ Effects          :
 Description      : Your chance for Sinister Strike to strike twice and grant Opportunity is increased by $s1%
 
 Name             : Heightened Rush (id=1259465) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Outlaw [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19283,7 +19289,7 @@ Effects          :
 Description      : Adrenaline Rush's duration is increased by ${$s1/1000} sec.
 
 Name             : Grand Melee (id=1259469) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=8, col=8, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19299,7 +19305,7 @@ Effects          :
 Description      : Blade Flurry causes your attacks to hit nearby enemies for an additional $s1% of their normal damage.
 
 Name             : Fast Action (id=1259480) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19315,7 +19321,7 @@ Effects          :
 Description      : The cooldown of Between the Eyes is reduced by ${-$s1/1000} sec.
 
 Name             : Dragon-Bone Dice (id=1259481) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19344,7 +19350,7 @@ Bonuses to Restless Blades cooldown reduction are $s3% greater.
 Jackpot's bonus to critical strike chance is $s4% greater.
 
 Name             : Zero In (id=1259485) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19386,7 +19392,7 @@ Description      : $@spelldesc1259485
 Tooltip          : Damage and critical strike chance of your next Between the Eyes is increased by $w1%.
 
 Name             : Flickering Steel (id=1259492) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Outlaw [tree=spec, row=6, col=8, max_rank=1, req_points=8, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19416,7 +19422,7 @@ Effects          :
 Description      : $@spelldesc1259492
 
 Name             : Expert Duelist (id=1259498) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19436,7 +19442,7 @@ Effects          :
 Description      : Between the Eyes increases your damage dealt by an additional $s1%.
 
 Name             : Crescendo of Violence (id=1259499) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19456,7 +19462,7 @@ Effects          :
 Description      : Your Finishing moves deal $s1% increased damage.
 
 Name             : Deadly Pursuit (id=1259612) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Outlaw [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19600,7 +19606,7 @@ Description      : $@spelldesc91023
 Tooltip          : Attacks ignore $w1% of enemy armor.
 
 Name             : Shuriken Tornado (id=1264764) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19730,7 +19736,7 @@ Effects          :
 Description      : Shadow Blades has ${$s1/1000}.1 sec increased duration and causes your attacks to deal an additional ${$s2}.1% damage as Shadow.
 
 Name             : Potent Powder (id=1265952) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Subtlety [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19789,7 +19795,7 @@ Description      : $@spelldesc459488
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Quick Fingers (id=1267210) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19804,7 +19810,7 @@ Description      : Increases your Agility by $s1%.
 
 
 Name             : Deep Cuts (id=1267216) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -19825,7 +19831,7 @@ Description      : Your Finishing moves deal $s1% increased damage.
 
 
 Name             : Danger Sense (id=1267220) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20227,7 +20233,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Precise Killer (id=1272989) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20243,7 +20249,7 @@ Effects          :
 Description      : Critical strike damage bonus increased by $s2%.
 
 Name             : Quietus Celeris (id=1273017) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20260,7 +20266,7 @@ Effects          :
 Description      : Deathstalker's Mark has a ${$s1/$s2*100}% chance to immediately consume a stack when applied.
 
 Name             : Mass Casualty (id=1273035) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20322,7 +20328,7 @@ Description      : $@spelldesc1264859
 Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Hoodwink (id=1276626) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20341,7 +20347,7 @@ Effects          :
 Description      : Fazed increases damage taken by an additional $s1%.
 
 Name             : Flashing Steel (id=1276630) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20359,7 +20365,7 @@ Effects          :
 Description      : Unseen Blade may now occur once every ${20-($s1/-1000)} sec and has $s2% chance to strike twice.
 
 Name             : Clever Combatant (id=1276679) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20380,7 +20386,7 @@ Effects          :
 Description      : $?c2[Pistol Shot][Shuriken Storm] has $?c2[$s1][$s2]% increased critical strike chance and now triggers Unseen Blade when available.
 
 Name             : Ravenholdt Mint (id=1276809) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20392,7 +20398,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1288797)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells
 #2 (id=1288798)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Tails) (452538)
@@ -20400,7 +20405,7 @@ Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells
 Description      : Flipping Heads increases damage by an additional $s1%. Damage dealt by flipping Tails is increased by $s2%.
 
 Name             : Controlled Chaos (id=1276816) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20415,7 +20420,7 @@ Effects          :
 Description      : After flipping a Fatebound Coin that ends a streak of $s1 or more, flip another that matches the same face.
 
 Name             : Sometimes Lucky (id=1277030) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20430,7 +20435,7 @@ Effects          :
 Description      : Critical strike chance increased by $s1%.
 
 Name             : Preparation (id=1277933) [Spell Family (8)] 
-Talent Entry     : Outlaw [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Outlaw [tree=spec, row=10, col=8, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -20478,7 +20483,7 @@ Effects          :
 Description      : Shuriken Storm damage is increased by $s1% while Stealthed.
 
 Name             : Improved Secret Technique (id=1279444) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None

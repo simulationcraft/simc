@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65535 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -420,6 +420,7 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -430,7 +431,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=14624)    : Apply Aura (6) | Stun (12)
@@ -509,7 +510,7 @@ Effects          :
                    Family Flags: 19
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mechagnome (0x4000)
 School           : Arcane
@@ -1106,7 +1107,7 @@ Tooltip          : Attacking nearby enemies for Physical damage every $101546t1 
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Transcendence (id=101643) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Nature
 Spell Type       : Melee
@@ -1219,7 +1220,7 @@ Tooltip          : Attacking all nearby enemies for Physical damage every $10154
 Movement speed reduced by $s2%.
 
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
-Talent Entry     : Windwalker, Mistweaver [free=(Windwalker, Mistweaver), tree=class, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Windwalker, Mistweaver [free=(Windwalker, Mistweaver), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -1282,7 +1283,7 @@ Effects          :
 Description      : Roll a short distance.
 
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -1346,7 +1347,7 @@ Description      : $@spelldesc8647
 Tooltip          : Physical damage taken increased by $w1%.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
+Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
 School           : Physical
 Spell Type       : None
@@ -1409,7 +1410,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [free=(Brewmaster), tree=class, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [free=(Brewmaster), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : Melee
@@ -1438,7 +1439,8 @@ Description      : You shrug off attacks, delaying a portion of Physical damage 
 $@spelldesc383714][]
 
 Name             : Paralysis (id=115078) [Spell Family (53)] 
-Talent Entry     : Generic [free=(Brewmaster, Windwalker, Mistweaver), tree=class, row=1, col=2, max_rank=1, req_points=0]
+Hotfixed         : Attributes
+Talent Entry     : Generic [free=(Brewmaster, Windwalker, Mistweaver), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -1462,7 +1464,7 @@ Mechanic         : Incapacitate
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Ancient Arts (344359 effect#1), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effect#4), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 35, 87
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Reflection (39), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Add Melee Hit Rating (191), Can Proc From Suppressed Target Procs (254), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Reflection (39), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Add Melee Hit Rating (191), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=128740)   : Apply Aura (6) | Stun (12)
@@ -1542,7 +1544,7 @@ If Renewing Mist heals a target past maximum health, it will travel to another i
 Each time Renewing Mist heals, it has a $s2% chance to increase the healing of your next Vivify by $197206s1%.][]
 
 Name             : Celerity (id=115173) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1560,7 +1562,7 @@ Effects          :
 Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -1600,7 +1602,7 @@ Damage taken reduced by $w2%.][]$?a1243155[
 Movement speed reduced by $w4%.][]
 
 Name             : Breath of Fire (id=115181) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
@@ -1666,7 +1668,8 @@ Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel 
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Damage Channel Duration (15), Standing (19), Invulnerability (22)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 3 | Scaled Value: 4500 (coefficient=0.024) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 5400 (coefficient=0.0288) | Target: Self (1)
+Hotfixed         : Coefficient (0.024 -> 0.0288)
                    Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
@@ -1697,7 +1700,7 @@ Description      : A swig of strong brew allows you to Stagger substantially mor
 Shares charges with Purifying Brew.
 
 Name             : Revival (id=115310) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -1776,7 +1779,7 @@ Description      : Summons a Black Ox Statue at the target location for $d, puls
 You may cast Provoke on the statue to taunt all enemies near the statue.
 
 Name             : Ascension (id=115396) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=3, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1794,7 +1797,7 @@ Effects          :
 Description      : Increases your maximum Chi by $s1, maximum Energy by $s3, and your Energy regeneration by $s2%.
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1913,7 +1916,7 @@ Description      : $@spelldesc115294
 Tooltip          : Use Mana Tea to consume charges to gain Mana.
 
 Name             : Mana Tea (id=115869) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1956,7 +1959,7 @@ Description      : When you kill an enemy, you summon a Healing Sphere, healing 
 When you kill an enemy with Blackout Kick, you have a $322719m1% chance to summon a Chi Sphere, granting 1 Chi when you walk through it.][]
 
 Name             : Disable (id=116095) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2012,7 +2015,7 @@ Description      : $@spelldesc115546
 Tooltip          : Taunted. Movement speed increased by $s3%.
 
 Name             : Teachings of the Monastery (id=116645) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
@@ -2062,13 +2065,14 @@ Description      : Causes a surge of invigorating mists, healing the target for 
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Hotfixed         : Charge Cooldown (45000 -> 30000)
+Talent Entry     : Mistweaver [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
 Cooldown         : 1 seconds
-Charges          : 1 (45 seconds cooldown)
+Charges          : 1 (30 seconds cooldown)
 Category         : 2294 (Type 0x0): Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1), Heart of the Jade Serpent (1238904 effect#7)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -2146,6 +2150,7 @@ Effects          :
 Description      : Jabs the target in the throat, interrupting spellcasting and preventing any spell from that school of magic from being cast for $d.
 
 Name             : Disable (id=116706) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2158,7 +2163,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Taps immediately (215), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131840)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Root | Target: Targeted Enemy (6)
@@ -2213,7 +2218,7 @@ Effects          :
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Tiger's Lust (id=116841) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -2236,7 +2241,7 @@ Description      : Increases a friendly target's movement speed by $s1% for $d a
 Tooltip          : Moving $s1% faster.
 
 Name             : Ring of Peace (id=116844) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -2261,7 +2266,7 @@ Description      : Form a Ring of Peace at the target location for $d. Enemies t
 Tooltip          : Nearby enemies will be knocked out of the Ring of Peace.
 
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Melee
@@ -2297,7 +2302,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Life Cocoon (id=116849) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -2525,6 +2530,7 @@ Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Leg Sweep (id=119381) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2538,7 +2544,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Tiger Tail Sweep (264348 effect#1), Ancient Arts (344359 effect#2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effect#4), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 41
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=136665)   : Apply Aura (6) | Stun (12) | Attributes: Area Effects Use Target Radius (17)
@@ -2547,7 +2553,7 @@ Description      : Knocks down all enemies within $A1 yards, stunning them for $
 Tooltip          : Stunned.
 
 Name             : Purifying Brew (id=119582) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -2629,6 +2635,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Fists of Fury (id=120086) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2642,7 +2649,7 @@ Mechanic         : Stun
 Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Crashing Fists (1248747 effect#1), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
 Triggered By     : Fists of Fury (113656)
 Family Flags     : 55
-Attributes       : Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=139326)   : Apply Aura (6) | Stun (12)
@@ -2776,7 +2783,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36424 | Target: Self (1)
 
 Name             : Keg Smash (id=121253) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2858,7 +2865,7 @@ Effects          :
 Description      : $@spelldesc121817
 
 Name             : Combat Wisdom (id=121817) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=2, col=2, max_rank=1, req_points=0, replace="Expel Harm" (id=322101)]
+Talent Entry     : Windwalker [tree=spec, row=2, col=5, max_rank=1, req_points=0, replace="Expel Harm" (id=322101)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -2879,7 +2886,7 @@ $@spellicon451968 $@spellname451968
 $@spelldesc451968
 
 Name             : Healing Elixir (id=122280) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -3030,7 +3037,7 @@ Effects          :
 Description      : $@spelldesc115294
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3068,7 +3075,7 @@ Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attac
 Every $323999s1 sec, Xuen strikes your enemies with Empowered Tiger Lightning dealing $323999s2% of the damage you have dealt to those targets in the last $323999s1 sec.][]
 
 Name             : Chi Burst (id=123986) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=class, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=class, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3298,7 +3305,7 @@ Description      : $@spelldesc122470
 Tooltip          : $w1 Nature damage every $t1 sec.
 
 Name             : Gift of the Ox (id=124502) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -3371,7 +3378,7 @@ Effects          :
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3779,7 +3786,7 @@ Effects          :
 Description      : $@spelldesc450391
 
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=8, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -4106,7 +4113,7 @@ Effects          :
                    Affected Spells (Label): Jadefire Stomp (388207), Jadefire Stomp (1248815)
 
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -4201,7 +4208,7 @@ Effects          :
 Description      : $@spelldesc116847
 
 Name             : Whirling Dragon Punch (id=152175) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -4308,7 +4315,7 @@ Effects          :
                    Base Value: 95 | Scaled Value: 95 | Misc Value: 23 | Target: Self (1)
 
 Name             : Windwalking (id=157411) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20]
                  : Effect#1 [op=set, values=(4, 6)]
 Class            : Monk
 School           : Physical
@@ -4543,7 +4550,7 @@ Effects          :
 Description      : Instantly kills any creature under level $m2, or player under $m3% health.
 
 Name             : Pool of Mists (id=173841) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -4782,7 +4789,7 @@ Effects          :
 Description      : $@spelldesc195650
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -4862,7 +4869,7 @@ Effects          :
 Description      : $@spelldesc196730
 
 Name             : Blackout Combo (id=196736) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -4892,7 +4899,7 @@ $@spellicon100780 Tiger Palm: Damage increased by $228563s1%.
 $@spellicon121253 Keg Smash: Reduces the remaining cooldown on your Brews by $s3 additional sec.
 
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=2, max_rank=2, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(3000, 6000)]
@@ -4917,7 +4924,7 @@ Description      : Stagger is $s1% more effective at delaying damage.
 Purifying Brew refunds ${$s3/1000}.1 sec of its cooldown if cast at $@spellname1260619.
 
 Name             : Hit Combo (id=196740) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -4976,7 +4983,7 @@ Effects          :
 Description      : $@spelldesc152175
 
 Name             : Focused Thunder (id=197895) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -5016,7 +5023,7 @@ Effects          :
 Description      : Increases Enveloping Mist's duration by ${$m2/1000} sec and its healing bonus by $s1%.
 
 Name             : Lifecycles (id=197915) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -5115,7 +5122,7 @@ Description      : $@spelldesc115175
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -5139,6 +5146,7 @@ Effects          :
 Description      : Conjures a cloud of hypnotic mist that slowly travels forward. Enemies touched by the mist fall asleep, Disoriented for $198909d.
 
 Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -5153,7 +5161,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Bypass Visibility Check (320), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=292723)   : Apply Aura (6) | Stun (12)
@@ -5980,8 +5988,8 @@ Description      : $@spelldesc217634
 Tooltip          : Healing received from the Monk increased by $w2%.
 
 Name             : Detox (id=218164) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=class, row=3, col=5, max_rank=1, req_points=0]
-                 : Windwalker [tree=class, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=class, row=3, col=6, max_rank=1, req_points=0]
+                 : Windwalker [tree=class, row=3, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -6332,6 +6340,7 @@ Effects          :
 Description      : Vivify healing is increased by $s1%.
 
 Name             : Fists of Fury (id=232055) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -6344,7 +6353,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Crashing Fists (1248747 effect#1), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
 Family Flags     : 55
-Attributes       : Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
+Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=350134)   : Apply Aura (6) | Stun (12)
@@ -7126,7 +7135,7 @@ Effects          :
 Description      : Blackout Kick costs $s1 fewer Chi.
 
 Name             : Sharp Reflexes (id=261917) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=2, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7141,7 +7150,7 @@ Effects          :
 Description      : Blackout Kick reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$100784m3/1000}.1 sec.
 
 Name             : Tiger Tail Sweep (id=264348) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7508,7 +7517,7 @@ Effects          :
 Description      : $@spelldesc116680
 
 Name             : Invigorating Mists (id=274586) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7603,7 +7612,7 @@ Description      : $@spelldesc274762
 Tooltip          : Healing for $w1 every $t1 second.
 
 Name             : Rising Mist (desc=Way of the Crane) (id=274909) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8026,7 +8035,7 @@ Effects          :
 Description      : $s1% of the damage redirected by Touch of Karma also heals you.
 
 Name             : Spiritual Focus (id=280197) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8062,7 +8071,7 @@ Effects          :
 Description      : $@spelldesc275975
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9457,7 +9466,7 @@ Effects          :
 Description      : $@spelldesc322109
 
 Name             : Improved Touch of Death (id=322113) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9474,7 +9483,7 @@ Effects          :
 Description      : Touch of Death can now be used on targets with less than $s1% health remaining, dealing $s2% of your maximum health in damage.
 
 Name             : Invoke Yu'lon, the Jade Serpent (id=322118) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -9551,7 +9560,7 @@ Description      : $@spelldesc115308
 Tooltip          : Your Stagger is $s3% more effective.
 
 Name             : Shuffle (id=322120) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=2, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -9575,7 +9584,8 @@ Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and 
 $@spellicon115069 $@spellname115069: $@spelldesc115069 
 
 Name             : Celestial Brew (id=322507) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
+Hotfixed         : Variables
+Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9601,7 +9611,7 @@ Effects          :
 Description      : A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.
 Tooltip          : Absorbs $w1 damage.$?$w2>0[
 Your self-healing increased by $w2%.][]
-Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
 
 
 Name             : Spinning Crane Kick (desc=Rank 2) (id=322700) [Spell Family (53), Passive] 
@@ -9664,7 +9674,7 @@ Tooltip          : Attacking all nearby enemies for Physical damage every $10154
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Mighty Stomp (id=322740) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=9, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9678,7 +9688,7 @@ Effects          :
 Description      : While active, Invoke Niuzao, the Black Ox can be recast to cause Niuzao to stomp mightily and knock nearby enemies into the air.
 
 Name             : Fortifying Brew: Determination (id=322960) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9746,7 +9756,7 @@ Description      : $@spelldesc119582
 Tooltip          : Increases the absorption of your next Celestial Brew by $w1%.
 
 Name             : Light Brewing (id=325093) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9780,7 +9790,7 @@ Effects          :
 Description      : Touch of Death reduces delayed Stagger damage by $s1% of damage dealt.
 
 Name             : Exploding Keg (id=325153) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Fire
 Spell Type       : Melee
@@ -9857,7 +9867,7 @@ Tooltip          : Breath of Fire reduces damage taken by an additional $325177s
 Spinning Crane Kick ignites targets with Breath of Fire.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=325197) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -9905,7 +9915,7 @@ Description      : Summon an effigy of Chi-Ji for $d that kicks up $s2 Gust of M
 Chi-Ji's presence makes you immune to movement impairing effects, makes Enveloping Mist instant cast, and reduces the mana cost of Enveloping Mist by $s3%.
 
 Name             : Dance of Chi-Ji (id=325201) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12209,7 +12219,7 @@ $@spellicon376744 $@spellname376744
 $@spelldesc376744
 
 Name             : Improved Blackout Kick (id=383695) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12245,7 +12255,7 @@ Description      : $@spelldesc383695
 Tooltip          : The damage of your next Keg Smash is increased by $w1%.
 
 Name             : Sal'salabim's Strength (id=383697) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12261,7 +12271,7 @@ Effects          :
 Description      : When you use Keg Smash, the remaining cooldown on Breath of Fire is reset.
 
 Name             : Scalding Brew (id=383698) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12276,7 +12286,7 @@ Effects          :
 Description      : Keg Smash deals an additional $s1% damage to targets affected by Breath of Fire.
 
 Name             : Gai Plin's Imperial Brew (id=383700) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12303,7 +12313,7 @@ Effects          :
 Description      : $@spelldesc383700
 
 Name             : Stormstout's Last Keg (id=383707) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12326,7 +12336,7 @@ Effects          :
 Description      : Keg Smash deals $m1% additional damage to its primary target, has $m2 additional $Lcharge:charges;, and its range is increased by $s3 yards.
 
 Name             : Training of Niuzao (id=383714) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12378,7 +12388,7 @@ Effects          :
 Description      : $@spelldesc388505
 
 Name             : Counterstrike (id=383785) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=9, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12503,7 +12513,7 @@ Effects          :
 Description      : $@spelldesc376744
 
 Name             : Anvil and Stave (id=386937) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
@@ -12604,7 +12614,7 @@ Effects          :
 Description      : Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.
 
 Name             : Elusive Footwork (id=387046) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12676,7 +12686,7 @@ Effects          :
 Description      : $@spelldesc310454
 
 Name             : Walk with the Ox (id=387219) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(-250, -500)]
 Class            : Monk
@@ -12698,7 +12708,7 @@ Description      : Your damaging abilities have $@switch<$s1>[a][an increased] c
 Variables        : $chance=$?${$s1>1}[an increased ][a ]
 
 Name             : Fluidity of Motion (id=387230) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12766,7 +12776,7 @@ Description      : Reduces Stagger by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Staggering Strikes (id=387625) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12787,7 +12797,7 @@ Description      : When you Blackout Kick, your |CFFffffffStagger|R is reduced b
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Shadowboxing Treads (id=387638) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12810,7 +12820,7 @@ Description      : Blackout Kick's damage increased by $s2% and it strikes an ad
 Tooltip          : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.
 
 Name             : Tear of Morning (desc=Way of the Serpent) (id=387991) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12887,7 +12897,7 @@ Effects          :
 Description      : $@spelldesc115151
 
 Name             : Resplendent Mist (id=388020) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=2, max_rank=2, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(60, 120)]
 Class            : Monk
 School           : Physical
@@ -12983,7 +12993,7 @@ Variables        : $pvp=$?a134735[${2.2}][${1}]}
 $healing=[${$388023s1*$<pvp>}]
 
 Name             : Jade Bond (id=388031) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13225,7 +13235,7 @@ Effects          :
 Description      : $@spelldesc388193
 
 Name             : Gift of the Celestials (id=388212) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13252,7 +13262,7 @@ Effects          :
 Description      : Reduces the cooldown of $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s1/-60000} min, but decreases its duration to ${($s4+$s2)/1000} sec. 
 
 Name             : Calming Coalescence (id=388218) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13287,7 +13297,7 @@ Description      : $@spelldesc388218
 Tooltip          : Absorb amount of your next Life Cocoon is increased by $s1%.
 
 Name             : Secret Infusion (id=388491) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Monk
 School           : Physical
@@ -13396,7 +13406,7 @@ Description      : $@spelldesc388491
 Tooltip          : Versatility increased by $w1%.
 
 Name             : Quick Sip (id=388505) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13414,7 +13424,7 @@ Effects          :
 Description      : Purify $s1% of your Staggered damage each time you gain $s2 sec of Shuffle duration.
 
 Name             : Overflowing Mists (id=388511) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(0.6, 1.2)]
 Class            : Monk
 School           : Physical
@@ -13500,7 +13510,7 @@ Effects          :
 Description      : Life Cocoon applies Renewing Mist and Enveloping Mist to the target. 
 
 Name             : Uplifted Spirits (id=388551) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13536,7 +13546,7 @@ Description      : $@spelldesc388551
 Tooltip          : Restores $w1 health every $t1 sec.
 
 Name             : Peaceful Mending (id=388593) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13570,7 +13580,7 @@ Effects          :
 Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $388668s1 per enemy damaged.
 
 Name             : Restoral (id=388615) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -13607,7 +13617,7 @@ Castable while stunned.
 Healing reduced beyond $s5 targets.
 
 Name             : Calming Presence (id=388664) [Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13644,7 +13654,7 @@ Effects          :
 Description      : $@spelldesc124081
 
 Name             : Ferocity of Xuen (id=388674) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(2, 4)]
                  : Effect#3 [op=set, values=(2, 4)]
@@ -13688,7 +13698,7 @@ Effects          :
 Description      : Reduces all damage taken by you and your target while channeling Soothing Mists by $s1%.
 
 Name             : Misty Peaks (id=388682) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.00245, 0.0095)]
                  : Effect#3 [op=set, values=(4, 8)]
 Class            : Monk
@@ -13725,7 +13735,7 @@ Effects          :
 Description      : Renewing Mist has a $s1% chance to immediately spread to an additional target when initially cast or when traveling to a new target.
 
 Name             : Way of the Crane (id=388779) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13754,7 +13764,7 @@ Effects          :
 Description      : Tiger Palms strike twice, Blackout Kicks strike an additional $s5 targets at $s6% effectiveness, and Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.
 
 Name             : Fast Feet (id=388809) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker, Mistweaver [tree=class, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Windwalker, Mistweaver [tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13776,7 +13786,7 @@ Description      : Rising Sun Kick deals $s1% increased damage. Spinning Crane K
 
 
 Name             : Grace of the Crane (id=388811) [Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
                  : Effect#1 [op=set, values=(4, 8)]
 Class            : Monk
 School           : Physical
@@ -13862,7 +13872,7 @@ Effects          :
 Description      : Increases your maximum health by an additional $s1% and your damage taken is reduced by an additional $s2% while Fortifying Brew is active.
 
 Name             : Rapid Diffusion (id=388847) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=5, max_rank=2, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=7, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Monk
 School           : Physical
@@ -13881,7 +13891,7 @@ Effects          :
 Description      : Rising Sun Kick and Enveloping Mist apply Renewing Mist for $s1 seconds to an ally within $r yds.
 
 Name             : Crane Vortex (id=388848) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13900,7 +13910,7 @@ Effects          :
 Description      : Spinning Crane Kick damage increased by $s1% and its radius is increased by $s2%.
 
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=4, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(15, 12)]
                  : Effect#2 [op=set, values=(12, 16)]
 Class            : Monk
@@ -13921,7 +13931,7 @@ Effects          :
 Description      : Rising Sun Kick damage increased by $s1% and critical strike damage increased by $s2%.
 
 Name             : Touch of the Tiger (id=388856) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13955,7 +13965,7 @@ Effects          :
 Description      : $@spelldesc325153
 
 Name             : Improved Detox (id=388874) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=class, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=class, row=3, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13969,7 +13979,7 @@ Effects          :
 Description      : Detox additionally removes all Poison and Disease effects.
 
 Name             : Fortifying Brew (id=388917) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, override="Fortifying Brew" (id=115203)]
+Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8, override="Fortifying Brew" (id=115203)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14121,7 +14131,7 @@ Description      : $@spelldesc389575
 Tooltip          : Avoidance increased by $w1%.
 
 Name             : Face Palm (id=389942) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=8, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14139,7 +14149,7 @@ Effects          :
 Description      : Tiger Palm's damage is increased by $s2% and reduces the remaining cooldown of your Brews by ${$s3/1000}.1 additional sec.
 
 Name             : Meridian Strikes (id=391330) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14160,7 +14170,7 @@ Description      : The cooldown of Touch of Death is reduced by ${$s2/-1000} sec
 Touch of Death deals an additional $s1% damage.
 
 Name             : Drinking Horn Cover (id=391370) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14175,7 +14185,7 @@ Effects          :
 Description      : The duration of $?s152173[Serenity][Zenith] is extended by ${$s1/1000} sec.
 
 Name             : Hardened Soles (id=391383) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=3, col=3, max_rank=2, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=3, col=6, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(6, 12)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Monk
@@ -14235,8 +14245,8 @@ The cost of Vivify is reduced by $s3%.]?c3[
 The cost of Vivify is reduced by $s4%.][]
 
 Name             : Vigorous Expulsion (id=392900) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=class, row=7, col=1, max_rank=1, req_points=8]
-                 : Windwalker [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=class, row=7, col=2, max_rank=1, req_points=8]
+                 : Windwalker [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14275,7 +14285,7 @@ Effects          :
 Description      : Expel Harm's critical healing is increased by $s1%.
 
 Name             : Glory of the Dawn (id=392958) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14344,7 +14354,7 @@ Description      : $@spelldesc279918
 Tooltip          : Returns $w1 chi.
 
 Name             : Jade Ignition (id=392979) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14363,7 +14373,7 @@ Effects          :
 Description      : Spinning Crane Kick detonates into a Chi Explosion, dealing $393056s1 Nature damage to all enemies within $393056A1 yards, reduced beyond $s3 targets.
 
 Name             : Shadowboxing Treads (id=392982) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14384,7 +14394,7 @@ Effects          :
 Description      : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets at $s3% effectiveness.
 
 Name             : Strike of the Windlord (id=392983) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -14412,7 +14422,7 @@ Description      : Strike with both fists at all enemies in front of you, dealin
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Thunderfist (id=392985) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14430,7 +14440,7 @@ Description      : Strike of the Windlord and Whirling Dragon Punch grant you $s
 Thunderfist discharges upon melee strikes, dealing $393566s1 Nature damage.
 
 Name             : Xuen's Bond (id=392986) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14468,7 +14478,7 @@ Description      : Tiger Palm now has a ${$m1+5} yard range and dashes you to th
 Tiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.
 
 Name             : Xuen's Battlegear (id=392993) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14491,7 +14501,7 @@ Description      : Rising Sun Kick critical strikes reduce the cooldown of Fists
 The critical strike chance of Rising Sun Kick is increased by $s1%.
 
 Name             : Path of Jade (id=392994) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=10, col=9, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14657,7 +14667,7 @@ Description      : $@spelldesc213112
 Tooltip          : You may cast Touch of Death again before the cooldown is triggered.
 
 Name             : Tranquil Spirit (id=393357) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14690,7 +14700,7 @@ Description      : Increases Dodge by $s1%.
 Tooltip          : Increases Dodge by $s1%.
 
 Name             : Pretense of Instability (id=393516) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=8, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14844,7 +14854,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Escape from Reality (id=394110) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14875,7 +14885,7 @@ Description      : $@spelldesc343250
 Tooltip          : Transcendence: Transfer has no cooldown.
 
 Name             : Fatal Touch (id=394123) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15173,7 +15183,7 @@ Description      : $@spelldesc396166
 Tooltip          : Critical strike, haste, and mastery increased by $w1%.
 
 Name             : Inner Peace (id=397768) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=7, col=8, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15223,7 +15233,7 @@ Effects          :
 Description      : $@spelldesc399226
 
 Name             : Sheilun's Gift (id=399491) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=6, max_rank=1, req_points=20, replace="Vivify" (id=116670)]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=7, max_rank=1, req_points=20, replace="Vivify" (id=116670)]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -15326,7 +15336,7 @@ Effects          :
 Description      : $@spelldesc399491
 
 Name             : Veil of Pride (id=400053) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15346,7 +15356,7 @@ Effects          :
 Description      : Increases Sheilun's Gift cloud of mist generation to every ${-$s1/1000} sec. 
 
 Name             : Spirit of the Ox (id=400629) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15367,7 +15377,7 @@ $@spellicon224863$@spellname224863:
 $@spelldesc224863
 
 Name             : Legacy of Wisdom (id=404408) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=8, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15706,7 +15716,7 @@ Description      : $@spelldesc411375
 Tooltip          : Shadowflame Nova damage increased by $w1%.
 
 Name             : Yu'lon's Grace (id=414131) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15725,7 +15735,7 @@ Effects          :
 Description      : Find resilience in the flow of chi in battle, gaining a magic absorb shield for ${$s1/10}.1% of your max health every $t sec in combat, stacking up to $s2%.
 
 Name             : Dance of the Wind (id=414132) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=class, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15777,7 +15787,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Press the Advantage (id=418359) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100, replace="Tiger Palm" (id=100780)]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100, replace="Tiger Palm" (id=100780)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15841,7 +15851,7 @@ Description      : $@spelldesc418359
 Tooltip          : You have attacked $s1 times.
 
 Name             : Energizing Brew (id=422031) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16081,6 +16091,7 @@ Tooltip          : $@spelldesc274586
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Celestial Brew (id=425965) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -16094,7 +16105,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: -11 | Target: Self (1)
 Description      : $@spelldesc422887
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
 
 
 Name             : Healing Elixir (id=427296) [Spell Family (53)] 
@@ -16208,8 +16219,8 @@ Description      : $@spelldesc432181
 Tooltip          : Your physical damage taken is reduced by $w1% until you receive a physical attack.
 
 Name             : Dance of the Wind (id=432181) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=class, row=7, col=5, max_rank=1, req_points=8]
-                 : Mistweaver [tree=class, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=class, row=7, col=6, max_rank=1, req_points=8]
+                 : Mistweaver [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16244,7 +16255,7 @@ Description      : $@spelldesc116680
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Transcendence: Linked Spirits (id=434774) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -16331,7 +16342,7 @@ $healing=${$cond($gt($SP,$AP),$SP*1,$AP*1)*$pctD*(1+$@versadmg)}
 $spike=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
 
 Name             : Dance of Chi-Ji (id=438439) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16437,8 +16448,8 @@ Description      : Teachings of the Monastery has a $s1% chance to refund a char
 The damage of Tiger Palm is increased by $s2%.
 
 Name             : Restore Balance (id=442719) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
-                 : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
+                 : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16515,7 +16526,7 @@ Description      : $@spelldesc442747
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -16754,7 +16765,7 @@ Effects          :
 Description      : $@spelldesc443110
 
 Name             : Heart of the Jade Serpent (id=443294) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16897,7 +16908,7 @@ Description      : $@spelldesc443566
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Inner Compass (id=443571) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16994,7 +17005,7 @@ Description      : $@spelldesc443571
 Tooltip          : Mastery increased by $w1%.
 
 Name             : Unity Within (id=443589) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17104,7 +17115,7 @@ Tooltip          : Yu'lon is increasing the cooldown recovery rate of $?c2[Renew
 Haste increased by $w8%.][]
 
 Name             : Yu'lon's Knowledge (id=443625) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17154,7 +17165,7 @@ Effects          :
 Description      : $@spelldesc446260
 
 Name             : Zen Pulse (id=446326) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17190,7 +17201,7 @@ Description      : $@spelldesc446326
 Tooltip          : Your next $?s399491[Sheilun's Gift][Vivify] triggers a Zen Pulse on your target and all allies with your Renewing Mist.
 
 Name             : Deep Clarity (id=446345) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17357,7 +17368,7 @@ Effects          :
 Description      : $@spelldesc117952
 
 Name             : Rushing Reflexes (id=450154) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=7, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17400,7 +17411,7 @@ Effects          :
 Description      : $@spelldesc450335
 
 Name             : Crashing Momentum (id=450335) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17458,8 +17469,8 @@ Description      : $@spelldesc450349
 Tooltip          : Your next $?a137023[Keg Smash][Rising Sun Kick] or $?s399491[Sheilun's Gift][Vivify] releases a Chi Wave onto its target.
 
 Name             : Chi Wave (id=450391) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=class, row=5, col=1, max_rank=1, req_points=8]
-                 : Brewmaster [tree=class, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=class, row=5, col=2, max_rank=1, req_points=8]
+                 : Brewmaster [tree=class, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17476,7 +17487,7 @@ Effects          :
 Description      : Every $t1 sec, your next $?a137023[Keg Smash][Rising Sun Kick] or $?s399491[Sheilun's Gift][Vivify] releases a wave of Chi energy that flows through friends and foes, dealing $132467s1 Nature damage or $132463s1 healing. Bounces up to $115098s1 times to targets within $132466a2 yards.
 
 Name             : Chi Proficiency (id=450426) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(2, 4)]
                  : Effect#3 [op=set, values=(2, 4)]
@@ -17502,7 +17513,7 @@ Effects          :
 Description      : Magical damage done increased by $s1% and healing done increased by $s2%.
 
 Name             : Martial Instincts (id=450427) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(-2, -4)]
                  : Effect#3 [op=set, values=(0, 0)]
@@ -17541,7 +17552,7 @@ Effects          :
 Description      : Paralysis now removes all Enrage effects from its target.
 
 Name             : Peace and Prosperity (id=450448) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17574,7 +17585,7 @@ Effects          :
 Description      : The duration of snare effects on you is reduced by $s1%.
 
 Name             : Aspect of Harmony (id=450508) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17613,7 +17624,7 @@ Description      : Store vitality from $?a137023[$s1%][$s2%] of your damage deal
 For $450711d after casting $?a137023[Celestial Brew][Thunder Focus Tea] your spells and abilities draw upon the stored vitality to deal $s6% additional $?a137023[damage over $450763d][healing over $450769d].
 
 Name             : Wind's Reach (id=450514) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17637,7 +17648,7 @@ Description      : The range of Disable is increased by $s1 yds.
 The duration of Crashing Momentum is increased by ${$s3/1000} sec and its snare now reduces movement speed by an additional $s2%.
 
 Name             : Bounding Agility (id=450520) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17689,7 +17700,7 @@ Description      : $@spelldesc450508
 Tooltip          : Storing $?a450508[$450508w5][0] vitality.
 
 Name             : Coalescence (id=450529) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17775,7 +17786,7 @@ Effects          :
 Description      : $@spelldesc450560
 
 Name             : Healing Winds (id=450560) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17807,7 +17818,7 @@ Effects          :
 Description      : $@spelldesc450508
 
 Name             : Flow of Chi (id=450569) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17939,7 +17950,7 @@ Effects          :
 Description      : $@spelldesc450569
 
 Name             : Spirit's Essence (id=450595) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17973,7 +17984,7 @@ Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Flurry Strikes (id=450615) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18048,8 +18059,8 @@ Effects          :
 Description      : $@spelldesc450622
 
 Name             : Energy Transfer (id=450631) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=class, row=5, col=3, max_rank=1, req_points=8]
-                 : Windwalker [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=class, row=5, col=5, max_rank=1, req_points=8]
+                 : Windwalker [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18253,7 +18264,7 @@ Effects          :
 Description      : Chi Burst and Chi Wave deal $s1% increased damage and healing.
 
 Name             : Balanced Stratagem (id=450889) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18438,7 +18449,7 @@ Description      : Energy spenders deal an additional $s1% damage.
 The cooldown of $?c1[Invoke Niuzao, the Black Ox is reduced by ${$s6/-1000} sec][Zenith is reduced by ${$s4/-1000} sec].
 
 Name             : Martial Precision (id=450990) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18452,7 +18463,7 @@ Effects          :
 Description      : Your attacks penetrate $s1% armor.
 
 Name             : Whirling Steel (id=450991) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18471,7 +18482,7 @@ Description      : When your health drops below $s1%, summon Whirling Steel, inc
 This effect can not occur more than once every $proccooldown sec.
 
 Name             : Predictive Training (id=450992) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18487,7 +18498,7 @@ Effects          :
 Description      : When you dodge or parry an attack, reduce all damage taken by $451230s1% for the next $451230d.
 
 Name             : Vigilant Watch (id=450993) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18503,7 +18514,7 @@ Effects          :
 Description      : Blackout Kick deals an additional $s1% critical damage.
 
 Name             : Clarity of Purpose (id=451017) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18559,7 +18570,7 @@ Effects          :
 Description      : $?a137023[][Rising Sun Kick, ]Blackout Kick and Tiger Palm deal $s1% additional damage to enemies in a line in front of you. Damage reduced above $s2 targets.
 
 Name             : Mantra of Tenacity (id=451029) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18574,7 +18585,7 @@ Description      : $?a137023[Fortifying Brew applies a Chi Cocoon, absorbing $<v
 Variables        : $value=${$MHP*$451299s2/100*(1+$@versadmg)}
 
 Name             : Mantra of Purity (id=451036) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18786,6 +18797,7 @@ Effects          :
 Description      : $@spelldesc1262612
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -18799,11 +18811,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: -11 | Target: Self (1)
 Description      : $@spelldesc451036
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
 
 
 Name             : Momentum Boost (id=451294) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18895,7 +18907,7 @@ Description      : $@spelldesc451036
 Tooltip          : Healing for $o1 over $d.
 
 Name             : Brawler's Intensity (id=451485) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=8, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18930,7 +18942,7 @@ Effects          :
 Description      : The Blackout Kick! effect also increases the damage of your next Blackout Kick by $s1%.
 
 Name             : Energy Burst (id=451498) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19010,7 +19022,7 @@ Description      : $@spelldesc450889
 Tooltip          : Healing and damage of your next Physical spell or ability is increased by $s1%.
 
 Name             : Sequenced Strikes (id=451515) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19024,7 +19036,7 @@ Effects          :
 Description      : You have a $s1% chance to gain Blackout Kick! after consuming Dance of Chi-Ji.
 
 Name             : Revolving Whirl (id=451524) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19041,7 +19053,7 @@ Effects          :
 Description      : Strike of the Windlord and Whirling Dragon Punch have a $s1% chance to activate Dance of Chi-Ji.
 
 Name             : Knowledge of the Broken Temple (id=451529) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19069,7 +19081,7 @@ Description      : Strike of the Windlord and Whirling Dragon Punch grant $s1 st
 Teachings of the Monastery can now stack up to $s4 times.
 
 Name             : Singularly Focused Jade (id=451573) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=10, col=9, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19094,7 +19106,7 @@ Effects          :
 Description      : Jadefire Stomp now strikes $s4 target, but deals $s2% increased damage and healing.
 
 Name             : Communion With Wind (id=451576) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19130,7 +19142,7 @@ Effects          :
 Description      : $@spelldesc152175
 
 Name             : Dual Threat (id=451823) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19352,7 +19364,7 @@ Effects          :
 Description      : $@spelldesc452137
 
 Name             : Flurry of Xuen (id=452137) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19595,7 +19607,7 @@ Effects          :
 Description      : Enveloping Mist and Renewing Mist healing increased by $s1%.
 
 Name             : August Blessing (id=454483) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -19612,7 +19624,7 @@ Effects          :
 Description      : When you would be healed above maximum health, you instead convert an amount equal to $s1% of your critical strike chance to a heal over time effect.
 
 Name             : One With the Wind (id=454484) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=8, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19737,7 +19749,7 @@ Effects          :
 Description      : $@spelldesc322740
 
 Name             : Memory of the Monastery (id=454969) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19773,7 +19785,7 @@ Description      : $@spelldesc454969
 Tooltip          : Haste increased by ${$w1}.1%.
 
 Name             : Ox Stance (id=455068) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19807,7 +19819,7 @@ Description      : $@spelldesc455068
 Tooltip          : Increased Stagger on next attack greater than $455068s1~% of your current health.
 
 Name             : Elixir of Determination (id=455139) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -19989,7 +20001,7 @@ Effects          :
 Description      : $@spelldesc443087
 
 Name             : Jadefire Stomp (id=457974) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=9, col=8, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -20038,7 +20050,7 @@ Effects          :
 Description      : Your Hearthstone cooldown is reduced by ${$s2/-60000} min and gains an additional charge.
 
 Name             : Ferociousness (id=458623) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Windwalker [tree=spec, row=3, col=2, max_rank=2, req_points=0]
+Talent Entry     : Windwalker [tree=spec, row=3, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Monk
 School           : Physical
@@ -20256,7 +20268,7 @@ Effects          :
                    Affected Spells (Label): Azerite Essences (640)
 
 Name             : Refreshment (id=467270) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20296,7 +20308,7 @@ Description      : $@spelldesc122280
 Tooltip          : $w1 Healing Elixir stored, which will heal for $428439s1% of your maximum health if brought below $s2% heatlh.
 
 Name             : Jadefire Teachings (desc=Way of the Crane) (id=467293) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -20315,7 +20327,7 @@ Description      : Ancient Teachings transfers an additional $388026s2% damage t
 Your Stamina is increased by $s2%.
 
 Name             : Rushing Wind Kick (id=467307) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=200, replace="Rising Sun Kick" (id=107428)]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=2, max_rank=1, req_points=20, select_idx=200, replace="Rising Sun Kick" (id=107428)]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -20341,7 +20353,7 @@ Description      : Kick up a powerful gust of wind, dealing $468179s1 Nature dam
 $?c2[Heals up to $s3 allies affected by your heal over time effects for $1269159s1.][]
 
 Name             : Jade Empowerment (id=467316) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20477,7 +20489,7 @@ Description      : $@spelldesc450615
 Tooltip          : Spent $w1 Energy.
 
 Name             : Emperor's Favor (id=471761) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=8, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20889,7 +20901,7 @@ Effects          :
 Description      : $@spelldesc1217413
 
 Name             : Slicing Winds (id=1217413) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=6, max_rank=1, req_points=20, replace="Flying Serpent Kick" (id=101545)]
+Talent Entry     : Windwalker [tree=spec, row=9, col=7, max_rank=1, req_points=20, replace="Flying Serpent Kick" (id=101545)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21332,7 +21344,8 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Celestial Infusion (id=1241059) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
+Hotfixed         : Variables
+Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21349,17 +21362,18 @@ Family Flags     : 53, 75
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1239822)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 22.68 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : AP Coefficient (0 -> 22.68)
 #2 (id=1239823)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $<absorb> total.
 Tooltip          : Absorbs $s2~% of incoming damage, up to $w1 total.
-Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
 
 
 Name             : Niuzao's Resolve (id=1241097) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21394,7 +21408,7 @@ Description      : $@spelldesc1241097
 Tooltip          : Healing for $w1 every $t sec.
 
 Name             : Zen State (id=1241136) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21509,7 +21523,7 @@ Effects          :
 Description      : Thunder Focus Tea summons a Jade Serpent Statue at your location. When you channel Soothing Mist, the statue will also begin to channel Soothing Mist on your target, healing for $198533o1 over $198533d.
 
 Name             : Way of the Serpent (id=1243155) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21583,7 +21597,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Skyfire Heel (id=1248704) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21639,7 +21653,7 @@ Effects          :
 Description      : $@spelldesc1248704
 
 Name             : Crashing Fists (id=1248747) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21655,7 +21669,7 @@ Effects          :
 Description      : The duration of Fists of Fury is increased by ${$s1/1000}.1 sec.
 
 Name             : Cyclone's Drift (id=1248749) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21704,7 +21718,7 @@ Effects          :
 Description      : $@spelldesc457974
 
 Name             : Airborne Rhythm (id=1248833) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Windwalker [tree=spec, row=10, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21730,7 +21744,7 @@ Effects          :
 Description      : $@spelldesc1248833
 
 Name             : Hurricane's Vault (id=1248837) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=10, col=7, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21800,7 +21814,7 @@ Description      : $@spelldesc1248989
 Tooltip          : Celestial Conduit may be cast.
 
 Name             : Zenith (id=1249625) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22063,7 +22077,7 @@ Description      : Your last ability to trigger Mastery: Combo Strikes was Touch
 Tooltip          : Your last ability to trigger Mastery: Combo Strikes was Touch of Death.
 
 Name             : Obsidian Spiral (id=1249832) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22101,7 +22115,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: Source (22) -> any in Area (7)
 
 Name             : Harmonic Combo (id=1250041) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22121,7 +22135,7 @@ Effects          :
 Description      : Fists of Fury's Chi cost is reduced by $s1, but its damage is reduced by $s2%.
 
 Name             : Echo Technique (id=1250042) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22421,6 +22435,7 @@ Effects          :
                    Affected Spells (Label): Manifestation (450875)
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -22431,7 +22446,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1267200)  : Apply Aura (6) | Stun (12)
@@ -22484,7 +22499,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fast Feet (id=1261543) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=class, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22589,7 +22604,7 @@ Description      : $@spelldesc1262017
 
 Name             : Empty the Cellar (id=1262329) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20]
-                 : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+                 : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22605,7 +22620,7 @@ Effects          :
 Description      : Exploding Keg can be reactivated within $1262768d to throw $s1 additional kegs at nearby targets, each dealing $1262765s1 Physical damage and reducing the cooldown of your Brews by ${$s2/1000}.1 sec.
 
 Name             : Jade Flash (id=1262334) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22637,7 +22652,7 @@ Effects          :
 Description      : Crackling Jade Lightning deals its damage in $s1% less time, costs $s3% less Energy, and strikes ${$s2-1} additional targets, but has a ${$s5/1000} sec cooldown.
 
 Name             : Stand Ready (id=1262603) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22676,7 +22691,7 @@ Description      : $@spelldesc1262603
 Tooltip          : $w1 Flurry Strikes charged, released on your next attack.
 
 Name             : Weapons of the Wall (id=1262610) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22695,7 +22710,7 @@ Effects          :
 Description      : $?c1[Invoke Niuzao, the Black Ox's stomp damage increased by $s2%.][Zenith Stomp damage increased by $s1%].
 
 Name             : Shado Over the Battlefield (id=1262612) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22711,7 +22726,7 @@ Effects          :
 Description      : Flurry Strikes deal $451250s1 Nature damage to all enemies within $451250a yds, reduced beyond $s2 targets.
 
 Name             : Awakening Spirit (id=1262628) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22731,7 +22746,7 @@ Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
 
 
 Name             : Vital Flame (id=1262659) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22747,7 +22762,7 @@ Effects          :
 Description      : Heal for $s1% of all Fire or Nature damage dealt by your spells and abilities.
 
 Name             : Yu'lon's Avatar (id=1262667) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22768,7 +22783,7 @@ Effects          :
 Description      : $?c3[Heart of the Jade Serpent additionally triggers for ${$s1/1000} sec at $s2% effectiveness after you cast Zenith][Vivify and Sheilun's Gift have a chance to trigger Heart of the Jade Serpent for ${$s1/1000} sec at $s2% effectiveness].
 
 Name             : Flowing Wisdom (id=1262672) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22848,7 +22863,7 @@ Description      : Fire a volley of $1262329s1 $Lkeg:kegs; at nearby targets.
 Tooltip          : Empty the Cellar is available to cast
 
 Name             : Heart of the Ox (id=1263245) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22883,7 +22898,7 @@ Description      : $@spelldesc1263346
 Tooltip          : Increases movement speed by $s1% and attack speed by $s2%.
 
 Name             : Swift as a Coursing River (id=1263346) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=7, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -22899,7 +22914,7 @@ Effects          :
 Description      : Drinking from a Brew increases your movement speed by $1263345s1% and your auto-attack speed by $1263345s2% for $1263345d.
 
 Name             : Celestial Flames (id=1263353) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23170,7 +23185,7 @@ Effects          :
 Description      : $@spelldesc1266719
 
 Name             : Stillstep Coil (id=1266733) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23278,7 +23293,7 @@ Effects          :
 Description      : Vivify and Sheilun's Gift critical strike chances are increased by $s1% on yourself.
 
 Name             : Mist Caller (id=1266811) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23292,7 +23307,7 @@ Effects          :
 Description      : Vivify and Sheilun's Gift trigger a Gust of Mist on yourself.
 
 Name             : Emperor's Elixir (id=1268807) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23316,7 +23331,7 @@ $@spelldesc1248812
 
 
 Name             : Misty Coalescence (id=1268817) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23367,7 +23382,7 @@ Effects          :
 Description      : $@spelldesc467307
 
 Name             : Tranquil Tea (id=1270621) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=9, col=7, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23381,7 +23396,7 @@ Effects          :
 Description      : Consuming Mana Tea generates $s1 $Lcloud of mist:clouds of mist;.
 
 Name             : Harmonic Surge (id=1270958) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23463,7 +23478,7 @@ Effects          :
 Description      : $@spelldesc1270958
 
 Name             : Potential Energy (id=1271048) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23477,7 +23492,7 @@ Effects          :
 Description      : Casting $?c1[Keg Smash][Rising Sun Kick or Rushing Wind Kick] guarantees that your next cast of Tiger Palm or Vivify will cause a Harmonic Surge.
 
 Name             : Meditative Focus (id=1271105) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23521,7 +23536,7 @@ Effects          :
 Description      : The healing of Gusts of Mist caused by Renewing Mist is increased by $s1%. 
 
 Name             : Universal Energy (id=1272175) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23537,7 +23552,7 @@ Effects          :
 Description      : Your magical damage is increased by $s1%.
 
 Name             : Sunfire Spiral (id=1272415) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=8, col=3, max_rank=1, req_points=20]
                  : Effect#1 [op=set, values=(20, 30)]
 Class            : Monk
 School           : Physical
@@ -23553,7 +23568,7 @@ Effects          :
 Description      : Rising Sun Kick gains $s1% additional effectiveness from Mastery: Combo Strikes.
 
 Name             : Chi Transfer (id=1272452) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23608,7 +23623,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Weapon of Wind (id=1272678) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23629,7 +23644,7 @@ Effects          :
 Description      : Your damage during Zenith is increased by $s1%.
 
 Name             : Martial Agility (id=1272685) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Windwalker [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23683,7 +23698,7 @@ Effects          :
 Description      : $@spelldesc1272694
 
 Name             : Tiger Fang (id=1272781) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=class, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Windwalker [tree=class, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23701,7 +23716,7 @@ Effects          :
 Description      : Your auto attack critical strike chance is increased by $s1%.
 
 Name             : Wisdom of the Wall (id=1272821) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23762,7 +23777,7 @@ Description      : $@spelldesc1272849
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Path of the Falling Star (id=1273154) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23781,7 +23796,7 @@ Description      : Celestial Conduit's healing and damage is increased by $s1% w
 Each addtional target reduces this bonus by $s2%.
 
 Name             : Morning Breeze (id=1277302) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -23826,7 +23841,7 @@ Effects          :
 Description      : $@spelldesc1277444
 
 Name             : Mistline (id=1280297) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Mistweaver [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : None

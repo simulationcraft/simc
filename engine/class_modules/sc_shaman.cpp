@@ -10712,6 +10712,10 @@ void shaman_t::init_spells()
   talent.crackling_fury            = _ST( "Crackling Fury" );
   talent.purging_flames            = _ST( "Purging Flames" );
 
+  talent.feedback_loop_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Feedback Loop", 1 );
+  talent.feedback_loop_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Feedback Loop", 2 );
+  talent.feedback_loop_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Feedback Loop", 3 );
+
   // Farseer
 
   talent.call_of_the_ancestors  = find_talent_spell( talent_tree::HERO, "Call of the Ancestors" );
@@ -12252,11 +12256,7 @@ bool shaman_t::validate_actor()
     return false;
   }
 #ifdef NDEBUG
-  if ( ( specialization() == SHAMAN_ELEMENTAL ) && ( sim->dbc->wowv() >= wowv_t( 12, 0, 0 ) ) )
-  {
-    throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
-    return false;
-  }
+  
 #endif  // !NDEBUG
 
   // Restoration isn't supported atm

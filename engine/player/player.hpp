@@ -716,7 +716,7 @@ struct player_t : public actor_t
   /// Current execution type
   execute_type current_execute_type;
 
-  using resource_callback_function_t = std::function<void()>;
+  using resource_callback_function_t = std::function<void( bool )>;
 
   template <typename T>
   struct player_option_t
@@ -1083,8 +1083,10 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
+  player_talent_t find_talent_spell( hero_tree_e tree, std::string_view name, bool name_tokenized = false,
+                                     unsigned index = 0 ) const;
   player_talent_t find_talent_spell( talent_tree tree, std::string_view name, specialization_e s = SPEC_NONE,
-                                     bool name_tokenized = false, unsigned index = 0 ) const;
+                                     bool name_tokenized = false, unsigned index = 0, hero_tree_e hero_tree = HERO_NONE ) const;
   player_talent_t find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const;
   player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
   player_talent_t find_talent_spell( unsigned talent_entry_id ) const;

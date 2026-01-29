@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.65535
+Class Spell ID List, wow build 12.0.0.65560
 
 Death Knight
 3714     Path of Frost
@@ -8649,7 +8649,7 @@ Hunter
 1257011  Vulnerability
 1257703  Precise Shots
 1258338  Stampede!
-1258344 *Stampede
+1258344  Stampede
 1258345 *Stampede
 1258402  Touch of Grass
 1258404  Catlike Reflexes
@@ -8661,14 +8661,14 @@ Hunter
 1258571  Takedown
 1258608 *Darkness Falls
 1259003  Raptor Swipe
-1259017 *Raptor Swipe
-1259019 *Raptor Swipe
+1259017  Raptor Swipe
+1259019  Raptor Swipe
 1259922  Lethality
 1261193  Boomstick
 1261215  Boomstick
 1261229  Wildfire Shells
 1262293  Raptor Swipe
-1262323 *Raptor's Fury
+1262323  Raptor's Fury
 1262328  Feral Lunge
 1262343  Raptor Swipe
 1262361  Raptor Swipe
@@ -8732,13 +8732,13 @@ Hunter
 1272136  Quick Reload
 1272139  Twin Fangs
 1272154  Primal Surge
-1273043 *Nature's Ally
+1273043  Nature's Ally
 1273065 *Nature's Ally
 1273126 *Nature's Ally
 1273128  Take Aim
 1273129 *Take Aim
 1273132 *Take Aim
-1273144 *Nature's Ally
+1273144  Nature's Ally
 1273145 *Nature's Ally
 1273147  Deadly Insight
 1273155  Raptor Swipe!
@@ -8758,7 +8758,7 @@ Hunter
 1279347  Quick Draw
 1280140  Tip of the Spear
 1281527 *Nature's Ally
-1282474 *Nature's Ally
+1282474  Nature's Ally
 1282660  Barbed Shot
 1282710  Serpentine Strikes
 1282747  Heart of the Pack

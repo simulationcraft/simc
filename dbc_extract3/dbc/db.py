@@ -214,7 +214,7 @@ class DataStore:
         elif isinstance(source_key, types.FunctionType) or isinstance(source_key, types.MethodType):
             key += [source_key.__name__]
         else:
-            logging.warn('Invalid source key %s, not linking %s::%s to %s::%s',
+            logging.warning('Invalid source key %s, not linking %s::%s to %s::%s',
                 source_key, source, source_key, target, target_attr)
             return
 

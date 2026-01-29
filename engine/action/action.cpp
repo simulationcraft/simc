@@ -698,6 +698,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   if ( spell_data.charge_cooldown() > timespan_t::zero() )
   {
+    cooldown->category = true;
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();
 

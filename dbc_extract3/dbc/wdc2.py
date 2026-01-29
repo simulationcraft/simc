@@ -211,7 +211,7 @@ class WDC2Section:
                 continue
 
             if source_dbc_id not in record_id_map:
-                logging.warn('Unable to find clone source id %d in section %d', source_dbc_id, self.id)
+                logging.warning('Unable to find clone source id %d in section %d', source_dbc_id, self.id)
                 continue
 
             source = record_id_map[source_dbc_id]
@@ -360,7 +360,7 @@ class WDC2Parser(WDC1Parser):
             self.record_table += records
             for record in records:
                 if record.dbc_id in self.id_table:
-                    logging.warn('Duplicate record with dbc id %d found', record.dbc_id)
+                    logging.warning('Duplicate record with dbc id %d found', record.dbc_id)
 
                 self.id_table[record.dbc_id] = record
 

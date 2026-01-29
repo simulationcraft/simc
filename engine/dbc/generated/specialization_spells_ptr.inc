@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.1.65448
-static constexpr std::array<specialization_spell_entry_t, 610> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.1.65617
+static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -588,6 +588,7 @@ static constexpr std::array<specialization_spell_entry_t, 610> __ptr_specializat
   { 13, 1467,  462076,      0, "Devastation Evoker"                , 0 },
   { 13, 1467, 1229376,      0, "Single-Button Assistant"           , 0 },
   { 13, 1467, 1256943,      0, "Devastation Evoker"                , 0 },
+  { 13, 1467, 1286123,      0, "Devastation Evoker"                , 0 },
   { 13, 1468,  356810,      0, "Preservation Evoker"               , 0 },
   { 13, 1468,  360823, 365585, "Naturalize"                        , 0 },
   { 13, 1468,  361178,      0, "Mass Return"                       , 0 },

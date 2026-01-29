@@ -674,6 +674,15 @@ table.sort tr.details td table.details {
 table.sort tr.details td table.details tr th:first-of-type {
     width: 90px;
 }
+table.talents th.right {
+    width: 1em;
+    vertical-align: middle;
+}
+table.talents td {
+    height: 40px;
+    width: 80px;
+    font-size: 11px;
+}
 .player-thumbnail {
     float: right;
     position: absolute;

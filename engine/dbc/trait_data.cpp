@@ -60,7 +60,7 @@ const trait_data_t* trait_data_t::find( unsigned trait_node_entry_id, bool ptr )
 }
 
 const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name, unsigned class_id,
-                                        specialization_e spec, bool ptr, bool tokenize, unsigned index )
+                                        specialization_e spec, bool ptr, bool tokenize, unsigned index, unsigned sub_tree_id )
 {
   std::vector<const trait_data_t*> _traits;
 
@@ -68,9 +68,16 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
 
   for ( const auto& entry : _data )
   {
+    if ( sub_tree_id != 0 && entry.id_sub_tree != 0 && entry.id_sub_tree != sub_tree_id )
+    {
+      continue;
+    }
+
     if ( util::str_compare_ci( name, tokenize ? util::tokenize_fn( entry.name ) : entry.name ) )
     {
-      if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
+      // hero talents seem to ignore id_spec requirement
+      if ( tree == talent_tree::HERO || entry.id_spec[ 0 ] == 0 ||
+           range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
       {
         _traits.push_back( &entry );
       }
@@ -83,9 +90,10 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
   }
   else if ( !_traits.empty() )
   {
-    // There are two situations where you can have multiple traits with the same name:
-    //  1) tiered nodes (apex) with multiple traits of the same name
-    //  2) 'dirty' talent code where a choice node is split up and a duplicate entry is left behind
+    // There are situations where you can have multiple traits with the same name:
+    //  1) different specs have different entry_id for the same node with the same name
+    //  2) tiered nodes (apex) with multiple traits of the same name
+    //  3) 'dirty' talent code where a choice node is split up and a duplicate entry is left behind
 
     // If index is passed, return the n-1'th matching node as the generated arrays are already sorted by selection index.
     // Note there is no check to see if traits are actually apex traits or on the same node - this is done on purpose to
@@ -96,6 +104,14 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
     }
     else
     {
+      // if one and only one trait matches the spec, assume it's the correct one
+      if ( auto it = range::partition( _traits, [ spec ]( const trait_data_t* t ) {
+        return range::contains( t->id_spec, spec );
+      } ); it == _traits.begin() + 1 )
+      {
+        return _traits.front();
+      }
+
       for ( auto trait : _traits )
       {
         // find all entries on the same node

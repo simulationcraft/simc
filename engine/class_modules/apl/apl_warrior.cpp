@@ -60,7 +60,7 @@ void fury( player_t* p )
   slayer->add_action( "execute" );
   slayer->add_action( "rampage,if=rage>115" );
   slayer->add_action( "odyns_fury" );
-  slayer->add_action( "rend,if=dot.rend.duration<6&active.enemies=>2" );
+  slayer->add_action( "rend,if=dot.rend.remains<6&active_enemies>1" );
   slayer->add_action( "crushing_blow" );
   slayer->add_action( "raging_blow" );
   slayer->add_action( "champions_leap,if=buff.enrage.up" );
@@ -68,7 +68,7 @@ void fury( player_t* p )
   slayer->add_action( "rampage" );
   slayer->add_action( "bloodbath" );
   slayer->add_action( "bloodthirst" );
-  slayer->add_action( "rend,if=dot.rend.duration<6" );
+  slayer->add_action( "rend,if=dot.rend.remains<6" );
   slayer->add_action( "wrecking_throw" );
   slayer->add_action( "whirlwind" );
   slayer->add_action( "storm_bolt,if=buff.bladestorm.up" );

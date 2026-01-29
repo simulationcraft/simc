@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.0.65535
-static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
+// Spell text, wow build 12.0.0.65560
+static constexpr std::array<spelltext_data_t, 28334> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27155,6 +27155,7 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1258235, "$@spelldesc14161", 0, 0 },
   { 1258283, "Invoke the litany to apply Beacon of Lightblind Wrath to an enemy for $d. Your next $u harmful spells call down a blast of Light to deal $1258275s1 Holy damage to the target.\r\n\r\n$1263727i injured allies are shielded for the same amount, absorbing $1263727s2% of damage taken while the shield holds.", "$@auracaster's harmful spells cause additional Holy damage and shield 5 injured allies.", 0 },
   { 1258338, "$@spelldesc472741", "Consuming Howl of the Pack Leader will summon a Stampede!", 0 },
+  { 1258344, "Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.", 0, 0 },
   { 1258398, "While wielding a two-handed weapon, you deal ${$s1}.1% additional damage.", 0, 0 },
   { 1258402, "Your maximum health is increased by $s1%.", 0, 0 },
   { 1258404, "Aspect of the Cheetah's initial burst of speed is increased by ${$s2/1000}.1 sec.", 0, 0 },
@@ -27202,6 +27203,8 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1258895, "All Elemental damage increased by $s1%.", 0, 0 },
   { 1258899, "Earth Shock, Elemental Blast, and Earthquake deal $s1% increased damage.", 0, 0 },
   { 1259003, "Raptor Strike has a $s1% chance to upgrade itself to a Raptor Swipe, dealing $1262293s1 Physical damage to all enemies within $s3 yds in front of you. Damage reduced beyond $s2 targets.", 0, 0 },
+  { 1259017, "Raptor Strike, Wildfire Bomb, and Raptor Swipe damage increased by $s1%.\r\n\r\nRaptor Swipe deals $s2% increased damage to its primary target.", 0, 0 },
+  { 1259019, "Raptor Strike now has a $s1% chance to upgrade itself to a Raptor Swipe.\r\n\r\nRaptor Swipes that benefit from Tip of the Spear provoke an additional Strike as One at $s2% effectiveness.", 0, 0 },
   { 1259047, "Lightning Bolt, $?a454009[Tempest, ][]Chain Lightning, Earth Shock, Elemental Blast, and Earthquake deal $s1% increased damage to targets affected by Flame Shock.", 0, 0 },
   { 1259060, "Kulzi favors you, granting your healing spells and abilities a chance to grant your target 1244243s1 Versatility.", 0, 0 },
   { 1259061, "$@spelldesc1259060", "Blessed with vigor by Kulzi, the Pango Loa. Your Versatility is increased by $w1.", 0 },
@@ -27440,6 +27443,7 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1262293, "Slashes through all enemies within $a1 yds in front of you, dealing $s1 Physical damage. Damage reduced beyond $s2 targets.", 0, 0 },
   { 1262294, "$@spelldesc386154", "Mastery increased by $w1.", 0 },
   { 1262299, "$@spelldesc386154", "Mastery increased by $w1.", 0 },
+  { 1262323, "$@spelldesc1259019", "Haste increased by $s1%.", 0 },
   { 1262328, "$@spelldesc1251717", 0, 0 },
   { 1262329, "Exploding Keg can be reactivated within $1262768d to throw $s1 additional kegs at nearby targets, each dealing $1262765s1 Physical damage and reducing the cooldown of your Brews by ${$s2/1000}.1 sec.", 0, 0 },
   { 1262334, "Crackling Jade Lightning deals its damage in $s1% less time, costs $s3% less Energy, and strikes ${$s2-1} additional targets, but has a ${$s5/1000} sec cooldown.", 0, 0 },
@@ -28132,11 +28136,13 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1272989, "Critical strike damage bonus increased by $s2%.", 0, 0 },
   { 1273017, "Deathstalker's Mark has a ${$s1/$s2*100}% chance to immediately consume a stack when applied.", 0, 0 },
   { 1273035, "Deathstalker's Mark deals $?c1[$s1][$s2]% of its normal damage to all other enemies within 8 yds $?c1[that are afflicted by Rupture][when a stack is consumed by Black Powder].", 0, 0 },
+  { 1273043, "Bestial Wrath also calls forth a powerful Dire Beast to fight alongside you for $1273144d.", 0, 0 },
   { 1273061, "$@spelldesc457052", 0, 0 },
   { 1273062, "Overpower and Slam increase the damage of your next Mortal Strike by $316440s1%, stacking up to 3 times.", 0, 0 },
   { 1273075, "Cleave and Whirlwind deal $s1% additional damage to targets below $s2% health.", 0, 0 },
   { 1273106, "Your abilities have a chance to summon a Silverpaw Lynx to strike at your foes, dealing $s1 physical damage split between all nearby enemies. Damage is increased per target hit.", 0, 0 },
   { 1273128, "Aimed Shot always critically strikes.", 0, 0 },
+  { 1273144, "$@spelldesc1273043", 0, 0 },
   { 1273147, "$@spelldesc1273128", "Bleeding for $w1 damage every $t1  sec.$?$w2>0[\r\n\r\nDamage taken from $@auracaster increased by $w2%.][]", 0 },
   { 1273154, "Celestial Conduit's healing and damage is increased by $s1% when striking a single target.\r\n\r\nEach addtional target reduces this bonus by $s2%.", 0, 0 },
   { 1273155, "$@spelldesc1259003", "Your Raptor Strike is upgraded to Raptor Swipe!", 0 },
@@ -28282,6 +28288,7 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1281580, "$@spelldesc1281574", 0, 0 },
   { 1281581, "$@spelldesc1281574", 0, 0 },
   { 1281638, "Ice Lance reduces the cooldown of Frozen Orb by ${$s1/1000}.1 sec, increased by ${$s2/1000}.1 sec for each stack of Freezing Shattered.", 0, 0 },
+  { 1282474, "$@spelldesc1273043", 0, 0 },
   { 1282660, "$@spelldesc321014", 0, 0 },
   { 1282710, "$@spelldesc468701", 0, 0 },
   { 1282747, "$@spelldesc1265052", "Haste increased by $W1%.", 0 },
@@ -28329,11 +28336,11 @@ static constexpr std::array<spelltext_data_t, 28327> __spelltext_data { {
   { 1283719, "$@spelldesc357208", "Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]", "Red" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.0.65535
+// spelltext hotfix entries, wow build 12.0.0.65560
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.0.65535
+// Spell description variables, wow build 12.0.0.65560
 static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28612,7 +28619,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  321677, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321685, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321686, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
-  {  322507, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
   {  324143, "$rage=$?c1[${4}]?c2[${6}][${4}]" },
@@ -28768,7 +28775,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  424564, "$dmg=${$57841s2+$57842s1}" },
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {  425804, "$healing=$?c2[${$s1*1.95}][${$s1}]" },
-  {  425965, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  425965, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  426516, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
   {  427031, "$apsp=${$cond($gt($SP,$AP),$SP,$AP)*(1)}" },
   {  427913, "$havocFury=${$s2}\r\n$vengeFury=${$s3+($258922s3*$d)}\r\n$havocTalentFury=${$s2+($258922s2*$d)}" },
@@ -28837,7 +28844,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   {  451036, "$value=${($AP*$s3/100)*(1+$@versadmg)}" },
   {  451055, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451181, "$value=$?a137023[${($AP*$451017s1/100)*(1+$@versadmg)}][${($SP*$451017s1/100)*(1+$@versadmg)}]" },
-  {  451253, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  451253, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   {  451299, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s2/100*(1+$@versadmg)}" },
   {  451882, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451901, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -28958,7 +28965,7 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   { 1237721, "$damageValue=${($max($AP,$SP)*($1250003w8/100))}" },
   { 1237885, "$damage=${$cond($gt($SP,$AP),$SP*0.5,$AP*0.5)*$pctD*(1+$@versadmg)}\r\n$damageovertime=${$cond($gt($SP,$AP),$SP*0.125,$AP*0.125)*$pctD*(1+$@versadmg)}\r\n$healing=${$cond($gt($SP,$AP),$SP*0.65,$AP*0.65)*$pctD*(1+$@versadmg)}\r\n$healingovertime=${$cond($gt($SP,$AP),$SP*0.15,$AP*0.15)*$pctD*(1+$@versadmg)}" },
   { 1240700, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
-  { 1241059, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  { 1241059, "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
   { 1241240, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241244, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241413, "$pvp=$?a134735[${1.15}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
@@ -29018,7 +29025,11 @@ static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.0.65535
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 12.0.0.65560
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
+  {  322507,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  {  425965,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  {  451253,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
+  { 1241059,  0, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n", "$absorb=${($AP*22.68)*(1+$@versadmg)}\r\n" },
 } };
 

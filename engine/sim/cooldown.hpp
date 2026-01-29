@@ -31,6 +31,7 @@ struct cooldown_t
   timespan_t duration;
   timespan_t ready;
   timespan_t reset_react;
+  bool category;  // cooldown associated with category ID instead of spell ID
   // Only adjust during initialization, otherwise use adjust/set_max_charges function
   int charges;
   event_t* recharge_event;
@@ -68,6 +69,11 @@ struct cooldown_t
   timespan_t remains() const;
 
   timespan_t current_charge_remains() const;
+
+  // Temporarily used to return true if category == true or charges > 1.
+  // Eventually should be removed and category == true should be sufficient.
+  bool is_category() const
+  { return category || charges > 1; }
 
   // Return true if the cooldown is ready (has at least one charge).
   bool up() const;

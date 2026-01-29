@@ -3295,6 +3295,21 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
 std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_t* talent, int /* level */ )
 {
+  auto spec_string = []( const std::array<unsigned, 4>& specs ) {
+    std::vector<std::string> tokens;
+
+    for ( auto spec : specs )
+    {
+      if ( spec )
+      {
+        tokens.emplace_back(
+          fmt::format( "{} ({})", dbc::specialization_string( static_cast<specialization_e>( spec ) ), spec ) );
+      }
+    }
+
+    return util::string_join( tokens, ", " );
+  };
+
   std::ostringstream s;
 
   s << "Name         : " << talent->name << std::endl;
@@ -3303,6 +3318,14 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Definition   : " << talent->id_trait_definition << std::endl;
   s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
+  if ( talent->id_spec[ 0 ] != 0 )
+  {
+    s << "Spec         : " << spec_string( talent->id_spec ) << std::endl;
+  }
+  if ( talent->id_spec_starter[ 0 ] != 0 )
+  {
+    s << "Starter      : " << spec_string( talent->id_spec_starter ) << std::endl;
+  }
   s << "Column       : " << talent->col << std::endl;
   s << "Row          : " << talent->row << std::endl;
   s << "Req. Points  : " << talent->req_points << std::endl;

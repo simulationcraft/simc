@@ -1,5 +1,5 @@
-// Embellishment data, wow build 12.0.1.65448
-static constexpr std::array<embellishment_data_t, 45> __ptr_embellishment_data { {
+// Embellishment data, wow build 12.0.1.65617
+static constexpr std::array<embellishment_data_t, 49> __ptr_embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
   { "Alchemical Flavor Pocket"                   ,    8174,  147811,  372120 },
@@ -34,6 +34,10 @@ static constexpr std::array<embellishment_data_t, 45> __ptr_embellishment_data {
   { "Griftah's Heavy-Duty Embellishing Powder"   ,   11941,  190239,  463429 },
   { "Arcanoweave Lining"                         ,   12384,  208649, 1283697 },
   { "Sunfire Silk Lining"                        ,   12385,  208662, 1241711 },
+  { "Darkmoon Sigil: Blood"                      ,   12705,  213245, 1245053 },
+  { "Darkmoon Sigil: Void"                       ,   13640,  213244, 1245052 },
+  { "Darkmoon Sigil: Rot"                        ,   12692,  213044, 1245055 },
+  { "Darkmoon Sigil: Hunt"                       ,   12693,  213045, 1245054 },
   { "Devouring Banding"                          ,   12685,  212929, 1244238 },
   { "Blessed Pango Charm"                        ,   12686,  212930, 1259060 },
   { "Primal Spore Binding"                       ,   12687,  212945, 1244276 },

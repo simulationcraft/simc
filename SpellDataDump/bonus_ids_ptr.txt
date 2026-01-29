@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65448 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -3122,7 +3122,7 @@ bonus_id={ 5805 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5806 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5807 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 5808 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
-bonus_id={ 5817 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 5817 }, recursive_bonus_ids={ 5805 }
 bonus_id={ 5821 }, quality={ epic }
 bonus_id={ 5825 }, desc={ Combatant I }, quality={ epic }
 bonus_id={ 5830 }, desc={ Challenger I }, quality={ epic }
@@ -4360,7 +4360,7 @@ bonus_id={ 7920 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7921 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7922 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
 bonus_id={ 7923 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
-bonus_id={ 7924 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 7924 }, recursive_bonus_ids={ 7920 }
 bonus_id={ 7930 }, effects={ Unknown Effect (id=0) }
 bonus_id={ 7932 }, effects={ Dimensional Translators (id=363327, index=0, type=use), Dimensional Translators (id=363328, index=0, type=equip) }
 bonus_id={ 7933 }, effects={ Raw Speed (id=363329, index=0, type=equip) }
@@ -4931,14 +4931,14 @@ bonus_id={ 9114 }, base_ilevel={ 68 }, req_ilevel={ 60 }, desc={ Raid Finder }, 
 bonus_id={ 9115 }, base_ilevel={ 69 }, req_ilevel={ 60 }, quality={ epic }
 bonus_id={ 9116 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 9117 }, base_ilevel={ 71 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9125 }, base_ilevel={ 75 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }
+bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }
+bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }
+bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }
+bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }
+bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }
+bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }
+bonus_id={ 9125 }, base_ilevel={ 75 }, req_ilevel={ 60 }
 bonus_id={ 9129 }, recursive_bonus_ids={ 6658 }
 bonus_id={ 9130 }, recursive_bonus_ids={ 13473 }
 bonus_id={ 9131 }, quality={ uncommon }, effects={ Fire Whirl (id=397207, index=0, type=equip) }
@@ -8163,7 +8163,7 @@ bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
 bonus_id={ 13635 }, base_ilevel={ 1 }
 bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
 bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
-bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
+bonus_id={ 13638 }, base_ilevel={ 102 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
 bonus_id={ 13642 }, recursive_bonus_ids={ 13617 }
 bonus_id={ 13644 }, base_ilevel={ 201 }, req_ilevel={ 90 }
@@ -8174,3 +8174,4 @@ bonus_id={ 13648 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13649 }, base_ilevel={ 180 }, req_ilevel={ 81 }, quality={ rare }
 bonus_id={ 13668 }, socket={ 1 }
 bonus_id={ 13669 }, base_ilevel={ 220 }, req_ilevel={ 90 }
+bonus_id={ 13670 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }

@@ -36,7 +36,7 @@ struct trait_data_t
   // static functions
   static const trait_data_t* find( unsigned trait_node_entry_id, bool ptr = false );
   static const trait_data_t* find( talent_tree tree, std::string_view name, unsigned class_id, specialization_e spec,
-                                   bool ptr = false, bool tokenize = false, unsigned index = 0 );
+                                   bool ptr = false, bool tokenize = false, unsigned index = 0, unsigned sub_tree_id = 0 );
   static std::vector<const trait_data_t*> find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id = 0,
                                                          specialization_e spec = SPEC_NONE, bool ptr = false );
   static const trait_data_t* find_by_trait_definition( unsigned trait_definition_id, bool ptr = false );
