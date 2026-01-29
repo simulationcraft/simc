@@ -3467,12 +3467,15 @@ struct takedown_t : public hunter_pet_attack_t<hunter_main_pet_t>
 
 struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 {
-  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", double effectiveness = 1.0 ) 
+  bool thundering_hooves = false;
+
+  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", bool is_thundering_hooves = false ) 
     : hunter_pet_attack_t( n, p, p->o()->talents.stomp_dmg )
   {
     background = true;
     aoe = -1;
-    base_dd_multiplier *= effectiveness;
+    thundering_hooves = is_thundering_hooves;
+    base_dd_multiplier *= thundering_hooves ? o()->talents.thundering_hooves->effectN( 1 ).percent() : 1.0;
   };
 
   void execute() override
@@ -3483,8 +3486,10 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
     {
       // Prioritise targets without Barbed Shot ticking.
       auto tl = target_list();
+
+      // 2026-01-29: Thundering Hooves stomps can hit the primary target.
       range::erase_remove(
-          tl, [ this ]( player_t* t ) { return t == target || o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
+          tl, [ this ]( player_t* t ) { return ( !thundering_hooves && t == target ) || o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
       target_cache.is_valid = false;
 
       if ( !tl.empty() )
@@ -3498,7 +3503,7 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 
     /* Wild Instincts edge case in ST where the target, if unaffected by 
        Barbed Shot, can receive a double Barbed Shot. */
-    if ( o()->talents.wild_instincts.ok() && s->n_targets == 1 )
+    if ( o()->talents.wild_instincts.ok() && target_list().size() == 1 )
       if ( p() == o()->pets.main && !o()->get_target_data( s->target )->dots.barbed_shot->is_ticking() )
         o()->actions.wild_instincts->execute_on_target( s->target );
   }
@@ -3723,7 +3728,7 @@ void stable_pet_t::init_spells()
   hunter_pet_t::init_spells();
 
   if ( o()->talents.thundering_hooves.ok() )
-    actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves->effectN( 1 ).percent() );
+    actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves.ok() );
 }
 
 void hunter_main_pet_base_t::init_spells()
@@ -5625,18 +5630,6 @@ struct barbed_shot_base_t : public hunter_ranged_attack_t
 
     return tt;
   }
-
-  /* Rolling periodic behaviour not working correctly 2026-01-10
-     TODO reconfirm before launch */
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t )
-      t = target;
-    if ( !t )
-      return nullptr;
-
-    return p()->get_target_data( t )->dots.barbed_shot;
-  }
 };
 
 struct barbed_shot_t : public barbed_shot_base_t
@@ -5680,12 +5673,9 @@ struct barbed_shot_t : public barbed_shot_base_t
 struct barbed_shot_wild_instincts_t : public barbed_shot_base_t
 {
   barbed_shot_wild_instincts_t( hunter_t* p )
-    : barbed_shot_base_t( p, "barbed_shot_wild_instincts", p->talents.barbed_shot )
+    : barbed_shot_base_t( p, "barbed_shot", p->talents.barbed_shot )
   {
     background = dual = true;
-
-    if ( auto barbed_shot = p->find_action( "barbed_shot" ) )
-      barbed_shot->add_child( this );
   }
 };
 
@@ -9494,7 +9484,7 @@ void hunter_t::create_buffs()
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.natures_ally_3 = 
-    make_buff( this, "natures_ally_3", talents.natures_ally_3_buff )
+    make_buff( this, "natures_ally", talents.natures_ally_3_buff )
       -> set_default_value( talents.natures_ally_3_buff->effectN( 1 ).percent() );
 
   buffs.bloody_frenzy = 
