@@ -839,6 +839,60 @@ struct shadow_word_madness_t final : public priest_spell_t
     parse_options( options_str );
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    timespan_t duration = composite_dot_duration( s );
+    if ( duration <= timespan_t::zero() )
+      return;
+
+    dot_t* dot = get_dot( s->target );
+
+    dot->current_action = this;
+    dot->max_stack      = dot_max_stack;
+
+    if ( !dot->state )
+      dot->state = get_state();
+
+    // Combine persistent_multiplier on refresh for Shadow Word: Madness only.
+    // When a partial/weak DoT (e.g., from Tentacle Slam / Maddening Tentacles)
+    // refreshes an existing DoT, the effective persistent multiplier should be
+    // the weighted combination of the old remaining ticks and the new base
+    // ticks so total damage is preserved rather than overwritten or doubled.
+    if ( dot->is_ticking() )
+    {
+      double old_persistent = dot->state->persistent_multiplier;
+      // copy new state first to capture snapshot values from this cast
+      dot->state->copy_state( s );
+
+      // compute weights in ticks
+      double ticks_left = dot->ticks_left_fractional();
+      timespan_t new_tick = tick_time( s );
+      timespan_t new_duration = composite_dot_duration( s );
+      double new_base_ticks = new_duration / new_tick;
+
+      // Protect against divide-by-zero: use sum of weighted ticks to preserve total damage.
+      double ticks_sum = ticks_left + new_base_ticks;
+      if ( ticks_sum > 0.0 )
+      {
+        double combined = ( ticks_left * old_persistent + new_base_ticks * s->persistent_multiplier ) / ticks_sum;
+        sim->print_debug( "shadow_word_madness refresh: old_persistent={} new_persistent={} ticks_left={} new_base_ticks={} ticks_sum={} combined={}",
+                          old_persistent, s->persistent_multiplier, ticks_left, new_base_ticks, ticks_sum, combined );
+        dot->state->persistent_multiplier = combined;
+      }
+      else
+      {
+        sim->print_debug( "shadow_word_madness refresh: ticks_sum<=0, preserving old_persistent={}", old_persistent );
+        dot->state->persistent_multiplier = old_persistent;
+      }
+    }
+    else
+    {
+      dot->state->copy_state( s );
+    }
+
+    dot->trigger( duration );
+  }
+
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_persistent_multiplier( s );
