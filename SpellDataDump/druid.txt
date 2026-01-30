@@ -1,6 +1,5 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
@@ -26,7 +25,6 @@ Description      : Shift into Bear Form and invoke the spirit of Ursol to let lo
 Tooltip          : Incapacitated.
 
 Name             : Entangling Roots (id=339) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -154,7 +152,6 @@ Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -395,7 +392,6 @@ Description      : Shift into Cat Form and increase your movement speed by $s1% 
 Tooltip          : Increased movement speed by $s1% while in Cat Form.
 
 Name             : Hibernate (id=2637) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -522,7 +518,6 @@ Description      : Hurl a ball of energy at the target, dealing $s1 Nature damag
 |C0033AA11Tree of Life: Damage increased by $5420s7% and instant cast.|R][]
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Druid
 School           : Physical
@@ -920,7 +915,6 @@ Hits a second target within $279620s1 yds of the first.][]$?s197911[
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][] 
 
 Name             : Regrowth (id=8936) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1815,7 +1809,6 @@ Effects          :
 Description      : $@spelldesc33763
 
 Name             : Cyclone (id=33786) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid
 School           : Nature
@@ -2138,7 +2131,6 @@ Effects          :
 Description      : Mangle has a 40% chance to grant $40452s1 Strength for $40452d, Starfire has a 25% chance to grant $40445s1 spell power for $40445d, and Rejuvenation has a 25% chance to grant  $40446s1 spell power for $40446d.
 
 Name             : Immobilized (id=45334) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -2157,7 +2149,6 @@ Description      : Charge to an enemy, immobilizing them for $45334d.
 Tooltip          : Immobilized.
 
 Name             : Wild Growth (id=48438) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Restoration), tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -3578,7 +3569,6 @@ Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
 Name             : Mass Entanglement (id=102359) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=8, max_rank=1, req_points=8, select_idx=100]
 Class            : Druid
 School           : Nature
@@ -5404,7 +5394,6 @@ Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
 Name             : Rejuvenation (Germination) (id=155777) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -5784,7 +5773,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
 
 Name             : Rake (id=163505) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -12174,7 +12162,6 @@ Tooltip          : $?<$w6<1>[Damage and healing increased by $w1% and haste incr
 If you spend ${$s9~/10} sec idle, the Frenzy consumes $w3% of your health and ends.][Damage and healing increased by $w6% and haste increased by $w8%.]
 
 Name             : Ravenous Frenzy (desc=Venthyr) (id=323557) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -15186,7 +15173,6 @@ Effects          :
                    Base Value: -12000 | Scaled Value: -12000 | Misc Value: 11 | Trigger Spell: 132158 | Target: Self (1)
                    Affected Spells: Nature's Swiftness (132158)
                    Family Flags: 51
-Hotfixed         : Sub Type (453 -> 107), Misc Value (2336 -> 11), Affects Spells, Trigger Spell (0 -> 132158)
 Description      : Nature's Swiftness's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Improved Ironbark (id=382552) [Spell Family (7), Passive] 

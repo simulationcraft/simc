@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3098,7 +3098,6 @@ $sweepingclawsecond= ${1*($AP*0.201825)*(1+$@versadmg)*2*$<mastery>}
 $damage=${1*($AP*0.3)*(1+$@versadmg)*$<mastery>}
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3121,7 +3120,6 @@ Description      : Strike an enemy with a smashing attack, dealing $s2 Physical 
 Tooltip          : Stunned.
 
 Name             : Gnaw (id=91800) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3164,7 +3162,6 @@ Effects          :
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $91807d.
 
 Name             : Shambling Rush (id=91807) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -5570,7 +5567,6 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Tremble Before Me (id=206961) 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
@@ -5785,7 +5781,6 @@ Effects          :
 Description      : $@spelldesc207142
 
 Name             : Blinding Sleet (id=207167) [Spell Family (15)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Frost
@@ -6742,7 +6737,6 @@ Effects          :
 Description      : Your Heart Strike generates ${$210738s1/10} additional Runic Power per target hit.
 
 Name             : Asphyxiate (id=221562) [Spell Family (15)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
@@ -13527,7 +13521,6 @@ Description      : $@spelldesc374747
 Tooltip          : Versatility increased by $w1%
 
 Name             : Tightening Grasp (id=374776) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -13670,7 +13663,6 @@ Description      : $@spelldesc376938
 Tooltip          : Damage taken from Remorseless Winter increased by $w1%.
 
 Name             : Absolute Zero (id=377048) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -18948,7 +18940,6 @@ Effects          :
 Description      : Chains of Ice now also roots enemies for $454787d but its cooldown is increased to ${$s2/1000} sec.
 
 Name             : Ice Prison (id=454787) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -19874,7 +19865,6 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class
 Effects          :
 #1 (id=1168230)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 10 | Scaled Value: 10 | Stat: Str | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value 2 (0 -> 1)
 Description      : $@spelldesc458753
 Tooltip          : Strength increased by ${$W1}.1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -35,7 +35,6 @@ Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Renew (id=139) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -189,7 +188,6 @@ Tooltip          : Reduced threat level. Enemies have a reduced detection range 
 Damage taken reduced by $s4%.][]
 
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -252,7 +250,6 @@ Effects          :
 Description      : A powerful prayer that heals your target and ${$s3-1} injured allies within $A2 yards for $s2.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
@@ -544,7 +541,6 @@ Description      : Blast the target's mind for $s1 Shadow damage.$?c1[ Costs a h
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=8, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
@@ -576,7 +572,6 @@ Description      : Lets out a psychic scream, causing all enemies within $A1 yar
 Tooltip          : Disoriented.
 
 Name             : Shackle Undead (id=9484) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=9, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
@@ -635,7 +630,6 @@ Tooltip          : Haste increased by $w1%.$?$w2>0[
 Mind Blast and Void Bolt damage increased by $w2%.][]
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Holy [tree=class, row=1, col=7, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
 Class            : Priest
 School           : Holy
@@ -739,7 +733,6 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
 Name             : Silence (id=15487) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
@@ -1494,7 +1487,6 @@ Description      : Releases miraculous light at a target location, healing up to
 |cFFFFFFFFCooldown reduced by $s3 sec when you cast Prayer of Healing.|r
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
@@ -3122,7 +3114,6 @@ Description      : $@spelldesc109186
 Tooltip          : Your next Flash Heal$?a1247178[ or Prayer of Healing][] is instant$?$w5>0[, heals for $w5% more,][] and costs $s2% less mana.
 
 Name             : Void Tendrils (id=114404) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -5192,7 +5183,6 @@ Tooltip          : Effects that reduce Holy Word cooldowns increased by $s1%. Co
 All healing done increased by $w3%. ][]$?$w5>0[ Heal and Prayer of Healing are instant and heal for $s5% more.][]
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5232,7 +5222,6 @@ Effects          :
 Description      : Holy Word: Chastise stuns the target for $200200d and is not broken by damage.
 
 Name             : Holy Word: Chastise (id=200200) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5973,7 +5962,6 @@ Effects          :
 Description      : The damage of Smite and Penance is increased by $m1%, and Penance increases or decreases your target's movement speed by $s2% for $355851d.
 
 Name             : Spirit of Redemption (desc=PvP Talent) (id=215769) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -11131,7 +11119,6 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical

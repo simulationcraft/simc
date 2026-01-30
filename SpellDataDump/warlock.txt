@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -212,7 +212,6 @@ Description      : Increases the time between an enemy's attacks by $s1% for $d.
 Tooltip          : Time between attacks increased by $w1%. $?e1[Chance to critically strike reduced by $w2%.][]
 
 Name             : Banish (id=710) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -469,7 +468,6 @@ Description      : Your attacks and damaging spells have a chance to drain the t
 Variables        : $damage=${$max($AP*1.25,$SPH)*0.25*$pctD*(1+$@versadmg)}
 
 Name             : Howl of Terror (id=5484) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -641,7 +639,6 @@ Description      : Burns the enemy's soul, dealing $s1 Fire damage and applying 
 Variables        : $cdr=${$s2/1000}
 
 Name             : Seduction (desc=Command Demon Ability) (id=6358) [Spell Family (57)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -710,7 +707,6 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Mortal Coil (id=6789) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -1326,7 +1322,6 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Infernal Awakening (id=22703) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -1696,7 +1691,6 @@ Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.816*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -2591,7 +2585,6 @@ Effects          :
 Description      : $@spelldesc89751
 
 Name             : Axe Toss (desc=Special Ability) (id=89766) [Spell Family (57)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Ranged
@@ -3633,7 +3626,6 @@ Description      : $@spelldesc196406
 Tooltip          : Incinerate, Soul Fire, and Chaos Bolt cast times reduced by $s1%.
 
 Name             : Fear (id=118699) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3836,7 +3828,6 @@ Effects          :
 Description      : $@spelldesc5227
 
 Name             : Fear (id=130616) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -4376,7 +4367,6 @@ Taunts the current target if it is not attacking the $?s108499[Abyssal][Infernal
 Tooltip          : Taunted.
 
 Name             : Meteor Strike (id=171017) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -4476,7 +4466,6 @@ Effects          :
 Description      : $@spelldesc171017
 
 Name             : Meteor Strike (desc=Command Demon Ability) (id=171156) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -4919,7 +4908,6 @@ Effects          :
 Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 
 Name             : Unstable Affliction (id=196364) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -11283,7 +11271,6 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -16011,7 +15998,6 @@ Effects          :
 Description      : Deals $s1 Fire damage to a target.
 
 Name             : Felseeker (id=438973) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Chaos
 Spell Type       : Magic

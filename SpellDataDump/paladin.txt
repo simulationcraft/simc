@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -137,7 +137,6 @@ Effects          :
 Description      : Reduces Arcane damage taken by $s1%.
 
 Name             : Hammer of Justice (id=853) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -402,7 +401,6 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Turn Evil (id=10326) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -1108,7 +1106,6 @@ $damage=$?a137027[${$s2*$<retribution>}][$s2]
 $crit=$?a137027[${$s4*$<retribution>}][$s4]
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -8417,7 +8414,6 @@ Demon and Undead enemies are also stunned for $255941d.
 |cFFFFFFFFGenerates $s2 Holy Power.
 
 Name             : Wake of Ashes (id=255941) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee

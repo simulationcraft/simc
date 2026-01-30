@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1389,7 +1389,6 @@ Description      : Hurls molten lava at the target, dealing $285452s1 Fire damag
 |cFFFFFFFFGenerates $343725s3 Maelstrom.|r][]
 
 Name             : Hex (desc=Frog) (id=51514) [Spell Family (11)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Nature
@@ -2129,7 +2128,6 @@ Description      : Causes the earth within $a1 yards of the target location to t
 |cFFFFFFFFThis spell is cast at a selected location.|r
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -2403,7 +2401,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.620802 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (0.3411 -> 0.620802)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -3401,7 +3398,6 @@ Description      : Burns an enemy, then inflicts additional Fire damage every $t
 Tooltip          : Fire damage inflicted every $t2 sec.
 
 Name             : Pulverize (id=118345) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -3437,7 +3433,6 @@ Description      : Critical Strike increased by $s1%.
 Tooltip          : Critical Strike increased by $s1%.
 
 Name             : Capacitor Totem (id=118905) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -3656,7 +3651,6 @@ Effects          :
                    Base Value: 183 | Scaled Value: 183 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-Hotfixed         : Base Value (126 -> 183)
 #13 (id=1006576) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 267 | Scaled Value: 267 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -4639,7 +4633,6 @@ Description      : $@spelldesc187874
 Tooltip          : Stormstrike, Ice Strike, and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
-Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Talent Entry     : Enhancement [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Physical
@@ -10241,7 +10234,6 @@ Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
 Name             : Lightning Lasso (desc=PvP Talent) (id=305485) [Spell Family (11)] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 5
@@ -21177,7 +21169,6 @@ Effects          :
 Description      : Lava Burst deals $s1% additional damage.
 
 Name             : Encasing Cold (id=1258862) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : Magic

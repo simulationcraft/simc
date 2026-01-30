@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -477,7 +477,6 @@ Description      : Your attacks and damaging spells have a chance to drain the t
 Variables        : $damage=${$max($AP*1.25,$SPH)*0.25*$pctD*(1+$@versadmg)}
 
 Name             : Intimidating Shout (id=5246) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Warrior
 School           : Physical
@@ -2596,7 +2595,6 @@ Effects          :
 Description      : $?s198304[Intercept][Charge] now deals $7922s1 additional damage to the target, and stuns them for $237744d.
 
 Name             : Charge (id=105771) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -3063,7 +3061,6 @@ Effects          :
 Description      : $@spelldesc5227
 
 Name             : Shockwave (id=132168) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -3085,7 +3082,6 @@ Description      : $@spelldesc46968
 Tooltip          : Stunned.
 
 Name             : Storm Bolt (id=132169) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -4134,7 +4130,6 @@ Effects          :
 Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
 Name             : Thunderstruck (desc=PvP Talent) (id=199042) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -5839,7 +5834,6 @@ Effects          :
 Description      : $@spelldesc236279
 
 Name             : Warbringer (id=237744) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -9574,7 +9568,6 @@ Less hindered by movement impairing effects.$?$w5!=0[
 Critical strike chance increased by $w5%.][]
 
 Name             : Ancient Aftershock (desc=Night Fae) (id=325886) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Nature
 Spell Type       : Melee
@@ -9607,7 +9600,6 @@ $areaDmg=${4*$326062s1}
 $period=${3}
 
 Name             : Ancient Aftershock (id=326062) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Nature
 Spell Type       : Magic
@@ -9669,7 +9661,6 @@ Effects          :
 Description      : $@spelldesc325886
 
 Name             : Ancient Aftershock (id=326083) 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Nature
 Spell Type       : Magic
@@ -10812,7 +10803,6 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -13076,7 +13066,6 @@ Effects          :
 Description      : $@spelldesc100
 
 Name             : Shield Charge (id=385954) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -16974,9 +16963,11 @@ Effects          :
 #2 (id=1164106)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=1164111)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1218193)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #5 (id=1229368)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Misc Value 2: -29 | Target: Self (1)
                    Affected School(s): Physical
@@ -19400,7 +19391,6 @@ Effects          :
 Description      : Cleave and Whirlwind deal $s1% additional damage to targets below $s2% health.
 
 Name             : Javelineer (id=1277104) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None

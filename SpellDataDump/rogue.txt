@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -31,7 +31,6 @@ Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Dama
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -159,7 +158,6 @@ Description      : Attack with both weapons, dealing a total of $<dmg> Physical 
 Variables        : $dmg=${$5374s2+$27576s2*0.5}
 
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -248,7 +246,6 @@ Effects          :
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -341,7 +338,6 @@ Effects          :
 Description      : Allows opening of locked chests and doors that require a skill level of up to $PL.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -496,7 +492,6 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2
 ][.]
 
 Name             : Blind (id=2094) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Outlaw), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -870,7 +865,6 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Sap (id=6770) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -10300,7 +10294,6 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -14879,7 +14872,6 @@ Description      : Kidney Shot has $s1% increased cooldown and Energy cost, and 
 
 
 Name             : Kidney Shot (id=426589) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -15040,7 +15032,6 @@ Effects          :
 Description      : $@spelldesc378996
 
 Name             : Blind (id=427773) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Ranged

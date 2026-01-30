@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -420,7 +420,6 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -1439,7 +1438,6 @@ Description      : You shrug off attacks, delaying a portion of Physical damage 
 $@spelldesc383714][]
 
 Name             : Paralysis (id=115078) [Spell Family (53)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Brewmaster, Windwalker, Mistweaver), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -1669,7 +1667,6 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 3 | Scaled Value: 5400 (coefficient=0.0288) | Target: Self (1)
-Hotfixed         : Coefficient (0.024 -> 0.0288)
                    Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
@@ -2065,7 +2062,6 @@ Description      : Causes a surge of invigorating mists, healing the target for 
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
-Hotfixed         : Charge Cooldown (45000 -> 30000)
 Talent Entry     : Mistweaver [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
@@ -2150,7 +2146,6 @@ Effects          :
 Description      : Jabs the target in the throat, interrupting spellcasting and preventing any spell from that school of magic from being cast for $d.
 
 Name             : Disable (id=116706) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2530,7 +2525,6 @@ Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Leg Sweep (id=119381) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2635,7 +2629,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Fists of Fury (id=120086) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -5146,7 +5139,6 @@ Effects          :
 Description      : Conjures a cloud of hypnotic mist that slowly travels forward. Enemies touched by the mist fall asleep, Disoriented for $198909d.
 
 Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -6340,7 +6332,6 @@ Effects          :
 Description      : Vivify healing is increased by $s1%.
 
 Name             : Fists of Fury (id=232055) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -9584,7 +9575,6 @@ Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and 
 $@spellicon115069 $@spellname115069: $@spelldesc115069 
 
 Name             : Celestial Brew (id=322507) [Spell Family (53)] 
-Hotfixed         : Variables
 Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -16091,7 +16081,6 @@ Tooltip          : $@spelldesc274586
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Celestial Brew (id=425965) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -18797,7 +18786,6 @@ Effects          :
 Description      : $@spelldesc1262612
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -21344,7 +21332,6 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Celestial Infusion (id=1241059) [Spell Family (53)] 
-Hotfixed         : Variables
 Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -21364,7 +21351,6 @@ Effects          :
 #1 (id=1239822)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 22.68 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : AP Coefficient (0 -> 22.68)
 #2 (id=1239823)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $<absorb> total.
@@ -22435,7 +22421,6 @@ Effects          :
                    Affected Spells (Label): Manifestation (450875)
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee

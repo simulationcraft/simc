@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -81,7 +81,6 @@ $piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
 Name             : Frost Nova (id=122) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1463,7 +1462,6 @@ $fingersMult=${(2.00*$<masteryMult>)}
 
 
 Name             : Dragon's Breath (id=31661) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Fire
@@ -1566,7 +1564,6 @@ Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Freeze (id=33395) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1896,7 +1893,6 @@ Description      : Unleash a flurry of ice, striking the target $s1 times for a 
 |CFFffffffApplies ${$1246769s2*$s1} $lstack:stacks; of Freezing.|R
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
@@ -2592,7 +2588,6 @@ Description      : Cannot benefit from Time Warp or other similar effects.
 Tooltip          : Cannot benefit from Time Warp or other similar effects.
 
 Name             : Ring of Frost (id=82691) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -4105,7 +4100,6 @@ Description      : Causes an explosion around yourself, dealing $s1 Fire damage 
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Ice Nova (id=157997) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=200, replace="Cone of Cold" (id=120)]
 Class            : Mage
 School           : Frost
@@ -6291,11 +6285,12 @@ Tooltip          : You recently moved.
 Stay still in order to gain Norgannon's Foresight.
 
 Name             : Cold Snap (id=235219) [Spell Family (3)] 
+Hotfixed         : Learn Level (19 -> 10), Required Level (19 -> 10)
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Mage
 School           : Frost
 Spell Type       : None
-Spell Level      : 19
+Spell Level      : 10
 Cooldown         : 300 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
@@ -11294,7 +11289,6 @@ Effects          :
 Description      : Conjures an Ice Wall $s3 yards long that obstructs line of sight. The wall has $s4% of your maximum health and lasts up to $d.
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -13161,7 +13155,6 @@ Description      : Enemies hit by Cone of Cold are frozen in place for $386770d 
 When your roots expire or are dispelled, your target is snared by $394255s1%, decaying over $394255d.
 
 Name             : Freezing Cold (id=386770) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -18657,11 +18650,12 @@ Effects          :
 Description      : Your Mastery is increased by $s1%.
 
 Name             : Glacial Bulwark (id=1244110) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Learn Level (54 -> 10), Required Level (54 -> 10)
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Spell Level      : 54
+Spell Level      : 10
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292

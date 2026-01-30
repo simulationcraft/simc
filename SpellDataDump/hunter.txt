@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -166,7 +166,6 @@ Description      : Shows the location of all nearby beasts on the minimap.
 Tooltip          : Tracking Beasts.
 
 Name             : Scare Beast (id=1513) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Nature
@@ -331,7 +330,6 @@ Description      : Your pet growls at the target, generating threat, taunting th
 Tooltip          : Taunted.
 
 Name             : Freezing Trap (id=3355) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Frost
 Spell Type       : Magic
@@ -1159,7 +1157,6 @@ Description      : Infuses you with Arcane energy, causing your next Arcane Shot
 Tooltip          : Your next Arcane Shot will create an Arcane Detonation.
 
 Name             : Intimidation (id=24394) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
@@ -2644,7 +2641,6 @@ Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Rest (desc=Bonus Ability) (id=94019) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2936,7 +2932,6 @@ Description      : $@spelldesc109248
 Tooltip          : Tethered to the magical arrow. Moving $109248s2 yards from the arrow will stun you for $117526d.
 
 Name             : Binding Shot (id=117526) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -3241,7 +3236,6 @@ Description      : Place a tar trap that creates a slick around itself for $1381
 Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Narrow Escape (id=136634) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -3802,7 +3796,6 @@ Effects          :
 Description      : $@spelldesc159788
 
 Name             : Steel Trap (id=162480) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4486,7 +4479,6 @@ Effects          :
 Description      : Place a Saberstalkers Battle Standard. In Draenor, the standard increases damage dealt against Beasts for players within $190637A1 yards of the Battle Standard by $190637s1%.  Lasts $d.
 
 Name             : Harpoon (id=190925) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4515,7 +4507,6 @@ Description      : Hurls a harpoon at an enemy, rooting them in place for $19092
 Tooltip          : Rooted.
 
 Name             : Harpoon (id=190927) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5558,7 +5549,6 @@ Description      : $@spelldesc208912
 Tooltip          : Increases the damage of your next Aimed Shot by $s1%.
 
 Name             : Play Dead (id=209997) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5712,7 +5702,6 @@ Effects          :
 Description      : Your pet gains the passive abilities of all pet specializations and deals ${$s2/3}% increased damage.
 
 Name             : Harpoon (id=212331) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5734,7 +5723,6 @@ Description      : $@spelldesc190925
 Tooltip          : Rooted
 
 Name             : Harpoon (id=212353) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8768,7 +8756,7 @@ Name             : Raptor Strike (id=265189) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
-Resource         : 30 Focus (2) (id=191506)[Hotfixed: Cost (40 -> 30)]
+Resource         : 30 Focus (2) (id=191506)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -8783,7 +8771,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.575 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.86 -> 3.575)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Fireblood (desc=Racial) (id=265221) 
@@ -13014,7 +13001,6 @@ Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69632 -> 69888), Attributes
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -13079,7 +13065,6 @@ Effects          :
 Description      : Fire an enchanted arrow, dealing $354831s1 Shadow damage to your target and an additional $354831s2 Shadow damage to all enemies within $354831A2 yds of your target. Targets struck by a Wailing Arrow are silenced for $355596d.
 
 Name             : Wailing Arrow (id=355596) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -14880,7 +14865,6 @@ Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to y
 |cFFFFFFFFGrants Deathblow.|r
 
 Name             : Wailing Arrow (id=392061) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -16813,7 +16797,6 @@ Description      : $@spelldesc459552
 Tooltip          : Bleeding for $w1 damage every $t sec.
 
 Name             : Spearhead (id=459690) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -21475,7 +21458,6 @@ Effects          :
 Description      : The cooldown of Feign Death is reduced by ${-$s1/1000} sec.
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter, Monk
 School           : Physical
 Spell Type       : Melee
