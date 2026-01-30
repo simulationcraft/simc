@@ -9728,15 +9728,15 @@ void rogue_t::init_spells()
 
   // Register passives ======================================================
 
-  // Extra CP from Improved Ambush is reported separatedly and manually handled within the action
-  deregister_passive_spell( talent.rogue.improved_ambush );
-
   // Vigor value is divided by 10 due to ancient scripted support for the per-CP spend mechanics
   if ( talent.rogue.alacrity->ok() )
   {
     register_passive_effect_override( talent.rogue.alacrity->effectN( 1 ),
                                       talent.rogue.alacrity->effectN( 1 ).base_value() / 10 );
   }
+
+  // Extra CPs from Improved Ambush is reported separatedly and manually handled within the action
+  register_passive_effect_mask( talent.rogue.improved_ambush, effect_mask_t( true ).disable( 1 ) );
     
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
