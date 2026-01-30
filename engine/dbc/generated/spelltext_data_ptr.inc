@@ -26543,7 +26543,7 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
   { 1245483, "Unleash your glaives and charge to your target, dealing $1245414s2 Cosmic damage.$?a1246562[\r\n\r\n|CFFffffffGenerates $1245414s3 Fury.|R][]", 0, 0 },
   { 1245511, "$@spelldesc452402", 0, 0 },
   { 1245514, "$@spelldesc452402", 0, 0 },
-  { 1245523, 0, "Your Veilpierce is replaced with Reaper's Toll.", 0 },
+  { 1245523, 0, "Pierce the Veil is replaced with Reaper's Toll.", 0 },
   { 1245577, "Consuming a nearby Soul Fragment empowers you.", "Soul Fragments are nearby.", 0 },
   { 1245628, "$@spelldesc452402", 0, 0 },
   { 1245630, "$@spelldesc452402", 0, 0 },
@@ -27276,7 +27276,7 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
   { 1259314, "Casting spells has a high chance to tempt you with the power of the Void, increasing your Intellect by $s1 for $1259317d.\r\n\r\nEach temptation permanently increases this effect by $s2%, up to $1268058u times, diminishing quickly upon leaving combat.", 0, 0 },
   { 1259317, "$@spelldesc1259314", "Intellect increased by $w1.", 0 },
   { 1259352, "$@spelldesc1250580", "Mastery increased by $w1.", 0 },
-  { 1259431, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", 0, 0 },
+  { 1259431, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path.", 0, 0 },
   { 1259442, 0, "As the void dissipates, you will be horrified for $1259443d1. Killing an enemy prevents this effect from occurring.", 0 },
   { 1259443, 0, "Horrified.", 0 },
   { 1259457, "Your chance for Sinister Strike to strike twice and grant Opportunity is increased by $s1%", 0, 0 },
@@ -27825,7 +27825,7 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
   { 1264905, "$@spelldesc1264899", "Receiving $w1 healing every $t1 sec.", 0 },
   { 1264911, "$@spelldesc1264614", "A dryad is channeling Spirit of the Thicket onto your Ironbark target.", 0 },
   { 1264934, "Increases the attack speed of your active pets by $s1%.", 0, 0 },
-  { 1264946, "$@spelldesc459730", "Your next Aimed Shot is a Wailing Arrow.", 0 },
+  { 1264946, "$@spelldesc459730", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram.", 0 },
   { 1264948, "$@spelldesc1258672", "Suffering $w1 Cosmic damage every $t1.", 0 },
   { 1264949, "Throw a chakram blessed with moonlight at your current target that will rapidly deal $1266081s1 Physical damage $x times, bouncing to other targets if they are nearby.", 0, 0 },
   { 1265019, "$@spelldesc1258672", 0, 0 },
@@ -28597,9 +28597,12 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65617
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
   {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
   {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
+  { 1245523,  1, "Your Veilpierce is replaced with Reaper's Toll.", "Pierce the Veil is replaced with Reaper's Toll." },
+  { 1259431,  0, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path." },
+  { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
 } };
 
 // Spell description variables, wow build 12.0.1.65617
