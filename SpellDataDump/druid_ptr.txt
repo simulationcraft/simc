@@ -1189,6 +1189,7 @@ Effects          :
 Description      : Returns the spirit to the body, restoring a dead target to life with $s2% health and at least $s1% mana. Castable in combat.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1199,7 +1200,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -4229,6 +4230,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -4242,7 +4244,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)

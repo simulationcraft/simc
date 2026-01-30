@@ -873,6 +873,7 @@ Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -883,7 +884,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -2760,6 +2761,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2773,7 +2775,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -22394,7 +22396,8 @@ Effects          :
                    Modified By: Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Description      : Increases the attack speed of your active pets by $s1%.
 
-Name             : Moonlight Chakram (id=1264946) [Spell Family (9), Hidden] 
+Name             : Moonlight Chakram (id=1264946) [Spell Family (9)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -22406,7 +22409,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Triggered By     : Moonlight Chakram (1264902)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : No Aura Cancel (31), Not In Spellbook (143), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1276583)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Moonlight Chakram overrides Trueshot
@@ -22414,7 +22417,7 @@ Effects          :
 #2 (id=1276584)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Moonlight Chakram overrides Takedown
                    Base Value: 1264949 | Scaled Value: 1264949 | Misc Value: 1250646 | Target: Self (1)
 Description      : $@spelldesc459730
-Tooltip          : Your next Aimed Shot is a Wailing Arrow.
+Tooltip          : $?c2[Trueshot][Takedown] is replaced with Moonlight Chakram.
 
 Name             : Moonlight Chakram (id=1264949) [Spell Family (9)] 
 Class            : Hunter

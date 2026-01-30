@@ -1063,8 +1063,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=165715)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Between the Eyes (315341), Slice and Dice (315496), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Echoing Reprimand (354835), Echoing Reprimand (354838), Keep It Rolling (381989), Ambush (385897), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Roll the Bones (1214909)
-                   Family Flags: 9, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118
+                   Affected Spells: Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Blade Rush (271877), Blade Rush (271878), Blade Rush (271881), Blade Rush (271896), Between the Eyes (315341), Slice and Dice (315496), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Echoing Reprimand (354835), Echoing Reprimand (354838), Keep It Rolling (381989), Ambush (385897), Blade Flurry (429951), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Roll the Bones (1214909)
+                   Family Flags: 9, 13, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118
+Hotfixed         : Affects Spells
 #4 (id=762250)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Ambush (8676), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Between the Eyes (315341), Sinister Strike (341541), Ambush (385897), Killing Spree (424556), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603)
@@ -1209,6 +1210,7 @@ Effects          :
 Description      : Increases your maximum Energy by $s1 and Energy regeneration by $s2%.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1219,7 +1221,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -2852,6 +2854,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2865,7 +2868,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -6641,7 +6644,7 @@ Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -6662,7 +6665,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -6680,7 +6683,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 6008: Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#2)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 13, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -6702,7 +6705,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -15184,7 +15187,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2941: Adrenaline Rush (13750 effect#5), Deft Maneuvers (381878 effect#1), Flawless Form (441326 effect#3)
                  : 3052: Broadside (193356 effect#6), Broadside (193356 effect#7), Deadly Precision (381542 effect#2), Heavy Hitter (381885 effect#3), Heavy Hitter (381885 effect#4), Lethality (382238 effect#3)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 13, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :

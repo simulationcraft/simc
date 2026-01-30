@@ -183,6 +183,7 @@ Effects          :
 Description      : Begins a ritual to create a summoning portal, requiring the caster and 2 allies to complete. This portal can be used to summon party and raid members.
 
 Name             : Curse of Weakness (id=702) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -198,7 +199,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Curse of the Satyr (440057 effect#1)
 Family Flags     : 109
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=279)      : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -342,6 +343,7 @@ Description      : Summons an Infernal from the Twisting Nether, impacting for $
 The Infernal will serve you for $111685d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
 
 Name             : Curse of Tongues (id=1714) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -358,7 +360,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 102
-Attributes       : Not Shapeshifted (16), Aura Bounce Fails Spell (157), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Aura Bounce Fails Spell (157), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.3334 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -1038,6 +1040,7 @@ Effects          :
 Description      : Deals Fire damage to all nearby enemies.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1048,7 +1051,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -2972,6 +2975,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2985,7 +2989,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -10495,6 +10499,7 @@ Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or F
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
 
 Name             : Curse of Exhaustion (id=334275) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -10511,7 +10516,7 @@ Labels           : 16: Class Spells
 Mechanic         : Snare
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 113
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=830121)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -16415,6 +16420,7 @@ Tooltip          : Haste increased by $w1% and $?s324536[Malefic Rapture grants 
 All of your active Withers are acute.
 
 Name             : Curse of the Satyr (id=442804) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -16430,7 +16436,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Curse of the Satyr (440057 effect#1)
 Family Flags     : 109
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
 Effects          :
 #1 (id=1138284)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)

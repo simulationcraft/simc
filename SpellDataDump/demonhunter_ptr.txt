@@ -91,6 +91,7 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -101,7 +102,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -590,6 +591,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -603,7 +605,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -15562,7 +15564,8 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1192725)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.81 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.967 | PvP Coefficient: 2.6 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.81 -> 1.967), PvP Coefficient (2 -> 2.6)
 Description      : Drain the essence from your target, dealing $s1 Cosmic damage.
 
 Castable while moving.
@@ -16010,7 +16013,8 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.5 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.69 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (4.5 -> 3.15), PvP Coefficient (1.3 -> 1.69)
 #2 (id=1229372)  : Energize Power (30)
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
                    Modified By: Celestial Echoes (1256312 effect#2)
@@ -16255,7 +16259,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1212255)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 200)
 #2 (id=1212323)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Damage from Void Ray has a $s1% increased chance to generate a Soul Fragment.
@@ -16320,7 +16325,8 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.847 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.732 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (3.847 -> 6.732), PvP Coefficient (1 -> 0.568)
 Description      : $@spelldesc1226019
 
 Name             : Eradicate (id=1225826) [Spell Family (107)] 
@@ -16363,7 +16369,8 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.846 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.732 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+Hotfixed         : SP Coefficient (3.846 -> 6.732), PvP Coefficient (1 -> 0.568)
 Description      : $@spelldesc1225826
 
 Name             : Reap (id=1226019) [Spell Family (107)] 
@@ -16461,13 +16468,15 @@ Family Flags     : 96
 Attributes       : Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1218166)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 4)
                    Modified By: Sweet Release (1242768 effect#1)
 #2 (id=1235664)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Modified By: Void Metamorphosis (1217607 effect#10), Moment of Craving (1238495 effect#1)
 #3 (id=1271545)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 1)
                    Modified By: Predator's Thirst (1215617 effect#2)
 Description      : Damaging an enemy has a $s1% chance to shatter a lesser soul fragment from them.
 
@@ -17499,7 +17508,8 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.95 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.66 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (4.95 -> 8.66), PvP Coefficient (1 -> 0.568)
 Description      : $@spelldesc1245453
 
 Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
@@ -17604,6 +17614,7 @@ Effects          :
 Description      : $@spelldesc452402
 
 Name             : Reaper's Toll (id=1245523) [Spell Family (107)] 
+Hotfixed         : Tooltip
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -17620,7 +17631,7 @@ Effects          :
                    Base Value: 1245470 | Scaled Value: 1245470 | Target: Self (1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
                    Family Flags: 30
-Tooltip          : Your Veilpierce is replaced with Reaper's Toll.
+Tooltip          : Pierce the Veil is replaced with Reaper's Toll.
 
 Name             : Soul Fragments (id=1245577) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -18785,6 +18796,7 @@ Effects          :
                    Affected Spells (Label): Item Effects (3959)
 
 Name             : Predator's Wake (id=1259431) [Spell Family (107)] 
+Hotfixed         : Description
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : Melee
@@ -18809,9 +18821,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 370967 | Target: Targeted Enemy (6)
 #3 (id=1268536)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. 
-
-The pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.
+Description      : Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path.
 
 Name             : Mirror Image (id=1259905) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -18883,8 +18893,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1271516)  : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
+#1 (id=1271516)  : Apply Aura (6) | Periodic Dummy (226): every 12 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : Period (8000 -> 12000)
 #2 (id=1271517)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : While in combat, generate $s1 Soul $LFragment:Fragments; every $t1 sec.
@@ -20152,7 +20163,8 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.95 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.66 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+Hotfixed         : SP Coefficient (4.95 -> 8.66), PvP Coefficient (1 -> 0.568)
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 
