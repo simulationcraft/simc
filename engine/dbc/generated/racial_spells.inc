@@ -1,4 +1,4 @@
-// Racial abilities, wow build 12.0.0.65560
+// Racial abilities, wow build 12.0.0.65655
 static constexpr std::array<racial_spell_entry_t, 180> __racial_spell_data { {
   { 0x0000000000000001, 0x00003fff,  458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00003fff,   20598, "The Human Spirit"                   },
