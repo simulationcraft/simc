@@ -1549,12 +1549,23 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       ww_mastery = true;
       background = dual = true;
-      // aoe                 = -1;
-      // reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
+    }
+
+    using monk_melee_attack_t::execute;
+    void execute( bool first )
+    {
+      monk_melee_attack_t::execute();
+
+      if ( !first || !p()->talent.windwalker.thunderfist->ok() )
+        return;
+
+      unsigned count = as<unsigned>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
+      count += std::max( 0, num_targets_hit - 1 );
+      p()->buff.thunderfist->trigger( count );
     }
   };
 
-  action_t *aoe;
+  damage_t *aoe;
   action_t *singletarget;
 
   whirling_dragon_punch_t( monk_t *player, std::string_view options_str )
@@ -1586,8 +1597,12 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     singletarget->execute();
 
     // -1 to compensate for zero index, -1 to skip last tick
-    for ( unsigned i = 0; i < dot_duration / base_tick_time - 2.0; i++ )
-      make_event<events::delayed_execute_event_t>( *p()->sim, p(), aoe, target, i * base_tick_time );
+    aoe->target = target;
+    for ( unsigned i = 0; i <= dot_duration / base_tick_time - 2.0; i++ )
+      make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ = ] { aoe->execute( !i ); } );
+
+    p()->buff.heart_of_the_jade_serpent->trigger();
+    p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -1601,8 +1616,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
   bool ready() override
   {
-    // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
-    // TODO: Fix this, this is very wrong
     if ( p()->buff.whirling_dragon_punch->up() )
       return monk_melee_attack_t::ready();
 
@@ -1655,7 +1668,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       if ( slot != SLOT_OFF_HAND )
         return;
 
-      if ( p()->talent.windwalker.thunderfist.ok() )
+      if ( p()->talent.windwalker.thunderfist->ok() )
       {
         unsigned count = 1;
 
@@ -1667,6 +1680,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       }
     }
   };
+
   // Off hand hits first followed by main hand
   // The ability does NOT require an off-hand weapon to be executed.
   // The ability uses the main-hand weapon damage for both attacks
@@ -4028,7 +4042,8 @@ struct whirling_dragon_punch_buff_t : monk_buff_t<>
         std::min( p().cooldown.rising_sun_kick->remains(), p().cooldown.fists_of_fury->remains() );
 
     if ( buff_duration > 0_ms )
-      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0, base_buff_duration + buff_duration );
+      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
+                                   base_buff_duration / ( 1 + p().composite_spell_haste() ) + buff_duration );
 
     return false;
   }
