@@ -4979,10 +4979,10 @@ struct kill_shot_t : public kill_shot_base_t
 
 struct moonlight_chakram_t final : public hunter_ranged_attack_t
 {
-  static inline unsigned int bounce_tally = 0;
-
   struct damage_t final : hunter_ranged_attack_t
   {
+    unsigned int bounce_tally = 0;
+
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.moonlight_chakram_damage )
     {
       background = dual = true;
@@ -5068,7 +5068,7 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       }
     }
 
-    bounce_tally = 0;
+    damage->bounce_tally = 0;
 
     p()->buffs.moonlight_chakram->expire();
 
