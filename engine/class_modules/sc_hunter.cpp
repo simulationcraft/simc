@@ -4986,10 +4986,6 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.moonlight_chakram_damage )
     {
       background = dual = true;
-
-      /* Seems to be an additional hidden AP modifier in Chakram's spell data, further testing required.
-         TODO reconfirm before launch */
-      //attack_power_mod.direct *= 1 + p->talents.moonlight_chakram_spell->effectN( 1 ).ap_coeff();
     }
 
     void impact( action_state_t* s ) override
@@ -5008,7 +5004,10 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
         am *= 1 + p()->talents.tip_of_the_spear_chakram_buff->effectN( 1 ).percent();
 
       if ( p()->talents.radiant_edge.ok() )
-        am *= pow( 1 + p()->talents.radiant_edge->effectN( 1 ).percent(), bounce_tally );
+      {
+        // Radiant Edge also affects the first hit so calc using tally + 1.
+        am *= pow( 1 + p()->talents.radiant_edge->effectN( 1 ).percent(), bounce_tally + 1 );
+      }
 
       return am;
     }
@@ -10534,6 +10533,12 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
+    // 2026-02-02: Radiant Edge is missing 10% from its base value
+    hotfix::register_effect( "Hunter", "2026-02-02", "Radiant Edge Bonus", 1276513 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 25 )
+        .verification_value( 15 );
   }
 
   void combat_begin( sim_t* ) const override {}
