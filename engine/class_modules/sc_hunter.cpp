@@ -7648,11 +7648,6 @@ struct kill_command_t: public hunter_spell_t
   };
 
   struct {
-    double chance = 0;
-    proc_t* proc;
-  } dire_command;
-
-  struct {
     double chance = 0; 
   } deathblow;
 
@@ -7661,6 +7656,20 @@ struct kill_command_t: public hunter_spell_t
     timespan_t extension = 0_s;
     timespan_t cap = 0_s;
   } fury_of_the_wyvern;
+
+  /* 2026-02-02: 
+    Dire Command has a hidden BLP mechanic.
+    From many hours of log testing, it is most likely to be a PRD (pseudo-random distribution) system.
+    Each failed attempt at a proc grants n% increased chance to proc the next time, linearly.
+    Calculating the accumulating chance is slow, so it has been precomputed using...
+    death_knight_t::pseudo_random_c_from_p() based on the nominal chance (20%) and hard coded.
+    A trivial error will be thrown if the nominal value changes.
+  */
+  struct
+  {
+    unsigned int attempt_number = 0;
+    const double chance_modifier = 0.055704042949781851858398652;
+  } dire_command_blp;
 
   kill_command_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) : hunter_spell_t( "kill_command", p, s )
   {
@@ -7676,11 +7685,9 @@ struct kill_command_t: public hunter_spell_t
         fury_of_the_wyvern.extension = p->talents.fury_of_the_wyvern->effectN( 2 ).time_value();
         fury_of_the_wyvern.cap = timespan_t::from_seconds( p->talents.fury_of_the_wyvern->effectN( 4 ).base_value() );
       }
-    }
 
-    if ( p -> talents.dire_command.ok() )
-    {
-      dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
+      if ( p->talents.dire_command.ok() && p->talents.dire_command->effectN( 1 ).base_value() != 20 )
+        sim->error( "Dire Command's nominal chance has changed since BLP was calculated, please tell a Hunter maintainer." );
     }
   }
 
@@ -7711,11 +7718,9 @@ struct kill_command_t: public hunter_spell_t
     tip_stacks += as<int>( p()->talents.primal_surge->effectN( 1 ).base_value() );
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
 
-    /* 2026-01-29: BLP introduced to this with no spell data. 
-                   Log testing needed to figure out rates. 
-                   TODO reconfirm before launch */  
-    if ( p()->talents.dire_command && rng().roll( dire_command.chance ) )
+    if ( p()->talents.dire_command && rng().roll( ++dire_command_blp.attempt_number * dire_command_blp.chance_modifier ) )
     {
+      dire_command_blp.attempt_number = 0;
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->procs.dire_command->occur();
     }
