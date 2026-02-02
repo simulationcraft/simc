@@ -6338,8 +6338,11 @@ void monk_t::combat_begin()
   }
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
+  {
     make_repeating_event( sim, talent.windwalker.tigereye_brew_1->effectN( 1 ).period(),
                           [ & ] { buff.tigereye_brew_1->trigger(); } );
+    buff.tigereye_brew_1->trigger( 10 );
+  }
 
   if ( specialization() == MONK_WINDWALKER )
   {
