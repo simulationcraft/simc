@@ -10120,38 +10120,6 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
     }
   }
 
-  // Untethered Rage is a tiered apex talent stored as three separate talents.
-  // Handle the base name (without _N suffix) to support talent.untethered_rage and talent.untethered_rage.rank
-  // Individual tiers (talent.untethered_rage_1, etc.) are handled by the base expression handler.
-  if ( ( splits.size() == 2 || splits.size() == 3 ) &&
-       util::str_compare_ci( splits[ 0 ], "talent" ) &&
-       util::str_compare_ci( splits[ 1 ], "untethered_rage" ) )
-  {
-    bool enabled = talent.vengeance.untethered_rage_1->ok() ||
-                   talent.vengeance.untethered_rage_2->ok() ||
-                   talent.vengeance.untethered_rage_3->ok();
-
-    if ( splits.size() == 2 || util::str_compare_ci( splits[ 2 ], "enabled" ) )
-    {
-      return expr_t::create_constant( name_str, enabled );
-    }
-
-    if ( util::str_compare_ci( splits[ 2 ], "rank" ) )
-    {
-      int rank = 0;
-      if ( talent.vengeance.untethered_rage_3->ok() )
-        rank = 3;
-      else if ( talent.vengeance.untethered_rage_2->ok() )
-        rank = 2;
-      else if ( talent.vengeance.untethered_rage_1->ok() )
-        rank = 1;
-      return expr_t::create_constant( name_str, rank );
-    }
-
-    throw sc_invalid_apl_argument(
-        fmt::format( "Unsupported talent.untethered_rage property '{}'. Use 'enabled' or 'rank'.", splits[ 2 ] ) );
-  }
-
   return player_t::create_expression( name_str );
 }
 
