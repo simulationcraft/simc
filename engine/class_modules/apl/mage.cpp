@@ -123,7 +123,7 @@ void fire( player_t* p )
   action_priority_list_t* ff_execute = p->get_action_priority_list( "ff_execute" );
   action_priority_list_t* ff_filler = p->get_action_priority_list( "ff_filler" );
   action_priority_list_t* sf_combustion = p->get_action_priority_list( "sf_combustion" );
-  action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" ); 
+  action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" );
 
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
@@ -160,7 +160,7 @@ void fire( player_t* p )
   ff_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down&active_enemies>=variable.ff_combustion_flamestrike" );
   ff_combustion->add_action( "pyroblast,if=buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down" );
   ff_combustion->add_action( "fireball,if=buff.combustion.down" );
-  ff_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<8)|(!talent.burnout&buff.combustion.remains>2)" );
+  ff_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<6)|(!talent.burnout&buff.combustion.remains>2)" );
   ff_combustion->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.ff_combustion_flamestrike" );
   ff_combustion->add_action( "pyroblast,if=buff.hot_streak.react" );
   ff_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&cast_time>buff.combustion.remains&active_enemies>=variable.ff_combustion_flamestrike" );
@@ -193,7 +193,7 @@ void fire( player_t* p )
   sf_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5" );
   sf_combustion->add_action( "flamestrike,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up&active_enemies>=variable.sf_combustion_flamestrike" );
   sf_combustion->add_action( "pyroblast,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up" );
-  sf_combustion->add_action( "fireball,if=buff.combustion.down" ); 
+  sf_combustion->add_action( "fireball,if=buff.combustion.down" );
   sf_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<8)|(!talent.burnout&buff.combustion.remains>2)" );
   sf_combustion->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.sf_combustion_flamestrike" );
   sf_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&!buff.hot_streak.up&cast_time>buff.combustion.remains&active_enemies>=variable.sf_combustion_flamestrike" );
