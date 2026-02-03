@@ -2728,8 +2728,10 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Self (1)
 #7 (id=728320)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#8 (id=1169538)  : Apply Aura (6) | Modify Armor% (101)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Target: Self (1)
+#8 (id=1169538)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : Sub Type (101 -> 87), Base Value (3 -> -3)
 #9 (id=1193928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)

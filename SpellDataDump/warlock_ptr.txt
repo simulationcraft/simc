@@ -17596,8 +17596,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Immolation (20153), Infernal Awakening (22703), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Channel Demonfire (409890), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Diabolic Bolt (438823), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715), Lake of Fire (1244890), Lake of Fire (1244918), Dark Harvest (1257065), Unstable Affliction (1259790), Malefic Grasp (1261153), Corruption (1261158), Unstable Affliction (1261176), Echo of Sargeras (1265884), Soul Swipe (1269049), Manifested Avarice (1269050), Demonic Touch (1269221), Eye Explosion (1269800)
                    Family Flags: 49
-#2 (id=1288714)  : Apply Aura (6) | Modify Pet Stat (382)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33 | Target: Self (1)
+#2 (id=1288714)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Sub Type (382 -> 4), Misc Value (33 -> 0)
 Description      : Damaging critical strikes dealt by you and your demons deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Devastation (id=454735) [Spell Family (5), Passive, Hidden] 
@@ -20883,6 +20884,7 @@ Description      : Call forth a cloud of cloying shadow mist that envelopes the 
 |cFF8282FFCurses: A warlock can only have one Curse or Blight active per target.|r
 
 Name             : Blight of Weakness (id=1271798) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -20892,7 +20894,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1284747)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Targeted Enemy (6)
@@ -20940,6 +20942,7 @@ Effects          :
 Description      : $@spelldesc1271748
 
 Name             : Blight of Tongues (id=1272122) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -20949,7 +20952,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1285187)  : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.3 | Target: Targeted Enemy (6)
