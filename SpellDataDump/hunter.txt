@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65699 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -22300,7 +22300,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147)
 Effects          :
 #1 (id=1276513)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Your Moonlight Chakram deals $1264949s3% increased damage each time it bounces.
 
 Name             : Twilight Requiem (id=1264904) [Spell Family (9), Passive] 

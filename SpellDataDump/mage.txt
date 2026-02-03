@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65655 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65699 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -6285,7 +6285,6 @@ Tooltip          : You recently moved.
 Stay still in order to gain Norgannon's Foresight.
 
 Name             : Cold Snap (id=235219) [Spell Family (3)] 
-Hotfixed         : Learn Level (19 -> 10), Required Level (19 -> 10)
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Mage
 School           : Frost
@@ -18650,7 +18649,6 @@ Effects          :
 Description      : Your Mastery is increased by $s1%.
 
 Name             : Glacial Bulwark (id=1244110) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Learn Level (54 -> 10), Required Level (54 -> 10)
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Mage
 School           : Physical
