@@ -15984,8 +15984,6 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Proc Chance      : 101%
-Proc Flags       : Magic Heal
 Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1278405)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
