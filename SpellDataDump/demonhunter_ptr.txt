@@ -1680,7 +1680,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
 Category Cooldown: 25 seconds
-Affecting Spells : Prepared (203551 effect#2), Tactical Retreat (389688 effect#1), Evasive Action (444929 effect#1), Demonsurge (1245496 effects: #3, #6)
+Affecting Spells : Prepared (203551 effect#2), Tactical Retreat (389688 effect#1), Evasive Action (444929 effect#1), Demonsurge (1245496 effect#3)
 Triggered By     : Vengeful Retreat (344866)
 Family Flags     : 3
 Attributes       : Is Ability (4), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), No Aura Icon (60), No Casting Bar Text (98), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -1705,7 +1705,7 @@ Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effects: #3, #6), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -3823,8 +3823,9 @@ Effects          :
 #10 (id=1123644) : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2298 (Category) | Target: Self (1)
 #11 (id=1157660) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 8 | Misc Value 2: 4821 (Label) | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Misc Value 2: 4821 (Label) | Target: Self (1)
                    Affected Spells (Label): Reaver's Mark (442624)
+Hotfixed         : Base Value (-1 -> -2)
 #12 (id=1165304) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3367 (Label) | Target: Self (1)
                    Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153), Reaver's Glaive (1283344)
@@ -9256,7 +9257,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
 Category Cooldown: 25 seconds
-Affecting Spells : Prepared (203551 effect#2), Tactical Retreat (389688 effect#1), Evasive Action (444929 effect#1), Demonsurge (1245496 effects: #3, #6)
+Affecting Spells : Prepared (203551 effect#2), Tactical Retreat (389688 effect#1), Evasive Action (444929 effect#1), Demonsurge (1245496 effect#3)
 Family Flags     : 3
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -13494,7 +13495,7 @@ $spike=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
 Name             : Blazing Nova (id=436899) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effects: #3, #6), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Don't close loot window (379), Allow Class Ability Procs (416)
@@ -13506,7 +13507,7 @@ Description      : $@spelldesc436897
 Name             : Blazing Nova (id=436964) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effects: #3, #6), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Not Available While Charmed (174), Allow While Fleeing (177), Always AOE Line of Sight (186), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
@@ -13560,7 +13561,8 @@ Family Flags     : 5, 16, 32, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=1137380)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.45 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.1 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (3.45 -> 3.1)
 #2 (id=1137756)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Keen Engagement (442497 effect#1)
@@ -14456,6 +14458,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
+                 : 6415: Devourer Demon Hunter (1213636 effect#9)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1153557)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
@@ -14466,6 +14469,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
+                   Modified By: Devourer Demon Hunter (1213636 effect#9)
 #3 (id=1213307)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 4666 (Label) | Target: Self (1)
                    Affected Spells (Label): Ragefire (390197)
@@ -14474,9 +14478,10 @@ Effects          :
                    Affected Spells: Hungering Slash (1239127)
                    Family Flags: 106
 #5 (id=1246845)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 0.4 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Hungering Slash (1239127)
                    Family Flags: 106
+Hotfixed         : Base Value (50 -> 125), PvP Coefficient (1 -> 0.4)
 Description      : $?a212612[Immolation Aura][Hungering Slash] has $s1 yd increased radius and $s2% increased critical strike damage bonus.
 
 Name             : Monster Rising (id=452414) [Spell Family (107), Passive] 
@@ -14555,9 +14560,10 @@ Effects          :
 #1 (id=1153593)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Pierce the Veil overrides Voidblade
                    Base Value: 1245483 | Scaled Value: 1245483 | Misc Value: 1245412 | Target: Self (1)
 #2 (id=1153594)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Hungering Slash (1239127), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
                    Family Flags: 30, 106
+Hotfixed         : Base Value (30 -> 20), PvP Coefficient (0.33 -> 0.5)
 #3 (id=1158336)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: cosmic | Trigger Spell: 452416 | Target: Self (1)
 #4 (id=1246861)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
@@ -14940,7 +14946,8 @@ Effects          :
 #1 (id=1153826)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Agi | Target: Self (1)
 #2 (id=1247648)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 8 | Scaled Value: 8 | Stat: Int | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Stat: Int | Target: Self (1)
+Hotfixed         : Base Value (8 -> 15)
 Description      : $@spelldesc452414
 Tooltip          : Agility increased by $w1%.
 
@@ -15059,11 +15066,13 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Chaos Strike (222031), Blade Dance (391374), Blade Dance (391378)
                    Family Flags: 6, 12, 14, 25
 #3 (id=1155059)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 6031 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6031 (Label) | Target: Self (1)
                    Affected Spells (Label): Mastery: Monster Within (1238855)
+Hotfixed         : Base Value (10 -> 20)
 #4 (id=1155060)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 6031 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 6031 (Label) | Target: Self (1)
                    Affected Spells (Label): Mastery: Monster Within (1238855)
+Hotfixed         : Base Value (10 -> 20)
 Description      : $@spelldesc452414
 Tooltip          : $?a212612[Chaos Strike and Blade Dance damage increased by $w2%.
 Haste increased by $w1%][The effectiveness of Mastery: Monster Within is increased by $s3%].
@@ -15673,6 +15682,10 @@ Effects          :
 #8 (id=1195349)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 3 | Misc Value 2: 5812 (Label) | Target: Self (1)
                    Affected Spells (Label): Swift Erasure (1253668)
+#9 (id=1304832)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 12 | Misc Value 2: 6415 (Label) | Target: Self (1)
+                   Affected Spells (Label): Flamebound (452413)
+Hotfixed         : NEW EFFECT
 
 Name             : Void Ray (id=1213649) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -17571,19 +17584,22 @@ Effects          :
 #2 (id=1246559)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Pierce the Veil overrides Voidblade
                    Base Value: 1245483 | Scaled Value: 1245483 | Misc Value: 1245412 | Target: Self (1)
 #3 (id=1246560)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), The Hunt (323639), Vengeful Retreat (344866), The Hunt (345335), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Blazing Nova (436899), Blazing Nova (436964), The Hunt (1246167), The Hunt (1246168), The Hunt (1246169), Predator's Wake (1259431)
                    Family Flags: 3, 82, 87
+Hotfixed         : Base Value (30 -> 20), PvP Coefficient (0.33 -> 0.5)
 #4 (id=1246791)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: cosmic | Trigger Spell: 452416 | Target: Self (1)
 #5 (id=1300741)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Hungering Slash (1239127), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
                    Family Flags: 30, 106
+Hotfixed         : Base Value (30 -> 20), PvP Coefficient (0.33 -> 0.5)
 #6 (id=1300742)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), The Hunt (323639), Vengeful Retreat (344866), The Hunt (345335), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Blazing Nova (436899), Blazing Nova (436964), The Hunt (1246167), The Hunt (1246168), The Hunt (1246169), Predator's Wake (1259431)
-                   Family Flags: 3, 82, 87
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: The Hunt (323639), The Hunt (345335), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), The Hunt (1246167), The Hunt (1246168), The Hunt (1246169), Predator's Wake (1259431)
+                   Family Flags: 82, 87
+Hotfixed         : Base Value (30 -> 20), Affects Spells, PvP Coefficient (0.33 -> 0.5)
 
 Name             : Demonsurge (id=1245511) [Spell Family (107), Hidden] 
 Class            : Demon Hunter

@@ -2803,7 +2803,8 @@ Effects          :
 #1 (id=150037)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.35 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.35 -> 1.9)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=335940)   : Dummy (3)
@@ -3926,13 +3927,15 @@ Effects          :
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
                    Family Flags: 58, 89
 #9 (id=260840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 44 | Scaled Value: 44 | Target: Self (1)
+                   Base Value: 73 | Scaled Value: 73 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
+Hotfixed         : Base Value (44 -> 73)
 #10 (id=260841)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 92 | Scaled Value: 92 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (60 -> 92)
 #11 (id=260842)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
@@ -3942,9 +3945,10 @@ Effects          :
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187)
                    Family Flags: 5
 #13 (id=260844)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
+Hotfixed         : Base Value (50 -> 80)
 #14 (id=260845)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 5669 (Label) | Target: Self (1)
                    Affected Spells (Label): Flurry Strike (451250)
@@ -12959,8 +12963,9 @@ Effects          :
 #1 (id=1023475)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
 #2 (id=1180344)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 215 | Scaled Value: 215 | PvP Coefficient: 0.745 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
+Hotfixed         : Base Value (215 -> 260), PvP Coefficient (0.745 -> 0.516)
 Description      : $@spelldesc467293
 Tooltip          : Ancient Teachings transfers an additional $w2% damage to healing.
 
@@ -13721,7 +13726,8 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | Target: Self (1)
+Hotfixed         : Base Value (120 -> 160)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -17574,13 +17580,15 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150447)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 100 yards | Target: Self and Summons in Area (120)
+Hotfixed         : Base Value (15 -> 25)
                    Modified By: Path of Resurgence (451084 effect#1)
 #2 (id=1150448)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Modified By: Path of Resurgence (451084 effect#2)
 #3 (id=1150449)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Hotfixed         : Base Value (7 -> 12)
                    Modified By: Path of Resurgence (451084 effect#3)
 #4 (id=1150450)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -18300,10 +18308,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 6418: Brewmaster Monk (1258153 effect#17)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151234)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Brewmaster Monk (1258153 effect#17)
 Description      : $?a137023[][Rising Sun Kick, ]Blackout Kick and Tiger Palm contribute $s1% additional vitality.
 
 Name             : Pride of Pandaria (id=450979) [Spell Family (53), Passive] 
@@ -18672,13 +18682,14 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3602: Chi Wave (450391 effect#2)
+                 : 3602: Chi Wave (450391 effect#2), Brewmaster Monk (1258153 effect#18)
 Triggered By     : Path of Resurgence (450912)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151425)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 3600 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of Harmony (450508)
+                   Modified By: Brewmaster Monk (1258153 effect#18)
 #2 (id=1151426)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Misc Value 2: 3600 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of Harmony (450508)
@@ -20302,8 +20313,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1180358)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 180 | Scaled Value: 180 | PvP Coefficient: 0.745 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
+Hotfixed         : Base Value (180 -> 260), PvP Coefficient (0.745 -> 0.516)
 #2 (id=1241878)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Sta | Target: Self (1)
 Description      : Ancient Teachings transfers an additional $388026s2% damage to healing.
@@ -22437,6 +22449,14 @@ Effects          :
 #16 (id=1267426) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 4194 (Label) | Target: Self (1)
                    Affected Spells (Label): Manifestation (450875)
+#17 (id=1305244) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 6418 (Label) | Target: Self (1)
+                   Affected Spells (Label): Way of a Thousand Strikes (450965)
+Hotfixed         : NEW EFFECT
+#18 (id=1305245) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 3602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Path of Resurgence (451084)
+Hotfixed         : NEW EFFECT
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
 Class            : Hunter, Monk
@@ -23851,13 +23871,15 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
 #2 (id=1283654)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 5954 (Label) | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 5954 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackout Combo (228563)
+Hotfixed         : Base Value (50 -> 100)
 #3 (id=1283655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #4 (id=1283765)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 5955 (Label) | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value 2: 5955 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418360)
+Hotfixed         : Base Value (50 -> 100)
 #5 (id=1283766)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 12 | Misc Value 2: 5957 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418359)

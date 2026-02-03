@@ -1271,7 +1271,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #11), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3), Realized Potential (1272326 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #11), Discipline Priest (137032 effects: #4, #5, #25, #26), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3), Realized Potential (1272326 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 33, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -1284,7 +1284,7 @@ Effects          :
                    Modified By: Deathspeaker (392507 effect#2)
 #4 (id=1073582)  : Server Side Script (77)
                    Base Value: 150 | Scaled Value: 150 | Target: Targeted Enemy (6)
-                   Modified By: Shadow Priest (137033 effect#8)
+                   Modified By: Discipline Priest (137032 effect#26), Shadow Priest (137033 effect#8)
 #5 (id=1101755)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
                    Modified By: Shadow Priest (137033 effect#7)
@@ -1510,7 +1510,8 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.333234 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.6667 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.333234 -> 0.6667)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Resource: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
@@ -3663,17 +3664,20 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+Hotfixed         : Base Value (5 -> 13)
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+Hotfixed         : Base Value (5 -> 13)
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
+Hotfixed         : Base Value (5 -> 13)
 #4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
@@ -3807,16 +3811,28 @@ Effects          :
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
 #22 (id=1081541) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -51 | Scaled Value: -51 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
+Hotfixed         : Base Value (-51 -> -33)
 #23 (id=1089477) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -59 | Scaled Value: -59 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
+Hotfixed         : Base Value (-59 -> -33)
 #24 (id=1302601) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 23 | Misc Value 2: 6366 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadowfiend (34433)
+#25 (id=1304872) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
+                   Family Flags: 33
+Hotfixed         : NEW EFFECT
+#26 (id=1304873) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
+                   Family Flags: 33
+Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -3829,13 +3845,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -13 | Scaled Value: -13 | Target: Self (1)
+                   Base Value: -26 | Scaled Value: -26 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
+Hotfixed         : Base Value (-13 -> -26)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -13 | Scaled Value: -13 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -26 | Scaled Value: -26 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
+Hotfixed         : Base Value (-13 -> -26)
 #3 (id=191069)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191070)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -3866,9 +3884,10 @@ Effects          :
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
 #12 (id=1040380) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 144 | Scaled Value: 144 | Target: Self (1)
+                   Base Value: 242 | Scaled Value: 242 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
+Hotfixed         : Base Value (144 -> 242)
 #13 (id=1040381) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 137 | Scaled Value: 137 | Misc Value 2: 4040 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Blast (8092)
@@ -3881,19 +3900,22 @@ Effects          :
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
 #16 (id=1041381) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 98 | Scaled Value: 98 | Target: Self (1)
+                   Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
+Hotfixed         : Base Value (98 -> 148)
 #17 (id=1045166) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 98 | Scaled Value: 98 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 148 | Scaled Value: 148 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
+Hotfixed         : Base Value (98 -> 148)
 #18 (id=1045167) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -28 | Scaled Value: -28 | Misc Value 2: 2616 (Label) | Target: Self (1)
                    Affected Spells (Label): Inescapable Torment (373427), Inescapable Torment (373442)
 #19 (id=1045958) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 85 | Scaled Value: 85 | Misc Value 2: 4003 (Label) | Target: Self (1)
+                   Base Value: 178 | Scaled Value: 178 | Misc Value 2: 4003 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120696), Halo (390964)
+Hotfixed         : Base Value (85 -> 178)
 #20 (id=1045987) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
@@ -3911,6 +3933,14 @@ Effects          :
 #24 (id=1283615) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -75 | Scaled Value: -75 | Misc Value 2: 2932 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120692)
+#25 (id=1304857) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 3 | Misc Value 2: 6416 (Label) | Target: Self (1)
+                   Affected Spells (Label): Quickened Pulse (1266845)
+Hotfixed         : NEW EFFECT
+#26 (id=1304858) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 12 | Misc Value 2: 6416 (Label) | Target: Self (1)
+                   Affected Spells (Label): Quickened Pulse (1266845)
+Hotfixed         : NEW EFFECT
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -4301,7 +4331,8 @@ Family Flags     : 52, 126
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 16 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 19 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (16 -> 19)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
@@ -5027,7 +5058,8 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+Hotfixed         : Base Value (45 -> 60)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -10358,7 +10390,7 @@ Name             : Painbreaker Psalm (id=336167) [Spell Family (6)]
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Affecting Spells : Holy Priest (137031 effect#11), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Occultist (1250293 effects: #1, #2), Shadow Priest (1256905 effect#3), Realized Potential (1272326 effect#3)
+Affecting Spells : Holy Priest (137031 effect#11), Discipline Priest (137032 effects: #25, #26), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Occultist (1250293 effects: #1, #2), Shadow Priest (1256905 effect#3), Realized Potential (1272326 effect#3)
 Family Flags     : 33
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221)
 Effects          :
@@ -11156,6 +11188,7 @@ Description      : $@spelldesc215768
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Inner Light (id=355897) [Spell Family (6)] 
+Hotfixed         : Aura Interrupt
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -11170,6 +11203,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 6 seconds
 Stance Mask      : 0x08000000
 Attributes       : Not Shapeshifted (16), No Threat (42), Cast When Learned (63), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Allow Class Ability Procs (416), Displayed Outside Of Spellbook (432)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=889359)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
@@ -11194,6 +11228,7 @@ Tooltip          : Reduces mana cost of healing spells by $s1%.
 Variables        : $cooldown=${6}
 
 Name             : Inner Shadow (id=355898) [Spell Family (6)] 
+Hotfixed         : Aura Interrupt
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -11208,6 +11243,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 6 seconds
 Stance Mask      : 0x08000000
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=889362)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -14936,7 +14972,8 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1070949)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 50)
 Description      : Shadow Apparitions deal $s1% increased damage to targets affected by your Shadow Word: Madness.
 
 Name             : Mind's Eye (id=407470) [Spell Family (6), Passive, Hidden] 
@@ -18983,7 +19020,8 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Suppress Caster Procs (112), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1248560)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 125)
 Description      : $?a137032[The first bolt of each Penance cast damages or heals for $s1% more.][$@spelldesc1246798]
 
 Name             : Piety (id=1246802) [Spell Family (6), Passive, Hidden] 
@@ -20160,15 +20198,18 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
+                 : 6416: Shadow Priest (137033 effect#25), Shadow Priest (137033 effect#26)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1279541)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 15, 44
+                   Modified By: Shadow Priest (137033 effect#25)
 #2 (id=1279551)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Misc Value 2: 3556 (Label) | Target: Self (1)
                    Affected Spells (Label): Entropic Rift (450193), Entropic Rift (459314)
+                   Modified By: Shadow Priest (137033 effect#26)
 Description      : Shadow Word: Pain and Entropic Rift deal damage ${100*(1/(1+$m1/100)-1)}% more often.
 
 Name             : Touch of the Void (id=1266856) [Spell Family (6), Passive, Hidden] 
@@ -20347,7 +20388,8 @@ Effects          :
                    Affected Spells: Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
                    Family Flags: 69
 #4 (id=1285565)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 15)
 Description      : $?c2[Reduces the cooldown of your Holy Words by ${$s1/-1000} sec.][Atonement healing from Holy spells is increased by $s4%.]
 
 

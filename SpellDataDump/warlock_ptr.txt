@@ -630,7 +630,8 @@ Family Flags     : 49, 65
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 19.0512 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 26.6717 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (19.051201 -> 26.6717)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -937,7 +938,8 @@ Family Flags     : 49, 55, 118
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.13874 | PvP Coefficient: 0.739646 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.99424 | PvP Coefficient: 0.528319 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.13874 -> 2.99424), PvP Coefficient (0.739646 -> 0.528319)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1550,7 +1552,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.4338 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.6507 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.4338 -> 3.6507)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -3581,7 +3584,8 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.71471 | PvP Coefficient: 2.18182 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.08618 | PvP Coefficient: 1.98347 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (3.71471 -> 4.08618), PvP Coefficient (2.18182 -> 1.98347)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3996,8 +4000,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6343 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449631)
 #7 (id=1300817)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 5186 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 5186 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Demonic Touch (1269221)
+Hotfixed         : Base Value (30 -> 0)
 #8 (id=1300819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -15825,7 +15830,8 @@ Family Flags     : 0, 38, 49, 118
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1124532)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.3894 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 13.4735 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (5.3894 -> 13.4735)
 #2 (id=1152084)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: soul_shard | Target: Self (1)
                    Modified By: Destruction Warlock (137046 effect#13)
@@ -15936,7 +15942,8 @@ Triggered By     : Ruination (434635)
 Family Flags     : 49
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.9194 | PvP Coefficient: 0.383333 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 25.3791 | PvP Coefficient: 0.255555 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (16.919399 -> 25.379101), PvP Coefficient (0.383333 -> 0.255555)
 Description      : $@spelldesc434635
 
 Name             : Hyper Productive (id=436339) [Passive] 
@@ -17001,7 +17008,8 @@ Family Flags     : 49
 Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150515)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.191186 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.114712 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.191186 -> 0.114712)
 Description      : $@spelldesc449624
 Tooltip          : Dealing $o1 Shadow damage over $d.
 
@@ -19411,7 +19419,8 @@ Family Flags     : 49
 Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264823)  : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 11.9936 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 8.39552 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (11.9936 -> 8.39552)
 Description      : $@spelldesc1257052
 
 Name             : Unstable Affliction (id=1259790) [Spell Family (5)] 
@@ -19891,7 +19900,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5671
 Proc Chance      : 100%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
@@ -20511,7 +20520,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1280432)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (4 -> 2)
                    Modified By: Manifested Demonic Soul (1269042 effect#2)
 Description      : Increases your Mastery by $s1%.
 
@@ -20569,9 +20579,11 @@ Family Flags     : 49
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280678)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.79306 | PvP Coefficient: 0.33 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.95514 | PvP Coefficient: 0.471429 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.79306 -> 1.95514), PvP Coefficient (0.33 -> 0.471429)
 #2 (id=1280679)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.86209 | PvP Coefficient: 0.33 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30346 | PvP Coefficient: 0.471429 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.86209 -> 1.30346), PvP Coefficient (0.33 -> 0.471429)
 Description      : Strikes nearby enemies with a malevolent claw, dealing $s1 Shadow damage to its target and $s2 Shadow damage to other enemies in $a2 yds.
 
 Name             : Manifested Avarice (id=1269050) [Spell Family (5), Hidden] 
@@ -21411,7 +21423,8 @@ Triggered By     : Wrath of Nathreza (1262028)
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1290665)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 33.6902 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.8451 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (33.690201 -> 16.8451)
 #2 (id=1290666)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1262028

@@ -494,7 +494,7 @@ Talent Entry     : Holy [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 2.8% Base Mana (0) (id=836)
+Resource         : 2.24% Base Mana (0) (id=836)[Hotfixed: Percent Cost (2.8 -> 2.24)]
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -888,7 +888,8 @@ Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.3256 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.125 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (5.3256 -> 6.125)
 Description      : $@spelldesc20473
 
 Name             : Berserking (desc=Racial) (id=26297) 
@@ -4237,16 +4238,18 @@ Effects          :
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5
 #16 (id=1266251) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 135 | Scaled Value: 135 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Dawnlight (431380), Dawnlight (431381)
                    Family Flags: 1
+Hotfixed         : Base Value (7 -> 135)
 #17 (id=1266252) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 178 | Scaled Value: 178 | Misc Value 2: 4717 (Label) | Target: Self (1)
                    Affected Spells (Label): Sun's Avatar (431911)
 #18 (id=1266253) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 51 | Scaled Value: 51 | Target: Self (1)
+                   Base Value: 93 | Scaled Value: 93 | PvP Coefficient: 0.548 | Target: Self (1)
                    Affected Spells: Hammer of Light (427453)
                    Family Flags: 29
+Hotfixed         : Base Value (51 -> 93), PvP Coefficient (1 -> 0.548)
 #19 (id=1266254) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 119 | Scaled Value: 119 | Target: Self (1)
                    Affected Spells: Ancient Fury (86704), Radiant Decree (383469), Hammer of Light (429826), Hammer of Light (1235934)
@@ -4260,6 +4263,14 @@ Effects          :
 #22 (id=1302146) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 3 | Misc Value 2: 6255 (Label) | Target: Self (1)
                    Affected Spells (Label): Quickened Invocation (379391)
+#23 (id=1303865) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 19 | Misc Value 2: 6259 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sun's Avatar (431907)
+Hotfixed         : NEW EFFECT
+#24 (id=1304068) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 3 | Misc Value 2: 5613 (Label) | Target: Self (1)
+                   Affected Spells (Label): Dawnlight (431581)
+Hotfixed         : NEW EFFECT
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -4321,8 +4332,9 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 6075 (Label) | Target: Self (1)
                    Affected Spells (Label): Sacred Weapon (432616)
 #18 (id=1043197) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Misc Value 2: 1830 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 1830 (Label) | Target: Self (1)
                    Affected Spells (Label): Shield of the Righteous (132403)
+Hotfixed         : Base Value (40 -> 20)
 #19 (id=1052746) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 1830 (Label) | Target: Self (1)
                    Affected Spells (Label): Shield of the Righteous (132403)
@@ -4357,11 +4369,13 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4345 (Label) | Target: Self (1)
                    Affected Spells (Label): Forge's Reckoning (447258)
 #28 (id=1292703) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3084 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 3084 (Label) | Target: Self (1)
                    Affected Spells (Label): Hammer of Light (427453), Hammer of Light (429826), Hammer of Light (1235934)
+Hotfixed         : Base Value (50 -> 200)
 #29 (id=1292704) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3086 (Label) | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | Misc Value 2: 3086 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Hammer (431398)
+Hotfixed         : Base Value (50 -> 125)
 #30 (id=1295179) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Misc Value 2: 6226 (Label) | Target: Self (1)
                    Affected Spells (Label): Seal of the Templar (1263252)
@@ -4400,9 +4414,10 @@ Effects          :
 #7 (id=260928)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260929)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
+Hotfixed         : Base Value (11 -> 50)
 #9 (id=260930)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 186 | Scaled Value: 186 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
@@ -17960,7 +17975,8 @@ Family Flags     : 65
 Attributes       : No Reflection (39), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1083497)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.28 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.56 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.28 -> 2.56)
 Description      : $@spelldesc414443
 
 Name             : Shining Righteousness (id=414450) [Spell Family (10), Passive] 
@@ -18070,7 +18086,8 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2324 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.465 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : AP Coefficient (1.2324 -> 2.465)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
@@ -19409,14 +19426,14 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 5613: Holy Paladin (1258016 effect#30)
+                 : 5613: Retribution Paladin (137027 effect#24), Holy Paladin (1258016 effect#30)
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119458)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-                   Modified By: Holy Paladin (1258016 effect#30)
+                   Modified By: Retribution Paladin (137027 effect#24), Holy Paladin (1258016 effect#30)
 #2 (id=1119459)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc431377
@@ -19511,7 +19528,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 6259
+                 : 6259: Retribution Paladin (137027 effect#23)
 Attributes       : No Aura Cancel (31), No Redirection (35), No Reflection (39), No Aura Icon (60), DoT Stacking Rule (103), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120102)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
@@ -24101,8 +24118,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 3 | Misc Value 2: 4199 (Label) | Target: Self (1)
                    Affected Spells (Label): Undisputed Ruling (432629)
 #17 (id=1266239) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 4199 (Label) | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Misc Value 2: 4199 (Label) | Target: Self (1)
                    Affected Spells (Label): Undisputed Ruling (432629)
+Hotfixed         : Base Value (2000 -> 4000)
 #18 (id=1266240) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 4200 (Label) | Target: Self (1)
                    Affected Spells (Label): Wrathful Descent (431551)
@@ -24395,9 +24413,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1273793)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 44
+Hotfixed         : Base Value (15 -> 25)
 #2 (id=1273806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Judgment (275779), Paladin Protection 10.2 Class Set 2pc (422895)
@@ -24842,7 +24861,8 @@ Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280841)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 50)
 Description      : $@spelldesc1267203
 Tooltip          : Your next Shield of the Righteous deals $s1~% increased damage to your primary target and refracts onto $1267215s2~ nearby enemies for additional Holy damage.
 
@@ -24935,7 +24955,8 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1282880)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0.5 | Scaled Value: 1250.062 (coefficient=0.006667) | Resource: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 3000 (coefficient=0.016) | Resource: mana | Target: Self (1)
+Hotfixed         : Coefficient (0.006667 -> 0.016)
 Description      : $@spelldesc415091
 
 Name             : Divine Favor (id=1270916) [Spell Family (10), Passive] 
