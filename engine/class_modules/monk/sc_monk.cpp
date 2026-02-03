@@ -2123,13 +2123,23 @@ struct keg_smash_t : monk_melee_attack_t
     }
   };
 
+  struct extra_kick_t : monk_spell_t
+  {
+    extra_kick_t( monk_t *player ) : monk_spell_t( player, "extra_kick", player->tier.mid1.brm_4pc_extra_kick )
+    {
+      background = dual = true;
+    }
+  };
+
   cooldown_t *breath_of_fire;
   action_t *empty_barrel;
+  action_t *extra_kick;
 
   keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
     : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ),
       breath_of_fire( nullptr ),
-      empty_barrel( nullptr )
+      empty_barrel( nullptr ),
+      extra_kick( nullptr )
   {
     parse_options( options_str );
     // TODO: can cast_during_sck be automated?
@@ -2159,6 +2169,12 @@ struct keg_smash_t : monk_melee_attack_t
     {
       empty_barrel = new empty_barrel_t( player );
       add_child( empty_barrel );
+    }
+
+    if ( player->tier.mid1.brm_4pc->ok() )
+    {
+      extra_kick = new extra_kick_t( player );
+      add_child( extra_kick );
     }
   }
 
@@ -2200,7 +2216,12 @@ struct keg_smash_t : monk_melee_attack_t
   void impact( action_state_t *state ) override
   {
     monk_melee_attack_t::impact( state );
-    get_td( state->target )->debuff.keg_smash->trigger();
+
+    monk_td_t *td = get_td( state->target );
+    td->debuff.keg_smash->trigger();
+
+    if ( extra_kick && td->dot.breath_of_fire->is_ticking() )
+      extra_kick->execute_on_target( state->target );
   }
 };
 
@@ -4687,6 +4708,9 @@ void monk_t::parse_player_effects()
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
 
   // Midnight S1 Set Effects
+  parse_effects( tier.mid1.brm_2pc );
+  parse_effects( tier.mid1.brm_4pc );
+
   // Midnight S2 Set Effects
   // Midnight S3 Set Effects
 }
@@ -5357,6 +5381,9 @@ void monk_t::init_spells()
 
   // monk_t::tier
   {
+    tier.mid1.brm_2pc            = sets->set( MONK_BREWMASTER, MID1, B2 );
+    tier.mid1.brm_4pc            = sets->set( MONK_BREWMASTER, MID1, B4 );
+    tier.mid1.brm_4pc_extra_kick = find_spell( 1272464 );
   }
 
   // Shared Talent Spells

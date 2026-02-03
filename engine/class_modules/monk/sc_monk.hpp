@@ -1081,6 +1081,9 @@ public:
   {
     struct
     {
+      const spell_data_t *brm_2pc;
+      const spell_data_t *brm_4pc;
+      const spell_data_t *brm_4pc_extra_kick;
     } mid1;
 
     struct
