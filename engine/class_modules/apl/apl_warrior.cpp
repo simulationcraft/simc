@@ -350,6 +350,8 @@ void protection( player_t* p )
   generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
   generic->add_action( "execute,if=rage>=70|(rage>=40&cooldown.shield_slam.remains&talent.demolish.enabled|rage>=50&cooldown.shield_slam.remains)|buff.sudden_death.up&talent.sudden_death.enabled" );
   generic->add_action( "shield_slam" );
+  generic->add_action( "wrecking_throw" );
+  generic->add_action( "shattering_throw" );
   generic->add_action( "thunder_blast,if=dot.rend.remains<=2&buff.violent_outburst.down" );
   generic->add_action( "thunder_blast" );
   generic->add_action( "thunder_clap,if=dot.rend.remains<=2&buff.violent_outburst.down" );
