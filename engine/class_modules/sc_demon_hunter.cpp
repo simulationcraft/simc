@@ -609,9 +609,9 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage1;
-      player_talent_t untethered_rage2;
-      player_talent_t untethered_rage3;
+      player_talent_t untethered_rage_1;
+      player_talent_t untethered_rage_2;
+      player_talent_t untethered_rage_3;
     } vengeance;
 
     struct aldrachi_reaver_talents_t
@@ -2476,7 +2476,7 @@ public:
 
   bool trigger_untethered_rage( const int souls_consumed )
   {
-    if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage1->ok() )
+    if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
     // TODO: CHECK IF THIS PERCENTAGE IS RIGHT
@@ -2487,7 +2487,7 @@ public:
       return true;
     }
 
-    if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage3->ok() )
+    if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage_3->ok() )
     {
       p()->buff.seething_anger->trigger();
     }
@@ -10120,6 +10120,38 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
     }
   }
 
+  // Untethered Rage is a tiered apex talent stored as three separate talents.
+  // Handle the base name (without _N suffix) to support talent.untethered_rage and talent.untethered_rage.rank
+  // Individual tiers (talent.untethered_rage_1, etc.) are handled by the base expression handler.
+  if ( ( splits.size() == 2 || splits.size() == 3 ) &&
+       util::str_compare_ci( splits[ 0 ], "talent" ) &&
+       util::str_compare_ci( splits[ 1 ], "untethered_rage" ) )
+  {
+    bool enabled = talent.vengeance.untethered_rage_1->ok() ||
+                   talent.vengeance.untethered_rage_2->ok() ||
+                   talent.vengeance.untethered_rage_3->ok();
+
+    if ( splits.size() == 2 || util::str_compare_ci( splits[ 2 ], "enabled" ) )
+    {
+      return expr_t::create_constant( name_str, enabled );
+    }
+
+    if ( util::str_compare_ci( splits[ 2 ], "rank" ) )
+    {
+      int rank = 0;
+      if ( talent.vengeance.untethered_rage_3->ok() )
+        rank = 3;
+      else if ( talent.vengeance.untethered_rage_2->ok() )
+        rank = 2;
+      else if ( talent.vengeance.untethered_rage_1->ok() )
+        rank = 1;
+      return expr_t::create_constant( name_str, rank );
+    }
+
+    throw sc_invalid_apl_argument(
+        fmt::format( "Unsupported talent.untethered_rage property '{}'. Use 'enabled' or 'rank'.", splits[ 2 ] ) );
+  }
+
   return player_t::create_expression( name_str );
 }
 
@@ -10763,9 +10795,9 @@ void demon_hunter_t::init_spells()
   talent.vengeance.down_in_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Vengeance Apex Talents
-  talent.vengeance.untethered_rage1 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 1 );
-  talent.vengeance.untethered_rage2 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 2 );
-  talent.vengeance.untethered_rage3 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 3 );
+  talent.vengeance.untethered_rage_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 1 );
+  talent.vengeance.untethered_rage_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 2 );
+  talent.vengeance.untethered_rage_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 3 );
 
   // Hero Talents ===========================================================
 
@@ -10934,8 +10966,8 @@ void demon_hunter_t::init_spells()
   spec.fel_devastation_heal            = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
   spec.felfire_fist_in_combat_buff     = talent_spell_lookup( talent.vengeance.felfire_fist, 1265759 );
   spec.felfire_fist_out_of_combat_buff = talent_spell_lookup( talent.vengeance.felfire_fist, 1265751 );
-  spec.untethered_rage_buff            = talent_spell_lookup( talent.vengeance.untethered_rage1, 1270476 );
-  spec.seething_anger_buff             = talent_spell_lookup( talent.vengeance.untethered_rage3, 1270547 );
+  spec.untethered_rage_buff            = talent_spell_lookup( talent.vengeance.untethered_rage_1, 1270476 );
+  spec.seething_anger_buff             = talent_spell_lookup( talent.vengeance.untethered_rage_3, 1270547 );
 
   switch ( specialization() )
   {
