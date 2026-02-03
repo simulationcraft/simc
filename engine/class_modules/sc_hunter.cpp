@@ -5201,7 +5201,7 @@ struct black_arrow_base_t : public kill_shot_base_t
     kill_shot_base_t::execute();
 
     if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
-      p()->trigger_deathblow( true );
+      p()->trigger_deathblow();
   }
 
   void impact( action_state_t* s ) override
@@ -5684,7 +5684,7 @@ struct barbed_shot_t : public barbed_shot_base_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
       if ( p()->talents.stomp.ok() )
-        pet->stable_pet_t::actions.stomp->execute();
+        pet->stable_pet_t::actions.stomp->execute_on_target( target );
     }
 
     if ( p()->talents.soul_drinker.ok() )
@@ -7867,10 +7867,10 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       // 01/02/2026 - The pet summoned by Nature's Ally does not benefit from Thundering Hooves 
       if( !p()->bugs )
         for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
-          pet->actions.thundering_hooves->execute();
+          pet->actions.thundering_hooves->execute_on_target( target );
       else
         for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
-          pet->actions.thundering_hooves->execute();
+          pet->actions.thundering_hooves->execute_on_target( target );
     }
 
     if ( p()->talents.withering_fire.ok() )
