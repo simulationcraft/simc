@@ -1256,7 +1256,7 @@ Range            : 30 yards
 GCD              : 0.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1428 (Type 0x1): Frost Death Knight (137006 effect#6), Blood Death Knight (137008 effect#11), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
+Category         : 1428 (Type 0x1): Frost Death Knight (137006 effect#6), Unholy Death Knight (137007 effect#18), Blood Death Knight (137008 effect#11), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1505,8 +1505,9 @@ Attributes       : Is Ability (4), Passive (6), Instant Target Procs (115), Can 
 Effects          :
 #1 (id=43434)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 51124 | Target: Self (1)
-#2 (id=1235458)  : Apply Aura (6) | Dummy (4)
+#2 (id=1235458)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : Your auto attack critical strikes have a chance to make your next Obliterate deal Frost damage and critically strike, or make your next Frostscythe critically strike for $s2 times the normal damage.
 
 Name             : Pillar of Frost (id=51271) [Spell Family (15)] 
@@ -3810,6 +3811,10 @@ Hotfixed         : NEW EFFECT
 #17 (id=1304611) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Misc Value 2: 5089 (Label) | Target: Self (1)
                    Affected Spells (Label): Undeath (444633)
+Hotfixed         : NEW EFFECT
+#18 (id=1305281) : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 0 | Misc Value: 1428 (Category) | Target: Self (1)
+                   Affected Spells (Category): Death Grip (49576)
 Hotfixed         : NEW EFFECT
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 

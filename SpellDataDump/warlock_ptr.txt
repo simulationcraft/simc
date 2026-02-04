@@ -19382,6 +19382,7 @@ Effects          :
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
 
 Name             : Dark Harvest (id=1257052) [Spell Family (5)] 
+Hotfixed         : Channel Interrupt
 Talent Entry     : Affliction [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -19394,7 +19395,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Is Self Channelled (38), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Channel Interrupt: Action (3)
+Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=1264780)  : Apply Aura (6) | Periodic Trigger Spell (23): Dark Harvest every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1257065 | Target: Self (1)
@@ -19445,9 +19446,13 @@ Family Flags     : 40, 49
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Unknown (490)
 Effects          :
 #1 (id=1269007)  : Dummy (3)
-                   Base Value: 3447 | Scaled Value: 3447 | Target: Targeted Enemy (6)
+                   Base Value: 4136 | Scaled Value: 4136 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (3447 -> 4136)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | Target: Targeted Enemy (6)
+#3 (id=1305431)  : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with $o2 Shadow damage over $d. Multiple uses of this ability may overlap.
 
 If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.
