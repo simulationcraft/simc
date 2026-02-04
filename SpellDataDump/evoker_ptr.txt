@@ -11970,7 +11970,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1113665)  : Trigger Spell (64): Warp
-                   Base Value: 429459 | Scaled Value: 429459 | Misc Value: 250 | Trigger Spell: 429459 | Target: Self (1)
+                   Base Value: 429459 | Scaled Value: 429459 | Delay: 250_ms | Trigger Spell: 429459 | Target: Self (1)
 #2 (id=1284555)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc358267
@@ -12927,7 +12927,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Do Not Display Range (126)
 Effects          :
 #1 (id=1127164)  : Trigger Spell (64): Warp
-                   Base Value: 429459 | Scaled Value: 429459 | Misc Value: 400 | Trigger Spell: 429459 | Target: Self (1)
+                   Base Value: 429459 | Scaled Value: 429459 | Delay: 400_ms | Trigger Spell: 429459 | Target: Self (1)
 #2 (id=1127165)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc358267
@@ -14868,7 +14868,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)

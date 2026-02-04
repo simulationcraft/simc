@@ -1892,11 +1892,11 @@ Effects          :
 #2 (id=376737)   : Trigger Spell (64): Flurry
                    Base Value: 0 | Scaled Value: 0 (delta=0.1) | Trigger Spell: 228596 | Target: Targeted Enemy (6)
 #3 (id=1248928)  : Trigger Spell (64): Flurry
-                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Misc Value: 400 | Trigger Spell: 228596 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Delay: 400_ms | Trigger Spell: 228596 | Target: Targeted Enemy (6)
 #4 (id=1248929)  : Trigger Spell (64): Flurry
-                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Misc Value: 800 | Trigger Spell: 228596 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Delay: 800_ms | Trigger Spell: 228596 | Target: Targeted Enemy (6)
 #5 (id=1289745)  : Trigger Spell (64): Flurry
-                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Misc Value: 1200 | Trigger Spell: 228596 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.1) | Delay: 1200_ms | Trigger Spell: 228596 | Target: Targeted Enemy (6)
 Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s1*$s1} Frost damage.
 
 |CFFffffffApplies ${$1246769s2*$s1} $lstack:stacks; of Freezing.|R
@@ -18170,7 +18170,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)

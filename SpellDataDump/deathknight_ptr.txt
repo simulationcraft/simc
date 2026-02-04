@@ -1016,22 +1016,22 @@ Effects          :
 #1 (id=41120)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=41121)    : Trigger Spell (64): Obliterate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 222024 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 222024 | Target: Targeted Enemy (6)
 #3 (id=308968)   : Trigger Spell (64): Obliterate Off-Hand
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Trigger Spell: 66198 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 20_ms | Trigger Spell: 66198 | Target: Targeted Enemy (6)
 #4 (id=815756)   : Trigger Spell (64): Obliterate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Trigger Spell: 325461 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 20_ms | Trigger Spell: 325461 | Target: Targeted Enemy (6)
 #5 (id=844534)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
                    Modified By: Empower Rune Weapon (1230959 effect#4)
 #6 (id=1090799)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75
 #7 (id=1275178)  : Trigger Spell (64): Obliterate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1264082 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1264082 | Target: Targeted Enemy (6)
 #8 (id=1275179)  : Trigger Spell (64): Obliterate Off-Hand
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Trigger Spell: 1264083 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 20_ms | Trigger Spell: 1264083 | Target: Targeted Enemy (6)
 #9 (id=1275180)  : Trigger Spell (64): Obliterate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Trigger Spell: 1264084 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 20_ms | Trigger Spell: 1264084 | Target: Targeted Enemy (6)
 Description      : A brutal attack $?$owb==0[that deals $<2hDamagePhysical> Physical and $<2hDamageFrost> Frost damage.][with both weapons that deals a total of $<dwDamagePhysical> Physical and $<dwDamageFrost> Frost damage.]
 Variables        : $2hDamagePhysical=${$325461s1}
 $2hDamageFrost=${$1264084s1}
@@ -1145,9 +1145,9 @@ Effects          :
 #2 (id=41259)    : Trigger Spell (64): Frost Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222026 | Target: Targeted Enemy (6)
 #3 (id=308971)   : Trigger Spell (64): Frost Strike Off-Hand
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 66196 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 66196 | Target: Targeted Enemy (6)
 #4 (id=815762)   : Trigger Spell (64): Frost Strike
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 325464 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 325464 | Target: Targeted Enemy (6)
 Description      : Chill your $?$owb==0[weapon with icy power and quickly strike the enemy, dealing $<2hDamage> Frost damage.][weapons with icy power and quickly strike the enemy with both, dealing a total of $<dualWieldDamage> Frost damage.]
 Variables        : $2hDamage=${$325464s1}
 $dualWieldDamage=${$222026s1+$66196s1}
@@ -13464,7 +13464,7 @@ Effects          :
 #1 (id=1000527)  : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1.25 | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1000533)  : Trigger Spell (64): Blood Draw
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 374609
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 374609
 Description      : $@spelldesc374598
 
 Name             : Blood Draw (id=374609) [Spell Family (15)] 
@@ -17092,7 +17092,7 @@ Effects          :
 #1 (id=1133377)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.07125 | Target: Targeted Enemy (6)
 #2 (id=1133380)  : Trigger Spell (64): Reaper's Mark
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 434765 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 434765 | Target: Targeted Enemy (6)
 #3 (id=1138466)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
 #4 (id=1173983)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
@@ -20528,7 +20528,7 @@ Effects          :
 #1 (id=1208378)  : Remove Aura (203): Shadow and Flame
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1221695 | Target: Self (1)
 #2 (id=1208489)  : Trigger Spell (64): Shadow and Flame
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1221698 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1221698 | Target: Self (1)
 #3 (id=1208490)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 36493 | Target: at Self (18)
 Description      : Weave the unity of shadow and flame, dealing $1221747s1 Shadowflame damage to enemies in front.
@@ -20725,9 +20725,9 @@ Effects          :
 #3 (id=1220481)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37201 | Target: at Self (18)
 #4 (id=1220537)  : Trigger Spell (64): Frostbane
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 1229279 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 1229279 | Target: Self (1)
 #5 (id=1265564)  : Trigger Spell (64): Frostbane
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 600 | Trigger Spell: 1228436 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 600_ms | Trigger Spell: 1228436 | Target: Self (1)
 Description      : Start a frozen onslaught that strikes twice, unleashing the chilling essence of winter, dealing $1228443s1 Frost damage to all enemies caught in its wake with each strike.
 
 Each enemy struck reduces the damage dealt to the next foe by $455993s4%, down to $455993s5%.
@@ -20756,7 +20756,7 @@ Effects          :
 #2 (id=1219453)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 37204 | Target: at Self (18)
 #3 (id=1220460)  : Trigger Spell (64): Frostbane
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 1229279 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 1229279 | Target: Self (1)
 Description      : $@spelldesc1228433
 
 Name             : Frostbane (id=1228440) 
@@ -21191,7 +21191,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)

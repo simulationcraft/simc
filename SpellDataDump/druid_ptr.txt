@@ -3343,7 +3343,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=91238)    : Trigger Spell (64): Wild Mushroom
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 88751 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1000_ms | Trigger Spell: 88751 | Target: At Enemy (53)
 #2 (id=1043162)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Grow a magical mushroom at the target enemy's location. After $d, the mushroom detonates, dealing $88751s1 Nature damage and then an additional $81281o1 Nature damage over $81281d. Affected targets are slowed by ${$81281s2*-1}%.
@@ -6243,7 +6243,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #16, #17), Incarnation: Chosen of Elune (102560 effects: #8, #9), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2, #20), Restoration Druid (137012 effects: #3, #4), Starfall (191034 effect#2), Rend and Tear (204053 effects: #1, #2, #3), Lunar Beam (204066 effects: #6, #7), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effects: #3, #4), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Fury of Nature (370701 effects: #2, #3), Untamed Savagery (372943 effects: #3, #4), Incarnation: Chosen of Elune (390414 effects: #8, #9), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Flashing Claws (393427 effect#2), Overpowering Aura (395944 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3), Furious Regeneration (408504 effects: #2, #3), Initial Druid (417382 effects: #1, #2), Lunar Calling (429523 effects: #2, #3, #4), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #2, #4, #5, #6), Guardian's Tenacity (455011 effects: #1, #2), Grievous Wounds (474526 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Sundering Roar (1253799 effect#1), Guardian Druid (1256993 effects: #1, #2), Restoration Druid (1256995 effects: #3, #4), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
+Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #16, #17), Incarnation: Chosen of Elune (102560 effects: #8, #9), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2, #20), Restoration Druid (137012 effects: #3, #4), Starfall (191034 effect#2), Rend and Tear (204053 effects: #1, #2, #3), Lunar Beam (204066 effects: #6, #7), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effects: #3, #4), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Fury of Nature (370701 effects: #2, #3), Untamed Savagery (372943 effects: #3, #4), Incarnation: Chosen of Elune (390414 effects: #8, #9), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Flashing Claws (393427 effect#2), Overpowering Aura (395944 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3), Furious Regeneration (408504 effects: #2, #3), Initial Druid (417382 effects: #1, #2), Lunar Calling (429523 effects: #2, #3, #4), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Dreadful Wound (441812 effect#3), Dreadful Wound (451177 effect#3), Druid Guardian 11.0 Class Set 4pc (453664 effects: #2, #4, #5, #6), Guardian's Tenacity (455011 effects: #1, #2), Grievous Wounds (474526 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Sundering Roar (1253799 effect#1), Guardian Druid (1256993 effects: #1, #2), Restoration Druid (1256995 effects: #3, #4), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 40, 77
 Attributes       : Is Ability (4), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), DoT Stacking Rule (103), Always Hit (114), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
@@ -7349,13 +7349,13 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Area (87)
                    Modified By: Bounteous Bloom (429215 effect#2)
 #2 (id=303839)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 248280 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 248280 | Target: at Area (87)
 #3 (id=465061)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 155 | Trigger Spell: 248280 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 155_ms | Trigger Spell: 248280 | Target: at Area (87)
 #4 (id=465062)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 248280 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 300_ms | Trigger Spell: 248280 | Target: at Area (87)
 #5 (id=736032)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 445 | Trigger Spell: 248280 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 445_ms | Trigger Spell: 248280 | Target: at Area (87)
                    Modified By: Sylvan Beckoning (1264618 effect#6), Sylvan Beckoning (1264618 effect#8), Spirit of the Thicket (1264911 effect#6), Spirit of the Thicket (1264911 effect#8)
 #6 (id=1293022)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: astral_power | Target: Self (1)
@@ -9935,7 +9935,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Stance Mask      : 0x00000001
-Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
+Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Dreadful Wound (451177 effect#3), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
 Family Flags     : 94
 Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -9956,7 +9956,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting Spells : Cat Form (768 effect#8), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Untamed Ferocity (273338 effect#2), Master Shapeshifter (290640 effect#1), Call of the Elder Druid (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Focused Frenzy (1244544 effects: #1, #2, #3), Hunger for Battle (1244553 effects: #1, #2), Lacerating Claws (1244632 effects: #1, #2), Feral Druid (1256992 effects: #1, #2), Unseen Predator's Craving (1263939 effects: #1, #2), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
+Affecting Spells : Cat Form (768 effect#8), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Untamed Ferocity (273338 effect#2), Master Shapeshifter (290640 effect#1), Call of the Elder Druid (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Dreadful Wound (451177 effect#3), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Focused Frenzy (1244544 effects: #1, #2, #3), Hunger for Battle (1244553 effects: #1, #2), Lacerating Claws (1244632 effects: #1, #2), Feral Druid (1256992 effects: #1, #2), Unseen Predator's Craving (1263939 effects: #1, #2), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 94, 98
 Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
@@ -20820,8 +20820,9 @@ Effects          :
                    Affected School(s): All
 #3 (id=1284873)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Rake (155722), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233), Frantic Frenzy (1243807), Frantic Frenzy (1244079), Dire Echo (1253489), Frantic Frenzy (1278969)
-                   Family Flags: 12, 85, 91, 94, 126
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Rake (155722), Thrash (192090), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233), Frantic Frenzy (1243807), Frantic Frenzy (1244079), Dire Echo (1253489), Frantic Frenzy (1278969)
+                   Family Flags: 12, 40, 85, 91, 94, 126
+Hotfixed         : Affects Spells
 #4 (id=1284874)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 5977 (Label) | Target: Targeted Enemy (6)
                    Affected Spells (Label): Unseen Slash (1271863)
@@ -21557,8 +21558,9 @@ Effects          :
                    Affected School(s): All
 #3 (id=1284869)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Rake (155722), Thrash (405233), Dire Echo (1253489)
-                   Family Flags: 12, 85, 91, 126
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Rake (155722), Thrash (192090), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233), Frantic Frenzy (1243807), Frantic Frenzy (1244079), Dire Echo (1253489), Frantic Frenzy (1278969)
+                   Family Flags: 12, 40, 85, 91, 94, 126
+Hotfixed         : Affects Spells
 Description      : $@spelldesc441809
 Tooltip          : Bleeding for $w1 damage every $t1 seconds. Weakened, dealing $w2% less damage to $@auracaster.
 
@@ -22293,7 +22295,7 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1182954)  : Trigger Spell (64): Sunseeker Mushroom
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 1280212 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1000_ms | Trigger Spell: 1280212 | Target: At Enemy (53)
 #2 (id=1190414)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc468936
@@ -23200,7 +23202,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -23417,6 +23419,7 @@ $@spellicon48518 $@spellname48518
 Arcane spells deal $48518s1% additional damage and Starfire damage is increased by $48518s3%.
 
 Name             : Celestial Fire (id=1240185) [Spell Family (7), Passive] 
+Hotfixed         : Description
 Talent Entry     : Balance [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
@@ -23434,7 +23437,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202497), Crashing Star (408310), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609), Shooting Stars (1272339)
                    Family Flags: 92, 116, 127
-Description      : Moonfire, Sunfire, and Shooting Stars damage increased by 15%.
+Description      : Moonfire, Sunfire, and Shooting Stars damage increased by $s1%.
 
 Name             : Sculpt the Stars (id=1240188) [Spell Family (7), Passive] 
 Talent Entry     : Balance [tree=spec, row=8, col=1, max_rank=1, req_points=20]
@@ -23589,7 +23592,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Stance Mask      : 0x00000001
-Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
+Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Dreadful Wound (451177 effect#3), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
 Family Flags     : 94
 Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -23709,7 +23712,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting Spells : Cat Form (768 effect#8), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Untamed Ferocity (273338 effect#2), Master Shapeshifter (290640 effect#1), Call of the Elder Druid (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Focused Frenzy (1244544 effects: #1, #2, #3), Hunger for Battle (1244553 effects: #1, #2), Lacerating Claws (1244632 effects: #1, #2), Feral Druid (1256992 effects: #1, #2), Unseen Predator's Craving (1263939 effects: #1, #2), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
+Affecting Spells : Cat Form (768 effect#8), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Untamed Ferocity (273338 effect#2), Master Shapeshifter (290640 effect#1), Call of the Elder Druid (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Dreadful Wound (451177 effect#3), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Big Winner!!! (1217245 effect#1), Luck of the Draw! (1218553 effects: #1, #2), Focused Frenzy (1244544 effects: #1, #2, #3), Hunger for Battle (1244553 effects: #1, #2), Lacerating Claws (1244632 effects: #1, #2), Feral Druid (1256992 effects: #1, #2), Unseen Predator's Craving (1263939 effects: #1, #2), Patient Custodian (1270592 effect#1), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 94, 98
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
@@ -26448,7 +26451,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
+Affecting Spells : Cat Form (768 effect#8), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Starfall (191034 effect#2), Untamed Ferocity (273338 effect#2), Adaptive Swarm (325733 effect#2), Sabertooth (391722 effect#1), Druid Feral 10.2 Class Set 4pc (422748 effect#1), Dreadful Wound (441812 effect#3), Tear Down the Mighty (441846 effects: #2, #3), Predator (449864 effect#1), Dreadful Wound (451177 effect#3), Big Winner!!! (1217245 effect#1), Focused Frenzy (1244544 effects: #1, #2, #3), Lacerating Claws (1244632 effects: #1, #2), Patient Custodian (1270592 effect#1)
 Family Flags     : 94
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :

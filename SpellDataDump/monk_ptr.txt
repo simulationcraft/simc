@@ -14396,7 +14396,7 @@ Effects          :
 #3 (id=1031602)  : Trigger Spell (64): Strike of the Windlord
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395519 | Target: Self (1)
 #4 (id=1031603)  : Trigger Spell (64): Strike of the Windlord
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 395521 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 395521 | Target: Self (1)
 Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d. Deals reduced damage to secondary targets.
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -21078,7 +21078,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
