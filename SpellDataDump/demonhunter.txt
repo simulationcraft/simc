@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65699 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65727 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -14278,10 +14278,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1153549)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.2 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.2)
 #2 (id=1184798)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.2 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.2)
 #3 (id=1245747)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : $?a212612[Demonsurge][Voidsurge] deals $s1% increased damage when it strikes a single target.
@@ -14512,7 +14510,6 @@ Attributes       : Not In Spellbook (143), Always AOE Line of Sight (186), No At
 Effects          :
 #1 (id=1153560)  : School Damage (2): magic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.8 | PvP Coefficient: 0.8 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1153570)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 3594 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonsurge (452416), Demonsurge (453323), Demonsurge (1238696), Voidsurge (1246160), Voidsurge (1246161)
@@ -14539,7 +14536,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.334 | Target: Self (1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Hungering Slash (1239127), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
                    Family Flags: 30, 106
-Hotfixed         : PvP Coefficient (1 -> 0.334)
 #3 (id=1158336)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: cosmic | Trigger Spell: 452416 | Target: Self (1)
 #4 (id=1246861)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
@@ -15671,7 +15667,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1195366)  : School Damage (2): cosmic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2025 | PvP Coefficient: 1.25 | Radius: 30 yards | Target: Target Reticule: Enemy (129)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 
 Name             : Void Ray (id=1214595) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -15687,7 +15682,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1196915)  : School Damage (2): cosmic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3375 | PvP Coefficient: 1.25 | Radius: 30 yards | Target: Target Reticule: Enemy (129)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 
 Name             : Cycle of Hatred (id=1214887) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -16440,7 +16434,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Collapsing Star (1221162)
                    Family Flags: 103
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217698)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227707
@@ -16890,7 +16883,6 @@ Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs 
 Effects          :
 #1 (id=1236611)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.475 | PvP Coefficient: 1.15 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc1239123
 
 Name             : Hungering Slash (id=1239507) [Spell Family (107)] 
@@ -17046,7 +17038,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1238387)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.3 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.3)
 #2 (id=1239241)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Void Ray deals $s1% more damage when damaging a single target.
@@ -17450,7 +17441,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=1246443)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.25 | PvP Coefficient: 1.38 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.2 -> 1.38)
 #3 (id=1246444)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Duty Eternal (1246562 effect#2)
@@ -17560,19 +17550,16 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), The Hunt (323639), Vengeful Retreat (344866), The Hunt (345335), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Blazing Nova (436899), Blazing Nova (436964), The Hunt (1246167), The Hunt (1246168), The Hunt (1246169), Predator's Wake (1259431)
                    Family Flags: 3, 82, 87
-Hotfixed         : Affects Spells, PvP Coefficient (1 -> 0.33)
 #4 (id=1246791)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: cosmic | Trigger Spell: 452416 | Target: Self (1)
 #5 (id=1300741)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Hungering Slash (1239127), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
                    Family Flags: 30, 106
-Hotfixed         : NEW EFFECT
 #6 (id=1300742)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), The Hunt (323639), Vengeful Retreat (344866), The Hunt (345335), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Blazing Nova (436899), Blazing Nova (436964), The Hunt (1246167), The Hunt (1246168), The Hunt (1246169), Predator's Wake (1259431)
                    Family Flags: 3, 82, 87
-Hotfixed         : NEW EFFECT
 
 Name             : Demonsurge (id=1245511) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -18701,12 +18688,10 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
-Hotfixed         : Base Value (0 -> -8)
 #2 (id=1266631)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
-Hotfixed         : Base Value (0 -> -8)
 
 Name             : Devourer Demon Hunter (id=1256968) [Spell Family (107), Passive, Hidden] 
 Class            : Devourer Demon Hunter
