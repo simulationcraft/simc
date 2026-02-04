@@ -1160,6 +1160,48 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
 
   print_profilesets_chart( out, sim );
 
+  // Profileset culling indicator and culled list (moved below charts)
+  if ( sim.profileset_cull.enabled )
+  {
+    out << "<h3 class=\"toggle\">Profileset culling details</h3>\n";
+    out << "<div class=\"toggle-content hide\">\n";
+
+    out << "<div class=\"note\" style=\"margin:6px 0;\">";
+    out << "Profileset culling enabled: method="
+        << sim.profileset_cull.method_name()
+        << ", min_iters=" << sim.profileset_cull.min_iterations;
+    if ( sim.profileset_cull.uses_alpha() )
+      out << ", alpha=" << sim.profileset_cull.alpha;
+    else
+      out << ", margin=" << sim.profileset_cull.margin;
+    out << "</div>\n";
+
+    // List culled profiles if any
+    bool any_culled = false;
+    for ( const auto& pset : profilesets.profilesets() )
+    {
+      if ( pset->culled() ) { any_culled = true; break; }
+    }
+    if ( any_culled )
+    {
+      out << "<div class=\"note\" style=\"margin:6px 0;\"><strong>Culled profiles:</strong><ul>";
+      for ( const auto& pset : profilesets.profilesets() )
+      {
+        if ( !pset->culled() ) continue;
+        out << "<li>" << util::encode_html( pset->name() )
+            << ": " << util::encode_html( pset->culled_reason() )
+            << " (iters=" << pset->culled_iterations()
+            << ", mean=" << util::round( pset->culled_mean(), 2 )
+            << ", error=" << util::round( pset->culled_error(), 4 )
+            << ", type=" << pset->culled_error_type_cstr() << ")";
+        out << "</li>";
+      }
+      out << "</ul></div>\n";
+    }
+
+    out << "</div>\n"; // end toggle-content
+  }
+
   out << "</div>";
   out << "</div>";
 }
