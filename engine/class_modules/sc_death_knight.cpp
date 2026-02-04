@@ -15776,7 +15776,7 @@ void death_knight_t::create_buffs()
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
 
     buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
-                                  ->set_chance( 1.0 )  // handled in assess damage.  Likely bugged
+                                  ->set_chance( 1.0 )
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
                             
     buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
@@ -16357,13 +16357,9 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
       else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
         buffs.bloodied_blade_stacks->trigger();
     }
-    // As of Dec 29, 2025, best we can tell there is a baseline 20% chance to proc dom 1, chance seems to be reduced
-    // per target you are in combat with
-    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() && sim->target_non_sleeping_list.size() > 0 &&
-          rng().roll( 0.20 / sim->target_non_sleeping_list.size() ) )
-    {
+
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() )
       buffs.dance_of_midnight_1->trigger();
-    }
   }
 }
 
