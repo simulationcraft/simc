@@ -2128,6 +2128,15 @@ struct keg_smash_t : monk_melee_attack_t
     extra_kick_t( monk_t *player ) : monk_spell_t( player, "extra_kick", player->tier.mid1.brm_4pc_extra_kick )
     {
       background = dual = true;
+      aoe               = -1;
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      if ( !get_td( state->target )->dot.breath_of_fire->is_ticking() )
+        return;
+
+      monk_spell_t::impact( state );
     }
   };
 
@@ -2211,17 +2220,15 @@ struct keg_smash_t : monk_melee_attack_t
       p()->buff.empty_barrel->expire();
       empty_barrel->execute_on_target( target );
     }
+
+    if ( extra_kick )
+      extra_kick->execute();
   }
 
   void impact( action_state_t *state ) override
   {
     monk_melee_attack_t::impact( state );
-
-    monk_td_t *td = get_td( state->target );
-    td->debuff.keg_smash->trigger();
-
-    if ( extra_kick && td->dot.breath_of_fire->is_ticking() )
-      extra_kick->execute_on_target( state->target );
+    get_td( state->target )->debuff.keg_smash->trigger();
   }
 };
 
@@ -4708,9 +4715,6 @@ void monk_t::parse_player_effects()
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
 
   // Midnight S1 Set Effects
-  parse_effects( tier.mid1.brm_2pc );
-  parse_effects( tier.mid1.brm_4pc );
-
   // Midnight S2 Set Effects
   // Midnight S3 Set Effects
 }
