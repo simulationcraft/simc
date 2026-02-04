@@ -152,6 +152,7 @@ Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -172,7 +173,7 @@ Labels           : 16: Class Spells
                  : 4337
 Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #21), Balance Druid (137013 effect#11), Germination (155675 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Lingering Healing (231040 effect#1), Autumn Leaves (287247 effect#1), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Druid Restoration Class Set 2pc (393639 effect#1), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Power of Nature (428866 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439890 effect#1), Wildstalker's Power (439926 effect#3), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Patient Custodian (1270592 effect#3), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2)
 Family Flags     : 4, 118
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Aura Required by Client (262), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=311)      : Apply Aura (6) | Periodic Heal (8): every 3 seconds
@@ -1923,7 +1924,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
-Category         : 2443 (Type 0x1): Guardian Druid (137010 effect#8), Harnessed Rage (1253035 effect#3)
+Category         : 2443 (Type 0x1): Berserk (50334 effect#12), Incarnation: Guardian of Ursoc (102558 effect#18), Guardian Druid (137010 effect#8), Harnessed Rage (1253035 effect#3)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2471,6 +2472,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842), Echo of Frenzied Regeneration (1269645)
                    Family Flags: 62
+#12 (id=1305523) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 2443 (Category) | Target: Self (1)
+                   Affected Spells (Category): Mangle (33917)
+Hotfixed         : NEW EFFECT
 Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, and Growl by $s1% and the cooldown of Frenzied Regeneration by $s2%.$?a339062[
 
 Grants immunity to effects that cause loss of control of your character.][]
@@ -3842,6 +3847,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (77758), Thrash (106830), Thrash (192090), Thrash (405233), Dire Echo (1253489)
                    Family Flags: 40, 91, 126
+#18 (id=1305524) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 2443 (Category) | Target: Self (1)
+                   Affected Spells (Category): Mangle (33917)
+Hotfixed         : NEW EFFECT
 Description      : An improved Bear Form that grants the benefits of Berserk, causes Mangle to hit up to $s12 targets, $?a429536[increases Arcane damage by $s14%, ][]and increases maximum health by $s13%.$?a339062[
 
 Grants immunity to effects that cause loss of control of your character.][]
@@ -17547,6 +17556,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+Stance Mask      : 0x00000010
 Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Ravage (441602 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2), Killing Blow (1252994 effect#1), Guardian Druid (1256993 effects: #1, #2), Druid Guardian 12.0 Class Set 2pc (1264815 effect#1), Bask in Moonlight (1271305 effect#3), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 11, 77
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -25576,6 +25586,7 @@ Hotfixed         : Base Value (8 -> 12)
 Description      : $?c4[Ironbark summons a Dryad to channel a beam of pure nature onto your target, healing them for $1264905o1 over $1264905d.][Your Starfall damage is increased by $s1% and your Starsurge damage is increased by $s2%.]
 
 Name             : Spirit of the Thicket (id=1264905) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -25587,7 +25598,7 @@ Labels           : 16: Class Spells
                  : 3022
 Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2)
 Family Flags     : 118
-Attributes       : Is Channelled (34), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Not In Spellbook (143), Force Display Castbar (155), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1276515)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.32 | Target: Targeted Ally (21)

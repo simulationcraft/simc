@@ -1033,10 +1033,11 @@ Each enemy stunned by Chaos Nova has a $s3% chance to generate a Lesser Soul Fra
 Tooltip          : Stunned.
 
 Name             : Disrupt (id=183752) [Spell Family (107)] 
+Hotfixed         : Learn Level (20 -> 19), Required Level (20 -> 19)
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
-Spell Level      : 20
+Spell Level      : 19
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
@@ -18212,6 +18213,9 @@ Effects          :
 #2 (id=1263819)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2448 (Category) | Target: Self (1)
                    Affected Spells (Category): Shift (1234796)
+#3 (id=1305503)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2524 (Category) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $?a212613[Torment][Shift] has $m1 additional $Lcharge:charges;.
 
 Name             : Celestial Echoes (id=1253415) [Spell Family (107), Passive] 
