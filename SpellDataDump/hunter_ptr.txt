@@ -23276,9 +23276,10 @@ Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1289934)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045), Rapid Fire (460496)
                    Family Flags: 3
+Hotfixed         : Base Value (25 -> 20)
 Description      : $@spelldesc389019
 Tooltip          : The damage of your next Rapid Fire is increased by $s1%.
 

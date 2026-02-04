@@ -1604,7 +1604,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Allow Item Spell In PvP (13), Do Not Sheath (18), No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -1722,7 +1722,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -2359,7 +2359,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 1140
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
@@ -2724,8 +2724,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Target: Self (1)
 #5 (id=1254942)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Dread Plague (1240996), Virulent Plague (Erupt) (1241167), Dread Plague (Erupt) (1241171), Dread Plague (1242564), Consumption (1263872)
-                   Family Flags: 40, 41, 57, 58, 93, 119
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Festering Wound (195757), Putrefy (390220), Dread Plague (1240996), Virulent Plague (Erupt) (1241167), Dread Plague (Erupt) (1241171), Dread Plague (1242564), Consumption (1263872), Putrefy (1277016)
+                   Family Flags: 40, 41, 57, 58, 85, 93, 112, 119
+Hotfixed         : Affects Spells
 #6 (id=1254948)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 3 | Misc Value 2: 5503 (Label) | Target: Self (1)
                    Affected Spells (Label): Mastery: Dreadblade (1250728)
@@ -2738,6 +2739,10 @@ Effects          :
 #9 (id=1296025)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 15 | Misc Value 2: 6230 (Label) | Target: Self (1)
                    Affected Spells (Label): Coil of Devastation (390271)
+#10 (id=1305391) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 15 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
+Hotfixed         : NEW EFFECT
 Description      : Increases the damage of your Minions and Shadow damage abilities by ${$s1}.1%.
 
 Increases the critical strike damage of your Minions and Diseases by ${$s5}.1%.
@@ -4963,7 +4968,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Affecting Spells : Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Grave Mastery (1238900 effect#1), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Disease Cloud (1244102 effect#4), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1)
+Affecting Spells : Mastery: Dreadblade (77515 effect#5), Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Grave Mastery (1238900 effect#1), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Disease Cloud (1244102 effect#4), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1)
 Triggered By     : Festering Wound (197147)
 Family Flags     : 85
 Attributes       : Allow Class Ability Procs (416)
@@ -11319,7 +11324,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Triggered By     : Rune of Sanguination (326801), Rune of Sanguination (333114)
 Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -11400,7 +11405,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -11429,7 +11434,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
@@ -11473,7 +11478,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Rune of Hysteria (326913), Rune of Hysteria (333113)
@@ -11534,7 +11539,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 963: Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 1 maximum
@@ -11602,7 +11607,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
@@ -11623,7 +11628,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -11647,7 +11652,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
@@ -11668,7 +11673,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
+                 : 961: Mastery: Dreadblade (77515 effect#10), Unholy Bond (374261 effect#1), Unholy Bond (374261 effect#5), Plague Mastery (390166 effect#4), Foul Infections (455396 effect#10), Foul Infections (455396 effect#11), Foul Infections (455396 effect#12), Soul Reaper (1241521 effect#5), Attuned to the Aether (1242344 effect#2), Blightfall (1242616 effect#3)
                  : 962: Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 963: Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 3 maximum
@@ -14721,7 +14726,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Grave Mastery (1238900 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Infected Claws (1241786 effect#2), Disease Cloud (1244102 effect#4), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2, #5), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Grave Mastery (1238900 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Infected Claws (1241786 effect#2), Disease Cloud (1244102 effect#4), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Family Flags     : 43, 78, 85
 Attributes       : Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -24510,7 +24515,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Grave Mastery (1238900 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Infected Claws (1241786 effect#2), Disease Cloud (1244102 effect#4), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2, #5), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Putrid Echoes (377580 effect#1), Commander of the Dead (390260 effect#3), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Grave Mastery (1238900 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3), March of Madness (1241707 effect#3), Infected Claws (1241786 effect#2), Disease Cloud (1244102 effect#4), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Death Knight Unholy 12.0 Class Set 4pc (1264804 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Family Flags     : 43, 78, 112
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :

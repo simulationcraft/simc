@@ -21920,7 +21920,8 @@ Family Flags     : 13, 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1280111)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.994896 | PvP Coefficient: 1.15 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6768 | PvP Coefficient: 1.15 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : SP Coefficient (0.994896 -> 0.6768)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Stormstream Totem (id=1267765) [Spell Family (11)] 
