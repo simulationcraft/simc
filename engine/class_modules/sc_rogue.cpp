@@ -277,6 +277,11 @@ public:
 
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
 
+    struct 
+    {
+      actions::rogue_attack_t* dispatch = nullptr;
+      actions::rogue_attack_t* coup_de_grace = nullptr;
+    } scoundrel_strike;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -2168,6 +2173,7 @@ public:
   void trigger_restless_blades( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_scent_of_blood();
+  void trigger_scoundrel_strike( const action_state_t*, rogue_attack_t* action );
   void trigger_seal_fate( const action_state_t* );
   void trigger_secondary_poisoning( const action_state_t* state );
   void trigger_shadow_blades_attack( const action_state_t* );
@@ -3600,28 +3606,13 @@ struct backstab_t : public rogue_attack_t
 
 struct dispatch_t: public rogue_attack_t
 {
-  struct scoundrel_strike_t : public rogue_attack_t
-  {
-    scoundrel_strike_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
-    {
-    }
-
-    bool procs_blade_flurry() const override
-    { return true; }
-  };
-
-  scoundrel_strike_t* scoundrel_strike;
-
   dispatch_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.dispatch, options_str ),
-    scoundrel_strike( nullptr )
+    rogue_attack_t( name, p, p->spec.dispatch, options_str )
   {
     affected_by.delivered_doom = true;
     if ( p->talent.outlaw.gravedigger_2->ok() )
     {
-      scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
-      add_child( scoundrel_strike );
+      add_child( p->active.scoundrel_strike.dispatch );
     }
   }
 
@@ -3658,16 +3649,13 @@ struct dispatch_t: public rogue_attack_t
     {
       const int cp_spend = cast_state( state )->get_combo_points();
 
-      if ( scoundrel_strike && cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
-      {
-        scoundrel_strike->execute_on_target( state->target );
-      }
-
       if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
       {
         p()->buffs.palmed_bullets->trigger();
       }
     }
+
+    trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
   bool ready() override
@@ -5035,6 +5023,22 @@ struct rupture_t : public rogue_attack_t
   }
 };
 
+// Scoundrel Strike =========================================================
+
+struct scoundrel_strike_t : public rogue_attack_t
+{
+  scoundrel_strike_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
+  {
+  }
+
+  bool procs_poison() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+};
+
 // Secret Technique =========================================================
 
 struct secret_technique_t : public rogue_attack_t
@@ -6388,6 +6392,11 @@ struct coup_de_grace_t : public rogue_attack_t
     {
       add_child( attacks.front()->bonus_attack );
     }
+
+    if ( p()->talent.outlaw.gravedigger_2->ok() )
+    {
+      add_child( p()->active.scoundrel_strike.coup_de_grace );
+    }
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -6419,6 +6428,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
   }
@@ -8306,6 +8316,25 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state_t* state, actions::rogue_attack_t* action )
+{
+  if ( !p()->talent.outlaw.gravedigger_2->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
+  {
+    make_event( *p()->sim, 200_ms, [ this, state, action ]() {
+      action->execute_on_target( state->target );
+    } );
+  }
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_supercharger()
 {
   if ( !p()->talent.rogue.supercharger->ok() )
@@ -9849,6 +9878,12 @@ void rogue_t::init_spells()
       secondary_trigger::FAN_THE_HAMMER, "pistol_shot_fan_the_hammer" );
     active.fan_the_hammer->not_a_proc = true; // Scripted foreground cast, can trigger cast procs
     active.fan_the_hammer->energize_type = action_energize::NONE; // Fan the Hammer itself does not generate CPs, only from Quick Draw
+  }
+
+  if ( talent.outlaw.gravedigger_2->ok() )
+  {
+    active.scoundrel_strike.dispatch = get_background_action<actions::scoundrel_strike_t>( "scoundrel_strike_dispatch" );
+    active.scoundrel_strike.coup_de_grace = get_background_action<actions::scoundrel_strike_t>( "scoundrel_strike_coup_de_grace" );
   }
 
   // Subtlety
