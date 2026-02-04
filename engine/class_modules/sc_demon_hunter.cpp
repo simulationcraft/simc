@@ -611,7 +611,7 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage_1; // Partial implementation - missing free Meta casts
+      player_talent_t untethered_rage_1;
       player_talent_t untethered_rage_2;
       player_talent_t untethered_rage_3;
     } vengeance;
@@ -1052,6 +1052,7 @@ public:
     proc_t* eye_beam_canceled;
 
     // Vengeance
+    proc_t* untethered_rage;
     proc_t* soul_fragment_expire;
     proc_t* soul_fragment_overflow;
     proc_t* soul_fragment_from_shear;
@@ -2486,7 +2487,9 @@ public:
     double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
+      p()->buff.seething_anger->expire();
       p()->buff.untethered_rage->trigger();
+      p()->proc.untethered_rage->occur();
       return true;
     }
 
@@ -4980,9 +4983,34 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
-        p()->buff.metamorphosis->trigger();
+      {
+        if ( p()->buff.untethered_rage->up() )
+        {
+          // Free Meta from Untethered Rage — 10s duration (tier 1 effect value) instead of normal 15s
+          timespan_t ur_duration = timespan_t::from_seconds(
+              p()->talent.vengeance.untethered_rage_1->effectN( 1 ).base_value() );
+          if ( p()->buff.metamorphosis->check() )
+          {
+            // Ensure at least ur_duration remains, but never shorten existing Meta
+            timespan_t remaining = p()->buff.metamorphosis->remains();
+            if ( remaining < ur_duration )
+            {
+              p()->buff.metamorphosis->extend_duration( p(), ur_duration - remaining );
+            }
+          }
+          else
+          {
+            p()->buff.metamorphosis->trigger( ur_duration );
+          }
+          p()->buff.untethered_rage->expire();
+        }
+        else
+        {
+          p()->buff.metamorphosis->trigger();
+        }
         p()->buff.dark_matter->trigger();
         break;
+      }
       default:
         break;
     }
@@ -9783,7 +9811,11 @@ void demon_hunter_t::create_buffs()
           ->set_quiet( true )
           ->set_allow_precombat( true );
 
-  buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff );
+  buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff )
+      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+        // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost
+        cooldown.metamorphosis->adjust_max_charges( cur - old );
+      } );
   buff.seething_anger =
       make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
 
@@ -10293,6 +10325,7 @@ void demon_hunter_t::init_procs()
   proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
+  proc.untethered_rage                    = get_proc( "untethered_rage" );
   proc.soul_fragment_expire               = get_proc( "soul_fragment_expire" );
   proc.soul_fragment_overflow             = get_proc( "soul_fragment_overflow" );
   proc.soul_fragment_from_shear           = get_proc( "soul_fragment_from_shear" );
