@@ -4926,6 +4926,9 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
   void execute() override
   {
+    // Snapshot untethered_rage before base execute, since update_ready() expires the buff during base_t::execute()
+    bool untethered = p()->buff.untethered_rage->up();
+
     base_t::execute();
 
     switch ( p()->specialization() )
@@ -4983,26 +4986,12 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
-      {
-        if ( p()->buff.untethered_rage->up() )
+        if ( untethered )
         {
-          // Free Meta from Untethered Rage — 10s duration (tier 1 effect value) instead of normal 15s
+          // Untethered Rage uses a shorter duration, matching Demonic's extend_duration_or_trigger pattern
           timespan_t ur_duration = timespan_t::from_seconds(
               p()->talent.vengeance.untethered_rage_1->effectN( 1 ).base_value() );
-          if ( p()->buff.metamorphosis->check() )
-          {
-            // Ensure at least ur_duration remains, but never shorten existing Meta
-            timespan_t remaining = p()->buff.metamorphosis->remains();
-            if ( remaining < ur_duration )
-            {
-              p()->buff.metamorphosis->extend_duration( p(), ur_duration - remaining );
-            }
-          }
-          else
-          {
-            p()->buff.metamorphosis->trigger( ur_duration );
-          }
-          p()->buff.untethered_rage->expire();
+          p()->buff.metamorphosis->extend_duration_or_trigger( ur_duration );
         }
         else
         {
@@ -5010,7 +4999,6 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         p()->buff.dark_matter->trigger();
         break;
-      }
       default:
         break;
     }
@@ -5023,6 +5011,29 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
       return false;
     }
     return base_t::action_ready();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    // Expiring untethered_rage removes the temporary max charge via adjust_max_charges, which also
+    // loses a current charge. Skip base_t::update_ready to avoid consuming a real charge on top.
+    if ( p()->buff.untethered_rage->up() )
+    {
+      p()->buff.untethered_rage->expire();
+    }
+    else
+    {
+      base_t::update_ready( cd_duration );
+    }
+  }
+
+  void reset() override
+  {
+    // Reset max charges to initial value, since adjust_max_charges from untethered_rage can leave charges out of
+    // sync when a previous iteration ends with the buff active.
+    cooldown->charges = std::max( data().charges(), 1U );
+
+    base_t::reset();
   }
 };
 
@@ -9813,7 +9824,7 @@ void demon_hunter_t::create_buffs()
 
   buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff )
       ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-        // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost
+        // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost.
         cooldown.metamorphosis->adjust_max_charges( cur - old );
       } );
   buff.seething_anger =
