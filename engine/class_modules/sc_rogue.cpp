@@ -26,6 +26,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  SCOUNDREL_STRIKE,
   SHADOW_CLONE,
 };
 
@@ -8328,9 +8329,7 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
 
   if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
   {
-    make_event( *p()->sim, 200_ms, [ this, state, action ]() {
-      action->execute_on_target( state->target );
-    } );
+    action->trigger_secondary_action( state->target, 200_ms );
   }
 }
 
@@ -9882,8 +9881,10 @@ void rogue_t::init_spells()
 
   if ( talent.outlaw.gravedigger_2->ok() )
   {
-    active.scoundrel_strike.dispatch = get_background_action<actions::scoundrel_strike_t>( "scoundrel_strike_dispatch" );
-    active.scoundrel_strike.coup_de_grace = get_background_action<actions::scoundrel_strike_t>( "scoundrel_strike_coup_de_grace" );
+    active.scoundrel_strike.dispatch = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_dispatch" );
+    active.scoundrel_strike.coup_de_grace = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_coup_de_grace" );
   }
 
   // Subtlety
