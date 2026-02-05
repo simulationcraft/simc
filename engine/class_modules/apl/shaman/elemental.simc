@@ -1,6 +1,102 @@
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/lightning_shield
+actions.precombat+=/thunderstrike_ward
+actions.precombat+=/variable,name=mael_cap,value=100+50*talent.swelling_maelstrom+25*talent.primordial_capacity
+actions.precombat+=/variable,name=trinket_1_buffs,value=(trinket.1.has_use_buff|trinket.1.is.funhouse_lens)
+actions.precombat+=/variable,name=trinket_2_buffs,value=(trinket.2.has_use_buff|trinket.2.is.funhouse_lens)
+actions.precombat+=/stormkeeper
 
 # Executed every time the actor is available.
 # Enable more movement.
-actions=lightning_bolt
+actions=spiritwalkers_grace,moving=1,if=movement.distance>6
+# Interrupt of casts.
+actions+=/wind_shear
+actions+=/blood_fury,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance|buff.ascendance.up
+actions+=/fireblood,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/ancestral_call,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
+
+# Normal buff trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket_1_buffs&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)
+actions+=/use_item,slot=trinket2,use_off_gcd=1,if=variable.trinket_2_buffs&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)
+# Normal weapons
+actions+=/use_item,slot=main_hand,use_off_gcd=1,if=(buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&cooldown.ascendance.remains>15|buff.ascendance.remains>12
+# Dmg trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_buffs&(cooldown.ascendance.remains>20|trinket.2.cooldown.remains>20)
+actions+=/use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_buffs&(cooldown.ascendance.remains>20|trinket.1.cooldown.remains>20)
+
+actions+=/lightning_shield,if=buff.lightning_shield.down
+actions+=/natures_swiftness
+# Use Power Infusion on Cooldown.
+actions+=/invoke_external_buff,name=power_infusion,if=buff.ascendance.up|cooldown.ascendance.remains>30
+actions+=/potion,if=buff.bloodlust.up|buff.ascendance.remains>12|fight_remains<31
+actions+=/run_action_list,name=aoe,if=spell_targets.chain_lightning>=2
+actions+=/run_action_list,name=single_target
+
+actions.aoe=fire_elemental
+actions.aoe+=/stormkeeper
+actions.aoe+=/ancestral_swiftness
+
+actions.aoe+=/flame_shock,if=active_dot.flame_shock=0&spell_targets.chain_lightning<=3&cooldown.ascendance.remains>10
+actions.aoe+=/voltaic_blaze,if=active_dot.flame_shock=0|talent.purging_flames
+
+actions.aoe+=/ascendance,if=cooldown.stormkeeper>10
+
+actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack=2
+
+# Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire.
+actions.aoe+=/earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))
+actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)
+actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)
+
+# Spend to spread Lightning Rod if Tempest or Stormkeeper is up.
+actions.aoe+=/earthquake,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))
+actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)
+actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)
+
+# [2-3t] Use Lava Surge procs to buff <anything> with MotE on 2-3 targets.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements&active_enemies<=3
+# [2-3t]{Farseer} Use all Lava Bursts to buff spenders, SK_CL and Tempest with MotE on 2-3 targets if not talented into Lightning Rod.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&talent.master_of_the_elements&(buff.stormkeeper.up|buff.tempest.up|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_eb.up|!talent.elemental_blast))&active_enemies<=3&!talent.lightning_rod&talent.call_of_the_ancestors
+# [2t] Use all Lava Bursts to buff <anything> with MotE on 2 targets.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&active_enemies=2
+# AoE Lava Burst goes brrrrr.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.purging_flames.up&(buff.ascendance.up&buff.ascendance.remains<3|buff.lava_surge.up)
+
+actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
+actions.aoe+=/chain_lightning
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+actions.aoe+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.aoe+=/frost_shock,moving=1
+
+
+actions.single_target=fire_elemental
+actions.single_target+=/stormkeeper
+actions.single_target+=/ancestral_swiftness
+
+# Apply Flame shock if it is not up.
+actions.single_target+=/flame_shock,if=active_dot.flame_shock=0&!buff.master_of_the_elements.up
+actions.aoe+=/voltaic_blaze,if=active_dot.flame_shock=0
+
+actions.single_target+=/ascendance,if=cooldown.stormkeeper>10
+
+# Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering.
+actions.single_target+=/elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+actions.single_target+=/earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+
+# Use Lava Burst to proc Master of the Elements.
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>variable.mael_cap-30|(maelstrom>52-5*talent.eye_of_the_storm*(1+talent.elemental_blast)+30*talent.elemental_blast)
+
+actions.single_target+=/tempest
+
+# Filler spell. Always available. Always the bottom line.
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+actions.single_target+=/voltaic_blaze,moving=1,if=movement.distance>6
+# Frost Shock is our movement filler.
+actions.single_target+=/frost_shock,moving=1
+

@@ -905,7 +905,7 @@ struct player_t : public actor_t
     // Default is "raid_random", picking a random race of a raid boss in the current tier
     // "random" picks a random valid race.
     // "none" will use the targets actual race.
-    std::string darkmoon_hunt_race = "raid_random";
+    player_option_t<std::string> darkmoon_hunt_race = "raid_random";
   } midnight_opts;
 
 private:
