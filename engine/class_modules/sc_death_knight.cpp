@@ -1870,6 +1870,8 @@ public:
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_summoned;
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_active;
     std::unique_ptr<extended_sample_data_t> magus_active;
+    std::unique_ptr<extended_sample_data_t> pest_dp_dur;
+    std::unique_ptr<extended_sample_data_t> pest_vp_dur;
   } sample_data;
 
   // Death Knight Options
@@ -2719,7 +2721,8 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_critical_damage_multiplier( s, school );
 
-    m *= 1.0 + grave_mastery->check_value();
+    if( grave_mastery->check() )
+      m *= 1.0 + grave_mastery->check_value();
 
     if ( mastery_dreadblade_crit->check() )
       m *= 1.0 + mastery_dreadblade_crit->check_value();
@@ -2749,9 +2752,6 @@ struct death_knight_pet_t : public pet_t
 
     if ( buffs.stunned->check() )
       return buffs.stunned->remains();
-
-    if ( in_gcd() )
-      return sim->current_time() - gcd_ready;
 
     if ( primary_resource() == RESOURCE_ENERGY )
     {
@@ -2786,6 +2786,18 @@ struct death_knight_pet_t : public pet_t
   {
     range::erase_remove( dk()->dk_active_pets, this );
     pet_t::demise();
+
+    // 2026-02-03: Dynamic pets by default dont seem to reset their auto attack on despawn, leading to incorrect
+    // schedule_execute() durations for their first auto attack the next time they spawn.
+    // Override that behavior here to get the correct behavior where they always execute their "first" auto attack
+    // almost immediately after spawning (excluding movement time if applicable).
+    if ( dynamic )
+    {
+      if ( main_hand_attack )
+        main_hand_attack->reset();
+      if ( off_hand_attack )
+        off_hand_attack->reset();
+    }
   }
 
   void trigger_pet_movement( double dist )
@@ -3109,7 +3121,7 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     if ( this->first )
     {
       timespan_t delay = ( this->weapon->slot == SLOT_OFF_HAND ) ? pet()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
-      return t + delay;
+      return delay;
     }
 
     return t;
@@ -3269,6 +3281,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       : dt_melee_ability_t( p, name, spell, dt )
     {
       triggers_infected_claws = triggers_apocalypse = true;
+      base_multiplier *= 0.85;
     }
   };
 
@@ -3338,7 +3351,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
     affected_by_grave_mastery = true;
-    owner_coeff.ap_from_ap    = 0.47385;
+    owner_coeff.ap_from_ap    = 0.474;
     if ( owner->spec.raise_dead->ok() )
     {
       dynamic = false;
@@ -3517,6 +3530,14 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
         }
       }
     }
+
+    bool ready() override
+    {
+      if ( pet()->putrefied )
+        return false;
+
+      return pet_melee_attack_t<lesser_ghoul_pet_t>::ready();
+    }
   };
 
   struct lesser_ghoul_sweeping_claws_aoe_t : public lesser_ghoul_claw_base_t
@@ -3580,7 +3601,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
-    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true )
+    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3632,12 +3653,16 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     if ( dk()->talent.unholy.necromancers_cunning.ok() && expired && !sim->event_mgr.canceled )
       ruptured_viscera->execute();
 
+    putrefied = false;
+
     base_ghoul_pet_t::dismiss( expired );
   }
 
   void putrefy_ghoul( putrefy_source_e source )
   {
-    make_event( *sim, rng().range( 1_ms, 100_ms ), [ &, source ]() {
+    putrefied = true;
+    timespan_t travel_time = timespan_t::from_seconds( spawn_distance / dk()->pet_spell.leap->missile_speed() );
+    make_event( *sim, travel_time + rng().range( 0_ms, 100_ms ), [ &, source ]() {
       // RNG roll technically not needed as its a 100% chance, but, leaving this here in case it changes in the future
       bool reanimation_triggered          = rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() );
       action_t* magus_summon_action       = dk()->pet_summon.reanimation_magus;
@@ -3727,6 +3752,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
 private:
   action_t* ruptured_viscera;
+  bool putrefied;
 };
 
 // ==========================================================================
@@ -3862,7 +3888,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     resource_regeneration       = regen_type::DISABLED;
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
-    main_hand_weapon.swing_time = 2.7_s;
+    main_hand_weapon.swing_time = 3_s;
 
     affected_by_grave_mastery         = true;
     affected_by_commander_of_the_dead = true;
@@ -3958,7 +3984,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 0.75;
   }
 
   void create_buffs() override
@@ -4577,7 +4603,7 @@ struct horseman_pet_t : public death_knight_pet_t
     main_hand_weapon.type     = WEAPON_BEAST_2H;
     owner_coeff.ap_from_ap    = 0.70125;
     resource_regeneration     = regen_type::DISABLED;
-    auto_attack_multiplier    = 1;
+    auto_attack_multiplier    = 0.75;
     affected_by_grave_mastery = true;
   }
 
@@ -5193,7 +5219,7 @@ struct abomination_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time       = 3.6_s;
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
-    owner_coeff.ap_from_ap            = 2.34;
+    owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
@@ -7385,7 +7411,7 @@ struct melee_t : public death_knight_melee_attack_t
     if ( first && !sync_weapons )
     {
       timespan_t delay = ( weapon->slot == SLOT_OFF_HAND ) ? p()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
-      return t + delay;
+      return delay;
     }
     else
       return t;
@@ -7635,14 +7661,17 @@ struct dread_plague_t final : public death_knight_disease_t
 {
   dread_plague_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
-      sd_chance( 0 ),
-      ticks_since_last_proc( 0 ),
       last_target( nullptr ),
-      erupt( nullptr )
+      erupt( nullptr ),
+      sudden_doom_rng( nullptr )
   {
     if ( p->talent.unholy.sudden_doom.ok() )
-      sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
+    {
+      double sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                                    ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      sudden_doom_rng  = p->get_accumulated_rng( "sudden_doom", sd_chance );
+    }
 
     add_child( p->background_actions.dread_plague_death );
 
@@ -7651,8 +7680,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.superstrain.ok() )
     {
-      erupt                  = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
-      erupt->base_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
+      erupt                         = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
       erupt->target_filter_callback = secondary_targets_only();
       add_child( erupt );
     }
@@ -7687,26 +7715,24 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     death_knight_disease_t::tick( d );
 
-    // Assume it works like the auto attack version of sudden doom, with a pseudo random proc chance
-    if ( p()->talent.unholy.sudden_doom.ok() && rng().roll( sd_chance * ++ticks_since_last_proc ) )
-    {
+    if ( p()->talent.unholy.sudden_doom.ok() && sudden_doom_rng->trigger() )
       p()->buffs.sudden_doom->trigger();
-      ticks_since_last_proc = 0;
-    }
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
     // for the time being. TODO: Test for longer... far longer
-    if ( p()->talent.unholy.superstrain.ok() &&
-         rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+    if ( p()->talent.unholy.superstrain.ok() )
     {
-      p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                          p()->gains.superstrain, this );
-
+      if ( rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+      {
+        p()->resource_gain( RESOURCE_RUNIC_POWER,
+                            p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p()->gains.superstrain, this );
+      }
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
         auto target = rng().range( erupt->target_list() );
-        erupt->execute_on_target( target, d->state->result_raw );
+        erupt->execute_on_target( target,
+                                  d->state->result_raw * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
       }
     }
 
@@ -7715,18 +7741,10 @@ struct dread_plague_t final : public death_knight_disease_t
       p()->pet_summon.fk_ghoul->execute();
   }
 
-  void reset() override
-  {
-    death_knight_disease_t::reset();
-
-    ticks_since_last_proc = 0;
-  }
-
 private:
-  double sd_chance;
-  int ticks_since_last_proc;
   player_t* last_target;
   action_t* erupt;
+  accumulated_rng_t* sudden_doom_rng;
 };
 
 // Frost Fever =======================================================
@@ -7864,7 +7882,6 @@ struct summon_whitemane_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.whitemane.active_pet()->adjust_duration( duration );
-      p()->pets.whitemane.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7888,7 +7905,6 @@ struct summon_trollbane_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.trollbane.active_pet()->adjust_duration( duration );
-      p()->pets.trollbane.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7911,7 +7927,6 @@ struct summon_nazgrim_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.nazgrim.active_pet()->adjust_duration( duration );
-      p()->pets.nazgrim.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7935,7 +7950,6 @@ struct summon_mograine_t final : public summon_rider_t
       summon_rider_t::execute();
       pets::mograine_pet_t* mograine = p()->pets.mograine.active_pet();
       mograine->adjust_duration( duration );
-      mograine->rp_spent = 0;
       if ( mograine->dnd_aura->check() )
         mograine->extended_by_apoc_now = true;
       else
@@ -11578,12 +11592,14 @@ struct pestilence_t final : public death_knight_spell_t
     double damage         = 0.0;
     if ( vp->is_ticking() )
     {
+      p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
       damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
+      p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
       damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
       dp->cancel();
@@ -11681,7 +11697,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 // Putrefy ==================================================================
 struct putrefy_aoe_t final : public death_knight_spell_t
 {
-  putrefy_aoe_t( std::string_view n, death_knight_t* p )
+  putrefy_aoe_t( std::string_view n, death_knight_t* p, putrefy_source_e source )
     : death_knight_spell_t( n, p, p->spell.putrefy_aoe ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     aoe        = -1;
@@ -11691,8 +11707,22 @@ struct putrefy_aoe_t final : public death_knight_spell_t
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
-      if ( n == "putrefy_aoe" )
-        add_child( p->background_actions.virulent_plague_erupt_bb );
+    }
+
+    switch ( source )
+    {
+      case PUTREFY_SOURCE_PUTREFY:
+        if ( p->talent.unholy.blightburst.ok() )
+          add_child( p->background_actions.virulent_plague_erupt_bb );
+        break;
+      case PUTREFY_SOURCE_SOUL_REAPER:
+        break;
+      case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
+        if ( p->talent.unholy.blightburst.ok() )
+          blightburst_dur *= p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+        break;
+      default:
+        break;
     }
   }
 
@@ -11721,24 +11751,34 @@ private:
 
 struct putrefy_st_t final : public death_knight_spell_t
 {
-  putrefy_st_t( std::string_view n, death_knight_t* p )
+  putrefy_st_t( std::string_view n, death_knight_t* p, putrefy_source_e source )
     : death_knight_spell_t( n, p, p->spell.putrefy_st ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     background         = true;
     cooldown->duration = 0_ms;
-    if ( n == "putrefy_sr_st" )
-      execute_action = p->background_actions.putrefy_sr_aoe;
-    else if ( n == "putrefy_fk_st" )
-      execute_action = p->background_actions.putrefy_fk_aoe;
-    else
-      execute_action = p->background_actions.putrefy_aoe;
-
     if ( p->talent.unholy.blightburst.ok() )
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
-      if ( n == "putrefy_st" )
-        add_child( p->background_actions.dread_plague_erupt_bb );
+    }
+
+    switch ( source )
+    {
+      case PUTREFY_SOURCE_PUTREFY:
+        execute_action = p->background_actions.putrefy_aoe;
+        if ( p->talent.unholy.blightburst.ok() )
+          add_child( p->background_actions.dread_plague_erupt_bb );
+        break;
+      case PUTREFY_SOURCE_SOUL_REAPER:
+        execute_action = p->background_actions.putrefy_sr_aoe;
+        break;
+      case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
+        execute_action = p->background_actions.putrefy_fk_aoe;
+        if ( p->talent.unholy.blightburst.ok() )
+          blightburst_dur *= p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+        break;
+      default:
+        break;
     }
   }
 
@@ -12821,6 +12861,12 @@ void death_knight_t::analyze( sim_t& s )
   sample_data.lesser_ghouls_summoned->analyze();
   sample_data.lesser_ghouls_active->analyze();
   sample_data.magus_active->analyze();
+
+  if ( talent.unholy.pestilence.ok() )
+  {
+    sample_data.pest_dp_dur->analyze();
+    sample_data.pest_vp_dur->analyze();
+  }
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -13903,8 +13949,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.putrefy.ok() )
     {
-      background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
-      background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
+      background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this, PUTREFY_SOURCE_PUTREFY );
+      background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this, PUTREFY_SOURCE_PUTREFY );
       pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
                                                                     lesser_ghoul_e::LESSER_PUTREFY );
     }
@@ -13941,8 +13987,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.forbidden_knowledge_3.ok() )
     {
-      background_actions.putrefy_fk_aoe                  = get_action<putrefy_aoe_t>( "putrefy_fk_aoe", this );
-      background_actions.putrefy_fk_st                   = get_action<putrefy_st_t>( "putrefy_fk_st", this );
+      background_actions.putrefy_fk_aoe                  = get_action<putrefy_aoe_t>( "putrefy_fk_aoe", this, PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE );
+      background_actions.putrefy_fk_st                   = get_action<putrefy_st_t>( "putrefy_fk_st", this, PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE );
       background_actions.putrefy_fk_st->base_multiplier  = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
       background_actions.putrefy_fk_aoe->base_multiplier = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
       pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_putrefy_ghoul,
@@ -13951,8 +13997,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.soul_reaper.ok() )
     {
-      background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this );
-      background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this );
+      background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this, PUTREFY_SOURCE_SOUL_REAPER );
+      background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this, PUTREFY_SOURCE_SOUL_REAPER );
       background_actions.putrefy_sr     = get_action<putrefy_sr_t>( "putrefy_sr", this );
       pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_SOUL_REAPER );
@@ -15716,7 +15762,7 @@ void death_knight_t::create_buffs()
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
 
     buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
-                                  ->set_chance( 1.0 )  // handled in assess damage.  Likely bugged
+                                  ->set_chance( 1.0 )
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
                             
     buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
@@ -16034,6 +16080,12 @@ void death_knight_t::init_uptimes()
   sample_data.lesser_ghouls_active   = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
   sample_data.magus_active           = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
+  if ( talent.unholy.pestilence.ok() )
+  {
+    sample_data.pest_dp_dur = std::make_unique<extended_sample_data_t>( "Dread Plague Consume Duration", false );
+    sample_data.pest_vp_dur = std::make_unique<extended_sample_data_t>( "Virulent Plague Consume Duration", false );
+  }
+
   uptimes.primary_resource_cap->uptime_instance.change_mode( false );
   uptimes.primary_resource_cap->uptime_sum.change_mode( false );
 }
@@ -16291,13 +16343,9 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
       else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
         buffs.bloodied_blade_stacks->trigger();
     }
-    // As of Dec 29, 2025, best we can tell there is a baseline 20% chance to proc dom 1, chance seems to be reduced
-    // per target you are in combat with
-    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() && sim->target_non_sleeping_list.size() > 0 &&
-          rng().roll( 0.20 / sim->target_non_sleeping_list.size() ) )
-    {
+
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() )
       buffs.dance_of_midnight_1->trigger();
-    }
   }
 }
 
@@ -17150,6 +17198,112 @@ public:
           "</div>\n";
   }
 
+  void dread_plague_dur_chart( report::sc_html_stream& os )
+  {
+    auto& d = *p.sample_data.pest_dp_dur;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dp_dur" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Dread Plague Consumed Duration", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+
+  }
+
+  void virulent_plague_dur_chart( report::sc_html_stream& os )
+  {
+    auto& d = *p.sample_data.pest_vp_dur;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "vp_dur" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Virulent Plague Consumed Duration", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+  }
+
+  void pestilence_charts( report::sc_html_stream& os )
+  {
+    if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
+      return;
+
+    if ( !p.talent.unholy.pestilence.ok() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle\">Pestilence</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
+
+    dread_plague_dur_chart( os );
+    virulent_plague_dur_chart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.sim->report_details == 1 )
@@ -17160,6 +17314,7 @@ public:
       html_rp_waste( os );
       lesser_ghoul_charts( os );
       magus_active_chart( os );
+      pestilence_charts( os );
     }
   }
 

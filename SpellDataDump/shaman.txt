@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65560 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65727 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -570,11 +570,11 @@ Family Flags     : 36
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Proc Equip Requirement (97), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9070)     : Trigger Spell (64): Stormstrike
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 32175 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 32175 | Target: Targeted Enemy (6)
 #2 (id=223648)   : Trigger Spell (64): Stormstrike Off-Hand
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 32176 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 32176 | Target: Targeted Enemy (6)
 #3 (id=287087)   : Trigger Spell (64): Stormstrike
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 195573 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 400_ms | Trigger Spell: 195573 | Target: Self (1)
 #4 (id=1160049)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Target: Self (1)
                    Modified By: Elemental Assault (210853 effect#3)
@@ -1389,7 +1389,6 @@ Description      : Hurls molten lava at the target, dealing $285452s1 Fire damag
 |cFFFFFFFFGenerates $343725s3 Maelstrom.|r][]
 
 Name             : Hex (desc=Frog) (id=51514) [Spell Family (11)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Nature
@@ -2129,7 +2128,6 @@ Description      : Causes the earth within $a1 yards of the target location to t
 |cFFFFFFFFThis spell is cast at a selected location.|r
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -2403,7 +2401,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.620802 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (0.3411 -> 0.620802)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -3081,7 +3078,7 @@ Effects          :
 #15 (id=1239481) : Apply Aura (6) | Cast Linked Spell w/ Value (285): Static Accumulation
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
 #16 (id=1248799) : Trigger Spell (64): Doom Winds
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 384352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 384352 | Target: Self (1)
 Description      : Transform into an Air Ascendant for $114051d and unleash Doom Winds, reducing the cooldown and cost of Stormstrike by $114051s9%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $114089r yd range.
 
 Maelstrom Weapon spenders have a ${$1252197s1/10}.1% chance to unleash Doom Winds per Maelstrom Weapon spent while Ascendance is not active.
@@ -3401,7 +3398,6 @@ Description      : Burns an enemy, then inflicts additional Fire damage every $t
 Tooltip          : Fire damage inflicted every $t2 sec.
 
 Name             : Pulverize (id=118345) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -3437,7 +3433,6 @@ Description      : Critical Strike increased by $s1%.
 Tooltip          : Critical Strike increased by $s1%.
 
 Name             : Capacitor Totem (id=118905) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -3656,7 +3651,6 @@ Effects          :
                    Base Value: 183 | Scaled Value: 183 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-Hotfixed         : Base Value (126 -> 183)
 #13 (id=1006576) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 267 | Scaled Value: 267 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -4639,7 +4633,6 @@ Description      : $@spelldesc187874
 Tooltip          : Stormstrike, Ice Strike, and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
-Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Talent Entry     : Enhancement [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Physical
@@ -10241,7 +10234,6 @@ Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
 Name             : Lightning Lasso (desc=PvP Talent) (id=305485) [Spell Family (11)] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 5
@@ -14616,9 +14608,9 @@ Family Flags     : 16, 34, 39, 58
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1016910)  : Trigger Spell (64): Doom Winds
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 466772 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2_ms | Trigger Spell: 466772 | Target: Self (1)
 #2 (id=1183511)  : Trigger Spell (64): Doom Winds
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 469270 | Target: at Self (18)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 469270 | Target: at Self (18)
 Description      : Unleash a devastating storm around yourself, dealing $469270s1 Stormstrike damage every $466772s5 sec to nearby enemies for $466772d.
 
 Increases your chance to activate Windfury Weapon by $466772s1%, and the damage of Windfury Weapon by $466772s2%.
@@ -19376,7 +19368,7 @@ Effects          :
 #1 (id=1180529)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1.15 | Scaled Value: 1.15 | Trigger Spell: 467386 | Target: Targeted Enemy (6)
 #2 (id=1193283)  : Trigger Spell (64): Flametongue Attack
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 467386 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 300_ms | Trigger Spell: 467386 | Target: Targeted Enemy (6)
 Description      : $@spelldesc318038
 
 Name             : Maelstrom Weapon (id=467442) [Spell Family (11), Hidden] 
@@ -20132,9 +20124,9 @@ Effects          :
 #1 (id=1202694)  : Trigger Spell (64): Primordial Fire
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218113 | Target: Self (1)
 #2 (id=1202695)  : Trigger Spell (64): Primordial Frost
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 1218116 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 300_ms | Trigger Spell: 1218116 | Target: Self (1)
 #3 (id=1202696)  : Trigger Spell (64): Primordial Lightning
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 600 | Trigger Spell: 1218118 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 600_ms | Trigger Spell: 1218118 | Target: Self (1)
 Description      : Devastate nearby enemies with a Primordial Storm, dealing $1218113s1 Flamestrike, $1218116s1 Froststrike, $1218118s1 Stormstrike damage, and unleashing a Lightning Bolt or a Chain Lightning at 100% effectiveness. Deals reduced damage beyond $1218047s3 targets.
 
 |cFFFFFFFFConsumes Maelstrom Weapon for increased damage.|r
@@ -20509,7 +20501,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -21177,7 +21169,6 @@ Effects          :
 Description      : Lava Burst deals $s1% additional damage.
 
 Name             : Encasing Cold (id=1258862) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : Magic

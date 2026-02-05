@@ -120,6 +120,7 @@ void fire( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* ff_combustion = p->get_action_priority_list( "ff_combustion" );
+  action_priority_list_t* ff_execute = p->get_action_priority_list( "ff_execute" );
   action_priority_list_t* ff_filler = p->get_action_priority_list( "ff_filler" );
   action_priority_list_t* sf_combustion = p->get_action_priority_list( "sf_combustion" );
   action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" );
@@ -152,6 +153,7 @@ void fire( player_t* p )
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(buff.combustion.remains>6|fight_remains<25)" );
 
   ff_combustion->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)" );
+  ff_combustion->add_action( "run_action_list,name=ff_execute,if=target.health.pct<=30&active_enemies<variable.ff_combustion_flamestrike+1" );
   ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&!action.fireball.executing&!action.pyroblast.executing&!buff.hot_streak.react&gcd.remains&gcd.remains<gcd.max&(hot_streak_spells_in_flight+buff.heating_up.react)<2" );
   ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&(action.pyroblast.executing&action.pyroblast.execute_remains<0.5|action.flamestrike.executing&action.flamestrike.execute_remains<0.5)" );
   ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5" );
@@ -166,7 +168,17 @@ void fire( player_t* p )
   ff_combustion->add_action( "scorch,if=buff.heat_shimmer.react" );
   ff_combustion->add_action( "fireball" );
 
+  ff_execute->add_action( "combustion,use_off_gcd=1,use_while_casting=1" );
+  ff_execute->add_action( "meteor" );
+  ff_execute->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1" );
+  ff_execute->add_action( "flamestrike,if=buff.hot_streak.react&buff.combustion.up&active_enemies>=variable.ff_combustion_flamestrike" );
+  ff_execute->add_action( "pyroblast,if=buff.hot_streak.react&buff.combustion.up" );
+  ff_execute->add_action( "flamestrike,if=buff.pyroclasm.up&cast_time>buff.combustion.remains&active_enemies>=variable.ff_combustion_flamestrike" );
+  ff_execute->add_action( "pyroblast,if=buff.pyroclasm.up&cast_time>buff.combustion.remains" );
+  ff_execute->add_action( "fireball" );
+
   ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5&cooldown.combustion.remains>variable.pooling_time" );
+  ff_filler->add_action( "run_action_list,name=ff_execute,if=target.health.pct<=30&active_enemies<variable.ff_filler_flamestrike+1" );
   ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.heating_up.react&action.pyroblast.executing&action.pyroblast.execute_remains<0.5" );
   ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(hot_streak_spells_in_flight+buff.heating_up.react<2)&gcd.remains<gcd.max&cooldown.combustion.remains>variable.pooling_time" );
   ff_filler->add_action( "meteor" );

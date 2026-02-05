@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -61036,7 +61036,7 @@ Effects          :
 #1 (id=274286)   : Apply Aura (6) | Proc Trigger Spell (42): Deadly Grace
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 188091 | Target: Self (1)
 #2 (id=331423)   : Trigger Spell (64): Potion of Deadly Grace
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 208646
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 208646
 Description      : Grants your attacks a chance to unleash a bolt of energy at your target.
 
 Staying away from enemies for the entire duration of the effect will extend the effect by an additional 5 seconds.
@@ -73979,7 +73979,7 @@ Category Cooldown: 10 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=337241)   : Trigger Spell (64): Colossal Slam
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 410 | Trigger Spell: 232044 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 410_ms | Trigger Spell: 232044 | Target: Self (1)
 #2 (id=346673)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #3 (id=346674)   : Dummy (3)
@@ -85246,7 +85246,7 @@ Triggered By     : Void Tendril (250846)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Redirection (35), No Reflection (39), No Casting Bar Text (98), Can Proc From Procs (122), Do Not Display Range (126), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=469763)   : Trigger Spell (64): Void Tendril
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 250834 | Radius: 1.5 yards | Target: at Target Random (74)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 250834 | Radius: 1.5 yards | Target: at Target Random (74)
 Description      : $@spelldesc250846
 
 Name             : Coastal Healing Potion (id=250870) 
@@ -85376,7 +85376,7 @@ Effects          :
 #2 (id=470898)   : Trigger Spell (64): Void Stalking
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251459 | Target: Targeted Enemy (6)
 #3 (id=470899)   : Trigger Spell (64): Void Stalking
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 535 | Trigger Spell: 251461 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 535_ms | Trigger Spell: 251461 | Target: Targeted Enemy (6)
 Description      : Call upon two Void Stalkers to strike your target from two directions inflicting up to ${$250908s1*2*$<rolemult>} Physical damage to all enemies in their paths.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -88922,7 +88922,7 @@ Category Cooldown: 20 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=478151)   : Trigger Spell (64): Tarratus Keystone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 256092 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 256092 | Target: Targeted Ally (21)
 Description      : Open a portal at an ally's location that releases brilliant light, restoring $253282s1 health split amongst injured allies within $253282A1 yds.
 
 Name             : Highfather's Timekeeping (id=255932) [Passive, Hidden] 
@@ -89059,7 +89059,7 @@ Triggered By     : Tarratus Keystone (255924)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=478425)   : Trigger Spell (64): Tarratus Keystone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 253282 | Radius: 0 - 2 yards | Target: at Targeted Ally (132) -> Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 400_ms | Trigger Spell: 253282 | Radius: 0 - 2 yards | Target: at Targeted Ally (132) -> Random in Area (86)
 Description      : $@spelldesc255924
 
 Name             : AI Cast - Goldtusk Visions (id=256093) [Hidden] 
@@ -96451,7 +96451,7 @@ Effects          :
 #3 (id=721849)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=721851)   : Trigger Spell (64): Ablative Shielding
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 271544 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 50_ms | Trigger Spell: 271544 | Target: Self (1)
 Description      : $@spelldesc271540
 Tooltip          : Armor increased by $w1. Taking further Physical damage reduces this effect.
 
@@ -101747,7 +101747,7 @@ Effects          :
 #5 (id=741128)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126901 | Misc Value 2: 3911 | Radius: 16 yards | Target: at Random (72)
 #6 (id=741130)   : Trigger Spell (64): Enthralling
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 281875
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 281875
 Description      : Play a tune of the desert, encouraging the small critters of Vol'dun to accompany you for $d. They happily follow you everywhere you go!
 Tooltip          : Creatures of the desert find you enthralling.
 
@@ -107264,7 +107264,7 @@ Triggered By     : Invocation of Yu'lon (289521)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=751809)   : Trigger Spell (64): Yu'lon's Fury
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 800 | Trigger Spell: 288282 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 800_ms | Trigger Spell: 288282 | Target: at Area (87)
 Description      : Summon a Yu'lon's spirit striking all enemies within $288282a1 yds of your target dealing $288282s1 Nature damage split amongst them.
 
 Name             : Gift of Wind (id=288304) [Passive, Hidden] 
@@ -107362,7 +107362,7 @@ Cast Time        : 1.5 seconds
 Cooldown         : 1200 seconds
 Effects          :
 #1 (id=751970)   : Trigger Spell (64): Windswept
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Trigger Spell: 288329 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1500_ms | Trigger Spell: 288329 | Target: Self (1)
 Description      : $@spelldesc288329
 
 Name             : Cold Hearted (id=288426) 
@@ -112333,7 +112333,7 @@ Spell Type       : Magic
 Attributes       : Ignore Healing Modifiers (219), Ignore Caster Damage Modifiers (221), Aura Points On Client (268)
 Effects          :
 #1 (id=764962)   : Trigger Spell (64): Undying Pact
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 600 | Trigger Spell: 295245 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 600_ms | Trigger Spell: 295245 | Target: Self (1)
 Description      : $@spelldesc295193
 
 Name             : Diamond Barrier (id=295643) [Hidden] 
@@ -116501,9 +116501,9 @@ Effects          :
 #1 (id=770892)   : Trigger Spell (64): Worldvein Resonance
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 295206 | Target: Self (1)
 #2 (id=770893)   : Trigger Spell (64): Worldvein Resonance
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 250 | Trigger Spell: 295206 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Delay: 250_ms | Trigger Spell: 295206 | Target: Self (1)
 #3 (id=770894)   : Trigger Spell (64): Worldvein Resonance
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 500 | Trigger Spell: 295206 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Delay: 500_ms | Trigger Spell: 295206 | Target: Self (1)
 Description      : Concentrate energy into the Heart of Azeroth, immediately causing $s1 Lifeblood Shards to erupt from the nearby ground for ${$295114d*(1+($295208m1/100))} sec, and incease the primary stat gained from Lifeblood Shards by $313310s1% for $313310d.
 
 $@spellicon295078$@spellname295114
@@ -117400,9 +117400,9 @@ Effects          :
 #1 (id=771980)   : Trigger Spell (64): Worldvein Resonance
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 295206 | Target: Self (1)
 #2 (id=771981)   : Trigger Spell (64): Worldvein Resonance
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 250 | Trigger Spell: 295206 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Delay: 250_ms | Trigger Spell: 295206 | Target: Self (1)
 #3 (id=771982)   : Trigger Spell (64): Worldvein Resonance
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 500 | Trigger Spell: 295206 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Delay: 500_ms | Trigger Spell: 295206 | Target: Self (1)
 Description      : Concentrate energy into the Heart of Azeroth, immediately causing $s1 Lifeblood Shards to erupt from the nearby ground for ${$295114d*(1+($295208m1/100))} sec, and incease the primary stat gained from Lifeblood Shards by $313310s1% for $313310d.
 
 $@spellicon295078$@spellname295114
@@ -133638,7 +133638,7 @@ Effects          :
 #10 (id=819230)  : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #11 (id=819239)  : Trigger Spell (64): Forgeborne Reveries
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 250 | Trigger Spell: 328225 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 250_ms | Trigger Spell: 328225 | Target: Self (1)
 #12 (id=820255)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -136339,7 +136339,7 @@ Effects          :
 #1 (id=831454)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 567.1601 (coefficient=57.92166) | Target: Targeted Enemy (6)
 #2 (id=874624)   : Trigger Spell (64): Dinner Time
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 347399 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 347399 | Target: Targeted Enemy (6)
 Description      : Summon a gargon to strike your target from the shadows causing them to Bleed for ${$s1*($d/$t+1)} over $d. Only usable outdoors in the Shadowlands.
 Tooltip          : Bleeding for $s1 every $t sec. Only usable outdoors in the Shadowlands.
 
@@ -140339,7 +140339,7 @@ Effects          :
 #1 (id=871952)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 30 | Scaled Value: 30 | Mechanic: Snare | Target: Targeted Enemy (6)
 #2 (id=871963)   : Trigger Spell (64): Soul Fragment
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 345802 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 345802 | Target: Targeted Enemy (6)
 Description      : Draw out a piece of the target's soul, decreasing their movement speed by $s1% until the soul reaches you. The soul instantly heals you for $345806s1, and grants you up to ${$345807s1+$345807s2} Critical Strike for $345805d. You gain more Critical Strike from lower health targets.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -141400,7 +141400,7 @@ Effects          :
 #10 (id=876323)  : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #11 (id=876324)  : Trigger Spell (64): Forgeborne Reveries
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 250 | Trigger Spell: 328225 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 250_ms | Trigger Spell: 328225 | Target: Self (1)
 #12 (id=876325)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -146996,7 +146996,7 @@ Effects          :
 #1 (id=902878)   : Trigger Missiles (32): Gladiator's Resonator
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 363489 | Radius: 6 yards | Target: at Area (87)
 #2 (id=902879)   : Trigger Spell (64): Gladiator's Resonator
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 4000 | Trigger Spell: 363491 | Target: at Area (87)
+                   Base Value: 4 | Scaled Value: 4 | Delay: 4000_ms | Trigger Spell: 363491 | Target: at Area (87)
 #3 (id=903109)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Throw the cosmic resonator which explodes after $s2 sec, dealing $363491s1 Cosmic damage split between all nearby enemies.
@@ -149672,9 +149672,9 @@ Effects          :
 #2 (id=911774)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 3180.768 (coefficient=24.88796) | Radius: 0 - 12 yards | Target: Self (1) -> at Random (72)
 #3 (id=914003)   : Trigger Spell (64): Earthbreaker's Impact | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3000 | Trigger Spell: 369068 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 3000_ms | Trigger Spell: 369068 | Target: Self (1)
 #4 (id=914004)   : Trigger Spell (64): Earthbreaker's Impact | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 369069 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1000_ms | Trigger Spell: 369069 | Target: Self (1)
 #5 (id=914005)   : Trigger Spell (64): Earthbreaker's Impact | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 369070 | Target: Self (1)
 Description      : Cause the ground to quake beneath your feet, dealing $s1 Nature damage split between all nearby enemies over $d. Damage increased per target hit.
@@ -149867,7 +149867,7 @@ Effects          :
 #2 (id=911975)   : Dummy (3) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 295.2498 (coefficient=2.252431) | Target: Self (1)
 #3 (id=914297)   : Trigger Spell (64): Grim Eclipse
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 369287 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 50_ms | Trigger Spell: 369287 | Target: Self (1)
 #4 (id=914485)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $369287d.
@@ -155897,7 +155897,7 @@ Effects          :
 #2 (id=1034755)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 377465
 #3 (id=1036336)  : Trigger Spell (64): Desperate Invocation
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 382417
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 382417
 Description      : Let loose a dangerous current of lightning, dealing $377465s2 Nature damage to your target and $377465s3 Nature damage to yourself. Self-damage increases with your stacks of Hatred.
 
 Name             : Desperate Invocation (id=377465) [Passive] 
@@ -160030,7 +160030,7 @@ Effects          :
 #1 (id=1016386)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87)
 #2 (id=1016397)  : Trigger Spell (64): I.W.I.N. Button Mk10
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3000 | Trigger Spell: 384071
+                   Base Value: 0 | Scaled Value: 0 | Delay: 3000_ms | Trigger Spell: 384071
 Description      : Press the button to call in an air strike at the designated location, dealing $384071s1 Fire damage to all enemies in the strike zone. Only usable outdoors.
 
 Name             : I.W.I.N. Button Mk10 (id=384071) 
@@ -160526,7 +160526,7 @@ Effects          :
 #1 (id=1017134)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87)
 #2 (id=1017155)  : Trigger Spell (64): Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 384496 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 384496 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : Gravitational Displacer (id=384496) [Hidden] 
@@ -160553,7 +160553,7 @@ Effects          :
 #1 (id=1017173)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: at Area (87)
 #2 (id=1017174)  : Trigger Spell (64): Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 384516 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 384516 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : Gravitational Displacer (id=384516) [Hidden] 
@@ -160580,7 +160580,7 @@ Effects          :
 #1 (id=1017177)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: at Area (87)
 #2 (id=1017178)  : Trigger Spell (64): Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 384519 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 384519 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : Gravitational Displacer (id=384519) [Hidden] 
@@ -160789,7 +160789,7 @@ Cast Time        : 1.5 seconds
 Attributes       : Not In Combat (Only Peaceful) (28), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1017327)  : Trigger Spell (64): Ornate Dragon Statue
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 384618 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 384618 | Target: Self (1)
 Description      : Place an ornate dragon statue near you.
 
 Name             : Refreshing Dance (id=384615) 
@@ -162735,7 +162735,7 @@ Effects          :
 #1 (id=1020769)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87)
 #2 (id=1020770)  : Trigger Spell (64): EZ-Thro Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 386584 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 386584 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : EZ-Thro Gravitational Displacer (id=386584) [Hidden] 
@@ -162762,7 +162762,7 @@ Effects          :
 #1 (id=1020773)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: at Area (87)
 #2 (id=1020774)  : Trigger Spell (64): EZ-Thro Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 386587 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 386587 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : EZ-Thro Gravitational Displacer (id=386587) [Hidden] 
@@ -162789,7 +162789,7 @@ Effects          :
 #1 (id=1020777)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: at Area (87)
 #2 (id=1020778)  : Trigger Spell (64): EZ-Thro Gravitational Displacer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 386589 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 386589 | Target: at Area (87)
 Description      : Throw the displacer and activate it after ${$q2/1000} sec, pulling all enemies within $a1 yards to its location. Only usable outdoors.
 
 Name             : EZ-Thro Gravitational Displacer (id=386589) [Hidden] 
@@ -166915,19 +166915,19 @@ Effects          :
 #2 (id=1027635)  : Trigger Spell (64): Monarch's Ritual Stone
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390592
 #3 (id=1027929)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1750 | Trigger Spell: 390646
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1750_ms | Trigger Spell: 390646
 #4 (id=1027930)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 390828
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 390828
 #5 (id=1027987)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1750 | Trigger Spell: 390827
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1750_ms | Trigger Spell: 390827
 #6 (id=1027988)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 390862
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1000_ms | Trigger Spell: 390862
 #7 (id=1028021)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1750 | Trigger Spell: 390867
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1750_ms | Trigger Spell: 390867
 #8 (id=1028022)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Trigger Spell: 390886
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1500_ms | Trigger Spell: 390886
 #9 (id=1028169)  : Trigger Spell (64): Monarch's Ritual Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1750 | Trigger Spell: 390890
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1750_ms | Trigger Spell: 390890
 Description      : Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.
 
 The ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon.
@@ -168314,7 +168314,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Aura Interrupt   : Enter Combat (28)
 Effects          :
 #1 (id=1031094)  : Trigger Spell (64): Djaradin's Trophy Mask
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 392661 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 392661 | Target: Self (1)
 Description      : Wear a djaradin's trophy mask.
 Tooltip          : You are wearing a djaradin's trophy mask.
 
@@ -169202,7 +169202,7 @@ Category Cooldown: 300 seconds
 Attributes       : Not In Arena or Rated Battleground (144), Scales with Casting Item's Level (354), Not in Instances (363)
 Effects          :
 #2 (id=1033867)  : Trigger Spell (64): Clearing Charge
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10000 | Trigger Spell: 394323 | Target: at Target (63)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10000_ms | Trigger Spell: 394323 | Target: at Target (63)
 Description      : Place near blocked caves to clear the entrances.
 
 Explosives! Handle with care!!
@@ -175716,7 +175716,7 @@ Effects          :
 #1 (id=1047172)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1047173)  : Trigger Spell (64): Experimental Dragon Pack
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 700 | Trigger Spell: 401367 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 700_ms | Trigger Spell: 401367 | Target: Self (1)
 #3 (id=1047174)  : Jump Dest (42)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1000 | Misc Value: 10 | Misc Value 2: 10 | Target: at Self (18) -> at Area (87)
 #4 (id=1047175)  : Apply Aura (6) | Modify Min Speed% (305)
@@ -178809,7 +178809,7 @@ Cast Time        : 1.5 seconds
 Attributes       : Not In Combat (Only Peaceful) (28), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1053277)  : Trigger Spell (64): Stuffed Bear
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 405204 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 405204 | Target: Self (1)
 Description      : Place a stuffed bear statue near you.
 
 Name             : Stuffed Bear (id=405204) [Hidden] 
@@ -178886,7 +178886,7 @@ Effects          :
 #2 (id=1053334)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 402952
 #3 (id=1053337)  : Trigger Spell (64): Pestilent Plague Stone
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 405221 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1000_ms | Trigger Spell: 405221 | Target: Targeted Enemy (6)
 Description      : $@spelldesc402952
 Tooltip          : Suffering $w1 Nature damage each second.
 
@@ -180375,7 +180375,7 @@ Range            : 100 yards
 Triggered By     : Firecaller's Focus (407524)
 Effects          :
 #1 (id=1071108)  : Trigger Spell (64): Firecaller's Explosion
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2500 | Trigger Spell: 407537 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2500_ms | Trigger Spell: 407537 | Target: at Area (87)
 
 Name             : Firecaller's Explosion (id=407537) 
 School           : Fire
@@ -181163,7 +181163,7 @@ Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Effects          :
 #1 (id=1073663)  : Trigger Spell (64): Molten Pour
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 413075 | Radius: 6 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 150_ms | Trigger Spell: 413075 | Radius: 6 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc408635
 
 Name             : Magma Volley (id=409095) 
@@ -197110,7 +197110,7 @@ Effects          :
 #1 (id=1138818)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1158366)  : Trigger Spell (64): Abyssal Gluttony
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 455162
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 455162
 Description      : Take what is rightfully yours, gorging on your target's essence to deal ${$<rolemult>*$443128s1} Shadow damage and healing you for $443128s2 over $446067d. Damage and healing increased based on the target's missing health.
 
 Cooldown reduced by $443128s4 sec if this effect kills the target.
@@ -197299,7 +197299,7 @@ Effects          :
 #2 (id=1147675)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 113899 | Target: Self (1)
 #3 (id=1149773)  : Trigger Spell (64): Ravenous Honey Buzzer
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 450038 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 450038 | Target: Self (1)
 #4 (id=1149899)  : Apply Aura (6) | Periodic Dummy (226): every 0.05 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
@@ -197442,7 +197442,7 @@ Triggered By     : High Speaker's Accretion (450921), Shadowy Accretion (451248)
 Attributes       : No Aura Icon (60), Allow Aura While Dead (116), No Aura Log (202), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139288)  : Trigger Spell (64): High Speaker's Accretion
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 450922 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 450922 | Target: at Area (87)
 #2 (id=1146184)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 12597.41 (coefficient=98.5686) | PvP Coefficient: 0.2 | Target: Self (1)
 #3 (id=1151743)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
@@ -203711,7 +203711,7 @@ Effects          :
 #1 (id=1150550)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33461 | Target: At Enemy (53)
 #2 (id=1150642)  : Trigger Spell (64): Mereldar's Toll
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 443539 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 950_ms | Trigger Spell: 443539 | Target: Targeted Enemy (6)
 Description      : Release a toll of holy light upon the target, inflicting ${$<rolemult>*$450641s2} Holy damage. The next $450641s3 allies to attack the target will receive the Blessing of Mereldar, increasing their Versatility by $450641s1 for $450551d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -206257,9 +206257,9 @@ Effects          :
 #1 (id=1155065)  : Trigger Spell (64): Webbed Up
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 453317 | Target: Self (1)
 #2 (id=1155066)  : Trigger Spell (64): (347845)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3000 | Trigger Spell: 347845 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 3000_ms | Trigger Spell: 347845 | Target: Self (1)
 #3 (id=1155148)  : Trigger Spell (64): Webbed Up
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4000 | Trigger Spell: 453818 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 4000_ms | Trigger Spell: 453818 | Target: Self (1)
 #4 (id=1157467)  : Cancel Aura (164): Eradicator's Mark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 454666 | Target: Self (1)
 
@@ -209281,9 +209281,9 @@ Effects          :
 #1 (id=1160850)  : Trigger Spell (64): Drink
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452384 | Target: Self (1)
 #2 (id=1160851)  : Trigger Spell (64): Become Well Fed | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 13392.86 (coefficient=0.357143) | Misc Value: 10000 | Trigger Spell: 456961 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13392.86 (coefficient=0.357143) | Delay: 10000_ms | Trigger Spell: 456961 | Target: Self (1)
 #3 (id=1178301)  : Trigger Spell (64): Become Well Fed | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20000 | Trigger Spell: 456961 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 20000_ms | Trigger Spell: 456961 | Target: Self (1)
 #4 (id=1178302)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc452382
@@ -217996,7 +217996,7 @@ Effects          :
 #1 (id=1180359)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1180360)  : Trigger Spell (64): Experimental Go-Pack
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1800 | Trigger Spell: 467295 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1800_ms | Trigger Spell: 467295 | Target: Self (1)
 #3 (id=1180361)  : Jump Dest (42)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1000 | Misc Value: 80 | Misc Value 2: 80 | Target: at Self (18) -> at Area (87)
 #4 (id=1180362)  : Apply Aura (6) | Modify Min Speed% (305)
@@ -218542,7 +218542,7 @@ Effects          :
 #1 (id=1184399)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 469809 | Target: Self (1)
 #2 (id=1184403)  : Trigger Spell (64): Experimental Go-Pack
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 200 | Trigger Spell: 467294 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Delay: 200_ms | Trigger Spell: 467294 | Target: Self (1)
 Description      : Equip the Go-Pack and propel yourself upwards into the air. Usable for repeated jumps only on the Siren Island.
 
 Name             : Forward Thrust (id=469825) [Hidden] 
@@ -223154,7 +223154,7 @@ Effects          :
 #1 (id=1197729)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1226422)  : Trigger Spell (64): Pacifist Rig
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7900 | Trigger Spell: 1233162 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 7900_ms | Trigger Spell: 1233162 | Target: Targeted Ally (21)
 Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
@@ -223217,9 +223217,9 @@ Effects          :
 #1 (id=1197742)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18)
 #2 (id=1197743)  : Trigger Spell (64): Pacifist Rig
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 495 | Trigger Spell: 1215054
+                   Base Value: 0 | Scaled Value: 0 | Delay: 495_ms | Trigger Spell: 1215054
 #3 (id=1197860)  : Trigger Spell (64): Pacifist Landing
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 495 | Trigger Spell: 1215129
+                   Base Value: 0 | Scaled Value: 0 | Delay: 495_ms | Trigger Spell: 1215129
 Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
@@ -228773,7 +228773,7 @@ Duration         : 120 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28)
 Effects          :
 #2 (id=1215927)  : Trigger Spell (64): Summon Eversong Majestic Beast
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 1226234
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 1226234
 Description      : Place the bait, luring a Renowned Beast in a specific region of Eversong Woods. 
 
 Name             : Majestic Zul'Aman Lure (id=1226227) [Hidden] 
@@ -228786,7 +228786,7 @@ Duration         : 120 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28)
 Effects          :
 #2 (id=1215911)  : Trigger Spell (64): Summon Zul'Aman Majestic Beast
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 1226235
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 1226235
 Description      : Place the bait, luring a Renowned Beast in a specific region of Zul'Aman. 
 
 Name             : Majestic Harandar Lure (id=1226228) [Hidden] 
@@ -228799,7 +228799,7 @@ Duration         : 120 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28)
 Effects          :
 #2 (id=1215913)  : Trigger Spell (64): Summon Harandar Majestic Beast
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 1226236
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 1226236
 Description      : Place the bait, luring a Renowned Beast in a specific region of Harandar. 
 
 Name             : Majestic Voidstorm Lure (id=1226229) [Hidden] 
@@ -228812,7 +228812,7 @@ Duration         : 120 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28)
 Effects          :
 #2 (id=1215915)  : Trigger Spell (64): Summon Voidstorm Majestic Beast
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 1226237
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 1226237
 Description      : Place the bait, luring a Renowned Beast in a specific region of Voidstorm. 
 
 Name             : Grand Beast Lure (id=1226230) [Hidden] 
@@ -228825,7 +228825,7 @@ Duration         : 120 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28)
 Effects          :
 #2 (id=1215917)  : Trigger Spell (64): Summon Grand Beast
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2000 | Trigger Spell: 1226238
+                   Base Value: 0 | Scaled Value: 0 | Delay: 2000_ms | Trigger Spell: 1226238
 Description      : Place the bait, luring the Grand Beast. 
 
 Name             : Summon Eversong Majestic Beast (id=1226234) [Hidden] 
@@ -235203,7 +235203,7 @@ Effects          :
 #1 (id=1227967)  : Trigger Spell (64): [DNT] Equip Artifact
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245110 | Target: Self (1)
 #2 (id=1231352)  : Trigger Spell (64): [DNT] Hey, Free Artifact Weapon!
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 1245139 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 1245139 | Target: Self (1)
 #3 (id=1254336)  : Trigger Spell (64): Infinite Potential
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250279 | Target: Self (1)
 
@@ -242130,7 +242130,7 @@ Effects          :
 #1 (id=1245546)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38655 | Radius: 6 yards | Target: Back Right of Self (42)
 #2 (id=1245567)  : Trigger Spell (64): Perfidious Projector
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1200 | Trigger Spell: 1235566 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1200_ms | Trigger Spell: 1235566 | Target: Targeted Enemy (6)
 Description      : Compel an oathbound Shadowguard squad to annihilate your target and nearby enemies, dealing $1235557s1 Cosmic damage split between them.
 
 $@spelldesc1240903
@@ -246420,7 +246420,7 @@ Effects          :
 #1 (id=1260710)  : School Damage (2): shadowflame | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 48.0343 (coefficient=0.375845) | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1260713)  : Trigger Spell (64): Unstable Felheart Crystal
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 1255200 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 1255200 | Target: Targeted Ally (21)
 Description      : Unleash the fel energy stored within the crystal, sacrificing $s1 of your health to infuse a target ally for $1255200d, absorbing $1266821s2 damage.
 Tooltip          : Absorbs $w2 damage.
 
@@ -247220,7 +247220,7 @@ Triggered By     : Ranger-General's Call (1243876)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1267274)  : Trigger Spell (64): Surprise Attack
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1300 | Trigger Spell: 1258556 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 1300_ms | Trigger Spell: 1258556 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1243876
 
 Name             : Surprise Attack (id=1258556) 
@@ -247689,7 +247689,7 @@ Effects          :
 #2 (id=1274030)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1263393 | Target: Self (1)
 #3 (id=1274053)  : Trigger Spell (64): (1263475)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 1263475 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 1263475 | Target: Self (1)
 #4 (id=1274126)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #5 (id=1274519)  : Dummy (3)
@@ -252269,6 +252269,28 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.
 
+Name             : Weak Bloomline (id=1269454) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281297)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281298)  : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
+
+Name             : Weak Glimmerline (id=1269459) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281305)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281306)  : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Combine $s2 Weak Glimmerline to create a Weak Glimmerline.
+
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical
 Spell Type       : None
@@ -252608,7 +252630,7 @@ Effects          :
 #1 (id=1285729)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 58724.42 (coefficient=459.49) | Radius: 50 yards | Target: Party in Area (20)
 #2 (id=1285730)  : Trigger Spell (64): Cosmic Toll
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 900 | Trigger Spell: 1272479
+                   Base Value: 0 | Scaled Value: 0 | Delay: 900_ms | Trigger Spell: 1272479
 Description      : Manifest void breaches above nearby party members to heal them and yourself for $s1 split between all targets.
 
 Name             : Astalor's Anguish Agitator (id=1272690) [Passive, Hidden] 
@@ -252636,9 +252658,9 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1285947)  : Trigger Spell (64): Astalor's Anguish Agitator
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 1272720 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 150_ms | Trigger Spell: 1272720 | Target: Targeted Enemy (6)
 #2 (id=1286025)  : Trigger Spell (64): Agitated Anguish
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 1272698 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 150_ms | Trigger Spell: 1272698 | Target: Self (1)
 Description      : Unleash a bolt of Anguish at your target, inflicting ${$<rolemult>*$1272690s1} Shadow damage. Residual Anguish energy surrounds you for a time, granting $1272690s2 Leech for $1272698d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -253342,4 +253364,63 @@ Effects          :
 Description      : Your spells and abilities have a chance to draw in a mana wyrm that will empower you and an ally with $@spellname1229746, increasing your $pri by ${$s1*$s2/100} and your ally's Primary Stat by ${$s1*$s3/100}.
 
 Name             : Voidtinged (id=1284260) 
-School           : Shad
+School           : Shadow
+Spell Type       : Magic
+Duration         : 20 seconds
+Cooldown         : 300 seconds
+Category         : 4 (Type 0x0)
+Labels           : 4875
+                 : 4880
+Category Cooldown: 300 seconds
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
+Effects          :
+#1 (id=1299144)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 97.19303 (coefficient=0.741476) | Target: Self (1)
+#2 (id=1299145)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Opens your mind to the touch of the Void. This effect enhances your appearance for $s2 sec to $d  but has no bearing on your combat abilities.
+Tooltip          : Communing with the Void.
+
+Name             : Pointed Spikesnail (id=1284999) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Attributes       : Is Tradeskill (5), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67)
+Effects          :
+#1 (id=1300693)  : Enchant Item Temporary (54)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8675
+Description      : When applied to your fishing pole, increases Midnight Fishing by $450401s1 for 10 min.
+
+Name             : Vampiric Reaping (id=1285825) [Hidden] 
+School           : Nature
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 15 seconds
+Labels           : 3957: Spatial Paradox (406732 effect#5)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Suppress Target Procs (113), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1302165)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Affected School(s): All
+Description      : $@spelldesc421373
+Tooltip          : Heals $w2 every $t2 sec.
+
+Name             : Seed of Radiant Hope (id=1285918) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1302330)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 25044.73 (coefficient=195.9629) | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Sunfire Silk Lining (id=1286623) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 4386
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1303569)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : $@spelldesc1241711
+
+

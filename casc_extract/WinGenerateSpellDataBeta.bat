@@ -1,5 +1,5 @@
 call py -3 casc_extract.py -m batch --cdn --beta -o wow_ptr
-cd wow
+cd wow_ptr
 dir /b /a:D /O:-D>hi.txt
 set /p wowdir=<hi.txt
 del hi.txt

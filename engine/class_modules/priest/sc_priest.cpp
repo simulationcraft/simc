@@ -3021,6 +3021,9 @@ void priest_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  // Mysticism
+  parse_passive_effects( find_spell( 89745 ) );
 }
 
 void priest_t::create_buffs()

@@ -436,12 +436,12 @@
       { "data_type": "B", "field": "instance_type" },
       { "data_type": "B", "field": "index" },
       { "data_type": "b", "field": "unk_4" },
-      { "data_type": "B", "field": "id_fallback_difficulty" },
+      { "data_type": "h", "field": "id_fallback_difficulty" },
       { "data_type": "B", "field": "min_players" },
       { "data_type": "B", "field": "max_players" },
-      { "data_type": "H", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "B", "field": "item_context" },
-      { "data_type": "B", "field": "id_toggle_difficulty" },
+      { "data_type": "h", "field": "id_toggle_difficulty" },
       { "data_type": "I", "field": "unk_11" },
       { "data_type": "I", "field": "unk_12" },
       { "data_type": "I", "field": "unk_13" },
@@ -1030,7 +1030,7 @@
       { "data_type": "b", "field": "flags_2" },
       { "data_type": "i", "field": "flags_3" },
       { "data_type": "b", "field": "flags_1" },
-      { "data_type": "i", "field": "id_display_season" },
+      { "data_type": "H", "field": "id_display_season" },
       { "data_type": "i", "field": "id_world_state_expression" }
     ]
   },
@@ -1159,6 +1159,14 @@
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "id_content_tuning", "ref": "ContentTuning" },
       { "data_type": "i", "field": "unk_9" }
+    ]
+  },
+  "MCRCurrency": {
+    "fields": [
+      { "data_type": "S", "field": "description_lang" },
+      { "data_type": "i", "field": "id_modified_crafting_category" },
+      { "data_type": "i", "field": "id_item_bonus_tree" },
+      { "data_type": "i", "field": "unk_1" }
     ]
   },
   "MCRSlotXMCRCategory": {

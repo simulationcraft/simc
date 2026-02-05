@@ -1354,17 +1354,14 @@ hammer_and_anvil_t::hammer_and_anvil_t( paladin_t* p, util::string_view n )
   reduced_aoe_targets          = 5;
 }
 
-bool trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+bool trigger_hammer_and_anvil( paladin_t* p, player_t* target, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas = HAA_JUDGMENT )
 {
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
-    if ( ( haas == HAA_JUDGMENT && s->result == RESULT_CRIT ) || ( haas == HAA_DIVINE_TOLL ) )
-    {
-      haa->set_target( s->target );
-      haa->execute();
-      return true;
-    }
+    haa->set_target( target );
+    haa->execute();
+    return true;
   }
   return false;
 }
@@ -1480,24 +1477,13 @@ void judgment_t::execute()
     p()->buffs.templar.sanctification->trigger();
   }
   // Proc chance for Glory of the Vanguard not in Spell Data, seems to be 20% according to Fatpala
-  if (p()->talents.glory_of_the_vanguard_1->ok() && p()->rng().roll(0.2))
+  if ( p()->talents.glory_of_the_vanguard_1->ok() && p()->rng().roll( 0.2 ) )
   {
     p()->buffs.vanguard->trigger();
   }
-}
-void judgment_t::impact(action_state_t* s)
-{
-  judgment_base_t::impact( s );
-  if ( p()->talents.lightsmith.hammer_and_anvil->ok() )
+  if ( crit_any_target )
   {
-    if ( !triggered_hammer_and_anvil && trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT ) )
-    {
-      triggered_hammer_and_anvil = true;
-    }
-    if ( s->chain_target == n_targets() - 1 || s->chain_target == num_targets() - 1 )
-    {
-      triggered_hammer_and_anvil = false;
-    }
+    trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
 }
 bool judgment_t::action_ready()
@@ -1719,6 +1705,13 @@ void hammer_of_wrath_t::execute()
     p()->buffs.templar.shake_the_heavens->extend_duration(
         p(), timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() ) );
   }
+  if (crit_any_target)
+  {
+    if (!(p()->bugs && p()->talents.sweeping_verdict->ok()))
+    {
+      trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
+    }
+  }
 }
 
 void hammer_of_wrath_t::impact( action_state_t* s )
@@ -1751,7 +1744,8 @@ double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
 {
   double ctm = judgment_base_t::composite_target_multiplier( target );
 
-  if ( p()->talents.vengeful_wrath->ok() )
+  // 30.01.26 Fluttershy - Talent currently does not work for Ret
+  if ( p()->talents.vengeful_wrath->ok() && p()->specialization() == PALADIN_PROTECTION )
   {
     ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
   }
@@ -1782,6 +1776,7 @@ struct divine_toll_t : public paladin_spell_t
   divine_exaction_judgment_t* judgment_de;
   divine_toll_hammer_of_wrath_ret_t* how;
   divine_exaction_hammer_of_wrath_t* how_de;
+  hammer_and_anvil_t* haa;
   divine_toll_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_toll", p, p->talents.divine_toll ),
       judgment( nullptr ),
@@ -1822,6 +1817,11 @@ struct divine_toll_t : public paladin_spell_t
     if ( p->talents.templar.divine_hammer->ok() )
     {
       add_child( p->active.divine_hammer_tick );
+    }
+    if (p->talents.lightsmith.resounding_strike->ok())
+    {
+      haa = new hammer_and_anvil_t( p, "hammer_and_anvil_divine_toll" );
+      add_child( haa );
     }
   }
 
@@ -1887,6 +1887,10 @@ struct divine_toll_t : public paladin_spell_t
       {
         make_event<delayed_execute_event_t>( *sim, p(), a, execute_state->target, 300_ms * ( i + 1 ) );
       }
+    }
+    if ( p()->talents.lightsmith.resounding_strike->ok() )
+    {
+      trigger_hammer_and_anvil( p(), execute_state->target, haa, HAA_DIVINE_TOLL );
     }
   }
 };

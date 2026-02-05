@@ -2226,6 +2226,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       tokens.emplace_back( fmt::format( "Min Stack Count: {}", e->misc_value1() ) );
     }
+    else if ( e->type() == E_TRIGGER_SPELL )
+    {
+      tokens.emplace_back( fmt::format( "Delay: {}_ms", e->misc_value1() ) );
+    }
     else
     {
       tokens.emplace_back( fmt::format( "Misc Value: {}", e->misc_value1() ) );

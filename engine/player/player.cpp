@@ -5069,11 +5069,9 @@ void player_t::create_buffs()
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
 
     // Dragonflight Raid Damage Modifier Debuffs
-    auto buff_spell      = find_spell( 428402 );
     debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
         ->disable_ticking( true )
-        ->set_default_value( buff_spell->effectN( 1 ).percent() )
-        ->set_schools( buff_spell->effectN( 1 ).affected_schools() );
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -6181,8 +6179,7 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->check_value();
 
-  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) &&
-       health_percentage() > debuffs.hunters_mark->data().effectN( 3 ).base_value() )
+  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) )
     m *= 1.0 + debuffs.hunters_mark->check_value();
 
   return m;

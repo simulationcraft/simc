@@ -1679,6 +1679,7 @@ class SpellDataGenerator(DataGenerator):
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5 ), # Dire Beast Kill Command
+          ( 1284992, 0 ), # Dire Beast Async Damage Buff
           ( 459834, 3 ), # Sulfur-Lined Pockets (Explosive Shot buff)
           ( 1259017, 3 ), # Raptor Swipe 2
           ( 1259019, 3 ), # Raptor Swipe 3

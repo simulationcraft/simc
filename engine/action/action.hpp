@@ -284,7 +284,11 @@ public:
   /// Did a channel action have an interrupt_immediate used to cancel it on it
   bool interrupt_immediate_occurred;
 
+  /// hit at least one target
   bool hit_any_target;
+
+  /// crit at least one target, implies hit_any_target == true
+  bool crit_any_target;
 
   /// Duration of the ground area trigger
   timespan_t ground_aoe_duration;

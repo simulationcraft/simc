@@ -637,6 +637,21 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
+bool warlock_t::validate_actor()
+{
+  // TODO: Remove this when Midnight is properly supported
+  if ( sim->dbc->wowv() < wowv_t( 13, 0, 0 ) )
+  {
+    std::string patch = "Midnight prepatch";
+    if ( sim->dbc->wowv() > wowv_t( 12, 0, 0 ) )
+      patch = "Midnight";
+    throw sc_unsupported_specialization( fmt::format( "Warlock sims are non functional for {}", patch ) );
+    return false;
+  }
+
+  return true;
+}
+
 pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );

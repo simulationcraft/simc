@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 12.0.1.65617
+// Player trait definitions, wow build 12.0.1.65701
 static constexpr std::array<trait_data_t, 3420> __ptr_trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  2, 200,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },   0, 0 },
   { 1,  1, 112179,  90322, 2, 23, 117184,  382896,      0,      0,  9,  4,   0,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
@@ -942,7 +942,7 @@ static constexpr std::array<trait_data_t, 3420> __ptr_trait_data_data { {
   { 2,  2, 102525,  81549, 1, 20, 107530,  458359,      0,      0, 10,  3,   0,                          "Radiant Glory", {   70,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 2,  2, 102533,  81554, 1, 20, 107538,  156910,      0,      0,  8,  2, 100,                        "Beacon of Faith", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 2 },
   { 2,  2, 102532,  81554, 1, 20, 107537,  200025,  53563,      0,  8,  2, 200,                       "Beacon of Virtue", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 2 },
-  { 2,  2, 102534,  81555, 1,  0, 107539,   20473,      0,      0,  1,  5, 100,                             "Holy Shock", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
+  { 2,  2, 102534,  81555, 1,  0, 107539,   20473,  35395,      0,  1,  5, 100,                             "Holy Shock", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 2,  2, 102535,  81556, 1,  8, 107540,  461244,      0,      0,  6,  7, 100,                      "Overflowing Light", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 2,  2, 102536,  81557, 1,  8, 107541,  392961,      0,      0,  5,  7, 100,                       "Imbued Infusions", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 2,  2, 102537,  81558, 1, 20, 107542,  415364,      0,      0,  8,  8, 100,                            "Reclamation", {   65,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
@@ -3422,7 +3422,7 @@ static constexpr std::array<trait_data_t, 3420> __ptr_trait_data_data { {
   { 4, 13, 123333,  99827, 1,  0,      0,       0,      0,      0,  1,  1, 200,                                      "0", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 },  36, 3 },
 } };
 
-// Player trait definition effect entries, wow build 12.0.1.65617
+// Player trait definition effect entries, wow build 12.0.1.65701
 static constexpr std::array<trait_definition_effect_entry_t, 505> __ptr_trait_definition_effect_data { {
   { 85158, 0, 1, 88312 },
   { 85162, 0, 1, 94588 },
@@ -4364,7 +4364,7 @@ static const std::array<uint16_t, 3420> __ptr_trait_spell_id_index { {
 
 #define PTR_MAX_HERO_TREES_PER_CLASS (4)
 
-// Hero trees, wow build 12.0.1.65617
+// Hero trees, wow build 12.0.1.65701
 static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __ptr_trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },

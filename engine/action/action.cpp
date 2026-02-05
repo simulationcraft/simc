@@ -403,6 +403,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     cd_waste_data(),
     interrupt_immediate_occurred(),
     hit_any_target(),
+    crit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
     dot_behavior( DOT_REFRESH_DURATION ),
@@ -1843,6 +1844,7 @@ void action_t::execute()
   }
 
   hit_any_target               = false;
+  crit_any_target              = false;
   num_targets_hit              = 0;
   interrupt_immediate_occurred = false;
 
@@ -4460,6 +4462,9 @@ void action_t::schedule_travel( action_state_t* s )
   {
     hit_any_target = true;
     num_targets_hit++;
+
+    if ( s->result == result_e::RESULT_CRIT )
+      crit_any_target = true;
   }
 }
 

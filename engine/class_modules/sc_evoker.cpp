@@ -9431,6 +9431,9 @@ void evoker_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  // Mail Specialization
+  parse_passive_effects( find_spell( 366524 ) );
 }
 
 void evoker_t::init_special_effects()

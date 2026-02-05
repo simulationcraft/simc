@@ -942,6 +942,7 @@ public:
   void init_assessors() override;
   void init_finished() override;
   void invalidate_cache( cache_e c ) override;
+  bool validate_actor() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   std::string default_potion() const override { return warlock_apl::potion( this ); }
   std::string default_flask() const override { return warlock_apl::flask( this ); }

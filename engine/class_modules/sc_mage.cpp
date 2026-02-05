@@ -294,7 +294,6 @@ public:
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* pyroclasm;
-    buff_t* wildfire;
 
 
     // Frost
@@ -1142,8 +1141,6 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
           value = std::floor( value );
         m *= 1.0 + value * 0.01;
       }
-
-      m *= 1.0 + o()->buffs.wildfire->check_value();
     }
 
     return m;
@@ -1562,7 +1559,6 @@ struct mage_spell_t : public spell_t
     // Misc
     bool fires_ire = true;
     bool overflowing_energy = false;
-    bool wildfire = true;
   } affected_by;
 
   struct triggers_t
@@ -1748,9 +1744,6 @@ public:
         value = std::floor( value );
       m *= 1.0 + value * 0.01;
     }
-
-    if ( affected_by.wildfire )
-      m *= 1.0 + p()->buffs.wildfire->check_value();
 
     return m;
   }
@@ -2708,7 +2701,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     custom_state_spell_t::execute();
 
     // TODO: PTR check
-    if ( sim->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
 
     p()->trigger_arcane_charge();
@@ -3473,7 +3466,6 @@ struct combustion_t final : public fire_mage_spell_t
     value += spheres * p()->talents.codex_of_the_sunstriders->effectN( 2 ).percent();
 
     buff->trigger( -1, value, -1.0, duration );
-    p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
@@ -3881,6 +3873,9 @@ struct flurry_t final : public frost_mage_spell_t
     may_miss = false;
     triggers.frostfire_empowerment = true; // Doesn't seem to need Heat Sink
 
+    // Used when creating the pulse events; doesn't actually do anything otherwise
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+
     add_child( flurry_bolt );
     if ( p->talents.glacial_assault.ok() )
       add_child( p->action.glacial_assault );
@@ -3908,11 +3903,16 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulses )
       .action( flurry_bolt ), true );
+
+    // This is a bit of a hack to ensure that all the secondary Flurry projectiles get affected
+    // by Splitting Ice's effectiveness reduction.
+    if ( s->chain_target > 0 )
+      e->pulse_state->persistent_multiplier *= std::pow( chain_multiplier, s->chain_target );
   }
 };
 
@@ -3935,6 +3935,11 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
+
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+    // TODO: Doesn't seem to affect Frostbolt for some reason
+    if ( p->bugs && !frostfire )
+      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
@@ -3994,9 +3999,6 @@ struct frostbolt_t final : public frost_mage_spell_t
       p()->state.trigger_ff_empowerment = false;
       p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
     }
-
-    // TODO: If the GS buff is up and a cleave FFB projectile deals damage, a GS will
-    // be automatically cast at the cleave target (for some reason)
   }
 
   bool ready() override
@@ -4153,7 +4155,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p->talents.glacial_shatter.ok() )
       freezing_stacks = 0;
 
-    chain_multiplier = 1.0; // The spell data value isn't used
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
 
     if ( p->talents.duality.ok() )
     {
@@ -4520,6 +4522,11 @@ struct meteor_burn_t final : public fire_mage_spell_t
     // tick on each pulse.
     dot_duration = base_tick_time = 1_ms;
     hasted_ticks = false;
+
+    // TODO: Hard to say how the new tick_zero attribute is supposed to work with
+    // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
+    if ( p->bugs && p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+      dot_duration = 3_ms;
   }
 };
 
@@ -4540,7 +4547,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
     // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs ? 4 : 5 ).base_value() ) ),
+    // TODO: Fixed on beta, remove PTR check
+    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && p->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -5422,8 +5430,8 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: Should be affected by spell speed as per the description; currently doesn't work
-    if ( !p->bugs )
+    // TODO: PTR check
+    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
@@ -6302,9 +6310,6 @@ void mage_t::create_buffs()
   buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
-  buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
-                                     ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
-                                     ->set_chance( talents.wildfire.ok() );
 
 
   // Frost

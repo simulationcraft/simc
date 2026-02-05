@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -444,9 +444,9 @@ Effects          :
 #3 (id=293833)   : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #4 (id=293834)   : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 160_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #5 (id=331324)   : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
 
    1 point  : ${$o1*2/6} over 8 sec
@@ -1063,8 +1063,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=165715)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Between the Eyes (315341), Slice and Dice (315496), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Echoing Reprimand (354835), Echoing Reprimand (354838), Keep It Rolling (381989), Ambush (385897), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Roll the Bones (1214909)
-                   Family Flags: 9, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118
+                   Affected Spells: Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Blade Rush (271877), Blade Rush (271878), Blade Rush (271881), Blade Rush (271896), Between the Eyes (315341), Slice and Dice (315496), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Echoing Reprimand (354835), Echoing Reprimand (354838), Keep It Rolling (381989), Ambush (385897), Blade Flurry (429951), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Roll the Bones (1214909)
+                   Family Flags: 9, 13, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118
+Hotfixed         : Affects Spells
 #4 (id=762250)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Ambush (8676), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Between the Eyes (315341), Sinister Strike (341541), Ambush (385897), Killing Spree (424556), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603)
@@ -1112,7 +1113,8 @@ Effects          :
 #1 (id=6243)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=136652)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
                    Modified By: Fate Intertwined (1249215 effect#2), Grand Melee (1259469 effect#1)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
@@ -1209,6 +1211,7 @@ Effects          :
 Description      : Increases your maximum Energy by $s1 and Energy regeneration by $s2%.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1219,7 +1222,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -2852,6 +2855,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2865,7 +2869,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -2985,6 +2989,7 @@ Mutilate has a $s5% chance to make your next Blindside free and usable on any ta
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Shadow Focus (id=112942) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2992,7 +2997,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Not an Action (92), Aura Points On Client (268)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -3386,19 +3391,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (5 -> -3)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (5 -> -3)
 #3 (id=191061)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
+Hotfixed         : Base Value (5 -> -3)
 #4 (id=191062)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
+Hotfixed         : Base Value (5 -> -3)
 #5 (id=191063)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 131 | Scaled Value: 131 | Target: Self (1)
+                   Base Value: 113 | Scaled Value: 113 | Target: Self (1)
+Hotfixed         : Base Value (131 -> 113)
 #6 (id=260977)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 2.87 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
@@ -3424,6 +3434,10 @@ Effects          :
 #13 (id=1297316) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 6280 (Label) | Target: Self (1)
                    Affected Spells (Label): Darkest Night (457280)
+#14 (id=1305289) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 6419 (Label) | Target: Self (1)
+                   Affected Spells (Label): Momentum of Despair (457115)
+Hotfixed         : NEW EFFECT
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -3435,19 +3449,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (38 -> 20)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 38 | Scaled Value: 38 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (38 -> 20)
 #3 (id=191057)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (38 -> 20)
 #4 (id=191058)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (38 -> 20)
 #5 (id=191059)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 411 | Scaled Value: 411 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | Target: Self (1)
+Hotfixed         : Base Value (411 -> 300)
 #6 (id=260967)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Misc Value 2: 4049 (Label) | Target: Self (1)
                    Affected Spells (Label): Death's Arrival (454433)
@@ -3470,19 +3489,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 21 | Scaled Value: 21 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (21 -> 25)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
+Hotfixed         : Base Value (21 -> 25)
 #3 (id=191053)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 21 | Scaled Value: 21 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (21 -> 25)
 #4 (id=191054)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 21 | Scaled Value: 21 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (21 -> 25)
 #5 (id=191055)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 296 | Scaled Value: 296 | Target: Self (1)
+                   Base Value: 348 | Scaled Value: 348 | Target: Self (1)
+Hotfixed         : Base Value (296 -> 348)
 #6 (id=261017)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Leeching Poison (108211)
@@ -6640,7 +6664,7 @@ Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -6661,7 +6685,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -6679,7 +6703,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 6008: Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#2)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 13, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -6701,7 +6725,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1)
 Family Flags     : 13
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -7430,12 +7454,12 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
 Charges          : 1 (25 seconds cooldown)
-Category         : 2461 (Type 0x1): Subtlety Rogue (137035 effect#10)
+Category         : 2461 (Type 0x1): Subtlety Rogue (137035 effect#10), Disorienting Strikes (441274 effect#3)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Jump Pathing (208), No Attack Parry (248), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -7470,7 +7494,7 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54
 Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -7588,12 +7612,13 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (382517 effect#3), Deeper Daggers (382517 effect#4), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4), Winning Streak! (1218143 effect#4), Winning Streak! (1218143 effect#5)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Umbral Edge (1281468 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Umbral Edge (1281468 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54, 122, 123
 Attributes       : No Threat (42), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Ignore Combat Timer (156), Always Cast Log (255), Face Destination (395), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742089)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2808 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2808 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.77)
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282480) [Spell Family (8)] 
@@ -7604,7 +7629,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54
 Attributes       : No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Allow Cast While Casting (135), Ignore Combat Timer (156), Not an Attack (194), No Jump Pathing (208), Face unit target upon completion of jump charge (300), Allow Cast While Channeling (308), Face Destination (395), Allow Class Ability Procs (416)
 Effects          :
@@ -11687,7 +11712,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1012624)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 30)
 Description      : Garrote increases the damage of Ambush and Mutilate on the target by $s1%.
 
 Name             : Amplifying Poison (id=381664) [Spell Family (8)] 
@@ -11751,7 +11777,8 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012664)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 25)
 Description      : Mutilate deals an additional $s1% Bleed damage over ${$381672d+2} sec.
 
 Name             : Dashing Scoundrel (id=381797) [Spell Family (8), Passive] 
@@ -15183,7 +15210,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2941: Adrenaline Rush (13750 effect#5), Deft Maneuvers (381878 effect#1), Flawless Form (441326 effect#3)
                  : 3052: Broadside (193356 effect#6), Broadside (193356 effect#7), Deadly Precision (381542 effect#2), Heavy Hitter (381885 effect#3), Heavy Hitter (381885 effect#4), Lethality (382238 effect#3)
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Rogue Outlaw 12.0 Class Set 2pc (1264858 effect#1), Rogue Outlaw 12.0 Class Set 4pc (1264859 effect#1), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 13, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -15463,10 +15490,15 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1135629)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Killing Spree (424556), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Secret Technique (1269560)
-                   Family Flags: 32, 55
+                   Affected Spells: Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Killing Spree (424556), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603)
+                   Family Flags: 55
+Hotfixed         : Affects Spells
 #2 (id=1166333)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#3 (id=1304361)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2461 (Category) | Target: Self (1)
+                   Affected Spells (Category): Secret Technique (280719)
+Hotfixed         : NEW EFFECT
 Description      : $?a137036[Killing Spree][Secret Technique] has $s1% reduced cooldown and allows your next $s2 strikes of Unseen Blade to ignore its cooldown.
 
 Name             : Flawless Form (id=441321) [Spell Family (8), Passive] 
@@ -16778,7 +16810,8 @@ Effects          :
 #2 (id=1161758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=1296699)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15)
 Description      : $?c1[Fan of Knives][Shuriken Storm] and $?c1[Crimson Tempest][Black Powder] deal $?c1[$s1][$s3]% additional damage while $?c1[$s2 or more enemies are afflicted with Rupture][Find Weakness is active].
 
 Name             : Momentum of Despair (id=457115) [Spell Family (8)] 
@@ -16792,6 +16825,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 5175
                  : 5176
+                 : 6419: Subtlety Rogue (137035 effect#14)
 Triggered By     : Momentum of Despair (457067)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
@@ -16804,6 +16838,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Crimson Tempest (1247227), Shuriken Storm (1269340), Black Powder (1269565)
                    Family Flags: 44, 50, 81, 127
+                   Modified By: Subtlety Rogue (137035 effect#14)
 Description      : $@spelldesc457067
 Tooltip          : Critical strike chance of $?c1[Fan of Knives][Shuriken Storm] and $?c1[Crimson Tempest][Black Powder] increased by $w1% and critical strike damage increased by $w2%.
 
@@ -18414,7 +18449,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -18738,7 +18773,7 @@ Name             : Lucky Coin (id=1248971) [Spell Family (8)]
 Class            : Rogue
 School           : None
 Spell Type       : Magic
-Duration         : 15 seconds
+Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -19869,7 +19904,8 @@ Family Flags     : 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.72 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (1.72 -> 2.6)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387
@@ -20322,7 +20358,7 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Umbral Edge (1281468 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Replicating Shadows (382506 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Umbral Edge (1281468 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54, 122, 123
 Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -20554,9 +20590,9 @@ Effects          :
 #2 (id=1282137)  : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #3 (id=1282138)  : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 160_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #4 (id=1282139)  : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1943
 Tooltip          : Bleeding for $w1 Shadow damage every $t1 sec.
 
@@ -20623,8 +20659,12 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1286332)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (20 -> 10)
+#2 (id=1304312)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Critical strike damage bonus increased by $s2%.
 
 Name             : Quietus Celeris (id=1273017) [Spell Family (8), Passive] 
@@ -20658,7 +20698,8 @@ Effects          :
 #1 (id=1286408)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=1286409)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 75)
 Description      : Deathstalker's Mark deals $?c1[$s1][$s2]% of its normal damage to all other enemies within 8 yds $?c1[that are afflicted by Rupture][when a stack is consumed by Black Powder].
 
 Name             : Deathstalker's Mark (id=1273061) [Spell Family (8)] 
@@ -20778,9 +20819,10 @@ Effects          :
 #1 (id=1288797)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1288798)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Tails) (452538)
                    Family Flags: 25
+Hotfixed         : Base Value (15 -> 12)
 Description      : Flipping Heads increases damage by an additional $s1%. Damage dealt by flipping Tails is increased by $s2%.
 
 Name             : Controlled Chaos (id=1276816) [Spell Family (8), Passive] 

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -64,6 +64,7 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : War Stomp (desc=Racial) (id=20549) 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -74,7 +75,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=11543)    : Apply Aura (6) | Stun (12)
@@ -580,6 +581,7 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -593,7 +595,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
-Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
+Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=117669)   : Apply Aura (6) | Stun (12)
@@ -2627,9 +2629,10 @@ Effects          :
                    Affected Spells: Deep Breath (353759), Melt Armor (441172)
                    Family Flags: 34
 #19 (id=1123725) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 76 | Scaled Value: 76 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
+Hotfixed         : Base Value (60 -> 76)
 #20 (id=1123736) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 33 | Scaled Value: 33 | Misc Value 2: 6112 (Label) | Target: Self (1)
                    Affected Spells (Label): Twin Flame (1265980)
@@ -9918,7 +9921,7 @@ Effects          :
                    Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Capacitor Totem (118905), Capacitor Totem (192058), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Mana Spring (395197), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357), Stormstream Totem (1267745)
 #13 (id=1096840) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 5 | Misc Value 2: 2835 (Label) | Target: Targeted Ally (21)
-                   Affected Spells (Label): Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Mangle (33917), Crusader Strike (35395), Rebuke (96231), Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Disable (116095), Spear Hand Strike (116705), Touch of Death (322109), Glyph of Tiger Palm (468605)
+                   Affected Spells (Label): Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Mangle (33917), Crusader Strike (35395), Rebuke (96231), Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Disable (116095), Spear Hand Strike (116705), Touch of Death (322109), Glyph of Tiger Palm (468605), Crusader Strike (1279187)
 Description      : $@spelldesc406732
 Tooltip          : Able to cast spells while moving and range increased by $s5%. Cast by $@auracaster.
 
@@ -11967,7 +11970,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1113665)  : Trigger Spell (64): Warp
-                   Base Value: 429459 | Scaled Value: 429459 | Misc Value: 250 | Trigger Spell: 429459 | Target: Self (1)
+                   Base Value: 429459 | Scaled Value: 429459 | Delay: 250_ms | Trigger Spell: 429459 | Target: Self (1)
 #2 (id=1284555)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc358267
@@ -12924,7 +12927,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Do Not Display Range (126)
 Effects          :
 #1 (id=1127164)  : Trigger Spell (64): Warp
-                   Base Value: 429459 | Scaled Value: 429459 | Misc Value: 400 | Trigger Spell: 429459 | Target: Self (1)
+                   Base Value: 429459 | Scaled Value: 429459 | Delay: 400_ms | Trigger Spell: 429459 | Target: Self (1)
 #2 (id=1127165)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc358267
@@ -13685,12 +13688,15 @@ Effects          :
 #1 (id=1140380)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=1141764)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1500 | Scaled Value: 1500 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
+Hotfixed         : Base Value (1500 -> 1000)
 #3 (id=1141810)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
+Hotfixed         : Base Value (8000 -> 4000)
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+Hotfixed         : Base Value (125 -> 115)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
@@ -14862,7 +14868,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)

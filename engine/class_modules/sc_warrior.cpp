@@ -1091,7 +1091,8 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
-      parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
+      if ( p()->talents.protection.ravager.ok() )
+        parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
     }
@@ -5934,8 +5935,8 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.shield_block->up() && p()->talents.protection.heavy_repercussions->ok() )
     {
-      p () -> buff.shield_block -> extend_duration( p(),
-          timespan_t::from_seconds( p() -> talents.protection.heavy_repercussions -> effectN( 1 ).percent() ) );
+      p()->buff.shield_block->extend_duration( p(),
+          timespan_t::from_seconds( p()->talents.protection.heavy_repercussions->effectN( 1 ).percent() ) );
     }
 
     if ( p()->talents.protection.impenetrable_wall->ok() )
@@ -6812,14 +6813,8 @@ struct shield_block_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p()->buff.shield_block->check() )
-    {
-      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
-    }
-    else
-    {
-      p()->buff.shield_block->trigger();
-    }
+    p()->buff.shield_block->extend_duration_or_trigger( p()->buff.shield_block->buff_duration() );
+
   }
 
   bool ready() override
