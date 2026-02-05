@@ -252322,6 +252322,7 @@ Effects          :
 Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
 Name             : Weak Glimmerline (id=1269459) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Allow Cast While Channeling (308)
@@ -252330,7 +252331,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
 #2 (id=1281306)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-Description      : Combine $s2 Weak Glimmerline to create a Weak Glimmerline.
+Description      : Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical
