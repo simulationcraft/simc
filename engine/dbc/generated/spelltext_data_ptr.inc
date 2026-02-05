@@ -28124,7 +28124,7 @@ static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
   { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
-  { 1269459, "Combine $s2 Weak Glimmerline to create a Weak Glimmerline.", 0, 0 },
+  { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28605,7 +28605,7 @@ static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65701
-static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __ptr_spelltext_hotfix_data { {
   {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
   {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
   {  196926,  0, "Crusader Strike reduces the cooldown of Holy Shock and Judgment by ${$m2/-1000}.1 sec.", "Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec and Crusader Strike reduces the cooldown of Judgment by ${$m2/-1000}.1 sec." },
@@ -28615,6 +28615,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_ho
   { 1245523,  1, "Your Veilpierce is replaced with Reaper's Toll.", "Pierce the Veil is replaced with Reaper's Toll." },
   { 1259431,  0, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path." },
   { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
+  { 1269459,  0, "Combine $s2 Weak Glimmerline to create a Weak Glimmerline.", "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline." },
 } };
 
 // Spell description variables, wow build 12.0.1.65701
