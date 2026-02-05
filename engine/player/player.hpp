@@ -900,6 +900,12 @@ struct player_t : public actor_t
     timespan_t arcanoweave_lining_update_interval = 5.25_s;  // default to heartbeat interval
     timespan_t arcanoweave_lining_update_stddev = 1.3125_s;  // 25% stddev
     double arcanoweave_lining_uptime = 0.9;  // !!!PLACEHOLDER!!!
+    // Allow specifying the race for Darkmoon Deck/Embellishment: Hunt
+    // Should allow any valid race string, as well as "random" and "none"
+    // Default is "raid_random", picking a random race of a raid boss in the current tier
+    // "random" picks a random valid race.
+    // "none" will use the targets actual race.
+    std::string darkmoon_hunt_race = "raid_random";
   } midnight_opts;
 
 private:

@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65701
-static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6374,7 +6374,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   {  196912, "Your auto attacks have a $s2% chance to generate $196911s2 Energy and store $m1 combo $Lpoint:points;, up to $196911u.\r\n\r\nAttacks that generate combo points can expend those stored to generate additional combo points, up to your maximum.", 0, 0 },
   {  196917, "$@spelldesc183998", "Suffering $w2 Holy damage every $t2 sec.", 0 },
   {  196922, "Movement speed increased by $s1%.", 0, 0 },
-  {  196926, "Crusader Strike reduces the cooldown of Holy Shock and Judgment by ${$m2/-1000}.1 sec.", 0, 0 },
+  {  196926, "Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec and Crusader Strike reduces the cooldown of Judgment by ${$m2/-1000}.1 sec.", 0, 0 },
   {  196938, "Opportunity increases the damage of Pistol Shot by an additional $s1%. Each charge of Opportunity consumed by Pistol Shot generates $1254567s1 combo $Lpoint:points;.", 0, 0 },
   {  196974, "Launch critters into the air.", 0, 0 },
   {  196976, "Gain ${$196980s1*$196980d/$196980t1+$196980s2} Energy over $196980d when you enter Stealth or activate Shadow Dance.", 0, 0 },
@@ -7507,7 +7507,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   {  216173, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   {  216187, "$@spelldesc108501", "Summoned by a Grimoire of Service.\r\nDamage done increased by $s1%.", 0 },
   {  216318, "Armor increased by $s1%.", 0, 0 },
-  {  216331, "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.", "Auto-attack damage increased by $s3%.\r\n\r\n$w6 nearby allies will be healed for $w5% of the damage done by Judgment and Crusader Strike, split evenly among them.", 0 },
+  {  216331, "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.\r\n\r\nThis spell is replaced with Crusader Strike while active.\r\n\r\n$@spellicon35395$@spellname35395:\r\n$@spelldesc35395", "Auto-attack damage increased by $s3%.\r\n\r\n$w6 nearby allies will be healed for $w5% of the damage done by Judgment and Crusader Strike, split evenly among them.", 0 },
   {  216371, "$@spelldesc216331", 0, 0 },
   {  216506, "Thunder Focus Tea also grants Effuse, Enveloping Mist, Essence Font, Renewing Mist, and Vivify $s1 extra charge at random.", 0, 0 },
   {  216509, "$@spelldesc216506", "Your next Renewing Mist does not trigger its cooldown.", 0 },
@@ -20139,7 +20139,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   {  415035, "$@spelldesc415006", 0, 0 },
   {  415038, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec unleash of wave of shadows Fearing nearby enemies for $415038d. The duration of the Fear is reduced for each nearby enemy down to 0.5 sec against $415006s12 or more targets.", "Disoriented.", 0 },
   {  415052, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec unleash of wave of shadows Fearing nearby enemies for $415038d. The duration of the Fear is reduced for each nearby enemy down to 0.5 sec against $415006s12 or more targets.", 0, 0 },
-  {  415091, "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Crusader Strike by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]", 0, 0 },
+  {  415091, "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Holy Shock by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]", 0, 0 },
   {  415130, "Let the power of the Scourge course through and corrupt you, consuming all Lost Souls $?a137047|a137034|a212611|a137005|a137041|a137027|a137025|a137011|a137017|a137028|a137023|a137010[and transforming into a lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec, unleash a wave of shadows causing nearby enemies to flee for $415038d. The duration of the fear is reduced for each nearby enemy (min 0.5 sec). (2 min 30 sec cooldown)][]$@spelldesc415245\r\n\r\nThis effect can differ based on your Specialization.", 0, 0 },
   {  415132, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415133d during which your harmful spell and abilities have a chance to slow the target by $415132s1% for $415132d. Begin to gather ice and form it into a Pillar of Frost, after $415006s10 sec launch the Pillar at your target dealing $415006s4 Frost damage split between all nearby enemies.", "Slowed by $w1%.", 0 },
   {  415133, "$@spelldesc415130", "Your harmful spell and abilities have a chance to slow the target by $415132w1% for $415132d. Begin to gather ice and form it into a Pillar of Frost, after $415006w10 sec launch the Pillar at your target dealing $415006w4 Frost damage split between all nearby enemies.", 0 },
@@ -26208,7 +26208,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1240019, "Place a cauldron that allows party and raid members to take flasks of their choosing from among the recipes known by your Warband. Only alchemists with the cauldron recipe will contribute.\r\n\r\nThe cauldron lasts for $d and has $432893M1 charges.", 0, 0 },
   { 1240103, "Increases your reputation with the Rajani by $s1.", 0, 0 },
   { 1240126, "$@spelldesc1237721", 0, 0 },
-  { 1240185, "Moonfire, Sunfire, and Shooting Stars damage increased by 15%.", 0, 0 },
+  { 1240185, "Moonfire, Sunfire, and Shooting Stars damage increased by $s1%.", 0, 0 },
   { 1240188, "The cooldowns of Lunar Eclipse and Solar Eclipse are reduced by ${-$s1/1000} sec.", 0, 0 },
   { 1240189, "Increases Mastery by $s2% and reduces the cast time of your Summon Demonic Tyrant and Summon Felguard by ${$s1/-1000}.1 sec.", 0, 0 },
   { 1240195, "Place a cauldron that allows party and raid members to take flasks of their choosing from among the recipes known by your Warband. Only alchemists with the cauldron recipe will contribute.\r\n\r\nThe cauldron lasts for $d and has $432893M1 charges.", 0, 0 },
@@ -26964,7 +26964,10 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1252415, "$@spelldesc187874", "Stormstrike and Lava Lash deal an additional $195592s1 damage split between up to $195592i targets in front of you.$?s1252373[\r\n\r\nAuto-attack speed increased by $w2%.][]$?s1264865[\r\n\r\nMastery increased by ${$w3*$mastery}%][]", 0 },
   { 1252431, "$@spelldesc1252373", 0, 0 },
   { 1252433, "Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. \r\n\r\nEnhances your weapons for $187878d, causing Stormstrike and Lava Lash to discharge ${$195592s1*$<CAP>/$AP} Nature damage up to $195592i enemies in front of you. $?s1252373[Multiple applications may overlap.][]", 0, 0 },
+  { 1252486, 0, "Haste increased by $w1.", 0 },
   { 1252487, "Increases Critical Strike by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  { 1252488, "Increases Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
+  { 1252489, "Increases Versatility by $s1 for $d.", "Versatility increased by $w1.", 0 },
   { 1252516, "$@spelldesc1252190", 0, 0 },
   { 1252524, "Blessed by Filo, gaining $pri.", "Blessed by Filo, gaining $w1 $pri.", 0 },
   { 1252708, "Raptor Strike increases the damage of Raptor Strike by $259388s1% for $259388d. Multiple applications may overlap.", 0, 0 },
@@ -28120,6 +28123,8 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269459, "Combine $s2 Weak Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28462,6 +28467,7 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1278915, "Place a $@spellname1278915 for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078  \r\nIf you spend at least 10 seconds eating you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", 0, 0 },
   { 1278929, "Place a $@spellname1278929 for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname462210  \r\nIf you spend at least 10 seconds eating you will become $@spellname462210 gaining $1219179s7 Stamina and $1219179s2 primary stat for $462209d.\r\n\r\nThis effect persists through death.", 0, 0 },
   { 1278969, "$@spelldesc1243807", 0, 0 },
+  { 1279187, "Strike the target for $<damage> $?s403664 [Holystrike][Physical] damage.$?a196926[\r\n\r\nReduces the cooldown of Judgment by ${$196926m2/-1000}.1 sec.][]\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   { 1279200, "$@spelldesc1225826", 0, 0 },
   { 1279247, "Voidfall Meteor damage increased by $s1%.", 0, 0 },
   { 1279347, "$@spelldesc186257", "Movement speed increased by $w1%.", 0 },
@@ -28595,19 +28601,24 @@ static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   { 1286247, "$@spelldesc191034", 0, 0 },
   { 1286400, "$@spelldesc1265052", "Haste increased by $W1%.", 0 },
   { 1286623, "$@spelldesc1241711\r\n", 0, 0 },
+  { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65701
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
   {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
   {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
+  {  196926,  0, "Crusader Strike reduces the cooldown of Holy Shock and Judgment by ${$m2/-1000}.1 sec.", "Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec and Crusader Strike reduces the cooldown of Judgment by ${$m2/-1000}.1 sec." },
+  {  216331,  0, "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.", "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.\r\n\r\nThis spell is replaced with Crusader Strike while active.\r\n\r\n$@spellicon35395$@spellname35395:\r\n$@spelldesc35395" },
+  {  415091,  0, "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Crusader Strike by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]", "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Holy Shock by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]" },
+  { 1240185,  0, "Moonfire, Sunfire, and Shooting Stars damage increased by 15%.", "Moonfire, Sunfire, and Shooting Stars damage increased by $s1%." },
   { 1245523,  1, "Your Veilpierce is replaced with Reaper's Toll.", "Pierce the Veil is replaced with Reaper's Toll." },
   { 1259431,  0, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path." },
   { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
 } };
 
 // Spell description variables, wow build 12.0.1.65701
-static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 692> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29295,6 +29306,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_dat
   { 1277297, "$baselineMult=$?s137048[${1.00}][${1.00}]\r\n$colossusMult=$?s429644[${1.20}][${1.00}]\r\n$absorb=${($AP*16)*(1+$@versadmg)*$<baselineMult>*$<colossusMult>}" },
   { 1277983, "$cap=${5}" },
   { 1278150, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$sweepingclaw= ${0.85*($AP*0.1656)*(1+$@versadmg)*$<mastery>}\r\n$sweepingclawSecond= ${0.85*($AP*0.1143675)*(1+$@versadmg)*$<mastery>}\r\n$damage=${0.85*($AP*0.2)*(1+$@versadmg)*$<mastery>}" },
+  { 1279187, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   { 1279408, "$pvp=$?a134735[${1.15}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   { 1280645, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.21*($1247379s1)*(1+$@versadmg)*$<mastery>}" },
   { 1283380, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },

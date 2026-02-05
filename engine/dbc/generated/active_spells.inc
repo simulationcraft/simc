@@ -1,4 +1,4 @@
-// Active class spells, wow build 12.0.0.65699
+// Active class spells, wow build 12.0.0.65727
 static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
@@ -353,7 +353,7 @@ static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.65699
+// Pet active spells, wow build 12.0.0.65727
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

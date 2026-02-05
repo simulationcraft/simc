@@ -3225,6 +3225,7 @@ Demon Hunter
 1283628  Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc
 1285383 *Initial Demon Hunter
 1285387 *Shattered Souls
+1287949  Eye Beam
 
 Druid
 99       Incapacitating Roar
@@ -15135,7 +15136,7 @@ Paladin
 1277162  Instrument of the Divine
 1277443  Armory of Light
 1277651  Rising Sunlight
-1279187 *Crusader Strike
+1279187  Crusader Strike
 1279302 *Beacon of Light
 1279303 *Beacon of Fath
 1279408  Hammer of Wrath
