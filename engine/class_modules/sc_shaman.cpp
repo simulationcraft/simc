@@ -2585,17 +2585,19 @@ public:
   double action_da_multiplier() const override  // TODO Hawk: This is automated right?
   {
     double m = ab::action_da_multiplier();
-
-    if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
-           p()->buff.fire_elemental->check() ) )
+    if ( !p()->bugs )
     {
-      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
-    }
+      if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
+             p()->buff.fire_elemental->check() ) )
+      {
+        m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
+      }
 
-    if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
-           p()->buff.storm_elemental->check() ))
-    {
-      m *= 1.0 +  p()->buff.storm_elemental->data().effectN( 4 ).percent();
+      if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+             p()->buff.storm_elemental->check() ) )
+      {
+        m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+      }
     }
 
     if ( ( affected_by_flametongue_da && p()->talent.flametongue_weapon.ok() &&
@@ -2616,17 +2618,18 @@ public:
   double action_ta_multiplier() const override
   {
     double m = ab::action_ta_multiplier();
-
-    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() )
+    if ( !p()->bugs )
     {
-      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
-    }
+      if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() )
+      {
+        m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
+      }
 
-    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() )
-    {
-      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+      if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() )
+      {
+        m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+      }
     }
-
     if ( ( affected_by_flametongue_ta && p()->talent.flametongue_weapon.ok() &&
            p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE ) )
     {
@@ -6392,7 +6395,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     snapshot_impact_state( s, amount_type( s ) );
 
     s->result        = elemental_overload_spell_t::calculate_result( s );
-    s->result_total *= 1.0 + player->cache.spell_crit_chance();
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
     elemental_overload_spell_t::impact( s );
@@ -6716,7 +6718,6 @@ struct lava_burst_t : public shaman_spell_t
     snapshot_impact_state( s, amount_type( s ) );
 
     s->result        = shaman_spell_t::calculate_result( s );
-    s->result_total *= 1.0 + player->cache.spell_crit_chance();
     s->result_amount = shaman_spell_t::calculate_direct_amount( s );
 
     shaman_spell_t::impact( s );
@@ -6733,7 +6734,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if (player->specialization() == SHAMAN_ELEMENTAL)
     {
-      m *= 1.0 + player->cache.spell_crit_chance();
+      m *= 1.0 + this->composite_crit_chance();
     }
 
     return m;
