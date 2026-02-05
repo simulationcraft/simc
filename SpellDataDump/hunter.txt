@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65699 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65727 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -18441,7 +18441,8 @@ Family Flags     : 52, 106
 Attributes       : Is Ability (4)
 Effects          :
 #1 (id=1189741)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc471876
 
 Name             : Boar Charge (id=471938) [Spell Family (9)] 
@@ -18459,7 +18460,8 @@ Family Flags     : 52, 106
 Attributes       : Not a Proc (105)
 Effects          :
 #1 (id=1189743)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.8 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.8 | PvP Coefficient: 0.5 | Radius: 8 yards | Target: at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1189826)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc471876

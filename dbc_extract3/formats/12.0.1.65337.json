@@ -1161,6 +1161,14 @@
       { "data_type": "i", "field": "unk_9" }
     ]
   },
+  "MCRCurrency": {
+    "fields": [
+      { "data_type": "S", "field": "description_lang" },
+      { "data_type": "i", "field": "id_modified_crafting_category" },
+      { "data_type": "i", "field": "id_item_bonus_tree" },
+      { "data_type": "i", "field": "unk_1" }
+    ]
+  },
   "MCRSlotXMCRCategory": {
     "parent": "ModifiedCraftingReagentSlot",
     "fields": [

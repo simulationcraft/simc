@@ -2721,7 +2721,8 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_critical_damage_multiplier( s, school );
 
-    m *= 1.0 + grave_mastery->check_value();
+    if( grave_mastery->check() )
+      m *= 1.0 + grave_mastery->check_value();
 
     if ( mastery_dreadblade_crit->check() )
       m *= 1.0 + mastery_dreadblade_crit->check_value();
@@ -3351,8 +3352,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
     affected_by_grave_mastery = true;
     owner_coeff.ap_from_ap    = 0.474;
-    // 25% nerf caused auto attacks from the ghoul to be nerfed twice. 
-    auto_attack_multiplier    = 0.75;
     if ( owner->spec.raise_dead->ok() )
     {
       dynamic = false;
@@ -3580,8 +3579,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
-      // Claw seems to just do ~37.5% less damage than expected in game.
-      base_multiplier *= 0.625;
     }
 
     bool ready() override
@@ -3600,8 +3597,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       background = true;
       aoe        = -1;
-      // Ruptured Viscera seems to just do ~37.5% less damage than expected in game.
-      base_multiplier *= 0.625;
     }
   };
 
@@ -3910,7 +3905,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       background = true;
       repeating  = true;
-      base_multiplier *= 0.75;
     }
 
     int n_targets() const override
@@ -4340,9 +4334,6 @@ struct magus_pet_t : public death_knight_pet_t
       parse_options( options_str );
       // There's a 1 energy cost in spelldata but it might as well be ignored
       base_costs[ RESOURCE_ENERGY ] = 0;
-      // Magus spells seem to be doing 25% less damage than expected. Potentially a consequence of the 25% nerfs being
-      // applied twice somehow? AP% inheritence has been checked and is correct.
-      base_multiplier *= 0.75;
     }
   };
 
@@ -5228,8 +5219,7 @@ struct abomination_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time       = 3.6_s;
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
-    owner_coeff.ap_from_ap            = 2.34;
-    auto_attack_multiplier            = 0.675;
+    owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
@@ -7892,7 +7882,6 @@ struct summon_whitemane_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.whitemane.active_pet()->adjust_duration( duration );
-      p()->pets.whitemane.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7916,7 +7905,6 @@ struct summon_trollbane_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.trollbane.active_pet()->adjust_duration( duration );
-      p()->pets.trollbane.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7939,7 +7927,6 @@ struct summon_nazgrim_t final : public summon_rider_t
     {
       summon_rider_t::execute();
       p()->pets.nazgrim.active_pet()->adjust_duration( duration );
-      p()->pets.nazgrim.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -7963,7 +7950,6 @@ struct summon_mograine_t final : public summon_rider_t
       summon_rider_t::execute();
       pets::mograine_pet_t* mograine = p()->pets.mograine.active_pet();
       mograine->adjust_duration( duration );
-      mograine->rp_spent = 0;
       if ( mograine->dnd_aura->check() )
         mograine->extended_by_apoc_now = true;
       else
@@ -15776,7 +15762,7 @@ void death_knight_t::create_buffs()
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
 
     buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
-                                  ->set_chance( 1.0 )  // handled in assess damage.  Likely bugged
+                                  ->set_chance( 1.0 )
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
                             
     buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
@@ -16357,13 +16343,9 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
       else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
         buffs.bloodied_blade_stacks->trigger();
     }
-    // As of Dec 29, 2025, best we can tell there is a baseline 20% chance to proc dom 1, chance seems to be reduced
-    // per target you are in combat with
-    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() && sim->target_non_sleeping_list.size() > 0 &&
-          rng().roll( 0.20 / sim->target_non_sleeping_list.size() ) )
-    {
+
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() )
       buffs.dance_of_midnight_1->trigger();
-    }
   }
 }
 

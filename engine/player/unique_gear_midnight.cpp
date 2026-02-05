@@ -378,7 +378,7 @@ void devouring_banding( special_effect_t& effect )
 
     seized_power_t( const special_effect_t& e ) : generic_proc_t( e, "seized_power", 1259229 )
     {
-      quiet = true;
+      quiet             = true;
       double buff_value = data().effectN( 1 ).trigger()->effectN( 1 ).average( e );
       // Damage is created after the buff, we can use this to check if there are 2 copies
       if ( auto proc = e.player->find_action( "devouring_bolt" ) )
@@ -386,8 +386,8 @@ void devouring_banding( special_effect_t& effect )
         buff_value += buff_value;
       }
 
-      // TODO: adjust buff value increase with two copies
-      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value, [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value,
+                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
     }
 
     void impact( action_state_t* ) override
@@ -577,8 +577,8 @@ void signet_of_azerothian_blessings( special_effect_t& effect )
   value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
   value *= bandolier_mul( effect.player );
 
-  auto buff =
-      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings", effect.driver()->effectN( 1 ).trigger() );
+  auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings",
+                                        effect.driver()->effectN( 1 ).trigger() );
 
   for ( auto stat : secondary_ratings )
     buff->add_stat( stat, value );
@@ -621,71 +621,70 @@ void loa_worshipers_band( special_effect_t& effect )
 
     loa_worshipers_band_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        capybara( nullptr ),
-        nalorakk( nullptr ),
-        halazzi( nullptr ),
-        janalai( nullptr ),
-        akilzon( nullptr ),
-        loas()
+      capybara( nullptr ),
+      nalorakk( nullptr ),
+      halazzi( nullptr ),
+      janalai( nullptr ),
+      akilzon( nullptr ),
+      loas()
     {
       // Capybara is always available, even with no gems socketed.
       loas.push_back( LOA_CAPYBARA );
       double capy_value = effect.driver()->effectN( 2 ).average( effect );
       capy_value *= bandolier_mul( effect.player );
       capybara = make_buff<stat_buff_t>( e.player, "blessing_of_the_capybara", e.player->find_spell( 1252524 ) )
-                     ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
+        ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ))
       {
         loas.push_back( LOA_NALORAKK );
         const spell_data_t* nalorakk_spell = e.player->find_spell( 1257183 );
         double nalo_value = nalorakk_spell->effectN( 1 ).average( e );
         nalo_value *= bandolier_mul( effect.player );
-        auto nalorakk_stat =
-            make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
-                ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
+        auto nalorakk_stat = make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
+          ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
         nalorakk =
-            make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
-                ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
+          make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
+          ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ))
       {
         loas.push_back( LOA_HALAZZI );
         double halazzi_value = effect.driver()->effectN( 3 ).average( effect );
         halazzi_value *= bandolier_mul( effect.player );
-        halazzi              = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
+        halazzi = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
         halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
         // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ))
       {
         loas.push_back( LOA_JANALAI );
         double janalai_value = effect.driver()->effectN( 4 ).average( effect );
         janalai_value *= bandolier_mul( effect.player );
-        janalai              = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
         janalai->base_dd_min = janalai->base_dd_max = janalai_value;
         janalai->aoe = -1;
         // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ))
       {
         loas.push_back( LOA_AKILZON );
         const spell_data_t* akilzon_spell = e.player->find_spell( 1252818 );
-        double akilzon_value              = akilzon_spell->effectN( 1 ).average( e );
+        double akilzon_value = akilzon_spell->effectN( 1 ).average( e );
         akilzon_value *= bandolier_mul( effect.player );
         // Akilzon buff has the values in the buff itself.
         akilzon = make_buff<stat_buff_t>( e.player, "akilzons_cry_of_victory", akilzon_spell )
-                      ->add_stat_from_effect( 1, akilzon_value );
+          ->add_stat_from_effect( 1, akilzon_value );
       }
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
       auto loa = rng().range( loas );
-      switch ( loa )
+      switch (loa)
       {
         case LOA_CAPYBARA:
           capybara->trigger();
@@ -712,6 +711,266 @@ void loa_worshipers_band( special_effect_t& effect )
 }
 
 }  // namespace embellishments
+
+namespace darkmoon
+{
+// Blood
+// 1245053 Embellishment Driver
+// 1245001 Trinket Driver
+// 1245012 RPPM
+// 1245025 Stat Buff
+// TODO: What happens with both the trinket, and embellishment active?
+void blood( special_effect_t& effect )
+{
+  struct blood_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    blood_cb_t( const special_effect_t& e, const spell_data_t* value_driver ) : dbc_proc_callback_t( e.player, e )
+    {
+      create_all_stat_buffs( e, e.player->find_spell( 1245025 ), value_driver->effectN( 1 ).average( e ),
+                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto stat = util::lowest_stat( listener, secondary_ratings );
+      for ( auto [ s, b ] : buffs )
+      {
+        if ( s == stat )
+          b->trigger();
+        else
+          b->expire();
+      }
+    }
+  };
+
+  auto value_driver = effect.driver();
+
+  effect.spell_id = 1245012;
+
+  new blood_cb_t( effect, value_driver );
+}
+
+// Rot
+// 1245055 Embellishment Driver
+// 1245051 Trinket Driver
+// 1244332 RPPM
+// 1247411 Asyncronous DoT
+// TODO: What happens with both the trinket, and embellishment active?
+void rot( special_effect_t& effect )
+{
+  struct root_rot_t : public generic_proc_t
+  {
+    root_rot_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* value_driver )
+      : generic_proc_t( e, "root_rot", s )
+    {
+      base_td = value_driver->effectN( 1 ).average( e );
+      dot_max_stack = 1; // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_ta_multiplier( s );
+
+      if ( auto debuff = find_debuff( s->target ) )
+        m *= debuff->check();
+      else
+        m = 0.0;
+
+      return m;
+    }
+
+    buff_t* create_debuff( player_t* target ) override
+    {
+      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", player->find_spell( 1247411 ) )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      get_debuff( execute_state->target )->execute();
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<root_rot_t>( "root_rot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
+
+  effect.spell_id = 1244332;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Void
+// 1245052 Embellishment Driver
+// 1244254 Trinket Driver
+// 1244253 RPPM
+// 1244617 Asyncronous Buff
+void void_( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.player->find_spell( 1244617 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1244253;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Hunt
+// 1245054 Embellishment Driver
+// 1245050 Trinket Driver
+// 1252457 RPPM
+// 1252486 Haste Buff - Elemental, Aberration
+// 1252487 Crit Buff - Mechanical
+// 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
+// 1252489 Versatility Buff - Undead
+// TODO: What happens with both the trinket, and embellishment active?
+// TODO: Figure out what Giant, and Demon trigger.
+void hunt( special_effect_t& effect )
+{
+  struct hunt_cb_t : public dbc_proc_callback_t
+  {
+    enum mode_e
+    {
+      MODE_SPECIFIED,
+      MODE_ACTUAL,
+      MODE_RANDOM,
+      MODE_RAID_RANDOM
+    };
+
+    buff_t* haste_buff;
+    buff_t* crit_buff;
+    buff_t* mastery_buff;
+    buff_t* vers_buff;
+    race_e race;
+    mode_e mode;
+
+    // TODO Add L'ura's race mapping when known.
+    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
+                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
+
+    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
+                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
+
+    hunt_cb_t( const special_effect_t& e, const spell_data_t* value_driver )
+      : dbc_proc_callback_t( e.player, e ),
+        haste_buff( nullptr ),
+        crit_buff( nullptr ),
+        mastery_buff( nullptr ),
+        vers_buff( nullptr ),
+        race( RACE_NONE ),
+        mode( MODE_RAID_RANDOM )
+    {
+      haste_buff = make_buff<stat_buff_t>( e.player, "hasty_hunt", e.player->find_spell( 1252486 ) )
+                       ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      crit_buff = make_buff<stat_buff_t>( e.player, "focused_hunt", e.player->find_spell( 1252487 ) )
+                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      mastery_buff = make_buff<stat_buff_t>( e.player, "masterful_hunt", e.player->find_spell( 1252488 ) )
+                         ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      vers_buff = make_buff<stat_buff_t>( e.player, "versatile_hunt", e.player->find_spell( 1252489 ) )
+                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
+           listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
+        mode = MODE_ACTUAL;
+      else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "random" ) )
+        mode = MODE_RANDOM;
+      else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
+        mode = MODE_RAID_RANDOM;
+      else
+        mode = MODE_SPECIFIED;
+
+      if ( mode == MODE_SPECIFIED )
+      {
+        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        if ( !range::contains( valid_races, race ) )
+        {
+
+          std::vector<std::string> valid_strings;
+          for ( auto r : valid_races )
+            valid_strings.push_back( util::race_type_string( r ) );
+
+          e.player->sim->error(
+              error_level_e::SEVERE,
+              fmt::format( "midnight.darkmoon_hunt_race has invalid race {}. Valid races are {}. Using targets actual race instead.",
+                           listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) ) );
+          mode = MODE_ACTUAL;
+        }
+      }
+      if ( mode == MODE_RANDOM )
+        pick_random_race();
+      if ( mode == MODE_RAID_RANDOM )
+        pick_random_raid_race();
+    }
+
+    void pick_random_race()
+    {
+      race = rng().range( valid_races );
+    }
+
+    void pick_random_raid_race()
+    {
+      race = rng().range( raid_races );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      // Pick a new random race each iteration
+      if ( mode == MODE_RANDOM )
+        pick_random_race();
+      if ( mode == MODE_RAID_RANDOM )
+        pick_random_raid_race();
+    }
+
+    void trigger_race_buff( race_e r )
+    {
+      switch ( r )
+      {
+        case RACE_BEAST:
+        case RACE_HUMANOID:
+        case RACE_DRAGONKIN:
+          mastery_buff->trigger();
+          break;
+        case RACE_ABERRATION:
+        case RACE_ELEMENTAL:
+          haste_buff->trigger();
+          break;
+        case RACE_MECHANICAL:
+          crit_buff->trigger();
+          break;
+        case RACE_UNDEAD:
+          vers_buff->trigger();
+          break;
+        case RACE_DEMON:
+        case RACE_GIANT:
+        default:
+          break;
+      }
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( mode == MODE_ACTUAL )
+        trigger_race_buff( s->target->race );
+      else
+        trigger_race_buff( race );
+    }
+  };
+
+  auto value_driver = effect.driver();
+
+  effect.spell_id = 1252457;
+
+  new hunt_cb_t( effect, value_driver );
+}
+
+}  // namespace darkmoon
 
 namespace trinkets
 {
@@ -1476,6 +1735,11 @@ void register_special_effects()
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
+  // Darkmoon Trinkets & Embellishments
+  register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
+  register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
+  register_special_effect( { 1245052, 1244254 }, darkmoon::void_ );
+  register_special_effect( { 1245050, 1245054 }, darkmoon::hunt );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );

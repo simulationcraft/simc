@@ -444,9 +444,9 @@ Effects          :
 #3 (id=293833)   : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #4 (id=293834)   : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 160_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #5 (id=331324)   : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
 
    1 point  : ${$o1*2/6} over 8 sec
@@ -18449,7 +18449,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -20590,9 +20590,9 @@ Effects          :
 #2 (id=1282137)  : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #3 (id=1282138)  : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 160_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 #4 (id=1282139)  : Trigger Spell (64): Rupture
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 199672 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1943
 Tooltip          : Bleeding for $w1 Shadow damage every $t1 sec.
 
