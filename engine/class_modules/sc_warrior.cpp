@@ -9230,6 +9230,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( buff.into_the_fray );
+    parse_effects( buff.avatar, effect_mask_t( false ).enable( 8 ) );
   }
 
   // Colossus
