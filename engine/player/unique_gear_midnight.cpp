@@ -818,6 +818,161 @@ void void_( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Hunt
+// 1245054 Embellishment Driver
+// 1245050 Trinket Driver
+// 1252457 RPPM
+// 1252486 Haste Buff - Elemental, Aberration
+// 1252487 Crit Buff - Mechanical
+// 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
+// 1252489 Versatility Buff - Undead
+// TODO: What happens with both the trinket, and embellishment active?
+// TODO: Figure out what Giant, and Demon trigger.
+void hunt( special_effect_t& effect )
+{
+  struct hunt_cb_t : public dbc_proc_callback_t
+  {
+    enum mode_e
+    {
+      MODE_SPECIFIED,
+      MODE_ACTUAL,
+      MODE_RANDOM,
+      MODE_RAID_RANDOM
+    };
+
+    buff_t* haste_buff;
+    buff_t* crit_buff;
+    buff_t* mastery_buff;
+    buff_t* vers_buff;
+    race_e race;
+    mode_e mode;
+
+    // TODO Add L'ura's race mapping when known.
+    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
+                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
+
+    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
+                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
+
+    hunt_cb_t( const special_effect_t& e, const spell_data_t* value_driver )
+      : dbc_proc_callback_t( e.player, e ),
+        haste_buff( nullptr ),
+        crit_buff( nullptr ),
+        mastery_buff( nullptr ),
+        vers_buff( nullptr ),
+        race( RACE_NONE ),
+        mode( MODE_RAID_RANDOM )
+    {
+      haste_buff = make_buff<stat_buff_t>( e.player, "hasty_hunt", e.player->find_spell( 1252486 ) )
+                       ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      crit_buff = make_buff<stat_buff_t>( e.player, "focused_hunt", e.player->find_spell( 1252487 ) )
+                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      mastery_buff = make_buff<stat_buff_t>( e.player, "masterful_hunt", e.player->find_spell( 1252488 ) )
+                         ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      vers_buff = make_buff<stat_buff_t>( e.player, "versatile_hunt", e.player->find_spell( 1252489 ) )
+                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
+
+      if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
+           listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
+        mode = MODE_ACTUAL;
+      else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "random" ) )
+        mode = MODE_RANDOM;
+      else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
+        mode = MODE_RAID_RANDOM;
+      else
+        mode = MODE_SPECIFIED;
+
+      if ( mode == MODE_SPECIFIED )
+      {
+        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        if ( !range::contains( valid_races, race ) )
+        {
+          std::vector<std::string> valid_strings;
+          for (auto r : valid_races)
+          {
+            std::string val = util::race_type_string( r );
+            valid_strings.emplace_back( val );
+          }
+
+          e.player->sim->error( error_level_e::SEVERE,
+                                "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types "
+                                "are {}. Defaulting to targets actual race.",
+                                listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) );
+              
+          mode = MODE_ACTUAL;
+        }
+      }
+      if ( mode == MODE_RANDOM )
+        pick_random_race();
+      if ( mode == MODE_RAID_RANDOM )
+        pick_random_raid_race();
+    }
+
+    void pick_random_race()
+    {
+      race = rng().range( valid_races );
+    }
+
+    void pick_random_raid_race()
+    {
+      race = rng().range( raid_races );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      // Pick a new random race each iteration
+      if ( mode == MODE_RANDOM )
+        pick_random_race();
+      if ( mode == MODE_RAID_RANDOM )
+        pick_random_raid_race();
+    }
+
+    void trigger_race_buff( race_e r )
+    {
+      switch ( r )
+      {
+        case RACE_BEAST:
+        case RACE_HUMANOID:
+        case RACE_DRAGONKIN:
+          mastery_buff->trigger();
+          break;
+        case RACE_ABERRATION:
+        case RACE_ELEMENTAL:
+          haste_buff->trigger();
+          break;
+        case RACE_MECHANICAL:
+          crit_buff->trigger();
+          break;
+        case RACE_UNDEAD:
+          vers_buff->trigger();
+          break;
+        case RACE_DEMON:
+        case RACE_GIANT:
+        default:
+          break;
+      }
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( mode == MODE_ACTUAL )
+        trigger_race_buff( s->target->race );
+      else
+        trigger_race_buff( race );
+    }
+  };
+
+  auto value_driver = effect.driver();
+
+  effect.spell_id = 1252457;
+
+  new hunt_cb_t( effect, value_driver );
+}
+
 }  // namespace darkmoon
 
 namespace trinkets
@@ -1587,6 +1742,7 @@ void register_special_effects()
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
   register_special_effect( { 1245052, 1244254 }, darkmoon::void_ );
+  register_special_effect( { 1245050, 1245054 }, darkmoon::hunt );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );

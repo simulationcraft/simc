@@ -611,7 +611,7 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage_1; // Partial implementation - missing free Meta casts
+      player_talent_t untethered_rage_1;  // Partial implementation - missing free Meta casts
       player_talent_t untethered_rage_2;
       player_talent_t untethered_rage_3;
     } vengeance;
@@ -823,6 +823,7 @@ public:
     const spell_data_t* collective_anguish_damage;
     const spell_data_t* essence_break_proc_damage;
     const spell_data_t* empowered_eye_beam_buff;
+    const spell_data_t* empowered_eye_beam_damage;
     const spell_data_t* eternal_hunt_buff;
 
     // Vengeance
@@ -3265,7 +3266,7 @@ struct shattered_souls_trigger_t : public BASE
   {
     BASE::impact( s );
 
-    if ( BASE::p()->specialization() != DEMON_HUNTER_DEVOURER)
+    if ( BASE::p()->specialization() != DEMON_HUNTER_DEVOURER )
       return;
 
     if ( !BASE::result_is_hit( s->result ) || s->proc_type() == PROC1_PERIODIC || s->result_total <= 0 )
@@ -3274,8 +3275,8 @@ struct shattered_souls_trigger_t : public BASE
     double chance = shattered_souls_chance( s );
     if ( BASE::rng().roll( chance ) )
     {
-      BASE::p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::p()->name(), BASE::name(),
-                       BASE::data().id(), chance );
+      BASE::p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::p()->name(),
+                                   BASE::name(), BASE::data().id(), chance );
       BASE::p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
       BASE::p()->proc.shattered_souls->occur();
     }
@@ -3800,6 +3801,9 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     }
   };
 
+  eye_beam_tick_t* tick;
+  eye_beam_tick_t* empowered_tick;
+
   eye_beam_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : base_t( name, p, s, o )
   {
@@ -3813,9 +3817,16 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     //            nochannel macro
     ability_lag = p->world_lag;
 
-    tick_action = p->get_background_action<eye_beam_tick_t>( name_str + "_tick", name_str, p->spec.eye_beam_damage,
+    tick = p->get_background_action<eye_beam_tick_t>( name_str + "_tick", name_str, p->spec.eye_beam_damage,
                                                              as<int>( data().effectN( 5 ).base_value() ) );
-    add_child( tick_action );
+    add_child( tick );
+
+    if ( p->talent.havoc.eternal_hunt_1->ok() )
+    {
+      empowered_tick = p->get_background_action<eye_beam_tick_t>( name_str + "_empowered_tick", name_str, p->spec.empowered_eye_beam_damage,
+                                                                   as<int>( data().effectN( 5 ).base_value() ) );
+      add_child( empowered_tick );
+    }
 
     // Add damage modifiers in eye_beam_tick_t, not here.
   }
@@ -3854,6 +3865,12 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
   {
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
+
+    tick_action = tick;
+    if ( empowered_tick && p()->buff.empowered_eye_beam->up() )
+    {
+      tick_action = empowered_tick;
+    }
 
     base_t::execute();
 
@@ -6304,7 +6321,8 @@ struct void_ray_t
 
 struct collapsing_star_t : public demon_hunter_spell_t
 {
-  struct collapsing_star_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
+  struct collapsing_star_damage_t
+    : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
   {
     collapsing_star_damage_t( std::string_view n, demon_hunter_t* p ) : base_t( n, p, p->spec.collapsing_star_damage )
     {
@@ -6399,7 +6417,8 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 struct voidfall_meteor_base_t : public demon_hunter_spell_t
 {
-  struct voidfall_meteor_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
+  struct voidfall_meteor_damage_t
+    : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
   {
     voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
@@ -6472,7 +6491,8 @@ struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_
 
 struct meteor_shower_t : public demon_hunter_spell_t
 {
-  struct meteor_shower_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
+  struct meteor_shower_damage_t
+    : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
   {
     meteor_shower_damage_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
@@ -10929,6 +10949,7 @@ void demon_hunter_t::init_spells()
   spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
   spec.essence_break_proc_damage        = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
   spec.empowered_eye_beam_buff          = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
+  spec.empowered_eye_beam_damage        = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
   spec.eternal_hunt_buff                = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );

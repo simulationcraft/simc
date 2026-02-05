@@ -245776,6 +245776,19 @@ Effects          :
 #2 (id=1257675)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 21.81823 (coefficient=0.170717) | Target: Self (1)
 
+Name             : Hasty Hunt (id=1252486) 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 4126
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1257712)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+Tooltip          : Haste increased by $w1.
+
 Name             : Focused Hunt (id=1252487) 
 School           : Physical
 Spell Type       : None
@@ -245789,6 +245802,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Description      : Increases Critical Strike by $s1 for $d.
 Tooltip          : Critical Strike increased by $w1.
+
+Name             : Masterful Hunt (id=1252488) 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 4126
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1257714)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Description      : Increases Mastery by $s1 for $d.
+Tooltip          : Mastery increased by $w1.
+
+Name             : Versatile Hunt (id=1252489) 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 4126
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1257715)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Description      : Increases Versatility by $s1 for $d.
+Tooltip          : Versatility increased by $w1.
 
 Name             : Flight of the Val'kyr (id=1252516) 
 School           : Holy

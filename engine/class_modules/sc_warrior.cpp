@@ -7478,6 +7478,10 @@ void warrior_t::init_spells()
     specialization() == WARRIOR_FURY ? effect_mask_t( true ).disable( 3 )
                                      : effect_mask_t( true ) );
 
+  register_passive_effect_mask( talents.slayer.slayers_malice,
+    specialization() == WARRIOR_ARMS ? effect_mask_t( true ).disable( 2 )
+                                     : effect_mask_t( true ).disable( 1 ) );
+
   // Armor Handled Manually for ATTT
   register_passive_effect_mask( talents.protection.armor_specialization, effect_mask_t( false ).enable( 1, 2 ) );
   register_passive_effect_mask( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
@@ -9230,6 +9234,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( buff.into_the_fray );
+    parse_effects( buff.avatar, effect_mask_t( false ).enable( 8 ) );
   }
 
   // Colossus

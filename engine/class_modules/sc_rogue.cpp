@@ -26,6 +26,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  SCOUNDREL_STRIKE,
   SHADOW_CLONE,
 };
 
@@ -277,6 +278,11 @@ public:
 
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
 
+    struct 
+    {
+      actions::rogue_attack_t* dispatch = nullptr;
+      actions::rogue_attack_t* coup_de_grace = nullptr;
+    } scoundrel_strike;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -2168,6 +2174,7 @@ public:
   void trigger_restless_blades( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_scent_of_blood();
+  void trigger_scoundrel_strike( const action_state_t*, rogue_attack_t* action );
   void trigger_seal_fate( const action_state_t* );
   void trigger_secondary_poisoning( const action_state_t* state );
   void trigger_shadow_blades_attack( const action_state_t* );
@@ -3600,28 +3607,13 @@ struct backstab_t : public rogue_attack_t
 
 struct dispatch_t: public rogue_attack_t
 {
-  struct scoundrel_strike_t : public rogue_attack_t
-  {
-    scoundrel_strike_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
-    {
-    }
-
-    bool procs_blade_flurry() const override
-    { return true; }
-  };
-
-  scoundrel_strike_t* scoundrel_strike;
-
   dispatch_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.dispatch, options_str ),
-    scoundrel_strike( nullptr )
+    rogue_attack_t( name, p, p->spec.dispatch, options_str )
   {
     affected_by.delivered_doom = true;
     if ( p->talent.outlaw.gravedigger_2->ok() )
     {
-      scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
-      add_child( scoundrel_strike );
+      add_child( p->active.scoundrel_strike.dispatch );
     }
   }
 
@@ -3658,16 +3650,13 @@ struct dispatch_t: public rogue_attack_t
     {
       const int cp_spend = cast_state( state )->get_combo_points();
 
-      if ( scoundrel_strike && cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
-      {
-        scoundrel_strike->execute_on_target( state->target );
-      }
-
       if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
       {
         p()->buffs.palmed_bullets->trigger();
       }
     }
+
+    trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
   bool ready() override
@@ -5035,6 +5024,22 @@ struct rupture_t : public rogue_attack_t
   }
 };
 
+// Scoundrel Strike =========================================================
+
+struct scoundrel_strike_t : public rogue_attack_t
+{
+  scoundrel_strike_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
+  {
+  }
+
+  bool procs_poison() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+};
+
 // Secret Technique =========================================================
 
 struct secret_technique_t : public rogue_attack_t
@@ -6388,6 +6393,11 @@ struct coup_de_grace_t : public rogue_attack_t
     {
       add_child( attacks.front()->bonus_attack );
     }
+
+    if ( p()->talent.outlaw.gravedigger_2->ok() )
+    {
+      add_child( p()->active.scoundrel_strike.coup_de_grace );
+    }
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -6419,6 +6429,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
   }
@@ -8159,20 +8170,24 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( !consumes_combo_points() && !ignore_cp )
     return;
 
+  // Darkest Night checks take priority and no stacks can be removed if Darkest Night is active
+  if ( p()->buffs.darkest_night->check())
+  {
+    if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
+    {
+      trigger_deathstalkers_mark_debuff( state, true );
+      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
+    }
+
+    return;
+  }
+
   // 2025-06-28 -- Deathstalker's Mark can be consumed via Symbols of Death with the TWW3 4pc set bonus
   player_t* mark_target = state->target->is_enemy() ? state->target : p()->target;
-  const bool consume_darkest_night = affected_by.darkest_night && p()->buffs.darkest_night->check() &&
-    cast_state( state )->get_combo_points() >= COMBO_POINT_MAX;
-
   if ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
        ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
-    // Envenom/Eviscerate cast with Darkest Night does not consume a stack of active Deathstalker's Marks
-    // MIDNIGHT TOCHECK -- Does this still trigger Unshakeable Drive or damage?
-    if ( !consume_darkest_night )
-    {
-      p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
-    }
+    p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
@@ -8196,14 +8211,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
       make_event( *p()->sim, 1_ms, [ this ] {
         p()->buffs.darkest_night->trigger();
       } );
-      return; // Note: Cannot immediately trigger and consume Darkest Night
     }
-  }
-
-  if ( consume_darkest_night )
-  {
-    trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
   }
 }
 
@@ -8303,6 +8311,23 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
   }
 
   p()->active.trickster.nimble_flurry->trigger_residual_action( state, multiplier );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state_t* state, actions::rogue_attack_t* action )
+{
+  if ( !p()->talent.outlaw.gravedigger_2->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
+  {
+    action->trigger_secondary_action( state->target, 200_ms );
+  }
 }
 
 template <typename Base>
@@ -9851,6 +9876,14 @@ void rogue_t::init_spells()
     active.fan_the_hammer->energize_type = action_energize::NONE; // Fan the Hammer itself does not generate CPs, only from Quick Draw
   }
 
+  if ( talent.outlaw.gravedigger_2->ok() )
+  {
+    active.scoundrel_strike.dispatch = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_dispatch" );
+    active.scoundrel_strike.coup_de_grace = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_coup_de_grace" );
+  }
+
   // Subtlety
   if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -10985,7 +11018,8 @@ bool rogue_t::stealthed( uint32_t stealth_mask, bool check_lag ) const
   if ( ( stealth_mask & STEALTH_VANISH ) && buffs.vanish->check() )
     return true;
 
-  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() && ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > 0.2_s ) )
+  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() &&
+       ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > world_lag.mean ) )
     return true;
 
   if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )

@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65701
-static constexpr std::array<spelltext_data_t, 28599> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26964,7 +26964,10 @@ static constexpr std::array<spelltext_data_t, 28599> __ptr_spelltext_data { {
   { 1252415, "$@spelldesc187874", "Stormstrike and Lava Lash deal an additional $195592s1 damage split between up to $195592i targets in front of you.$?s1252373[\r\n\r\nAuto-attack speed increased by $w2%.][]$?s1264865[\r\n\r\nMastery increased by ${$w3*$mastery}%][]", 0 },
   { 1252431, "$@spelldesc1252373", 0, 0 },
   { 1252433, "Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. \r\n\r\nEnhances your weapons for $187878d, causing Stormstrike and Lava Lash to discharge ${$195592s1*$<CAP>/$AP} Nature damage up to $195592i enemies in front of you. $?s1252373[Multiple applications may overlap.][]", 0, 0 },
+  { 1252486, 0, "Haste increased by $w1.", 0 },
   { 1252487, "Increases Critical Strike by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  { 1252488, "Increases Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
+  { 1252489, "Increases Versatility by $s1 for $d.", "Versatility increased by $w1.", 0 },
   { 1252516, "$@spelldesc1252190", 0, 0 },
   { 1252524, "Blessed by Filo, gaining $pri.", "Blessed by Filo, gaining $w1 $pri.", 0 },
   { 1252708, "Raptor Strike increases the damage of Raptor Strike by $259388s1% for $259388d. Multiple applications may overlap.", 0, 0 },
