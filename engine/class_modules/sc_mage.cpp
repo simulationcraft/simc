@@ -7086,14 +7086,16 @@ void mage_t::trigger_fired_up()
   // TODO: Update placeholder whenever we have data, will need to add a decrementing chance
   // Combustion set proc chance +15% or * 1.75 (35%) 
   // Remove 0.05 each proc to account for 1% chance
-  constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1.75;
-
+  // constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1.75; Using placeholder 1 for now:
+  constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1;
+  
   if ( buffs.combustion->up() )
     proc_chance *= FIRED_UP_COMBUSTION_PROC_MULT;
     proc_chance = std::min( proc_chance, 1.0 );
 
   if ( !rng().roll( proc_chance ) )
-    FIRED_UP_COMBUSTION_PROC_MULT = FIRED_UP_COMBUSTION_PROC_MULT - 0.05; // Each proc reduces it 1% back down to 20% 
+    // Each proc reduces it 1% back down to 20% 
+    // FIRED_UP_COMBUSTION_PROC_MULT = FIRED_UP_COMBUSTION_PROC_MULT - 0.05; 
     return;
 
   buffs.fired_up->trigger();
