@@ -7081,22 +7081,27 @@ void mage_t::trigger_fired_up()
 {
   if ( !talents.fired_up_1.ok() )
     return;
+  // via Degen
+  double proc_chance = talents.fired_up_1->effectN( 1 ).percent();
+  // TODO: Update placeholder whenever we have data, will need to add a decrementing chance
+  // Combustion set proc chance +15 (35%)
+  // Each proc reduces it back down to 20%
+  constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1.0;
 
-  int stacks = 1;
-  // TODO: If fired_up_2, need to reduce Fire Blast cooldown by 2.5 per talent point.
-  // TODO: If fired_up_3, need to extend Combustion one second and modify the proc chance for trigger_fired_up accordingly.
-  // Was never able to cap in tests, but there must be a cap
-  auto trigger_buff = [ this, s = std::min( buffs.fired_up_1->max_stack() - buffs.fired_up_1->check(), stacks ) ]
-  {
-    buffs.fired_up_1->trigger( s );
-    fired_up_expiration.push_back( make_event( *sim, buffs.fired_up_1->buff_duration(), [ this, s ]
-    {
-      fired_up_expiration.erase( fired_up_expiration.begin() );
-      buffs.fired_up_1->decrement( s );
-    } ) );
-  };
+  if ( buffs.combustion->up() )
+    proc_chance *= FIRED_UP_COMBUSTION_PROC_MULT;
+    proc_chance = std::min( proc_chance, 1.0 );
 
+  if ( !rng().roll( proc_chance ) )
+    return;
 
+  buffs.fired_up->trigger();
+
+  if ( buffs.combustion->up() && talents.fired_up_3.ok() )
+    buffs.combustion->extend_duration( this, talents.fired_up_3->effectN( 2 ).time_value() );
+
+  if ( talents.fired_up_2.ok() )
+    cooldowns.fire_blast->adjust( -talents.fired_up_2->effectN( 1 ).time_value(), false );
 }
 
 void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
