@@ -229,7 +229,6 @@ struct gift_of_the_ox_t : monk_buff_t<>
   {
     orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
 
-    double action_multiplier() const override;
     void impact( action_state_t *state ) override;
   };
 

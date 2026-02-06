@@ -48,6 +48,23 @@ WINDWALKER:
 
 namespace monk
 {
+namespace functions
+{
+struct missing_health_percentage_t
+{
+  monk_t *player;
+
+  missing_health_percentage_t( monk_t *player ) : player( player )
+  {
+  }
+
+  double operator()( double base ) const
+  {
+    return 1.0 + ( 1.0 - std::max( player->health_percentage() / 100.0, 0.0 ) ) * base;
+  }
+};
+}  // namespace functions
+
 namespace actions
 {
 template <class Base>
@@ -1259,8 +1276,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      double missing_health_percentage = 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 );
-      double m = 1.0 + missing_health_percentage * p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent();
+      auto multiplier_fn = functions::missing_health_percentage_t( p() );
+      double m           = multiplier_fn( p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent() );
 
       p()->find_stagger( "Stagger" )
           ->purify_flat(
@@ -3575,17 +3592,13 @@ struct expel_harm_t : monk_heal_t
       background = true;
 
     add_child( damage );
-  }
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-    if ( !p()->talent.monk.strength_of_spirit->ok() )
-      return am;
-    // TODO: convert to parse_effects
-    am *=
-        1.0 + ( 1.0 - p()->health_percentage() / 100.0 ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-    return am;
+    if ( const auto &effect = player->talent.monk.strength_of_spirit->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_value( effect.percent() )
+          .set_value_func( functions::missing_health_percentage_t( player ) )
+          .set_eff( &effect )
+          .set_note( "Missing Health Scaling" );
   }
 
   void execute() override
@@ -3880,15 +3893,14 @@ gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spe
   : monk_heal_t( player, name, spell_data )
 {
   background = true;
-}
 
-double gift_of_the_ox_t::orb_t::action_multiplier() const
-{
-  double am = monk_heal_t::action_multiplier();
-  if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
-    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 ) ) *
-                    p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-  return am;
+  if ( const auto &effect = player->talent.monk.strength_of_spirit->effectN( 1 ); effect.ok() )
+    add_parse_entry( da_multiplier_effects )
+        .set_func( [ & ] { return p()->buff.expel_harm_accumulator->check(); } )
+        .set_value( effect.percent() )
+        .set_value_func( functions::missing_health_percentage_t( player ) )
+        .set_eff( &effect )
+        .set_note( "Missing Health Scaling" );
 }
 
 void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
@@ -4621,16 +4633,13 @@ struct niuzaos_resolve_t : buffs::monk_buff_t<>
       attack_power_mod.tick   = 0.0;
       base_tick_time          = timespan_t::zero();
       dot_duration            = timespan_t::zero();
-    }
 
-    double action_multiplier() const override
-    {
-      double am = monk_heal_t::action_multiplier();
-
-      double missing_health_percentage = 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 );
-      am *= 1.0 + missing_health_percentage * p()->talent.brewmaster.niuzaos_resolve->effectN( 1 ).percent();
-
-      return am;
+      if ( const auto &effect = player->talent.brewmaster.niuzaos_resolve->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_value( effect.percent() )
+            .set_value_func( functions::missing_health_percentage_t( player ) )
+            .set_eff( &effect )
+            .set_note( "Missing Health Scaling" );
     }
   };
 
@@ -5690,7 +5699,7 @@ void monk_t::create_buffs()
 
           // multiplier is not available in spell data :(
           if ( talent.brewmaster.zen_state->ok() )
-            stagger_rating *= 1.0 + 1.3 * ( 1.0 - current_health() );
+            stagger_rating *= functions::missing_health_percentage_t( this )( 1.3 );
 
           double k = dbc->armor_mitigation_constant( state->target->level() );
           k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
