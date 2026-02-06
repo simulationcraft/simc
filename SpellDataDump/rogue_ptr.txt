@@ -7486,6 +7486,7 @@ Description      : Finishing move that creates shadow clones of yourself. You an
 Variables        : $mult=${3}
 
 Name             : Secret Technique (id=280720) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -7496,7 +7497,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Mastery: Executioner (76808 effects: #1, #2), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#5), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #2, #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Symbols of Death (212283 effects: #1, #2, #4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Fatebound Coin (Heads) (456479 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Winning Streak! (1218143 effect#1), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Cold Blood (1264297 effect#1), Find Weakness (1264521 effect#2), Deep Cuts (1267216 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Improved Secret Technique (1279444 effect#1), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 32, 54
-Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Do Not Sheath (18), Not a Proc (105), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=738432)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2808 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)

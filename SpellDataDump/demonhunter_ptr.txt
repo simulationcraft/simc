@@ -6479,6 +6479,7 @@ Effects          :
 Description      : $@spelldesc275934
 
 Name             : Consume Magic (id=278326) [Spell Family (107)] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Chromatic
@@ -6498,7 +6499,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Targeted Enemy (6)
 #2 (id=733971)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Description      : Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $s2 Fury][].
+Description      : Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $1277738s1 Fury][].
 
 Name             : Demonic Wards (id=278386) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter

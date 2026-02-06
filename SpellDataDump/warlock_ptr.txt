@@ -3080,8 +3080,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Soul Link (108446), Soul Link (108447), Fel Synergy (389372)
                    Family Flags: 78
-#3 (id=1168508)  : Apply Aura (6) | Modify Base Attribute% (80)
+#3 (id=1168508)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Sta | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (2 -> 0), Misc Value 2 (0 -> 4)
 Description      : $s2% of all damage you take is taken by your demon pet instead. $?a137044[][
 
 While Grimoire of Sacrifice is active, your Stamina is increased by $s3%.]
@@ -20786,8 +20787,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126)
 Effects          :
-#1 (id=1282996)  : Apply Aura (6) | Modify Base Attribute% (80)
+#1 (id=1282996)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Gorefiend's Avarice (id=1270701) [Spell Family (5), Passive, Hidden] 
