@@ -213,6 +213,9 @@ public:
   // Mana Cascade expiration events
   std::vector<event_t*> mana_cascade_expiration;
 
+  // Fired Up expiration events
+  std::vector<event_t*> fired_up_expiration;
+
   // Events
   struct events_t
   {
@@ -294,6 +297,7 @@ public:
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* pyroclasm;
+    buff_t* fired_up_1;
 
 
     // Frost
@@ -906,6 +910,7 @@ public:
   bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
+  void trigger_fired_up();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -2448,6 +2453,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
+      p()->trigger_fired_up();
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
@@ -2459,6 +2465,8 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
       // but it hasn't been tested whether it can roll the random chance.
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
+      // TODO: Check if Pyromaniac also procs Fired Up
+      // p()->trigger_fired_up();
 
       assert( pyromaniac_action );
       // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
@@ -6310,8 +6318,23 @@ void mage_t::create_buffs()
   buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
+  // Naming this buff fired_up_1 to match the spell ID, but it is used for all 3 ranks of the talent
+  buffs.fired_up_1               = make_buff( this, "fired_up_1", find_spell( 1257343 ) )
+                                     ->set_default_value( talents.fired_up_1->effectN( 1 ).percent() ) //TODO: Dorovon Please check, not sure if I did this right
+                                     ->set_schools_from_effect( 1 )
+                                     ->set_chance( talents.fired_up_1.ok() );
+                                   ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                     {
+                                       if ( cur == 0 )
+                                       {
+                                         for ( auto e : fired_up_expiration )
+                                           event_t::cancel( e );
 
-
+                                         fired_up_expiration.clear();
+                                       }
+                                     } )
+                                   ->set_chance( talents.fired_up_1.ok() );
+  
   // Frost
   buffs.brain_freeze       = make_buff( this, "brain_freeze", find_spell( 190446 ) );
   buffs.comet_storm        = make_buff( this, "comet_storm", find_spell( 1247778 ) )
@@ -6706,6 +6729,7 @@ void mage_t::reset()
   player_t::reset();
 
   buff_queue.clear();
+  fired_up_expiration.clear();
   mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
@@ -7041,6 +7065,28 @@ void mage_t::trigger_mana_cascade()
     else
       trigger_buff();
   }
+}
+
+void mage_t::trigger_fired_up()
+{
+  if ( !talents.fired_up_1.ok() )
+    return;
+
+  int stacks = 1;
+  // TODO: If fired_up_2, need to reduce Fire Blast cooldown by 2.5 per talent point.
+  // TODO: If fired_up_3, need to extend Combustion one second and modify the proc chance for trigger_fired_up accordingly.
+  // Was never able to cap in tests, but there must be a cap
+  auto trigger_buff = [ this, s = std::min( buffs.fired_up_1->max_stack() - buffs.fired_up_1->check(), stacks ) ]
+  {
+    buffs.fired_up_1->trigger( s );
+    fired_up_expiration.push_back( make_event( *sim, buffs.fired_up_1->buff_duration(), [ this, s ]
+    {
+      fired_up_expiration.erase( fired_up_expiration.begin() );
+      buffs.fired_up_1->decrement( s );
+    } ) );
+  };
+
+
 }
 
 void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
