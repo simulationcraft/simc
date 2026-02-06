@@ -6319,8 +6319,9 @@ void mage_t::create_buffs()
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
   // Naming this buff fired_up_1 to match the spell ID, but it is used for all 3 ranks of the talent
-  buffs.fired_up_1               = make_buff( this, "fired_up_1", find_spell( 1257343 ) )
+  buffs.fired_up_1               = make_buff( this, "fired_up_1", find_spell( 1257350 ) )
                                      ->set_default_value( talents.fired_up_1->effectN( 1 ).percent() ) //TODO: Dorovon Please check, not sure if I did this right
+                                     ->set_default_value_from_effect( 1 )
                                      ->set_schools_from_effect( 1 )
                                      ->set_chance( talents.fired_up_1.ok() );
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -6671,6 +6672,15 @@ double mage_t::composite_player_multiplier( school_e school ) const
   if ( buffs.enlightened->check() && buffs.enlightened->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened->check_value() * buffs.enlightened->data().effectN( 2 ).percent();
 
+  if ( school == SCHOOL_FIRE ) // note to self: via Degen, remove comment later
+  {
+    if ( talents.fired_up_2.ok() )
+      m *= 1.0 + talents.fired_up_2->effectN( 2 ).percent();
+  }
+
+  if ( buffs.fired_up && buffs.fired_up->has_common_school( school ) )
+    m *= 1.0 + buffs.fired_up->check_stack_value();
+  
   return m;
 }
 
