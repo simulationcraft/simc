@@ -7084,15 +7084,16 @@ void mage_t::trigger_fired_up()
   // via Degen
   double proc_chance = talents.fired_up_1->effectN( 1 ).percent();
   // TODO: Update placeholder whenever we have data, will need to add a decrementing chance
-  // Combustion set proc chance +15 (35%)
-  // Each proc reduces it back down to 20%
-  constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1.0;
+  // Combustion set proc chance +15% or * 1.75 (35%) 
+  // Remove 0.05 each proc to account for 1% chance
+  constexpr double FIRED_UP_COMBUSTION_PROC_MULT = 1.75;
 
   if ( buffs.combustion->up() )
     proc_chance *= FIRED_UP_COMBUSTION_PROC_MULT;
     proc_chance = std::min( proc_chance, 1.0 );
 
   if ( !rng().roll( proc_chance ) )
+    FIRED_UP_COMBUSTION_PROC_MULT = FIRED_UP_COMBUSTION_PROC_MULT - 0.05; // Each proc reduces it 1% back down to 20% 
     return;
 
   buffs.fired_up->trigger();
