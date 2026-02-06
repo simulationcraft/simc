@@ -489,8 +489,13 @@ struct vital_flame_t : public monk_heal_t
     background      = true;
     proc            = true;
     target          = player;
-    may_crit        = false;
     base_multiplier = player->talent.brewmaster.vital_flame->effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    monk_heal_t::init();
+    update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
   }
 };
 
