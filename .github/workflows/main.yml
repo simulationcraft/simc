@@ -24,7 +24,7 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      do-test: ${{ github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' ) }}
+      do-test: ${{ github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch }}
 
   environment-configuration-info:
     runs-on: ubuntu-22.04
@@ -35,7 +35,7 @@ jobs:
 
   spec-test:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
+    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -43,7 +43,7 @@ jobs:
 
   spec-test-ptr:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
+    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -51,11 +51,11 @@ jobs:
 
   ubuntu-test:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
+    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/ubuntu_test.yml
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
     needs: [build, spec-test]
-    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && ( github.base_ref == '' && github.head_ref == '' )
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml
