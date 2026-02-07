@@ -15,11 +15,16 @@ env:
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_GENERATION: 0 # bump if you need to "clean" ccache
 
+# Most CI jobs only run if you are either:
+# - committing PR against default_branch
+# - committing or merging into default_branch
+# If PR CI is desired for other branches, chain additional `|| github.base_ref == 'branch name'`
+
 jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      do-test: ${{ github.base_ref == github.event.repository.default_branchy || github.base_ref == 'midnight' }}
+      do-test: ${{ github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' ) }}
 
   environment-configuration-info:
     runs-on: ubuntu-22.04
@@ -30,7 +35,7 @@ jobs:
 
   spec-test:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
+    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -38,7 +43,7 @@ jobs:
 
   spec-test-ptr:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch
+    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -46,11 +51,11 @@ jobs:
 
   ubuntu-test:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || github.base_ref == 'midnight'
+    if: github.base_ref == github.event.repository.default_branch || ( github.base_ref == '' && github.head_ref == '' )
     uses: ./.github/workflows/ubuntu_test.yml
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
     needs: [build, spec-test]
-    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.base_ref == github.event.repository.default_branch
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && ( github.base_ref == '' && github.head_ref == '' )
     uses: ./.github/workflows/generate_files.yml
