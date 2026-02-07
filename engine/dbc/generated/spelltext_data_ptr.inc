@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.65701
-static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.1.65769
+static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28123,8 +28123,6 @@ static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
-  { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
-  { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28604,8 +28602,8 @@ static constexpr std::array<spelltext_data_t, 28602> __ptr_spelltext_data { {
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.65701
-static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 12.0.1.65769
+static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __ptr_spelltext_hotfix_data { {
   {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
   {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
   {  196926,  0, "Crusader Strike reduces the cooldown of Holy Shock and Judgment by ${$m2/-1000}.1 sec.", "Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec and Crusader Strike reduces the cooldown of Judgment by ${$m2/-1000}.1 sec." },
@@ -28616,10 +28614,9 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __ptr_spelltext_h
   { 1245523,  1, "Your Veilpierce is replaced with Reaper's Toll.", "Pierce the Veil is replaced with Reaper's Toll." },
   { 1259431,  0, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path." },
   { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
-  { 1269459,  0, "Combine $s2 Weak Glimmerline to create a Weak Glimmerline.", "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline." },
 } };
 
-// Spell description variables, wow build 12.0.1.65701
+// Spell description variables, wow build 12.0.1.65769
 static constexpr std::array<spelldesc_vars_data_t, 692> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29315,7 +29312,7 @@ static constexpr std::array<spelldesc_vars_data_t, 692> __ptr_spelldesc_vars_dat
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.65701
+// spelldesc_vars hotfix entries, wow build 12.0.1.65769
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

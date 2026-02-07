@@ -290,6 +290,7 @@ public:
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
     buff_t* fiery_rush;
+    buff_t* fired_up;
     buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
@@ -906,6 +907,7 @@ public:
   bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
+  void trigger_fired_up();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -2445,6 +2447,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
+      p()->trigger_fired_up();
 
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
@@ -6302,6 +6305,11 @@ void mage_t::create_buffs()
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
+  buffs.fired_up                 = make_buff( this, "fired_up", find_spell( 1257350 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                     ->set_chance( talents.fired_up_1.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
                                      ->set_default_value_from_effect( 3 )
                                      ->set_trigger_spell( talents.heat_shimmer );
@@ -6647,6 +6655,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.enlightened->check() && buffs.enlightened->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened->check_value() * buffs.enlightened->data().effectN( 2 ).percent();
+
+  if ( buffs.fired_up->has_common_school( school ) )
+    m *= 1.0 + buffs.fired_up->check_stack_value();
 
   return m;
 }
@@ -7013,6 +7024,7 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     buffs.glacial_spike->trigger();
 }
 
+// TODO: Does this still have bugs with Pyromaniac, or can it just be buff_stack_behavior::ASYNCHRONOUS now?
 void mage_t::trigger_mana_cascade()
 {
   if ( !talents.mana_cascade.ok() )
@@ -7040,6 +7052,23 @@ void mage_t::trigger_mana_cascade()
       make_event( *sim, trigger_buff );
     else
       trigger_buff();
+  }
+}
+
+void mage_t::trigger_fired_up()
+{
+  if ( !talents.fired_up_1.ok() )
+    return;
+
+  // TODO: add Combustion bonus chance from Rank 4
+  // TODO: check if this is really a flat chance or if there is something more complicated here.
+  double chance = talents.fired_up_1->effectN( 1 ).percent();
+
+  if ( rng().roll( chance ) )
+  {
+    buffs.fired_up->trigger();
+    cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
+    buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
   }
 }
 

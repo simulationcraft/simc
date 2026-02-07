@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65769 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -13720,8 +13720,9 @@ Labels           : 16: Class Spells
                  : 6314: Honed Aggression (371038 effect#2)
 Attributes       : Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1140381)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
+#1 (id=1140381)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.4 -> 1), Attribute (2048 -> 0)
 Description      : $@spelldesc444088
 
 Name             : Fire Breath (desc=Red) (id=444249) [Spell Family (224)] 

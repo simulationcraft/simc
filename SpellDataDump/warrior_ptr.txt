@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65769 midnight-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65769 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -16224,12 +16224,12 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Pyroblast (11366), Pyroblast (460475), Pyroblast (1262863)
                    Family Flags: 22
-Hotfixed         : Base Value (5 -> 3)
+Hotfixed         : Base Value (8 -> 3)
 #2 (id=1261871)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Flamestrike (460476), Flamestrike (1254851)
                    Family Flags: 2
-Hotfixed         : Base Value (5 -> 3)
+Hotfixed         : Base Value (8 -> 3)
 #3 (id=1261872)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
