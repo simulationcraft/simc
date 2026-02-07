@@ -6288,7 +6288,7 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion               = make_buff<buffs::combustion_t>( this );
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
-                                     ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
+                                     ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_cooldown( find_spell( 383391 )->internal_cooldown() )
