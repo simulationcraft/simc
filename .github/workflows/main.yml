@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Report Environment Configuration Information
         run: |
-          echo "${{github.event.repository.default_branch}} ${{github.base_ref}} ${{github.sha}}"
+          echo "${{github.event.repository.default_branch}} ${{github.base_ref}} ${{github.head_ref}} ${{github.sha}}"
 
   spec-test:
     needs: [build]
