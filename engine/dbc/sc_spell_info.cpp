@@ -946,7 +946,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::
   {  449, "Reagent Consumes Charges"                                             },
   {  451, "Hide Passive From Tooltip"                                            },
   {  468, "Private Aura"                                                         },
-  {  491, "Important Spell"                                                      },
+  {  491, "Important Spell (C_Spell.IsSpellImportant)"                           },
   {  506, "Non-secret Aura"                                                      },
   {  511, "Non-secret Spell"                                                     },
 } );
