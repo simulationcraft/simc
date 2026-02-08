@@ -517,7 +517,6 @@ public:
     // Windwalker
     propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> combo_breaker;
-    propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
@@ -891,8 +890,6 @@ public:
       player_talent_t brawlers_intensity;
       // Row 6
       player_talent_t jade_ignition;
-      const spell_data_t *chi_energy_buff;
-      const spell_data_t *chi_explosion;
       player_talent_t cyclones_drift;
       player_talent_t crashing_fists;
       player_talent_t drinking_horn_cover;

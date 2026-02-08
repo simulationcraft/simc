@@ -1307,88 +1307,77 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   }
 };
 
-// Jade Ignition Talent
-struct chi_explosion_t : public monk_spell_t
-{
-  chi_explosion_t( monk_t *player ) : monk_spell_t( player, "chi_explosion", player->talent.windwalker.chi_explosion )
-  {
-    dual = background = true;
-    aoe               = -1;
-    school            = SCHOOL_NATURE;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    // TODO: convert to parse_effects manually
-    am *= 1 + p()->buff.chi_energy->check_stack_value();
-
-    return am;
-  }
-};
-
-struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
-{
-  sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
-    : charred_passions_t<monk_melee_attack_t>( p, name, data )
-  {
-    ww_mastery = true;
-
-    dual = background   = true;
-    aoe                 = -1;
-    reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-    ap_type             = attack_power_type::WEAPON_BOTH;
-  }
-
-  result_amount_type report_amount_type( const action_state_t * ) const override
-  {
-    return result_amount_type::DMG_DIRECT;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    p()->buff.shuffle->trigger(
-        timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
-  }
-};
-
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
-  chi_explosion_t *chi_x;
+  struct tick_t : charred_passions_t<monk_melee_attack_t>
+  {
+    tick_t( monk_t *player, std::string_view name, const spell_data_t *data )
+      : charred_passions_t<monk_melee_attack_t>( player, name, data )
+    {
+      dual = background   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = player->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
+      ww_mastery          = true;
+      ap_type             = attack_power_type::WEAPON_BOTH;
+    }
 
-  spinning_crane_kick_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "spinning_crane_kick",
-                           ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.spinning_crane_kick
-                                                                    : p->baseline.monk.spinning_crane_kick ) ),
-      chi_x( nullptr )
+    result_amount_type report_amount_type( const action_state_t * ) const override
+    {
+      return result_amount_type::DMG_DIRECT;
+    }
+
+    void execute() override
+    {
+      monk_melee_attack_t::execute();
+
+      p()->buff.shuffle->trigger(
+          timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
+    }
+  };
+
+  struct jade_ignition_t : monk_spell_t
+  {
+    jade_ignition_t( monk_t *player )
+      : monk_spell_t( player, "chi_explosion", player->talent.windwalker.jade_ignition->effectN( 1 ).trigger() )
+    {
+      dual = background = true;
+      aoe               = -1;
+    }
+  };
+
+  action_t *jade_ignition;
+
+  spinning_crane_kick_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t(
+          player, "spinning_crane_kick",
+          ( player->specialization() == MONK_BREWMASTER ? player->baseline.brewmaster.spinning_crane_kick
+                                                        : player->baseline.monk.spinning_crane_kick ) ),
+      jade_ignition( nullptr )
   {
     parse_options( options_str );
 
     may_combo_strike = true;
     tick_zero        = true;
-    tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    tick_action      = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
     add_child( tick_action );
 
-    interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
-    if ( p->specialization() == MONK_BREWMASTER )
+    interrupt_auto_attack = player->specialization() != MONK_WINDWALKER;
+    if ( player->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
     }
 
-    if ( p->specialization() == MONK_WINDWALKER )
+    if ( player->specialization() == MONK_WINDWALKER )
     {
       channeled    = true;
       dot_behavior = DOT_CLIP;
     }
 
-    if ( p->talent.windwalker.jade_ignition->ok() )
+    if ( player->talent.windwalker.jade_ignition->ok() )
     {
-      chi_x = new chi_explosion_t( p );
-      add_child( chi_x );
+      jade_ignition = new jade_ignition_t( player );
+      add_child( jade_ignition );
     }
   }
 
@@ -1427,15 +1416,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
 
-    if ( chi_x && p()->buff.chi_energy->up() )
-      chi_x->execute();
-  }
-
-  void last_tick( dot_t *dot ) override
-  {
-    monk_melee_attack_t::last_tick( dot );
-
-    p()->buff.chi_energy->expire();
+    if ( jade_ignition )
+      jade_ignition->execute();
   }
 };
 
@@ -5308,8 +5290,6 @@ void monk_t::init_spells()
     talent.windwalker.hit_combo_buff                           = find_spell( 196741 );
     talent.windwalker.brawlers_intensity                       = _ST( "Brawler's Intensity" );
     talent.windwalker.jade_ignition                            = _ST( "Jade Ignition" );
-    talent.windwalker.chi_energy_buff                          = find_spell( 393057 );
-    talent.windwalker.chi_explosion                            = find_spell( 393056 );
     talent.windwalker.cyclones_drift                           = _ST( "Cyclone's Drift" );
     talent.windwalker.crashing_fists                           = _ST( "Crashing Fists" );
     talent.windwalker.drinking_horn_cover                      = _ST( "Drinking Horn Cover" );
@@ -5834,10 +5814,6 @@ void monk_t::create_buffs()
                            ->set_chance( !talent.windwalker.combo_breaker->ok()
                                              ? 1.0
                                              : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
-
-  buff.chi_energy =
-      make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", talent.windwalker.chi_energy_buff )
-          ->set_default_value_from_effect( 1 );
 
   buff.combo_strikes =
       make_buff_fallback( baseline.windwalker.mastery->ok(), this, "combo_strikes" )
