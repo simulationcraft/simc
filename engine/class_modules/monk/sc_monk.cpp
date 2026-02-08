@@ -808,7 +808,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
       p()->proc.blackout_combo_tiger_palm->occur();
 
     if ( p()->buff.courage_of_the_white_tiger->up() )
-      p()->action.courage_of_the_white_tiger.celestial->execute();
+      p()->action.courage_of_the_white_tiger.celestial->base();
 
     base_t::execute();
 
@@ -3222,16 +3222,14 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
 
     void execute() override
     {
-      monk_melee_attack_t::execute();
-
       if ( source == BASE )
       {
         p()->buff.strength_of_the_black_ox->trigger();
         p()->buff.inner_compass_tiger_stance->trigger();
+        p()->buff.courage_of_the_white_tiger->expire();
       }
 
-      if ( source == CELESTIAL )
-        p()->buff.courage_of_the_white_tiger->expire();
+      monk_melee_attack_t::execute();
     }
 
     void impact( action_state_t *state ) override
@@ -3308,19 +3306,21 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
     CELESTIAL
   };
 
-  template <sotbo_source_e source_effect>
+  sotbo_source_e source;
+
   struct impact_t : monk_spell_t
   {
-    impact_t( monk_t *player )
+    impact_t( monk_t *player, sotbo_source_e source )
       : monk_spell_t( player, fmt::format( "strength_of_the_black_ox_damage{}", BASE ? "" : "_celestial" ),
-                      player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
+                      player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage ),
+        source( source )
     {
       background = true;
       aoe        = -1;
       reduced_aoe_targets =
           player->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
 
-      if ( source_effect == CELESTIAL )
+      if ( source == CELESTIAL )
         if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
              effect.ok() )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
@@ -3328,9 +3328,7 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 
     void execute() override
     {
-      monk_spell_t::execute();
-
-      if constexpr ( source_effect == BASE )
+      if ( source == BASE )
       {
         if ( !p()->buff.strength_of_the_black_ox->up() )
           return;
@@ -3339,6 +3337,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
         p()->buff.inner_compass_ox_stance->trigger();
       }
 
+      monk_spell_t::execute();
+
       p()->buff.teachings_of_the_monastery->trigger(
           as<int>( p()->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
     }
@@ -3346,8 +3346,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 
   strength_of_the_black_ox_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
-    base      = new impact_t<BASE>( player );
-    celestial = new impact_t<CELESTIAL>( player );
+    base      = new impact_t( player, BASE );
+    celestial = new impact_t( player, CELESTIAL );
   }
 };
 
