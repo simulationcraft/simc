@@ -55,6 +55,20 @@ struct niuzao_pet_t : public monk_pet_t
 }  // namespace niuzao
 }  // namespace pets
 
+namespace functions
+{
+struct missing_health_percentage_t
+{
+  monk_t *player;
+
+  missing_health_percentage_t( monk_t *player ) : player( player )
+  {
+  }
+
+  double operator()( double base ) const;
+};
+}  // namespace functions
+
 namespace actions
 {
 template <class Base>
@@ -1114,6 +1128,15 @@ public:
     int chi_burst_healing_targets;
     int shado_pan_initial_charge_accumulator;
   } user_options;
+
+  struct functions_t
+  {
+    functions::missing_health_percentage_t missing_health_percentage;
+
+    functions_t( monk_t *p ) : missing_health_percentage( p )
+    {
+    }
+  } functions;
 
 public:
   monk_t( sim_t *sim, std::string_view name, race_e r );
