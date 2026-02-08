@@ -808,7 +808,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
       p()->proc.blackout_combo_tiger_palm->occur();
 
     if ( p()->buff.courage_of_the_white_tiger->up() )
-      p()->action.courage_of_the_white_tiger.base->execute();
+      p()->action.courage_of_the_white_tiger.celestial->execute();
 
     base_t::execute();
 
@@ -3193,7 +3193,6 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
   {
     struct heal_t : monk_heal_t
     {
-      template <typename... Args>
       heal_t( monk_t *player, std::string_view name )
         : monk_heal_t( player, fmt::format( "{}_heal", name ),
                        player->talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal )
@@ -3229,8 +3228,10 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
       {
         p()->buff.strength_of_the_black_ox->trigger();
         p()->buff.inner_compass_tiger_stance->trigger();
-        p()->buff.courage_of_the_white_tiger->expire();
       }
+
+      if ( source == CELESTIAL )
+        p()->buff.courage_of_the_white_tiger->expire();
     }
 
     void impact( action_state_t *state ) override
@@ -3319,7 +3320,7 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
       reduced_aoe_targets =
           player->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
 
-      if constexpr ( source_effect == CELESTIAL )
+      if ( source_effect == CELESTIAL )
         if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
              effect.ok() )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
@@ -3405,7 +3406,7 @@ struct celestial_conduit_t : public monk_spell_t
   struct tick_action_t : TBase
   {
     tick_action_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, name, spell_data )
+      : TBase( player, fmt::format( "celestial_conduit_{}", name ), spell_data )
     {
       TBase::background = true;
 
@@ -3425,12 +3426,13 @@ struct celestial_conduit_t : public monk_spell_t
       double cam = TBase::composite_aoe_multiplier( state );
 
       if ( state->n_targets )
-        cam *=
-            1 +
-            ( TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
-              std::min(
-                  as<double>( state->n_targets ),
-                  TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
+      {
+        double target_scalar = std::min(
+            as<double>( state->n_targets ),
+            TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() );
+        cam *= 1.0 + TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
+                         target_scalar;
+      }
 
       return cam;
     }
@@ -3441,9 +3443,9 @@ struct celestial_conduit_t : public monk_spell_t
 
   celestial_conduit_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "celestial_conduit", player->talent.conduit_of_the_celestials.celestial_conduit_action ),
-      damage( new tick_action_t<monk_spell_t>( player, "celestial_conduit_damage",
+      damage( new tick_action_t<monk_spell_t>( player, "damage",
                                                player->talent.conduit_of_the_celestials.celestial_conduit_damage ) ),
-      heal( new tick_action_t<monk_heal_t>( player, "celestial_conduit_heal",
+      heal( new tick_action_t<monk_heal_t>( player, "heal",
                                             player->talent.conduit_of_the_celestials.celestial_conduit_heal ) )
   {
     parse_options( options_str );
@@ -3457,8 +3459,7 @@ struct celestial_conduit_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->talent.conduit_of_the_celestials.celestial_conduit->ok() && p()->buff.celestial_conduit->check() &&
-           monk_spell_t::ready();
+    return p()->buff.celestial_conduit->check() && monk_spell_t::ready();
   }
 
   bool usable_moving() const override
@@ -6239,7 +6240,6 @@ void monk_t::init_special_effects()
                                                        state->action->id != action.empowered_tiger_lightning->id;
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          action.flurry_of_xuen->set_target( state->target );
           buff.flurry_of_xuen->trigger();
         } );
 
