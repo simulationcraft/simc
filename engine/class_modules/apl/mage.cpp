@@ -120,7 +120,7 @@ void fire( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* ff_combustion = p->get_action_priority_list( "ff_combustion" );
-  action_priority_list_t* ff_execute = p->get_action_priority_list( "ff_execute" );
+  action_priority_list_t* fireblast = p->get_action_priority_list( "fireblast" );
   action_priority_list_t* ff_filler = p->get_action_priority_list( "ff_filler" );
   action_priority_list_t* sf_combustion = p->get_action_priority_list( "sf_combustion" );
   action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" );
@@ -128,18 +128,19 @@ void fire( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
   precombat->add_action( "variable,name=pooling_time,value=10*gcd.max" );
-  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=2" );
-  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=2" );
-  precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=2" );
-  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=2" );
+  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=3" );
+  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=3" );
+  precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=3" );
+  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=3" );
+  precombat->add_action( "variable,name=firestarter_delay,if=talent.firestarter,value=18" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "frostfire_bolt,if=talent.frostfire_bolt" );
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready)" );
-  default_->add_action( "run_action_list,name=sf_combustion,if=cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready" );
+  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((!talent.firestarter|time>=variable.firestarter_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))" );
+  default_->add_action( "run_action_list,name=sf_combustion,if=!talent.frostfire_bolt&((!talent.firestarter|time>=variable.firestarter_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))" );
   default_->add_action( "run_action_list,name=ff_filler,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=sf_filler" );
 
@@ -153,66 +154,56 @@ void fire( player_t* p )
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(buff.combustion.remains>6|fight_remains<25)" );
 
   ff_combustion->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)" );
-  ff_combustion->add_action( "run_action_list,name=ff_execute,if=target.health.pct<=30&active_enemies<variable.ff_combustion_flamestrike+1" );
-  ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&!action.fireball.executing&!action.pyroblast.executing&!buff.hot_streak.react&gcd.remains&gcd.remains<gcd.max&(hot_streak_spells_in_flight+buff.heating_up.react)<2" );
-  ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&(action.pyroblast.executing&action.pyroblast.execute_remains<0.5|action.flamestrike.executing&action.flamestrike.execute_remains<0.5)" );
-  ff_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5" );
   ff_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down&active_enemies>=variable.ff_combustion_flamestrike" );
   ff_combustion->add_action( "pyroblast,if=buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down" );
   ff_combustion->add_action( "fireball,if=buff.combustion.down" );
-  ff_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<6)|(!talent.burnout&buff.combustion.remains>2)" );
+  ff_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<8)|(!talent.burnout&buff.combustion.remains>2)" );
   ff_combustion->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.ff_combustion_flamestrike" );
   ff_combustion->add_action( "pyroblast,if=buff.hot_streak.react" );
   ff_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&cast_time>buff.combustion.remains&active_enemies>=variable.ff_combustion_flamestrike" );
   ff_combustion->add_action( "pyroblast,if=buff.pyroclasm.up&cast_time>buff.combustion.remains" );
   ff_combustion->add_action( "scorch,if=buff.heat_shimmer.react" );
   ff_combustion->add_action( "fireball" );
+  ff_combustion->add_action( "call_action_list,name=fireblast" );
 
-  ff_execute->add_action( "combustion,use_off_gcd=1,use_while_casting=1" );
-  ff_execute->add_action( "meteor" );
-  ff_execute->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1" );
-  ff_execute->add_action( "flamestrike,if=buff.hot_streak.react&buff.combustion.up&active_enemies>=variable.ff_combustion_flamestrike" );
-  ff_execute->add_action( "pyroblast,if=buff.hot_streak.react&buff.combustion.up" );
-  ff_execute->add_action( "flamestrike,if=buff.pyroclasm.up&cast_time>buff.combustion.remains&active_enemies>=variable.ff_combustion_flamestrike" );
-  ff_execute->add_action( "pyroblast,if=buff.pyroclasm.up&cast_time>buff.combustion.remains" );
-  ff_execute->add_action( "fireball" );
-
-  ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5&cooldown.combustion.remains>variable.pooling_time" );
-  ff_filler->add_action( "run_action_list,name=ff_execute,if=target.health.pct<=30&active_enemies<variable.ff_filler_flamestrike+1" );
-  ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.heating_up.react&action.pyroblast.executing&action.pyroblast.execute_remains<0.5" );
-  ff_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(hot_streak_spells_in_flight+buff.heating_up.react<2)&gcd.remains<gcd.max&cooldown.combustion.remains>variable.pooling_time" );
-  ff_filler->add_action( "meteor" );
-  ff_filler->add_action( "flamestrike,if=(buff.hot_streak.react|buff.pyroclasm.up)&active_enemies>=variable.ff_filler_flamestrike" );
-  ff_filler->add_action( "pyroblast,if=buff.hot_streak.react|buff.pyroclasm.up" );
-  ff_filler->add_action( "scorch,if=buff.heat_shimmer.react" );
+  ff_filler->add_action( "meteor,if=!talent.firestarter|time>=variable.firestarter_delay" );
+  ff_filler->add_action( "flamestrike,if=active_enemies>=variable.ff_filler_flamestrike&(buff.hot_streak.react)" );
+  ff_filler->add_action( "flamestrike,if=active_enemies>=variable.ff_filler_flamestrike&(buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2)" );
+  ff_filler->add_action( "pyroblast,if=buff.hot_streak.react" );
+  ff_filler->add_action( "pyroblast,if=buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2" );
   ff_filler->add_action( "fireball" );
+  ff_filler->add_action( "call_action_list,name=fireblast" );
+
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct>=30|buff.combustion.up|!talent.scorch)&(hot_streak_spells_in_flight+buff.heating_up.react=0&cooldown.fire_blast.charges_fractional>1.95)&gcd.remains<gcd.max&cooldown.combustion.remains>(variable.pooling_time+5)" );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct>=30|buff.combustion.up|!talent.scorch)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max&cooldown.combustion.remains>variable.pooling_time" );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct<30&talent.scorch)&(hot_streak_spells_in_flight+buff.heating_up.react=0)&action.scorch.executing&buff.heat_shimmer.down&gcd.remains<gcd.max&cooldown.combustion.remains>variable.pooling_time" );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct<30&talent.scorch)&(hot_streak_spells_in_flight=0&buff.heating_up.react)&prev_gcd.1.pyroblast&buff.heat_shimmer.down&gcd.remains<gcd.max&cooldown.combustion.remains>variable.pooling_time" );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&talent.firestarter&action.fireball.executing&variable.firestarter_delay-time>=10-(5*(cooldown.fire_blast.charges_fractional>=2))" );
 
   sf_combustion->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)|action.flamestrike.executing&(action.flamestrike.execute_remains<variable.cast_remains_time)" );
-  sf_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&!action.fireball.executing&!action.pyroblast.executing&!action.flamestrike.executing&!buff.hot_streak.react&gcd.remains&gcd.remains<gcd.max&(!talent.glorious_incandescence|buff.glorious_incandescence.up|charges_fractional>1.5|buff.combustion.remains<(gcd.max*charges))&(hot_streak_spells_in_flight+buff.heating_up.react)<2" );
-  sf_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&(action.pyroblast.executing&action.pyroblast.execute_remains<0.5|action.flamestrike.executing&action.flamestrike.execute_remains<0.5)" );
-  sf_combustion->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.combustion.up&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5" );
   sf_combustion->add_action( "flamestrike,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up&active_enemies>=variable.sf_combustion_flamestrike" );
   sf_combustion->add_action( "pyroblast,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up" );
   sf_combustion->add_action( "fireball,if=buff.combustion.down" );
-  sf_combustion->add_action( "meteor" );
-  sf_combustion->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.sf_combustion_flamestrike" );
+  sf_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<8)|(!talent.burnout&buff.combustion.remains>2)" );
+  sf_combustion->add_action( "flamestrike,if=(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react|(buff.pyroclasm.up&cooldown.combustion.remains>12)|buff.pyroclasm.stack>1)&active_enemies>=variable.sf_combustion_flamestrike" );
   sf_combustion->add_action( "flamestrike,if=buff.pyroclasm.up&!buff.hot_streak.up&cast_time>buff.combustion.remains&active_enemies>=variable.sf_combustion_flamestrike" );
   sf_combustion->add_action( "pyroblast,if=buff.hot_streak.react" );
   sf_combustion->add_action( "pyroblast,if=buff.pyroclasm.up&!buff.hot_streak.up&cast_time>buff.combustion.remains" );
   sf_combustion->add_action( "scorch,if=scorch_execute.active|buff.heat_shimmer.react" );
   sf_combustion->add_action( "fireball" );
+  sf_combustion->add_action( "call_action_list,name=fireblast" );
 
-  sf_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&buff.heating_up.react&action.fireball.executing&action.fireball.execute_remains<0.5&cooldown.combustion.remains>variable.pooling_time" );
-  sf_filler->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(hot_streak_spells_in_flight+buff.heating_up.react<2)&buff.hyperthermia.up&gcd.remains<gcd.max&(!talent.glorious_incandescence|buff.glorious_incandescence.up|charges_fractional>1.5|buff.hyperthermia.remains<(gcd.max*charges))&cooldown.combustion.remains>variable.pooling_time" );
-  sf_filler->add_action( "flamestrike,if=buff.hyperthermia.up&active_enemies>=variable.sf_filler_flamestrike" );
-  sf_filler->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.sf_filler_flamestrike" );
-  sf_filler->add_action( "flamestrike,if=buff.pyroclasm.up&active_enemies>=variable.sf_filler_flamestrike" );
+  sf_filler->add_action( "flamestrike,if=active_enemies>=variable.sf_filler_flamestrike&(buff.hyperthermia.up)" );
+  sf_filler->add_action( "flamestrike,if=active_enemies>=variable.sf_filler_flamestrike&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2)" );
+  sf_filler->add_action( "flamestrike,if=active_enemies>=variable.sf_filler_flamestrike&(buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2)" );
   sf_filler->add_action( "pyroblast,if=buff.hyperthermia.up" );
-  sf_filler->add_action( "pyroblast,if=buff.hot_streak.react|(buff.pyroclasm.up&cooldown.combustion.remains>12)|buff.pyroclasm.stack>1" );
+  sf_filler->add_action( "pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2" );
+  sf_filler->add_action( "pyroblast,if=buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2" );
   sf_filler->add_action( "meteor,if=talent.blast_zone" );
   sf_filler->add_action( "meteor,if=!talent.blast_zone&talent.sunfury_execution&cooldown.combustion.remains<12&buff.pyroclasm.stack<2" );
-  sf_filler->add_action( "scorch,if=buff.heat_shimmer.react" );
+  sf_filler->add_action( "scorch,if=buff.heat_shimmer.react|talent.scald&target.health.pct<30" );
   sf_filler->add_action( "fireball" );
+  sf_filler->add_action( "call_action_list,name=fireblast" );
 }
 //fire_apl_end
 
