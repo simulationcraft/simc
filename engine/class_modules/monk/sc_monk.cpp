@@ -3419,19 +3419,31 @@ struct celestial_conduit_t : public monk_spell_t
 
       if constexpr ( std::is_same_v<TBase, monk_heal_t> )
         TBase::target = player;
+
+      if ( const auto &effect = player->conduit_of_the_celestials.path_of_the_falling_star->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_func( [] { return false; } )
+            .set_value( effect.percent() )
+            .set_eff( &effect )
+            .set_note( "Target Count Scaling" );
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
     {
       double cam = TBase::composite_aoe_multiplier( state );
 
-      if ( state->n_targets )
+      if ( player_talent_t &talent = TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action;
+           state->n_targets && talent->ok() )
       {
-        double target_scalar = std::min(
-            as<double>( state->n_targets ),
-            TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() );
-        cam *= 1.0 + TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
-                         target_scalar;
+        double target_scalar = std::min( as<double>( state->n_targets ), talent->effectN( 3 ).base_value() );
+        cam *= 1.0 + talent->effectN( 1 ).percent() * target_scalar;
+      }
+
+      if ( player_talent_t &talent = p()->talent.conduit_of_the_celestials.path_of_the_falling_star; talent->ok() )
+      {
+        double multiplier =
+            std::max( 0.0, talent->effectN( 1 ).percent() - state->n_targets * talent->effectN( 2 ).percent() );
+        cam *= 1.0 + multiplier;
       }
 
       return cam;
