@@ -6252,7 +6252,7 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->set_affects_regen( true )
                                       ->set_expire_callback( [ this ] ( buff_t*, int, timespan_t )
-                                        { trigger_memory_of_alar(); } );
+                                        { if ( talents.memory_of_alar.ok() ) trigger_memory_of_alar(); } );
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
@@ -6283,7 +6283,7 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion               = make_buff<buffs::combustion_t>( this )
                                      ->set_expire_callback( [ this ] ( buff_t*, int, timespan_t )
-                                       { trigger_memory_of_alar(); } );
+                                       { if ( talents.memory_of_alar.ok() ) trigger_memory_of_alar(); } );
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
@@ -7069,9 +7069,6 @@ void mage_t::trigger_fired_up()
 void mage_t::trigger_memory_of_alar()
 {
   buffs.lesser_time_warp->trigger();
-
-  if ( !talents.memory_of_alar.ok() )
-    return;
 
   auto spec = specialization();
   auto buff = spec == MAGE_FIRE ? buffs.hyperthermia : buffs.arcane_soul;
