@@ -908,6 +908,7 @@ public:
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_fired_up();
+  void trigger_memory_of_alar();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -1256,17 +1257,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     mage_pet_t::demise();
 
     event_t::cancel( cast_event );
-
-    // TODO: Move all of this to Arcane Surge/Combustion expire; these effects happen even when
-    // not talented into Arcane Phoenix
-    o()->buffs.lesser_time_warp->trigger();
-
-    if ( !o()->talents.memory_of_alar.ok() )
-      return;
-
-    auto spec = o()->specialization();
-    auto buff = spec == MAGE_FIRE ? o()->buffs.hyperthermia : o()->buffs.arcane_soul;
-    buff->trigger( o()->talents.memory_of_alar->effectN( spec == MAGE_FIRE ? 2 : 1 ).time_value() );
   };
 
   void create_actions() override;
@@ -6260,7 +6250,9 @@ void mage_t::create_buffs()
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                       ->set_default_value_from_effect( 1 )
-                                      ->set_affects_regen( true );
+                                      ->set_affects_regen( true )
+                                      ->set_expire_callback( [ this ] ( buff_t*, int, timespan_t )
+                                        { trigger_memory_of_alar(); } );
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
@@ -6289,7 +6281,9 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion               = make_buff<buffs::combustion_t>( this );
+  buffs.combustion               = make_buff<buffs::combustion_t>( this )
+                                     ->set_expire_callback( [ this ] ( buff_t*, int, timespan_t )
+                                       { trigger_memory_of_alar(); } );
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
@@ -7070,6 +7064,18 @@ void mage_t::trigger_fired_up()
     cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
     buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
   }
+}
+
+void mage_t::trigger_memory_of_alar()
+{
+  buffs.lesser_time_warp->trigger();
+
+  if ( !talents.memory_of_alar.ok() )
+    return;
+
+  auto spec = specialization();
+  auto buff = spec == MAGE_FIRE ? buffs.hyperthermia : buffs.arcane_soul;
+  buff->trigger( talents.memory_of_alar->effectN( spec == MAGE_FIRE ? 2 : 1 ).time_value() );
 }
 
 void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
