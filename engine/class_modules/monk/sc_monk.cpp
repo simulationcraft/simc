@@ -1276,8 +1276,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      auto multiplier_fn = functions::missing_health_percentage_t( p() );
-      double m           = multiplier_fn( p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent() );
+      double m = functions::missing_health_percentage_t( p() )(
+          p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent() );
 
       p()->find_stagger( "Stagger" )
           ->purify_flat(
@@ -5831,8 +5831,9 @@ void monk_t::create_buffs()
   buff.combo_breaker = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "combo_breaker",
                                            talent.windwalker.combo_breaker_buff )
                            ->set_trigger_spell( talent.windwalker.combo_breaker )
-                           ->set_chance( !talent.windwalker.combo_breaker->ok() ? 1.0 
-                               : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
+                           ->set_chance( !talent.windwalker.combo_breaker->ok()
+                                             ? 1.0
+                                             : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", talent.windwalker.chi_energy_buff )
