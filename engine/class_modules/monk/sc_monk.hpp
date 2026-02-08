@@ -537,7 +537,6 @@ public:
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
-    propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
@@ -973,7 +972,6 @@ public:
       const spell_data_t *heart_of_the_jade_serpent_buff;
       // Row 3
       player_talent_t chijis_swiftness;
-      const spell_data_t *chijis_swiftness_buff;
       player_talent_t strength_of_the_black_ox;
       const spell_data_t *strength_of_the_black_ox_buff;
       const spell_data_t *strength_of_the_black_ox_absorb;

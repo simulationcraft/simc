@@ -5365,7 +5365,6 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent         = _HT( "Heart of the Jade Serpent" );
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff    = find_spell( 443421 );
     talent.conduit_of_the_celestials.chijis_swiftness                  = _HT( "Chi-Ji's Swiftness" );
-    talent.conduit_of_the_celestials.chijis_swiftness_buff             = find_spell( 443028 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox          = _HT( "Strength of the Black Ox" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_buff     = find_spell( 443112 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb   = find_spell( 443113 );
@@ -5890,10 +5889,6 @@ void monk_t::create_buffs()
   buff.celestial_conduit =
       make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this, "celestial_conduit",
                           talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).trigger() );
-
-  buff.chijis_swiftness =
-      make_buff_fallback( talent.conduit_of_the_celestials.chijis_swiftness->ok(), this, "chijis_swiftness",
-                          talent.conduit_of_the_celestials.chijis_swiftness_buff );
 
   buff.courage_of_the_white_tiger = make_buff_fallback(
       talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this, "courage_of_the_white_tiger",
