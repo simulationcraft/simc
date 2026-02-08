@@ -50,10 +50,19 @@ namespace monk
 {
 namespace functions
 {
-double missing_health_percentage_t::operator()( double base ) const
+struct missing_health_percentage_t
 {
-  return 1.0 + ( 1.0 - std::max( player->health_percentage() / 100.0, 0.0 ) ) * base;
-}
+  monk_t *player;
+
+  missing_health_percentage_t( monk_t *player ) : player( player )
+  {
+  }
+
+  double operator()( double base ) const
+  {
+    return 1.0 + ( 1.0 - std::max( player->health_percentage() / 100.0, 0.0 ) ) * base;
+  }
+};
 }  // namespace functions
 
 namespace actions
@@ -1267,7 +1276,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      auto multiplier_fn = p()->functions.missing_health_percentage;
+      auto multiplier_fn = functions::missing_health_percentage_t( p() );
       double m           = multiplier_fn( p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent() );
 
       p()->find_stagger( "Stagger" )
@@ -3587,7 +3596,7 @@ struct expel_harm_t : monk_heal_t
     if ( const auto &effect = player->talent.monk.strength_of_spirit->effectN( 1 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
           .set_value( effect.percent() )
-          .set_value_func( player->functions.missing_health_percentage )
+          .set_value_func( functions::missing_health_percentage_t( player ) )
           .set_eff( &effect )
           .set_note( "Missing Health Scaling" );
   }
@@ -3889,7 +3898,7 @@ gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spe
     add_parse_entry( da_multiplier_effects )
         .set_func( [ & ] { return p()->buff.expel_harm_accumulator->check(); } )
         .set_value( effect.percent() )
-        .set_value_func( player->functions.missing_health_percentage )
+        .set_value_func( functions::missing_health_percentage_t( player ) )
         .set_eff( &effect )
         .set_note( "Missing Health Scaling" );
 }
@@ -4628,7 +4637,7 @@ struct niuzaos_resolve_t : buffs::monk_buff_t<>
       if ( const auto &effect = player->talent.brewmaster.niuzaos_resolve->effectN( 1 ); effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_value( effect.percent() )
-            .set_value_func( player->functions.missing_health_percentage )
+            .set_value_func( functions::missing_health_percentage_t( player ) )
             .set_eff( &effect )
             .set_note( "Missing Health Scaling" );
     }
@@ -4706,8 +4715,7 @@ monk_t::monk_t( sim_t *sim, std::string_view name, race_e r )
     talent(),
     tier(),
     pets( this ),
-    user_options( options_t() ),
-    functions( this )
+    user_options( options_t() )
 {
   cooldown.anvil_and_stave = get_cooldown( "anvil_and_stave" );
   cooldown.blackout_kick   = get_cooldown( "blackout_kick" );
@@ -5691,7 +5699,7 @@ void monk_t::create_buffs()
 
           // multiplier is not available in spell data :(
           if ( talent.brewmaster.zen_state->ok() )
-            stagger_rating *= functions.missing_health_percentage( 1.3 );
+            stagger_rating *= functions::missing_health_percentage_t( this )( 1.3 );
 
           double k = dbc->armor_mitigation_constant( state->target->level() );
           k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
