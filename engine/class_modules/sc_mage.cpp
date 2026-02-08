@@ -2895,14 +2895,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
   }
 
-  timespan_t travel_time() const override
-  {
-    // Add a small amount of travel time so that Arcane Blast's damage can be stored
-    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
-    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 10_ms );
-  }
-
   double cost_pct_multiplier() const override
   {
     double c = arcane_mage_spell_t::cost_pct_multiplier();
@@ -3298,14 +3290,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     triggers.spellfire_sphere = triggers.mana_cascade = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Add a small amount of travel time so that Arcane Surge's damage can be stored
-    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
-    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
   }
 
   double action_multiplier() const override
