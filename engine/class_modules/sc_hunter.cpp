@@ -361,8 +361,6 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
-    buff_t* kill_zone;
-    buff_t* ohnahran_winds;
 
     buff_t* sentinels_mark;
     buff_t* crescent_steel;
@@ -478,8 +476,6 @@ public:
     buff_t* lock_and_load;
     buff_t* in_the_rhythm;
     buff_t* trueshot;
-    buff_t* moving_target;
-    buff_t* precision_detonation_hidden;
     buff_t* bullseye;
     buff_t* bulletstorm;
     buff_t* volley;
@@ -609,7 +605,6 @@ public:
 
     proc_t* deathblow;
 
-    proc_t* precision_detonation;
     proc_t* tww_s2_mm_4pc_explosive;
 
     proc_t* release_and_reload_stacks;
@@ -851,17 +846,6 @@ public:
     spell_data_ptr_t bullet_hell;
     spell_data_ptr_t shrapnel_shot;
     spell_data_ptr_t unload;
-
-    spell_data_ptr_t ammo_conservation; //TODO Removed 
-    spell_data_ptr_t moving_target; //TODO Removed
-    spell_data_ptr_t moving_target_buff; //TODO Removed
-    spell_data_ptr_t precision_detonation; //TODO Removed
-    spell_data_ptr_t precision_detonation_buff; //TODO Removed
-    spell_data_ptr_t magnetic_gunpowder; //TODO Removed
-    spell_data_ptr_t ohnahran_winds; //TODO Removed
-    spell_data_ptr_t ohnahran_winds_debuff; //TODO Removed
-    spell_data_ptr_t kill_zone; //TODO Removed
-    spell_data_ptr_t kill_zone_debuff; //TODO Removed
 
     // Survival Tree
     spell_data_ptr_t kill_command_sv_player;
@@ -1169,7 +1153,6 @@ public:
   struct {
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     event_t* current_volley = nullptr;
-    event_t* precision_detonation_expiry = nullptr;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     bool fury_of_the_wyvern_extendable = false;
@@ -4063,9 +4046,6 @@ void hunter_t::consume_precise_shots()
   if ( !buffs.precise_shots->check() )
     return;
 
-  if ( talents.moving_target.ok() )
-    buffs.moving_target->trigger();
-
   cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
 
   buffs.precise_shots->expire();
@@ -5791,7 +5771,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
     m *= 1 + p()->buffs.bulletstorm->check_stack_value();
-    m *= 1 + p()->buffs.moving_target->value();
 
     return m;
   }
@@ -5801,7 +5780,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     m *= 1 + td( target )->debuffs.spotters_mark->check_value();
-    m *= 1 + td( target )->debuffs.ohnahran_winds->check_value();
 
     return m;
   }
@@ -5832,14 +5810,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       target_cache.is_valid = false;
 
     hunter_ranged_attack_t::execute();
-
-    // TODO 23/1/25: Moving Target gets consumed by all forms of Aimed Shot casts
-    // for example casting an Aimed Shot with an Arcane Shot queued immediately after will apply the 
-    // Moving Target triggered by the Arcane Shot to an Aspect of the Hydra or Double Tap Aimed Shot
-    // and consume the Moving Target
-    // likewise if the primary Aimed Shot cast consumes a Moving Target and it is not triggered again
-    // with a queued Precise Shot spender, a secondary Aimed Shot will not receive a bonus from it
-    p()->buffs.moving_target->expire();
   }
 
   int n_targets() const override
@@ -5855,29 +5825,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     hunter_td_t* target_data = td( s->target );
-
-    // TODO 25/1/25: All forms of Aimed Shot impacts reliably trigger both existing and queued Explosive Shots, but there is a lot 
-    // of inconsistency on bonus applications of Precision Detonation and TWW S2 4pc, perhaps tied to the trigger and expiration 
-    // timing of the hidden buff 474199. Pray for fixes and buff all for now.
-    if ( p()->talents.precision_detonation->ok() )
-    {
-      if ( target_data->dots.explosive_shot->is_ticking() )
-      {
-        p()->buffs.precision_detonation_hidden->trigger();
-
-        // Expire Precision Detonation after other possible impacts.
-        if ( !p()->state.precision_detonation_expiry )
-          p()->state.precision_detonation_expiry = make_event( p()->sim,
-            [ this ]() {
-              p()->buffs.precision_detonation_hidden->expire();
-              p()->state.precision_detonation_expiry = nullptr;
-            } );
-
-        p()->procs.precision_detonation->occur();
-        p()->buffs.precision_detonation_hidden->trigger();
-        target_data->dots.explosive_shot->cancel();
-      }
-    }
 
     if ( phantom_pain.replicate_amount > 0 )
     {
@@ -7842,9 +7789,6 @@ struct volley_t : public hunter_spell_t
 
       if ( s->chain_target < salvo.targets && p()->cooldowns.salvo->up() )
         salvo.explosive->execute_on_target( s->target );
-
-      if ( p()->talents.kill_zone.ok() )
-        p()->get_target_data( s->target )->debuffs.kill_zone->trigger();
     }
   };
 
@@ -7889,14 +7833,6 @@ struct volley_t : public hunter_spell_t
               case ground_aoe_params_t::EVENT_STOPPED:
               {
                 p()->state.current_volley = nullptr;
-                if ( p()->talents.kill_zone.ok() )
-                  // Scheduled after next Volley tick.
-                  make_event( *sim, 0_ms, [ this ]() { 
-                    for ( player_t* t : sim->target_non_sleeping_list )
-                      if ( t->is_enemy() )
-                        p()->get_target_data( t )->debuffs.kill_zone->expire();
-                  } );
-                  
                 break;
               }
               default:
@@ -8250,15 +8186,8 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     ->set_default_value( outland_venom_value )
     ->disable_ticking( true );
 
-  debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff )
-    -> set_default_value_from_effect( 2 )
-    -> set_chance( p->talents.kill_zone.ok() );
-
   debuffs.spotters_mark = make_buff( *this, "spotters_mark", p->specs.spotters_mark_debuff )
     ->set_default_value( p->specs.spotters_mark_debuff->effectN( 1 ).percent() );
-
-  debuffs.ohnahran_winds = make_buff( *this, "ohnahran_winds", p->talents.ohnahran_winds_debuff )
-    ->set_default_value( p->talents.ohnahran_winds_debuff->effectN( 1 ).percent() );
 
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
@@ -8682,18 +8611,6 @@ void hunter_t::init_spells()
     talents.take_aim_1                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 1 );
     talents.take_aim_2                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 2 );
     talents.take_aim_3                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 3 );
-
-    //TODO Remove
-    talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
-    talents.moving_target                     = find_talent_spell( talent_tree::SPECIALIZATION, "Moving Target", HUNTER_MARKSMANSHIP );
-    talents.moving_target_buff                = talents.moving_target.ok() ? find_spell( 474293 ) : spell_data_t::not_found();
-    talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
-    talents.precision_detonation_buff         = talents.precision_detonation.ok() ? find_spell( 474199 ) : spell_data_t::not_found();
-    talents.magnetic_gunpowder                = find_talent_spell( talent_tree::SPECIALIZATION, "Magnetic Gunpowder", HUNTER_MARKSMANSHIP );
-    talents.ohnahran_winds                    = find_talent_spell( talent_tree::SPECIALIZATION, "Ohn'ahran Winds", HUNTER_MARKSMANSHIP );
-    talents.ohnahran_winds_debuff             = talents.ohnahran_winds.ok() ? find_spell( 1215057 ) : spell_data_t::not_found();
-    talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
-    talents.kill_zone_debuff                  = talents.kill_zone.ok() ? find_spell( 393480 ) : spell_data_t::not_found();
   }
 
   // Survival Tree
@@ -9155,15 +9072,6 @@ void hunter_t::create_buffs()
           cooldowns.rapid_fire->adjust_recharge_multiplier();
         } );
 
-  buffs.moving_target =
-    make_buff( this, "moving_target", talents.moving_target_buff )
-      ->set_default_value_from_effect( 1 );
-
-  buffs.precision_detonation_hidden =
-    make_buff( this, "precision_detonation", talents.precision_detonation_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_quiet( true );
-
   buffs.bullseye =
     make_buff( this, "bullseye", talents.bullseye_buff )
       ->set_default_value_from_effect( 1 )
@@ -9530,9 +9438,6 @@ void hunter_t::init_procs()
   
   if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
-
-  if ( talents.precision_detonation.ok() )
-    procs.precision_detonation = get_proc( "Precision Detonations" );
 
   if ( tier_set.tww_s2_mm_4pc.ok() )
     procs.tww_s2_mm_4pc_explosive = get_proc( "TWW S2 MM 4pc Explosive" );
@@ -9992,11 +9897,6 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
 {
   double d = player_t::composite_player_target_multiplier( target, school );
 
-  auto td = get_target_data( target );
-
-  if ( td->debuffs.kill_zone->has_common_school( school ) )
-    d *= 1 + td->debuffs.kill_zone->check_value();
-
   return d;
 }
 
@@ -10029,11 +9929,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
 {
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
-
-  auto td = get_target_data( target );
-
-  if ( td->debuffs.kill_zone->check() )
-    m *= 1 + talents.kill_zone_debuff->effectN( guardian ? 4 : 3 ).percent();
 
   return m;
 }
