@@ -527,7 +527,6 @@ public:
     buff_t* hogstrider;
     buff_t* stampede;
     buff_t* stampede_incoming;
-    buff_t* lead_from_the_front;
 
     // Sentinel
     buff_t* eyes_closed;
@@ -583,7 +582,6 @@ public:
   {
     proc_t* snakeskin_quiver;
     proc_t* dire_command;
-    proc_t* bear_without_lftf;
 
     proc_t* deathblow;
 
@@ -983,11 +981,6 @@ public:
     spell_data_ptr_t stampede_trigger;
     spell_data_ptr_t stampede_dmg;
     
-    spell_data_ptr_t lead_from_the_front; //TODO Removed
-    spell_data_ptr_t lead_from_the_front_buff; //TODO Removed
-    spell_data_ptr_t envenomed_fangs; //TODO Removed
-    spell_data_ptr_t envenomed_fangs_spell; //TODO Removed
-
     // Sentinel
     spell_data_ptr_t sentinel;
     spell_data_ptr_t sentinels_mark;
@@ -1296,7 +1289,6 @@ public:
 
     // Pack Leader
     damage_affected_by wyverns_cry;
-    damage_affected_by lead_from_the_front;    
 
     // Dark Ranger
     damage_affected_by through_the_eyes;
@@ -1337,7 +1329,6 @@ public:
     affected_by.stargazer      = check_affected_by( this, p->talents.stargazer_buff->effectN( 1 ) );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
-    affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
 
     affected_by.through_the_eyes = parse_damage_affecting_aura( this, p->talents.black_arrow_dot );
 
@@ -1496,9 +1487,6 @@ public:
     if ( affected_by.wyverns_cry.direct )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
 
-    if ( affected_by.lead_from_the_front.direct && p()->buffs.lead_from_the_front->check() )
-      am *= 1 + p()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.direct ).percent();
-
     if ( affected_by.tww_s2_sv_2pc.direct )
       am *= 1 + p()->buffs.winning_streak->stack_value();
 
@@ -1537,9 +1525,6 @@ public:
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
 
-    if ( affected_by.lead_from_the_front.tick && p()->buffs.lead_from_the_front->check() )
-      am *= 1 + p()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.tick ).percent();
-    
     if ( affected_by.tww_s2_sv_2pc.tick )
       am *= 1 + p()->buffs.winning_streak->stack_value();
 
@@ -2616,7 +2601,6 @@ public:
 
     // Pack Leader
     damage_affected_by wyverns_cry;
-    damage_affected_by lead_from_the_front;
 
     // Sentinel
     bool stargazer = false;
@@ -2651,7 +2635,6 @@ public:
     affected_by.mongoose_fury = parse_damage_affecting_aura( this, o()->talents.mongoose_fury_buff );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, o()->talents.howl_of_the_pack_leader_wyvern_buff );
-    affected_by.lead_from_the_front = parse_damage_affecting_aura( this, o()->talents.lead_from_the_front_buff );
 
     affected_by.stargazer = check_affected_by( this, o()->talents.stargazer_buff->effectN( 1 ) );
   }
@@ -2718,9 +2701,6 @@ public:
     if ( affected_by.wyverns_cry.direct )
       am *= 1 + o()->buffs.wyverns_cry->check_stack_value();
 
-    if ( affected_by.lead_from_the_front.direct && o()->buffs.lead_from_the_front->check() )
-      am *= 1 + o()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.direct ).percent();
-
     return am;
   }
 
@@ -2743,9 +2723,6 @@ public:
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + o()->buffs.wyverns_cry->check_stack_value();
-
-    if ( affected_by.lead_from_the_front.tick && o()->buffs.lead_from_the_front->check() )
-      am *= 1 + o()->talents.lead_from_the_front_buff->effectN( affected_by.lead_from_the_front.tick ).percent();
 
     return am;
   }
@@ -3386,24 +3363,11 @@ struct ravenous_leap_t : public hunter_pet_attack_t<fenryr_t>
 
 struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
 {
-  struct envenomed_fangs_t : public hunter_pet_attack_t<bear_t>
-  {
-    envenomed_fangs_t( bear_t* p ) : hunter_pet_attack_t( "envenomed_fangs", p, p->o()->talents.envenomed_fangs_spell )
-    {
-      background = true;
-    }
-  };
-  
-  envenomed_fangs_t* envenomed_fangs = nullptr;
-
   rend_flesh_t( bear_t* p ) : hunter_pet_attack_t( "rend_flesh", p, p->o()->talents.howl_of_the_pack_leader_bear_bleed )
   {
     background = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
     dire_beast_chance = -1;
-
-    if ( o()->talents.envenomed_fangs.ok() )
-      envenomed_fangs = new envenomed_fangs_t( p );
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -8035,12 +7999,6 @@ void hunter_t::init_spells()
     talents.stampede_incoming_buff                        = talents.stampede.ok() ? find_spell( 1258338 ) : spell_data_t::not_found();
     talents.stampede_trigger                              = talents.stampede.ok() ? find_spell( 1258344 ) : spell_data_t::not_found();
     talents.stampede_dmg                                  = talents.stampede.ok() ? find_spell( 201594 ) : spell_data_t::not_found();
-
-    //TODO Remove
-    talents.envenomed_fangs = find_talent_spell( talent_tree::HERO, "Envenomed Fangs" );
-    talents.envenomed_fangs_spell = talents.envenomed_fangs.ok() ? find_spell( 472525 ) : spell_data_t::not_found();
-    talents.lead_from_the_front = find_talent_spell( talent_tree::HERO, "Lead From the Front" );
-    talents.lead_from_the_front_buff = talents.lead_from_the_front.ok() ? find_spell( 472743 ) : spell_data_t::not_found();
   }
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_SURVIVAL )
@@ -8532,11 +8490,6 @@ void hunter_t::create_buffs()
   buffs.stampede = 
         make_buff( this, "stampede", talents.stampede_trigger );
   
-  buffs.lead_from_the_front =
-    make_buff( this, "lead_from_the_front", talents.lead_from_the_front_buff )
-      ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
-      ->set_default_value_from_effect( specialization() == HUNTER_BEAST_MASTERY ? 4 : 5 );
-
   buffs.stargazer = 
     make_buff( this, "stargazer", talents.stargazer_buff )
       ->set_default_value_from_effect( 1 )
@@ -8601,9 +8554,6 @@ void hunter_t::init_procs()
   if ( talents.snakeskin_quiver.ok() )
     procs.snakeskin_quiver = get_proc( "Snakeskin Quiver" );
 
-  if ( talents.lead_from_the_front.ok() )
-    procs.bear_without_lftf = get_proc( "Bear without Lead From the Front" );
-  
   if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
 
@@ -9076,7 +9026,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     m *= 1 + buffs.summon_hati->check_value();
     m *= 1 + buffs.wyverns_cry->check_stack_value();
-    m *= 1 + buffs.lead_from_the_front->check_value();
   }
 
   return m;
