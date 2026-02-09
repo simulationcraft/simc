@@ -808,7 +808,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
       p()->proc.blackout_combo_tiger_palm->occur();
 
     if ( p()->buff.courage_of_the_white_tiger->up() )
-      p()->action.courage_of_the_white_tiger.celestial->base();
+      p()->action.courage_of_the_white_tiger.base->execute();
 
     base_t::execute();
 
@@ -3306,10 +3306,10 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
     CELESTIAL
   };
 
-  sotbo_source_e source;
-
   struct impact_t : monk_spell_t
   {
+    sotbo_source_e source;
+
     impact_t( monk_t *player, sotbo_source_e source )
       : monk_spell_t( player, fmt::format( "strength_of_the_black_ox_damage{}", BASE ? "" : "_celestial" ),
                       player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage ),
@@ -3420,7 +3420,8 @@ struct celestial_conduit_t : public monk_spell_t
       if constexpr ( std::is_same_v<TBase, monk_heal_t> )
         TBase::target = player;
 
-      if ( const auto &effect = player->conduit_of_the_celestials.path_of_the_falling_star->effectN( 1 ); effect.ok() )
+      if ( const auto &effect = player->talent.conduit_of_the_celestials.path_of_the_falling_star->effectN( 1 );
+           effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_func( [] { return false; } )
             .set_value( effect.percent() )
@@ -3432,14 +3433,15 @@ struct celestial_conduit_t : public monk_spell_t
     {
       double cam = TBase::composite_aoe_multiplier( state );
 
-      if ( player_talent_t &talent = TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action;
-           state->n_targets && talent->ok() )
+      if ( const spell_data_t *spell = TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action;
+           state->n_targets && spell->ok() )
       {
-        double target_scalar = std::min( as<double>( state->n_targets ), talent->effectN( 3 ).base_value() );
-        cam *= 1.0 + talent->effectN( 1 ).percent() * target_scalar;
+        double target_scalar = std::min( as<double>( state->n_targets ), spell->effectN( 3 ).base_value() );
+        cam *= 1.0 + spell->effectN( 1 ).percent() * target_scalar;
       }
 
-      if ( player_talent_t &talent = p()->talent.conduit_of_the_celestials.path_of_the_falling_star; talent->ok() )
+      if ( const player_talent_t &talent = TBase::p()->talent.conduit_of_the_celestials.path_of_the_falling_star;
+           talent->ok() )
       {
         double multiplier =
             std::max( 0.0, talent->effectN( 1 ).percent() - state->n_targets * talent->effectN( 2 ).percent() );

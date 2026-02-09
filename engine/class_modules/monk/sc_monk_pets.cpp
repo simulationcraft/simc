@@ -276,7 +276,7 @@ private:
     double action_multiplier() const override
     {
       double am = pet_melee_t::action_multiplier();
-      am *= 1.0 + o()->talent.conduit_of_the_celestials->xuens_bond->effectN( 1 ).percent();
+      am *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
       return am;
     }
   };
@@ -294,7 +294,7 @@ private:
     double action_multiplier() const override
     {
       double am = pet_spell_t::action_multiplier();
-      am *= 1.0 + o()->talent.conduit_of_the_celestials->xuens_bond->effectN( 1 ).percent();
+      am *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
       return am;
     }
   };
@@ -325,7 +325,7 @@ private:
     double action_ta_multiplier() const override
     {
       double atam = pet_spell_t::action_ta_multiplier();
-      atam *= 1.0 + o()->talent.conduit_of_the_celestials->xuens_bond->effectN( 1 ).percent();
+      atam *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
       return atam;
     }
   };
