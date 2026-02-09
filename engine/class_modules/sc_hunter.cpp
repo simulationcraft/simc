@@ -371,7 +371,6 @@ struct hunter_td_t: public actor_target_data_t
   struct dots_t
   {
     dot_t* explosive_shot;
-    dot_t* serpent_sting;
     
     dot_t* barbed_shot;
     dot_t* laceration;
@@ -1107,7 +1106,6 @@ public:
     spell_data_ptr_t steady_shot;
     spell_data_ptr_t steady_shot_energize;
     spell_data_ptr_t flare;
-    spell_data_ptr_t serpent_sting;
     spell_data_ptr_t call_pet;
 
     // SV
@@ -3631,23 +3629,6 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   void impact( action_state_t* s ) override
   {
     hunter_pet_attack_t::impact( s );
-
-    if ( o()->talents.envenomed_fangs.ok() )
-    {
-      dot_t* serpent_sting = o()->get_target_data( s->target )->dots.serpent_sting;
-      if ( serpent_sting->is_ticking() )
-      {
-        auto new_state = serpent_sting->current_action->get_state( serpent_sting->state );
-        new_state->result = RESULT_HIT;
-        double tick_damage = serpent_sting->current_action->calculate_tick_amount( new_state, serpent_sting->current_stack() );
-        action_state_t::release( new_state );
-
-        double ticks_left = serpent_sting->ticks_left_fractional();
-        sim->print_debug( "{} consumes {} with tick damage: {}, remaining ticks: {}", p()->name(), serpent_sting->name(), tick_damage, ticks_left );
-        envenomed_fangs->execute_on_target( s->target, ticks_left * tick_damage );
-        serpent_sting->cancel();
-      }
-    }
   }
 };
 
@@ -4618,27 +4599,6 @@ struct counter_shot_t : public hunter_ranged_attack_t
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
     return hunter_ranged_attack_t::target_ready( candidate_target );
-  }
-};
-
-// Serpent Sting (Beast Mastery/Survival) =====================================================================
-
-struct serpent_sting_t: public hunter_ranged_attack_t
-{
-  serpent_sting_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.serpent_sting )
-  {
-    background = dual = true;
-  }
-
-  // We have a whole lot of Serpent Sting variations that all need to work with the same dot.
-  dot_t* get_dot( player_t* t )
-  {
-    if ( !t )
-      t = target;
-    if ( !t )
-      return nullptr;
-
-    return td( t )->dots.serpent_sting;
   }
 };
 
@@ -6537,49 +6497,13 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct serpent_sting_vipers_venom_t final : public serpent_sting_t
-  {
-    serpent_sting_vipers_venom_t( util::string_view n, hunter_t* p ) : serpent_sting_t( n, p )
-    {
-    }
-
-    int n_targets() const override
-    {
-      if ( p()->talents.contagious_reagents.ok() && p()->get_target_data( target )->dots.serpent_sting->is_ticking() )
-        return 1 + as<int>( p()->talents.contagious_reagents->effectN( 1 ).base_value() );
-
-      return serpent_sting_t::n_targets();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      serpent_sting_t::available_targets( tl );
-
-      if ( is_aoe() && tl.size() > 1 )
-      {
-        // Prefer targets without Serpent Sting ticking.
-        auto start = tl.begin();
-        std::partition( *start == target ? std::next( start ) : start, tl.end(),
-                        [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
-      }
-
-      return tl.size();
-    }
-  };
-
-  serpent_sting_vipers_venom_t* vipers_venom = nullptr;
-  
   struct {
     double chance = 0;
     proc_t* proc;
   } rylakstalkers_strikes;
 
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-    hunter_melee_attack_t( n, p, s )
-  {
-    if ( p -> talents.vipers_venom.ok() )
-      vipers_venom = p->get_background_action<serpent_sting_vipers_venom_t>( "serpent_sting_vipers_venom" );
-  }
+    hunter_melee_attack_t( n, p, s ) {}
 
   double action_multiplier() const override
   {
@@ -6620,14 +6544,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p()->buffs.strike_it_rich->expire();
       p()->cooldowns.wildfire_bomb->adjust( -p()->buffs.strike_it_rich->data().effectN( 2 ).time_value() );
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    if ( vipers_venom )
-      vipers_venom->execute_on_target( s->target );
   }
 
   bool ready() override
@@ -8195,7 +8111,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.headshot = make_buff( *this, "headshot", p->talents.headshot_debuff )
     -> set_default_value_from_effect( 1 );
 
-  dots.serpent_sting = t -> get_dot( "serpent_sting", p );
   dots.wildfire_bomb = t->get_dot( p->talents.shrapnel_bomb ? "wildfire_bomb_bleed" : "wildfire_bomb_dot", p );
   dots.sanctified_armaments = t->get_dot( "sanctified_armaments", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
@@ -8523,9 +8438,6 @@ void hunter_t::init_spells()
     talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, "Nature's Ally", 2 );
     talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, "Nature's Ally", 3 );
     talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
-
-    //TODO Removed
-    specs.serpent_sting = find_spell( 271788 );
   }
 
   // Marksmanship Tree
@@ -8617,7 +8529,6 @@ void hunter_t::init_spells()
   if ( specialization() == HUNTER_SURVIVAL )
   {
     specs.aspect_of_the_eagle = find_spell( 186289 );
-    specs.serpent_sting = find_spell( 259491 );
     specs.harpoon = find_spell( 190925 );
     specs.hatchet_toss = find_spell( 193265 );
 
@@ -9002,10 +8913,6 @@ void hunter_t::init_base_stats()
 
 void hunter_t::create_actions()
 {
-  // Since without an apl defined use of Serpent Sting we can end up in a situation where no "serpent_sting" action is created 
-  // for the "active_dot" expression to look up the dot by, force an action to be made here that may or may not go unused.
-  get_background_action<attacks::serpent_sting_t>( "serpent_sting" );
-
   player_t::create_actions();
 
   if ( talents.laceration.ok() )
