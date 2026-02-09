@@ -5912,7 +5912,6 @@ void monk_t::create_buffs()
       talent.conduit_of_the_celestials.yulons_avatar->ok(), this, "heart_of_the_jade_serpent_yulons_avatar",
       talent.conduit_of_the_celestials.yulons_avatar_buff );
 
-  // TODO: does this cancel zenith (yulon's avatar) hotjs?
   buff.heart_of_the_jade_serpent_unity_within =
       make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this,
                           "heart_of_the_jade_serpent_unity_within",
@@ -5966,6 +5965,7 @@ void monk_t::create_buffs()
                                           talent.conduit_of_the_celestials.unity_within_buff )
                           ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
                             buff.jade_sanctuary->trigger();
+
                             action.strength_of_the_black_ox.celestial->execute();
                             action.courage_of_the_white_tiger.celestial->execute();
 
