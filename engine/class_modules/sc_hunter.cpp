@@ -350,11 +350,6 @@ struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
 
-  struct cooldowns_t
-  {
-    cooldown_t* overwatch;
-  } cooldowns;
-
   struct debuffs_t
   {
     buff_t* outland_venom;
@@ -362,7 +357,6 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* spotters_mark;
 
     buff_t* sentinels_mark;
-    buff_t* crescent_steel;
 
     buff_t* headshot;
   } debuffs;
@@ -529,7 +523,6 @@ public:
     buff_t* stampede_incoming;
 
     // Sentinel
-    buff_t* eyes_closed;
     buff_t* stargazer;
     buff_t* moonlight_chakram;
 
@@ -586,10 +579,6 @@ public:
     proc_t* deathblow;
 
     proc_t* tww_s2_mm_4pc_explosive;
-
-    proc_t* release_and_reload_stacks;
-    proc_t* crescent_steel_stacks;
-    proc_t* overwatch_implosions;
 
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
@@ -1011,16 +1000,6 @@ public:
 
     spell_data_ptr_t lunar_storm;
     spell_data_ptr_t lunar_storm_dmg;
-
-    spell_data_ptr_t sentinel_precision; //TODO Removed/Reworked
-    spell_data_ptr_t release_and_reload; //TODO Removed/Reworked
-    spell_data_ptr_t sentinel_watch; //TODO Removed/Reworked
-    spell_data_ptr_t eyes_closed; //TODO Removed/Reworked
-    spell_data_ptr_t symphonic_arsenal; //TODO Removed/Reworked
-    spell_data_ptr_t symphonic_arsenal_spell; //TODO Removed/Reworked
-    spell_data_ptr_t overwatch; //TODO Removed/Reworked
-    spell_data_ptr_t crescent_steel; //TODO Removed/Reworked
-    spell_data_ptr_t crescent_steel_debuff; //TODO Removed/Reworked
   } talents;
 
   // Specialization Spells
@@ -1068,8 +1047,6 @@ public:
     action_t* laceration = nullptr;
 
     action_t* boar_charge = nullptr;
-
-    action_t* symphonic_arsenal = nullptr;
 
     action_t* lunar_storm = nullptr;
 
@@ -7017,8 +6994,6 @@ struct trueshot_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p()->buffs.eyes_closed->trigger();
-
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
     p() -> buffs.trueshot -> expire();
     p() -> buffs.trueshot -> trigger();
@@ -7416,13 +7391,9 @@ struct auto_attack_t: public action_t
 } // end namespace actions
 
 hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p ),
-  cooldowns(),
   debuffs(),
   dots()
 {
-  cooldowns.overwatch = t->get_cooldown( "overwatch" );
-  cooldowns.overwatch->duration = timespan_t::from_seconds( p->talents.overwatch->effectN( 2 ).base_value() );
-
   double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
   if ( p->bugs )
     outland_venom_value /= 2; /* 2026-01-24: Outland Venom is only giving half of its value.
@@ -8031,17 +8002,6 @@ void hunter_t::init_spells()
     
     talents.lunar_storm              = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
     talents.lunar_storm_dmg          = talents.lunar_storm.ok() ? find_spell( 1253733 ) : spell_data_t::not_found();
-
-    //TODO Remove
-    talents.sentinel_precision = find_talent_spell( talent_tree::HERO, "Sentinel Precision" );
-    talents.release_and_reload = find_talent_spell( talent_tree::HERO, "Release and Reload" );
-    talents.sentinel_watch = find_talent_spell( talent_tree::HERO, "Sentinel Watch" );
-    talents.eyes_closed = find_talent_spell( talent_tree::HERO, "Eyes Closed" );
-    talents.symphonic_arsenal = find_talent_spell( talent_tree::HERO, "Symphonic Arsenal" );
-    talents.symphonic_arsenal_spell = talents.symphonic_arsenal.ok() ? find_spell( 451194 ) : spell_data_t::not_found();
-    talents.overwatch = find_talent_spell( talent_tree::HERO, "Overwatch" );
-    talents.crescent_steel = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
-    talents.crescent_steel_debuff = talents.crescent_steel.ok() ? find_spell( 451531 ) : spell_data_t::not_found();
   }
 
   // Mastery
@@ -8498,8 +8458,6 @@ void hunter_t::create_buffs()
   buffs.moonlight_chakram = 
     make_buff( this, "moonlight_chakram", talents.moonlight_chakram_buff );
 
-  buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
-
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff );
 
@@ -8560,15 +8518,6 @@ void hunter_t::init_procs()
   if ( tier_set.tww_s2_mm_4pc.ok() )
     procs.tww_s2_mm_4pc_explosive = get_proc( "TWW S2 MM 4pc Explosive" );
 
-  if ( talents.release_and_reload.ok() )
-    procs.release_and_reload_stacks = get_proc( "Release and Reload Stacks" );
-
-  if ( talents.crescent_steel.ok() )
-    procs.crescent_steel_stacks = get_proc( "Crescent Steel Stacks" );
-
-  if ( talents.overwatch.ok() )
-    procs.overwatch_implosions = get_proc( "Overwatch Implosion" );
-
   if ( talents.dire_beast_summon.ok() )
     procs.dire_beast_spawn = get_proc( "Dire Beast" );
 
@@ -8604,13 +8553,6 @@ void hunter_t::init_scaling()
 void hunter_t::init_assessors()
 {
   player_t::init_assessors();
-
-  if ( talents.crescent_steel.ok() )
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
-      if ( s->target->health_percentage() < talents.crescent_steel->effectN( 1 ).base_value() )
-        get_target_data( s->target )->debuffs.crescent_steel->trigger();
-      return assessor::CONTINUE;
-    } );
 }
 
 void hunter_t::init_action_list()
