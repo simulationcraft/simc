@@ -4932,10 +4932,11 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 bool monk_t::validate_actor()
 {
-#ifdef NDEBUG
-  throw sc_unsupported_specialization( "Monk sims are non-functional for Midnight prepatch." );
-  return false;
-#endif
+  if ( !is_ptr() )
+  {
+    throw sc_unsupported_specialization( "Monk sims are non-functional for Midnight prepatch." );
+    return false;
+  }
 
   if ( specialization() == MONK_MISTWEAVER )
   {
