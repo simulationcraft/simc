@@ -185,6 +185,7 @@ struct flurry_strikes_t : public monk_spell_t
   action_t *high_impact;
   action_t *shado_over_the_battlefield;
   std::unordered_map<source_e, flurry_strike_t *> flurry_strike_variants;
+  cooldown_t *wisdom_of_the_wall;
 
   flurry_strikes_t( bool, monk_t * );
   using monk_spell_t::execute;

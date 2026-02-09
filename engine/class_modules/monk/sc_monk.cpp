@@ -625,7 +625,8 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
   : monk_spell_t( player, "flurry_strikes", player->talent.shado_pan.flurry_strikes ),
     fallback( !fallback ),
     high_impact( nullptr ),
-    shado_over_the_battlefield( nullptr )
+    shado_over_the_battlefield( nullptr ),
+    wisdom_of_the_wall( nullptr )
 {
   background = dual = true;
 
@@ -655,8 +656,11 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
   if ( player->talent.shado_pan.stand_ready->ok() )
     flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
   if ( player->talent.shado_pan.wisdom_of_the_wall->ok() )
+  {
     flurry_strike_variants.insert(
         { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
+    wisdom_of_the_wall = player->get_cooldown( "wisdom_of_the_wall" );
+  }
 
   for ( auto &[ key, variant ] : flurry_strike_variants )
   {
@@ -693,13 +697,16 @@ void flurry_strikes_t::execute( source_e source )
       p()->buff.flurry_charge->expire();
       break;
     case STAND_READY:
-      if ( p()->buff.stand_ready->check() )
+      if ( p()->buff.stand_ready->check() && !p()->bugs )
         count = as<int>( p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value() );
       p()->buff.stand_ready->expire();
       break;
     case WISDOM_OF_THE_WALL:
-      if ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() )
+      if ( ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() ) && wisdom_of_the_wall->up() )
+      {
+        wisdom_of_the_wall->start( p()->talent.shado_pan.wisdom_of_the_wall->internal_cooldown() );
         count = as<int>( p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() );
+      }
       break;
     default:
       assert( false );
@@ -789,7 +796,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+    if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() && !player->bugs )
       add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
 
     parse_effects( player->buff.combat_wisdom );
@@ -1843,6 +1850,9 @@ struct auto_attack_t : public monk_melee_attack_t
         background = dual = true;
 
         if ( const auto &effect = player->buff.press_the_advantage->data().effectN( 2 ); effect.ok() )
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
+
+        if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() && !player->bugs )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
       }
     };
@@ -2926,8 +2936,9 @@ struct breath_of_fire_t : public monk_spell_t
 
     void execute() override
     {
-      for ( size_t i = 0; i < p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-        monk_spell_t::execute();
+      monk_spell_t::execute();
+
+      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
     }
   };
 
@@ -2966,7 +2977,9 @@ struct breath_of_fire_t : public monk_spell_t
       return;
 
     if ( dragonfire_brew )
-      dragonfire_brew->execute();
+      for ( size_t i = 1; i <= p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+        make_event<events::delayed_execute_event_t>( *sim, p(), dragonfire_brew, target,
+                                                     i * timespan_t::from_seconds( 1.5 ) );
 
     monk_spell_t::execute();
 
@@ -6772,9 +6785,11 @@ public:
     };
 
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
+    ReportIssue( "Stand Ready buff is consumed but does not trigger Flurry Strikes", "2026-02-09", true );
+    ReportIssue( "Face Palm does not increase the damage of Tiger Palm", "2026-02-09", true );
+    ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
