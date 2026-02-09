@@ -3422,7 +3422,7 @@ struct celestial_conduit_t : public monk_spell_t
 
       if ( const auto &effect = player->talent.conduit_of_the_celestials.path_of_the_falling_star->effectN( 1 );
            effect.ok() )
-        add_parse_entry( da_multiplier_effects )
+        add_parse_entry( TBase::da_multiplier_effects )
             .set_func( [] { return false; } )
             .set_value( effect.percent() )
             .set_eff( &effect )
