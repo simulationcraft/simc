@@ -565,7 +565,6 @@ public:
   struct cooldowns_t
   {
     cooldown_t* kill_shot;
-    cooldown_t* explosive_shot;
     
     cooldown_t* aimed_shot;
     cooldown_t* rapid_fire;
@@ -709,9 +708,6 @@ public:
 
     spell_data_ptr_t deathblow_buff;
     
-    spell_data_ptr_t explosive_shot; //TODO Removed
-    spell_data_ptr_t explosive_shot_cast; //TODO Removed
-    spell_data_ptr_t explosive_shot_damage; //TODO Removed
     spell_data_ptr_t high_explosive_trap; //TODO Removed
     spell_data_ptr_t implosive_trap; //TODO Removed
     spell_data_ptr_t explosive_trap_damage; //TODO Removed
@@ -870,6 +866,8 @@ public:
     spell_data_ptr_t double_tap;
     spell_data_ptr_t double_tap_buff;
     spell_data_ptr_t salvo;
+    spell_data_ptr_t explosive_shot_data;
+    spell_data_ptr_t explosive_shot_damage;
     spell_data_ptr_t bullet_hell;
     spell_data_ptr_t shrapnel_shot;
     spell_data_ptr_t unload;
@@ -1213,7 +1211,6 @@ public:
     procs()
   {
     cooldowns.kill_shot       = get_cooldown( "kill_shot" );
-    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
 
     cooldowns.aimed_shot                = get_cooldown( "aimed_shot" );
     cooldowns.rapid_fire                = get_cooldown( "rapid_fire" );
@@ -4109,7 +4106,6 @@ void hunter_t::consume_precise_shots()
   if ( talents.moving_target.ok() )
     buffs.moving_target->trigger();
 
-  cooldowns.explosive_shot->adjust( -talents.magnetic_gunpowder->effectN( 1 ).time_value() * buffs.precise_shots->check() );
   cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
 
   buffs.precise_shots->expire();
@@ -4714,16 +4710,16 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   }
 };
 
-// Explosive Shot (Hunter Talent)  ====================================================================
+// Explosive Shot (Salvo)  ============================================================================
 
-struct explosive_shot_base_t : public hunter_ranged_attack_t
+struct explosive_shot_t : public hunter_ranged_attack_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_damage )
     {
       background = dual = true;
-      reduced_aoe_targets = p->talents.explosive_shot_cast->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->talents.explosive_shot_data->effectN( 2 ).base_value();
       aoe = -1;
     }
 
@@ -4734,37 +4730,21 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       if ( pre_execute_state )
       {
         update_state( pre_execute_state, result_amount_type::DMG_DIRECT );
-        if ( pre_execute_state->persistent_multiplier > 1.0 )
-          p()->procs.tww_s2_mm_4pc_explosive->occur();
       }
 
       hunter_ranged_attack_t::execute();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_ranged_attack_t::impact( s );
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = hunter_ranged_attack_t::composite_da_multiplier( s );
-    
-      m *= 1.0 + p()->buffs.precision_detonation_hidden->check_value();
-      
-      return m;
-    }
   };
 
-  timespan_t grenade_juggler_reduction = 0_s;
   damage_t* explosion = nullptr;
 
-  explosive_shot_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : hunter_ranged_attack_t( n, p, s )
+  explosive_shot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_data )
   {
     may_miss = may_crit = false;
+    background = dual = proc = true;
 
     explosion = p->get_background_action<damage_t>( "explosive_shot_damage" );
-    grenade_juggler_reduction = p->talents.grenade_juggler->effectN( 3 ).time_value();
+    add_child( explosion );
   }
 
   void init() override
@@ -4835,58 +4815,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     // The dot should have the state from the cast that triggered it, so forward it to the explosion.
     explosion->pre_execute_state->copy_state( d->state );
     explosion->execute_on_target( d->target );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-    
-    p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
-    p()->buffs.bombardier->decrement();
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = hunter_ranged_attack_t::cost_pct_multiplier();
-
-    return c;
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buffs.bombardier->up() )
-      return as<int>( p()->buffs.bombardier->data().effectN( 2 ).base_value() );
-
-    return hunter_ranged_attack_t::n_targets();
-  }
-};
-
-struct explosive_shot_t : public explosive_shot_base_t
-{
-  explosive_shot_t( hunter_t* p, util::string_view options_str )
-    : explosive_shot_base_t( "explosive_shot", p, p->talents.explosive_shot )
-  {
-    parse_options( options_str );
-  }
-
-  void init() override
-  {
-    explosive_shot_base_t::init();
-
-    if ( p()->specialization() == HUNTER_MARKSMANSHIP )
-    {
-      explosion->stats = stats;
-      stats->action_list.push_back( explosion );
-    }
-  }
-};
-
-struct explosive_shot_background_t : public explosive_shot_base_t
-{
-  explosive_shot_background_t( util::string_view n, hunter_t* p )
-    : explosive_shot_base_t( n, p, p->talents.explosive_shot_cast )
-  {
-    background = dual = proc = true;
   }
 };
 
@@ -6098,7 +6026,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       if ( p()->buffs.lock_and_load->check() )
       {
         p()->buffs.lock_and_load->decrement();
-        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
       }
     }
   };
@@ -6120,24 +6047,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       if ( p()->buffs.lock_and_load->check() )
       {
         p()->buffs.lock_and_load->decrement();
-        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
       }
-    }
-  };
-
-  struct explosive_shot_tww_s2_mm_4pc_t : public explosive_shot_background_t
-  {
-    explosive_shot_tww_s2_mm_4pc_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p )
-    {
-    }
-
-    double composite_persistent_multiplier( const action_state_t *state ) const override
-    {
-      double pm = explosive_shot_background_t::composite_persistent_multiplier( state );
-
-      pm *= p()->tier_set.tww_s2_mm_4pc->effectN( 1 ).percent();
-
-      return pm;
     }
   };
 
@@ -6152,7 +6062,6 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   aimed_shot_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
   aimed_shot_double_tap_t* double_tap = nullptr;
-  explosive_shot_tww_s2_mm_4pc_t* tww_s2_mm_4pc = nullptr;
   bool lock_and_loaded = false;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
@@ -6180,9 +6089,6 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p->talents.deathblow.ok() )
       deathblow.chance = p->talents.deathblow->effectN( 1 ).percent();
-  
-    if ( p->tier_set.tww_s2_mm_4pc.ok() )
-      tww_s2_mm_4pc = p->get_background_action<explosive_shot_tww_s2_mm_4pc_t>( "explosive_shot_tww_s2_mm_4pc" );
   }
 
   double cost() const override
@@ -6272,10 +6178,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( lock_and_loaded )
     {
       p()->buffs.lock_and_load->decrement();
-      p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
-
-      if ( tww_s2_mm_4pc )
-        tww_s2_mm_4pc->execute_on_target( target );
     }
 
     lock_and_loaded = false;
@@ -7660,27 +7562,6 @@ struct implosive_trap_t : public trap_base_t
 
 struct kill_command_t: public hunter_spell_t
 {
-  struct explosive_shot_sulfurlined_pockets_t : public attacks::explosive_shot_background_t
-  {
-    explosive_shot_sulfurlined_pockets_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p ) {}
-
-    void init() override
-    {
-      explosive_shot_background_t::init();
-
-      snapshot_flags = STATE_MUL_PERSISTENT;
-    }
-
-    double composite_persistent_multiplier( const action_state_t *state ) const override
-    {
-      double pm = explosive_shot_background_t::composite_persistent_multiplier( state );
-
-      pm *= p()->talents.sulfurlined_pockets->effectN( 2 ).percent();
-
-      return pm;
-    }
-  };
-
   struct {
     double chance = 0; 
   } deathblow;
@@ -8090,7 +7971,7 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     struct salvo {
-      attacks::explosive_shot_background_t* explosive = nullptr;
+      attacks::explosive_shot_t* explosive = nullptr;
       int targets = 0;
     } salvo;
 
@@ -8102,7 +7983,7 @@ struct volley_t : public hunter_spell_t
       if ( p -> talents.salvo.ok() )
       {
         salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
-        salvo.explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot" );
+        salvo.explosive = p -> get_background_action<attacks::explosive_shot_t>( "explosive_shot" );
       }
     }
 
@@ -8133,6 +8014,9 @@ struct volley_t : public hunter_spell_t
     tick_duration( data().duration() )
   {
     parse_options( options_str );
+
+    if ( damage->salvo.explosive )
+      add_child( damage->salvo.explosive );
 
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
@@ -8334,9 +8218,6 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
         bomb_dot->target_cache.is_valid     = true;
         bomb_dot->execute();
       }
-
-      if ( rng().roll( p()->talents.grenade_juggler->effectN( 2 ).percent() ) )
-        p()->cooldowns.explosive_shot->reset( true );
     }
 
     void impact( action_state_t* s ) override
@@ -8674,7 +8555,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
-  if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "flamefang_pitch"       ) return new        flamefang_pitch_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
@@ -8804,9 +8684,6 @@ void hunter_t::init_spells()
 
   //TODO Remove 
 
-  talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
-  talents.explosive_shot_cast               = find_spell( 212431 );
-  talents.explosive_shot_damage             = find_spell( 212680 );
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
@@ -8976,6 +8853,8 @@ void hunter_t::init_spells()
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
     talents.double_tap_buff                   = talents.double_tap.ok() ? find_spell( 260402 ) : spell_data_t::not_found();
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
+    talents.explosive_shot_data               = talents.salvo.ok() ? find_spell( 212431 ) : spell_data_t::not_found();
+    talents.explosive_shot_damage             = talents.salvo.ok() ? find_spell( 212680 ) : spell_data_t::not_found();
     talents.bullet_hell                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bullet Hell", HUNTER_MARKSMANSHIP );
     talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
     talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
@@ -9623,12 +9502,6 @@ void hunter_t::create_buffs()
         if ( cur == 0 )
         {
           buffs.relentless_primal_ferocity->expire();
-
-          if ( talents.bombardier.ok() )
-          {
-            buffs.bombardier->trigger();
-            cooldowns.explosive_shot->reset( true );
-          }
         }
       } );
 
