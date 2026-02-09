@@ -4785,7 +4785,6 @@ void monk_t::parse_player_effects()
   parse_effects( buff.predictive_training );
 
   // Conduit of the Celestials
-  parse_effects( buff.inner_compass_crane_stance );
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
@@ -5392,7 +5391,6 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.celestial_conduit_damage          = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal            = find_spell( 443039 );
     talent.conduit_of_the_celestials.inner_compass                     = _HT( "Inner Compass" );
-    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff   = find_spell( 443572 );
     talent.conduit_of_the_celestials.inner_compass_ox_stance_buff      = find_spell( 443574 );
     talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff   = find_spell( 443575 );
     talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff = find_spell( 443576 );
@@ -5924,25 +5922,12 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent->expire();
           } );
 
-  buff.inner_compass_crane_stance =
-      make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "crane_stance",
-                          talent.conduit_of_the_celestials.inner_compass_crane_stance_buff )
-          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
-            {
-              buff.inner_compass_ox_stance->expire();
-              buff.inner_compass_serpent_stance->expire();
-              buff.inner_compass_tiger_stance->expire();
-            }
-          } );
-
   buff.inner_compass_ox_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "ox_stance",
                           talent.conduit_of_the_celestials.inner_compass_ox_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_serpent_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -5954,7 +5939,6 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -5966,7 +5950,6 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_serpent_stance->expire();
             }
