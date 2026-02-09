@@ -942,9 +942,6 @@ public:
     spell_data_ptr_t withering_fire_black_arrow;
     spell_data_ptr_t withering_fire_buff;
 
-    spell_data_ptr_t phantom_pain; //TODO Removed
-    spell_data_ptr_t phantom_pain_spell; //TODO Removed
-
     // Pack Leader
     spell_data_ptr_t howl_of_the_pack_leader;
     spell_data_ptr_t howl_of_the_pack_leader_wyvern_ready_buff;
@@ -1082,8 +1079,6 @@ public:
     action_t* symphonic_arsenal = nullptr;
 
     action_t* lunar_storm = nullptr;
-
-    action_t* phantom_pain = nullptr;
 
     action_t* stampede = nullptr;
     action_t* wild_instincts = nullptr;
@@ -2862,21 +2857,9 @@ public:
 
 struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
 {
-  struct
-  {
-    double replicate_amount = 0;
-    int max_targets = 0;
-  } phantom_pain;
-
   kill_command_bm_t( hunter_main_pet_base_t* p, const spell_data_t* s ) : hunter_pet_attack_t( "kill_command", p, s )
   {
     background = dual = proc = true;
-
-    if ( o()->talents.phantom_pain.ok() )
-    {
-      phantom_pain.replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent();
-      phantom_pain.max_targets = as<int>( o()->talents.phantom_pain->effectN( 3 ).base_value() );
-    }
   }
 
   void execute() override
@@ -2897,24 +2880,6 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
 
       const double amount = s->result_total * o()->talents.kill_cleave->effectN( 1 ).percent() * target_da_multiplier * target_pet_multiplier;
       p()->actions.kill_cleave->execute_on_target( s->target, amount );
-    }
-
-    if ( phantom_pain.replicate_amount > 0 )
-    {
-      int target_count = 0;
-      for ( player_t* t : sim->target_non_sleeping_list )
-      {
-        if ( t->is_enemy() && !t->demise_event && t != s->target )
-        {
-          if ( o()->get_target_data( t )->dots.black_arrow->is_ticking() )
-          {
-            double amount = phantom_pain.replicate_amount * s->result_amount;
-            o()->actions.phantom_pain->execute_on_target( t, amount );
-            if ( ++target_count == phantom_pain.max_targets )
-              break;
-          }
-        }
-      }
     }
   }
 
@@ -4993,17 +4958,6 @@ struct wailing_arrow_t final : public hunter_ranged_attack_t
   }
 };
 
-// Phantom Pain (Dark Ranger) =========================================================
-
-struct phantom_pain_t final : hunter_ranged_attack_t
-{
-  phantom_pain_t( hunter_t* p ) : hunter_ranged_attack_t( "phantom_pain", p, p->talents.phantom_pain_spell )
-  {
-    background = dual = true;
-    base_dd_min = base_dd_max = 1.0;
-  }
-};
-
 // Howl of the Pack Leader (Pack Leader)
 
 struct boar_charge_t final : hunter_ranged_attack_t
@@ -5469,12 +5423,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
   timespan_t target_acquisition_reduction;
 
-  struct
-  {
-    double replicate_amount = 0;
-    int max_targets = 0;
-  } phantom_pain;
-
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
     trick_shots_targets( as<int>( p->talents.trick_shots_data->effectN( 1 ).base_value() ) ),
@@ -5482,12 +5430,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     radius = 8;
     base_aoe_multiplier = p->talents.trick_shots_data->effectN( 4 ).percent();
-
-    if ( p->talents.phantom_pain.ok() )
-    {
-      phantom_pain.replicate_amount = p->talents.phantom_pain->effectN( 2 ).percent();
-      phantom_pain.max_targets = as<int>( p->talents.phantom_pain->effectN( 3 ).base_value() );
-    }
 
     if ( p->tier_set.tww_s3_sentinel_2pc->ok() )
       p->buffs.boon_of_elune_2pc->add_stack_change_callback(
@@ -5574,24 +5516,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     hunter_td_t* target_data = td( s->target );
-
-    if ( phantom_pain.replicate_amount > 0 )
-    {
-      int target_count = 0;
-      for ( player_t* t : sim->target_non_sleeping_list )
-      {
-        if ( t->is_enemy() && !t->demise_event && t != s->target )
-        {
-          if ( p()->get_target_data( t )->dots.black_arrow->is_ticking() )
-          {
-            double amount = phantom_pain.replicate_amount * s->result_amount;
-            p()->actions.phantom_pain->execute_on_target( t, amount );
-            if ( ++target_count >= phantom_pain.max_targets )
-              break;
-          }
-        }
-      }
-    }
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
@@ -8070,10 +7994,6 @@ void hunter_t::init_spells()
     talents.withering_fire              = find_talent_spell( talent_tree::HERO, "Withering Fire" );
     talents.withering_fire_black_arrow  = talents.withering_fire.ok() ? find_spell( 468037 ) : spell_data_t::not_found();
     talents.withering_fire_buff         = talents.withering_fire.ok() ? find_spell( 466991 ) : spell_data_t::not_found();
-
-    // TODO Remove
-    talents.phantom_pain = find_talent_spell( talent_tree::HERO, "Phantom Pain" );
-    talents.phantom_pain_spell = talents.phantom_pain.ok() ? find_spell( 468019 ) : spell_data_t::not_found();
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
@@ -8313,9 +8233,6 @@ void hunter_t::create_actions()
 
   if ( talents.snakeskin_quiver.ok() )
     actions.snakeskin_quiver = new attacks::cobra_shot_snakeskin_quiver_t( this );
-
-  if ( talents.phantom_pain.ok() )
-    actions.phantom_pain = new attacks::phantom_pain_t( this );
 
   if ( talents.stampede.ok() )
     actions.stampede = new attacks::stampede_t( this );
