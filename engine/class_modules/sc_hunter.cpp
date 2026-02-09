@@ -410,38 +410,6 @@ public:
 
   struct tier_sets_t
   {
-    // TWW Season 1 - Nerub'ar Palace
-    spell_data_ptr_t tww_s1_bm_2pc;
-    spell_data_ptr_t tww_s1_bm_4pc;
-    spell_data_ptr_t tww_s1_mm_2pc;
-    spell_data_ptr_t tww_s1_mm_4pc;
-    spell_data_ptr_t tww_s1_sv_2pc;
-    spell_data_ptr_t tww_s1_sv_4pc;
-
-    // TWW Season 2 - Liberation of Undermine
-    spell_data_ptr_t tww_s2_bm_2pc;
-    spell_data_ptr_t tww_s2_bm_4pc;
-    spell_data_ptr_t tww_s2_mm_2pc;
-    spell_data_ptr_t tww_s2_mm_4pc;
-    spell_data_ptr_t tww_s2_sv_2pc;
-    spell_data_ptr_t tww_s2_sv_4pc;
-
-    // TWW Season 3 - Manaforge Omega
-    spell_data_ptr_t tww_s3_dark_ranger_2pc;
-    spell_data_ptr_t tww_s3_dark_ranger_4pc;
-    spell_data_ptr_t tww_s3_dark_ranger_4pc_buff;
-
-    spell_data_ptr_t tww_s3_sentinel_2pc;
-    spell_data_ptr_t tww_s3_sentinel_2pc_buff;
-    spell_data_ptr_t tww_s3_sentinel_4pc;
-    spell_data_ptr_t tww_s3_sentinel_4pc_buff;
-
-    spell_data_ptr_t tww_s3_pack_leader_2pc;
-    spell_data_ptr_t tww_s3_pack_leader_2pc_haste_buff;
-    spell_data_ptr_t tww_s3_pack_leader_2pc_mastery_buff;
-    spell_data_ptr_t tww_s3_pack_leader_2pc_crit_buff;
-    spell_data_ptr_t tww_s3_pack_leader_4pc;
-
     // Midnight Season 1 - Whatever the raid is called
     spell_data_ptr_t mid_s1_bm_2pc;
     spell_data_ptr_t mid_s1_bm_4pc;
@@ -500,15 +468,6 @@ public:
     buff_t* predators_thirst;
 
     // Tier Set Bonuses
-    // TWW - S2
-    buff_t* jackpot; // MM 2pc
-    buff_t* winning_streak; // SV 2pc - Wildfire Bomb damage stacking buff
-    buff_t* strike_it_rich; // SV 4pc - Mongoose Bite damage buff, consuming it reduces Wildfire Bomb cooldown
-    // TWW - S3
-    buff_t* boon_of_elune_2pc; // Sentinel 2pc
-    buff_t* boon_of_elune_4pc; // Sentinel 4pc
-    buff_t* grizzled_fur; // Pack Leader 2pc mastery
-    buff_t* hasted_hooves; // Pack Leader 2pc haste
 
     // Hero Talents 
 
@@ -577,8 +536,6 @@ public:
     proc_t* dire_command;
 
     proc_t* deathblow;
-
-    proc_t* tww_s2_mm_4pc_explosive;
 
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
@@ -1269,12 +1226,6 @@ public:
 
     // Dark Ranger
     damage_affected_by through_the_eyes;
-
-    // Tier Set
-    damage_affected_by tww_s2_mm_2pc;
-    damage_affected_by tww_s2_sv_2pc;
-    damage_affected_by tww_s3_sentinel_2pc;
-    damage_affected_by tww_s3_sentinel_4pc;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1308,11 +1259,6 @@ public:
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
 
     affected_by.through_the_eyes = parse_damage_affecting_aura( this, p->talents.black_arrow_dot );
-
-    affected_by.tww_s2_mm_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() );
-    affected_by.tww_s2_sv_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s2_sv_2pc->effectN( 1 ).trigger() );
-    affected_by.tww_s3_sentinel_2pc = parse_damage_affecting_aura( this, p->tier_set.tww_s3_sentinel_2pc_buff );
-    affected_by.tww_s3_sentinel_4pc = parse_damage_affecting_aura( this, p->tier_set.tww_s3_sentinel_4pc_buff );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -1458,20 +1404,8 @@ public:
     if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() )
       am *= 1 + p()->talents.tip_of_the_spear_buff->effectN( 1 ).percent();
 
-    if ( affected_by.tww_s2_mm_2pc.direct )
-      am *= 1 + p()->buffs.jackpot->value();
-
     if ( affected_by.wyverns_cry.direct )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
-
-    if ( affected_by.tww_s2_sv_2pc.direct )
-      am *= 1 + p()->buffs.winning_streak->stack_value();
-
-    if ( affected_by.tww_s3_sentinel_2pc.direct )
-      am *= 1 + p()->buffs.boon_of_elune_2pc->value();
-
-    if ( affected_by.tww_s3_sentinel_4pc.direct )
-      am *= 1 + p()->buffs.boon_of_elune_4pc->value();
 
     return am;
   }
@@ -1501,9 +1435,6 @@ public:
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
-
-    if ( affected_by.tww_s2_sv_2pc.tick )
-      am *= 1 + p()->buffs.winning_streak->stack_value();
 
     return am;
   }
@@ -2341,7 +2272,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
   {
     action_t* basic_attack = nullptr;
     action_t* brutal_companion_ba = nullptr;
-    action_t* potent_mutagen = nullptr; // TWW S2 BM 4PC
 
     action_t* sic_em              = nullptr;
     action_t* strike_as_one       = nullptr;
@@ -2353,7 +2283,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
   struct buffs_t
   {
     buff_t* solitary_companion = nullptr;
-    buff_t* potent_mutagen = nullptr; // TWW S2 BM 4pc
 
     buff_t* bloodseeker = nullptr;
   } buffs;
@@ -2407,12 +2336,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
-
-    buffs.potent_mutagen = 
-      make_buff( this, "potent_mutagen", o()->find_spell( 1218003 ) )
-        //2025-03-07 - For some reason the base value is still 1, the pet buff says 0.5 seconds reduction per hit, but the server script doing the reduction only reduces by 0.25s
-        //2025-06-05 - The base value is now 25 for a 0.25s reduction per hit on the PTR for 11.1.7.
-        ->set_default_value( o()->find_spell( 1218004)->effectN( 2 ).percent() );
 
     buffs.solitary_companion = 
       make_buff( this, "solitary_companion", find_spell( 474751 ) )
@@ -3080,13 +3003,6 @@ struct main_pet_base_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
 
     if ( o()->buffs.wyverns_cry->check() )
       o()->buffs.wyverns_cry->increment( 1, buff_t::DEFAULT_VALUE(), o()->buffs.wyverns_cry->remains() );
-
-    auto main_pet = dynamic_cast<hunter_main_pet_t*>( p() );
-    if ( main_pet && main_pet->buffs.potent_mutagen->up() )
-    {
-      main_pet->actions.potent_mutagen->execute_on_target( s->target );
-      o()->cooldowns.bestial_wrath->adjust( -timespan_t::from_seconds( main_pet->buffs.potent_mutagen->value() ) );
-    }
   }
 };
 
@@ -3384,16 +3300,6 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   }
 };
 
-// Potent Mutagen (The War Within Season 2 4 Piece Set Bonus) ======================
-
-struct potent_mutagen_t : public hunter_pet_attack_t<hunter_main_pet_base_t>
-{
-  potent_mutagen_t( hunter_main_pet_base_t* p ) : hunter_pet_attack_t( "potent_mutagen", p, p->find_spell( 1218004 ) )
-  {
-    background = dual = true;
-  }
-};
-
 // Shoot (Dark Minion) =============================================================
 
 struct shoot_t final : public hunter_pet_attack_t<dark_minion_t>
@@ -3527,9 +3433,6 @@ void hunter_main_pet_t::init_spells()
   {
     if ( o()->talents.brutal_companion.ok() )
       actions.brutal_companion_ba = new actions::brutal_companion_ba_t( this, "Claw" );
-
-    if ( o()->tier_set.tww_s2_bm_4pc.ok() )
-      actions.potent_mutagen = new actions::potent_mutagen_t( this );
   }
 }
 
@@ -3904,7 +3807,6 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     up++;
     actions.boar_charge->execute_on_target( target );
     buffs.howl_of_the_pack_leader_boar->expire();
-    buffs.hasted_hooves->trigger();
   }
 
   if ( buffs.howl_of_the_pack_leader_bear->check() )
@@ -3919,7 +3821,6 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     }
 
     buffs.howl_of_the_pack_leader_bear->expire();
-    buffs.grizzled_fur->trigger();
   }
 
   if ( up )
@@ -4123,9 +4024,6 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     timespan_t m = auto_attack_base_t::execute_time_flat_modifier();
 
     m += timespan_t::from_millis( p()->buffs.in_the_rhythm->check_value() );
-
-    if ( p()->buffs.jackpot->check() )
-      m += timespan_t::from_millis( p()->tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger()->effectN( 2 ).base_value() );
 
     return m;
   }
@@ -5201,32 +5099,6 @@ struct laceration_t : public residual_bleed_base_t
   laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed ) {}
 };
 
-// Barbed Shot (Empowered) (The War Within Season 2 2 Piece Set Bonus) ==============
-
-struct barbed_shot_tww_s2_bm_2pc_t : public barbed_shot_t
-{
-  barbed_shot_tww_s2_bm_2pc_t( util::string_view, hunter_t* p ) : barbed_shot_t( p, "" )
-  {
-    background = dual = proc = true;
-  }
-
-  void init() override
-  {
-    barbed_shot_t::init();
-
-    snapshot_flags |= STATE_MUL_PERSISTENT;
-  }
-
-  double composite_persistent_multiplier( const action_state_t *state ) const override
-  {
-    double pm = barbed_shot_t::composite_persistent_multiplier( state );
-
-    pm *= p()->tier_set.tww_s2_bm_2pc->effectN( 1 ).percent();
-
-    return pm;
-  }
-};
-
 //==============================
 // Marksmanship attacks
 //==============================
@@ -5371,24 +5243,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     radius = 8;
     base_aoe_multiplier = p->talents.trick_shots_data->effectN( 4 ).percent();
-
-    if ( p->tier_set.tww_s3_sentinel_2pc->ok() )
-      p->buffs.boon_of_elune_2pc->add_stack_change_callback(
-        [ this, p ]( buff_t*, int prev, int cur ) {
-          if ( prev == 0 )
-            set_school_override( p->tier_set.tww_s3_sentinel_2pc_buff->effectN( 2 ).school_type() );
-          else if ( cur == 0 )
-            clear_school_override();
-        } );
-
-    if ( p->tier_set.tww_s3_sentinel_4pc->ok() )
-      p->buffs.boon_of_elune_4pc->add_stack_change_callback(
-        [ this, p ]( buff_t*, int prev, int cur ) {
-          if ( prev == 0 )
-            set_school_override( p->tier_set.tww_s3_sentinel_4pc_buff->effectN( 2 ).school_type() );
-          else if ( cur == 0 )
-            clear_school_override();
-        } );
   }
 
   double action_multiplier() const override
@@ -5647,14 +5501,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     lock_and_loaded = false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    aimed_shot_base_t::impact( s );
-
-    if ( p()->tier_set.tww_s3_sentinel_2pc.ok() && s->chain_target == 0 )
-      make_event( p()->sim, 400_ms, [ this ]() { p()->buffs.boon_of_elune_2pc->decrement(); } );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -6121,53 +5967,14 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct {
-    double chance = 0;
-    proc_t* proc;
-  } rylakstalkers_strikes;
-
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ) {}
-
-  double action_multiplier() const override
-  {
-    double am = hunter_melee_attack_t::action_multiplier();
-
-    if ( p()->buffs.strike_it_rich->check() )
-      am *= 1 + p() -> buffs.strike_it_rich -> value();  
-
-    return am;
-  }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_melee_attack_t::composite_target_da_multiplier( t );
-
-    hunter_td_t *td = p()->get_target_data( t );
-
-    if ( p()->tier_set.tww_s1_sv_4pc.ok() && td->dots.wildfire_bomb->is_ticking() )
-      m *= 1 + p()->tier_set.tww_s1_sv_4pc->effectN( 1 ).percent();
-
-    return m;
-  }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
 
-    if ( rng().roll( rylakstalkers_strikes.chance ) )
-    {
-      p() -> cooldowns.wildfire_bomb -> reset( true );
-      rylakstalkers_strikes.proc -> occur();
-    }
-
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
-
-    if ( p()->tier_set.tww_s2_sv_4pc.ok() && p()->buffs.strike_it_rich->check() )
-    {
-      p()->buffs.strike_it_rich->expire();
-      p()->cooldowns.wildfire_bomb->adjust( -p()->buffs.strike_it_rich->data().effectN( 2 ).time_value() );
-    }
   }
 
   bool ready() override
@@ -6781,7 +6588,6 @@ struct kill_command_t: public hunter_spell_t
 struct bestial_wrath_t: public hunter_ranged_attack_t
 {
   timespan_t precast_time = 0_ms;
-  attacks::barbed_shot_tww_s2_bm_2pc_t* barbed_shot_tww_s2_bm_2pc = nullptr;
 
   bestial_wrath_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "bestial_wrath", p, p -> talents.bestial_wrath )
   {
@@ -6789,9 +6595,6 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
-
-    if ( p->tier_set.tww_s2_bm_2pc.ok() && p->talents.barbed_shot.ok() )
-      barbed_shot_tww_s2_bm_2pc = p->get_background_action<attacks::barbed_shot_tww_s2_bm_2pc_t>( "barbed_shot_tww_s2_bm_2pc" );
   }
 
   bool usable_precombat() const override
@@ -6834,15 +6637,6 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     if ( p()->talents.scent_of_blood.ok() )
       p()->cooldowns.barbed_shot->reset( true, as<int>( p()->talents.scent_of_blood->effectN( 1 ).base_value() ) );
-
-    if ( !is_precombat )
-    {
-      if ( barbed_shot_tww_s2_bm_2pc )
-          barbed_shot_tww_s2_bm_2pc->execute_on_target( target );
-
-      if ( p()->tier_set.tww_s2_bm_4pc.ok() )
-        p()->pets.main->buffs.potent_mutagen->trigger();
-    }
 
     if ( p()->talents.bloody_frenzy.ok() )
       p()->buffs.bloody_frenzy->trigger();
@@ -7017,8 +6811,6 @@ struct trueshot_t : public hunter_spell_t
       p()->buffs.moonlight_chakram->trigger();
 
     p()->buffs.double_tap->trigger();
-
-    p()->buffs.jackpot->trigger();
   }
 };
 
@@ -7133,24 +6925,6 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
         hunter_spell_t( n, p, p->talents.shrapnel_bomb.ok() ? p->talents.shrapnel_bomb_bleed : p->talents.wildfire_bomb_dot )
       {
         background = dual = true;
-
-        if ( p->tier_set.tww_s3_sentinel_2pc->ok() )
-          p->buffs.boon_of_elune_2pc->add_stack_change_callback(
-            [ this, p ]( buff_t*, int prev, int cur ) {
-              if ( prev == 0 )
-                set_school_override( p->tier_set.tww_s3_sentinel_2pc_buff->effectN( 2 ).school_type() );
-              else if ( cur == 0 )
-                clear_school_override();
-            } );
-
-        if ( p->tier_set.tww_s3_sentinel_4pc->ok() )
-          p->buffs.boon_of_elune_4pc->add_stack_change_callback(
-            [ this, p ]( buff_t*, int prev, int cur ) {
-              if ( prev == 0 )
-                set_school_override( p->tier_set.tww_s3_sentinel_4pc_buff->effectN( 2 ).school_type() );
-              else if ( cur == 0 )
-                clear_school_override();
-            } );
       }
 
       double composite_ta_multiplier( const action_state_t* s ) const override
@@ -7184,24 +6958,6 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 
       a->add_child( this );
       a->add_child( bomb_dot );
-
-      if ( p->tier_set.tww_s3_sentinel_2pc->ok() )
-        p->buffs.boon_of_elune_2pc->add_stack_change_callback(
-          [ this, p ]( buff_t*, int prev, int cur ) {
-            if ( prev == 0 )
-              set_school_override( p->tier_set.tww_s3_sentinel_2pc_buff->effectN( 2 ).school_type() );
-            else if ( cur == 0 )
-              clear_school_override();
-          } );
-
-      if ( p->tier_set.tww_s3_sentinel_4pc->ok() )
-        p->buffs.boon_of_elune_4pc->add_stack_change_callback(
-          [ this, p ]( buff_t*, int prev, int cur ) {
-            if ( prev == 0 )
-              set_school_override( p->tier_set.tww_s3_sentinel_4pc_buff->effectN( 2 ).school_type() );
-            else if ( cur == 0 )
-              clear_school_override();
-          } );
     }
 
     void execute() override
@@ -7288,21 +7044,6 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
     if ( p()->tier_set.mid_s1_sv_4pc.ok() )
       if ( auto pet = p()->pets.main )
         pet->actions.strike_as_one->execute_on_target( target );
-
-    if ( p()->buffs.winning_streak->check() && rng().roll( p()->tier_set.tww_s2_sv_2pc->proc_chance() ) )
-    {
-      p()->buffs.winning_streak->expire();  // Consume 2pc buff
-      if ( p()->tier_set.tww_s2_sv_4pc.ok() )
-        p()->buffs.strike_it_rich->trigger(); // Apply 4pc buff
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wildfire_bomb_base_t::impact( s );
-
-    if ( p()->tier_set.tww_s3_sentinel_2pc.ok() )
-      make_event( p()->sim, 400_ms, [ this ]() { p()->buffs.boon_of_elune_2pc->decrement(); } );
   }
 };
 
@@ -8029,35 +7770,6 @@ void hunter_t::init_spells()
   specs.call_pet             = find_spell( 883 );
 
   // Tier Sets
-  tier_set.tww_s1_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B2 );
-  tier_set.tww_s1_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B4 );
-  tier_set.tww_s1_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, TWW1, B2 );
-  tier_set.tww_s1_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, TWW1, B4 );
-  tier_set.tww_s1_sv_2pc = sets -> set( HUNTER_SURVIVAL, TWW1, B2 );
-  tier_set.tww_s1_sv_4pc = sets -> set( HUNTER_SURVIVAL, TWW1, B4 );
-
-  tier_set.tww_s2_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, TWW2, B2 );
-  tier_set.tww_s2_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, TWW2, B4 );
-  tier_set.tww_s2_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, TWW2, B2 );
-  tier_set.tww_s2_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, TWW2, B4 );
-  tier_set.tww_s2_sv_2pc = sets -> set( HUNTER_SURVIVAL, TWW2, B2 );
-  tier_set.tww_s2_sv_4pc = sets -> set( HUNTER_SURVIVAL, TWW2, B4 );
-
-  tier_set.tww_s3_dark_ranger_2pc = sets->set( HERO_DARK_RANGER, TWW3, B2 );
-  tier_set.tww_s3_dark_ranger_4pc = sets->set( HERO_DARK_RANGER, TWW3, B4 );
-  tier_set.tww_s3_dark_ranger_4pc_buff = tier_set.tww_s3_dark_ranger_4pc.ok() ? find_spell( 1236975 ) : spell_data_t::not_found();
-  
-  tier_set.tww_s3_sentinel_2pc = sets->set( HERO_SENTINEL, TWW3, B2 );
-  tier_set.tww_s3_sentinel_2pc_buff = tier_set.tww_s3_sentinel_2pc.ok() ? find_spell( 1236644 ) : spell_data_t::not_found();
-  tier_set.tww_s3_sentinel_4pc = sets->set( HERO_SENTINEL, TWW3, B4 );
-  tier_set.tww_s3_sentinel_4pc_buff = tier_set.tww_s3_sentinel_4pc.ok() ? find_spell( 1249464 ) : spell_data_t::not_found();
-  
-  tier_set.tww_s3_pack_leader_2pc = sets->set( HERO_PACK_LEADER, TWW3, B2 );
-  tier_set.tww_s3_pack_leader_2pc_mastery_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236564 ) : spell_data_t::not_found();
-  tier_set.tww_s3_pack_leader_2pc_haste_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236565 ) : spell_data_t::not_found();
-  tier_set.tww_s3_pack_leader_2pc_crit_buff = tier_set.tww_s3_pack_leader_2pc.ok() ? find_spell( 1236566 ) : spell_data_t::not_found();
-  tier_set.tww_s3_pack_leader_4pc = sets->set( HERO_PACK_LEADER, TWW3, B4 );
-
   tier_set.mid_s1_bm_2pc        = sets->set( HUNTER_BEAST_MASTERY, MID1, B2 );
   tier_set.mid_s1_bm_4pc        = sets->set( HUNTER_BEAST_MASTERY, MID1, B4 );
 
@@ -8103,11 +7815,6 @@ void hunter_t::init_spells()
                                 specialization() == HUNTER_BEAST_MASTERY
                                                     ? effect_mask_t( true ).disable( 1, 3 )
                                                     : effect_mask_t( true ).disable( 2, 4 ) );
-
-  register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
-                                specialization() == HUNTER_BEAST_MASTERY
-                                                    ? effect_mask_t( true ).disable( 2 )
-                                                    : effect_mask_t( true ).disable( 1 ) );
 
   deregister_passive_spell( talents.penetrating_shots );
 
@@ -8355,37 +8062,6 @@ void hunter_t::create_buffs()
 
   // Tier Set Bonuses
 
-  buffs.jackpot
-    = make_buff( this, "jackpot", tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() )
-      ->set_default_value_from_effect( 1 );
-
-  buffs.winning_streak = 
-    make_buff( this, "winning_streak", tier_set.tww_s2_sv_2pc->effectN( 1 ).trigger() )
-      ->set_default_value_from_effect( 1 ) // Damage increase per stack to wildfire bomb
-      ->set_chance( 1.0 );
-
-  buffs.strike_it_rich = 
-    make_buff( this, "strike_it_rich", find_spell( 1216879 ) ) 
-      ->set_default_value_from_effect( 1 ); // Damage increase to mongoose/raptor strike
-
-  buffs.boon_of_elune_2pc =
-    make_buff( this, "boon_of_elune_2pc", tier_set.tww_s3_sentinel_2pc_buff )
-      ->set_default_value_from_effect( specialization() == HUNTER_MARKSMANSHIP ? 1 : 3 );
-
-  buffs.boon_of_elune_4pc =
-    make_buff( this, "boon_of_elune_4pc", tier_set.tww_s3_sentinel_4pc_buff )
-      ->set_default_value_from_effect( specialization() == HUNTER_MARKSMANSHIP ? 1 : 3 );
-
-  buffs.grizzled_fur =
-    make_buff( this, "grizzled_fur", tier_set.tww_s3_pack_leader_2pc_mastery_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
-  
-  buffs.hasted_hooves =
-    make_buff( this, "hasted_hooves", tier_set.tww_s3_pack_leader_2pc_haste_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-
   // Hero Talents
 
   buffs.howl_of_the_pack_leader_wyvern = 
@@ -8514,9 +8190,6 @@ void hunter_t::init_procs()
 
   if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
-
-  if ( tier_set.tww_s2_mm_4pc.ok() )
-    procs.tww_s2_mm_4pc_explosive = get_proc( "TWW S2 MM 4pc Explosive" );
 
   if ( talents.dire_beast_summon.ok() )
     procs.dire_beast_spawn = get_proc( "Dire Beast" );
@@ -8753,67 +8426,6 @@ void hunter_t::init_special_effects()
 
     auto cb = new master_marksman_cb_t( *effect, talents.master_marksman -> effectN( 1 ).percent(), new attacks::master_marksman_t( this ) );
     cb -> initialize();
-  }
-
-  if ( tier_set.tww_s2_bm_2pc.ok() )
-  {
-    struct jackpot_cb_t : public dbc_proc_callback_t
-    {
-      hunter_t* player;
-      action_t* barbed_shot;
-
-      jackpot_cb_t( const special_effect_t& e, hunter_t* p ) : dbc_proc_callback_t( p, e ), 
-        player( p ), 
-        barbed_shot( p->get_background_action<attacks::barbed_shot_tww_s2_bm_2pc_t>( "barbed_shot_tww_s2_bm_2pc" ) )
-      {
-      }
-
-      void execute( action_t* a, action_state_t* s ) override
-      {
-        dbc_proc_callback_t::execute( a, s );
-
-        if ( barbed_shot && player->talents.barbed_shot.ok() )
-          barbed_shot->execute_on_target( s->target );
-
-        if ( player->tier_set.tww_s2_bm_4pc.ok())
-          player->pets.main->buffs.potent_mutagen->trigger();
-      }
-    };
-
-    auto const effect = new special_effect_t( this );
-    effect->name_str = "jackpot";
-    effect->spell_id = tier_set.tww_s2_bm_2pc->id();
-    effect->proc_flags2_ = PF2_ALL_HIT;
-    special_effects.push_back( effect );
-
-    auto cb = new jackpot_cb_t( *effect, this );
-    cb->initialize();
-  }
-
-  if ( tier_set.tww_s2_mm_2pc.ok() )
-  {
-    auto const effect = new special_effect_t( this );
-    effect->name_str = "jackpot";
-    effect->spell_id = tier_set.tww_s2_mm_2pc->id();
-    effect->custom_buff = buffs.jackpot;
-    effect->proc_flags2_ = PF2_ALL_HIT;
-    special_effects.push_back( effect );
-
-    auto cb = new dbc_proc_callback_t( this, *effect );
-    cb->initialize();
-  }
-
-  if ( tier_set.tww_s2_sv_2pc.ok() )
-  {
-    auto const effect = new special_effect_t( this );
-    effect->name_str = "winning_streak";
-    effect->spell_id = tier_set.tww_s2_sv_2pc->id();
-    effect->custom_buff = buffs.winning_streak;
-    effect->proc_flags2_ = PF2_LANDED;
-    special_effects.push_back( effect );
-
-    auto cb = new dbc_proc_callback_t( this, *effect );
-    cb->initialize();
   }
 }
 
