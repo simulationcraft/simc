@@ -7053,6 +7053,9 @@ void mage_t::trigger_fired_up()
     buffs.fired_up->trigger();
     cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
     buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
+
+    if ( pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() )
+      pets.arcane_phoenix->adjust_duration( talents.fired_up_1->effectN( 3 ).time_value() );
   }
 }
 
