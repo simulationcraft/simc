@@ -1,5 +1,5 @@
-// Embellishment data, wow build 12.0.0.65727
-static constexpr std::array<embellishment_data_t, 45> __embellishment_data { {
+// Embellishment data, wow build 12.0.1.65848
+static constexpr std::array<embellishment_data_t, 49> __embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
   { "Alchemical Flavor Pocket"                   ,    8174,  147811,  372120 },
@@ -32,10 +32,14 @@ static constexpr std::array<embellishment_data_t, 45> __embellishment_data { {
   { "Dawnthread Lining"                          ,   11303,  187453,  457665 },
   { "Duskthread Lining"                          ,   11304,  187454,  457677 },
   { "Griftah's Heavy-Duty Embellishing Powder"   ,   11941,  190239,  463429 },
-  { "Arcanoweave Lining"                         ,   12384,  208649, 1229511 },
+  { "Arcanoweave Lining"                         ,   12384,  208649, 1283697 },
   { "Sunfire Silk Lining"                        ,   12385,  208662, 1241711 },
+  { "Darkmoon Sigil: Blood"                      ,   12705,  213245, 1245053 },
+  { "Darkmoon Sigil: Void"                       ,   13640,  213244, 1245052 },
+  { "Darkmoon Sigil: Rot"                        ,   12692,  213044, 1245055 },
+  { "Darkmoon Sigil: Hunt"                       ,   12693,  213045, 1245054 },
   { "Devouring Banding"                          ,   12685,  212929, 1244238 },
-  { "Blessed Pango Charm"                        ,   12686,  212930, 1244243 },
+  { "Blessed Pango Charm"                        ,   12686,  212930, 1259060 },
   { "Primal Spore Binding"                       ,   12687,  212945, 1244276 },
   { "Lucky Keychain"                             ,   12715,  213317, 1246298 },
   { "Kinetic Ankle Primers"                      ,   12717,  213322, 1246308 },

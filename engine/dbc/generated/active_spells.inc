@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.0.0.65727
-static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
+// Active class spells, wow build 12.0.1.65848
+static constexpr std::array<active_class_spell_t, 352> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -334,6 +334,7 @@ static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
   { 12, 1480, 1226019,  344862, "Reap"                               },
   { 12, 1480, 1229376,       0, "Single-Button Assistant"            },
   { 12, 1480, 1234796,  344865, "Shift"                              },
+  { 12, 1480, 1251417,  188501, "Spectral Sight"                     },
   { 13,    0,  355913,       0, "Emerald Blossom"                    },
   { 13,    0,  356995,       0, "Disintegrate"                       },
   { 13,    0,  357208,       0, "Fire Breath"                        },
@@ -353,7 +354,7 @@ static constexpr std::array<active_class_spell_t, 351> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.65727
+// Pet active spells, wow build 12.0.1.65848
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

@@ -1,5 +1,5 @@
-// Item effects, wow build 12.0.0.65727
-static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
+// Item effects, wow build 12.0.1.65848
+static constexpr std::array<item_effect_t, 10853> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -909,8 +909,8 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 207468, 1225232,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Dark Summons
   { 207469, 1225233,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Sacrificial Rituals
   { 207470, 1225234,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Prophetic Death
-  { 208649, 1229511,      0,   0,   6,    0,      -1,      -1 }, // Arcanoweave Lining
-  { 208662, 1241711,      0,   0,   6,    0,      -1,      -1 }, // Sunfire Silk Lining
+  { 208649, 1283697,      0,   0,   1,    0,      -1,      -1 }, // Arcanoweave Lining
+  { 208662, 1241711,      0,   0,   1,    0,      -1,      -1 }, // Sunfire Silk Lining
   { 212295, 1234416,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
   { 212364, 1234414,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
   { 212382, 1234413,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
@@ -921,7 +921,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 212387, 1234426,      0,   0,   1,    0,      -1,      -1 }, // Arcane Aegis
   { 212388, 1234418,      0,   0,   1,    0,      -1,      -1 }, // Temporal Retaliation
   { 212929, 1244238,      0,   0,   1,    0,      -1,      -1 }, // Devouring Banding
-  { 212930, 1244243,      0,   0,   1,    0,      -1,      -1 }, // Blessed Pango Charm
+  { 212930, 1259060,      0,   0,   1,    0,      -1,      -1 }, // Blessed Pango Charm
   { 212945, 1244276,      0,   0,   1,    0,      -1,      -1 }, // Primal Spore Binding
   { 213044, 1245055,      0,   0,   1,    0,      -1,      -1 }, // Rot
   { 213045, 1245054,      0,   0,   1,    0,      -1,      -1 }, // Hunt
@@ -10133,7 +10133,6 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 205070, 454149, 235805,   0,   0,   11,       0,      -1 }, // Refreshment
   { 205073, 1218442, 235813,   0,   1,    0,      -1,      -1 }, // Machine Gob's Iron Grin
   { 205099, 457482, 235853,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
-  { 205128, 1219187, 235919,   0,   0,   11,       0,      -1 }, // Refreshment
   { 205131, 1219294, 235984,   0,   0,    0,      -1,      -1 }, // Garbagemancer's Last Resort
   { 205132, 1219296, 235984,   1,   1,    0,      -1,      -1 }, // Garbagemancer's Last Resort
   { 205148, 443568, 236003,   1,   1,    0,      -1,      -1 }, // Fate Weaver
@@ -10176,10 +10175,10 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 207772, 1224458, 237790,   0,   1,    0,      -1,      -1 }, // Draining Essence
   { 206921, 1234139, 237946,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206922, 1234151, 237947,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 206923, 1234183, 237948,   0,   6,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206923, 1234183, 237948,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206925, 1234140, 237950,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206926, 1234152, 237951,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 206927, 1234184, 237952,   0,   6,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206927, 1234184, 237952,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206930, 1234161, 238009,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206931, 395185, 238009,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
   { 206932, 1234145, 238010,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
@@ -10194,7 +10193,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 206941, 395185, 238014,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
   { 206942, 1234146, 238015,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206943, 394872, 238015,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
-  { 206944, 1234146, 238016,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206944, 1234142, 238016,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206945, 395335, 238016,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
   { 206946, 1234150, 238017,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206947, 395393, 238017,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
@@ -10240,6 +10239,21 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 208926, 1231217, 240213,   0,   1,    0,      -1,      -1 }, // Veiling Mana Shroud
   { 208927, 1231220, 240213,   1,   1,    0,      -1,      -1 }, // Veiling Mana Ward
   { 209261, 1231665, 240214,   0,   1,    0,      -1,      -1 }, // Miniature Reshi Sandgarden
+  { 230625, 1234159, 240953,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230626, 395467, 240953,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230633, 1234159, 240954,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230634, 395467, 240954,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230635, 1234155, 240955,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230636, 395468, 240955,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
+  { 230642, 1234175, 240956,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230629, 1234160, 240957,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230630, 395467, 240957,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230637, 1234160, 240958,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230638, 395467, 240958,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230621, 1234156, 240959,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230622, 395468, 240959,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
+  { 230623, 1234176, 240960,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230624, 395469, 240960,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
   { 208795, 1251815, 241139,   0,   1,    0,      -1,      -1 }, // Thalassian Phoenix Torque
   { 208797, 1251902, 241140,   1,   1,    0,      -1,      -1 }, // Signet of Azerothian Blessings
   { 211403, 1236994, 241288,   0,   0,    0,      -1,      -1 }, // Potion of Recklessness
@@ -10250,8 +10264,8 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 211997, 1238443, 241297,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 211347, 1236616, 241308,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 211346, 1236616, 241309,   0,   0,    0,      -1,      -1 }, // Light's Potential
-  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
-  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
+  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
   { 210509, 1235108, 241322,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
   { 210510, 1235108, 241323,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
   { 210513, 1235110, 241324,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
@@ -10262,8 +10276,8 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 208942,  17619, 241340,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
   { 209286, 1231936, 242260,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Stormwind Guard Weapon Set
   { 209287, 1231938, 242265,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Orgrimmar Guard Weapon Set
-  { 211401, 1259657, 242272,   0,   0,   11,       0,       0 }, // Quel'dorei Medley
-  { 211400, 1259657, 242273,   0,   0,   11,       0,      -1 }, // Quel'dorei Medley
+  { 211401, 1259657, 242272,   0,   0, 2187,       0,       0 }, // Quel'dorei Medley
+  { 211400, 1259656, 242273,   0,   0,    0,       0,      -1 }, // Blooming Feast
   { 209642, 1232919, 242274,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209641, 1232917, 242275,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209640, 1232916, 242276,   0,   0,    0,      -1,      -1 }, // Refreshment
@@ -10284,7 +10298,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 209467, 1232486, 242291,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209627, 1232485, 242292,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209626, 1232484, 242293,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209628, 1219187, 242294,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209628, 1232901, 242294,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209624, 1232483, 242295,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209623, 1232481, 242296,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 227344, 1269305, 242297,   0,   0,    0,      -1,      -1 }, // Refreshment
@@ -10323,9 +10337,6 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 212862, 1244029, 242494,   0,   0,    0,      -1,      -1 }, // Woven Fate
   { 212743, 1243118, 242495,   0,   1,    0,      -1,      -1 }, // Incorporeal Warpclaw
   { 212843, 1243818, 242497,   0,   1,    0,      -1,      -1 }, // Azhiccaran Parapodia
-  { 209461, 1232257, 242530,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209462, 1232257, 242531,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209463, 1232257, 242532,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 209479, 196118, 242555,   1,   1,    0,      -1,      -1 },
   { 209480, 1233922, 242555,   2,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
   { 209592, 1233913, 242555,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
@@ -10404,37 +10415,37 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 211235, 1233262, 242664,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
   { 211236, 1236137, 242664,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 229948, 1278915, 242744,   0,   0,    0,      -1,      -1 }, // Hearty Quel'dorei Medley
-  { 229656, 1278915, 242745,   0,   0,    0,      -1,      -1 }, // Hearty Quel'dorei Medley
-  { 209827, 1232919, 242746,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209828, 1232917, 242747,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209829, 1232916, 242748,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209830, 1232915, 242749,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209831, 1232914, 242750,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209832, 1232913, 242751,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209833, 1232910, 242752,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209834, 1232909, 242753,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209835, 1232908, 242754,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209836, 1232907, 242755,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209837, 1232906, 242756,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209838, 1232905, 242757,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209839, 1232903, 242758,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209840, 1232902, 242759,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209841, 1232489, 242760,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209842, 1232488, 242761,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209843, 1232487, 242762,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209844, 1232486, 242763,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209845, 1232485, 242764,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209846, 1232484, 242765,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209847, 1219187, 242766,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209848, 1232483, 242767,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209849, 1232481, 242768,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209850, 1232257, 242769,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209851, 1232256, 242770,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209852, 1232253, 242771,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209853, 1232252, 242772,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209854, 1232251, 242773,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209855, 1232250, 242774,   0,   0,    0,      -1,      -1 }, // Refreshment
-  { 209856, 1232249, 242775,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 229656, 1278909, 242745,   0,   0,    0,      -1,      -1 }, // Hearty Blooming Feast
+  { 209827, 1233768, 242746,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209828, 1233767, 242747,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209829, 1233766, 242748,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209830, 1233765, 242749,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209831, 1233764, 242750,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209832, 1233763, 242751,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209833, 1233762, 242752,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209834, 1233761, 242753,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209835, 1233760, 242754,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209836, 1233759, 242755,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209837, 1233758, 242756,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209838, 1233757, 242757,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209839, 1233756, 242758,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209840, 1233755, 242759,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209841, 1233753, 242760,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209842, 1233752, 242761,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209843, 1233751, 242762,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209844, 1233750, 242763,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209845, 1233749, 242764,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209846, 1233748, 242765,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209847, 1233754, 242766,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209848, 1233747, 242767,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209849, 1233746, 242768,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209850, 1233745, 242769,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209851, 1233744, 242770,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209852, 1233743, 242771,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209853, 1233742, 242772,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209854, 1233741, 242773,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209855, 1233740, 242774,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 209856, 1233739, 242775,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
   { 209857, 1233738, 242776,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
   { 209963, 1234022, 242867,   0,   1,    0,      -1,      -1 }, // Automatic Footbomb Dispenser
   { 212294, 1234366, 243032,   0,   1,    0,      -1,      -1 }, // Touch of Malice
@@ -10452,7 +10463,6 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 211338, 395398, 244176,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
   { 211339, 1234174, 244177,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211340, 395398, 244177,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
-  { 211341, 462040, 244177,   2,   1,    0,      -1,      -1 }, // Runed Null Stone Rod
   { 211419, 1237362, 244463,   0,   1,    0,      -1,      -1 }, // Murder Row Fleet Feet
   { 211427, 1237608, 244472,   0,   1,    0,      -1,      -1 }, // Knight-Commander's Palisade
   { 211437, 1243903, 244601,   0,   1,    0,      -1,      -1 }, // Azerothian Power
@@ -10462,44 +10472,44 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 225016, 1259297, 244612,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
   { 225014, 1259297, 244613,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
   { 225015, 1259297, 244614,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
-  { 211441, 455786, 244615,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211441, 1234163, 244615,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211442, 395478, 244615,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
-  { 211443, 455744, 244616,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211443, 1234143, 244616,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211444, 395477, 244616,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211445, 455744, 244617,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211445, 1234143, 244617,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211446, 395477, 244617,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211447, 455691, 244618,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211447, 1234171, 244618,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211448, 395470, 244618,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
-  { 211449, 455781, 244619,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211449, 1234151, 244619,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211450, 395474, 244619,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
-  { 211451, 455688, 244620,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211451, 1234187, 244620,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211452, 395473, 244620,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
-  { 211453, 455776, 244621,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211453, 1234164, 244621,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211454, 395478, 244621,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
-  { 211455, 455747, 244622,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211455, 1234144, 244622,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211456, 395477, 244622,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211457, 455747, 244623,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211457, 1234144, 244623,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211458, 395477, 244623,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211459, 455710, 244624,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211459, 1234172, 244624,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211460, 395470, 244624,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
-  { 211461, 455780, 244625,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211461, 1234152, 244625,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211462, 395474, 244625,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
-  { 211463, 455763, 244626,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211463, 1234188, 244626,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211464, 395473, 244626,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
-  { 211465, 455727, 244627,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211465, 1234183, 244627,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211466, 395475, 244627,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
-  { 211467, 455724, 244628,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211467, 1234184, 244628,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211468, 395475, 244628,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
-  { 211469, 455690, 244629,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211469, 1234155, 244629,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211470, 395468, 244629,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
-  { 211471, 455734, 244630,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211471, 1234156, 244630,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211472, 395468, 244630,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
   { 214274, 1250529, 244679,   0,   1,    0,      -1,      -1 }, // Murder Row Fishhook
   { 211521, 1234137, 244707,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211522, 395396, 244707,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
   { 211523, 1234138, 244708,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211524, 395396, 244708,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
-  { 211525, 1234147, 244709,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211525, 1234171, 244709,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211526, 395470, 244709,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
   { 211527, 1234172, 244710,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211528, 395470, 244710,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
@@ -10527,21 +10537,21 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 211560, 395369, 244788,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 211561, 1237934, 244789,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211562, 395369, 244789,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
-  { 211597, 455776, 244807,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211597, 1234164, 244807,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211598, 395478, 244807,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
-  { 211599, 455747, 244808,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211599, 1234144, 244808,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211600, 395477, 244808,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211601, 455747, 244809,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211601, 1234144, 244809,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211602, 395477, 244809,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
-  { 211603, 455710, 244810,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211603, 1234172, 244810,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211604, 395470, 244810,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
-  { 211605, 455780, 244811,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211605, 1234152, 244811,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211606, 395474, 244811,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
-  { 211607, 455763, 244812,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211607, 1234188, 244812,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211608, 395473, 244812,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
-  { 211609, 455724, 244813,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211609, 1234184, 244813,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211610, 395475, 244813,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
-  { 211611, 455734, 244814,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211611, 1234156, 244814,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211612, 395468, 244814,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
   { 211635, 1238016, 244828,   0,   1,    0,      -1,      -1 }, // Spellblade Sear
   { 212118, 1244254, 245750,   0,   1,    0,      -1,      -1 }, // Void
@@ -10567,8 +10577,8 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 212203, 1236616, 245898,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 212205, 1238443, 245900,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 212206, 1238443, 245901,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
-  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
-  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
+  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
   { 212228, 1235111, 245928,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
   { 212229, 1235111, 245929,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
   { 212230, 1235110, 245930,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
@@ -10619,8 +10629,13 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 212652, 395473, 246521,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
   { 212653, 1234180, 246522,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212654, 395472, 246522,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
-  { 212655, 1234176, 246523,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 212656, 395469, 246523,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
+  { 230639, 1234160, 246524,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230640, 395467, 246524,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230631, 1234160, 246525,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230632, 395467, 246525,   1,   1,    0,      -1,      -1 }, // Inscription Gear Equipped (DNT)
+  { 230627, 1234156, 246526,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 230628, 395468, 246526,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
+  { 230641, 1234176, 246527,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212665, 1234162, 246533,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212666, 395185, 246533,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
   { 212667, 1234146, 246534,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
@@ -10696,12 +10711,14 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 224845, 1259351, 250238,   1,   1,    0,      -1,      -1 }, // Seed of the Devouring Wild
   { 214292, 1250582, 250241,   0,   1,    0,      -1,      -1 }, // Mark of Light
   { 214293, 1250584, 250242,   0,   1,    0,      -1,      -1 }, // Jelly Replicator
-  { 214294, 1250587, 250243,   0,   0,    0,      -1,      -1 }, // The Binding Flame
+  { 214294, 1250587, 250243,   0,   0,    0,      -1,      -1 }, // Binding Flame
+  { 230541, 1283373, 250243,   1,   1,    0,      -1,      -1 }, // Binding Flame
   { 214295, 1250588, 250244,   0,   1,    0,      -1,      -1 }, // Permafrost Reservoir
   { 214296, 1250589, 250245,   0,   1,    0,      -1,      -1 }, // Crawling Plague
   { 214297, 1254752, 250246,   1,   1,    0,      -1,      -1 }, // Refueling Orb
   { 214298, 1250591, 250248,   1,   1,    0,      -1,      -1 }, // Mycolic Medicine
   { 214303, 1250596, 250253,   1,   1,    0,      -1,      -1 }, // Whisper of the Duskwraith
+  { 231167, 1285918, 250254,   0,   1,    0,      -1,      -1 }, // Seed of Radiant Hope
   { 214304, 1263644, 250254,   1,   0,    0,      -1,      -1 }, // Seed of Radiant Hope
   { 227058, 1266821, 250255,   0,   1,    0,      -1,      -1 }, // Unstable Felheart Crystal
   { 214305, 1254339, 250255,   1,   0,    0,      -1,      -1 }, // Unstable Felheart Crystal
@@ -10714,21 +10731,21 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 230334, 1281581, 251217,   0,   1,    0,      -1,      -1 }, // Voidlight Bindings
   { 215084, 1251904, 251513,   1,   1,    0,      -1,      -1 }, // Loa Worshiper's Band
   { 215326, 1253043, 251774,   0,   0,    0,      -1,      -1 }, // Searching Crate
-  { 215327, 1253042, 251775,   0,   1,    0,      -1,      -1 }, // Empty Crate of Relics
   { 215331, 1253110, 251782,   0,   1,    0,      -1,      -1 }, // Withered Saptor's Paw
   { 215332, 1253111, 251783,   0,   1,    0,      -1,      -1 }, // Lost Idol of the Hash'ey
   { 215333, 1253112, 251784,   0,   1,    0,      -1,      -1 }, // Sylvan Wakrapuku
   { 215334, 1253113, 251785,   0,   1,    0,      -1,      -1 }, // Void-Reaper's Libram
   { 215335, 1253114, 251786,   0,   0,    0,      -1,      -1 }, // Ever-collapsing Void Fissure
   { 215336, 1253115, 251787,   0,   0,    0,      -1,      -1 }, // Sealed Chaos Urn
-  { 215337, 1253116, 251788,   0,   1,    0,      -1,      -1 }, // Guide of Light
+  { 215337, 1253116, 251788,   0,   1,    0,      -1,      -1 }, // Gift of Light
   { 215338, 1253117, 251789,   0,   1,    0,      -1,      -1 }, // Consecrated Chalice
   { 225097, 1259988, 251789,   1,   0,    0,      -1,      -1 }, // Consecrated Chalice
   { 215339, 1253118, 251790,   0,   1,    0,      -1,      -1 }, // Desecrated Chalice
-  { 215340, 1253119, 251791,   0,   1,    0,      -1,      -1 }, // Gift of Light
+  { 215340, 1253119, 251791,   0,   1,    0,      -1,      -1 }, // Holy Retributor's Order
   { 215341, 1253120, 251792,   0,   1,    0,      -1,      -1 }, // Glorious Crusader's Keepsake
   { 215342, 1253121, 251793,   0,   0,    0,      -1,      -1 }, // Spore Releasing Device
   { 215343, 1253122, 251794,   0,   1,    0,      -1,      -1 }, // Gris-gris of Confidence
+  { 230542, 1283377, 251882,   0,   1,    0,      -1,      -1 }, // Fragmented Light Shard
   { 215382, 1253327, 251883,   0,   1,    0,      -1,      -1 }, // Looming Darkness
   { 215383, 1253357, 251884,   0,   1,    0,      -1,      -1 }, // Abyss Sabre
   { 215384, 1253359, 251885,   0,   1,    0,      -1,      -1 }, // Radiant Foil
@@ -10750,6 +10767,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 215823, 1254640, 252420,   0,   1,    0,      -1,      -1 }, // Solarflare Prism
   { 215824, 1254641, 252421,   0,   0,    0,      -1,      -1 }, // Rotting Globule
   { 223938, 1257925, 252421,   1,   1,    0,      -1,      -1 }, // Rotting Globule
+  { 230543, 1283380, 252677,   0,   1,    0,      -1,      -1 }, // Puzzling Crypt Relic
   { 216268, 1255277, 252956,   0,   1,    0,      -1,      -1 }, // Aln-Bound Essence
   { 216267, 1255278, 252957,   0,   1,    0,      -1,      -1 }, // Tangle of Vibrant Vines
   { 224748, 345228, 255326,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
@@ -10763,7 +10781,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 224757, 336126, 255616,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
   { 224758, 336135, 255617,   0,   1,    0,      -1,      -1 }, // Adaptation
   { 224965, 1259659, 255845,   0,   0,   11,       0,      -1 }, // Silvermoon Parade
-  { 224966, 1259658, 255846,   0,   0,   11,       0,      -1 }, // Rootland Celebration
+  { 224966, 1259658, 255846,   0,   0,   11,       0,      -1 }, // Harandar Celebration
   { 224967, 1232917, 255847,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 224968, 1232919, 255848,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 225134, 1260244, 256326,   0,   1,    0,      -1,      -1 }, // Fetid Dartfrog Idol
@@ -10782,22 +10800,21 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 226589, 395399, 259181,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
   { 226592, 1234170, 259183,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226593, 395397, 259183,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
-  { 226597, 1234188, 259205,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226597, 1234186, 259205,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226598, 395394, 259205,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
   { 226601, 1234178, 259207,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226602, 395395, 259207,   1,   1,    0,      -1,      -1 }, // Cooking Tool Equipped (DNT)
   { 226605, 1234158, 259209,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 226606, 395472, 259209,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
-  { 226637, 1234184, 259230,   0,   6,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226606, 395400, 259209,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
+  { 226637, 1234184, 259230,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226640, 1234152, 259232,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226643, 1234140, 259234,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226804, 1265127, 259477,   0,   1,    0,      -1,      -1 }, // Thriving Essence Sprig
   { 226808, 1265336, 259896,   0,   0,    0,      -1,      -1 }, // Shield of the Guardian Tree
+  { 230394, 1282103, 259896,   1,   1,    0,      -1,      -1 }, // Shield of the Guardian Tree
   { 226856, 1265809, 260235,   0,   1,    0,      -1,      -1 }, // Umbral Plume
   { 226859, 1265806, 260235,   1,   0,    0,      -1,      -1 }, // Radiant Plume
   { 226964, 1266257, 260408,   0,   1,    0,      -1,      -1 }, // Heaven's Glaive
-  { 227352, 1255277, 262753,   0,   1,    0,      -1,      -1 }, // Aln-Bound Essence
-  { 227353, 1255278, 262754,   0,   1,    0,      -1,      -1 }, // Tangle of Vibrant Vines
   { 227528, 1269965, 262992,   0,   1,    0,      -1,      -1 }, // Myth Maker's Brush
   { 227565, 1270337, 263282,   0,   1,    0,      -1,      -1 }, // Repurposed Volatile Manacell
   { 228847, 1272091, 264507,   0,   1,    0,      -1,      -1 }, // Crucible of Erratic Energies
@@ -10810,8 +10827,7 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 229304, 1276678, 265657,   0,   1,    0,      -1,      -1 }, // Fiber of Living Agony
   { 229655, 1278895, 266985,   0,   0,   11,       0,      -1 }, // Hearty Silvermoon Parade
   { 229657, 1278915, 266986,   0,   0,   11,       0,      -1 }, // Hearty Quel'dorei Medley
-  { 229658, 1278929, 266996,   0,   0,   11,       0,      -1 }, // Hearty Rootland Celebration
-  { 229660, 1232919, 267000,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 229658, 1278929, 266996,   0,   0,   11,       0,      -1 }, // Hearty Harandar Celebration
   { 229671, 1234188, 267052,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 229672, 395473, 267052,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
   { 229675, 1234180, 267054,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
@@ -10833,9 +10849,13 @@ static constexpr std::array<item_effect_t, 10833> __item_effect_data { {
   { 229877, 1280421, 267392,   0,   1,    0,      -1,      -1 }, // Test Item [DNT] - When X has poison dispelled
   { 229872, 1280385, 267403,   0,   0,    0,      -1,      -1 }, // Test Item [DNT] - Apply Poison - DISPEL TYPE
   { 229930, 345229, 267469,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 230391, 1282029, 268274,   0,   1,    0,      -1,      -1 }, // Blinky's Collar
+  { 230478, 1282741, 268534,   0,   7,    0,      -1,      -1 }, // [DNT] Sanctum's Decree
+  { 230539, 1233767, 268679,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
+  { 230540, 1233768, 268680,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
 } };
 
-static const std::array<uint16_t, 10833> __item_effect_id_index { {
+static const std::array<uint16_t, 10853> __item_effect_id_index { {
    1088,  1089,  1090,  1091,  1092,  1093,  1094,  1097,
    1098,  1099,  1100,  1101,  1102,  1103,  1104,  1105,
    1106,  1107,  1108,  1109,  1112,  1113,  1114,  1115,
@@ -12079,117 +12099,119 @@ static const std::array<uint16_t, 10833> __item_effect_id_index { {
   10100, 10117, 10118, 10119, 10120, 10121, 10122, 10123,
   10124, 10125, 10126, 10127, 10128, 10129, 10024, 10025,
   10130, 10131, 10132, 10073,   842,   843, 10133, 10134,
-  10135, 10080, 10136, 10075, 10137, 10077,  9984,  9979,
-   9981,  9983,  9977,  9975,  9973,  9965,  9963,  9961,
-   9971,  9969,  9967, 10151, 10153, 10155,   844,   845,
-  10156, 10157,   846,   847,   848,   849,  9938, 10145,
+  10080, 10135, 10075, 10136, 10077,  9984,  9979,  9981,
+   9983,  9977,  9975,  9973,  9965,  9963,  9961,  9971,
+   9969,  9967, 10150, 10152, 10154,   844,   845, 10155,
+  10156,   846,   847,   848,   849,  9938, 10144, 10173,
   10174, 10175, 10176, 10177, 10178, 10179, 10180, 10181,
   10182, 10183, 10184, 10185, 10186, 10187, 10188, 10189,
   10190, 10191, 10192, 10193, 10194, 10195, 10196, 10197,
-  10198, 10199, 10143, 10144, 10200, 10202, 10203, 10204,
-  10201,   850,   851,   852,   853,   854,   855,   856,
-    857,   858,   859,   860,   861,   862,   863,   864,
-    865,   866,   867,   868,   869,   870,   871,   872,
-    873,   874,   875,   876,   877,   878,   879,   880,
-    881,   882,   883,   884,   885,   886,   887,   888,
-    889,   890,   891,   892,   893,   894,   895,   896,
-    897,   898,   899,   900,   901,   902,   903,   904,
-    905, 10147,   906,   907,   908, 10158, 10165, 10164,
-  10170, 10169, 10171, 10162, 10163, 10159, 10160, 10168,
-  10167, 10166, 10161, 10173, 10172, 10146, 10139, 10140,
-  10141, 10142, 10205,   909,   910, 10240, 10241, 10232,
-  10233, 10234, 10235, 10236, 10237, 10238, 10258, 10259,
-  10239, 10260, 10261, 10298, 10297, 10296, 10295, 10294,
-  10293, 10292, 10291, 10301, 10303, 10323, 10324, 10325,
-  10279, 10278, 10280, 10281, 10302, 10311, 10313, 10314,
-  10138, 10326, 10327, 10331, 10334, 10336, 10338, 10340,
-  10342, 10344, 10345, 10347, 10349, 10351, 10353, 10355,
-  10357, 10359, 10360, 10362, 10364, 10366, 10368, 10370,
-  10372, 10374, 10375, 10377, 10379, 10382, 10383, 10385,
-  10387, 10389, 10391, 10393, 10395, 10396, 10398, 10390,
-  10354, 10373, 10328, 10376, 10356, 10361, 10378, 10380,
-  10343, 10384, 10348, 10381, 10394, 10397, 10392, 10388,
-  10386, 10369, 10358, 10346, 10333, 10350, 10371, 10286,
-  10285, 10283, 10282, 10284, 10277, 10276, 10275, 10274,
-  10273, 10272, 10271, 10270, 10269, 10268, 10267, 10266,
-  10265, 10264, 10290, 10289, 10288, 10304, 10306, 10307,
-  10405, 10406, 10407, 10408, 10409, 10410, 10411, 10412,
-  10413, 10414, 10415, 10416, 10417, 10418, 10419, 10420,
-  10421, 10422, 10423, 10424, 10425, 10426, 10427, 10428,
-  10429, 10430, 10431, 10432, 10433, 10434, 10435, 10339,
-  10335, 10341, 10337, 10352, 10367, 10365, 10363, 10329,
-  10330, 10154, 10152, 10436, 10228, 10229, 10226, 10227,
-  10224, 10225, 10222, 10223, 10220, 10221, 10218, 10219,
-  10216, 10217, 10214, 10215, 10212, 10213, 10210, 10211,
-  10208, 10209, 10206, 10207, 10443, 10305, 10251, 10250,
-  10252, 10253, 10257, 10256, 10254, 10255, 10150, 10148,
-  10149, 10299, 10312, 10310, 10308, 10309, 10300, 10317,
-  10444, 10315, 10316, 10399, 10400, 10401, 10402, 10445,
-  10446, 10447, 10448, 10449, 10450, 10451, 10452, 10249,
-  10248, 10243, 10263, 10262, 10242, 10453, 10454, 10455,
-  10456, 10457, 10458, 10462, 10463, 10464, 10465, 10466,
-  10467, 10468, 10469, 10470, 10471, 10472, 10473, 10474,
-  10475, 10476, 10477, 10478, 10479, 10480, 10481, 10482,
-  10483, 10484, 10485, 10486, 10487, 10488, 10489, 10490,
-  10491, 10492, 10493, 10318, 10245, 10244, 10495, 10496,
-  10497, 10498, 10499, 10500, 10501, 10502, 10503, 10504,
-  10505, 10506, 10507, 10508, 10509, 10510, 10511, 10512,
-  10513, 10514, 10515, 10516, 10517, 10518, 10519, 10520,
-  10521, 10522, 10523, 10524, 10525, 10526, 10527, 10528,
-  10529, 10530, 10531, 10532, 10533, 10534, 10535, 10536,
-  10537, 10538, 10539, 10540, 10541, 10542, 10543, 10247,
-  10246, 10544, 10545, 10546, 10547, 10548, 10549, 10550,
-  10551, 10552, 10553, 10554, 10555, 10556, 10557, 10558,
-  10559, 10560, 10561, 10562, 10563, 10564, 10565, 10566,
-  10567, 10568, 10569, 10570, 10571, 10572, 10573, 10574,
-  10575, 10576, 10577, 10578, 10579, 10580, 10581, 10582,
-  10583, 10584, 10585, 10586, 10442, 10441, 10440, 10439,
-  10438, 10437,   911, 10587, 10588, 10589, 10603, 10604,
-    912, 10597, 10598, 10599, 10600, 10601, 10602, 10590,
-  10591, 10592, 10593, 10594, 10595, 10596,   913,   914,
-    915,   916,   917,   918,   919, 10606, 10608, 10230,
-  10231, 10609, 10610, 10611, 10612, 10613, 10614, 10615,
-  10616, 10617, 10618, 10619, 10620, 10621, 10622, 10623,
-  10624, 10625, 10626, 10627, 10628, 10629, 10630, 10321,
-  10319, 10631, 10632, 10633, 10634, 10635, 10636, 10637,
-  10638, 10639, 10640, 10641, 10642, 10322, 10643, 10645,
-  10320,   920,   921,   922, 10607, 10647, 10648, 10649,
-  10650, 10652, 10654, 10605,   923,   924,   925,   926,
-    927,   928,   929, 10651, 10646, 10644, 10653,   930,
-    931, 10655,  1082,  1083,  1084,  1085,   932,   933,
-    934,   935,   936,   937,   938,   939,   940,   941,
-    942,   943,   944,   945,   946,   947,   948,   949,
-    950,   951,   952,   953,   954,   955,   956,   957,
-    958,   959,   960,   961,   962,   963,   964,   965,
-    966,   967,   968,   969,   970,   971, 10661, 10670,
-  10674, 10681, 10682, 10683, 10684, 10685,   972, 10686,
-  10494, 10687, 10689, 10690, 10691, 10692, 10694, 10695,
-  10696, 10697, 10698, 10699, 10700, 10701, 10702, 10704,
-  10705, 10706, 10707, 10708,   973,   974,   975,   976,
-    977,   978, 10663, 10709,   979,   980, 10712, 10713,
-  10714, 10715, 10716, 10717, 10718, 10719, 10720, 10721,
-  10722, 10724, 10725, 10726, 10727, 10728, 10729, 10730,
-  10731, 10732, 10733, 10734, 10735, 10736,   981, 10737,
-  10738, 10739, 10742, 10741, 10740,   982, 10744, 10745,
-  10747, 10748,   983,   984,   985,   986, 10751, 10750,
-  10688, 10743,  3185, 10671, 10662, 10749, 10746, 10675,
-  10676, 10660, 10679,   987,   988,   989,   990, 10752,
-  10753, 10754, 10755, 10756, 10757, 10758, 10759, 10760,
-  10761, 10658, 10659, 10667, 10677, 10693, 10678,   991,
-  10762, 10763, 10764, 10765, 10460, 10461, 10459, 10664,
-  10723, 10766,   992, 10665, 10666, 10668, 10672, 10656,
-  10657,   993,   994,   995,   996,   997,   998,   999,
+  10198, 10142, 10143, 10199, 10201, 10202, 10203, 10200,
+    850,   851,   852,   853,   854,   855,   856,   857,
+    858,   859,   860,   861,   862,   863,   864,   865,
+    866,   867,   868,   869,   870,   871,   872,   873,
+    874,   875,   876,   877,   878,   879,   880,   881,
+    882,   883,   884,   885,   886,   887,   888,   889,
+    890,   891,   892,   893,   894,   895,   896,   897,
+    898,   899,   900,   901,   902,   903,   904,   905,
+  10146,   906,   907,   908, 10157, 10164, 10163, 10169,
+  10168, 10170, 10161, 10162, 10158, 10159, 10167, 10166,
+  10165, 10160, 10172, 10171, 10145, 10138, 10139, 10140,
+  10141, 10204,   909,   910, 10254, 10255, 10231, 10232,
+  10233, 10234, 10235, 10236, 10237, 10272, 10273, 10238,
+  10274, 10275, 10312, 10311, 10310, 10309, 10308, 10307,
+  10306, 10305, 10315, 10317, 10293, 10292, 10294, 10295,
+  10316, 10325, 10327, 10328, 10137, 10337, 10338, 10342,
+  10345, 10347, 10349, 10351, 10353, 10355, 10356, 10358,
+  10360, 10362, 10364, 10366, 10368, 10370, 10371, 10373,
+  10375, 10377, 10379, 10381, 10383, 10385, 10386, 10388,
+  10390, 10393, 10394, 10396, 10398, 10400, 10402, 10404,
+  10406, 10407, 10409, 10401, 10365, 10384, 10339, 10387,
+  10367, 10372, 10389, 10391, 10354, 10395, 10359, 10392,
+  10405, 10408, 10403, 10399, 10397, 10380, 10369, 10357,
+  10344, 10361, 10382, 10300, 10299, 10297, 10296, 10298,
+  10291, 10290, 10289, 10288, 10287, 10286, 10285, 10284,
+  10283, 10282, 10281, 10280, 10279, 10278, 10304, 10303,
+  10302, 10318, 10320, 10321, 10416, 10417, 10418, 10419,
+  10420, 10421, 10422, 10423, 10424, 10425, 10426, 10427,
+  10428, 10429, 10430, 10431, 10432, 10433, 10434, 10435,
+  10436, 10437, 10438, 10439, 10440, 10441, 10442, 10443,
+  10444, 10445, 10446, 10350, 10346, 10352, 10348, 10363,
+  10378, 10376, 10374, 10340, 10341, 10153, 10151, 10447,
+  10227, 10228, 10225, 10226, 10223, 10224, 10221, 10222,
+  10219, 10220, 10217, 10218, 10215, 10216, 10213, 10214,
+  10211, 10212, 10209, 10210, 10207, 10208, 10205, 10206,
+  10454, 10319, 10265, 10264, 10266, 10267, 10271, 10270,
+  10268, 10269, 10149, 10147, 10148, 10313, 10326, 10324,
+  10322, 10323, 10314, 10331, 10455, 10329, 10330, 10410,
+  10411, 10412, 10413, 10456, 10457, 10458, 10459, 10460,
+  10461, 10462, 10263, 10262, 10257, 10277, 10276, 10256,
+  10463, 10464, 10465, 10466, 10467, 10468, 10472, 10473,
+  10474, 10475, 10476, 10477, 10478, 10479, 10480, 10481,
+  10482, 10483, 10484, 10485, 10486, 10487, 10488, 10489,
+  10490, 10491, 10492, 10493, 10494, 10495, 10496, 10497,
+  10498, 10499, 10500, 10501, 10502, 10503, 10332, 10259,
+  10258, 10505, 10506, 10507, 10508, 10509, 10510, 10511,
+  10512, 10513, 10514, 10515, 10516, 10517, 10518, 10519,
+  10520, 10521, 10522, 10523, 10524, 10525, 10526, 10527,
+  10528, 10529, 10530, 10531, 10532, 10533, 10534, 10535,
+  10536, 10537, 10538, 10539, 10540, 10541, 10542, 10543,
+  10544, 10545, 10546, 10547, 10548, 10549, 10550, 10551,
+  10552, 10553, 10261, 10260, 10554, 10555, 10556, 10557,
+  10558, 10559, 10560, 10561, 10562, 10563, 10564, 10565,
+  10566, 10567, 10568, 10569, 10570, 10571, 10572, 10573,
+  10574, 10575, 10576, 10577, 10578, 10579, 10580, 10581,
+  10582, 10583, 10584, 10585, 10586, 10587, 10588, 10589,
+  10590, 10591, 10592, 10593, 10594, 10595, 10596, 10453,
+  10452, 10451, 10450, 10449, 10448,   911, 10597, 10598,
+  10599, 10613, 10614,   912, 10607, 10608, 10609, 10610,
+  10611, 10612, 10600, 10601, 10602, 10603, 10604, 10605,
+  10606,   913,   914,   915,   916,   917,   918,   919,
+  10616, 10618, 10229, 10230, 10619, 10620, 10621, 10622,
+  10623, 10624, 10625, 10626, 10627, 10628, 10636, 10637,
+  10638, 10639, 10640, 10641, 10642, 10643, 10644, 10645,
+  10335, 10333, 10646, 10647, 10648, 10649, 10650, 10651,
+  10652, 10653, 10654, 10655, 10656, 10657, 10336, 10658,
+  10660, 10334,   920,   921,   922, 10617, 10662, 10663,
+  10664, 10665, 10667, 10669, 10615,   923,   924,   925,
+    926,   927,   928,   929, 10666, 10661, 10659, 10668,
+    930,   931, 10670,  1082,  1083,  1084,  1085,   932,
+    933,   934,   935,   936,   937,   938,   939,   940,
+    941,   942,   943,   944,   945,   946,   947,   948,
+    949,   950,   951,   952,   953,   954,   955,   956,
+    957,   958,   959,   960,   961,   962,   963,   964,
+    965,   966,   967,   968,   969,   970,   971, 10676,
+  10685, 10689, 10696, 10697, 10698, 10699, 10700,   972,
+  10701, 10504, 10702, 10704, 10705, 10706, 10707, 10709,
+  10710, 10711, 10713, 10714, 10715, 10716, 10717, 10719,
+  10721, 10722, 10723, 10724, 10725,   973,   974,   975,
+    976,   977,   978, 10678, 10726,   979,   980, 10729,
+  10730, 10731, 10732, 10733, 10734, 10735, 10736, 10737,
+  10738, 10740, 10741, 10742, 10743, 10744, 10746, 10747,
+  10748, 10749, 10750, 10751, 10752, 10753,   981, 10754,
+  10755, 10756, 10759, 10758, 10757,   982, 10761, 10762,
+  10764, 10765,   983,   984,   985,   986, 10769, 10768,
+  10703, 10760,  3185, 10686, 10677, 10766, 10763, 10690,
+  10691, 10675, 10694,   987,   988,   989,   990, 10770,
+  10771, 10772, 10773, 10774, 10775, 10776, 10777, 10778,
+  10779, 10673, 10674, 10682, 10692, 10708, 10693,   991,
+  10780, 10781, 10782, 10783, 10470, 10471, 10469, 10679,
+  10739, 10784,   992, 10680, 10681, 10683, 10687, 10671,
+  10672,   993,   994,   995,   996,   997,   998,   999,
    1000,  1001,  1002,  1003,  1004,  1005,  1006,  1007,
-   1008,  1009,  1010, 10767, 10768, 10769, 10770, 10771,
-  10772, 10773, 10774, 10775, 10776, 10777, 10778, 10779,
-  10780, 10781, 10782, 10783, 10784, 10785, 10786, 10787,
-  10788, 10789, 10790, 10791, 10792, 10793, 10673, 10794,
-   7404, 10795, 10680, 10703, 10287, 10796, 10797, 10798,
-  10799, 10669, 10800, 10801, 10802, 10803, 10804, 10805,
-  10806, 10807, 10332,  6094, 10808, 10404, 10809, 10810,
-  10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818,
-  10819, 10820, 10821, 10822, 10823, 10825, 10827, 10824,
-  10831, 10826, 10828, 10829, 10830, 10832, 10403, 10710,
-  10711,
+   1008,  1009,  1010, 10785, 10786, 10787, 10788, 10789,
+  10790, 10791, 10792, 10793, 10794, 10795, 10796, 10797,
+  10798, 10799, 10800, 10801, 10802, 10803, 10804, 10805,
+  10806, 10807, 10808, 10809, 10810, 10812, 10688, 10813,
+   7404, 10814, 10695, 10720, 10301, 10815, 10816, 10684,
+  10817, 10818, 10819, 10820, 10821, 10822, 10823, 10824,
+  10343,  6094, 10825, 10415, 10826, 10827, 10828, 10829,
+  10830, 10831, 10832, 10833, 10834, 10835, 10836, 10837,
+  10838, 10839, 10841, 10843, 10840, 10847, 10842, 10844,
+  10845, 10846, 10848, 10414, 10727, 10728, 10849, 10811,
+  10850, 10851, 10852, 10712, 10745, 10767, 10250, 10251,
+  10252, 10253, 10239, 10240, 10633, 10634, 10246, 10247,
+  10631, 10632, 10241, 10242, 10243, 10244, 10248, 10249,
+  10629, 10630, 10635, 10245, 10718,
 } };
 

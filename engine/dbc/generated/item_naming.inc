@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.0.65727
-static constexpr std::array<item_name_description_t, 1029> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.1.65848
+static constexpr std::array<item_name_description_t, 1031> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -834,7 +834,7 @@ static constexpr std::array<item_name_description_t, 1029> __item_name_descripti
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
   { 14101, "Raid Finder|n"                               },
-  { 14102, "Beginner Crafted"                            },
+  { 14102, "Vanity Crafted"                              },
   { 14103, "Awakened Crafted"                            },
   { 14104, "Kalimdor and Eastern Kingdoms Cups"          },
   { 14105, "Outland Cup"                                 },
@@ -1026,8 +1026,10 @@ static constexpr std::array<item_name_description_t, 1029> __item_name_descripti
   { 14405, "World Quests"                                },
   { 14406, "Rare Crafted"                                },
   { 14407, "Epic Crafted"                                },
-  { 14408, "Hard"                                        },
-  { 14409, "Nightmare"                                   },
+  { 14408, "Hard Hunts"                                  },
+  { 14409, "Nightmare Hunts"                             },
   { 14410, "Tan"                                         },
+  { 14412, "Pinnacle Cache - Midnight Preseason"         },
+  { 14416, "Normal Hunts"                                },
 } };
 
