@@ -1516,7 +1516,7 @@ enum effect_subtype_t : unsigned {
   A_DISABLE_GRAVITY = 488,
   A_MOD_ALTERNATIVE_DEFAULT_LANGUAGE = 489,
   A_490 = 490,
-  A_SPELL_IMPORTANT = 491,
+  A_491 = 491,
   A_492 = 492,
   A_493 = 493,
   A_SET_POWER_POINT_CHARGE = 494,
@@ -1896,8 +1896,10 @@ enum spell_attribute : unsigned
   SX_ONLY_PROC_FROM_CLASS_ABILITIES = 415u,
   SX_ALLOW_CLASS_ABILITY_PROCS      = 416u,
   SX_REFRESH_EXTENDS_DURATION       = 436u,
+  SX_ASYNCRONOUS_STACKING_BUFF      = 490u,
+  SX_IMPORTANT_SPELL                = 491u,
   SX_IS_EXTERNAL_DEFENSIVE          = 499u,
-  SX_IS_BIG_DEFENSIVE               = 512u,
+  SX_IS_BIG_DEFENSIVE               = 512u
 };
 
 // spell aura/channel interrupt flags, indicates bit position
