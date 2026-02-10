@@ -1519,6 +1519,7 @@ struct fists_of_fury_t : monk_melee_attack_t
 
     may_combo_strike        = true;
     attack_power_mod.direct = 0;
+    channeled               = true;
 
     // expected base tick time is always 1_s
     // default: 5 ticks over 4s w/ tick 0, 4 / 4 = 1
