@@ -452,7 +452,7 @@ public:
     bool trigger_overpowered_missiles;
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
-    bool cant_trigger_brainstorm; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
+    timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
@@ -905,7 +905,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
+  bool trigger_clearcasting( double chance = 1.0, bool allow_predict = true, timespan_t delay = 0_ms, bool has_double_proc_delay = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
@@ -1889,8 +1889,11 @@ public:
 
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, !background ) )
+        if ( p()->trigger_clearcasting( proc_chance, !background ) )
+        {
+          p()->state.last_random_clearcasting = sim->current_time();
           p()->state.clearcasting_blp_count = 0;
+        }
       }
     }
 
@@ -2804,7 +2807,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     int salvo = p()->buffs.arcane_salvo->check();
     if ( p()->buffs.arcane_soul->check() )
     {
-      p()->trigger_clearcasting();
+      p()->trigger_clearcasting( 1.0, true, 0_ms, true );
       p()->trigger_arcane_charge( arcane_soul_charges );
       p()->trigger_arcane_salvo( arcane_soul_salvo, as<int>( p()->buffs.arcane_soul->data().effectN( 2 ).base_value() ) );
     }
@@ -7182,7 +7185,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_predict )
+bool mage_t::trigger_clearcasting( double chance, bool allow_predict, timespan_t delay, bool has_double_proc_delay )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -7196,6 +7199,11 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
       state.gained_initial_clearcasting = true;
       make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
     }
+
+    // We triggered CC from a random roll, while simulataneously gaining CC from a guaranteed proc.
+    // For some reason, a double_proc_delay only occurs with Barrages + Arcane Soul, while ToTM + Aegwynn's Technique applies CC + BS twice within 0ms.
+    if ( has_double_proc_delay && state.last_random_clearcasting == sim->current_time() )
+      delay = 100_ms;
     if ( delay > 0_ms && had_clearcasting )
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
@@ -7205,17 +7213,17 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
 
     if ( talents.brainstorm.ok() )
     {
-      // TODO: double check timing
-      if ( chance < 1.0 || !state.cant_trigger_brainstorm )
+      // Small note: due to Brainstorm being async, in sims, its trigger will be scheduled w/ make_event ~30ms later.
+      // This is fine (for now) because Blast (where this procs Clearcasting + BS) into a queued Barrage will
+      // lead to brainstorm being given AFTER the barrage (even though blast is what triggered CC), which is close enough with how it works in game.
+      // Clearcasting is not async, and its trigger occurs without delay in sims; 
+      // this causes Clearcasting to be active 30ms before brainstorm is given, and thus will be active prior to the queued Barrage.
+      // In game, CC and Brainstorm both have that ~~30ms delay (however, in logs, it is all instantaneous -- it's order is logged Blast -> Barrage -> CC + BS from Blast)
+      // If [for example] Clearcasting directly grants Intellect in the future: in sims, the queued barrage would benefit from Clearcasting; in game, the barrage wouldn't.
+      if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
         buffs.brainstorm->trigger();
-      sim->print_debug("Brainstorm Trigger: {}", !state.cant_trigger_brainstorm );
-
-      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
-      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
-      if ( chance >= 1.0 )
-        state.cant_trigger_brainstorm = false;
       else
-        state.cant_trigger_brainstorm = true;
+        sim->print_debug("Gaining Clearcasting in {}_s; Brainstorm will not be given due to CC being double proc'd", delay );
     }
 
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
