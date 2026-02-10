@@ -242903,7 +242903,8 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-School           : Shadowstorm
+Hotfixed         : School (40 -> 8)
+School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
@@ -242914,7 +242915,7 @@ Proc Chance      : 101%
 Triggered By     : Rot (1244332)
 Attributes       : Aura Is Debuff (26), No Threat (42), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Asynchronous Buff (490)
 Effects          :
-#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): shadowstorm every 2 seconds | Attributes: Suppress Points Stacking (6)
+#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Dealing $s1 Nature damage every $t seconds.
 Tooltip          : Dealing $w1 Nature damage every $t seconds.
