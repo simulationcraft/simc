@@ -752,6 +752,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     ignore_time_modifier = true;
   set_can_cancel( !s_data->flags( spell_attribute::SX_NO_CANCEL ) );
 
+  if ( s_data->flags( spell_attribute::SX_ASYNCRONOUS_STACKING_BUFF ) && _max_stack > 1 )
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
   update_trigger_calculations();
 }
 
