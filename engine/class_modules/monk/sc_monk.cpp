@@ -2171,7 +2171,7 @@ struct keg_smash_t : monk_melee_attack_t
     fuel_on_the_fire_t( monk_t *player )
       : monk_spell_t( player, "fuel_on_the_fire", player->talent.brewmaster.fuel_on_the_fire_damage )
     {
-      aoe               = -1;
+      aoe        = -1;
       background = dual = true;
     }
 
@@ -2182,7 +2182,7 @@ struct keg_smash_t : monk_melee_attack_t
       if ( rng().roll( 0.75 ) )
         monk_spell_t::impact( s );
     }
-  }
+  };
 
   cooldown_t *breath_of_fire;
   action_t *empty_barrel;
@@ -2279,12 +2279,14 @@ struct keg_smash_t : monk_melee_attack_t
     {
       p()->buff.fuel_on_the_fire->decrement();
 
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-                                                     .target( target )
-                                                     .duration( data().duration() )
-                                                     .pulse_time( timespan_t::from_seconds( 1.0 ) )
-                                                     .n_pulses( 3 )
-                                                     .action( fuel_on_the_fire ), true );
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                          .target( target )
+                                          .duration( data().duration() )
+                                          .pulse_time( timespan_t::from_seconds( 1.0 ) )
+                                          .n_pulses( 3 )
+                                          .action( fuel_on_the_fire ),
+                                      true );
     }
   }
 
