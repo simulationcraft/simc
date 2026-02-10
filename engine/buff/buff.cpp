@@ -2180,13 +2180,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
         return a->remains() < b->remains();
       } );
     }
-    /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
-    if ( check() == before_stacks && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
-    {
-      event_t::cancel( expiration.front() );
-      expiration.erase( expiration.begin() );
-    }
-    */
+
   }
 
   timespan_t period = tick_time();
@@ -2346,31 +2340,7 @@ void buff_t::bump( int stacks, double value )
       overflow_total += overflow;
       current_stack = max_stack();
 
-      if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
-      {
-        // Can't trigger more than max stack at a time
-        overflow -= std::max( 0, stacks - max_stack() );
 
-        /* Replace the oldest buff with the new one. We do this by cancelling
-        expiration events until their stack count add up to the overflow. */
-        while ( overflow > 0 )
-        {
-          event_t* e     = expiration.front();
-          int exp_stacks = debug_cast<expiration_t*>( e )->stack;
-
-          if ( exp_stacks > overflow )
-          {
-            debug_cast<expiration_t*>( e )->stack -= overflow;
-            break;
-          }
-          else
-          {
-            event_t::cancel( e );
-            expiration.erase( expiration.begin() );
-            overflow -= exp_stacks;
-          }
-        }
-      }
     }
 
     if ( before_stack != current_stack )
