@@ -4933,8 +4933,8 @@ bonus_id={ 9116 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Heroic }, quali
 bonus_id={ 9117 }, base_ilevel={ 71 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }
 bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }
-bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }
-bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }
+bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }
+bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }
 bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }
