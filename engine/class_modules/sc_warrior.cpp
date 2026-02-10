@@ -8002,7 +8002,8 @@ void warrior_t::create_buffs()
      ->set_duration( find_spell( 184362 )->duration() );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
-                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                          ->set_disable_async_expire_events_removal( true );
 
   buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
   buff.charge_movement        = make_buff( this, "charge_movement" );
@@ -8071,6 +8072,7 @@ void warrior_t::create_buffs()
 
   buff.berserk = make_buff( this, "berserk", find_spell( 1269349) )
                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                    ->set_disable_async_expire_events_removal( true )
                     ->set_trigger_spell( talents.fury.rampaging_berserker_1 );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
@@ -8100,6 +8102,7 @@ void warrior_t::create_buffs()
 
   // Slayer
   buff.executioner          = make_buff( this, "executioner", find_spell( 445584 ) )
+                              ->set_disable_async_expire_events_removal( true )
                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
   buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
@@ -8121,6 +8124,7 @@ void warrior_t::create_buffs()
                                         ->set_cooldown( talents.arms.master_of_warfare_1->internal_cooldown() );
 
   buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
+                                ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Protection Apex
