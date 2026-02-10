@@ -951,7 +951,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::
   {  499, "External Defensive (C_Spell.IsExternalDefensive)",                    },
   {  506, "Non-secret Aura"                                                      },
   {  511, "Non-secret Spell"                                                     },
-  {  512, "BIG_DEFENSIVE (C_UnitAuras.AuraIsBigDefensive)"                       }
+  {  512, "Big Defensive (C_UnitAuras.AuraIsBigDefensive)"                       }
 } );
 
 static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, std::string_view>( {
