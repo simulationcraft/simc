@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -13593,7 +13593,6 @@ Effects          :
 Description      : Increases the critical strike chance of your Nature spells and abilities by $s1%.
 
 Name             : Brimming with Life (id=381684) [Spell Family (11), Hidden] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
