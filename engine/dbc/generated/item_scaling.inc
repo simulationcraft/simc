@@ -1,5 +1,5 @@
 // Curve points data, wow build 12.0.1.65867
-static constexpr std::array<curve_point_t, 164361> __curve_point_data { {
+static constexpr std::array<curve_point_t, 164364> __curve_point_data { {
   {    8,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {    9,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {   11,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
@@ -164361,6 +164361,9 @@ static constexpr std::array<curve_point_t, 164361> __curve_point_data { {
   { 100257,  2,    2.90000f,    0.00000f,    2.90000f,    0.00000f },
   { 100257,  3,    6.28000f,  -80.00000f,    6.28000f,  -80.00000f },
   { 100257,  4,    8.64000f,  -80.00000f,    8.64000f,  -80.00000f },
+  { 100285,  0,    0.00000f,   12.75314f,    0.00000f,    0.00000f },
+  { 100285,  1,    0.29650f,    0.10042f,    0.00000f,    0.00000f },
+  { 100285,  2,    3.55800f,    0.00000f,    0.00000f,    0.00000f },
 } };
 
 // Item Scaling Config data, wow build 12.0.1.65867
