@@ -6673,14 +6673,14 @@ void monk_t::combat_begin()
     auto callback = [ & ] {
       const auto internal = [ this ]( const auto &fn ) -> void {
         buff.tigereye_brew_1->trigger();
-        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 + composite_melee_haste() );
+        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
         auto wrapped_fn   = [ fn ] { fn( fn ); };
         make_event<events::delayed_cb_event_t>( *this->sim, this, period, wrapped_fn );
       };
       internal( internal );
     };
     timespan_t initial_period =
-        talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 + composite_melee_haste() );
+        talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
     make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
     buff.tigereye_brew_1->trigger( 10 );
   }
