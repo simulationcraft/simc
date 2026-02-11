@@ -1767,8 +1767,7 @@ struct auto_attack_t : public monk_melee_attack_t
       bool allowed;
 
       damage_t( monk_t *player )
-        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ),
-          allowed( false )
+        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
@@ -1781,7 +1780,7 @@ struct auto_attack_t : public monk_melee_attack_t
         allowed = false;
       }
 
-      void impact( action_state_t* state ) override
+      void impact( action_state_t *state ) override
       {
         // We attribute all DT melees to MH weapon type, but it will be technically
         // accurate as you cannot equip a 2h in your offhand :)
@@ -1794,7 +1793,8 @@ struct auto_attack_t : public monk_melee_attack_t
 
     template <typename... Args>
     dual_threat_t( monk_t *player, weapon_t *weapon, Args &&...args )
-      : TBase( player, weapon, std::forward<Args>( args )... ), damage( nullptr ),
+      : TBase( player, weapon, std::forward<Args>( args )... ),
+        damage( nullptr ),
         chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
 
     {
@@ -1990,27 +1990,7 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::impact( state );
 
-      if ( !p()->talent.shado_pan.flurry_strikes->ok() || result_is_miss( state->result ) )
-        return;
-
-      unsigned flurry_charges = 0;
-      switch ( monk_melee_attack_t::weapon->group() )
-      {
-        case WEAPON_1H:
-          flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value() );
-          break;
-        case WEAPON_2H:
-          flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
-          break;
-        default:
-          assert( false );
-      }
-
-      if ( state->result == RESULT_CRIT )
-        flurry_charges *= as<int>( 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value() );
-
-      if ( flurry_charges )
-        p()->buff.flurry_charge->trigger( flurry_charges );
+      p()->buff.flurry_charge->trigger( state, weapon );
     }
 
     timespan_t execute_time() const override
@@ -4716,6 +4696,39 @@ struct niuzaos_resolve_t : buffs::monk_buff_t<>
       heal->base_multiplier = m;
       heal->execute();
     } );
+  }
+};
+
+struct flurry_charge_t : monk_buff_t<>
+{
+  flurry_charge_t( monk_t *player ) : monk_buff_t<>( player, "flurry_charge", talent.shado_pan.flurry_charge )
+  {
+    set_default_value_from_effect( 1 );
+  }
+
+  using monk_buff_t<>::trigger;
+  bool trigger( action_state_t *state, weapon_t *weapon )
+  {
+    if ( result_is_miss( state->result ) )
+      return;
+
+    unsigned flurry_charges = 0;
+    switch ( weapon->group() )
+    {
+      case WEAPON_1H:
+        flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value() );
+        break;
+      case WEAPON_2H:
+        flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
+        break;
+      default:
+        assert( false );
+    }
+
+    if ( state->result == RESULT_CRIT )
+      flurry_charges *= as<int>( 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value() );
+
+    trigger( flurry_charges );
   }
 };
 }  // namespace buffs
