@@ -246,7 +246,7 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=active_enemies>=3" );
+  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=3" );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
@@ -257,54 +257,70 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=ss_st" );
 
   cds->add_action( "potion" );
-  cds->add_action( "use_items,if=prev_gcd.1.frozen_orb|fight_remains<20" );
-  cds->add_action( "flurry,line_cd=9999" );
-  cds->add_action( "frozen_orb,line_cd=9999" );
-  cds->add_action( "ray_of_frost,line_cd=9999" );
+  cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
+  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999", "Frostfire Opener" );
+  cds->add_action( "glacial_spike,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "glacial_spike,if=talent.splinterstorm&active_enemies>=3,line_cd=9999", "Spellslinger Opener" );
+  cds->add_action( "flurry,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "frozen_orb,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
 
-  ff_aoe->add_action( "comet_storm,target_if=min:debuff.freezing.stack,if=debuff.freezing.stack>=16|cooldown.ray_of_frost.full_recharge_time<3|fight_remains<15|!talent.glacial_assault|talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
-  ff_aoe->add_action( "glacial_spike" );
+  ff_aoe->add_action( "comet_storm" );
+  ff_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
   ff_aoe->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_aoe->add_action( "frozen_orb" );
+  ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "blizzard" );
+  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ff_aoe->add_action( "ice_lance,if=debuff.freezing.react>=10" );
+  ff_aoe->add_action( "frostbolt,if=buff.frostfire_empowerment.react|prev_gcd.1.glacial_spike" );
   ff_aoe->add_action( "ray_of_frost" );
-  ff_aoe->add_action( "ice_lance,if=buff.thermal_void.up" );
-  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
-  ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
   ff_aoe->add_action( "frostbolt" );
 
   ff_st->add_action( "comet_storm" );
-  ff_st->add_action( "glacial_spike" );
+  ff_st->add_action( "ray_of_frost,if=fight_remains<12" );
   ff_st->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_st->add_action( "frozen_orb" );
+  ff_st->add_action( "glacial_spike" );
+  ff_st->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ff_st->add_action( "ice_lance,if=debuff.freezing.react>=10" );
   ff_st->add_action( "ray_of_frost" );
-  ff_st->add_action( "ice_lance,if=buff.thermal_void.up" );
   ff_st->add_action( "frostbolt" );
 
   ss_aoe->add_action( "comet_storm" );
-  ss_aoe->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
-  ss_aoe->add_action( "blizzard,if=buff.splinterstorm.down" );
-  ss_aoe->add_action( "ice_lance,if=buff.thermal_void.react" );
+  ss_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
+  ss_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ss_aoe->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_aoe->add_action( "frozen_orb,if=cooldown_react" );
   ss_aoe->add_action( "glacial_spike" );
-  ss_aoe->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
+  ss_aoe->add_action( "blizzard,if=buff.splinterstorm.down&(talent.freezing_rain|talent.freezing_winds|active_enemies>=7)" );
+  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
+  ss_aoe->add_action( "ice_nova,if=talent.cone_of_frost&active_enemies>=4" );
+  ss_aoe->add_action( "cone_of_cold,if=talent.cone_of_frost&active_enemies>=4" );
   ss_aoe->add_action( "flurry,if=cooldown_react" );
   ss_aoe->add_action( "ray_of_frost" );
   ss_aoe->add_action( "frostbolt" );
 
   ss_st->add_action( "comet_storm" );
-  ss_st->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
-  ss_st->add_action( "ray_of_frost" );
-  ss_st->add_action( "ice_lance,if=buff.thermal_void.up" );
+  ss_st->add_action( "ray_of_frost,if=fight_remains<12" );
+  ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_st->add_action( "frozen_orb,if=cooldown_react" );
   ss_st->add_action( "glacial_spike" );
-  ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
-  ss_st->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
+  ss_st->add_action( "blizzard,if=active_enemies=2&talent.freezing_winds&buff.freezing_rain.up" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ss_st->add_action( "ice_lance,if=debuff.freezing.react>=6" );
   ss_st->add_action( "flurry,if=cooldown_react" );
+  ss_st->add_action( "ray_of_frost" );
   ss_st->add_action( "frostbolt" );
 }
 //frost_apl_end
