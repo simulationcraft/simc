@@ -343,6 +343,14 @@ struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
   double consume( double amount, action_state_t *state = nullptr ) override;
   absorb_buff_t *set_absorb_fraction( double fraction );
 };
+
+struct flurry_charge_t : monk_buff_t<>
+{
+  flurry_charge_t( monk_t *player );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( action_state_t *state, weapon_t *weapon );
+};
 }  // namespace buffs
 
 struct monk_td_t : public actor_target_data_t
@@ -557,7 +565,7 @@ public:
     propagate_const<buff_t *> harmonic_surge;
 
     // Shado-Pan
-    propagate_const<buff_t *> flurry_charge;
+    propagate_const<buffs::flurry_charge_t *> flurry_charge;
     propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
     propagate_const<buff_t *> whirling_steel;
@@ -1066,7 +1074,6 @@ public:
       player_talent_t predictive_training;
       player_talent_t stand_ready;
       const spell_data_t *stand_ready_buff;
-      const spell_data_t *stand_ready_driver;
       // Row 4
       player_talent_t against_all_odds;
       player_talent_t efficient_training;
