@@ -6033,7 +6033,7 @@ void monk_t::create_buffs()
 
   buff.strength_of_the_black_ox =
       make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
-                          "strength_of_the_black_ox", talent.conduit_of_the_celestials.unity_within_buff );
+                          "strength_of_the_black_ox", talent.conduit_of_the_celestials.strength_of_the_black_ox_buff );
 
   buff.unity_within = make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
                                           talent.conduit_of_the_celestials.unity_within_buff )
