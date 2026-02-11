@@ -939,6 +939,13 @@ struct rising_sun_kick_t : monk_melee_attack_t
 
         background = dual = true;
       }
+
+      std::vector<player_t*>& target_list() const override
+      {
+        std::vector<player_t*>& tl = monk_melee_attack_t::target_list();
+        range::erase_remove( tl, target );
+        return tl;
+      }
     };
 
     action_t *damage;
