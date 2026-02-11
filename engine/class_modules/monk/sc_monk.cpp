@@ -940,9 +940,9 @@ struct rising_sun_kick_t : monk_melee_attack_t
         background = dual = true;
       }
 
-      std::vector<player_t*>& target_list() const override
+      std::vector<player_t *> &target_list() const override
       {
-        std::vector<player_t*>& tl = monk_melee_attack_t::target_list();
+        std::vector<player_t *> &tl = monk_melee_attack_t::target_list();
         range::erase_remove( tl, target );
         return tl;
       }
@@ -967,9 +967,8 @@ struct rising_sun_kick_t : monk_melee_attack_t
       if ( !damage )
         return;
 
-      double value        = state->result_amount * TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent();
-      damage->base_dd_min = damage->base_dd_max = value;
-      damage->execute_on_target( state->target );
+      double value = state->result_amount * TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent();
+      damage->execute_on_target( state->target, value );
     }
   };
 
@@ -1785,6 +1784,7 @@ struct auto_attack_t : public monk_melee_attack_t
 
       void impact( action_state_t *state ) override
       {
+        monk_spell_t::impact( state );
         // We attribute all DT melees to MH weapon type, but it will be technically
         // accurate as you cannot equip a 2h in your offhand :)
         p()->buff.flurry_charge->trigger( state, &p()->main_hand_weapon );
@@ -6689,8 +6689,7 @@ void monk_t::combat_begin()
       };
       internal( internal );
     };
-    timespan_t initial_period =
-        talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+    timespan_t initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
     make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
     buff.tigereye_brew_1->trigger( 10 );
   }
