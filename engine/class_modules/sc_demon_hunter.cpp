@@ -6477,7 +6477,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
     void impact( action_state_t* s ) override
     {
       base_t::impact( s );
-      if ( p()->talent.devourer.impending_apocalypse->ok() )
+      if ( p()->talent.devourer.impending_apocalypse->ok() && s->chain_target == 0 )
       {
         make_event( *p()->sim, 1.2_s, [ this ] { p()->buff.impending_apocalypse->trigger(); } );
       }
