@@ -1765,14 +1765,10 @@ struct auto_attack_t : public monk_melee_attack_t
     struct damage_t : public monk_spell_t
     {
       bool allowed;
-      bool triggered;
-      double chance;
 
       damage_t( monk_t *player )
         : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ),
-          allowed( false ),
-          triggered( false ),
-          chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
+          allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
@@ -1785,25 +1781,22 @@ struct auto_attack_t : public monk_melee_attack_t
         allowed = false;
       }
 
-      void execute() override
+      void impact( action_state_t* state ) override
       {
-        if ( allowed && p()->rng().roll( chance ) )
-        {
-          monk_spell_t::execute();
-          allowed   = false;
-          triggered = true;
-        }
-        else
-          allowed = true;
+        // We attribute all DT melees to MH weapon type, but it will be technically
+        // accurate as you cannot equip a 2h in your offhand :)
+        p()->buff.flurry_charge->trigger( state, &p()->main_hand_weapon );
       }
     };
 
     damage_t *damage;
-    bool allowed;
+    double chance;
 
     template <typename... Args>
     dual_threat_t( monk_t *player, weapon_t *weapon, Args &&...args )
-      : TBase( player, weapon, std::forward<Args>( args )... ), damage( nullptr ), allowed( false )
+      : TBase( player, weapon, std::forward<Args>( args )... ), damage( nullptr ),
+        chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
+
     {
       if ( !player->talent.windwalker.dual_threat->ok() )
         return;
@@ -1819,17 +1812,16 @@ struct auto_attack_t : public monk_melee_attack_t
 
     void impact( action_state_t *state ) override
     {
-      if ( damage && result_is_hit( state->result ) )
+      if ( damage && damage->allowed && result_is_hit( state->result ) && p()->rng().roll( chance ) )
       {
         damage->execute_on_target( state->target );
-        if ( damage->triggered )
-        {
-          damage->triggered = false;
-          return;
-        }
+        damage->allowed = false;
       }
-
-      TBase::impact( state );
+      else
+      {
+        TBase::impact( state );
+        damage->allowed = true;
+      }
     }
   };
 
