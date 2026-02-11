@@ -1307,7 +1307,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
       buff( player->buff.rushing_jade_wind )
   {
     parse_options( options_str );
-    may_combo_strike = true;
   }
 
   void execute() override
@@ -2548,7 +2547,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     parse_options( options_str );
     may_crit              = true;
     ww_mastery            = true;
-    may_combo_strike      = true;
     ignore_false_positive = true;
     aoe                   = -1;
   }
@@ -2656,8 +2654,7 @@ struct chi_wave_t : public monk_spell_t
       heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
       damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
   {
-    background       = true;
-    may_combo_strike = false;
+    background = true;
 
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
@@ -2714,7 +2711,6 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
-    may_combo_strike = true;
 
     stats = damage->stats;
     add_child( heal );
@@ -3620,8 +3616,7 @@ struct expel_harm_t : monk_heal_t
       damage( new damage_t( player ) )
   {
     parse_options( options_str );
-    may_combo_strike = false;
-    cast_during_sck  = true;
+    cast_during_sck = true;
     if ( player->talent.windwalker.combat_wisdom->ok() )
       background = true;
 
