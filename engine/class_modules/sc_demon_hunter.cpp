@@ -6472,10 +6472,14 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         p()->cooldown.voidblade->adjust( -p()->talent.devourer.voidrush->effectN( 1 ).time_value() );
       }
+    }
 
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
       if ( p()->talent.devourer.impending_apocalypse->ok() )
       {
-        p()->buff.impending_apocalypse->trigger();
+        make_event( *p()->sim, 1.2_s, [ this ] { p()->buff.impending_apocalypse->trigger(); } );
       }
     }
   };
