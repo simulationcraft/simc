@@ -1809,7 +1809,7 @@ struct auto_attack_t : public monk_melee_attack_t
 
     void impact( action_state_t *state ) override
     {
-      if ( damage && damage->allowed && result_is_hit( state->result ) && p()->rng().roll( chance ) )
+      if ( damage && damage->allowed && result_is_hit( state->result ) && TBase::p()->rng().roll( chance ) )
       {
         damage->execute_on_target( state->target );
         damage->allowed = false;
