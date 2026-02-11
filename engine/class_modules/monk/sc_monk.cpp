@@ -982,46 +982,11 @@ struct rising_sun_kick_t : monk_melee_attack_t
     }
   };
 
-  struct rushing_wind_kick_t : combined_type_t
-  {
-    int target_count_max;
-    double target_count_coefficient;
-
-    rushing_wind_kick_t( monk_t *player )
-      : combined_type_t( player, "rushing_wind_kick", player->talent.windwalker.rushing_wind_kick_damage ),
-        target_count_max( 5 ),
-        target_count_coefficient( 0.06 )
-    {
-      aoe              = -1;
-      split_aoe_damage = true;
-
-      add_parse_entry( da_multiplier_effects )
-          .set_func( []() { return false; } )
-          .set_value( target_count_coefficient )
-          .set_note( "Target-count AoE Scaling" );
-    }
-
-    double composite_aoe_multiplier( const action_state_t *state ) const override
-    {
-      double mult = 1.0 + std::min( state->n_targets, 5u ) * target_count_coefficient;
-      return combined_type_t::composite_aoe_multiplier( state ) * mult;
-    }
-
-    void execute() override
-    {
-      combined_type_t::execute();
-
-      p()->buff.rushing_wind_kick->expire();
-    }
-  };
-
   action_t *rising_sun_kick;
-  action_t *rushing_wind_kick;
 
   rising_sun_kick_t( monk_t *player, std::string_view options_str )
     : monk_melee_attack_t( player, "rising_sun_kick", player->talent.monk.rising_sun_kick ),
-      rising_sun_kick( new damage_t( player ) ),
-      rushing_wind_kick( nullptr )
+      rising_sun_kick( new damage_t( player ) )
   {
     parse_options( options_str );
 
@@ -1029,27 +994,78 @@ struct rising_sun_kick_t : monk_melee_attack_t
     cast_during_sck  = true;
 
     add_child( rising_sun_kick );
+  }
 
-    if ( player->talent.windwalker.rushing_wind_kick->ok() )
-    {
-      rushing_wind_kick = new rushing_wind_kick_t( player );
-      add_child( rushing_wind_kick );
-    }
+  bool ready() override
+  {
+    if ( p()->buff.rushing_wind_kick->check() )
+      return false;
+
+    return monk_melee_attack_t::ready();
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.rushing_wind_kick->up() )
-      rushing_wind_kick->execute_on_target( target );
-    else
-      rising_sun_kick->execute_on_target( target );
+    rising_sun_kick->execute_on_target( target );
 
     if ( p()->specialization() == MONK_WINDWALKER )
       p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
+
     p()->buff.whirling_dragon_punch->trigger();
     p()->action.chi_wave->execute();
+  }
+};
+
+struct rushing_wind_kick_t : rising_sun_kick_t::combined_type_t
+{
+  using combined_type_t = rising_sun_kick_t::combined_type_t;
+
+  int target_count_max;
+  double target_count_coefficient;
+
+  rushing_wind_kick_t( monk_t *player, std::string_view options_str )
+    : combined_type_t( player, "rushing_wind_kick", player->talent.windwalker.rushing_wind_kick_damage ),
+      target_count_max( 5 ),
+      target_count_coefficient( 0.06 )
+  {
+    parse_options( options_str );
+
+    aoe              = -1;
+    split_aoe_damage = true;
+
+    add_parse_entry( da_multiplier_effects )
+        .set_func( []() { return false; } )
+        .set_value( target_count_coefficient )
+        .set_note( "Target-count AoE Scaling" );
+  }
+
+  void init() override
+  {
+    combined_type_t::init();
+    if ( action_t *rising_sun_kick = p()->find_action( "rising_sun_kick" ); rising_sun_kick )
+      rising_sun_kick->add_child( this );
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.rushing_wind_kick->up() )
+      return combined_type_t::ready();
+
+    return false;
+  }
+
+  double composite_aoe_multiplier( const action_state_t *state ) const override
+  {
+    double mult = 1.0 + std::min( state->n_targets, 5u ) * target_count_coefficient;
+    return combined_type_t::composite_aoe_multiplier( state ) * mult;
+  }
+
+  void execute() override
+  {
+    combined_type_t::execute();
+    p()->buff.rushing_wind_kick->expire();
   }
 };
 
@@ -4887,6 +4903,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" )
     return new rising_sun_kick_t( this, options_str );
+  if ( name == "rushing_wind_kick" )
+    return new rushing_wind_kick_t( this, options_str );
   if ( name == "roll" )
     return new roll_t( this, options_str );
   if ( name == "spear_hand_strike" )
