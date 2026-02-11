@@ -1528,6 +1528,7 @@ class SpellDataGenerator(DataGenerator):
          1259130, # Primal Spore Binding embellishment heal
          1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, # Midnight Food Buffs
          1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
+         1252486, 1252487, 1252488, 1252489, # Darkmoon Deck: Hunt
         ),
 
         # Warrior:
@@ -1653,6 +1654,7 @@ class SpellDataGenerator(DataGenerator):
           ( 260395, 2 ), # Lethal Shots buff
           ( 342076, 2 ), # Streamline buff
           ( 191043, 2 ), # Legacy of the Windrunners
+          ( 260402, 2 ), # Double Tap Buff
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           ( 265888, 3 ), # Mongoose Bite (AotE version)

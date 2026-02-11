@@ -272,6 +272,13 @@ private:
     melee_t( std::string_view n, xuen_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
     {
     }
+
+    double action_multiplier() const override
+    {
+      double am = pet_melee_t::action_multiplier();
+      am *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
+      return am;
+    }
   };
 
   struct crackling_tiger_lightning_tick_t : public pet_spell_t
@@ -282,6 +289,13 @@ private:
     {
       background   = true;
       merge_report = false;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = pet_spell_t::action_multiplier();
+      am *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
+      return am;
     }
   };
 
@@ -306,6 +320,13 @@ private:
     double last_tick_factor( const dot_t *, timespan_t, timespan_t ) const
     {
       return 0.0;
+    }
+
+    double action_ta_multiplier() const override
+    {
+      double atam = pet_spell_t::action_ta_multiplier();
+      atam *= 1.0 + o()->talent.conduit_of_the_celestials.xuens_bond->effectN( 1 ).percent();
+      return atam;
     }
   };
 

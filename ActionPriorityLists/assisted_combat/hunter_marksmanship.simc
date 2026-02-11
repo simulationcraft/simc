@@ -9,14 +9,15 @@ actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=volley,if=target.distance<=50
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=trueshot
+actions.assisted_combat+=/volley,if=target.distance<=50
 actions.assisted_combat+=/multishot,if=buff.trick_shots.down&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.trick_shots.up&buff.trick_shots.remains<=2&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.precise_shots.up&active_enemies>3
 actions.assisted_combat+=/kill_shot,if=talent.black_arrow
 actions.assisted_combat+=/black_arrow,if=talent.black_arrow
 actions.assisted_combat+=/rapid_fire
-actions.assisted_combat+=/explosive_shot
 actions.assisted_combat+=/aimed_shot,if=charges>=2,cooldown_allow_casting_success=1
 actions.assisted_combat+=/aimed_shot
 actions.assisted_combat+=/kill_shot
@@ -28,7 +29,7 @@ actions.assisted_combat+=/steady_shot,cooldown_allow_casting_success=1
 actions.assisted_combat+=/aimed_shot
 actions.assisted_combat+=/steady_shot
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

@@ -7,25 +7,25 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=frozen_orb
+actions.assisted_combat=arcane_intellect,if=aura.arcane_intellect.down
+actions.assisted_combat+=/comet_storm,if=buff.comet_storm.up
+actions.assisted_combat+=/frozen_orb
 actions.assisted_combat+=/blizzard,if=active_enemies>3
-actions.assisted_combat+=/comet_storm
-actions.assisted_combat+=/shifting_power
-actions.assisted_combat+=/glacial_spike,if=debuff.winters_chill.up
-actions.assisted_combat+=/ice_nova
-actions.assisted_combat+=/ray_of_frost,if=debuff.winters_chill.up
-actions.assisted_combat+=/flurry,if=debuff.winters_chill.down
+actions.assisted_combat+=/ray_of_frost,if=debuff.freezing.stack<=5
+actions.assisted_combat+=/ice_lance,if=buff.fingers_of_frost.up&debuff.freezing.up
+actions.assisted_combat+=/ice_lance,if=debuff.freezing.stack>=5
+actions.assisted_combat+=/flurry
+actions.assisted_combat+=/glacial_spike,if=buff.frostfire_empowerment.up
 actions.assisted_combat+=/frostbolt,if=buff.frostfire_empowerment.up
-actions.assisted_combat+=/ice_lance,if=buff.fingers_of_frost.up
-actions.assisted_combat+=/ice_lance,if=debuff.winters_chill.up
+actions.assisted_combat+=/glacial_spike,cooldown_allow_casting_success=1
 actions.assisted_combat+=/frostbolt,cooldown_allow_casting_success=1
+actions.assisted_combat+=/glacial_spike
 actions.assisted_combat+=/frostbolt
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/icy_veins

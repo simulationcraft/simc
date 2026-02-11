@@ -13829,6 +13829,10 @@ void player_t::create_options()
                             midnight_opts.arcanoweave_lining_update_stddev, 250_ms, timespan_t::max() ) );
   add_option( opt_float(    "midnight_arcanoweave_lining_uptime",
                             midnight_opts.arcanoweave_lining_uptime, 0, 1.0 ) );
+  add_option( opt_string( "midnight.darkmoon_hunt_race", midnight_opts.darkmoon_hunt_race ) );
+  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
+                            500_ms, 5_s ) );
+  add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

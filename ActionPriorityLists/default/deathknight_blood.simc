@@ -43,6 +43,7 @@ actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
 actions.high_prio_actions=raise_dead,use_off_gcd=1
 actions.high_prio_actions+=/death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd
 actions.high_prio_actions+=/dancing_rune_weapon
+actions.high_prio_actions+=/abomination_limb
 
 actions.san_drw=heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains
 actions.san_drw+=/death_strike,if=runic_power.deficit<36

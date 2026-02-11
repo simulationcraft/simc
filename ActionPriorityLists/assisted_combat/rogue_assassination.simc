@@ -8,14 +8,10 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-# Generic stealth check replacement expression for multiple buff checks (Overridden from 'target.distance<=40&buff.stealth.up&!talent.improved_garrote')
-actions.assisted_combat=ambush,if=target.distance<=40&stealthed.basic&!talent.improved_garrote
-# Generic stealth check replacement expression for multiple buff checks (Overridden from 'target.distance<=40&buff.stealth.up&talent.deathstalkers_mark')
-actions.assisted_combat+=/ambush,if=target.distance<=40&stealthed.basic&talent.deathstalkers_mark
-actions.assisted_combat+=/ambush,if=buff.subterfuge.up&talent.deathstalkers_mark&debuff.deathstalkers_mark.down&buff.darkest_night.down
-# Generic stealth check replacement expression for multiple buff checks (Overridden from 'target.distance<=40&buff.stealth.up')
-actions.assisted_combat+=/garrote,if=target.distance<=40&stealthed.basic
-actions.assisted_combat+=/garrote,if=!dot.garrote.ticking
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=deathmark,if=dot.garrote.ticking&dot.rupture.ticking
+actions.assisted_combat+=/kingsbane,if=dot.garrote.ticking&dot.rupture.ticking&talent.implacable&effective_combo_points<=1
+actions.assisted_combat+=/kingsbane,if=dot.garrote.ticking&dot.rupture.ticking&!talent.implacable
 actions.assisted_combat+=/envenom,if=effective_combo_points>=5&buff.darkest_night.up&!talent.deeper_stratagem&!talent.sanguine_stratagem
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&buff.darkest_night.up&!talent.deeper_stratagem&!talent.sanguine_stratagem
 actions.assisted_combat+=/envenom,if=effective_combo_points>=6&buff.darkest_night.up&!talent.sanguine_stratagem&talent.deeper_stratagem
@@ -26,23 +22,21 @@ actions.assisted_combat+=/envenom,if=effective_combo_points>=7&buff.darkest_nigh
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=7&buff.darkest_night.up&talent.deeper_stratagem&talent.sanguine_stratagem
 # Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly false. (Overridden from 'buff.slice_and_dice.down&combo_points>=5&buff.cut_to_the_chase.down')
 actions.assisted_combat+=/slice_and_dice,if=buff.slice_and_dice.down&effective_combo_points>=5&0
-actions.assisted_combat+=/crimson_tempest,if=target.distance<=10&!dot.crimson_tempest.ticking&effective_combo_points>=5&active_enemies>=3&buff.darkest_night.down
 actions.assisted_combat+=/rupture,if=!dot.rupture.ticking&effective_combo_points>=5&buff.darkest_night.down
-actions.assisted_combat+=/mutilate,if=talent.caustic_spatter&active_enemies>=3&debuff.caustic_spatter.down&dot.rupture.ticking&dot.deadly_poison.ticking
-actions.assisted_combat+=/shiv,if=debuff.shiv.down&talent.kingsbane&cooldown.kingsbane.ready
-actions.assisted_combat+=/shiv,if=debuff.shiv.down&charges>=2
-actions.assisted_combat+=/kingsbane
-actions.assisted_combat+=/cold_blood,if=effective_combo_points>=5&cooldown.envenom.ready
 actions.assisted_combat+=/envenom,if=effective_combo_points>=5&buff.darkest_night.down
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&buff.darkest_night.down
+# Generic stealth check replacement expression for multiple buff checks (Overridden from 'target.distance<=40&buff.stealth.up&!talent.improved_garrote')
+actions.assisted_combat+=/ambush,if=target.distance<=40&stealthed.basic&!talent.improved_garrote
+# Generic stealth check replacement expression for multiple buff checks (Overridden from 'target.distance<=40&buff.stealth.up')
+actions.assisted_combat+=/garrote,if=target.distance<=40&stealthed.basic
+actions.assisted_combat+=/garrote,if=!dot.garrote.ticking
 actions.assisted_combat+=/ambush,if=buff.blindside.up
 actions.assisted_combat+=/fan_of_knives,if=active_enemies>=3
-actions.assisted_combat+=/fan_of_knives,if=active_enemies>=1&buff.clear_the_witnesses.up
 actions.assisted_combat+=/mutilate
 actions.assisted_combat+=/poisoned_knife,if=buff.stealth.down&buff.vanish.down&energy>=70&target.distance>15
 actions.assisted_combat+=/mutilate
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

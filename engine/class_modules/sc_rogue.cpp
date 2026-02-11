@@ -26,6 +26,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  SCOUNDREL_STRIKE,
   SHADOW_CLONE,
 };
 
@@ -277,6 +278,11 @@ public:
 
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
 
+    struct 
+    {
+      actions::rogue_attack_t* dispatch = nullptr;
+      actions::rogue_attack_t* coup_de_grace = nullptr;
+    } scoundrel_strike;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -1263,7 +1269,7 @@ public:
   { return debug_cast<const actions::rogue_attack_t*>( action ); }
 
   void swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat = true );
-  bool stealthed( uint32_t stealth_mask = STEALTH_ALL ) const;
+  bool stealthed( uint32_t stealth_mask = STEALTH_ALL, bool check_lag = false ) const;
 
   // Secondary Action Tracking
 private:
@@ -1731,7 +1737,7 @@ public:
 
     if ( p->set_bonuses.mid1_subtlety_2pc->ok() )
     {
-      affected_by.mid1_subtlety_2pc = ab::base_costs[ RESOURCE_COMBO_POINT ] > 0;
+      affected_by.mid1_subtlety_2pc = consumes_combo_points();
     }
   }
 
@@ -1802,7 +1808,7 @@ public:
 
     register_damage_buff( p()->buffs.mid1_outlaw_4pc );
 
-    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    if ( consumes_combo_points() )
     {
       affected_by.relentless_strikes = true;
       affected_by.ruthlessness = true;
@@ -1931,7 +1937,7 @@ public:
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
   {
-    int consume_cp = as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) );
+    int consume_cp = consumes_combo_points() ? as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) ) : 0;
     int effective_cp = consume_cp;
 
     // Apply and Snapshot Supercharger Buffs
@@ -2112,9 +2118,13 @@ public:
   virtual bool breaks_stealth() const
   { return _breaks_stealth; }
 
+  // Overridable function to determine whether an ability consumes CP resources
+  virtual bool consumes_combo_points() const
+  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0; }
+
   // Overridable function to determine whether a finisher is working with Supercharger
   virtual bool consumes_supercharger() const
-  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
+  { return consumes_combo_points() && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
   double parry_chance( double exp, player_t* target ) const override
   {
@@ -2164,11 +2174,13 @@ public:
   void trigger_restless_blades( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_scent_of_blood();
+  void trigger_scoundrel_strike( const action_state_t*, rogue_attack_t* action );
   void trigger_seal_fate( const action_state_t* );
   void trigger_secondary_poisoning( const action_state_t* state );
   void trigger_shadow_blades_attack( const action_state_t* );
   bool trigger_shadow_clone( const action_state_t* state, rogue_attack_t* action = nullptr, double chance = 0.0, timespan_t delay = 0_ms );
   void trigger_shadow_techniques( const action_state_t* );
+  void trigger_shadow_techniques_buff( const action_state_t*, bool ignore_shadowcraft = false );
   void trigger_shadow_techniques_cp( const action_state_t* );
   void trigger_supercharger();
   void trigger_unseen_blade( const action_state_t* state );
@@ -2216,8 +2228,10 @@ public:
 
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
   {
-    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] )
+    if ( consumes_combo_points() )
+    {
       return static_cast<double>( cast_state( s )->get_combo_points() );
+    }
 
     return 1.0;
   }
@@ -2645,11 +2659,11 @@ public:
     if ( !ab::ready() )
       return false;
 
-    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
-      p()->current_cp() < ab::base_costs[ RESOURCE_COMBO_POINT ] )
+    if ( consumes_combo_points() && p()->current_cp() < ab::base_costs[ RESOURCE_COMBO_POINT ] )
       return false;
 
-    if ( requires_stealth() && !p()->stealthed( STEALTH_STANCE ) )
+    // For abilities that require stance changes, aura lag can impact client ready checks
+    if ( requires_stealth() && !p()->stealthed( STEALTH_STANCE, true ) )
     {
       return false;
     }
@@ -3492,12 +3506,10 @@ struct shadow_clone_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     // MIDNIGHT TOCHECK -- Check final functionality once bugs are fixed, currently a bit wonky
-    //                     Does not currently appear to work with Shadowcraft bonuses
+    //                     Does not currently appear to work with Shadowcraft bonuses    
     if ( p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
     {
-      double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value();
-      p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, execute_state->action );
-      p()->buffs.shadow_techniques->trigger(); // Combo Point storage
+      trigger_shadow_techniques_buff( execute_state, true );
     }
   }
 };
@@ -3595,28 +3607,13 @@ struct backstab_t : public rogue_attack_t
 
 struct dispatch_t: public rogue_attack_t
 {
-  struct scoundrel_strike_t : public rogue_attack_t
-  {
-    scoundrel_strike_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
-    {
-    }
-
-    bool procs_blade_flurry() const override
-    { return true; }
-  };
-
-  scoundrel_strike_t* scoundrel_strike;
-
   dispatch_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.dispatch, options_str ),
-    scoundrel_strike( nullptr )
+    rogue_attack_t( name, p, p->spec.dispatch, options_str )
   {
     affected_by.delivered_doom = true;
     if ( p->talent.outlaw.gravedigger_2->ok() )
     {
-      scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
-      add_child( scoundrel_strike );
+      add_child( p->active.scoundrel_strike.dispatch );
     }
   }
 
@@ -3653,16 +3650,13 @@ struct dispatch_t: public rogue_attack_t
     {
       const int cp_spend = cast_state( state )->get_combo_points();
 
-      if ( scoundrel_strike && cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
-      {
-        scoundrel_strike->execute_on_target( state->target );
-      }
-
       if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
       {
         p()->buffs.palmed_bullets->trigger();
       }
     }
+
+    trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
   bool ready() override
@@ -4281,11 +4275,11 @@ struct fan_of_knives_t: public rogue_attack_t
     return rogue_attack_t::composite_poison_flat_modifier( state );
   }
 
-  void impact( action_state_t* state ) override
+  void execute() override
   {
-    rogue_attack_t::impact( state );
+    rogue_attack_t::execute();
 
-    if ( state->result == RESULT_CRIT && p()->talent.deathstalker.momentum_of_despair->ok() )
+    if ( crit_any_target && p()->talent.deathstalker.momentum_of_despair->ok() )
     {
       p()->buffs.momentum_of_despair->trigger();
     }
@@ -5030,6 +5024,22 @@ struct rupture_t : public rogue_attack_t
   }
 };
 
+// Scoundrel Strike =========================================================
+
+struct scoundrel_strike_t : public rogue_attack_t
+{
+  scoundrel_strike_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
+  {
+  }
+
+  bool procs_poison() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+};
+
 // Secret Technique =========================================================
 
 struct secret_technique_t : public rogue_attack_t
@@ -5085,6 +5095,19 @@ struct secret_technique_t : public rogue_attack_t
         m *= p()->spec.secret_technique->effectN( 3 ).percent();
 
       return m;
+    }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+
+      // MIDNIGHT TOCHECK -- Check final functionality once bugs are fixed, currently a bit wonky
+      //                     Does not currently appear to work with Shadowcraft bonuses
+      if ( hit_any_target && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
+           p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
+      {
+        trigger_shadow_techniques_buff( execute_state, true );
+      }
     }
 
     void impact( action_state_t* state ) override
@@ -6370,6 +6393,11 @@ struct coup_de_grace_t : public rogue_attack_t
     {
       add_child( attacks.front()->bonus_attack );
     }
+
+    if ( p()->talent.outlaw.gravedigger_2->ok() )
+    {
+      add_child( p()->active.scoundrel_strike.coup_de_grace );
+    }
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -6401,6 +6429,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
   }
@@ -7300,7 +7329,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 template <typename Base>
 void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* state )
 {
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  if ( !consumes_combo_points() )
     return;
 
   if ( !ab::hit_any_target )
@@ -7607,17 +7636,28 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   {
     p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
     p()->shadow_techniques_counter = 0;
-
-    double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value();
-
-    p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
-    // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
-    if ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.shadow_dance->check() )
-    {
-      p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
-    }
-    p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
+    trigger_shadow_techniques_buff( state );
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action_state_t* state, bool ignore_shadowcraft )
+{
+  if ( !p()->spec.shadow_techniques->ok() )
+    return;
+
+  const double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value();
+  const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() &&
+                                            p()->buffs.shadow_dance->check() &&
+                                            !ignore_shadowcraft ) ? 1 : 0;
+
+  p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+  // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
+  if ( shadowcraft_adjustment > 0 )
+  {
+    p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+  }
+  p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
 }
 
 template <typename Base>
@@ -7985,9 +8025,9 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
     return;
 
-  if ( !( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 || ( ab::energize_type != action_energize::NONE &&
-                                                          ab::energize_resource == RESOURCE_COMBO_POINT &&
-                                                          ab::energize_amount > 0 ) ) )
+  if ( !( consumes_combo_points() || ( ab::energize_type != action_energize::NONE &&
+                                       ab::energize_resource == RESOURCE_COMBO_POINT &&
+                                       ab::energize_amount > 0 ) ) )
     return;
 
   if ( range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
@@ -8067,7 +8107,7 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
   if ( !p()->talent.subtlety.ancient_arts_3->ok() || !ab::hit_any_target )
     return;
 
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || !this->has_amount_result() )
+  if ( !consumes_combo_points() || !this->has_amount_result() )
     return;
 
   if ( !p()->buffs.ancient_arts->check() )
@@ -8099,7 +8139,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   if ( !p()->spell.cut_to_the_chase->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  if ( !consumes_combo_points() )
     return;
 
   double extend_duration = p()->spell.cut_to_the_chase->effectN( 1 ).base_value() * cast_state( state )->get_combo_points();
@@ -8127,23 +8167,27 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
     return;
 
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 && !ignore_cp )
+  if ( !consumes_combo_points() && !ignore_cp )
     return;
+
+  // Darkest Night checks take priority and no stacks can be removed if Darkest Night is active
+  if ( p()->buffs.darkest_night->check())
+  {
+    if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
+    {
+      trigger_deathstalkers_mark_debuff( state, true );
+      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
+    }
+
+    return;
+  }
 
   // 2025-06-28 -- Deathstalker's Mark can be consumed via Symbols of Death with the TWW3 4pc set bonus
   player_t* mark_target = state->target->is_enemy() ? state->target : p()->target;
-  const bool consume_darkest_night = affected_by.darkest_night && p()->buffs.darkest_night->check() &&
-    cast_state( state )->get_combo_points() >= COMBO_POINT_MAX;
-
   if ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
        ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
-    // Envenom/Eviscerate cast with Darkest Night does not consume a stack of active Deathstalker's Marks
-    // MIDNIGHT TOCHECK -- Does this still trigger Unshakeable Drive or damage?
-    if ( !consume_darkest_night )
-    {
-      p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
-    }
+    p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
@@ -8167,14 +8211,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
       make_event( *p()->sim, 1_ms, [ this ] {
         p()->buffs.darkest_night->trigger();
       } );
-      return; // Note: Cannot immediately trigger and consume Darkest Night
     }
-  }
-
-  if ( consume_darkest_night )
-  {
-    trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
   }
 }
 
@@ -8274,6 +8311,23 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
   }
 
   p()->active.trickster.nimble_flurry->trigger_residual_action( state, multiplier );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state_t* state, actions::rogue_attack_t* action )
+{
+  if ( !p()->talent.outlaw.gravedigger_2->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
+  {
+    action->trigger_secondary_action( state->target, 200_ms );
+  }
 }
 
 template <typename Base>
@@ -9822,6 +9876,14 @@ void rogue_t::init_spells()
     active.fan_the_hammer->energize_type = action_energize::NONE; // Fan the Hammer itself does not generate CPs, only from Quick Draw
   }
 
+  if ( talent.outlaw.gravedigger_2->ok() )
+  {
+    active.scoundrel_strike.dispatch = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_dispatch" );
+    active.scoundrel_strike.coup_de_grace = get_secondary_trigger_action<actions::scoundrel_strike_t>(
+      secondary_trigger::SCOUNDREL_STRIKE, "scoundrel_strike_coup_de_grace" );
+  }
+
   // Subtlety
   if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -10255,7 +10317,7 @@ void rogue_t::create_buffs()
   if ( talent.fatebound.lucky_coin->ok() )
   {
     buffs.fatebound_coin_flips
-      ->set_max_stack( talent.fatebound.lucky_coin->effectN( 1 ).base_value() )
+      ->set_max_stack( as<int>( talent.fatebound.lucky_coin->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
         if ( b && stack == b->max_stack() )
@@ -10948,7 +11010,7 @@ void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool 
 
 // rogue_t::stealthed =======================================================
 
-bool rogue_t::stealthed( uint32_t stealth_mask ) const
+bool rogue_t::stealthed( uint32_t stealth_mask, bool check_lag ) const
 {
   if ( ( stealth_mask & STEALTH_NORMAL ) && buffs.stealth->check() )
     return true;
@@ -10956,7 +11018,8 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
   if ( ( stealth_mask & STEALTH_VANISH ) && buffs.vanish->check() )
     return true;
 
-  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() )
+  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() &&
+       ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > world_lag.mean ) )
     return true;
 
   if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )

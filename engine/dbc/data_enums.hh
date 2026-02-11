@@ -1896,6 +1896,10 @@ enum spell_attribute : unsigned
   SX_ONLY_PROC_FROM_CLASS_ABILITIES = 415u,
   SX_ALLOW_CLASS_ABILITY_PROCS      = 416u,
   SX_REFRESH_EXTENDS_DURATION       = 436u,
+  SX_ASYNCRONOUS_STACKING_BUFF      = 490u,
+  SX_IMPORTANT_SPELL                = 491u,
+  SX_IS_EXTERNAL_DEFENSIVE          = 499u,
+  SX_IS_BIG_DEFENSIVE               = 512u
 };
 
 // spell aura/channel interrupt flags, indicates bit position

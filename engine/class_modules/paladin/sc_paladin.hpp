@@ -1095,7 +1095,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, divine_purpose, divine_purpose_cost;  // Shared
+    bool avenging_wrath, divine_purpose, divine_purpose_cost;  // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden,
       rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
@@ -1261,22 +1261,6 @@ public:
     }
 
     return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = ab::composite_target_multiplier( t );
-
-    paladin_td_t* td = this->td( t );
-
-    // Handles both holy and ret judgment
-    if ( affected_by.judgment && td->debuff.judgment->up() )
-    {
-      double judg_mul = 1.0 + td->debuff.judgment->default_value;
-      ctm *= judg_mul;
-    }
-
-    return ctm;
   }
 
   virtual double composite_target_ta_multiplier( player_t* target ) const override
@@ -1806,7 +1790,6 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
-  void impact( action_state_t* s ) override;
   bool action_ready() override;
 };
 
@@ -1815,7 +1798,7 @@ struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
 };
-bool trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+bool trigger_hammer_and_anvil( paladin_t* p, player_t* target, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas );
 struct golden_path_t : public paladin_heal_t
 {

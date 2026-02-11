@@ -362,6 +362,7 @@ public:
   rng::rng_t& rng() const;
 
   bool change_regen_rate;
+  bool disable_async_expire_events_removal;
 
   buff_t* set_chance( double chance );
   buff_t* set_duration( timespan_t duration );
@@ -422,6 +423,8 @@ public:
   buff_t* set_name_reporting( std::string_view );
 
   buff_t* apply_time_rate_modifier( const spell_data_t* spell );
+
+  buff_t* set_disable_async_expire_events_removal( bool b );
 
   friend void sc_format_to( const buff_t&, fmt::format_context::iterator );
 private:

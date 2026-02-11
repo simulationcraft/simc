@@ -44,5 +44,5 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 actions.cooldowns+=/use_items,if=buff.voidform.up
-actions.cooldowns+=/voidform
+actions.cooldowns+=/voidform,if=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions.cooldowns+=/power_infusion,if=buff.voidform.up

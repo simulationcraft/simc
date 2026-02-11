@@ -1091,7 +1091,8 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
-      parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
+      if ( p()->talents.protection.ravager.ok() )
+        parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
     }
@@ -5934,8 +5935,8 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.shield_block->up() && p()->talents.protection.heavy_repercussions->ok() )
     {
-      p () -> buff.shield_block -> extend_duration( p(),
-          timespan_t::from_seconds( p() -> talents.protection.heavy_repercussions -> effectN( 1 ).percent() ) );
+      p()->buff.shield_block->extend_duration( p(),
+          timespan_t::from_seconds( p()->talents.protection.heavy_repercussions->effectN( 1 ).percent() ) );
     }
 
     if ( p()->talents.protection.impenetrable_wall->ok() )
@@ -6812,14 +6813,8 @@ struct shield_block_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p()->buff.shield_block->check() )
-    {
-      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
-    }
-    else
-    {
-      p()->buff.shield_block->trigger();
-    }
+    p()->buff.shield_block->extend_duration_or_trigger( p()->buff.shield_block->buff_duration() );
+
   }
 
   bool ready() override
@@ -7483,6 +7478,10 @@ void warrior_t::init_spells()
     specialization() == WARRIOR_FURY ? effect_mask_t( true ).disable( 3 )
                                      : effect_mask_t( true ) );
 
+  register_passive_effect_mask( talents.slayer.slayers_malice,
+    specialization() == WARRIOR_ARMS ? effect_mask_t( true ).disable( 2 )
+                                     : effect_mask_t( true ).disable( 1 ) );
+
   // Armor Handled Manually for ATTT
   register_passive_effect_mask( talents.protection.armor_specialization, effect_mask_t( false ).enable( 1, 2 ) );
   register_passive_effect_mask( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
@@ -8003,7 +8002,8 @@ void warrior_t::create_buffs()
      ->set_duration( find_spell( 184362 )->duration() );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
-                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                          ->set_disable_async_expire_events_removal( true );
 
   buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
   buff.charge_movement        = make_buff( this, "charge_movement" );
@@ -8072,6 +8072,7 @@ void warrior_t::create_buffs()
 
   buff.berserk = make_buff( this, "berserk", find_spell( 1269349) )
                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                    ->set_disable_async_expire_events_removal( true )
                     ->set_trigger_spell( talents.fury.rampaging_berserker_1 );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
@@ -8101,6 +8102,7 @@ void warrior_t::create_buffs()
 
   // Slayer
   buff.executioner          = make_buff( this, "executioner", find_spell( 445584 ) )
+                              ->set_disable_async_expire_events_removal( true )
                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
   buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
@@ -8122,6 +8124,7 @@ void warrior_t::create_buffs()
                                         ->set_cooldown( talents.arms.master_of_warfare_1->internal_cooldown() );
 
   buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
+                                ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Protection Apex
@@ -9235,6 +9238,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( buff.into_the_fray );
+    parse_effects( buff.avatar, effect_mask_t( false ).enable( 8 ) );
   }
 
   // Colossus

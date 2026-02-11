@@ -688,7 +688,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    disable_async_expire_events_removal( false )
 {
   if ( source )  // Player Buffs
   {
@@ -751,6 +752,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
     ignore_time_modifier = true;
   set_can_cancel( !s_data->flags( spell_attribute::SX_NO_CANCEL ) );
+
+  if ( s_data->flags( spell_attribute::SX_ASYNCRONOUS_STACKING_BUFF ) && _max_stack > 1 )
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   update_trigger_calculations();
 }
@@ -1511,6 +1515,12 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
   return this;
 }
 
+buff_t* buff_t::set_disable_async_expire_events_removal( bool b )
+{
+  disable_async_expire_events_removal = b;
+  return this;
+}
+
 // Applies a modifier from -99 to infinity that controls how fast the buff functions.
 // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
 // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
@@ -2180,13 +2190,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
         return a->remains() < b->remains();
       } );
     }
-    /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
-    if ( check() == before_stacks && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
-    {
-      event_t::cancel( expiration.front() );
-      expiration.erase( expiration.begin() );
-    }
-    */
+
   }
 
   timespan_t period = tick_time();
@@ -2346,7 +2350,7 @@ void buff_t::bump( int stacks, double value )
       overflow_total += overflow;
       current_stack = max_stack();
 
-      if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
+      if ( !disable_async_expire_events_removal && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
       {
         // Can't trigger more than max stack at a time
         overflow -= std::max( 0, stacks - max_stack() );
@@ -2357,7 +2361,6 @@ void buff_t::bump( int stacks, double value )
         {
           event_t* e     = expiration.front();
           int exp_stacks = debug_cast<expiration_t*>( e )->stack;
-
           if ( exp_stacks > overflow )
           {
             debug_cast<expiration_t*>( e )->stack -= overflow;

@@ -49,8 +49,10 @@ template <typename T, typename Fields>
 bool override_field( T* data, const Fields& fields, util::string_view name, double value ) {
   return detail::handle_field( data, fields, name,
     [ value ] ( auto& field ) {
-        field = static_cast<std::remove_reference_t<decltype(field)>>( value );
-        return true;
+      field = static_cast<std::remove_reference_t<decltype(field)>>(
+        std::is_unsigned_v<std::remove_reference_t<decltype(field)>> && value < 0.0 ? 0.0 : value
+      );
+      return true;
     }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
 }
 

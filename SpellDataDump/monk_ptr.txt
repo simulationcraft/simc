@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -531,7 +531,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -1638,7 +1638,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Soothing Mist (115175 effect#3), Expeditious Fortification (388813 effect#1), Ironshell Brew (388814 effects: #1, #2), Lighter Than Air (449609 effect#3), Windwalker Monk (1258122 effect#13), Mistweaver Monk (1258138 effect#24)
 Family Flags     : 52, 53
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Prevent Jumping During Precast (448), Unknown (491), Unknown (512)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Prevent Jumping During Precast (448), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -1717,7 +1717,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Uplifted Spirits (388551 effect#1), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 48, 60
-Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 59.8828 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
@@ -2319,7 +2319,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Burst of Life (287472 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Heart of the Jade Serpent (1238904 effect#2)
 Family Flags     : 78
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (499)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
 Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.3 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -2803,7 +2803,8 @@ Effects          :
 #1 (id=150037)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.35 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.35 -> 1.9)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=335940)   : Dummy (3)
@@ -3798,7 +3799,7 @@ Labels           : 16: Class Spells
                  : 930
 Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
-Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=171856)   : Summon Guardian (28)
@@ -3926,13 +3927,15 @@ Effects          :
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
                    Family Flags: 58, 89
 #9 (id=260840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 44 | Scaled Value: 44 | Target: Self (1)
+                   Base Value: 73 | Scaled Value: 73 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
+Hotfixed         : Base Value (44 -> 73)
 #10 (id=260841)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 92 | Scaled Value: 92 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (60 -> 92)
 #11 (id=260842)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
@@ -3942,9 +3945,10 @@ Effects          :
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187)
                    Family Flags: 5
 #13 (id=260844)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
+Hotfixed         : Base Value (50 -> 80)
 #14 (id=260845)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 5669 (Label) | Target: Self (1)
                    Affected Spells (Label): Flurry Strike (451250)
@@ -8731,7 +8735,7 @@ Labels           : 16: Class Spells
                  : 720: Vision of Perfection (296326 effect#2)
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Uplifted Spirits (388551 effect#1), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 48, 60
-Attributes       : No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=769665)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.4 | PvP Coefficient: 1.75 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
@@ -12959,8 +12963,9 @@ Effects          :
 #1 (id=1023475)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
 #2 (id=1180344)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 215 | Scaled Value: 215 | PvP Coefficient: 0.745 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
+Hotfixed         : Base Value (215 -> 260), PvP Coefficient (0.745 -> 0.516)
 Description      : $@spelldesc467293
 Tooltip          : Ancient Teachings transfers an additional $w2% damage to healing.
 
@@ -13571,7 +13576,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Uplifted Spirits (388551 effect#1), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 48, 60
-Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=1024408)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 59.8828 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
@@ -13721,7 +13726,8 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | Target: Self (1)
+Hotfixed         : Base Value (120 -> 160)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -14390,7 +14396,7 @@ Effects          :
 #3 (id=1031602)  : Trigger Spell (64): Strike of the Windlord
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395519 | Target: Self (1)
 #4 (id=1031603)  : Trigger Spell (64): Strike of the Windlord
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 395521 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 395521 | Target: Self (1)
 Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d. Deals reduced damage to secondary targets.
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -14985,7 +14991,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
-Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=1035629)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 180743 | Misc Value 2: 4958 | Target: Self (1)
@@ -17574,13 +17580,15 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150447)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 100 yards | Target: Self and Summons in Area (120)
+Hotfixed         : Base Value (15 -> 25)
                    Modified By: Path of Resurgence (451084 effect#1)
 #2 (id=1150448)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Modified By: Path of Resurgence (451084 effect#2)
 #3 (id=1150449)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Hotfixed         : Base Value (7 -> 12)
                    Modified By: Path of Resurgence (451084 effect#3)
 #4 (id=1150450)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -18300,10 +18308,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 6418: Brewmaster Monk (1258153 effect#17)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151234)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Brewmaster Monk (1258153 effect#17)
 Description      : $?a137023[][Rising Sun Kick, ]Blackout Kick and Tiger Palm contribute $s1% additional vitality.
 
 Name             : Pride of Pandaria (id=450979) [Spell Family (53), Passive] 
@@ -18672,13 +18682,14 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3602: Chi Wave (450391 effect#2)
+                 : 3602: Chi Wave (450391 effect#2), Brewmaster Monk (1258153 effect#18)
 Triggered By     : Path of Resurgence (450912)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151425)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 3600 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of Harmony (450508)
+                   Modified By: Brewmaster Monk (1258153 effect#18)
 #2 (id=1151426)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Misc Value 2: 3600 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of Harmony (450508)
@@ -20302,8 +20313,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1180358)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 180 | Scaled Value: 180 | PvP Coefficient: 0.745 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
+Hotfixed         : Base Value (180 -> 260), PvP Coefficient (0.745 -> 0.516)
 #2 (id=1241878)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Sta | Target: Self (1)
 Description      : Ancient Teachings transfers an additional $388026s2% damage to healing.
@@ -21066,7 +21078,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -21383,7 +21395,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Celestial Brew (322507 effect#2), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 42
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239912)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
@@ -22437,6 +22449,18 @@ Effects          :
 #16 (id=1267426) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 4194 (Label) | Target: Self (1)
                    Affected Spells (Label): Manifestation (450875)
+#17 (id=1305244) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 6418 (Label) | Target: Self (1)
+                   Affected Spells (Label): Way of a Thousand Strikes (450965)
+Hotfixed         : NEW EFFECT
+#18 (id=1305245) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 3602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Path of Resurgence (451084)
+Hotfixed         : NEW EFFECT
+#19 (id=1305728) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 3 | Misc Value 2: 6422 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wisdom of the Wall (1272821)
+Hotfixed         : NEW EFFECT
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
 Class            : Hunter, Monk
@@ -23851,13 +23875,15 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
 #2 (id=1283654)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 5954 (Label) | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 5954 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackout Combo (228563)
+Hotfixed         : Base Value (50 -> 100)
 #3 (id=1283655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #4 (id=1283765)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 5955 (Label) | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value 2: 5955 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418360)
+Hotfixed         : Base Value (50 -> 100)
 #5 (id=1283766)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 12 | Misc Value 2: 5957 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418359)
@@ -24069,6 +24095,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 6422: Brewmaster Monk (1258153 effect#19)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -24076,6 +24103,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1286132)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Brewmaster Monk (1258153 effect#19)
 Description      : $?c1[Invoke Niuzao, the Black Ox][Zenith] causes $?c1[Breath of Fire][Rising Sun Kick and Spinning Crane Kick] to launch $s1 Flurry Strikes.
 
 Name             : Combat Stance (id=1272844) [Spell Family (53), Passive, Hidden] 

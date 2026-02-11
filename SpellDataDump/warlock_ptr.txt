@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -630,7 +630,8 @@ Family Flags     : 49, 65
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 19.0512 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 26.6717 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (19.051201 -> 26.6717)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -937,7 +938,8 @@ Family Flags     : 49, 55, 118
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.13874 | PvP Coefficient: 0.739646 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.99424 | PvP Coefficient: 0.528319 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.13874 -> 2.99424), PvP Coefficient (0.739646 -> 0.528319)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1550,7 +1552,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.4338 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.6507 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.4338 -> 3.6507)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1940,7 +1943,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -2900,7 +2903,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Strength of Will (317138 effect#1), Dark Accord (386659 effect#1)
 Family Flags     : 54, 67
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -3077,8 +3080,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Soul Link (108446), Soul Link (108447), Fel Synergy (389372)
                    Family Flags: 78
-#3 (id=1168508)  : Apply Aura (6) | Modify Base Attribute% (80)
+#3 (id=1168508)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Sta | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (2 -> 0), Misc Value 2 (0 -> 4)
 Description      : $s2% of all damage you take is taken by your demon pet instead. $?a137044[][
 
 While Grimoire of Sacrifice is active, your Stamina is increased by $s3%.]
@@ -3581,7 +3585,8 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.71471 | PvP Coefficient: 2.18182 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.08618 | PvP Coefficient: 1.98347 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (3.71471 -> 4.08618), PvP Coefficient (2.18182 -> 1.98347)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3996,8 +4001,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6343 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449631)
 #7 (id=1300817)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 5186 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 5186 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Demonic Touch (1269221)
+Hotfixed         : Base Value (30 -> 0)
 #8 (id=1300819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -5317,7 +5323,7 @@ Labels           : 16: Class Spells
                  : 1387
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#1), Eye Contract (1279521 effect#1)
 Family Flags     : 88
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=302908)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 103673 | Misc Value 2: 3766 | Radius: 3 yards | Target: Right of Self (49)
@@ -7360,7 +7366,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Soulbound Tyrant (334585 effect#1), Master Summoner (1240189 effect#1), Reign of Tyranny (1276748 effect#1)
 Family Flags     : 81
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=709184)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 4255 | Radius: 5 yards | Target: Front Left of Self (44)
@@ -7551,7 +7557,7 @@ Effects          :
 #1 (id=709510)   : Trigger Spell (64): Meaty Rampage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 265392 | Target: Targeted Enemy (6)
 #2 (id=709511)   : Trigger Spell (64): Meaty Rampage
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 265393 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 500_ms | Trigger Spell: 265393 | Target: Targeted Enemy (6)
 Description      : Smacks the target multiple times with cooked meat, inflicting $265392s1 Physical damage twice.
 
 Name             : Meaty Rampage (id=265392) 
@@ -10311,13 +10317,13 @@ Effects          :
 #1 (id=815472)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=815483)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 100 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Delay: 100_ms | Trigger Spell: 327070 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #3 (id=819800)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 200 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Delay: 200_ms | Trigger Spell: 327072 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #4 (id=819801)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 300 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Delay: 300_ms | Trigger Spell: 327070 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #5 (id=819802)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 400 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Delay: 400_ms | Trigger Spell: 327072 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next$?s198590[][ $325299u] $?s137046[Incinerates]?s198590[Drain Soul]?a137044&?!s137046[Demonbolts]?!a137044[Shadow Bolts][] by $325299s1%.$?a196408[ This value is reduced while using Fire and Brimstone.][]
 
 Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul]?a137044[Demonbolt]?!s137046&!a137044[Shadow Bolt][] both increase as your target's health decreases.
@@ -11931,7 +11937,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 690: Major Cooldowns
-Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=911563)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 1881 | Target: at Area (87)
@@ -15825,7 +15831,8 @@ Family Flags     : 0, 38, 49, 118
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1124532)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.3894 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 13.4735 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (5.3894 -> 13.4735)
 #2 (id=1152084)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: soul_shard | Target: Self (1)
                    Modified By: Destruction Warlock (137046 effect#13)
@@ -15936,7 +15943,8 @@ Triggered By     : Ruination (434635)
 Family Flags     : 49
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.9194 | PvP Coefficient: 0.383333 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 25.3791 | PvP Coefficient: 0.255555 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (16.919399 -> 25.379101), PvP Coefficient (0.383333 -> 0.255555)
 Description      : $@spelldesc434635
 
 Name             : Hyper Productive (id=436339) [Passive] 
@@ -17001,7 +17009,8 @@ Family Flags     : 49
 Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150515)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.191186 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.114712 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.191186 -> 0.114712)
 Description      : $@spelldesc449624
 Tooltip          : Dealing $o1 Shadow damage over $d.
 
@@ -17596,8 +17605,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Immolation (20153), Infernal Awakening (22703), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Channel Demonfire (409890), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Diabolic Bolt (438823), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715), Lake of Fire (1244890), Lake of Fire (1244918), Dark Harvest (1257065), Unstable Affliction (1259790), Malefic Grasp (1261153), Corruption (1261158), Unstable Affliction (1261176), Echo of Sargeras (1265884), Soul Swipe (1269049), Manifested Avarice (1269050), Demonic Touch (1269221), Eye Explosion (1269800)
                    Family Flags: 49
-#2 (id=1288714)  : Apply Aura (6) | Modify Pet Stat (382)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33 | Target: Self (1)
+#2 (id=1288714)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Sub Type (382 -> 4), Misc Value (33 -> 0)
 Description      : Damaging critical strikes dealt by you and your demons deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Devastation (id=454735) [Spell Family (5), Passive, Hidden] 
@@ -18651,7 +18661,7 @@ Labels           : 4874
 Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 1231418 | Target: Self (1)
 #2 (id=1223444)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Front of Self (47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
@@ -19373,6 +19383,7 @@ Effects          :
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
 
 Name             : Dark Harvest (id=1257052) [Spell Family (5)] 
+Hotfixed         : Channel Interrupt
 Talent Entry     : Affliction [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -19385,7 +19396,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Is Self Channelled (38), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Channel Interrupt: Action (3)
+Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=1264780)  : Apply Aura (6) | Periodic Trigger Spell (23): Dark Harvest every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1257065 | Target: Self (1)
@@ -19410,7 +19421,8 @@ Family Flags     : 49
 Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264823)  : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 11.9936 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 8.39552 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (11.9936 -> 8.39552)
 Description      : $@spelldesc1257052
 
 Name             : Unstable Affliction (id=1259790) [Spell Family (5)] 
@@ -19432,12 +19444,16 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Jackpot! (1219034 effects: #2, #3), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Potent Soul Shards (1259815 effects: #1, #2), Shard Instability (1260269 effects: #1, #2, #3), Warlock Affliction 12.0 Class Set 2pc (1264869 effect#2), Through the Felvine (1266799 effects: #1, #2), Demonic Touch (1269221 effect#1), Darkglare Presence (1280663 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 2pc (1283640 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 4pc (1283641 effects: #1, #2)
 Family Flags     : 40, 49
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Unknown (490)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Asynchronous Buff (490)
 Effects          :
 #1 (id=1269007)  : Dummy (3)
-                   Base Value: 3447 | Scaled Value: 3447 | Target: Targeted Enemy (6)
+                   Base Value: 4136 | Scaled Value: 4136 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (3447 -> 4136)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | Target: Targeted Enemy (6)
+#3 (id=1305431)  : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with $o2 Shadow damage over $d. Multiple uses of this ability may overlap.
 
 If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.
@@ -19890,7 +19906,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5671
 Proc Chance      : 100%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
@@ -20510,7 +20526,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1280432)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (4 -> 2)
                    Modified By: Manifested Demonic Soul (1269042 effect#2)
 Description      : Increases your Mastery by $s1%.
 
@@ -20568,9 +20585,11 @@ Family Flags     : 49
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280678)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.79306 | PvP Coefficient: 0.33 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.95514 | PvP Coefficient: 0.471429 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.79306 -> 1.95514), PvP Coefficient (0.33 -> 0.471429)
 #2 (id=1280679)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.86209 | PvP Coefficient: 0.33 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30346 | PvP Coefficient: 0.471429 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.86209 -> 1.30346), PvP Coefficient (0.33 -> 0.471429)
 Description      : Strikes nearby enemies with a malevolent claw, dealing $s1 Shadow damage to its target and $s2 Shadow damage to other enemies in $a2 yds.
 
 Name             : Manifested Avarice (id=1269050) [Spell Family (5), Hidden] 
@@ -20768,8 +20787,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126)
 Effects          :
-#1 (id=1282996)  : Apply Aura (6) | Modify Base Attribute% (80)
+#1 (id=1282996)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Gorefiend's Avarice (id=1270701) [Spell Family (5), Passive, Hidden] 
@@ -20883,6 +20903,7 @@ Description      : Call forth a cloud of cloying shadow mist that envelopes the 
 |cFF8282FFCurses: A warlock can only have one Curse or Blight active per target.|r
 
 Name             : Blight of Weakness (id=1271798) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -20892,7 +20913,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1284747)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Targeted Enemy (6)
@@ -20940,6 +20961,7 @@ Effects          :
 Description      : $@spelldesc1271748
 
 Name             : Blight of Tongues (id=1272122) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -20949,7 +20971,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1285187)  : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.3 | Target: Targeted Enemy (6)
@@ -21408,7 +21430,8 @@ Triggered By     : Wrath of Nathreza (1262028)
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1290665)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 33.6902 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.8451 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (33.690201 -> 16.8451)
 #2 (id=1290666)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1262028

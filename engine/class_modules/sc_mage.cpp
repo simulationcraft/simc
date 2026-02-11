@@ -210,9 +210,6 @@ public:
   // Buffs waiting to be triggered/expired
   std::vector<buff_adjust_info_t> buff_queue;
 
-  // Mana Cascade expiration events
-  std::vector<event_t*> mana_cascade_expiration;
-
   // Events
   struct events_t
   {
@@ -290,6 +287,7 @@ public:
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
     buff_t* fiery_rush;
+    buff_t* fired_up;
     buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
@@ -457,6 +455,7 @@ public:
     int clearcasting_blp_count;
     int sphere_blp_count;
     int icicles;
+    int fired_up_count; // number of Fired Up procs in this Combustion
   } state;
 
   // Talents
@@ -906,6 +905,7 @@ public:
   bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
+  void trigger_fired_up();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -1446,6 +1446,7 @@ struct combustion_t final : public buff_t
       if ( old == 0 )
       {
         p->buffs.fiery_rush->trigger();
+        p->state.fired_up_count = 0;
       }
       else if ( cur == 0 )
       {
@@ -2406,7 +2407,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     m *= 1.0 + p()->buffs.hyperthermia_damage->check_stack_value();
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
       m *= 1.0 + p()->buffs.pyroclasm->check_value();
 
     return m;
@@ -2438,13 +2439,14 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
       p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
       p()->buffs.pyroclasm->decrement();
 
     if ( last_hot_streak )
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
+      p()->trigger_fired_up();
 
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
@@ -2701,7 +2703,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     custom_state_spell_t::execute();
 
     // TODO: PTR check
-    if ( sim->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
 
     p()->trigger_arcane_charge();
@@ -2772,6 +2774,10 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    // Polished Focus refund is based on salvo stacks prior to Orb Barrage proc,
+    // unlike any of the other effects that depend on salvo stacks.
+    int old_salvo = p()->buffs.arcane_salvo->check();
+
     // Arcane Orb from Orb Barrage executes before Arcane Barrage does. The extra
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
@@ -2811,7 +2817,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( p()->talents.force_of_will.ok() )
       p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
-    if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
+    // See above wrt old_salvo
+    if ( old_salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
     if ( p()->talents.glorious_incandescence.ok() && salvo )
     {
@@ -2890,14 +2897,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Add a small amount of travel time so that Arcane Blast's damage can be stored
-    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
-    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 10_ms );
   }
 
   double cost_pct_multiplier() const override
@@ -3295,14 +3294,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     triggers.spellfire_sphere = triggers.mana_cascade = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Add a small amount of travel time so that Arcane Surge's damage can be stored
-    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
-    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
   }
 
   double action_multiplier() const override
@@ -3873,6 +3864,9 @@ struct flurry_t final : public frost_mage_spell_t
     may_miss = false;
     triggers.frostfire_empowerment = true; // Doesn't seem to need Heat Sink
 
+    // Used when creating the pulse events; doesn't actually do anything otherwise
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+
     add_child( flurry_bolt );
     if ( p->talents.glacial_assault.ok() )
       add_child( p->action.glacial_assault );
@@ -3900,11 +3894,16 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulses )
       .action( flurry_bolt ), true );
+
+    // This is a bit of a hack to ensure that all the secondary Flurry projectiles get affected
+    // by Splitting Ice's effectiveness reduction.
+    if ( s->chain_target > 0 )
+      e->pulse_state->persistent_multiplier *= std::pow( chain_multiplier, s->chain_target );
   }
 };
 
@@ -3927,6 +3926,11 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
+
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+    // TODO: Doesn't seem to affect Frostbolt for some reason
+    if ( p->bugs && !frostfire )
+      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
@@ -4142,7 +4146,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p->talents.glacial_shatter.ok() )
       freezing_stacks = 0;
 
-    chain_multiplier = 1.0; // The spell data value isn't used
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
 
     if ( p->talents.duality.ok() )
     {
@@ -4512,7 +4516,7 @@ struct meteor_burn_t final : public fire_mage_spell_t
 
     // TODO: Hard to say how the new tick_zero attribute is supposed to work with
     // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs && sim->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+    if ( p->bugs && p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       dot_duration = 3_ms;
   }
 };
@@ -4534,7 +4538,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
     // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs ? 4 : 5 ).base_value() ) ),
+    // TODO: Fixed on beta, remove PTR check
+    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && p->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -5416,8 +5421,8 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: Should be affected by spell speed as per the description; currently doesn't work
-    if ( !p->bugs )
+    // TODO: PTR check
+    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
@@ -6274,9 +6279,8 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion               = make_buff<buffs::combustion_t>( this );
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
-                                     ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
+                                     ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_cooldown( find_spell( 383391 )->internal_cooldown() )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
@@ -6288,6 +6292,10 @@ void mage_t::create_buffs()
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
+  buffs.fired_up                 = make_buff( this, "fired_up", find_spell( 1257350 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                     ->set_chance( talents.fired_up_1.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
                                      ->set_default_value_from_effect( 3 )
                                      ->set_trigger_spell( talents.heat_shimmer );
@@ -6309,7 +6317,6 @@ void mage_t::create_buffs()
                                ->set_chance( talents.icicles.ok() );
   buffs.hand_of_frost      = make_buff( this, "hand_of_frost", find_spell( 1263263 ) )
                                ->set_default_value_from_effect( 1 )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                ->set_chance( talents.hand_of_frost_2.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
@@ -6346,16 +6353,7 @@ void mage_t::create_buffs()
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                   ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                     {
-                                       if ( cur == 0 )
-                                       {
-                                         for ( auto e : mana_cascade_expiration )
-                                           event_t::cancel( e );
-
-                                         mana_cascade_expiration.clear();
-                                       }
-                                     } )
+                                   ->set_disable_async_expire_events_removal( bugs )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -6367,7 +6365,7 @@ void mage_t::create_buffs()
   buffs.brainstorm         = make_buff( this, "brainstorm", find_spell( 461531 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_disable_async_expire_events_removal( bugs )
                                ->set_chance( talents.brainstorm.ok() );
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
                                // TODO: ABar value?
@@ -6634,6 +6632,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
   if ( buffs.enlightened->check() && buffs.enlightened->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened->check_value() * buffs.enlightened->data().effectN( 2 ).percent();
 
+  if ( buffs.fired_up->has_common_school( school ) )
+    m *= 1.0 + buffs.fired_up->check_stack_value();
+
   return m;
 }
 
@@ -6692,7 +6693,6 @@ void mage_t::reset()
   player_t::reset();
 
   buff_queue.clear();
-  mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -6999,6 +6999,7 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     buffs.glacial_spike->trigger();
 }
 
+// TODO: Does this still have bugs with Pyromaniac?
 void mage_t::trigger_mana_cascade()
 {
   if ( !talents.mana_cascade.ok() )
@@ -7007,25 +7008,34 @@ void mage_t::trigger_mana_cascade()
   // This is still tied to the pet despite the other effects (Ashes of Inspiration,
   // Memory of Al'ar) being moved to Arcane Surge/Combustion.
   int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
-  auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
-  {
-    buffs.mana_cascade->trigger( s );
-    mana_cascade_expiration.push_back( make_event( *sim, buffs.mana_cascade->buff_duration(), [ this, s ]
-    {
-      mana_cascade_expiration.erase( mana_cascade_expiration.begin() );
-      buffs.mana_cascade->decrement( s );
-    } ) );
-  };
+  buffs.mana_cascade->trigger( stacks );
+}
 
-  if ( buffs.mana_cascade->check() < buffs.mana_cascade->max_stack() )
+void mage_t::trigger_fired_up()
+{
+  if ( !talents.fired_up_1.ok() )
+    return;
+
+  // TODO: Fit an equation or get more accurate numbers here. This list of probabilities is from logged data on target dummies.
+  constexpr std::array<double, 6> combustion_chance = { 0.889, 0.764, 0.483, 0.241, 0.0957, 0.027 };
+  double chance;
+  // TODO: This is bugged and seems to apply its changes to the proc chance during Combustion even when the talent is not learned.
+  if ( buffs.combustion->check() && ( bugs || talents.fired_up_3.ok() ) )
+    chance = state.fired_up_count < combustion_chance.size() ? combustion_chance[ state.fired_up_count ] : 0.0;
+  else
+    chance = talents.fired_up_1->effectN( 1 ).percent();
+
+  if ( rng().roll( chance ) )
   {
-    // If this is triggered twice within a small enough time frame,
-    // erroneous expiration events can be scheduled. This currently
-    // only happens with Pyromaniac.
-    if ( bugs )
-      make_event( *sim, trigger_buff );
-    else
-      trigger_buff();
+    buffs.fired_up->trigger();
+    cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
+    buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
+
+    if ( pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() )
+      pets.arcane_phoenix->adjust_duration( talents.fired_up_1->effectN( 3 ).time_value() );
+
+    if ( buffs.combustion->check() )
+      state.fired_up_count++;
   }
 }
 

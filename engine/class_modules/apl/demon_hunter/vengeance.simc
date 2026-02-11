@@ -1,76 +1,145 @@
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=snapshot_stats
-actions.precombat+=/variable,name=single_target,value=spell_targets.spirit_bomb=1
-actions.precombat+=/variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5
-actions.precombat+=/variable,name=big_aoe,value=spell_targets.spirit_bomb>=6
+# === Precombat ===
+actions.precombat=/snapshot_stats
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.agility|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.agility|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
-actions.precombat+=/arcane_torrent
 actions.precombat+=/sigil_of_flame
 actions.precombat+=/immolation_aura
 
-# Executed every time the actor is available.
-actions=variable,name=num_spawnable_souls,op=reset,default=0
-actions+=/variable,name=num_spawnable_souls,op=max,value=1,if=talent.soul_sigils&cooldown.sigil_of_flame.up
-actions+=/variable,name=num_spawnable_souls,op=max,value=2,if=cooldown.fracture.charges_fractional>=1&!buff.metamorphosis.up
-actions+=/variable,name=num_spawnable_souls,op=max,value=3,if=cooldown.fracture.charges_fractional>=1&buff.metamorphosis.up
-actions+=/variable,name=num_spawnable_souls,op=add,value=1,if=talent.soul_carver&(cooldown.soul_carver.remains>(cooldown.soul_carver.duration-3))
-actions+=/variable,name=fiery_demise_active,value=talent.fiery_brand&talent.fiery_demise&dot.fiery_brand.ticking
+# === Default ===
+actions=/variable,name=fiery_demise_active,value=talent.fiery_brand&talent.fiery_demise&dot.fiery_brand.ticking
+# SBomb consumes up to 5 frags (inventory cap 6; 6th slot is overflow buffer)
+actions+=/variable,name=spb_threshold,value=5
+# In Meta, Fracture generates 3 frags — SBomb at 4 fires faster with better per-GCD efficiency
+actions+=/variable,name=spb_threshold,op=set,value=4,if=buff.metamorphosis.up
+actions+=/variable,name=ur_fishing,value=talent.untethered_rage&buff.metamorphosis.up&buff.metamorphosis.remains<8&!buff.untethered_rage.up
+actions+=/variable,name=fallout_aoe,value=talent.fallout&active_enemies>=3
 actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/run_action_list,name=anni,if=hero_tree.annihilator
 actions+=/run_action_list,name=ar,if=hero_tree.aldrachi_reaver
+actions+=/run_action_list,name=anni,if=hero_tree.annihilator
 
-actions.externals=invoke_external_buff,name=power_infusion
+# === Externals ===
+actions.externals=/invoke_external_buff,name=power_infusion
 
-actions.anni=variable,name=spb_1t_souls,op=setif,condition=talent.fiery_demise&dot.fiery_demise.ticking,value=3,value_else=5
-actions.anni+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs|(variable.trinket_1_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.1.cooldown.duration)|(variable.trinket_2_buffs&trinket.2.cooldown.remains<cooldown.metamorphosis.remains)))
-actions.anni+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs|(variable.trinket_2_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.2.cooldown.duration)|(variable.trinket_1_buffs&trinket.1.cooldown.remains<cooldown.metamorphosis.remains)))
-actions.anni+=/potion,use_off_gcd=1,if=buff.voidfall_spending.stack=3
-actions.anni+=/call_action_list,name=externals,if=buff.voidfall_spending.stack=3
-actions.anni+=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking&(buff.voidfall_building.stack=2|buff.voidfall_spending.stack=3)
-actions.anni+=/spirit_bomb,if=buff.voidfall_spending.stack=3
-actions.anni+=/soul_cleave,if=buff.voidfall_spending.up&buff.voidfall_spending.stack<3
-actions.anni+=/fracture,if=buff.voidfall_building.stack=2
-actions.anni+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&!buff.voidfall_building.up&!buff.voidfall_spending.up
-actions.anni+=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking
-actions.anni+=/immolation_aura,if=talent.charred_flesh&dot.fiery_brand.ticking
-actions.anni+=/sigil_of_spite,if=soul_fragments<=2+talent.soul_sigils
-actions.anni+=/soul_carver,if=soul_fragments<=3
-actions.anni+=/fel_devastation
-actions.anni+=/spirit_bomb,if=spell_targets=1&souls_consumed>=variable.spb_1t_souls
-actions.anni+=/spirit_bomb,if=spell_targets>1&souls_consumed>=3
-actions.anni+=/fracture,if=!buff.voidfall_spending.up
-actions.anni+=/sigil_of_flame
-actions.anni+=/soul_cleave
-actions.anni+=/fracture
-actions.anni+=/throw_glaive
+# === UR Fishing — Meta about to expire, maximize Untethered Rage proc attempts ===
+# Seething Anger bad-luck protection raises proc chance — capitalize on it
+actions.ur_fishing=/spirit_bomb,if=buff.seething_anger.up&soul_fragments>=3
+actions.ur_fishing+=/spirit_bomb,if=soul_fragments>=4
+actions.ur_fishing+=/sigil_of_spite,if=soul_fragments<=2
+actions.ur_fishing+=/soul_carver,if=soul_fragments<=2
+actions.ur_fishing+=/fracture
+actions.ur_fishing+=/soul_cleave,if=soul_fragments>=1
 
-actions.ar=use_item,slot=trinket1,if=!trinket.1.is.tome_of_lights_devotion&(!variable.trinket_1_buffs|(variable.trinket_1_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.1.cooldown.duration)|(variable.trinket_2_buffs&trinket.2.cooldown.remains<cooldown.metamorphosis.remains))))
-actions.ar+=/use_item,slot=trinket2,if=!trinket.2.is.tome_of_lights_devotion&(!variable.trinket_2_buffs|(variable.trinket_2_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.2.cooldown.duration)|(variable.trinket_1_buffs&trinket.1.cooldown.remains<cooldown.metamorphosis.remains))))
+# === Fillers ===
+actions.fillers=/immolation_aura
+actions.fillers+=/vengeful_retreat,if=talent.unhindered_assault
+actions.fillers+=/throw_glaive
+
+# === Aldrachi Reaver ===
+# Trinkets: non-buffed fire immediately, buffed sync to Meta
+actions.ar=/use_item,slot=trinket1,if=!trinket.1.is.tome_of_lights_devotion&(!variable.trinket_1_buffs|(buff.metamorphosis.up|cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>trinket.1.cooldown.duration|(variable.trinket_2_buffs&trinket.2.cooldown.remains<cooldown.metamorphosis.remains)))
+actions.ar+=/use_item,slot=trinket2,if=!trinket.2.is.tome_of_lights_devotion&(!variable.trinket_2_buffs|(buff.metamorphosis.up|cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>trinket.2.cooldown.duration|(variable.trinket_1_buffs&trinket.1.cooldown.remains<cooldown.metamorphosis.remains)))
 actions.ar+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
 actions.ar+=/potion,use_off_gcd=1,if=(buff.rending_strike.up&buff.glaive_flurry.up)|prev_gcd.1.reavers_glaive
 actions.ar+=/call_action_list,name=externals,if=(buff.rending_strike.up&buff.glaive_flurry.up)|prev_gcd.1.reavers_glaive
-actions.ar+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up
-actions.ar+=/fel_devastation,if=!buff.rending_strike.up&!buff.glaive_flurry.up
-# Always Soul Cleave if Rending Strike isn't up and Glaive Flurry is
-actions.ar+=/soul_cleave,if=!buff.rending_strike.up&buff.glaive_flurry.up
-# Spend Rending Strike or generate Fury for empowered Soul Cleave
-actions.ar+=/fracture,if=buff.glaive_flurry.up
-actions.ar+=/reavers_glaive,if=!buff.rending_strike.up&!buff.glaive_flurry.up
-actions.ar+=/sigil_of_spite,if=!buff.reavers_glaive.up&(buff.art_of_the_glaive.stack+soul_fragments.total)<20
-actions.ar+=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking
-actions.ar+=/soul_carver,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)
-# Immolation Aura is one of our best generators if Fallout is talented
-actions.ar+=/immolation_aura,if=talent.fallout
-actions.ar+=/fracture,if=buff.metamorphosis.up
-actions.ar+=/sigil_of_flame
+# Pool frags before Meta for instant SBomb on entry
+actions.ar+=/metamorphosis,use_off_gcd=1,if=(!buff.metamorphosis.up&soul_fragments>=3)|buff.untethered_rage.up
+actions.ar+=/call_action_list,name=ar_empowered
+actions.ar+=/call_action_list,name=ar_brand_window,if=variable.fiery_demise_active
+actions.ar+=/call_action_list,name=ur_fishing,if=variable.ur_fishing
+actions.ar+=/call_action_list,name=ar_cooldowns
+actions.ar+=/call_action_list,name=ar_aoe,if=variable.fallout_aoe
+# Fracture during Reaver's Mark feeds Wounded Quarry Physical accumulation in ST
+actions.ar+=/fracture,if=debuff.reavers_mark.up&active_enemies=1&soul_fragments<variable.spb_threshold
+# Prevent Fracture charge cap. Skip in ST during FD: SBomb at 3 per-GCD > Fracture→SBomb at 5
+actions.ar+=/fracture,if=cooldown.fracture.full_recharge_time<gcd.max&soul_fragments<variable.spb_threshold&(!variable.fiery_demise_active|active_enemies>=3)
+# FD fire amp makes 3-frag SBomb casts worthwhile
+actions.ar+=/spirit_bomb,if=soul_fragments>=3&variable.fiery_demise_active
+actions.ar+=/spirit_bomb,if=soul_fragments>=variable.spb_threshold
 actions.ar+=/fracture
-actions.ar+=/spirit_bomb,if=spell_targets>=12&soul_fragments>=4
-actions.ar+=/soul_cleave
-actions.ar+=/immolation_aura
 actions.ar+=/felblade
-actions.ar+=/vengeful_retreat,if=talent.unhindered_assault
-actions.ar+=/throw_glaive
+actions.ar+=/immolation_aura,if=talent.fallout
+actions.ar+=/sigil_of_flame
+actions.ar+=/soul_cleave
+actions.ar+=/call_action_list,name=fillers
+
+# === AR Empowered — Art of the Glaive cycle spending ===
+# AoE 3+: Fracture-first for 12 Bladecraft slashes hitting all targets
+# ST: Cleave-first for 2 RM stacks — sustained 14% single-target amp
+actions.ar_empowered=/reavers_glaive,if=buff.reavers_glaive.up&!buff.rending_strike.up&!buff.glaive_flurry.up
+actions.ar_empowered+=/fracture,if=buff.rending_strike.up&buff.glaive_flurry.up&active_enemies>=3
+actions.ar_empowered+=/soul_cleave,if=buff.rending_strike.up&buff.glaive_flurry.up
+actions.ar_empowered+=/fracture,if=buff.rending_strike.up&!buff.glaive_flurry.up
+actions.ar_empowered+=/soul_cleave,if=buff.glaive_flurry.up&!buff.rending_strike.up
+
+# === AR Cooldowns — Brand synced to fire CD availability for denser FD windows ===
+actions.ar_cooldowns=/fiery_brand,if=talent.fiery_demise&(cooldown.fiery_brand.charges>=2|(!dot.fiery_brand.ticking&(cooldown.soul_carver.remains<6|cooldown.fel_devastation.remains<6|cooldown.sigil_of_spite.remains<6)))
+actions.ar_cooldowns+=/sigil_of_spite,if=soul_fragments<=3
+# Hold Soul Carver for Brand window when FD talented
+actions.ar_cooldowns+=/soul_carver,if=!talent.fiery_demise|variable.fiery_demise_active
+# Don't interrupt empowered cycle with FelDev channel
+actions.ar_cooldowns+=/fel_devastation,if=!buff.rending_strike.up&!buff.glaive_flurry.up
+
+# === AR AoE — Fallout fragment generation at 3+ targets ===
+actions.ar_aoe=/immolation_aura,if=!buff.immolation_aura.up
+actions.ar_aoe+=/spirit_bomb,if=soul_fragments>=variable.spb_threshold
+# Fracture generates 3 frags in Meta, building to SBomb threshold faster
+actions.ar_aoe+=/fracture,if=buff.metamorphosis.up
+actions.ar_aoe+=/sigil_of_flame
+actions.ar_aoe+=/fracture
+actions.ar_aoe+=/felblade
+actions.ar_aoe+=/soul_cleave
+actions.ar_aoe+=/call_action_list,name=fillers
+
+# === AR Brand Window — Fire CDs during Fiery Demise for +30% amp ===
+# Ensure Frailty damage-taken amp is active before fire CDs land
+actions.ar_brand_window=/spirit_bomb,if=soul_fragments>=3&!debuff.frailty.up
+# Charred Flesh: ImmAura ticks extend Brand duration
+actions.ar_brand_window+=/immolation_aura,if=talent.charred_flesh&!buff.immolation_aura.up
+actions.ar_brand_window+=/soul_carver
+actions.ar_brand_window+=/sigil_of_spite,if=soul_fragments<=3
+actions.ar_brand_window+=/fel_devastation,if=!buff.rending_strike.up&!buff.glaive_flurry.up
+actions.ar_brand_window+=/immolation_aura,if=!talent.charred_flesh
+
+# === Annihilator ===
+# Trinkets: non-buffed fire immediately, buffed sync to Meta
+actions.anni=/use_item,slot=trinket1,if=!trinket.1.is.tome_of_lights_devotion&(!variable.trinket_1_buffs|(buff.metamorphosis.up|cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>trinket.1.cooldown.duration|(variable.trinket_2_buffs&trinket.2.cooldown.remains<cooldown.metamorphosis.remains)))
+actions.anni+=/use_item,slot=trinket2,if=!trinket.2.is.tome_of_lights_devotion&(!variable.trinket_2_buffs|(buff.metamorphosis.up|cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>trinket.2.cooldown.duration|(variable.trinket_1_buffs&trinket.1.cooldown.remains<cooldown.metamorphosis.remains)))
+actions.anni+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
+actions.anni+=/potion,use_off_gcd=1,if=buff.voidfall_spending.stack=3
+actions.anni+=/call_action_list,name=externals,if=buff.voidfall_spending.stack=3
+actions.anni+=/call_action_list,name=anni_voidfall
+# Hold Meta at 2 building stacks — let natural cycle complete for double Voidfall burst
+# At 2 stacks, one Fracture proc completes natural spending, then Mass Acceleration
+# provides a second immediate 3-stack spending phase. At 0-1 stacks, not worth waiting.
+actions.anni+=/metamorphosis,use_off_gcd=1,if=(!buff.metamorphosis.up|buff.untethered_rage.up)&!buff.voidfall_spending.up&buff.voidfall_building.stack<2
+actions.anni+=/call_action_list,name=ur_fishing,if=variable.ur_fishing
+actions.anni+=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking
+# Charred Flesh: ImmAura ticks extend Brand duration
+actions.anni+=/immolation_aura,if=talent.charred_flesh&dot.fiery_brand.ticking
+actions.anni+=/sigil_of_spite,if=soul_fragments<=2+talent.soul_sigils
+actions.anni+=/soul_carver,if=talent.soul_carver&soul_fragments<=3
+# FelDev channel delays Soul Cleave meteor triggers — avoid during spending
+actions.anni+=/fel_devastation,if=!buff.voidfall_spending.up
+actions.anni+=/fracture,if=cooldown.fracture.full_recharge_time<gcd.max&soul_fragments<variable.spb_threshold
+actions.anni+=/spirit_bomb,if=soul_fragments>=variable.spb_threshold
+actions.anni+=/fracture,if=!buff.voidfall_spending.up
+actions.anni+=/felblade
+actions.anni+=/immolation_aura,if=talent.fallout
+actions.anni+=/sigil_of_flame
+actions.anni+=/soul_cleave
+# Ungated Fracture: safety net during Voidfall spending when guarded Fracture is blocked
+actions.anni+=/fracture
+actions.anni+=/call_action_list,name=fillers
+
+# === Anni Voidfall — State machine for building/spending cycle ===
+# Brand at peak building or peak spending for FD amp on the biggest burst
+actions.anni_voidfall=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking&(buff.voidfall_building.stack=2|buff.voidfall_spending.stack=3)
+# FelDev at peak spending when fragment-starved: Meteoric Rise generates 3 frags for SBomb burst
+actions.anni_voidfall+=/fel_devastation,if=buff.voidfall_spending.stack=3&soul_fragments<variable.spb_threshold
+actions.anni_voidfall+=/spirit_bomb,if=buff.voidfall_spending.stack=3&soul_fragments>=variable.spb_threshold
+actions.anni_voidfall+=/soul_cleave,if=buff.voidfall_spending.up&buff.voidfall_spending.stack<3
+# Pool fury before final building Fracture to ensure SBomb is castable immediately after
+actions.anni_voidfall+=/fracture,if=buff.voidfall_building.stack=2&fury>=70

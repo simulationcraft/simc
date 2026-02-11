@@ -185,6 +185,7 @@ struct flurry_strikes_t : public monk_spell_t
   action_t *high_impact;
   action_t *shado_over_the_battlefield;
   std::unordered_map<source_e, flurry_strike_t *> flurry_strike_variants;
+  cooldown_t *wisdom_of_the_wall;
 
   flurry_strikes_t( bool, monk_t * );
   using monk_spell_t::execute;
@@ -229,7 +230,6 @@ struct gift_of_the_ox_t : monk_buff_t<>
   {
     orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
 
-    double action_multiplier() const override;
     void impact( action_state_t *state ) override;
   };
 
@@ -342,6 +342,14 @@ struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
 
   double consume( double amount, action_state_t *state = nullptr ) override;
   absorb_buff_t *set_absorb_fraction( double fraction );
+};
+
+struct flurry_charge_t : monk_buff_t<>
+{
+  flurry_charge_t( monk_t *player );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( action_state_t *state, weapon_t *weapon );
 };
 }  // namespace buffs
 
@@ -461,6 +469,8 @@ public:
     propagate_const<action_t *> special_delivery;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
+    propagate_const<heal_t *> refreshing_drink;
+    propagate_const<action_t *> vital_flame;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
@@ -497,14 +507,18 @@ public:
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elixir_of_determination;
     propagate_const<buff_t *> elusive_brawler;
+    propagate_const<buff_t *> empty_barrel;
     propagate_const<buff_t *> empty_the_cellar;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
+    propagate_const<buff_t *> fuel_on_the_fire;
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> invoke_niuzao;
+    propagate_const<buff_t *> niuzaos_resolve;
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
+    propagate_const<buff_t *> refreshing_drink;
     propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> swift_as_a_coursing_river;
     propagate_const<buff_t *> training_of_niuzao;
@@ -513,7 +527,6 @@ public:
     // Windwalker
     propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> combo_breaker;
-    propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
@@ -534,12 +547,10 @@ public:
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
-    propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
     propagate_const<buff_t *> heart_of_the_jade_serpent_unity_within;
-    propagate_const<buff_t *> inner_compass_crane_stance;
     propagate_const<buff_t *> inner_compass_ox_stance;
     propagate_const<buff_t *> inner_compass_serpent_stance;
     propagate_const<buff_t *> inner_compass_tiger_stance;
@@ -554,7 +565,7 @@ public:
     propagate_const<buff_t *> harmonic_surge;
 
     // Shado-Pan
-    propagate_const<buff_t *> flurry_charge;
+    propagate_const<buffs::flurry_charge_t *> flurry_charge;
     propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
     propagate_const<buff_t *> whirling_steel;
@@ -785,6 +796,7 @@ public:
       player_talent_t celestial_brew;
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
+      const spell_data_t *niuzaos_resolve_hot;
       player_talent_t celestial_flames;
       const spell_data_t *celestial_flames_damage;
       player_talent_t shadowboxing_treads;
@@ -828,11 +840,14 @@ public:
       const spell_data_t *ox_stance_buff;
       player_talent_t awakening_spirit;
       player_talent_t vital_flame;
+      const spell_data_t *vital_flame_heal;
       player_talent_t invoke_niuzao_the_black_ox;
       const spell_data_t *invoke_niuzao_the_black_ox_npc;
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       // row 10
       player_talent_t fuel_on_the_fire;
+      const spell_data_t *fuel_on_the_fire_buff;
+      const spell_data_t *fuel_on_the_fire_damage;
       player_talent_t empty_the_cellar;
       const spell_data_t *empty_the_cellar_buff;
       const spell_data_t *empty_the_cellar_driver;
@@ -845,6 +860,9 @@ public:
       player_talent_t bring_me_another_1;
       player_talent_t bring_me_another_2;
       player_talent_t bring_me_another_3;
+      const spell_data_t *empty_barrel_damage;
+      const spell_data_t *refreshing_drink_buff;
+      const spell_data_t *refreshing_drink_hot;
     } brewmaster;
 
     // Windwalker
@@ -882,8 +900,6 @@ public:
       player_talent_t brawlers_intensity;
       // Row 6
       player_talent_t jade_ignition;
-      const spell_data_t *chi_energy_buff;
-      const spell_data_t *chi_explosion;
       player_talent_t cyclones_drift;
       player_talent_t crashing_fists;
       player_talent_t drinking_horn_cover;
@@ -967,7 +983,6 @@ public:
       const spell_data_t *heart_of_the_jade_serpent_buff;
       // Row 3
       player_talent_t chijis_swiftness;
-      const spell_data_t *chijis_swiftness_buff;
       player_talent_t strength_of_the_black_ox;
       const spell_data_t *strength_of_the_black_ox_buff;
       const spell_data_t *strength_of_the_black_ox_absorb;
@@ -984,7 +999,6 @@ public:
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;
-      const spell_data_t *inner_compass_crane_stance_buff;
       const spell_data_t *inner_compass_ox_stance_buff;
       const spell_data_t *inner_compass_tiger_stance_buff;
       const spell_data_t *inner_compass_serpent_stance_buff;
@@ -1060,7 +1074,6 @@ public:
       player_talent_t predictive_training;
       player_talent_t stand_ready;
       const spell_data_t *stand_ready_buff;
-      const spell_data_t *stand_ready_driver;
       // Row 4
       player_talent_t against_all_odds;
       player_talent_t efficient_training;
@@ -1075,6 +1088,9 @@ public:
   {
     struct
     {
+      const spell_data_t *brm_2pc;
+      const spell_data_t *brm_4pc;
+      const spell_data_t *brm_4pc_extra_kick;
     } mid1;
 
     struct
@@ -1116,6 +1132,7 @@ public:
   void init_blizzard_action_list() override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t &step,
                                    action_priority_list_t *assisted_combat ) override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
                                                             const assisted_combat_step_data_t &step ) const override;

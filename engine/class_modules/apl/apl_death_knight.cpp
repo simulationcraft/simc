@@ -10,11 +10,11 @@ namespace death_knight_apl
 
 std::string potion( const player_t* p )
 {
-  std::string frost_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
+  std::string frost_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  std::string unholy_potion = ( p->true_level >= 81 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+  std::string unholy_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  std::string blood_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
+  std::string blood_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
   switch ( p->specialization() )
   {
@@ -29,7 +29,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string frost_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
+  std::string frost_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
   std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
@@ -54,9 +54,9 @@ std::string food( const player_t* p )
 
   if ( p->true_level >= 81 )
   {
-    frost_food = "rootland_celebration";
-    unholy_food = "rootland_celebration";
-    blood_food = "disabled";
+    frost_food = "silvermoon_parade";
+    unholy_food = "silvermoon_parade";
+    blood_food = "silvermoon_parade";
   }
   else
   {
@@ -323,12 +323,13 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
-  cooldowns->add_action( "potion,if=talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
-  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(talent.infliction_of_sorrow&buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|cooldown.dark_transformation.remains<7)" );
-  cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
-  cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(talent.soul_reaper&!target.health.pct<=35|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)" );
+  cooldowns->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
+  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&fight_remains>5&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(!talent.infliction_of_sorrow&cooldown.dark_transformation.remains<3|talent.infliction_of_sorrow&!buff.gift_of_the_sanlayn.up|fight_remains<3|raid_event.adds.exists&raid_event.adds.remains<3)" );
+  cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
+  cooldowns->add_action( "soul_reaper,if=(!talent.pestilence|!talent.infliction_of_sorrow)&cooldown.putrefy.charges>=1|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&((talent.soul_reaper&!target.health.pct<=35|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>10&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&charges=max_charges))" );
 
   aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
   aoe->add_action( "festering_strike,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
@@ -364,6 +365,8 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
   variables->add_action( "variable,name=spending_rp,value=cooldown.army_of_the_dead.remains>5&runic_power.deficit<20|cooldown.army_of_the_dead.remains<=5&runic_power.deficit<60|!talent.army_of_the_dead|rune<2|buff.forbidden_knowledge.up&rune<4", "Variables" );
+  variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15)" );
+  variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|!raid_event.pull.exists&raid_event.adds.remains>5|raid_event.pull.exists&raid_event.adds.in>20)" );
 }
 //unholy_apl_end
 
