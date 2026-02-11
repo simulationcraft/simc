@@ -6676,11 +6676,13 @@ void monk_t::combat_begin()
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
     // Period is hasted
-    auto period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 / composite_melee_haste() ); 
-    // TODO: potentially need to adjust for temporary haste buffs that can occur during combat, but this is a good start
-    // and better than nothing
-    make_repeating_event( sim, period,
-                          [ & ] { buff.tigereye_brew_1->trigger(); } );
+    auto callback = [ & ] {
+      buff.tigereye_brew_1->trigger();
+      double period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 - composite_melee_haste() );
+      make_event<events::delayed_cb_event_t>( sim, this, period, callback );
+    };
+    double initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 - composite_melee_haste() );
+    make_event<events::delayed_cb_event_t>( sim, this, initial_period, callback );
     buff.tigereye_brew_1->trigger( 10 );
   }
 
