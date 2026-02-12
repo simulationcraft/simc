@@ -5461,11 +5461,6 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
       demon_hunter_sigil_t::execute();
       p()->spawn_soul_fragment( p()->proc.soul_fragment_from_sigil_of_spite, soul_fragment::LESSER,
                                 soul_fragments_to_spawn );
-
-      if ( p()->talent.aldrachi_reaver.broken_spirit->ok() )
-      {
-        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
-      }
     }
   };
 
