@@ -21,58 +21,32 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots.corruption = target->get_dot( "corruption", &p );
   dots.agony = target->get_dot( "agony", &p );
   dots.drain_soul = target->get_dot( "drain_soul", &p );
-  dots.phantom_singularity = target->get_dot( "phantom_singularity", &p );
   dots.seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots.unstable_affliction = target->get_dot( "unstable_affliction", &p );
-  dots.jackpot_ua = target->get_dot( "unstable_affliction_jackpot", &p );
-  dots.vile_taint = target->get_dot( "vile_taint_dot", &p );
-  dots.soul_rot = target->get_dot( "soul_rot", &p );
+  dots.malefic_grasp = target->get_dot( "malefic_grasp", &p );
 
   debuffs.haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
                       ->set_cooldown( 0_ms );
 
-  debuffs.shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.drain_soul.ok() ? p.talents.shadow_embrace_debuff_ds : p.talents.shadow_embrace_debuff_sb )
-                               ->set_default_value_from_effect( 1 );
-
-  debuffs.infirmity = make_buff( *this, "infirmity", p.talents.infirmity_debuff )
-                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   // Demonology
-  debuffs.wicked_maw = make_buff( *this, "wicked_maw", p.talents.wicked_maw_debuff )
-                           ->set_default_value_from_effect( 1 );
-
-  debuffs.fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
-                           ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
-
   debuffs.doom = make_buff( *this, "doom", p.talents.doom_debuff )
                      ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                        if ( cur == 0 )
                        {
                          p.proc_actions.doom_proc->execute_on_target( b->player );
-
-                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( p.rng_settings.pact_of_the_eredruin.setting_value ) )
-                         {
-                           p.warlock_pet_list.doomguards.spawn( 1u );
-                           p.procs.pact_of_the_eredruin->occur();
-                         }
                        }
                        } );
 
   // Destruction
   dots.immolate = target->get_dot( "immolate", &p );
 
-  debuffs.eradication = make_buff( *this, "eradication", p.talents.eradication_debuff );
+  debuffs.lake_of_fire = make_buff( *this, "lake_of_fire", p.talents.lake_of_fire_debuff )
+                             ->set_default_value_from_effect( 1 );
 
   debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
-
-  debuffs.pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
-                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  debuffs.conflagrate = make_buff( *this, "conflagrate", p.talents.conflagrate_debuff )
-                            ->set_default_value_from_effect( 1 );
 
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs.havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
@@ -108,24 +82,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                  warlock.proc_actions.blackened_soul->execute_on_target( target );
                                } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
-                               ->set_tick_time_callback( [ & ]( const buff_t* b, unsigned int ) {
-                                 timespan_t period = b->buff_period;
-
-                                 if ( p.buffs.maintained_withering->check() )
-                                 {
-                                   // TOCHECK: 2025-08-16 Currently Hellcaller TWW3 B4 (Maintained Withering) tier bonus
-                                   // of doing Blackened Soul damage faster is bugged for destruction and does not work
-                                   if ( !p.bugs || !p.destruction() )
-                                   {
-                                     period *= 1.0 + p.buffs.maintained_withering->data()
-                                                         .effectN( p.affliction() ? 2 : 3 )
-                                                         .percent();
-                                   }
-                                 }
-                                 return period;
-                               } );
+                               ->set_freeze_stacks( true );
 
   // Soul Harvester
   dots.soul_anathema = target->get_dot( "soul_anathema", &p );
@@ -141,13 +98,6 @@ void warlock_td_t::target_demise()
     return;
 
   if ( dots.unstable_affliction->is_ticking() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
-
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
-  }
-
-  if ( dots.jackpot_ua->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
 
@@ -170,10 +120,6 @@ void warlock_td_t::target_demise()
 
   if ( debuffs.shadowburn->check() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} refunds one charge of Shadowburn.", target->name(), warlock.name() );
-      
-    warlock.cooldowns.shadowburn->reset( true );
-   
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs.shadowburn->check_value(), warlock.gains.shadowburn_refund );
@@ -217,33 +163,14 @@ int warlock_td_t::count_affliction_dots() const
   if ( dots.seed_of_corruption->is_ticking() )
     count++;
 
+  // NOTE: UA counts as 1 dot does not matter how many stacks
   if ( dots.unstable_affliction->is_ticking() )
-    count++;
-
-  if ( dots.vile_taint->is_ticking() )
-    count++;
-
-  if ( dots.phantom_singularity->is_ticking() )
-    count++;
-
-  if ( dots.soul_rot->is_ticking() )
     count++;
 
   if ( dots.wither->is_ticking() )
     count++;
 
-  return count;
-}
-
-int warlock_td_t::count_affliction_dots( bool include_tier_ua ) const
-{
-  int count = count_affliction_dots();
-
-  if ( !include_tier_ua )
-    return count;
-
-  if ( dots.jackpot_ua->is_ticking() )
-    count++;
+  // TODO: Check if Malefic Grasp and Drain Soul count
 
   return count;
 }
@@ -252,7 +179,6 @@ int warlock_td_t::count_affliction_dots( bool include_tier_ua ) const
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : parse_player_effects_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    ua_target( nullptr ),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
@@ -272,12 +198,12 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     initial_soul_shards(),
     default_pet(),
     disable_auto_felstorm( false ),
-    normalize_destruction_mastery( false ),
-    demonic_inspiration_double_dip( false )
+    normalize_destruction_mastery( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.shadowburn = get_cooldown( "shadowburn" );
+  cooldowns.dark_harvest = get_cooldown( "dark_harvest" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
+  cooldowns.summon_doomguard = get_cooldown( "summon_doomguard" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
   cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
@@ -287,7 +213,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    for ( auto& pet : active_pets )
+    for ( auto pet : active_pets )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
@@ -326,20 +252,6 @@ bool warlock_t::hellcaller() const
 
 bool warlock_t::soul_harvester() const
 { return has_hero_tree( HERO_SOUL_HARVESTER ); }
-
-double warlock_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
-{
-  double m = parse_player_effects_t::composite_player_target_pet_damage_multiplier( target, guardian );
-
-  if ( demonology() )
-  {
-    // TOCHECK: Fel Sunder lacks guardian effect, so only player and main pet is benefitting (bug?). Last checked 2025-09-23
-    if ( !bugs && guardian && talents.fel_sunder.ok() )
-      m *= 1.0 + get_target_data( target )->debuffs.fel_sunder->check_stack_value();
-  }
-
-  return m;
-}
 
 static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
 {
@@ -448,39 +360,19 @@ int warlock_t::active_demon_count() const
 {
   int count = 0;
 
-  for ( auto& pet : this->pet_list )
+  for ( auto pet : this->pet_list )
   {
     auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-    
+
     if ( lock_pet == nullptr )
       continue;
     if ( lock_pet->is_sleeping() )
       continue;
-    
+
     count++;
   }
 
   return count;
-}
-
-void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
-{
-  for ( auto& pet : this->pet_list )
-  {
-    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-
-    if ( lock_pet == nullptr )
-      continue;
-    if ( lock_pet->is_sleeping() )
-      continue;
-
-    if ( lock_pet == source )
-      continue;
-
-    // 2025-03-28: The Expendables talent does not apply to Greater Dreadstalkers (maybe a bug?)
-    if ( ( lock_pet->pet_type != PET_FELHUNTER || !lock_pet->bugs ) && lock_pet->pet_type != PET_WARLOCK_RANDOM )
-      lock_pet->buffs.the_expendables->trigger();
-  }
 }
 
 std::pair<timespan_t, timespan_t> warlock_t::dreadstalkers_delay_duration_adjustment_helper( const player_t& target )
@@ -490,7 +382,7 @@ std::pair<timespan_t, timespan_t> warlock_t::dreadstalkers_delay_duration_adjust
   timespan_t& dur_adjust = ret.second;
   const double dist = get_player_distance( target );
   // The summon is considered at melee range if the distance is less than or equal to 5 yards
-  if (dist > 5.0)
+  if ( dist > 5.0 )
   {
     // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
     delay = rng().range( 0_s, 1_s );
@@ -510,26 +402,6 @@ std::pair<timespan_t, timespan_t> warlock_t::dreadstalkers_delay_duration_adjust
     dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
   }
   return ret;
-}
-
-// Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
-// It must be adjusted manually over time, and any use of it should be removed once a patch goes live
-// Returns TRUE if actor's dbc version >= version specified
-// When checking VERSION_PTR, will only return true if PTR dbc is being used, regardless of version number
-bool warlock_t::min_version_check( version_check_e version ) const
-{
-  //If we ever get a full DBC version string checker, replace these returns with that function
-  switch ( version )
-  {
-    case VERSION_PTR:
-      return is_ptr();
-    case VERSION_11_1_0:
-      return !( version_11_1_0_data == spell_data_t::not_found() );
-    case VERSION_ANY:
-      return true;
-  }
-
-  return false;
 }
 
 static std::string append_rng_option( warlock_t::rng_settings_t::rng_setting_t setting )
@@ -556,18 +428,14 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
     if ( normalize_destruction_mastery )
       profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
-    if ( demonic_inspiration_double_dip )
-      profile_str += "demonic_inspiration_double_dip=" + util::to_string( demonic_inspiration_double_dip ) + "\n";
 
     profile_str += append_rng_option( rng_settings.cunning_cruelty_sb );
     profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
     profile_str += append_rng_option( rng_settings.agony );
     profile_str += append_rng_option( rng_settings.nightfall );
     profile_str += append_rng_option( rng_settings.pact_of_the_eredruin );
-    profile_str += append_rng_option( rng_settings.shadow_invocation );
+    profile_str += append_rng_option( rng_settings.avatar_of_destruction_dr );
     profile_str += append_rng_option( rng_settings.spiteful_reconstitution );
-    profile_str += append_rng_option( rng_settings.decimation );
-    profile_str += append_rng_option( rng_settings.dimension_ripper );
     profile_str += append_rng_option( rng_settings.blackened_soul );
     profile_str += append_rng_option( rng_settings.bleakheart_tactics );
     profile_str += append_rng_option( rng_settings.seeds_of_their_demise );
@@ -576,8 +444,7 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.succulent_soul_demo );
     profile_str += append_rng_option( rng_settings.feast_of_souls_aff );
     profile_str += append_rng_option( rng_settings.feast_of_souls_demo );
-    profile_str += append_rng_option( rng_settings.umbral_lattice );
-    profile_str += append_rng_option( rng_settings.empowered_legion_strike );
+    profile_str += append_rng_option( rng_settings.manifested_avarice );
   }
 
   return profile_str;
@@ -593,17 +460,14 @@ void warlock_t::copy_from( player_t* source )
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
   normalize_destruction_mastery = p->normalize_destruction_mastery;
-  demonic_inspiration_double_dip = p->demonic_inspiration_double_dip;
 
   rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
   rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
   rng_settings.agony = p->rng_settings.agony;
   rng_settings.nightfall = p->rng_settings.nightfall;
   rng_settings.pact_of_the_eredruin = p->rng_settings.pact_of_the_eredruin;
-  rng_settings.shadow_invocation = p->rng_settings.shadow_invocation;
+  rng_settings.avatar_of_destruction_dr = p->rng_settings.avatar_of_destruction_dr;
   rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
-  rng_settings.decimation = p->rng_settings.decimation;
-  rng_settings.dimension_ripper = p->rng_settings.dimension_ripper;
   rng_settings.blackened_soul = p->rng_settings.blackened_soul;
   rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
@@ -612,8 +476,7 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.succulent_soul_demo = p->rng_settings.succulent_soul_demo;
   rng_settings.feast_of_souls_aff = p->rng_settings.feast_of_souls_aff;
   rng_settings.feast_of_souls_demo = p->rng_settings.feast_of_souls_demo;
-  rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
-  rng_settings.empowered_legion_strike = p->rng_settings.empowered_legion_strike;
+  rng_settings.manifested_avarice = p->rng_settings.manifested_avarice;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -637,21 +500,6 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-bool warlock_t::validate_actor()
-{
-  // TODO: Remove this when Midnight is properly supported
-  if ( sim->dbc->wowv() < wowv_t( 13, 0, 0 ) )
-  {
-    std::string patch = "Midnight prepatch";
-    if ( sim->dbc->wowv() > wowv_t( 12, 0, 0 ) )
-      patch = "Midnight";
-    throw sc_unsupported_specialization( fmt::format( "Warlock sims are non functional for {}", patch ) );
-    return false;
-  }
-
-  return true;
-}
-
 pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
@@ -667,7 +515,7 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
     return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
-  if ( pet_name == "felguard" && demonology() )
+  if ( pet_name == "felguard" && demonology() && talents.summon_felguard.ok() )
     return new pets::demonology::felguard_pet_t( this, pet_name );
 
   return nullptr;
@@ -732,7 +580,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       double active_agonies = get_active_dots( agony );
       if ( sim->debug )
         sim->out_debug.printf( "active agonies: %f", active_agonies );
-      
+
       if ( active_agonies == 0 || !agony->current_action )
       {
         return std::numeric_limits<double>::infinity();
@@ -803,7 +651,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return make_fn_expr( name_str, [this, soc_list] {
       std::vector<player_t*> no_dots;
 
-      if ( soc_list.empty() ) 
+      if ( soc_list.empty() )
         return false;
 
       //All the actions should have the same target list, so do this once only
@@ -838,7 +686,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
 
       return false;
-    });
+    } );
   }
   else if ( name_str == "diabolic_ritual" )
   {
@@ -871,14 +719,14 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
 /* ----------------------------------------------------------
 * NOTE NOTE NOTE
-* Applies DYNAMIC (Buffs, Debuffs, DoTs, or anything else that could change state during combat) 
+* Applies DYNAMIC (Buffs, Debuffs, DoTs, or anything else that could change state during combat)
 * effects that effect the player as a whole, IE: a % Crit Chance buff, all pet/guardian damage modifiers, and the likes
 * NOTE NOTE NOTE
 *
 * This system can also handle passive effects, but increases sim initialization time!
-* 
+*
 * General Useage is parse_effects( buff, modifying_spell_1, modifying_spell_2, modifying_spell_3 );
-* 
+*
 * USEAGE EXAMPLES *
 * -----------------
 * Baseline effect with no affecting talents, or spells
@@ -888,7 +736,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 * Buff that is modified by a talent (Buff with a talent that modifies an effect to have a value)
 * --
 * parse_effects( buff.rolling_havoc, talents.rolling_havoc );
-* -- 
+* --
 ****** This system CAN NOT handle buffs that modify other buffs and/or debuffs. ******
 * Debuff
 * --
@@ -898,7 +746,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 * --
 * parse_target_effects( d_fn( &warlock_td_t::dots_t::unstable_affliction ), talents.unstable_affliction );
 * --
-* More advanced examples can be found in other modules that use this system. 
+* More advanced examples can be found in other modules that use this system.
 * A few are sc_druid.cpp, sc_death_knight.cpp, and sc_demon_hunter.cpp
 ------------------------------------------------------------- */
 void warlock_t::parse_player_effects()
@@ -914,26 +762,20 @@ void warlock_t::parse_player_effects()
   {
     // Affliction Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::shadow_embrace ), talents.drain_soul.ok() ? talents.shadow_embrace_debuff_ds : talents.shadow_embrace_debuff_sb ); // 32390 / 453206
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::infirmity ), talents.infirmity_debuff ); // 458219
   }
 
   // Demonology
   if ( demonology() )
   {
     // Demonology Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::fel_sunder ), talents.fel_sunder_debuff  ); // 387402
   }
 
   // Destruction
   if ( destruction() )
   {
     // Destruction Buffs
-    parse_effects( buffs.rolling_havoc ); // 387570
 
     // Destruction Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::eradication ), talents.eradication_debuff ); // 196414
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::pyrogenics ), talents.pyrogenics_debuff ); // 387096
   }
 
   // Diabolist
@@ -952,7 +794,10 @@ void warlock_t::parse_player_effects()
   }
 
   // Soul Harvester
-
+  if ( soul_harvester() )
+  {
+    parse_effects( buffs.manifested_demonic_soul ); // 1269042  // TODO: Need to check if this parse_effects works in doubling the mastery effect when the buff is active?
+  }
 }
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
@@ -996,6 +841,67 @@ void warlock_t::feast_of_souls_gain()
   procs.feast_of_souls->occur();
 }
 
+std::vector<player_t*> warlock_t::get_smart_targets( const std::vector<player_t*>& _tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, int n_targets, player_t* exclude, double dis, bool really_smart )
+{
+  if ( n_targets < 1 || !_tl.size() )
+    return {};
+
+  auto tl = _tl;  // make a copy
+
+  if ( exclude )
+  {
+    if ( dis && sim->distance_targeting_enabled )
+    {
+      // remove out of range
+      range::erase_remove( tl, [ exclude, dis ]( player_t* t ) {
+        return t == exclude || t->get_player_distance( *exclude ) > dis;
+      } );
+    }
+    else
+    {
+      range::erase_remove( tl, exclude );
+    }
+  }
+
+  if ( tl.size() > 1 )
+  {
+    // randomize remaining targets
+    rng().shuffle( tl.begin(), tl.end() );
+
+    if ( really_smart )
+    {
+      // sort by time remaining
+      range::sort( tl, [ this, &dot ]( player_t* a, player_t* b ) {
+        return std::invoke( dot, get_target_data( a )->dots )->remains() <
+               std::invoke( dot, get_target_data( b )->dots )->remains();
+      } );
+    }
+    else
+    {
+      // prioritize undotted over dotted
+      std::partition( tl.begin(), tl.end(), [ this, &dot ]( player_t* t ) {
+        return !std::invoke( dot, get_target_data( t )->dots )->is_ticking();
+      } );
+    }
+  }
+
+  // slice to n_targets
+  if ( as<int>( tl.size() ) > n_targets )
+    tl.resize( n_targets );
+
+  return tl;
+}
+
+player_t* warlock_t::get_smart_target( const std::vector<player_t*>& _tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, player_t* exclude, double dis, bool really_smart )
+{
+  std::vector<player_t*> players = get_smart_targets( _tl, dot, 1, exclude, dis, really_smart );
+
+  if ( players.size() )
+    return players[ 0 ];
+
+  return nullptr;
+}
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -1005,7 +911,7 @@ public:
   warlock_report_t( warlock_t& player ) : p( player )
   {}
 
-  void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& ) override
   {}
 
 private:
@@ -1047,10 +953,10 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
-    grimoire_felguards( "grimoire_felguard", w ),
+    grimoire_imp_lords( "demonic_imp_lord", w ),
+    grimoire_fel_ravagers( "demonic_fel_ravager", w ),
     wild_imps( "wild_imp", w ),
     doomguards( "Doomguard", w ),
-    greater_dreadstalkers( "greater_dreadstalker", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),

@@ -71,26 +71,12 @@ struct warlock_pet_t : public pet_t
 
   struct buffs_t
   {
-    propagate_const<buff_t*> demonic_inspiration; // Hidden buff from talent that gives haste to some demons
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
-    propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
-    propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
-    propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
-    propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
+    propagate_const<buff_t*> unstable_soul;
     propagate_const<buff_t*> ferocity_of_fharg;
-    propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> demonic_power;
-    propagate_const<buff_t*> empowered_legion_strike; // TWW1 Demonology 4pc buff
-    propagate_const<buff_t*> demonic_hunger; // TWW2 Demonology 2pc buff
-    propagate_const<buff_t*> spliced_4pc; // TWW2 Demonology 4pc dummy buff
   } buffs;
-
-  struct affected_by_t
-  {
-    bool demonic_inspiration = false;
-  } affected_by;
 
   bool is_main_pet = false;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
@@ -101,10 +87,10 @@ struct warlock_pet_t : public pet_t
   void create_buffs() override;
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_spell_haste() const override;
   double composite_melee_haste() const override;
-  double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
   void arise() override;
   void demise() override;
 
@@ -280,16 +266,6 @@ public:
 
   const warlock_pet_td_t* pet_td( player_t* t ) const
   { return p()->get_target_data( t ); }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = ab::composite_target_multiplier( target );
-
-    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
-      m *= 1.0 + p()->o()->talents.wicked_maw_debuff->effectN( 2 ).percent();
-
-    return m;
-  }
 };
 
 // TODO: Switch to a general autoattack template if one is added
@@ -418,11 +394,7 @@ namespace demonology
 {
 struct felguard_pet_t : public warlock_pet_t
 {
-  action_t* soul_strike;
-  action_t* hatred_proc;
   cooldown_t* felstorm_cd;
-  cooldown_t* dstr_cd;
-  int demonic_strength_executes;
 
   // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
   // and maximum is a predetermined empirical value from in game
@@ -433,30 +405,6 @@ struct felguard_pet_t : public warlock_pet_t
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
-  void arise() override;
-  double composite_player_multiplier( school_e ) const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
-
-  void queue_ds_felstorm();
-};
-
-struct grimoire_felguard_pet_t : public warlock_pet_t
-{
-  const spell_data_t* felstorm_spell;
-  cooldown_t* felstorm_cd;
-
-  // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
-  // and maximum is a predetermined empirical value from in game
-  double min_energy_threshold;
-  double max_energy_threshold;
-
-  grimoire_felguard_pet_t( warlock_t* );
-  void init_base_stats() override;
-  action_t* create_action( util::string_view, util::string_view ) override;
-  timespan_t available() const override;
-  void arise() override;
-  void demise() override;
 };
 
 struct wild_imp_pet_t : public warlock_pet_t
@@ -491,7 +439,6 @@ struct dreadstalker_t : public warlock_pet_t
   void demise() override;
   timespan_t available() const override;
   action_t* create_action( util::string_view, util::string_view ) override;
-  double composite_player_multiplier( school_e ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
   void queue_dreadbite();
@@ -510,33 +457,42 @@ struct vilefiend_t : public warlock_simple_pet_t
   void arise() override;
   void demise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
-  double composite_player_multiplier( school_e ) const override;
 };
 
 struct demonic_tyrant_t : public warlock_pet_t
 {
+  int leap_executes;
+
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
 };
 
 struct doomguard_t : public warlock_simple_pet_t
 {
-  int doom_bolt_executes;
-
   doomguard_t( warlock_t* );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
+  void demise() override;
 };
 
-struct greater_dreadstalker_t : public dreadstalker_t
+struct grimoire_imp_lord_t : public warlock_pet_t  //  TODO: warlock_simple_pet_t or warlock_pet_t ?
 {
-  bool vilefiend_present_on_summon;
-
-  greater_dreadstalker_t( warlock_t* );
+  grimoire_imp_lord_t( warlock_t* );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
   void demise() override;
-  double composite_player_multiplier( school_e ) const override;
+};
+
+struct grimoire_fel_ravager_t : public warlock_pet_t  //  TODO: warlock_simple_pet_t or warlock_pet_t ?
+{
+  grimoire_fel_ravager_t( warlock_t* );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
+  void demise() override;
 };
 }  // namespace demonology
 
