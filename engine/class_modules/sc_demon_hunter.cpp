@@ -2528,8 +2528,8 @@ public:
     if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
-    // TODO: refine this as needed
-    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
+    // TODO: base chance and growth factor are approximations, no spell data source
+    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->stack() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
       p()->buff.seething_anger->expire();
