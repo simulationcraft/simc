@@ -2166,7 +2166,7 @@ struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_t( warrior_t* p )
-    : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+    : warrior_attack_t( "rend_dot", p, p->find_spell( 388539 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
