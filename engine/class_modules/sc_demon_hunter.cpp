@@ -8073,8 +8073,8 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_t : public voidfall_spending_trigger_t<
-                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+struct soul_cleave_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
+                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
