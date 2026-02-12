@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -183,7 +183,6 @@ Effects          :
 Description      : Begins a ritual to create a summoning portal, requiring the caster and 2 allies to complete. This portal can be used to summon party and raid members.
 
 Name             : Curse of Weakness (id=702) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -343,7 +342,6 @@ Description      : Summons an Infernal from the Twisting Nether, impacting for $
 The Infernal will serve you for $111685d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
 
 Name             : Curse of Tongues (id=1714) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -631,7 +629,6 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Poin
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 26.6717 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (19.051201 -> 26.6717)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -939,7 +936,6 @@ Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic a
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.99424 | PvP Coefficient: 0.528319 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.13874 -> 2.99424), PvP Coefficient (0.739646 -> 0.528319)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1042,7 +1038,6 @@ Effects          :
 Description      : Deals Fire damage to all nearby enemies.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1553,7 +1548,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.6507 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (2.4338 -> 3.6507)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1894,7 +1888,6 @@ Effects          :
                    Modified By: Shadow of Nathreza (1261990 effect#4)
 #5 (id=1273044)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : Trigger Spell (1262710 -> 0)
 Description      : A ghostly soul haunts a single target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
 If the target dies, Haunt's cooldown is reset.
@@ -2978,7 +2971,6 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -3082,7 +3074,6 @@ Effects          :
                    Family Flags: 78
 #3 (id=1168508)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Sta | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (2 -> 0), Misc Value 2 (0 -> 4)
 Description      : $s2% of all damage you take is taken by your demon pet instead. $?a137044[][
 
 While Grimoire of Sacrifice is active, your Stamina is increased by $s3%.]
@@ -3586,7 +3577,6 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Poin
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.08618 | PvP Coefficient: 1.98347 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (3.71471 -> 4.08618), PvP Coefficient (2.18182 -> 1.98347)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -4003,7 +3993,6 @@ Effects          :
 #7 (id=1300817)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 5186 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Demonic Touch (1269221)
-Hotfixed         : Base Value (30 -> 0)
 #8 (id=1300819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -5738,7 +5727,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 118
                  : 292
-Attributes       : Not Shapeshifted (16), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=314734)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
@@ -10505,7 +10494,6 @@ Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or F
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
 
 Name             : Curse of Exhaustion (id=334275) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -15832,7 +15820,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1124532)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 13.4735 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (5.3894 -> 13.4735)
 #2 (id=1152084)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: soul_shard | Target: Self (1)
                    Modified By: Destruction Warlock (137046 effect#13)
@@ -15944,7 +15931,6 @@ Family Flags     : 49
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 25.3791 | PvP Coefficient: 0.255555 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (16.919399 -> 25.379101), PvP Coefficient (0.383333 -> 0.255555)
 Description      : $@spelldesc434635
 
 Name             : Hyper Productive (id=436339) [Passive] 
@@ -16428,7 +16414,6 @@ Tooltip          : Haste increased by $w1% and $?s324536[Malefic Rapture grants 
 All of your active Withers are acute.
 
 Name             : Curse of the Satyr (id=442804) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -17010,7 +16995,6 @@ Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), 
 Effects          :
 #1 (id=1150515)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.114712 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.191186 -> 0.114712)
 Description      : $@spelldesc449624
 Tooltip          : Dealing $o1 Shadow damage over $d.
 
@@ -17607,7 +17591,6 @@ Effects          :
                    Family Flags: 49
 #2 (id=1288714)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : Sub Type (382 -> 4), Misc Value (33 -> 0)
 Description      : Damaging critical strikes dealt by you and your demons deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Devastation (id=454735) [Spell Family (5), Passive, Hidden] 
@@ -19383,7 +19366,6 @@ Effects          :
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
 
 Name             : Dark Harvest (id=1257052) [Spell Family (5)] 
-Hotfixed         : Channel Interrupt
 Talent Entry     : Affliction [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -19422,7 +19404,6 @@ Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Pr
 Effects          :
 #1 (id=1264823)  : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 8.39552 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (11.9936 -> 8.39552)
 Description      : $@spelldesc1257052
 
 Name             : Unstable Affliction (id=1259790) [Spell Family (5)] 
@@ -19448,12 +19429,10 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste A
 Effects          :
 #1 (id=1269007)  : Dummy (3)
                    Base Value: 4136 | Scaled Value: 4136 | Target: Targeted Enemy (6)
-Hotfixed         : Base Value (3447 -> 4136)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | Target: Targeted Enemy (6)
 #3 (id=1305431)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with $o2 Shadow damage over $d. Multiple uses of this ability may overlap.
 
 If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.
@@ -20230,6 +20209,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 5671
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
@@ -20527,7 +20507,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1280432)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Hotfixed         : Base Value (4 -> 2)
                    Modified By: Manifested Demonic Soul (1269042 effect#2)
 Description      : Increases your Mastery by $s1%.
 
@@ -20586,10 +20565,8 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280678)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.95514 | PvP Coefficient: 0.471429 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.79306 -> 1.95514), PvP Coefficient (0.33 -> 0.471429)
 #2 (id=1280679)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30346 | PvP Coefficient: 0.471429 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.86209 -> 1.30346), PvP Coefficient (0.33 -> 0.471429)
 Description      : Strikes nearby enemies with a malevolent claw, dealing $s1 Shadow damage to its target and $s2 Shadow damage to other enemies in $a2 yds.
 
 Name             : Manifested Avarice (id=1269050) [Spell Family (5), Hidden] 
@@ -20789,7 +20766,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1282996)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Gorefiend's Avarice (id=1270701) [Spell Family (5), Passive, Hidden] 
@@ -20903,7 +20879,6 @@ Description      : Call forth a cloud of cloying shadow mist that envelopes the 
 |cFF8282FFCurses: A warlock can only have one Curse or Blight active per target.|r
 
 Name             : Blight of Weakness (id=1271798) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -20961,7 +20936,6 @@ Effects          :
 Description      : $@spelldesc1271748
 
 Name             : Blight of Tongues (id=1272122) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -21431,7 +21405,6 @@ Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (3
 Effects          :
 #1 (id=1290665)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.8451 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (33.690201 -> 16.8451)
 #2 (id=1290666)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1262028

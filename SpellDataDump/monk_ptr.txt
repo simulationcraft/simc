@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -167,7 +167,6 @@ Effects          :
 Tooltip          : Max Health increased by $s1%.
 
 Name             : War Stomp (desc=Racial) (id=20549) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -962,7 +961,7 @@ Labels           : 16: Class Spells
                  : 2835: Spatial Paradox (406789 effect#13)
                  : 3567: Balanced Stratagem (451514 effect#1)
                  : 5841: Bring Me Another (1265138 effect#1), Bring Me Another (1265138 effect#3)
-Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Face Palm (389942 effect#2), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Counterstrike (383800)
 Family Flags     : 10, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Aura Log (202), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
@@ -1178,7 +1177,6 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2804,7 +2802,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.35 -> 1.9)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=335940)   : Dummy (3)
@@ -3930,12 +3927,10 @@ Effects          :
                    Base Value: 73 | Scaled Value: 73 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
-Hotfixed         : Base Value (44 -> 73)
 #10 (id=260841)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 92 | Scaled Value: 92 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : Base Value (60 -> 92)
 #11 (id=260842)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
@@ -3948,7 +3943,6 @@ Hotfixed         : Base Value (60 -> 92)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
-Hotfixed         : Base Value (50 -> 80)
 #14 (id=260845)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 5669 (Label) | Target: Self (1)
                    Affected Spells (Label): Flurry Strike (451250)
@@ -10388,7 +10382,7 @@ Range            : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Face Palm (389942 effect#2), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 10, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Aura Log (202), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -12965,7 +12959,6 @@ Effects          :
 #2 (id=1180344)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
-Hotfixed         : Base Value (215 -> 260), PvP Coefficient (0.745 -> 0.516)
 Description      : $@spelldesc467293
 Tooltip          : Ancient Teachings transfers an additional $w2% damage to healing.
 
@@ -13727,7 +13720,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 160 | Scaled Value: 160 | Target: Self (1)
-Hotfixed         : Base Value (120 -> 160)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -14121,8 +14113,10 @@ Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In S
 Effects          :
 #1 (id=1026492)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 7 | Target: Self (1)
-#2 (id=1026495)  : Apply Aura (6) | Dummy (4)
+#2 (id=1026495)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
+                   Family Flags: 10
 #3 (id=1026496)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Target: Self (1)
 Description      : Tiger Palm's damage is increased by $s2% and reduces the remaining cooldown of your Brews by ${$s3/1000}.1 additional sec.
@@ -17581,14 +17575,12 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1150447)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Radius: 100 yards | Target: Self and Summons in Area (120)
-Hotfixed         : Base Value (15 -> 25)
                    Modified By: Path of Resurgence (451084 effect#1)
 #2 (id=1150448)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Modified By: Path of Resurgence (451084 effect#2)
 #3 (id=1150449)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-Hotfixed         : Base Value (7 -> 12)
                    Modified By: Path of Resurgence (451084 effect#3)
 #4 (id=1150450)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -20315,7 +20307,6 @@ Effects          :
 #1 (id=1180358)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
-Hotfixed         : Base Value (180 -> 260), PvP Coefficient (0.745 -> 0.516)
 #2 (id=1241878)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Sta | Target: Self (1)
 Description      : Ancient Teachings transfers an additional $388026s2% damage to healing.
@@ -20446,7 +20437,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2835: Spatial Paradox (406789 effect#13)
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2, #9, #16), Mistweaver Monk (137024 effect#13), Windwalker Monk (137025 effects: #1, #2, #7, #13), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Face Palm (389942 effect#2), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Mistweaver Monk (428200 effects: #3, #4), Xuen's Guidance (442687 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Tiger's Ferocity (454502 effect#1), Memory of the Monastery (454969 effect#2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #4), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effects: #1, #8), Mistweaver Monk (1258138 effects: #4, #5, #9), Brewmaster Monk (1258153 effect#7), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 10, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Aura Log (202), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -22452,15 +22443,12 @@ Effects          :
 #17 (id=1305244) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 6418 (Label) | Target: Self (1)
                    Affected Spells (Label): Way of a Thousand Strikes (450965)
-Hotfixed         : NEW EFFECT
 #18 (id=1305245) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 3602 (Label) | Target: Self (1)
                    Affected Spells (Label): Path of Resurgence (451084)
-Hotfixed         : NEW EFFECT
 #19 (id=1305728) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 3 | Misc Value 2: 6422 (Label) | Target: Self (1)
                    Affected Spells (Label): Wisdom of the Wall (1272821)
-Hotfixed         : NEW EFFECT
 
 Name             : Intimidation (id=1258508) [Spell Family (9)] 
 Class            : Hunter, Monk
@@ -23877,13 +23865,11 @@ Effects          :
 #2 (id=1283654)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 5954 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackout Combo (228563)
-Hotfixed         : Base Value (50 -> 100)
 #3 (id=1283655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #4 (id=1283765)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Misc Value 2: 5955 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418360)
-Hotfixed         : Base Value (50 -> 100)
 #5 (id=1283766)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 12 | Misc Value 2: 5957 (Label) | Target: Self (1)
                    Affected Spells (Label): Press the Advantage (418359)

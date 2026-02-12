@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -584,7 +584,6 @@ Description      : Energizes both your weapons with lightning and delivers a mas
 Stormstrike has a $s4% chance to generate $210853m2 $Lstack:stacks; of Maelstrom Weapon.][]
 
 Name             : War Stomp (desc=Racial) (id=20549) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -2918,7 +2917,6 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -3117,7 +3115,6 @@ Tooltip          : Transformed into a powerful Air Ascendant. Auto attacks have 
 Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $384437t1 sec.][]
 
 Name             : Ascendance (id=114052) [Spell Family (11)] 
-Hotfixed         : Description, Tooltip
 Talent Entry     : Restoration [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Shaman
 School           : Nature
@@ -3152,31 +3149,24 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-Hotfixed         : Sub Type (108 -> 107), Base Value (30 -> 3), Misc Value (0 -> 17), Affects Spells
 #13 (id=1283758) : Apply Aura (6) | Add Percent Modifier (108): Spell Chain Multiplier (20)
                    Base Value: 29 | Scaled Value: 29 | Misc Value: 20 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-Hotfixed         : Base Value (30 -> 29), Misc Value (22 -> 20), Affects Spells
 #14 (id=1303925) : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #15 (id=1303926) : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #16 (id=1303927) : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
-Hotfixed         : NEW EFFECT
 #17 (id=1303969) : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #18 (id=1303970) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-Hotfixed         : NEW EFFECT
 Description      : Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.
 
 While ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.
@@ -3742,18 +3732,14 @@ Effects          :
                    Base Value: -14 | Scaled Value: -14 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
-Hotfixed         : Base Value (-9 -> -14)
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -14 | Scaled Value: -14 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
-Hotfixed         : Base Value (-9 -> -14)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -14 | Scaled Value: -14 | Target: Self (1)
-Hotfixed         : Base Value (-9 -> -14)
 #4 (id=191044)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -14 | Scaled Value: -14 | Target: Self (1)
-Hotfixed         : Base Value (-9 -> -14)
 #5 (id=191045)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #6 (id=733898)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
@@ -3808,7 +3794,6 @@ Hotfixed         : Base Value (-9 -> -14)
                    Base Value: 59 | Scaled Value: 59 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
-Hotfixed         : Base Value (77 -> 59)
 #21 (id=1070361) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
@@ -13287,12 +13272,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Hex (51514)
                    Family Flags: 47
-Hotfixed         : Affects Spells
 #7 (id=1247575)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Hex (51514)
                    Family Flags: 47
-Hotfixed         : Affects Spells
 Description      : Your next healing or damaging Nature spell $?a1246131[or Hex ][]is instant cast and costs no mana.
 Tooltip          : Your next healing or damaging Nature spell is instant cast and costs no mana.
 
@@ -13609,7 +13592,7 @@ Effects          :
                    Affected Spells (Label): Unleash Life (73685), Lightning Lasso (305484), Lightning Lasso (305485), Ascendance (344548), Earth Shock Overload (381725), Earthliving Weapon (382024), Tidewaters (409354), Awakening Storms (455130), Surging Bolt (458267), Tidewaters (462425), Ascendance (467263), Doom Winds (469270)
 Description      : Increases the critical strike chance of your Nature spells and abilities by $s1%.
 
-Name             : Brimming with Life (id=381684) [Spell Family (11)] 
+Name             : Brimming with Life (id=381684) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13618,7 +13601,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 5951: Brimming with Life (381689 effect#2)
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012678)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16532,12 +16515,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Hex (51514)
                    Family Flags: 47
-Hotfixed         : Affects Spells
 #9 (id=1247585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Hex (51514)
                    Family Flags: 47
-Hotfixed         : Affects Spells
 Description      : Your next healing or damaging spell$?a1246131[ or Hex][] is instant, costs no mana, and deals $s6% increased damage and healing.
 
 If you know Nature's Swiftness, it is replaced by Ancestral Swiftness and causes Ancestral Swiftness to call an Ancestor to your side for $445624d.
@@ -21925,7 +21906,6 @@ Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51)
 Effects          :
 #1 (id=1280111)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6768 | PvP Coefficient: 1.15 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (0.994896 -> 0.6768)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Stormstream Totem (id=1267765) [Spell Family (11)] 

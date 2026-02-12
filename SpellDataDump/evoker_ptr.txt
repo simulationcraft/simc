@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -64,7 +64,6 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : War Stomp (desc=Racial) (id=20549) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -581,7 +580,6 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2632,7 +2630,6 @@ Effects          :
                    Base Value: 76 | Scaled Value: 76 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
-Hotfixed         : Base Value (60 -> 76)
 #20 (id=1123736) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 33 | Scaled Value: 33 | Misc Value 2: 6112 (Label) | Target: Self (1)
                    Affected Spells (Label): Twin Flame (1265980)
@@ -13689,14 +13686,11 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
 #2 (id=1141764)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Hotfixed         : Base Value (1500 -> 1000)
 #3 (id=1141810)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
-Hotfixed         : Base Value (8000 -> 4000)
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
-Hotfixed         : Base Value (125 -> 115)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
@@ -13722,7 +13716,6 @@ Attributes       : Ignore Caster Damage Modifiers (221), Allow Class Ability Pro
 Effects          :
 #1 (id=1140381)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (0.4 -> 1), Attribute (2048 -> 0)
 Description      : $@spelldesc444088
 
 Name             : Fire Breath (desc=Red) (id=444249) [Spell Family (224)] 
@@ -16173,9 +16166,8 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Proc Chance      : 101%
-Proc Flags       : Magic Heal
 Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1278405)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2463 (Category) | Target: Self (1)

@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65769
+Class Spell ID List, wow build 12.0.1.65867
 
 Death Knight
 3714     Path of Frost
@@ -7568,7 +7568,7 @@ Hunter
 260387  *Natural Mending
 260393   Lethal Shots
 260395   Lethal Shots
-260402  *Double Tap
+260402   Double Tap
 260404   Calling the Shots
 260420  *Chakrams
 260426  *Chakrams Missile
