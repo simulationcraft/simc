@@ -6636,9 +6636,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
     ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
                                                   ? ground_aoe_params_t::SPELL_HASTE
                                                   : ground_aoe_params_t::ATTACK_HASTE;
-    timespan_t duration =
-        timespan_t::from_seconds( as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() ) / 2 );
-    timespan_t pulse_time = duration / 10;  // TODO: VERIFY
+    int tick_count = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
+    timespan_t duration = timespan_t::from_seconds( tick_count / 2 );
+    timespan_t pulse_time = duration / tick_count;
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
