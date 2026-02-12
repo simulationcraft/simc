@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.65769
-static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.1.65867
+static constexpr std::array<spelltext_data_t, 28604> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9629,6 +9629,7 @@ static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   {  260385, "Highlights and allows the player to interact with various cauldrons on Kul Tiras and Zandalar.\r\n", "Able to interact with cauldrons.", 0 },
   {  260393, "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot have a $h% chance to reduce the cooldown of Rapid Fire by ${$m1/10}.1 sec.", 0, 0 },
   {  260395, "$@spelldesc260393", "Your next Aimed Shot will have $s1% increased critical strike chance, or your next Rapid Fire will deal a critical strike with each shot.", 0 },
+  {  260402, "Your next Aimed Shot will fire a second time instantly at $s4% power without consuming Focus, or your next Rapid Fire will shoot $s3% additional shots during its channel.", "Your next Aimed Shot will fire a second time instantly at $s4% power and consume no Focus, or your next Rapid Fire will shoot $s3% additional shots during its channel.", 0 },
   {  260404, "Trueshot's cooldown is reduced by ${$s1/1000*-1} sec.", 0, 0 },
   {  260708, "Your next $s4 damaging single-target abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage. Lasts $d.", "Your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.", 0 },
   {  260734, "$@spelldesc16166", "Your next Nature, Physical, or Frost spell will deal $s1% increased damage or healing.", 0 },
@@ -26518,7 +26519,7 @@ static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   { 1244947, "$@spelldesc1244941", "Reduces the cost of your next Rain of Fire by $s1%.", 0 },
   { 1245001, "Your damaging spells and abilities have the chance to grant $@spellname1245025, increasing your lowest secondary stat by $s1 for $1245025d.\r\n\r\nWhen an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Blood.", 0, 0 },
   { 1245025, 0, "Lowest secondary stat increased by $w5.", 0 },
-  { 1245050, "Your spells and abilities have the chance to grant $1252457s1 secondary stats for $1252487d  based on the target creature's type.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Hunt.", 0, 0 },
+  { 1245050, "Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Hunt.", 0, 0 },
   { 1245051, "Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Rot.\r\n", 0, 0 },
   { 1245052, "Your damaging spells and abilities have the chance to embolden you in Void Glass granting $s1 Versatility over $1244617d. Multiple applications can overlap.", 0, 0 },
   { 1245053, "Your damaging spells and abilities have the chance to grant $@spellname1245025, increasing your lowest secondary stat by $s1 for $1245025d.\r\n\r\nWhen an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.", 0, 0 },
@@ -27495,9 +27496,10 @@ static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   { 1262110, "Replace your traditional ammunition with a special toxin that causes your auto-attacks to also apply a bleed to the target which deals $1262109s1 Poison damage every $1262109t1 sec.\r\n\r\nLasts $M2 min.", 0, 0 },
   { 1262112, "Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $s1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.", "Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.", 0 },
   { 1262113, "|cnDARKYELLOW_FONT_COLOR:$@spelldesc1262112|r\r\n\r\n$@spelldesc455680", 0, 0 },
-  { 1262121, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $386260s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
-  { 1262123, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $386260s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
+  { 1262121, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $1262142s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
+  { 1262123, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $1262146s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
   { 1262142, "Deals a small amount of fire damage in an area around the target.", 0, 0 },
+  { 1262146, "Deals a small amount of fire damage in an area around the target.", 0, 0 },
   { 1262159, "$@spelldesc1262017", 0, 0 },
   { 1262186, "|cnDARKYELLOW_FONT_COLOR:$@spelldesc1262382|r\r\n\r\n$@spelldesc455680", 0, 0 },
   { 1262188, "|cnDARKYELLOW_FONT_COLOR:$@spelldesc1262381|r\r\n\r\n$@spelldesc455680", 0, 0 },
@@ -28123,6 +28125,8 @@ static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28602,21 +28606,11 @@ static constexpr std::array<spelltext_data_t, 28600> __ptr_spelltext_data { {
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.65769
-static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __ptr_spelltext_hotfix_data { {
-  {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
-  {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
-  {  196926,  0, "Crusader Strike reduces the cooldown of Holy Shock and Judgment by ${$m2/-1000}.1 sec.", "Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec and Crusader Strike reduces the cooldown of Judgment by ${$m2/-1000}.1 sec." },
-  {  216331,  0, "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.", "You become the ultimate crusader of light, for $d. Auto-attack damage is increased by $s3%, Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.\r\n\r\nThis spell is replaced with Crusader Strike while active.\r\n\r\n$@spellicon35395$@spellname35395:\r\n$@spelldesc35395" },
-  {  278326,  0, "Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $s2 Fury][].", "Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $1277738s1 Fury][]." },
-  {  415091,  0, "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Crusader Strike by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]", "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Holy Shock by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]" },
-  { 1240185,  0, "Moonfire, Sunfire, and Shooting Stars damage increased by 15%.", "Moonfire, Sunfire, and Shooting Stars damage increased by $s1%." },
-  { 1245523,  1, "Your Veilpierce is replaced with Reaper's Toll.", "Pierce the Veil is replaced with Reaper's Toll." },
-  { 1259431,  0, "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.", "Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path." },
-  { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
+// spelltext hotfix entries, wow build 12.0.1.65867
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.1.65769
+// Spell description variables, wow build 12.0.1.65867
 static constexpr std::array<spelldesc_vars_data_t, 692> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29312,7 +29306,7 @@ static constexpr std::array<spelldesc_vars_data_t, 692> __ptr_spelldesc_vars_dat
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.65769
+// spelldesc_vars hotfix entries, wow build 12.0.1.65867
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

@@ -1,4 +1,4 @@
-// Item effects, wow build 12.0.1.65769
+// Item effects, wow build 12.0.1.65867
 static constexpr std::array<item_effect_t, 10853> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -10264,8 +10264,8 @@ static constexpr std::array<item_effect_t, 10853> __ptr_item_effect_data { {
   { 211997, 1238443, 241297,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 211347, 1236616, 241308,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 211346, 1236616, 241309,   0,   0,    0,      -1,      -1 }, // Light's Potential
-  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
-  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
+  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
   { 210509, 1235108, 241322,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
   { 210510, 1235108, 241323,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
   { 210513, 1235110, 241324,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
@@ -10577,8 +10577,8 @@ static constexpr std::array<item_effect_t, 10853> __ptr_item_effect_data { {
   { 212203, 1236616, 245898,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 212205, 1238443, 245900,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 212206, 1238443, 245901,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
-  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
-  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
+  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
   { 212228, 1235111, 245928,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
   { 212229, 1235111, 245929,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
   { 212230, 1235110, 245930,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
