@@ -1029,6 +1029,9 @@ struct rushing_wind_kick_t : monk_melee_attack_t
       : combined_type_t( player, "rushing_wind_kick_damage",
                          player->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger() )
     {
+      background = dual = true;
+
+      may_combo_strike = true;
       aoe              = -1;
       split_aoe_damage = true;
 
