@@ -50,7 +50,7 @@ actions.cooldowns=arcane_orb,if=talent.splintering_sorcery&variable.opener,line_
 actions.cooldowns+=/arcane_missiles,if=talent.spellfire_spheres&variable.opener,line_cd=30
 # Spellslinger builds Salvo before going into cds the first time.  TODO: Add fight length sensitivity.
 actions.cooldowns+=/arcane_blast,if=talent.splintering_sorcery&buff.arcane_salvo.react<20&(variable.opener|(talent.orb_mastery&cooldown.arcane_surge.remains<(gcd.max*(mana.pct%(8+(8*(active_enemies>=2)))))))
-actions.cooldowns+=/wait,sec=0.05,if=(prev_gcd.1._arcane_surge&(talent.splintering_sorcery|(!buff.arcane_salvo.react=(20+(5*talent.spellfire_salvo)))))|(prev_off_gcd.touch_of_the_magi&gcd.remains=0)|(prev_off_gcd.presence_of_mind&gcd.remains=0),line_cd=1
+actions.cooldowns+=/wait,sec=0.05,if=(prev_gcd.1._arcane_surge&(talent.splintering_sorcery|(!(buff.arcane_salvo.react=(20+(5*talent.spellfire_salvo))))))|(prev_off_gcd.touch_of_the_magi&gcd.remains=0)|(prev_off_gcd.presence_of_mind&gcd.remains=0),line_cd=1
 # Spellslinger uses Touch after Surge, Sunfury holds touch for the end of Surge to capture Soul and the run-off of resources after Soul.  TODO: Look into delaying touch slightly for Spellslinger Surges to cover more Splinter generation.
 actions.cooldowns+=/touch_of_the_magi,use_off_gcd=1,if=(talent.splintering_sorcery&buff.arcane_surge.up)|(talent.spellfire_spheres&buff.arcane_surge.up&buff.arcane_surge.remains<(5+gcd.remains))|(cooldown.touch_of_the_magi.ready&cooldown.arcane_surge.remains>30&buff.arcane_surge.down)
 actions.cooldowns+=/arcane_surge
@@ -64,7 +64,7 @@ actions.spellslinger+=/arcane_barrage,if=buff.arcane_salvo.react>=20&(buff.arcan
 # Barrage in AOE when you can recoup Charges with Missiles or Orb.
 actions.spellslinger+=/arcane_barrage,if=active_enemies>=2&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.overpowered_missiles.react&talent.high_voltage&buff.arcane_salvo.react>5&buff.arcane_salvo.react<14&cooldown.touch_of_the_magi.remains>gcd.max*4
 # Missiles for Charges with HV and Salvo stacks.
-actions.spellslinger+=/arcane_missiles,if=buff.clearcasting.react&((buff.arcane_salvo.stack<(10+(5*buff.overpowered_missiles.react=0)))|(buff.arcane_charge.stack<2&talent.high_voltage&active_enemies>=2)),chain=1
+actions.spellslinger+=/arcane_missiles,if=buff.clearcasting.react&((buff.arcane_salvo.stack<(10+(5*(buff.overpowered_missiles.react=0))))|(buff.arcane_charge.stack<2&talent.high_voltage&active_enemies>=2)),chain=1
 actions.spellslinger+=/presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles
 actions.spellslinger+=/arcane_blast,if=buff.presence_of_mind.up
 actions.spellslinger+=/arcane_pulse,if=active_enemies>3
@@ -76,7 +76,7 @@ actions.spellslinger_orbm=arcane_orb,if=(prev_gcd.1.arcane_barrage|active_enemie
 # Barrage at 20 stacks, up to 2 lower if you have Orb Barrage talented, save resources for Touch, Barrage the end of Touch for Splinters.
 actions.spellslinger_orbm+=/arcane_barrage,if=(buff.arcane_charge.stack=4|talent.orb_barrage)&buff.arcane_salvo.react>=20&cooldown.touch_of_the_magi.remains>gcd.max*4|(buff.arcane_surge.remains<gcd.max&buff.arcane_surge.up&buff.arcane_salvo.react>=10)
 # Missiles only if you have HV or OPM specced and in minimal situations.
-actions.spellslinger_orbm+=/arcane_missiles,if=(talent.high_voltage|talent.overpowered_missiles)&buff.clearcasting.react&buff.arcane_salvo.react<=(10+(5*buff.overpowered_missiles.react=0))&!prev_gcd.1.arcane_orb&(buff.arcane_surge.down|(talent.high_voltage&active_enemies=1))&(active_enemies<2|talent.overpowered_missiles),chain=1
+actions.spellslinger_orbm+=/arcane_missiles,if=(talent.high_voltage|talent.overpowered_missiles)&buff.clearcasting.react&buff.arcane_salvo.react<=(10+(5*(buff.overpowered_missiles.react=0)))&!prev_gcd.1.arcane_orb&(buff.arcane_surge.down|(talent.high_voltage&active_enemies=1))&(active_enemies<2|talent.overpowered_missiles),chain=1
 # Use PoM to get early charges after Barraging as a low priority option.
 actions.spellslinger_orbm+=/presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles
 actions.spellslinger_orbm+=/arcane_blast,if=buff.presence_of_mind.up
