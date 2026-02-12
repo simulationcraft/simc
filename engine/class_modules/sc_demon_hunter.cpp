@@ -664,7 +664,7 @@ public:
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t reavers_mark;
-      player_talent_t broken_spirit;  // NYI
+      player_talent_t broken_spirit;
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
@@ -5461,6 +5461,11 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
       demon_hunter_sigil_t::execute();
       p()->spawn_soul_fragment( p()->proc.soul_fragment_from_sigil_of_spite, soul_fragment::LESSER,
                                 soul_fragments_to_spawn );
+
+      if ( p()->talent.aldrachi_reaver.broken_spirit->ok() )
+      {
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
+      }
     }
   };
 
@@ -8151,6 +8156,12 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
     damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
 
     trigger_untethered_rage( fragments_consumed );
+
+    if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
+         rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 3 ).percent() ) )
+    {
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
+    }
   }
 };
 
