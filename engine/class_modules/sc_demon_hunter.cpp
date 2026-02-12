@@ -4114,8 +4114,9 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
 
     if ( p()->talent.annihilator.meteoric_rise->ok() )
     {
-      int ticks_per_soul_fragment = as<int>( d->num_ticks() / soul_fragments_from_meteoric_rise );
-      if ( d->num_ticks() % ticks_per_soul_fragment == 0 )
+      int expected_before = ( d->current_tick - 1 ) * soul_fragments_from_meteoric_rise / d->num_ticks();
+      int expected_after  = d->current_tick * soul_fragments_from_meteoric_rise / d->num_ticks();
+      if ( expected_after > expected_before )
       {
         p()->spawn_soul_fragment( p()->proc.soul_fragment_from_meteoric_rise, soul_fragment::LESSER );
       }
