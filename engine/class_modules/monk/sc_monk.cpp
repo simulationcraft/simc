@@ -138,9 +138,10 @@ void monk_action_t<Base>::apply_buff_effects()
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
-      const std::array<unsigned, 3> rsk_ids = { p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
-                                                p()->talent.windwalker.rushing_wind_kick_damage->id(),
-                                                p()->talent.windwalker.glory_of_the_dawn_damage->id() };
+      const std::array<unsigned, 3> rsk_ids = {
+          p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
+          p()->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger()->id(),
+          p()->talent.windwalker.glory_of_the_dawn_damage->id() };
 
       double value = effect.mastery_value();
       if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
@@ -1018,53 +1019,63 @@ struct rising_sun_kick_t : monk_melee_attack_t
   }
 };
 
-struct rushing_wind_kick_t : rising_sun_kick_t::combined_type_t
+struct rushing_wind_kick_t : monk_melee_attack_t
 {
   using combined_type_t = rising_sun_kick_t::combined_type_t;
 
-  int target_count_max;
-  double target_count_coefficient;
+  struct damage_t : combined_type_t
+  {
+    damage_t( monk_t *player )
+      : combined_type_t( player, "rushing_wind_kick_damage",
+                         player->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger() )
+    {
+      aoe              = -1;
+      split_aoe_damage = true;
+
+      add_parse_entry( da_multiplier_effects )
+          .set_func( []() { return false; } )
+          .set_value( player->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).percent() )
+          .set_note( "Target-count AoE Scaling" );
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = combined_type_t::composite_aoe_multiplier( state );
+
+      double count = std::min( as<double>( state->n_targets ),
+                               p()->talent.windwalker.rushing_wind_kick_action->effectN( 2 ).base_value() );
+      double mult  = 1.0 + count * p()->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).percent();
+      cam *= mult;
+
+      return cam;
+    }
+  };
 
   rushing_wind_kick_t( monk_t *player, std::string_view options_str )
-    : combined_type_t( player, "rushing_wind_kick", player->talent.windwalker.rushing_wind_kick_damage ),
-      target_count_max( 5 ),
-      target_count_coefficient( 0.06 )
+    : monk_melee_attack_t( player, "rushing_wind_kick", player->talent.windwalker.rushing_wind_kick_action )
   {
     parse_options( options_str );
 
-    aoe              = -1;
-    split_aoe_damage = true;
+    // Note that Rushing Wind Kick cannot be parented to Rising Sun Kick
+    // due to max parent depth.
+    if ( !player->talent.windwalker.rushing_wind_kick->ok() )
+      return;
 
-    add_parse_entry( da_multiplier_effects )
-        .set_func( []() { return false; } )
-        .set_value( target_count_coefficient )
-        .set_note( "Target-count AoE Scaling" );
-  }
-
-  void init() override
-  {
-    combined_type_t::init();
-    if ( action_t *rising_sun_kick = p()->find_action( "rising_sun_kick" ); rising_sun_kick )
-      rising_sun_kick->add_child( this );
+    execute_action = new damage_t( player );
+    add_child( execute_action );
   }
 
   bool ready() override
   {
     if ( p()->buff.rushing_wind_kick->up() )
-      return combined_type_t::ready();
+      return monk_melee_attack_t::ready();
 
     return false;
   }
 
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double mult = 1.0 + std::min( state->n_targets, 5u ) * target_count_coefficient;
-    return combined_type_t::composite_aoe_multiplier( state ) * mult;
-  }
-
   void execute() override
   {
-    combined_type_t::execute();
+    monk_melee_attack_t::execute();
     p()->buff.rushing_wind_kick->expire();
   }
 };
@@ -5416,7 +5427,7 @@ void monk_t::init_spells()
     talent.windwalker.memory_of_the_monastery_buff   = find_spell( 454970 );
     talent.windwalker.rushing_wind_kick              = _ST( "Rushing Wind Kick" );
     talent.windwalker.rushing_wind_kick_buff         = find_spell( 1250554 );
-    talent.windwalker.rushing_wind_kick_damage       = find_spell( 468179 );
+    talent.windwalker.rushing_wind_kick_action       = find_spell( 467307 );
     talent.windwalker.xuens_battlegear               = _ST( "Xuen's Battlegear" );
     talent.windwalker.thunderfist                    = _ST( "Thunderfist" );
     talent.windwalker.thunderfist_buff               = find_spell( 393565 );
