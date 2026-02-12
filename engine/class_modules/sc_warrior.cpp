@@ -2166,7 +2166,7 @@ struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_t( warrior_t* p )
-    : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+    : warrior_attack_t( "rend_dot", p, p->find_spell( 388539 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
@@ -3946,6 +3946,8 @@ struct thunder_clap_t : public warrior_attack_t
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
+
+    cooldown = p->cooldown.thunder_clap;
 
     energize_type = action_energize::NONE;
 
@@ -7576,6 +7578,7 @@ void warrior_t::init_spells()
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
+  cooldown.thunder_clap->category=true;
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );

@@ -12496,9 +12496,13 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   }
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-  buff_t* buff       = make_buff( dk, "unholy_strength", dk->runeforge_spell.unholy_strength )
-                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                     ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  auto buff          = buff_t::find( effect.player, "unholy_strength" );
+  if ( !buff )
+  {
+    buff = make_buff( dk, "unholy_strength", dk->runeforge_spell.unholy_strength )
+               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  }
 
   effect.custom_buff    = buff;
   effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", dk );

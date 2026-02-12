@@ -664,7 +664,7 @@ public:
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t reavers_mark;
-      player_talent_t broken_spirit;  // NYI
+      player_talent_t broken_spirit;
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
@@ -2528,8 +2528,8 @@ public:
     if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
-    // TODO: refine this as needed
-    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
+    // TODO: base chance and growth factor are approximations, no spell data source
+    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->stack() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
       p()->buff.seething_anger->expire();
@@ -3170,6 +3170,7 @@ struct doomsayer_trigger_t : public BASE
     }
 
     BASE::p()->buff.doomsayer_in_combat->expire();
+    BASE::p()->buff.doomsayer_out_of_combat->expire();
 
     for ( int i = 0; i < meteors_to_trigger; ++i )
     {
@@ -4114,8 +4115,9 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
 
     if ( p()->talent.annihilator.meteoric_rise->ok() )
     {
-      int ticks_per_soul_fragment = as<int>( d->num_ticks() / soul_fragments_from_meteoric_rise );
-      if ( d->num_ticks() % ticks_per_soul_fragment == 0 )
+      int expected_before = ( d->current_tick - 1 ) * soul_fragments_from_meteoric_rise / d->num_ticks();
+      int expected_after  = d->current_tick * soul_fragments_from_meteoric_rise / d->num_ticks();
+      if ( expected_after > expected_before )
       {
         p()->spawn_soul_fragment( p()->proc.soul_fragment_from_meteoric_rise, soul_fragment::LESSER );
       }
@@ -5808,8 +5810,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
       p()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
-                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() +
-                                                  p()->talent.devourer.predators_thirst->effectN( 2 ).base_value() ) );
+                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() ) );
     }
   }
 };
@@ -6337,6 +6338,12 @@ struct void_ray_t
                                                                                    p->spec.voidglare_boon_energize );
     }
 
+    // forces hasted cooldown due to the spell baseline having no cooldown duration
+    if ( data().affected_by( p->spec.devourer_demon_hunter->effectN( 6 ) ) )
+    {
+      cooldown->hasted = true;
+    }
+
     // Add damage modifiers in voidray_tick_t, not here.
   }
 
@@ -6630,9 +6637,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
     ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
                                                   ? ground_aoe_params_t::SPELL_HASTE
                                                   : ground_aoe_params_t::ATTACK_HASTE;
-    timespan_t duration =
-        timespan_t::from_seconds( as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() ) / 2 );
-    timespan_t pulse_time = duration / 10;  // TODO: VERIFY
+    int tick_count = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
+    timespan_t duration = timespan_t::from_seconds( tick_count / 2 );
+    timespan_t pulse_time = duration / tick_count;
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -8067,8 +8074,8 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_t : public voidfall_spending_trigger_t<
-                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+struct soul_cleave_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
+                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -8145,6 +8152,12 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
     damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
 
     trigger_untethered_rage( fragments_consumed );
+
+    if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
+         rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 3 ).percent() ) )
+    {
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
+    }
   }
 };
 

@@ -269,6 +269,110 @@ void powerful_eversong_diamond( special_effect_t& effect )
 
   effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
+
+// Berserker's Rage
+// 1236727 Rank 1 Driver
+// 1236728 Rank 2 Driver
+// 1241723 RPPM
+// 1241762 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void berserkers_rage( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "frenzied_focus" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "frenzied_focus", effect.player->find_spell( 1241762 ) )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241723;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Acuity of the Ren'dorei
+// 1236741 Rank 1 Driver
+// 1236742 Rank 2 Driver
+// 1241710 RPPM
+// 1241715 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void acuity_of_the_rendorei( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "might_of_the_void" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "might_of_the_void", effect.player->find_spell( 1241715 ) )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241710;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Arcane Mastery
+// 1236712 Rank 1 Driver
+// 1236721 Rank 2 Driver
+// 1241729 RPPM
+// 1241759 Buff
+void arcane_mastery( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "genius_insight" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "genius_insight", effect.player->find_spell( 1241759 ) )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241729;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Jan'alai's Precision
+// 1236724 Rank 1 Driver
+// 1236725 Rank 2 Driver
+// 1241722 RPPM
+// 1241761 Buff
+void janalais_precision( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "precision_of_the_dragonhawk" );
+  if ( !buff )
+  {
+    buff =
+        create_buff<stat_buff_t>( effect.player, "precision_of_the_dragonhawk", effect.player->find_spell( 1241761 ) )
+            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241722;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Worldsoul Tenacity
+// 1236729 Rank 1 Driver
+// 1236730 Rank 2 Driver
+// 1241727 RPPM
+// 1241764 Buff
+void worldsoul_tenacity( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "natures_tenacity" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "natures_tenacity", effect.player->find_spell( 1241764 ) )
+            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241727;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -1531,6 +1635,55 @@ void withered_saptors_paw( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Shadow of the Empyrean Requiem
+// 1259518 Driver
+// 1264325 Main target damage
+// 1268775 Second target damage
+// 1264337 Haste Buff
+void shadow_of_the_empyrean_requiem( special_effect_t& effect )
+{
+  struct shadow_of_the_empyrean_requiem_damage_t : public generic_proc_t
+  {
+    buff_t* haste_buff;
+    const special_effect_t& effect;
+    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, const spell_data_t* s,
+                                             buff_t* buff )
+      : generic_proc_t( e, n, s ), haste_buff( buff ), effect( e )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+      // Ensure secondary damage doesnt hit the same target as the main hit
+      if ( s->id() == 1268775 )
+        target_filter_callback = secondary_targets_only();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( s->target->health_percentage() < effect.driver()->effectN( 3 ).base_value() )
+        haste_buff->trigger();
+    }
+  };
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "empyrean_swiftness", effect.player->find_spell( 1264337 ) )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem", effect, "shadow_of_the_empyrean_requiem",
+      effect.player->find_spell( 1264325 ), buff );
+
+  auto second_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem_secondary", effect, "shadow_of_the_empyrean_requiem_secondary",
+      effect.player->find_spell( 1268775 ), buff );
+
+  main_target_damage->execute_action = second_target_damage;
+  main_target_damage->add_child( second_target_damage );
+
+  effect.execute_action = main_target_damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1699,6 +1852,26 @@ void root_wardens_regalia( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
+
+// Voidlight Bindings
+// 1281574 Driver
+// 1281581 Value Spell
+// 1281580 Area Trigger
+// 1281579 Damage
+void voidlight_bindings( special_effect_t& effect )
+{
+  auto value_spell    = effect.player->find_spell( 1281581 );
+  assert( value_spell && "Voidlight Bindings missing value spell" );
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  // No Role multiplier currently
+  //damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace sets
 
 void register_special_effects()
@@ -1744,6 +1917,11 @@ void register_special_effects()
   // Oils
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
+  register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
+  register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
+  register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
+  register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
+  register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -1779,6 +1957,7 @@ void register_special_effects()
   register_special_effect( 1253115, trinkets::sealed_chaos_urn );
   register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
   register_special_effect( 1253110, trinkets::withered_saptors_paw );
+  register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
@@ -1786,7 +1965,7 @@ void register_special_effects()
   register_special_effect( 1244021, sets::root_wardens_regalia );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   // Sets
-
+  register_special_effect( 1281574, sets::voidlight_bindings );
 }
 
 void register_target_data_initializers( sim_t& )
