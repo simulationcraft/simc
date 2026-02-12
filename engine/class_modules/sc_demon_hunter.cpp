@@ -3170,6 +3170,7 @@ struct doomsayer_trigger_t : public BASE
     }
 
     BASE::p()->buff.doomsayer_in_combat->expire();
+    BASE::p()->buff.doomsayer_out_of_combat->expire();
 
     for ( int i = 0; i < meteors_to_trigger; ++i )
     {
