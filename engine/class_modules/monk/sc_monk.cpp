@@ -6723,7 +6723,7 @@ void monk_t::combat_begin()
 
         if ( !sim->active_enemies &&
              buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
-          make_event<events::delayed_cb_event_t>( *sim, this, period - 2_s, out_of_combat );
+          make_event<events::delayed_cb_event_t>( *sim, this, 2_s, out_of_combat );
 
         buff.tigereye_brew_1->trigger();
         make_event<events::delayed_cb_event_t>( *sim, this, period, wrapped_fn );
