@@ -238199,7 +238199,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1232711)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 730.8104 (coefficient=5.57528) | Stat: StrAgiInt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 365.4052 (coefficient=2.78764) | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : Coefficient (5.57528 -> 2.78764)
 Description      : Drink to increase your primary stat by $s1 for $d.
 Tooltip          : Primary stat increased by $w1.
 
@@ -238911,7 +238912,8 @@ Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostil
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Unknown (508)
 Effects          :
 #1 (id=1233487)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 813.881 (coefficient=6.209017) | Stat: StrAgiInt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 406.9404 (coefficient=3.104508) | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : Coefficient (6.209017 -> 3.104508)
 #2 (id=1234844)  : Apply Aura (6) | Proc Trigger Spell (42): Draught of Rampant Abandon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154
 Description      : Increases $pri by $s0 for $d. While under the effects of this potion the Void may extract its toll, opening a void zone at your feet.
