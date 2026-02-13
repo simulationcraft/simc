@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -21824,6 +21824,7 @@ Effects          :
 Description      : Summons a totem at your feet that immediately heals $?a445035[${1+$s2}][$s2] injured allies for $1268684s1 and additional heals $?a445035[${1+$s2}][$s2] injured allies within $52042A1 yards for $1267745s1 every $1267765t1 sec for $d.
 
 Name             : Stormstream Totem (id=1267089) [Spell Family (11)] 
+Hotfixed         : Proc Stacks (0 -> 1)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -21832,7 +21833,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 5671
-Stacks           : 2 maximum
+Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Attributes       : Not In Spellbook (143), Allow Class Ability Procs (416)

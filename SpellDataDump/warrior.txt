@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -305,6 +305,7 @@ Variables        : $baseDmg=${3*$199658s1}
 $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 
 Name             : Hamstring (id=1715) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -319,7 +320,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Battle Stance (386164 effect#4), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2)
 Family Flags     : 1, 8, 9, 52
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Completely Blocked (99), Do Not Display Range (126), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Completely Blocked (99), Do Not Display Range (126), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -821,6 +822,7 @@ Description      : A vicious strike that deals $s1 Physical damage and reduces t
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
 School           : Physical
@@ -836,7 +838,7 @@ Labels           : 16: Class Spells
 Mechanic         : Snare
 Affecting Spells : Warrior (137047 effect#2), Battlefield Commander (424742 effect#3), Resonant Voice (1243660 effect#1)
 Family Flags     : 8, 70, 71
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Show Mechanic as Combat Text (213), Taps immediately (215), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Show Mechanic as Combat Text (213), Taps immediately (215), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=5303)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 0 - 12 yards | Mechanic: Snare | Target: Source (22) -> Enemy in Area (15)
@@ -4090,6 +4092,7 @@ Description      : When activated, your next Mortal Strike will deal $m1% increa
 Tooltip          : Damage done by your next Mortal Strike increased by $m1%, and causes the target to take $198819m1% reduced healing for $198819d.
 
 Name             : Mortal Strike (desc=PvP Talent) (id=198819) [Spell Family (4)] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -4097,7 +4100,7 @@ Duration         : 4 seconds
 Labels           : 25: Warrior Spells
                  : 118
 Proc Chance      : 101%
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=292280)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -18030,6 +18033,7 @@ Description      : $@spelldesc1244088
 Tooltip          : $?$w2=0[$w1% of damage taken is redirected to $@auracaster.][Taking ${$s1*$e1}% of damage taken by allies until at least $w2 more damage is taken.]
 
 Name             : Piercing Howl (id=1244157) [Spell Family (4)] 
+Hotfixed         : Mechanic (11 -> 0)
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -18040,7 +18044,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 948
                  : 1387
-Mechanic         : Snare
 Affecting Spells : Warrior (137047 effect#2), Battlefield Commander (424742 effect#3), Resonant Voice (1243660 effect#1)
 Triggered By     : Piercing Howl (12323)
 Family Flags     : 8, 70, 71
