@@ -1516,7 +1516,7 @@ struct fists_of_fury_t : monk_melee_attack_t
     jadefire_stomp_t( monk_t *player )
       : monk_melee_attack_t( player, "jadefire_stomp", player->talent.windwalker.jadefire_stomp_damage )
     {
-      aoe        = as<int>( player->talent.windwalker.jadefire_stomp_targeting->effectN( 1 ).base_value() );
+      aoe        = as<int>( player->talent.windwalker.jadefire_stomp->effectN( 2 ).base_value() );
       background = dual = true;
       ww_mastery        = true;
 
