@@ -10724,12 +10724,17 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       }
     }
 
-    if ( execute_state && p()->talent.frost.frostbane )
+    if ( execute_state && p()->talent.frost.frostbane && !p()->buffs.frostbane->up() )
     {
-      const int other_targets = execute_state->n_targets - targets_max_razorice;
       // 11.2 TODO find actual proc chance
       // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
-      if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
+      double chance = .195;
+
+      if (execute_state->n_targets > 2)
+        chance = std::min( ( .09 * (execute_state->n_targets - targets_max_razorice) ) + ( .32 * targets_max_razorice ),
+                           .925 );
+
+      if ( p()->rng().roll( chance ) )
         p()->buffs.frostbane->trigger();
     }
   }
@@ -12496,9 +12501,13 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   }
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-  buff_t* buff       = make_buff( dk, "unholy_strength", dk->runeforge_spell.unholy_strength )
-                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                     ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  auto buff          = buff_t::find( effect.player, "unholy_strength" );
+  if ( !buff )
+  {
+    buff = make_buff( dk, "unholy_strength", dk->runeforge_spell.unholy_strength )
+               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  }
 
   effect.custom_buff    = buff;
   effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", dk );

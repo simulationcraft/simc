@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -236395,7 +236395,6 @@ Effects          :
 Description      : |cnRED_FONT_COLOR:Catching this fish will summon the spirit of the Blood Hunter to take revenge.|R
 
 Name             : Flask of Thalassian Resistance (id=1235057) 
-Hotfixed         : Name
 School           : Nature
 Spell Type       : None
 Duration         : 3600 seconds
@@ -238200,7 +238199,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1232711)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 730.8104 (coefficient=5.57528) | Stat: StrAgiInt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 365.4052 (coefficient=2.78764) | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : Coefficient (5.57528 -> 2.78764)
 Description      : Drink to increase your primary stat by $s1 for $d.
 Tooltip          : Primary stat increased by $w1.
 
@@ -238912,7 +238912,8 @@ Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostil
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Unknown (508)
 Effects          :
 #1 (id=1233487)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 813.881 (coefficient=6.209017) | Stat: StrAgiInt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 406.9404 (coefficient=3.104508) | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : Coefficient (6.209017 -> 3.104508)
 #2 (id=1234844)  : Apply Aura (6) | Proc Trigger Spell (42): Draught of Rampant Abandon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154
 Description      : Increases $pri by $s0 for $d. While under the effects of this potion the Void may extract its toll, opening a void zone at your feet.
@@ -241906,7 +241907,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1244908)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Void | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 87.22633 (coefficient=0.665441) | Trigger Spell: 1244253 | Target: Self (1)
-Hotfixed         : Coefficient (0.110248 -> 0.665441), Scaling Class (-9 -> -7)
 Description      : Your damaging spells and abilities have the chance to embolden you in Void Glass granting $s1 Versatility over $1244617d. Multiple applications can overlap.
 
 This effect is augmented by Darkmoon Sigil: Void.
@@ -242146,10 +242146,8 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=1245853)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blood | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 314.2315 (coefficient=2.397241) | Trigger Spell: 1245012 | Target: Self (1)
-Hotfixed         : Coefficient (0.551239 -> 2.397241), Scaling Class (-9 -> -7)
 #2 (id=1245854)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blood | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 154.9905 (coefficient=1.212725) | Trigger Spell: 1245965 | Target: Self (1)
-Hotfixed         : Coefficient (0.658981 -> 1.212725)
 Description      : Your damaging spells and abilities have the chance to grant $@spellname1245025, increasing your lowest secondary stat by $s1 for $1245025d.
 
 When an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.
@@ -242168,10 +242166,8 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Pr
 Effects          :
 #1 (id=1245870)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (23.571106 -> 0), Scaling Class (-9 -> 0)
 #2 (id=1245871)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (4.928916 -> 0), Scaling Class (-9 -> 0)
 
 Name             : Farstrider's Guile (id=1245025) 
 School           : Physical
@@ -242193,14 +242189,12 @@ Effects          :
 Tooltip          : Lowest secondary stat increased by $w5.
 
 Name             : Hunt (id=1245050) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245921)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hunt | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 119.1912 (coefficient=0.909298) | Trigger Spell: 1252457 | Target: Self (1)
-Hotfixed         : Coefficient (0.278125 -> 0.909298), Scaling Class (-9 -> -7)
 Description      : Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type.
 
 This effect is augmented by Darkmoon Sigil: Hunt.
@@ -242213,7 +242207,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245922)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 158.8333 (coefficient=1.242793) | Trigger Spell: 1244332 | Target: Self (1)
-Hotfixed         : Coefficient (1.495861 -> 1.242793)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 This effect is augmented by Darkmoon Sigil: Rot.
@@ -242229,7 +242222,6 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=1245923)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Void | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 39.51552 (coefficient=0.30146) | Trigger Spell: 1244253 | Target: Self (1)
-Hotfixed         : Coefficient (0.067575 -> 0.30146), Scaling Class (-9 -> -7)
 Description      : Your damaging spells and abilities have the chance to embolden you in Void Glass granting $s1 Versatility over $1244617d. Multiple applications can overlap.
 
 Name             : Blood (id=1245053) [Passive] 
@@ -242241,10 +242233,8 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=1245928)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blood | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 76.39672 (coefficient=0.582823) | Trigger Spell: 1245012 | Target: Self (1)
-Hotfixed         : Coefficient (0.412565 -> 0.582823), Scaling Class (-9 -> -7)
 #2 (id=1245929)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blood | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 63.22484 (coefficient=0.482336) | Trigger Spell: 1245965 | Target: Self (1)
-Hotfixed         : Coefficient (0.341433 -> 0.482336), Scaling Class (-9 -> -7)
 Description      : Your damaging spells and abilities have the chance to grant $@spellname1245025, increasing your lowest secondary stat by $s1 for $1245025d.
 
 When an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.
@@ -242257,18 +242247,15 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245930)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hunt | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 198.7753 (coefficient=1.516437) | Trigger Spell: 1252457 | Target: Self (1)
-Hotfixed         : Coefficient (1.513937 -> 1.516437), Scaling Class (-9 -> -7)
 Description      : Your spells and abilities have the chance to grant $1252457s2 secondary stats for $1252487d  based on the target creature's type.
 
 Name             : Rot (id=1245055) [Passive] 
-Hotfixed         : Max Scaling Level (90 -> 0)
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 74.29293 (coefficient=0.581306) | Trigger Spell: 1244332 | Target: Self (1)
-Hotfixed         : Coefficient (3.753302 -> 0.581306)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -242903,7 +242890,6 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-Hotfixed         : School (40 -> 8)
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -244898,6 +244884,20 @@ Effects          :
 Description      : Mark your target for execution, increasing your Haste by $s3 for $d. While the target is marked, each of your attacks against them grants an additional $s2 Critical Strike, as the Void urges you to finish the kill, up to a maximum of ${$s2*$1263357u} Critical Strike.
 Tooltip          : A mandate of execution has been placed upon your target, granting you $w3 Haste. Your strikes against your victim grant you stacking Critical Strike.
 
+Name             : Latch's Crooked Hook (id=1250561) [Passive] 
+School           : Physical
+Spell Type       : None
+Cooldown         : 90 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
+Attributes       : Passive (6), No Aura Icon (60), Always Line of Sight (185), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1254671)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Target: Self (1)
+#2 (id=1254672)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Target: Self (1)
+Description      : Hurls a hook toward your target, cleaving through enemies in its path and dealing X Physical damage to each. When the hook crashes into the ground, it inflicts Y Physical damage split among nearby enemies.
+
 Name             : Kroluk's Warbanner (id=1250563) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -245786,10 +245786,8 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1257674)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (0.86781 -> 0), Scaling Class (-9 -> 0)
 #2 (id=1257675)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (0.170717 -> 0), Scaling Class (-9 -> 0)
 
 Name             : Hasty Hunt (id=1252486) 
 School           : Physical
@@ -246449,6 +246447,15 @@ Effects          :
 Description      : Hurl a massive hook toward your target, cleaving through enemies in its path and dealing ${$<rolemult>*$1255379s2} Physical damage to each. When the hook crashes into the target, it inflicts ${$<rolemult>*$1255379s1} Physical damage split among enemies within $1255298a1 yards.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
+Name             : Latch's Crooked Hook (id=1254328) 
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1260689)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | Trigger Spell: 1255379 | Target: Current Target (25)
+
 Name             : Echoing Roar (id=1254331) 
 School           : Physical
 Spell Type       : Magic
@@ -246823,7 +246830,7 @@ Name             : Latch's Crooked Hook (id=1255379) [Passive]
 School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
-Triggered By     : Latch's Crooked Hook (1255298)
+Triggered By     : Latch's Crooked Hook (1254328), Latch's Crooked Hook (1255298)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1262190)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
@@ -246927,6 +246934,26 @@ Effects          :
 #1 (id=1263040)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike decreased by $w1.
+
+Name             : Emberwing Burn (id=1255856) 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1263043)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Tooltip          : Mastery decreased by $w1.
+
+Name             : Emberwing Burn (id=1255857) 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1263044)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Tooltip          : Versatility decreased by $w1.
 
 Name             : Illusion: Felshatter (id=1256110) 
 School           : Physical
@@ -249527,7 +249554,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262140 | Target: Self (1)
 
 Name             : Weighted Boomshots (id=1262121) [Hidden] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -249544,7 +249570,6 @@ Lasts $M2 min.
 
 
 Name             : Weighted Boomshots (id=1262123) [Hidden] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -249593,7 +249618,6 @@ Attributes       : Allow While Stealthed (37), Not an Action (92), Allow Cast Wh
 Effects          :
 #1 (id=1272218)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1102 (coefficient=8.622615) | Radius: 0 - 3 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : Coefficient (33.083466 -> 8.622615)
 Description      : Deals a small amount of fire damage in an area around the target.
 
 Name             : Weighted Boomshots (id=1262146) 
@@ -249606,7 +249630,6 @@ Attributes       : Allow While Stealthed (37), Not an Action (92), Allow Cast Wh
 Effects          :
 #1 (id=1272223)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1334 (coefficient=10.4379) | Radius: 0 - 3 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : Coefficient (33.083466 -> 10.437902)
 Description      : Deals a small amount of fire damage in an area around the target.
 
 Name             : Weighted Boomshots (id=1262147) [Hidden] 
@@ -250876,6 +250899,18 @@ Effects          :
 #1 (id=1274640)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 40323 | Target: at Self (18)
 
+Name             : Light's Blessing (id=1263768) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Unknown (452)
+Effects          :
+#1 (id=1274648)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Tooltip          : Mastery increased by increased by $w1.
+
 Name             : Eternal Eggshell (id=1264144) 
 School           : Holy
 Spell Type       : None
@@ -251546,7 +251581,6 @@ Effects          :
 #1 (id=1278246)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (-80 -> -50)
 #2 (id=1278247)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #3 (id=1278248)  : Apply Aura (6) | Modify Damage Done% (79)
@@ -251554,7 +251588,6 @@ Hotfixed         : Base Value (-80 -> -50)
                    Affected School(s): All
 #4 (id=1278249)  : Apply Aura (6) | Threat (10)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (-75 -> -90)
 Description      : $@spelldesc421373
 
 Name             : Nether Entropic Kris (id=1266072) 
@@ -253212,7 +253245,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1293549)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 68.24404 (coefficient=0.520627) | Target: Self (1)
-Hotfixed         : Coefficient (2.000087 -> 0.520627)
 Description      : When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d. Your highest stat is always chosen.
 
 Name             : Conjured Illusory Adornment - Blooming Light (id=1281332) 

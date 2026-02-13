@@ -89,7 +89,7 @@ void arcane( player_t* p )
   default_->add_action( "arcane_missiles,if=fight_remains<execute_time*(1+buff.clearcasting.react)&buff.clearcasting.react&buff.arcane_salvo.stack>=13+(5*talent.spellfire_salvo)&!talent.orb_mastery,chain=1" );
   default_->add_action( "arcane_orb,if=fight_remains<execute_time*(1+buff.clearcasting.react)&buff.clearcasting.react&buff.arcane_salvo.stack>=13+(5*talent.spellfire_salvo)&talent.orb_mastery" );
   default_->add_action( "variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0" );
-  default_->add_action( "variable,name=sunfury_hold_for_cds,op=set,value=((buff.arcane_surge.down&cooldown.touch_of_the_magi.remains>gcd.max*(4-(active_enemies>=3)-(2*(buff.overpowered_missiles.react&buff.clearcasting.react))<?((cooldown.arcane_orb.charges_fractional>0.95|buff.clearcasting.react)&active_enemies>=3))&cooldown.arcane_surge.remains>gcd.max*(4-(active_enemies>=3)-((2*(buff.overpowered_missiles.react&buff.clearcasting.react))<?((cooldown.arcane_orb.charges_fractional>0.95|buff.clearcasting.react)&active_enemies>=3))))|((buff.clearcasting.react|((buff.arcane_salvo.react=25|cooldown.arcane_orb.charges_fractional>0.95)&active_enemies>=3))&buff.arcane_surge.remains>gcd.max*(6-(2*(buff.overpowered_missiles.react<?(active_enemies>=3))))))", "This line dictates pooling logic around Touch, Surge, and Soul, the line is daunting but the basic idea is that you don't spend Barrage near your cooldowns unless you have a reliable way to get them back; in AOE this is a little more relaxed.  TODO: look into simplifying as well as a similar conditional for Spellslinger if it would help." );
+  default_->add_action( "variable,name=sunfury_hold_for_cds,op=set,value=((buff.arcane_surge.down&cooldown.touch_of_the_magi.remains>gcd.max*(4-(active_enemies>=3)-((2*(buff.overpowered_missiles.react&buff.clearcasting.react))<?((cooldown.arcane_orb.charges_fractional>0.95|buff.clearcasting.react)&active_enemies>=3)))&cooldown.arcane_surge.remains>gcd.max*(4-(active_enemies>=3)-((2*(buff.overpowered_missiles.react&buff.clearcasting.react))<?((cooldown.arcane_orb.charges_fractional>0.95|buff.clearcasting.react)&active_enemies>=3))))|((buff.clearcasting.react|((buff.arcane_salvo.react=25|cooldown.arcane_orb.charges_fractional>0.95)&active_enemies>=3))&buff.arcane_surge.remains>gcd.max*(6-(2*(buff.overpowered_missiles.react<?(active_enemies>=3))))))", "This line dictates pooling logic around Touch, Surge, and Soul, the line is daunting but the basic idea is that you don't spend Barrage near your cooldowns unless you have a reliable way to get them back; in AOE this is a little more relaxed.  TODO: look into simplifying as well as a similar conditional for Spellslinger if it would help." );
   default_->add_action( "call_action_list,name=cooldowns", "cooldowns section dictates actions that only happen around cooldowns, spellslinger_orbm is for Orb Mastery builds, spellslinger is for non-Orb Mastery builds, sunfury supports only missile builds.  TODO: Add Orb Mastery support for Sunfury, much of Sunfury likely needs some reassessment. Look into Charged Missiles tailored sequences for both hero trees." );
   default_->add_action( "call_action_list,name=spellslinger_orbm,if=talent.splintering_sorcery&talent.orb_mastery" );
   default_->add_action( "call_action_list,name=spellslinger,if=talent.splintering_sorcery&!talent.orb_mastery" );
@@ -99,7 +99,7 @@ void arcane( player_t* p )
   cooldowns->add_action( "arcane_orb,if=talent.splintering_sorcery&variable.opener,line_cd=30", "Orb Mastery Slinger builds throw an Orb right after Blasting on pull, other Spellslinger builds will just go for Touch, and Sunfury opens by spending the Clearcasting from Surge on pull." );
   cooldowns->add_action( "arcane_missiles,if=talent.spellfire_spheres&variable.opener,line_cd=30" );
   cooldowns->add_action( "arcane_blast,if=talent.splintering_sorcery&buff.arcane_salvo.react<20&(variable.opener|(talent.orb_mastery&cooldown.arcane_surge.remains<(gcd.max*(mana.pct%(8+(8*(active_enemies>=2)))))))", "Spellslinger builds Salvo before going into cds the first time.  TODO: Add fight length sensitivity." );
-  cooldowns->add_action( "wait,sec=0.05,if=(prev_gcd.1._arcane_surge&(talent.splintering_sorcery|(!buff.arcane_salvo.react=(20+(5*talent.spellfire_salvo)))))|(prev_off_gcd.touch_of_the_magi&gcd.remains=0)|(prev_off_gcd.presence_of_mind&gcd.remains=0),line_cd=1" );
+  cooldowns->add_action( "wait,sec=0.05,if=(prev_gcd.1._arcane_surge&(talent.splintering_sorcery|(!(buff.arcane_salvo.react=(20+(5*talent.spellfire_salvo))))))|(prev_off_gcd.touch_of_the_magi&gcd.remains=0)|(prev_off_gcd.presence_of_mind&gcd.remains=0),line_cd=1" );
   cooldowns->add_action( "touch_of_the_magi,use_off_gcd=1,if=(talent.splintering_sorcery&buff.arcane_surge.up)|(talent.spellfire_spheres&buff.arcane_surge.up&buff.arcane_surge.remains<(5+gcd.remains))|(cooldown.touch_of_the_magi.ready&cooldown.arcane_surge.remains>30&buff.arcane_surge.down)", "Spellslinger uses Touch after Surge, Sunfury holds touch for the end of Surge to capture Soul and the run-off of resources after Soul.  TODO: Look into delaying touch slightly for Spellslinger Surges to cover more Splinter generation." );
   cooldowns->add_action( "arcane_surge" );
   cooldowns->add_action( "evocation,if=mana.pct<10&buff.arcane_surge.down&debuff.touch_of_the_magi.down&cooldown.arcane_surge.remains>10", "TODO: Reassess Evo usage for all builds." );
@@ -107,7 +107,7 @@ void arcane( player_t* p )
   spellslinger->add_action( "arcane_orb,if=buff.arcane_charge.stack<(3+(active_enemies>=2))&(((buff.clearcasting.react=0&talent.high_voltage)|(buff.clearcasting.react&buff.arcane_salvo.react>=12))|(active_enemies>=2))&cooldown.touch_of_the_magi.remains>gcd.max*4", "Orb when you need charges, if you have Clearcasting skip this and get your Charges from Missiles." );
   spellslinger->add_action( "arcane_barrage,if=buff.arcane_salvo.react>=20&(buff.arcane_charge.stack=4|talent.orb_barrage)&cooldown.touch_of_the_magi.remains>gcd.max*4", "Barrage at 20 Salvo or 18+ with Orb Barrage, Charges are also optional with Orb Barrage. Hold for CDs if near." );
   spellslinger->add_action( "arcane_barrage,if=active_enemies>=2&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.overpowered_missiles.react&talent.high_voltage&buff.arcane_salvo.react>5&buff.arcane_salvo.react<14&cooldown.touch_of_the_magi.remains>gcd.max*4", "Barrage in AOE when you can recoup Charges with Missiles or Orb." );
-  spellslinger->add_action( "arcane_missiles,if=buff.clearcasting.react&((buff.arcane_salvo.stack<(10+(5*buff.overpowered_missiles.react=0)))|(buff.arcane_charge.stack<2&talent.high_voltage&active_enemies>=2)),chain=1", "Missiles for Charges with HV and Salvo stacks." );
+  spellslinger->add_action( "arcane_missiles,if=buff.clearcasting.react&((buff.arcane_salvo.stack<(10+(5*(buff.overpowered_missiles.react=0))))|(buff.arcane_charge.stack<2&talent.high_voltage&active_enemies>=2)),chain=1", "Missiles for Charges with HV and Salvo stacks." );
   spellslinger->add_action( "presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles" );
   spellslinger->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
   spellslinger->add_action( "arcane_pulse,if=active_enemies>3" );
@@ -116,7 +116,7 @@ void arcane( player_t* p )
 
   spellslinger_orbm->add_action( "arcane_orb,if=(prev_gcd.1.arcane_barrage|active_enemies>=4)&((buff.clearcasting.react|buff.clearcasting.react=0&cooldown.arcane_orb.remains<gcd.max*0.5&buff.arcane_surge.up&buff.arcane_charge.stack=0)&buff.arcane_salvo.react<=14)", "Orb after Barraging with Clearcasting to recoup Charges and Salvo, in AOE just send as long as you won't overcap Salvo. If you don't have CC, only Orb if you'll overcap Orb and need Charges." );
   spellslinger_orbm->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=4|talent.orb_barrage)&buff.arcane_salvo.react>=20&cooldown.touch_of_the_magi.remains>gcd.max*4|(buff.arcane_surge.remains<gcd.max&buff.arcane_surge.up&buff.arcane_salvo.react>=10)", "Barrage at 20 stacks, up to 2 lower if you have Orb Barrage talented, save resources for Touch, Barrage the end of Touch for Splinters." );
-  spellslinger_orbm->add_action( "arcane_missiles,if=(talent.high_voltage|talent.overpowered_missiles)&buff.clearcasting.react&buff.arcane_salvo.react<=(10+(5*buff.overpowered_missiles.react=0))&!prev_gcd.1.arcane_orb&(buff.arcane_surge.down|(talent.high_voltage&active_enemies=1))&(active_enemies<2|talent.overpowered_missiles),chain=1", "Missiles only if you have HV or OPM specced and in minimal situations." );
+  spellslinger_orbm->add_action( "arcane_missiles,if=(talent.high_voltage|talent.overpowered_missiles)&buff.clearcasting.react&buff.arcane_salvo.react<=(10+(5*(buff.overpowered_missiles.react=0)))&!prev_gcd.1.arcane_orb&(buff.arcane_surge.down|(talent.high_voltage&active_enemies=1))&(active_enemies<2|talent.overpowered_missiles),chain=1", "Missiles only if you have HV or OPM specced and in minimal situations." );
   spellslinger_orbm->add_action( "presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles", "Use PoM to get early charges after Barraging as a low priority option." );
   spellslinger_orbm->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
   spellslinger_orbm->add_action( "arcane_pulse,if=active_enemies>3" );
@@ -246,7 +246,7 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=active_enemies>=3" );
+  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=3" );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
@@ -257,54 +257,70 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=ss_st" );
 
   cds->add_action( "potion" );
-  cds->add_action( "use_items,if=prev_gcd.1.frozen_orb|fight_remains<20" );
-  cds->add_action( "flurry,line_cd=9999" );
-  cds->add_action( "frozen_orb,line_cd=9999" );
-  cds->add_action( "ray_of_frost,line_cd=9999" );
+  cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
+  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999", "Frostfire Opener" );
+  cds->add_action( "glacial_spike,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "glacial_spike,if=talent.splinterstorm&active_enemies>=3,line_cd=9999", "Spellslinger Opener" );
+  cds->add_action( "flurry,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "frozen_orb,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
 
-  ff_aoe->add_action( "comet_storm,target_if=min:debuff.freezing.stack,if=debuff.freezing.stack>=16|cooldown.ray_of_frost.full_recharge_time<3|fight_remains<15|!talent.glacial_assault|talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
-  ff_aoe->add_action( "glacial_spike" );
+  ff_aoe->add_action( "comet_storm" );
+  ff_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
   ff_aoe->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_aoe->add_action( "frozen_orb" );
+  ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "blizzard" );
+  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ff_aoe->add_action( "ice_lance,if=debuff.freezing.react>=10" );
+  ff_aoe->add_action( "frostbolt,if=buff.frostfire_empowerment.react|prev_gcd.1.glacial_spike" );
   ff_aoe->add_action( "ray_of_frost" );
-  ff_aoe->add_action( "ice_lance,if=buff.thermal_void.up" );
-  ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
-  ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10&talent.fractured_frost&(talent.heart_of_ice|talent.white_out)" );
   ff_aoe->add_action( "frostbolt" );
 
   ff_st->add_action( "comet_storm" );
-  ff_st->add_action( "glacial_spike" );
+  ff_st->add_action( "ray_of_frost,if=fight_remains<12" );
   ff_st->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
   ff_st->add_action( "frozen_orb" );
+  ff_st->add_action( "glacial_spike" );
+  ff_st->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ff_st->add_action( "ice_lance,if=debuff.freezing.react>=10" );
   ff_st->add_action( "ray_of_frost" );
-  ff_st->add_action( "ice_lance,if=buff.thermal_void.up" );
   ff_st->add_action( "frostbolt" );
 
   ss_aoe->add_action( "comet_storm" );
-  ss_aoe->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
-  ss_aoe->add_action( "blizzard,if=buff.splinterstorm.down" );
-  ss_aoe->add_action( "ice_lance,if=buff.thermal_void.react" );
+  ss_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
+  ss_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ss_aoe->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_aoe->add_action( "frozen_orb,if=cooldown_react" );
   ss_aoe->add_action( "glacial_spike" );
-  ss_aoe->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
+  ss_aoe->add_action( "blizzard,if=buff.splinterstorm.down&(talent.freezing_rain|talent.freezing_winds|active_enemies>=7)" );
+  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
+  ss_aoe->add_action( "ice_nova,if=talent.cone_of_frost&active_enemies>=4" );
+  ss_aoe->add_action( "cone_of_cold,if=talent.cone_of_frost&active_enemies>=4" );
   ss_aoe->add_action( "flurry,if=cooldown_react" );
   ss_aoe->add_action( "ray_of_frost" );
   ss_aoe->add_action( "frostbolt" );
 
   ss_st->add_action( "comet_storm" );
-  ss_st->add_action( "frozen_orb,if=cooldown_react&(!buff.brain_freeze.react|!talent.wintertide)" );
-  ss_st->add_action( "ray_of_frost" );
-  ss_st->add_action( "ice_lance,if=buff.thermal_void.up" );
+  ss_st->add_action( "ray_of_frost,if=fight_remains<12" );
+  ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_st->add_action( "frozen_orb,if=cooldown_react" );
   ss_st->add_action( "glacial_spike" );
-  ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react" );
-  ss_st->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
+  ss_st->add_action( "blizzard,if=active_enemies=2&talent.freezing_winds&buff.freezing_rain.up" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ss_st->add_action( "ice_lance,if=debuff.freezing.react>=6" );
   ss_st->add_action( "flurry,if=cooldown_react" );
+  ss_st->add_action( "ray_of_frost" );
   ss_st->add_action( "frostbolt" );
 }
 //frost_apl_end

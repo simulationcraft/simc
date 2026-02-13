@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <memory>
+#include <optional>
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -1324,31 +1325,23 @@ public:
   {
     ab::execute();
 
-    if ( decrements_tip_of_the_spear && p()->buffs.tip_of_the_spear->check() )
+    if ( affected_by.wallop.direct )
+      p()->buffs.wallop->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    // Tip removal and effects are triggered on impact but only once
+    if ( decrements_tip_of_the_spear && s->chain_target == 0 && p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.stargazer->trigger();
 
-      /* On Survival, Sentinel's Mark applies to a random target hit for AoE spells. 
-         For now, pick a random target in the target_list(), even if they were not hit.
-         Results should be unaffected but ideally it would be accurate.
-
-         Note: This same logic is used in boomstick_t::execute().
-
-         2026-01-18: Needs a revisit after class implementation is done, slice the vector probably.
-
-         TODO reconfirm before launch */
-      if ( this->aoe )
-      {
-        auto tl = this->target_list();
-        p()->rng().shuffle( tl.begin(), tl.end() );
-        p()->trigger_eagles_mark( tl.front(), true );
-        this->target_cache.is_valid = false;
-      }
-      else
-      {
-        p()->trigger_eagles_mark( this->target, true );
-      }
+      // 2026-02-13: For Survival, Sentinel's Mark applies to a random target hit for AoE spells.
+      //             Tipped Wildfire Bombs can also trigger an additional mark after consuming one so make an event.
+      make_event( p()->sim, [ this ]() { p()->trigger_eagles_mark( get_random_valid_target(), true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -1360,14 +1353,6 @@ public:
         }
       }
     }
-
-    if ( affected_by.wallop.direct )
-      p()->buffs.wallop->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1612,6 +1597,40 @@ public:
     const bool in_combat = ab::player -> in_combat;
     if ( ab::is_precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
+  }
+
+  player_t* get_random_valid_target( std::optional<int> aoe_override = std::nullopt ) const
+  {
+    const int aoe = aoe_override.value_or( ab::aoe );
+
+    switch ( aoe )
+    {
+      case 0: 
+        return ab::target;
+
+      case -1:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() )
+          return p()->rng().range( tl );
+
+        break;
+      }
+
+      // Capped targets
+      default:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() && aoe > 0 )
+        {
+          const size_t cap = std::min<size_t>( aoe, tl.size() );
+          const size_t t   = p()->rng().template range<size_t>( 0, cap );
+          return tl[ t ];
+        }
+        break;
+      }
+    }
+    return ab::target;
   }
 };
 
@@ -3158,6 +3177,15 @@ struct bloodshed_t : hunter_pet_attack_t<hunter_main_pet_base_t>
       affected_by.unnatural_causes.tick = as<uint8_t>( 2 );
   }
 
+  void init() override
+  {
+    hunter_pet_attack_t::init();
+
+    // 2026-02-12: Bloodshed is bugged and cannot proc Dire Beasts.
+    if ( o()->bugs )
+      dire_beast_chance = 0;
+  }
+
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double am = hunter_pet_attack_t::composite_ta_multiplier( s );
@@ -3685,16 +3713,16 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+
+    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
+    cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
+
     return;
   }
 
   if ( cooldowns.sentinels_mark->down() )
     return;
 
-  /* Further testing is required on the calculation sequence for this chance. 
-     When is Feathered Frenzy's bonus applied?
-     How does Lunar Calling affect it?
-     TODO reconfirm before launch */
   auto spec = specialization();
   double chance = 0;
   double lunar_calling_bonus = talents.lunar_calling->effectN( spec == HUNTER_MARKSMANSHIP ? 1 : 2 ).percent();
@@ -3703,18 +3731,23 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     chance += specs.spotters_mark_data->effectN( 1 ).percent();
 
-    /* 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
-       TODO reconfirm before launch */
+    // 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
     chance += talents.moons_blessing->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
 
-    if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
-      chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+    if ( buffs.trueshot->check() )
+    {
+      if ( talents.feathered_frenzy.ok() )
+        chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+
+      chance += lunar_calling_bonus;
+    }
   }
   else if ( spec == HUNTER_SURVIVAL )
   {
     chance += talents.sentinel->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
+
+    if ( buffs.takedown->check() )
+      chance += lunar_calling_bonus;
   }
 
   if ( rng().roll( chance ) )
@@ -4804,8 +4837,12 @@ struct boar_charge_t final : hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.howl_of_the_pack_leader_boar_charge_cleave )
     {
       background = dual = true;
-      aoe = as<int>( data().effectN( 2 ).base_value() );
       travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
+
+      // 2026-02-12: Boar Charge's Cleave is softcapped when it should be capped to 8.
+      const double cleave_targets = data().effectN( 2 ).base_value();
+      aoe = p->bugs ? -1 : as<int>( cleave_targets );
+      reduced_aoe_targets = cleave_targets;
 
       // TODO 31/1/25: currently hits primary target
       // 2026-01-19: still hits primary target
@@ -6154,10 +6191,7 @@ struct boomstick_t : public hunter_spell_t
 
       p()->buffs.stargazer->trigger();
       
-      auto tl = target_list();
-      p()->rng().shuffle( tl.begin(), tl.end() );
-      p()->trigger_eagles_mark( tl.front(), true );
-      target_cache.is_valid = false;
+      p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
       
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -6942,6 +6976,9 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     {
       background = dual = true;
 
+      // 2026-02-11: Wildfire Bomb's direct damage is not buffed by Unnatural Causes in game, despite being in spell data
+      affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
@@ -7026,6 +7063,11 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
   void execute() override
   {
+    // Tip of the Spear is decremented in execute() so run here
+    if ( p()->tier_set.mid_s1_sv_4pc.ok() && p()->buffs.tip_of_the_spear->check() )
+      if ( auto pet = p()->pets.main )
+        pet->actions.strike_as_one->execute_on_target( target );
+
     wildfire_bomb_base_t::execute();
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
@@ -7034,10 +7076,6 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
-
-    if ( p()->tier_set.mid_s1_sv_4pc.ok() )
-      if ( auto pet = p()->pets.main )
-        pet->actions.strike_as_one->execute_on_target( target );
   }
 };
 
@@ -7077,7 +7115,9 @@ struct auto_attack_t: public action_t
     ignore_false_positive = true;
     trigger_gcd = 0_ms;
 
+  #ifdef NDEBUG
     assert( p->main_hand_weapon.type != WEAPON_NONE );
+  #endif
 
     if ( p->main_hand_weapon.group() == WEAPON_RANGED )
     {
@@ -8313,7 +8353,6 @@ void hunter_t::init_blizzard_action_list()
   switch ( specialization() )
   {
     case HUNTER_BEAST_MASTERY:
-      cooldowns->add_action( "bestial_wrath" );
       break;
     case HUNTER_MARKSMANSHIP:
       cooldowns->add_action( "trueshot" );
@@ -8334,9 +8373,14 @@ parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assist
 
 std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 53351 && specialization() != HUNTER_SURVIVAL )
+  if ( spell_id == 53351 )
   {
     return { "kill_shot", "black_arrow" };
+  }
+
+  if( spell_id == 19574 )
+  {
+    return { "bestial_wrath", "wailing_arrow" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );

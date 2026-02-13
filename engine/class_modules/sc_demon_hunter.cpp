@@ -550,7 +550,7 @@ public:
 
       player_talent_t desperate_instincts;  // No Implementation
       player_talent_t netherwalk;           // No Implementation
-      player_talent_t deflecting_dance;     // NYI
+      player_talent_t deflecting_dance;     // No Implementation
       player_talent_t mortal_dance;         // No Implementation
 
       player_talent_t initiative;
@@ -664,11 +664,11 @@ public:
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t reavers_mark;
-      player_talent_t broken_spirit;  // NYI
+      player_talent_t broken_spirit;
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
-      player_talent_t incorruptible_spirit;  // NYI
+      player_talent_t incorruptible_spirit;  // No Implementation
       player_talent_t wounded_quarry;
       player_talent_t keen_edge;
 
@@ -712,7 +712,7 @@ public:
       player_talent_t wave_of_debilitation;  // No Implementation
       player_talent_t pursuit_of_angriness;
       player_talent_t focused_hatred;
-      player_talent_t set_fire_to_the_pain;  // NYI
+      player_talent_t set_fire_to_the_pain;  // No Implementation
       player_talent_t improved_soul_rending;
 
       player_talent_t burning_blades;
@@ -724,7 +724,7 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;  // Partial implementation (no Meta)
+      player_talent_t blind_focus;
       player_talent_t undying_embers;
       player_talent_t volatile_instinct;
 
@@ -2095,7 +2095,11 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within, p()->hero_spec.enduring_torment_buff );
+    ab::parse_effects( p()->mastery.monster_within, [this](double v) {
+      if (p()->buff.enduring_torment->check())
+        v *= 1.0 + p()->buff.enduring_torment->check_value();
+      return v;
+    } );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
@@ -2161,6 +2165,11 @@ public:
     ab::parse_effects( p()->buff.demonsurge_demonic_intensity );
     ab::parse_effects( p()->buff.demonsurge );
     ab::parse_effects( p()->buff.voidsurge );
+    ab::parse_effects( p()->talent.scarred.blind_focus, [this](double v) {
+      if (p()->buff.metamorphosis->check())
+        v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+      return v;
+    } );
 
     // Tier sets
   }
@@ -2528,8 +2537,8 @@ public:
     if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
-    // TODO: refine this as needed
-    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
+    // TODO: base chance and growth factor are approximations, no spell data source
+    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->stack() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
       p()->buff.seething_anger->expire();
@@ -3170,6 +3179,7 @@ struct doomsayer_trigger_t : public BASE
     }
 
     BASE::p()->buff.doomsayer_in_combat->expire();
+    BASE::p()->buff.doomsayer_out_of_combat->expire();
 
     for ( int i = 0; i < meteors_to_trigger; ++i )
     {
@@ -4114,8 +4124,9 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
 
     if ( p()->talent.annihilator.meteoric_rise->ok() )
     {
-      int ticks_per_soul_fragment = as<int>( d->num_ticks() / soul_fragments_from_meteoric_rise );
-      if ( d->num_ticks() % ticks_per_soul_fragment == 0 )
+      int expected_before = ( d->current_tick - 1 ) * soul_fragments_from_meteoric_rise / d->num_ticks();
+      int expected_after  = d->current_tick * soul_fragments_from_meteoric_rise / d->num_ticks();
+      if ( expected_after > expected_before )
       {
         p()->spawn_soul_fragment( p()->proc.soul_fragment_from_meteoric_rise, soul_fragment::LESSER );
       }
@@ -5808,8 +5819,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
       p()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
-                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() +
-                                                  p()->talent.devourer.predators_thirst->effectN( 2 ).base_value() ) );
+                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() ) );
     }
   }
 };
@@ -6265,7 +6275,7 @@ struct void_ray_t
       background = dual = true;
       aoe               = -1;
 
-      shattered_souls_base_chance *= p->talent.devourer.waste_not->effectN( 1 ).percent();
+      shattered_souls_base_chance *= 1.0 + p->talent.devourer.waste_not->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6297,11 +6307,6 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
-
-      if ( p()->talent.devourer.waste_not->ok() )
-      {
-        m *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
-      }
 
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
@@ -6335,6 +6340,12 @@ struct void_ray_t
     {
       voidglare_boon_energize = p->get_background_action<demon_hunter_energize_t>( "voidglare_boon_energize",
                                                                                    p->spec.voidglare_boon_energize );
+    }
+
+    // forces hasted cooldown due to the spell baseline having no cooldown duration
+    if ( data().affected_by( p->spec.devourer_demon_hunter->effectN( 6 ) ) )
+    {
+      cooldown->hasted = true;
     }
 
     // Add damage modifiers in voidray_tick_t, not here.
@@ -6472,10 +6483,15 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         p()->cooldown.voidblade->adjust( -p()->talent.devourer.voidrush->effectN( 1 ).time_value() );
       }
+    }
 
-      if ( p()->talent.devourer.impending_apocalypse->ok() )
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
+
+      if ( p()->talent.devourer.impending_apocalypse->ok() && s->chain_target == 0 )
       {
-        p()->buff.impending_apocalypse->trigger();
+        make_event( *p()->sim, 1.2_s, [ this ] { p()->buff.impending_apocalypse->trigger(); } );
       }
     }
   };
@@ -6625,9 +6641,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
     ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
                                                   ? ground_aoe_params_t::SPELL_HASTE
                                                   : ground_aoe_params_t::ATTACK_HASTE;
-    timespan_t duration =
-        timespan_t::from_seconds( as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() ) / 2 );
-    timespan_t pulse_time = duration / 10;  // TODO: VERIFY
+    int tick_count                          = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
+    timespan_t duration                     = timespan_t::from_seconds( tick_count / 2 );
+    timespan_t pulse_time                   = duration / tick_count;
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -8062,8 +8078,9 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_t : public voidfall_spending_trigger_t<
-                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+struct soul_cleave_t
+  : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -8140,6 +8157,12 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
     damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
 
     trigger_untethered_rage( fragments_consumed );
+
+    if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
+         rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 3 ).percent() ) )
+    {
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
+    }
   }
 };
 
@@ -9771,7 +9794,9 @@ void demon_hunter_t::create_buffs()
   buff.feast_of_souls = make_buff( this, "feast_of_souls", spec.feast_of_souls_buff )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                            ->disable_ticking( true );
+                            ->disable_ticking( true )
+                            ->set_disable_async_expire_events_removal( true );
+
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
   buff.moment_of_craving =
       make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
@@ -9992,14 +10017,14 @@ void demon_hunter_t::create_buffs()
 
   // Scarred ============================================================
 
-  buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
-                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                              ->set_allow_precombat( true )
-                              ->set_quiet( true );
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
+  buff.enduring_torment =
+      make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+          ->set_allow_precombat( true )
+          ->set_quiet( true )
+          ->set_default_value_from_effect_type( specialization() == DEMON_HUNTER_HAVOC ? A_HASTE_ALL
+                                                                                       : A_ADD_PCT_LABEL_MODIFIER )
+          ->set_pct_buff_type( specialization() == DEMON_HUNTER_HAVOC ? STAT_PCT_BUFF_HASTE : STAT_PCT_BUFF_MASTERY );
 
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
                             ->set_allow_precombat( true )
@@ -11179,6 +11204,9 @@ void demon_hunter_t::init_spells()
                                                                 .remove_spell( spec.eradicate->id() )
                                                                 .remove_spell( spec.the_hunt->id() )
                                                                 .remove_spell( hero_spec.pierce_the_veil->id() ) );
+
+  // Blind Focus is done via parse_effects
+  deregister_passive_spell( talent.scarred.blind_focus );
 
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );

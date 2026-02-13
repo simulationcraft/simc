@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -92,7 +92,6 @@ Grants the target $387792s1% increased armor for $387792d.][]
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 
 Name             : Divine Shield (id=642) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -213,7 +212,6 @@ Tooltip          : Immune to Physical damage and harmful effects.$?a469770[
 Movement speed increased by $w4%.][]
 
 Name             : Blessing of Freedom (id=1044) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0, select_idx=300]
 Class            : Paladin
 School           : Holy
@@ -1511,7 +1509,6 @@ Damage taken reduced by $w4%.][]$?e4[
 Healed for $w5 every $t5 sec.][]
 
 Name             : Infusion of Light (id=53576) [Spell Family (10), Passive] 
-Hotfixed         : Learn Level (23 -> 0), Required Level (23 -> 0)
 Talent Entry     : Holy [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
@@ -6035,7 +6032,6 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy

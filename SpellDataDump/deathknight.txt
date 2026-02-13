@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1182,7 +1182,6 @@ $@spelldesc55095
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -6065,7 +6064,6 @@ Description      : Causes each of your Virulent Plagues to flare up, dealing $21
 Extends the duration of Dread Plague and Virulent Plague by ${$137007s11/1000}.1 sec.
 
 Name             : Dark Arbiter (id=207349) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -6082,7 +6080,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 3238 | Radius: 4 yards | Target: Front Left of Self (44)
 #2 (id=313813)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
-Hotfixed         : Attribute (0 -> 1048576)
 #3 (id=313814)   : Trigger Spell (64): Summon Gargoyle
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777 | Target: Self (1)
 #4 (id=328306)   : Trigger Spell (64): Dark Arbiter
@@ -8768,7 +8765,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=733625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 207349 | Scaled Value: 207349 | Target: Self (1)
-Hotfixed         : Sub Type (332 -> 4), Affects Spells
 Description      : Your Summon Gargoyle spell summons a Val'kyr instead of a Gargoyle.
 
 Name             : Eternal Rune Weapon (id=278479) [Spell Family (15), Passive] 

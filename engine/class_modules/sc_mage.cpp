@@ -230,6 +230,7 @@ public:
     action_t* arcane_assault;
     action_t* arcane_echo;
     action_t* burnout;
+    action_t* cinderstorm;
     action_t* flash_freezeburn;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
@@ -368,7 +369,7 @@ public:
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     int clearcasting_blp_threshold = -1;
     int sphere_blp_threshold = 11;
-    bool il_requires_freezing = true;
+    bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
   } options;
@@ -906,6 +907,7 @@ public:
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_fired_up();
+  void trigger_cinderstorm( player_t* target );
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -2436,6 +2438,9 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
   {
     custom_state_spell_t::execute();
 
+    // TODO: When exactly in execute does this trigger the first cinder?
+    p()->trigger_cinderstorm( target );
+
     if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
       p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
 
@@ -2453,6 +2458,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
+    // TODO: Check if Pyromaniac can trigger Fired Up and Cinderstorm.
     if ( ( last_hot_streak || p()->bugs ) && p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
@@ -2702,11 +2708,8 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     custom_state_spell_t::execute();
 
-    // TODO: PTR check
-    if ( p()->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
-
     p()->trigger_arcane_charge();
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
     clearcasting_snapshot = false;
   }
 
@@ -3009,8 +3012,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_splinter( p()->target ); // Also triggers from echo
-    if ( !background )
-      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
@@ -3411,6 +3413,59 @@ struct blizzard_t final : public frost_mage_spell_t
       .duration( ground_aoe_duration )
       .action( blizzard_shard )
       .hasted( ground_aoe_params_t::SPELL_CAST_SPEED ), true );
+  }
+};
+
+struct cinderstorm_t final : public fire_mage_spell_t
+{
+  cinderstorm_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 1254024 ) )
+  {
+    background = proc = true;
+    triggers.ignite = true;
+  };
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+
+    m *= p()->talents.cinderstorm->effectN( 5 ).percent();
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    // TODO: Technically, the primary target does not have to be in this list anymore.
+    auto spread_targets = target_list();
+    if ( spread_targets.size() < 2 )
+      return;
+
+    // TODO: If this is ever increased to hit more than 1 additional target, check if it can pick the same target multiple times.
+    for ( size_t i = 0; i < as<size_t>( p()->talents.cinderstorm->effectN( 3 ).base_value() ); i++ )
+    {
+      // This spreads Ignite to a random target.
+      size_t target_index = rng().range( spread_targets.size() - 1 );
+      player_t* spread_target = spread_targets[ target_index ];
+      if ( spread_target == s->target )
+        spread_target = spread_targets.back();
+
+      // Despite the tooltip, this chains to a target and applies Ignite based on Cinderstorm's damage.
+      // TODO: This may actually calculate the damage freshly in some way, but for now this uses damage to the main target.
+      //       The applied Ignite values don't match perfectly, but do seem to respect whether the initial Cinderstorm crit.
+      // TODO: Check whether multipliers such as composite_ignite_multiplier consider the initial target or the chained target.
+      action_state_t* spread_state = get_state( s );
+      spread_state->target = spread_target;
+      spread_state->result_total *= 2.0; // This applies Ignite at 200% effectiveness to the secondary target.
+      // TODO: Implement travel time to the secondary target if needed. This should use the same missile speed as this action.
+      trigger_ignite( spread_state );
+      action_state_t::release( spread_state );
+    }
   }
 };
 
@@ -3928,7 +3983,22 @@ struct frostbolt_t final : public frost_mage_spell_t
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
-    // TODO: Doesn't seem to affect Frostbolt for some reason
+    // TODO: Splitting Ice has a couple of issues that affect Frostbolt and Frostfire Bolt
+    //
+    // 1) Frostbolt cleave distance is much smaller than the other SI spells (including FFB)
+    // 2) The secondary target reduction is applied by keeping track of the target
+    // of the last cast. The impact spell then deals full damage if its target matches the one
+    // above. This has its own set of (rather meaningless) bugs, e.g. casting another spell
+    // before the previous one hits can change how the previous spell deals damage.
+    //
+    // However, the bigger issue is that it's currently only Frostfire Bolt that sets this tracked
+    // target. Frostbolt uses it to deal damage but doesn't set it. This has the following consequences:
+    //
+    // * If you cast Frostfire Bolt and then switch to Spellslinger, your Frostbolt will only ever
+    // deal full damage to the last FFB target.
+    // * If you never cast Frostfire Bolt, Frostbolt simply deals full damage to everything.
+    //
+    // Since the last behavior is the most common one, that's what we'll model in simc.
     if ( p->bugs && !frostfire )
       chain_multiplier = 1.0;
 
@@ -4516,7 +4586,7 @@ struct meteor_burn_t final : public fire_mage_spell_t
 
     // TODO: Hard to say how the new tick_zero attribute is supposed to work with
     // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs && p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+    if ( p->bugs )
       dot_duration = 3_ms;
   }
 };
@@ -4537,9 +4607,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
-    // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    // TODO: Fixed on beta, remove PTR check
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && p->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -5421,9 +5489,7 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: PTR check
-    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      next *= p->cache.spell_cast_speed();
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
@@ -5700,6 +5766,9 @@ void mage_t::create_actions()
 
   if ( talents.burnout.ok() )
     action.burnout = get_action<burnout_t>( "burnout", this );
+
+  if ( talents.cinderstorm.ok() )
+    action.cinderstorm = get_action<cinderstorm_t>( "cinderstorm", this );
 
   player_t::create_actions();
 }
@@ -7036,6 +7105,20 @@ void mage_t::trigger_fired_up()
 
     if ( buffs.combustion->check() )
       state.fired_up_count++;
+  }
+}
+
+void mage_t::trigger_cinderstorm( player_t* target )
+{
+  if ( !talents.cinderstorm.ok() )
+    return;
+
+  if ( rng().roll( talents.cinderstorm->effectN( 1 ).percent() ) )
+  {
+    action.cinderstorm->execute_on_target( target );
+    int count = as<int>( talents.cinderstorm->effectN( 4 ).base_value() ) - 1;
+    if ( count > 0 )
+      make_repeating_event( *sim, 200_ms, [ this, t = target ] { action.cinderstorm->execute_on_target( t ); }, count );
   }
 }
 

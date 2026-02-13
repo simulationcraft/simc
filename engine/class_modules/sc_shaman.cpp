@@ -7413,6 +7413,7 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
   earthquake_overload_damage_t( shaman_t* player, earthquake_base_t* parent ) :
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
+
   }
 
   double action_multiplier() const override
@@ -7423,6 +7424,9 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     {
       m *= (1.0 + p()->spell.ascendance->effectN( 8 ).percent());
     }
+
+    m *= p()->talent.mountains_will_fall->effectN( 1 ).percent() *
+         p()->mastery.elemental_overload->effectN( 2 ).percent();
 
     return m;
   }
@@ -12577,7 +12581,7 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "call_action_list,name=buffs" );
   single_sb->add_action( "sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled" );
   single_sb->add_action( "doom_winds" );
-  single_sb->add_action( "crash_lightning,if=!buff.crash_lightning.up" );
+  single_sb->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_sb->add_action( "voltaic_blaze,if=(buff.doom_winds.up&buff.maelstrom_weapon.stack>=10-(1+2*talent.fire_nova.enabled)&!buff.maelstrom_weapon.stack=10)&talent.thorims_invocation.enabled" );
   single_sb->add_action( "windstrike,if=buff.maelstrom_weapon.stack>0&talent.thorims_invocation.enabled" );
   single_sb->add_action( "ascendance" );
@@ -12596,7 +12600,7 @@ void shaman_t::init_action_list_enhancement()
 
   // Totemic Single Target
   single_totemic->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0" );
-  single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up" );
+  single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_totemic->add_action( "surging_totem" );
   single_totemic->add_action( "call_action_list,name=buffs" );
   single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );

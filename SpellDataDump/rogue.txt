@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -3809,7 +3809,6 @@ Effects          :
 Description      : Increases the damage of Shadowstrike by $s1%.
 
 Name             : Crimson Vial (id=185311) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Nature
 Spell Type       : Magic
@@ -3908,7 +3907,6 @@ Description      : Shadow Dance duration is increased by $1271702s3% of your Has
 Current bonus duration: ${$s1/1000}.2 sec
 
 Name             : Shadow Dance (id=185422) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None

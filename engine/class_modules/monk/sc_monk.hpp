@@ -931,7 +931,7 @@ public:
       // Row 9
       player_talent_t rushing_wind_kick;
       const spell_data_t *rushing_wind_kick_buff;
-      const spell_data_t *rushing_wind_kick_damage;
+      const spell_data_t *rushing_wind_kick_action;
       player_talent_t xuens_battlegear;
       player_talent_t thunderfist;
       const spell_data_t *thunderfist_buff;

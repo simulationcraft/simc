@@ -66,7 +66,7 @@ void fury( player_t* p )
   slayer->add_action( "rampage,if=rage>115" );
   slayer->add_action( "bloodthirst" );
   slayer->add_action( "rampage" );
-  slayer->add_action( "rend,if=dot.rend.remains<6" );
+  slayer->add_action( "rend,if=dot.rend_dot.remains<6" );
   slayer->add_action( "wrecking_throw" );
   slayer->add_action( "raging_blow" );
   slayer->add_action( "rend" );
@@ -175,7 +175,7 @@ void arms( player_t* p )
   default_->add_action( "run_action_list,name=slayer_execute,target_if=min:target.health.pct,if=talent.slayers_dominance&variable.execute_phase" );
   default_->add_action( "run_action_list,name=slayer_st,if=talent.slayers_dominance" );
 
-  colossus_aoe->add_action( "rend,if=!dot.rend.remains<=gcd" );
+  colossus_aoe->add_action( "rend,if=!dot.rend_dot.remains<=gcd" );
   colossus_aoe->add_action( "sweeping_strikes,if=(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes" );
   colossus_aoe->add_action( "ravager" );
   colossus_aoe->add_action( "colossus_smash" );
@@ -194,7 +194,7 @@ void arms( player_t* p )
   colossus_aoe->add_action( "whirlwind" );
 
   colossus_execute->add_action( "sweeping_strikes,if=active_enemies>1" );
-  colossus_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
+  colossus_execute->add_action( "rend,if=dot.rend_dot.remains<=gcd&!talent.bloodletting" );
   colossus_execute->add_action( "champions_leap" );
   colossus_execute->add_action( "champions_spear" );
   colossus_execute->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
@@ -209,7 +209,7 @@ void arms( player_t* p )
   colossus_execute->add_action( "bladestorm" );
   colossus_execute->add_action( "wrecking_throw" );
 
-  colossus_st->add_action( "rend,if=dot.rend.remains<=gcd|cooldown.avatar.remains<1&cooldown.colosus.remains<1&dot.rend.remains<=10" );
+  colossus_st->add_action( "rend,if=dot.rend_dot.remains<=gcd|cooldown.avatar.remains<1&cooldown.colosus.remains<1&dot.rend_dot.remains<=10" );
   colossus_st->add_action( "ravager" );
   colossus_st->add_action( "avatar" );
   colossus_st->add_action( "colossus_smash" );
@@ -221,10 +221,10 @@ void arms( player_t* p )
   colossus_st->add_action( "execute,if=cooldown.demolish.remains>10" );
   colossus_st->add_action( "overpower" );
   colossus_st->add_action( "wrecking_throw" );
-  colossus_st->add_action( "rend,if=dot.rend.remains<=gcd*5" );
+  colossus_st->add_action( "rend,if=dot.rend_dot.remains<=gcd*5" );
   colossus_st->add_action( "slam" );
 
-  slayer_aoe->add_action( "rend,if=!dot.rend.remains&talent.rend|dot.rend.remains<8" );
+  slayer_aoe->add_action( "rend,if=!dot.rend_dot.remains&talent.rend|dot.rend_dot.remains<8" );
   slayer_aoe->add_action( "sweeping_strikes,if=(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes" );
   slayer_aoe->add_action( "avatar" );
   slayer_aoe->add_action( "colossus_smash" );
@@ -248,7 +248,7 @@ void arms( player_t* p )
   slayer_aoe->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
   slayer_execute->add_action( "sweeping_strikes,if=active_enemies>1&(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes" );
-  slayer_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
+  slayer_execute->add_action( "rend,if=dot.rend_dot.remains<=gcd&!talent.bloodletting" );
   slayer_execute->add_action( "avatar" );
   slayer_execute->add_action( "champions_leap" );
   slayer_execute->add_action( "champions_spear" );
@@ -274,7 +274,7 @@ void arms( player_t* p )
   slayer_st->add_action( "bladestorm,if=cooldown.colossus_smash.remains>5" );
   slayer_st->add_action( "overpower" );
   slayer_st->add_action( "wrecking_throw" );
-  slayer_st->add_action( "rend,if=dot.rend.remains<=5" );
+  slayer_st->add_action( "rend,if=dot.rend_dot.remains<=5" );
   slayer_st->add_action( "slam" );
   slayer_st->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
@@ -327,8 +327,8 @@ void protection( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_->add_action( "call_action_list,name=generic" );
 
-  aoe->add_action( "thunder_blast,if=dot.rend.remains<=1" );
-  aoe->add_action( "thunder_clap,if=dot.rend.remains<=1" );
+  aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
+  aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
   aoe->add_action( "thunder_blast,if=buff.violent_outburst.up&spell_targets.thunderclap>=2&buff.avatar.up" );
   aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
   aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>=4&buff.avatar.up&talent.crashing_thunder.enabled|buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up" );
@@ -344,9 +344,9 @@ void protection( player_t* p )
   generic->add_action( "shield_slam" );
   generic->add_action( "wrecking_throw" );
   generic->add_action( "shattering_throw" );
-  generic->add_action( "thunder_blast,if=dot.rend.remains<=2&buff.violent_outburst.down" );
+  generic->add_action( "thunder_blast,if=dot.rend_dot.remains<=2&buff.violent_outburst.down" );
   generic->add_action( "thunder_blast" );
-  generic->add_action( "thunder_clap,if=dot.rend.remains<=2&buff.violent_outburst.down" );
+  generic->add_action( "thunder_clap,if=dot.rend_dot.remains<=2&buff.violent_outburst.down" );
   generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic->add_action( "revenge,if=(rage>=80&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=80&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );

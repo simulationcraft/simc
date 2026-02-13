@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.65848
-static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
+// Spell text, wow build 12.0.1.65867
+static constexpr std::array<spelltext_data_t, 28623> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26858,6 +26858,7 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1250548, "$@spelldesc1246517", 0, 0 },
   { 1250554, "$@spelldesc1250566", "Rushing Wind Kick is available!", 0 },
   { 1250557, "Mark your target for execution, increasing your Haste by $s3 for $d. While the target is marked, each of your attacks against them grants an additional $s2 Critical Strike, as the Void urges you to finish the kill, up to a maximum of ${$s2*$1263357u} Critical Strike.", "A mandate of execution has been placed upon your target, granting you $w3 Haste. Your strikes against your victim grant you stacking Critical Strike.", 0 },
+  { 1250561, "Hurls a hook toward your target, cleaving through enemies in its path and dealing X Physical damage to each. When the hook crashes into the ground, it inflicts Y Physical damage split among nearby enemies.", 0, 0 },
   { 1250562, "Increases the critical strike chance of your Holy Word: Serenity$?a1246517[] [ and Holy Word: Sanctify] by $s1%.", 0, 0 },
   { 1250563, "Your melee attacks have a chance to summon an elite Axethrower who hurls an axe at your target, inflicting ${$<rolemult>*$s1} Physical damage.", 0, 0 },
   { 1250564, "Your damaging abilities have a chance to echo with Xathuux's furious roar, increasing Critical Strike by $s1 for $1254180d.\r\n\r\nDuring this time, each of your attacks increases your Critical Strike by an additional $s2, $@spelldesc1254331", 0, 0 },
@@ -27132,6 +27133,8 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1255774, 0, "Recharging.", 0 },
   { 1255804, 0, "Your healing spells and abilities also heal the imbued ally for $w2.", 0 },
   { 1255853, 0, "Critical Strike decreased by $w1.", 0 },
+  { 1255856, 0, "Mastery decreased by $w1.", 0 },
+  { 1255857, 0, "Versatility decreased by $w1.", 0 },
   { 1256110, "Collect the weapon enchantment appearance of Felshatter.", 0, 0 },
   { 1256245, "Each stack of Voidfall grants $s1% reduced damage taken.", 0, 0 },
   { 1256295, "Gain $m1 $Lstack:stacks; of Voidfall $?a212613[and reset the cooldown of Spirit Bomb][and reset the cooldown of Reap] upon activating $?a212613[Metamorphosis][Void Metamorphosis].", 0, 0 },
@@ -27637,6 +27640,7 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1263729, 0, "Surrounded by a mist of blood, increasing your chance to Parry by $s2% and dealing $1263752s1 Shadow damage every $t1 sec to nearby enemies.", 0 },
   { 1263743, "When you cast Dancing Rune Weapon, you become enveloped in a blood mist that surrounds you for $1263729d, increasing your Parry by $1263729s2%. \r\n\r\nDeals $1263752s1 Shadow damage every $1263729t1 sec to enemies within $1263752A1 yds. Every time it deals damage you gain ${$1263774s1/10} Runic Power, up to a maximum of ${$1263774s1/10*$1263729s3} Runic Power. Deals reduced damage beyond $1263729s4 targets.", 0, 0 },
   { 1263752, "$@spelldesc1263743", 0, 0 },
+  { 1263768, 0, "Mastery increased by increased by $w1.", 0 },
   { 1263774, "$@spelldesc1263743", 0, 0 },
   { 1263781, "When Blood Mist ends it deals $1263786s1 Shadow damage to $1263786i nearby enemies, healing you for ${$1263786e*100}% of the damage dealt. The damage is increased by $1263789s1% for every $s1 Runic Power spent while Blood Mist was active.", 0, 0 },
   { 1263782, "You have a $s1% chance to $?c3[gain Blessing of An'she and ][]generate $s2 Holy Power after casting Avenging Wrath.$?c3[\r\n\r\nDuring Avenging Wrath, Hammer of Wrath casts Blade of Justice at $s3% effectiveness.][]", 0, 0 },
@@ -27664,6 +27668,7 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1263939, "$@spelldesc1263658", "Damage increased by $w1%.", 0 },
   { 1263941, "When your Wild Imps cast Fel Firebolt, they have $s1% chance to instantly cast another Fel Firebolt at $s2% effectiveness.", 0, 0 },
   { 1263962, "Tiger's Fury causes you to perform an Unseen Attack after your next $1263962u combo point generating attacks.", "You will perform an Unseen Attack after your next combo point generating attack.", 0 },
+  { 1264017, "Sears the soul of its target with fel fire, dealing $s1 Fire damage every $t1 sec.", "Dealing $o1 Fire damage over $d.", 0 },
   { 1264050, "$@spelldesc1263920", "Dawnlight's critical strike chance is increased by $w1%.", 0 },
   { 1264082, "$@spelldesc49020\r\n", 0, 0 },
   { 1264083, "$@spelldesc49020", 0, 0 },
@@ -28156,6 +28161,8 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1269680, "$@spelldesc114014", 0, 0 },
   { 1269800, "$@spelldesc1268709", 0, 0 },
   { 1269879, "$@spelldesc1268716", "Intellect increased by $s1%.", 0 },
+  { 1269885, "Fire a beam of destructive chaos magic at the target, dealing $s1 Chaos damage.", 0, 0 },
+  { 1269886, "Fire a beam of destructive chaos magic at the target, dealing $s1 Chaos damage.", 0, 0 },
   { 1269892, "Fire a beam of destructive chaos magic at the target, dealing $s1 Chaos damage.\r\n\r\nDamage is increased by $s2% per Demonic Oculus active.", 0, 0 },
   { 1269917, "Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and mana every sec.", 0 },
   { 1269918, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
@@ -28422,11 +28429,15 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1277038, "Judgment causes its primary target's successful melee attacks against you to grant a Physical absorb shield for $s1% of the damage dealt. Limit $i.", "Melee attacks against $@auracaster will grant a Physical absorb shield.", 0 },
   { 1277046, "$@spelldesc1277038", "Absorbing $w1 Physical damage.", 0 },
   { 1277098, "A mindless servant of the Scourge, raised to obey its master's commands for $d.", 0, 0 },
+  { 1277099, "The Antoran Inquisitor fires a bolt of fel at their target, inflicting $s1 Chaos damage.", 0, 0 },
   { 1277104, "$@spelldesc1271948", "Silenced.", 0 },
   { 1277108, "$@spelldesc1271948", "Unable to silence with Javelineer.", 0 },
+  { 1277116, "Deals $s1 Fire damage to a target.\r\n\r\n|cFF777777(Right-Click to toggle)|r", 0, "Basic Attack" },
+  { 1277117, "Bites the enemy, causing $s1 Shadow damage.\r\n\r\n|cFF777777(Right-Click to toggle)|r", 0, "Basic Attack" },
   { 1277131, "$@spelldesc1273128", "Your next Aimed Shot will cause the target to bleed for $s1% additional damage over $1273147d.", 0 },
   { 1277134, "$@spelldesc1273128", "Your next Kill Shot will cause the target to bleed for $s1% additional damage over $1273147d.", 0 },
   { 1277136, "$@spelldesc1273128", "Your next Rapid Fire will cause the target to bleed for $s1% additional damage over $1273147d.", 0 },
+  { 1277151, "$@spelldesc1264017", 0, 0 },
   { 1277162, "Shield of the Righteous consumes up to $s2 more Holy Power and deals $s1% increased damage for each additional Holy Power consumed.", 0, 0 },
   { 1277169, "Open to collect 10 Hero and Myth Dawncrests.", 0, 0 },
   { 1277263, "$@spelldesc1236094", 0, 0 },
@@ -28451,6 +28462,7 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1277738, "$@spelldesc278326", 0, 0 },
   { 1277760, "You may equip one-handed weapons in your off-hand.", 0, 0 },
   { 1277769, "$@spelldesc473662", 0, 0 },
+  { 1277879, "Hurl an ember torn from Nihilam at the target, dealing $s1 Shadowflame damage and an additional $s2 Shadowflame damage to all enemies within $a2 yds.\r\n\r\nDamage reduced beyond $s3 targets.", 0, 0 },
   { 1277933, "Immediately reset the cooldowns of Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, and Killing Spree.", 0, 0 },
   { 1277983, "$@spelldesc1264330", "Taking $w1% additional Revenge damage from you.", 0 },
   { 1278009, "Your next Shield Slam will trigger Phalanx.", "Your next Shield Slam will trigger Phalanx.", 0 },
@@ -28500,11 +28512,15 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1280212, "$@spelldesc468936", 0, 0 },
   { 1280213, "$@spelldesc468936", "Movement speed reduced by $s2%. Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 1280297, "Renewing Mist's healing is increased by $s1% on your lowest health ally with its effect.", 0, 0 },
+  { 1280307, "Releases a volley of fel fire, firing $s1 bolts at your target and $s2 $L:bolts,bolt at all enemies within $a1 yards of your target for $1277099s1 Chaos damage.", 0, 0 },
   { 1280316, "When Shred or Moonfire generate combo points, they have a $h% chance to generate full combo points.", 0, 0 },
   { 1280352, "$@spelldesc1280316", 0, 0 },
   { 1280385, "Apply a poison dispel type aura to the target.", 0, 0 },
   { 1280386, "$@spelldesc1236260", "Damage increased by $s1%.", 0 },
   { 1280403, "Apply a poison label aura to the target.", 0, 0 },
+  { 1280457, "Corrosive shadow energy radiates from the target, dealing Shadow damage over $d to all enemies within 10 yards of the target.", "Causing Shadow damage to all targets within 10 yards every 1 sec.", 0 },
+  { 1280460, "$@spelldesc1280457", 0, 0 },
+  { 1280461, "$@spelldesc1264017", 0, 0 },
   { 1280483, "Reduces the cooldown of Summon Infernal by ${$s1/-1000}.1 sec and increases your Mastery by $s2%.", 0, 0 },
   { 1280485, "$@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.", 0, 0 },
   { 1280591, "When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d. Your highest stat is always chosen.", 0, 0 },
@@ -28536,6 +28552,9 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1282474, "$@spelldesc1273043", 0, 0 },
   { 1282501, "$@spelldesc1276163", 0, 0 },
   { 1282502, "$@spelldesc1276163", 0, 0 },
+  { 1282507, "Dark magic is unleashed at the target's location, inflicting $s1 Shadow damage to all enemies within $a1 yards.\r\n\r\nDamage reduced beyond $s2 targets.", 0, 0 },
+  { 1282533, "Hurl a fireball at the target that inflicts $1282534s1 Fire damage to enemies within $1282534a1 yards on impact.\r\n\r\nDamage reduced beyond $1282534s2 targets.", 0, 0 },
+  { 1282534, "$@spelldesc1282533", 0, 0 },
   { 1282535, "A mindless servant of the Scourge, raised to obey its master's commands for $d.", 0, 0 },
   { 1282565, "$@spelldesc1242561", "You may not benefit from the effects of Scythe of Decay.", 0 },
   { 1282570, "$spelldesc1256566", "Necrotic Coil and Graveyard damage increased by ${$W1}.1%.", 0 },
@@ -28543,6 +28562,8 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1282710, "$@spelldesc468701", 0, 0 },
   { 1282741, "|cnGOLD_FONT_COLOR:Your companion has a chance during combat, via casting spells, abilities, or from slaying enemies to gain a Sanctum's Blessing. Each blessing grants $s1% increased healing and damage.\r\n\r\nUpon reaching $s6 blessings, your companion becomes a Sanctum's Champion, converting $s2% of their current health into an absorb shield that lasts for $1265780d, or until depleted. While the shield holds, increase the damage and healing conferred by Sanctum's Blessings. Upon expiration, blessings are removed.\r\n\r\nSlaying an Elite enemy grants $s4 Sanctum's Blessings, while normal foes yield $s3.|r", "Your companion has a chance during combat, via casting spells, abilities, or from slaying enemies to gain a Sanctum's Blessing. Each blessing grants $w1% increased healing and damage.\r\n\r\nUpon reaching $w6 blessings, your companion becomes a Sanctum's Champion, converting $w2% of their current health into an absorb shield that lasts for $1265780d, or until depleted. While the shield holds, increase the damage and healing conferred by Sanctum's Blessings. Upon expiration, blessings are removed.\r\n\r\nSlaying an Elite enemy grants $w4 Sanctum's Blessings, while normal foes yield $w3.", 0 },
   { 1282747, "$@spelldesc1265052", "Haste increased by $W1%.", 0 },
+  { 1282748, "$@spelldesc1282533", 0, 0 },
+  { 1282757, "$@spelldesc1282533", 0, 0 },
   { 1283344, "Throw a glaive enhanced with the essence of consumed souls at your target, dealing $s1 Physical damage and ricocheting to ${$x1-1} additional $Lenemy:enemies;.\r\n \r\nBegins a well-practiced pattern of glaivework, enhancing your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] and $?a212612[Blade Dance][Soul Cleave].\r\n\r\nThe enhanced ability you cast first deals $442290s3% increased damage, and the second deals $442290s4% increased damage.$?a442497[\r\n\r\n|CFFffffffGenerates $s2 Fury.|R][]", 0, 0 },
   { 1283374, "$@spelldesc1232065", 0, 0 },
   { 1283377, "Your spells and abilities have a chance to grant you a Light Fragment. Upon collecting $s3 fragments, you unleash the Light within the shard, increasing your $pri by $s1 for $1283378d.", 0, 0 },
@@ -28604,15 +28625,12 @@ static constexpr std::array<spelltext_data_t, 28602> __spelltext_data { {
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.65848
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
-  { 1245050,  0, "Your spells and abilities have the chance to grant $1252457s1 secondary stats for $1252487d  based on the target creature's type.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Hunt.", "Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Hunt." },
-  { 1262121,  0, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $386260s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $1262142s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n" },
-  { 1262123,  0, "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $386260s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n", "Add a supply of Boomshots to your arsenal. Your attacks have a chance to fire one of these Boomshots which explodes on impact to deal $1262146s1 Fire damage in a small radius around the target.\r\n\r\nLasts $M2 min.\r\n" },
+// spelltext hotfix entries, wow build 12.0.1.65867
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.1.65848
-static constexpr std::array<spelldesc_vars_data_t, 692> __spelldesc_vars_data { {
+// Spell description variables, wow build 12.0.1.65867
+static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29297,6 +29315,7 @@ static constexpr std::array<spelldesc_vars_data_t, 692> __spelldesc_vars_data { 
   { 1271211, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1272091, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1272693, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1277116, "$mult=$?s56248[${1.20}][${1.00}]\r\n$damage=${(($SP*0.50)*0.657)+$M1}" },
   { 1277297, "$baselineMult=$?s137048[${1.00}][${1.00}]\r\n$colossusMult=$?s429644[${1.20}][${1.00}]\r\n$absorb=${($AP*16)*(1+$@versadmg)*$<baselineMult>*$<colossusMult>}" },
   { 1277983, "$cap=${5}" },
   { 1278150, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$sweepingclaw= ${0.85*($AP*0.1656)*(1+$@versadmg)*$<mastery>}\r\n$sweepingclawSecond= ${0.85*($AP*0.1143675)*(1+$@versadmg)*$<mastery>}\r\n$damage=${0.85*($AP*0.2)*(1+$@versadmg)*$<mastery>}" },
@@ -29307,7 +29326,7 @@ static constexpr std::array<spelldesc_vars_data_t, 692> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.65848
+// spelldesc_vars hotfix entries, wow build 12.0.1.65867
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

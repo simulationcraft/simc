@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65769
+Class Spell ID List, wow build 12.0.1.65867
 
 Death Knight
 3714     Path of Frost
@@ -7568,7 +7568,7 @@ Hunter
 260387  *Natural Mending
 260393   Lethal Shots
 260395   Lethal Shots
-260402  *Double Tap
+260402   Double Tap
 260404   Calling the Shots
 260420  *Chakrams
 260426  *Chakrams Missile
@@ -22592,7 +22592,7 @@ Warlock
 1263941  Infernal Rapidity
 1264005 *Evil Eye
 1264006 *Summon Eye of Gul'dan
-1264017 *Infernal Grudge
+1264017  Infernal Grudge
 1264093  Burning Cleave
 1264110 *Felstorm
 1264292 *Dominion of Argus
@@ -22632,8 +22632,8 @@ Warlock
 1269643  Demonic Oculi
 1269800  Eye Explosion
 1269879  Mind's Eyes
-1269885 *Diabolic Gaze
-1269886 *Diabolic Gaze
+1269885  Diabolic Gaze
+1269886  Diabolic Gaze
 1269892  Diabolic Gaze
 1269991 *Pact of Exhaustion
 1270032 *Pact of Tongues
@@ -22683,25 +22683,25 @@ Warlock
 1276947  Demonic Calling
 1276956  Blighted Maw
 1276960  Blighted Maw
-1277099 *Soul Barrage
-1277116 *Greater Felbolt
+1277099  Soul Barrage
+1277116  Greater Felbolt
 1277139 *Fixate
-1277151 *Infernal Grudge
+1277151  Infernal Grudge
 1277235 *Unholy Vitality
 1277805 *Demonic Portal <DNT>
 1277806 *Demonic Portal <DNT>
-1277879 *Echo of Sargeras
+1277879  Echo of Sargeras
 1278047  Wrath of Nathreza
 1279510  Niskaran Methods
 1279521  Eye Contract
 1279575  Empowered Felstorm
 1279659  Malefic Grasp
 1279686  Wither
-1279998 *Seed of Corruption Is Out [DNT]
-1280307 *Soul Barrage
-1280457 *Mind Sear
-1280460 *Mind Sear
-1280461 *Mind Sear
+1279998  Seed of Corruption Is Out [DNT]
+1280307  Soul Barrage
+1280457  Mind Sear
+1280460  Mind Sear
+1280461  Mind Sear
 1280470 *Fixate
 1280482 *Conduit of Xoroth
 1280483  Inferno
@@ -22717,12 +22717,12 @@ Warlock
 1281559  Hellbent Commander
 1282501  Dominion of Argus: Lady Sacrolash
 1282502  Dominion of Argus: Grand Warlock Alythess
-1282507 *Shadow Nova
-1282533 *Blaze
-1282534 *Blaze
+1282507  Shadow Nova
+1282533  Blaze
+1282534  Blaze
 1282536 *Fixate
-1282748 *Blaze
-1282757 *Shadow Nova
+1282748  Blaze
+1282757  Shadow Nova
 1283640  Warlock - Midnight PrePatch - 11.2 Class Set 2pc
 1283641  Warlock - Midnight PrePatch - 11.2 Class Set 4pc
 
