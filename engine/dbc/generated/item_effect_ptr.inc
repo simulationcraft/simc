@@ -10264,14 +10264,14 @@ static constexpr std::array<item_effect_t, 10853> __ptr_item_effect_data { {
   { 211997, 1238443, 241297,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 211347, 1236616, 241308,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 211346, 1236616, 241309,   0,   0,    0,      -1,      -1 }, // Light's Potential
-  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
-  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
-  { 210509, 1235108, 241322,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
-  { 210510, 1235108, 241323,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
-  { 210513, 1235110, 241324,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
-  { 210514, 1235110, 241325,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
-  { 210512, 1235111, 241326,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
-  { 210511, 1235111, 241327,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
+  { 210507, 1235057, 241320,   0,   0,    0,    3000,      -1 }, // Flask of Thalassian Resistance
+  { 210506, 1235057, 241321,   0,   0,    0,    3000,      -1 }, // Flask of Thalassian Resistance
+  { 210509, 1235108, 241322,   0,   0,    0,    3000,      -1 }, // Flask of the Magisters
+  { 210510, 1235108, 241323,   0,   0,    0,    3000,      -1 }, // Flask of the Magisters
+  { 210513, 1235110, 241324,   0,   0,    0,    3000,      -1 }, // Flask of the Blood Knights
+  { 210514, 1235110, 241325,   0,   0,    0,    3000,      -1 }, // Flask of the Blood Knights
+  { 210512, 1235111, 241326,   0,   0,    0,    3000,      -1 }, // Flask of the Shattered Sun
+  { 210511, 1235111, 241327,   0,   0,    0,    3000,      -1 }, // Flask of the Shattered Sun
   { 208941, 1280591, 241340,   0,   1,    0,      -1,      -1 }, // Magister's Alchemist Stone
   { 208942,  17619, 241340,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
   { 209286, 1231936, 242260,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Stormwind Guard Weapon Set
@@ -10577,14 +10577,14 @@ static constexpr std::array<item_effect_t, 10853> __ptr_item_effect_data { {
   { 212203, 1236616, 245898,   0,   0,    0,      -1,      -1 }, // Light's Potential
   { 212205, 1238443, 245900,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
   { 212206, 1238443, 245901,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
-  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
-  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Flask of Thalassian Resistance
-  { 212228, 1235111, 245928,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
-  { 212229, 1235111, 245929,   0,   0,    0,      -1,      -1 }, // Flask of the Shattered Sun
-  { 212230, 1235110, 245930,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
-  { 212231, 1235110, 245931,   0,   0,    0,      -1,      -1 }, // Flask of the Blood Knights
-  { 212232, 1235108, 245932,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
-  { 212233, 1235108, 245933,   0,   0,    0,      -1,      -1 }, // Flask of the Magisters
+  { 212226, 1235057, 245926,   0,   0,    0,    3000,      -1 }, // Flask of Thalassian Resistance
+  { 212227, 1235057, 245927,   0,   0,    0,    3000,      -1 }, // Flask of Thalassian Resistance
+  { 212228, 1235111, 245928,   0,   0,    0,    3000,      -1 }, // Flask of the Shattered Sun
+  { 212229, 1235111, 245929,   0,   0,    0,    3000,      -1 }, // Flask of the Shattered Sun
+  { 212230, 1235110, 245930,   0,   0,    0,    3000,      -1 }, // Flask of the Blood Knights
+  { 212231, 1235110, 245931,   0,   0,    0,    3000,      -1 }, // Flask of the Blood Knights
+  { 212232, 1235108, 245932,   0,   0,    0,    3000,      -1 }, // Flask of the Magisters
+  { 212233, 1235108, 245933,   0,   0,    0,    3000,      -1 }, // Flask of the Magisters
   { 212252, 1233515, 245964,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212253, 1236138, 245964,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212254, 1233262, 245964,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
