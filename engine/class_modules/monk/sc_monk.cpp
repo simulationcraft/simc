@@ -128,10 +128,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
   parse_effects( p()->buff.celestial_flames );
-  parse_effects(
-      p()->buff.counterstrike,
-      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
-      CONSUME_BUFF );
+  parse_effects( p()->buff.counterstrike, CONSUME_BUFF );
   parse_effects( p()->buff.empty_barrel );
 
   // Windwalker
@@ -178,7 +175,11 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
   parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic,
+                 affect_list_t( 1 )
+                     .remove_spell( p()->baseline.monk.crackling_jade_lightning->id() )
+                     .remove_spell( p()->talent.brewmaster.exploding_keg->id() ),
+                 CONSUME_BUFF );
 
   // Shado-Pan
 
@@ -1330,20 +1331,44 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
-  buff_t *buff;
+  struct tick_t : monk_melee_attack_t
+  {
+    tick_t( monk_t *player, std::string_view name, const spell_data_t *data )
+      : monk_melee_attack_t( player, name, data )
+    {
+      background = dual   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.brewmaster.rushing_jade_wind_buff->effectN( 1 ).base_value();
+
+      if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_physical->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( persistent_multiplier_effects )
+            .set_buff( player->buff.balanced_stratagem_physical )
+            .set_value( effect.percent() )
+            .set_eff( &effect )
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
+                                 [ this, b = player->buff.balanced_stratagem_physical.get() ]( action_state_t * ) {
+                                   b->consume( this );
+                                 } );
+    }
+  };
 
   rushing_jade_wind_t( monk_t *player, std::string_view options_str )
-    : monk_melee_attack_t( player, "rushing_jade_wind", player->talent.brewmaster.rushing_jade_wind ),
-      buff( player->buff.rushing_jade_wind )
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->talent.brewmaster.rushing_jade_wind )
   {
     parse_options( options_str );
+
+    tick_action = new tick_t( player, "rushing_jade_wind_tick", player->talent.brewmaster.rushing_jade_wind_tick );
+    add_child( tick_action );
+
+    cast_during_sck = true;
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
 
-    buff->trigger();
+    p()->buff.rushing_jade_wind->trigger();
   }
 };
 
@@ -1359,6 +1384,26 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       reduced_aoe_targets = player->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
       ww_mastery          = true;
       ap_type             = attack_power_type::WEAPON_BOTH;
+
+      if ( const auto &effect = player->talent.brewmaster.counterstrike->effectN( 1 ); effect.ok() )
+        add_parse_entry( persistent_multiplier_effects )
+            .set_buff( player->buff.counterstrike )
+            .set_value( effect.percent() )
+            .set_eff( &effect )
+            .add_parse_callback(
+                this, PARSE_CALLBACK_POST_EXECUTE,
+                [ this, b = player->buff.counterstrike.get() ]( action_state_t * ) { b->consume( this ); } );
+
+      if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_physical->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( persistent_multiplier_effects )
+            .set_buff( player->buff.balanced_stratagem_physical )
+            .set_value( effect.percent() )
+            .set_eff( &effect )
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
+                                 [ this, b = player->buff.balanced_stratagem_physical.get() ]( action_state_t * ) {
+                                   b->consume( this );
+                                 } );
     }
 
     result_amount_type report_amount_type( const action_state_t * ) const override
@@ -2724,6 +2769,12 @@ struct chi_burst_t : monk_spell_t
       for ( const auto &effect : spell_data->effects() )
         if ( effect.type() == E_SCHOOL_DAMAGE )
           TBase::ww_mastery = true;
+
+      if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_magic->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.balanced_stratagem_magic )
+            .set_value( effect.percent() )
+            .set_eff( &effect );
     }
   };
 
@@ -2758,7 +2809,6 @@ struct chi_burst_t : monk_spell_t
   void execute() override
   {
     p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
-    monk_spell_t::execute();
 
     if ( buff )
     {
@@ -2770,6 +2820,9 @@ struct chi_burst_t : monk_spell_t
 
     damage->execute();
     heal->execute();
+
+    // Defer consumption of buffs until after the damage and heal are executed
+    monk_spell_t::execute();
   }
 };
 
@@ -2906,6 +2959,15 @@ struct crackling_jade_lightning_t : public monk_spell_t
       aoe_dot = new aoe_dot_t( player );
       add_child( aoe_dot );
     }
+
+    if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_magic->effectN( 1 ); effect.ok() )
+      add_parse_entry( persistent_multiplier_effects )
+          .set_buff( player->buff.balanced_stratagem_magic )
+          .set_value( effect.percent() )
+          .set_eff( &effect )
+          .add_parse_callback(
+              this, PARSE_CALLBACK_POST_EXECUTE,
+              [ this, b = player->buff.balanced_stratagem_magic.get() ]( action_state_t * ) { b->consume( this ); } );
   }
 
   void execute() override
@@ -2960,11 +3022,18 @@ struct breath_of_fire_t : public monk_spell_t
 {
   struct dot_t : public monk_spell_t
   {
-    dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
+    dot_t( monk_t *player ) : monk_spell_t( player, "breath_of_fire_dot", player->talent.brewmaster.breath_of_fire_dot )
     {
       background    = true;
       tick_may_crit = may_crit = true;
       hasted_ticks             = false;
+
+      // Balanced Stratagem is consumed by the parent action, but still present when the dot is executed
+      if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_magic->effectN( 1 ); effect.ok() )
+        add_parse_entry( persistent_multiplier_effects )
+            .set_buff( player->buff.balanced_stratagem_magic )
+            .set_value( effect.percent() )
+            .set_eff( &effect );
     }
   };
 
@@ -3070,11 +3139,20 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 
 struct exploding_keg_proc_t : public monk_spell_t
 {
-  exploding_keg_proc_t( monk_t *p )
-    : monk_spell_t( p, "exploding_keg_proc", p->talent.brewmaster.exploding_keg->effectN( 4 ).trigger() )
+  exploding_keg_proc_t( monk_t *player )
+    : monk_spell_t( player, "exploding_keg_proc", player->talent.brewmaster.exploding_keg->effectN( 4 ).trigger() )
   {
     background = dual = true;
     proc              = true;
+
+    if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_magic->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_value( effect.percent() )
+          .set_value_func( [ & ]( double base ) {
+            // Balanced Stratagem stacks are captured as the value on the Exploding Keg buff when it's triggered.
+            return base * p()->buff.exploding_keg->check_value();
+          } )
+          .set_eff( &effect );
   }
 };
 
@@ -3089,15 +3167,12 @@ struct exploding_keg_t : public monk_spell_t
     add_child( p->action.exploding_keg );
   }
 
-  timespan_t travel_time() const override
-  {
-    // Always has the same time to land regardless of distance, probably represented there.
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-
   void execute() override
   {
-    p()->buff.exploding_keg->trigger();
+    // The initial EK hit is not affected by Balanced Stratagem, so we consume the stacks here.
+    // The stacks are captured as the value on the buff for exploding_keg_proc_t to use later.
+    p()->buff.exploding_keg->trigger( 1, p()->buff.balanced_stratagem_magic->consume( this ) );
+
     p()->buff.empty_the_cellar->trigger();
 
     if ( p()->talent.brewmaster.fuel_on_the_fire->ok() )
@@ -4218,67 +4293,6 @@ struct zenith_t : monk_buff_t<>
   }
 };
 
-struct rushing_jade_wind_buff_t : public monk_buff_t<>
-{
-  struct tick_action_t : actions::monk_melee_attack_t
-  {
-    tick_action_t( monk_t *p )
-      : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->talent.shared_spell.rushing_jade_wind_tick )
-    {
-      ww_mastery = true;
-
-      dual = background   = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->talent.shared_spell.rushing_jade_wind_buff->effectN( 1 ).base_value();
-
-      // Merge action statistics if RJW exists as an active ability
-      if ( const action_t *action = p->find_action( "rushing_jade_wind" ); action )
-        stats = action->stats;
-    }
-  };
-
-  timespan_t _period;
-  action_t *rushing_jade_wind_tick;
-
-  rushing_jade_wind_buff_t( monk_t *player )
-    : monk_buff_t( player, "rushing_jade_wind", player->talent.shared_spell.rushing_jade_wind_buff ),
-      rushing_jade_wind_tick( nullptr )
-  {
-    set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
-    set_tick_time_callback( [ this ]( const buff_t *, unsigned int ) { return _period; } );
-
-    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
-      if ( rushing_jade_wind_tick )
-      {
-        rushing_jade_wind_tick->execute();
-        return;
-      }
-
-      if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
-      {
-        rushing_jade_wind_tick = rjw;
-        rjw->execute();
-      }
-    } );
-    set_tick_behavior( buff_tick_behavior::REFRESH );
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    // RJW snapshots the tick period on cast.
-    if ( duration == timespan_t::min() )
-    {
-      duration = monk_buff_t::buff_duration();
-      duration *= p().cache.spell_cast_speed();
-    }
-
-    _period = monk_buff_t::buff_period * p().cache.spell_cast_speed();
-
-    return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
 struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
 {
   double multiplier;
@@ -4685,6 +4699,51 @@ aspect_of_harmony_t::spender_t::tick_t<base_action_t>::tick_t( monk_t *player, s
   : residual_action::residual_periodic_action_t<base_action_t>( player, name, spell_data )
 {
 }
+
+balanced_stratagem_t::balanced_stratagem_t( monk_t *player, std::string_view name, const spell_data_t *spell_data,
+                                            std::unordered_set<unsigned int> allowlist )
+  : monk_buff_t<>( player, fmt::format( "balanced_stratagem_{}", name ), spell_data ),
+    allowlist( std::move( allowlist ) )
+{
+  // Remove IDs that weren't found so they don't unintentionally trigger on auto attacks
+  this->allowlist.erase( 0 );
+}
+
+bool balanced_stratagem_t::trigger( const action_state_t *state )
+{
+  if ( is_fallback )
+    return false;
+
+  if ( range::contains( allowlist, state->action->id ) )
+    return monk_buff_t::trigger();
+
+  return false;
+}
+
+struct balanced_stratagem_magic_t : balanced_stratagem_t
+{
+  balanced_stratagem_magic_t( monk_t *player )
+    : balanced_stratagem_t(
+          player, "magic", player->talent.master_of_harmony.balanced_stratagem_magic,
+          { player->baseline.monk.blackout_kick->id(), player->baseline.brewmaster.blackout_kick->id(),
+            player->talent.brewmaster.keg_smash->id(), player->talent.brewmaster.rushing_jade_wind->id(),
+            player->baseline.monk.spinning_crane_kick->id(), player->baseline.monk.tiger_palm->id(),
+            player->talent.brewmaster.press_the_advantage_tiger_palm->id() } )
+  {
+  }
+};
+
+struct balanced_stratagem_physical_t : balanced_stratagem_t
+{
+  balanced_stratagem_physical_t( monk_t *player )
+    : balanced_stratagem_t( player, "physical", player->talent.master_of_harmony.balanced_stratagem_physical,
+                            { player->talent.brewmaster.breath_of_fire->id(), player->talent.monk.chi_burst->id(),
+                              player->baseline.monk.crackling_jade_lightning->id(),
+                              player->baseline.monk.expel_harm->id(), player->talent.brewmaster.exploding_keg->id(),
+                              player->talent.monk.soothing_mist->id(), player->baseline.monk.vivify->id() } )
+  {
+  }
+};
 
 fractional_absorb_t::fractional_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_buff_t<absorb_buff_t>( player, name, spell_data ), absorb_fraction( 1.0 )
@@ -5327,6 +5386,8 @@ void monk_t::init_spells()
     talent.brewmaster.special_delivery                 = _ST( "Special Delivery" );
     talent.brewmaster.special_delivery_missile         = find_spell( 196732 );
     talent.brewmaster.rushing_jade_wind                = _ST( "Rushing Jade Wind" );
+    talent.brewmaster.rushing_jade_wind_buff           = find_spell( 116847 );
+    talent.brewmaster.rushing_jade_wind_tick           = find_spell( 148187 );
     talent.brewmaster.spirit_of_the_ox                 = _ST( "Spirit of the Ox" );
     talent.brewmaster.jade_flash                       = _ST( "Jade Flash" );
     talent.brewmaster.celestial_brew                   = _ST( "Celestial Brew" );
@@ -5591,10 +5652,6 @@ void monk_t::init_spells()
     tier.mid1.brm_4pc_extra_kick = find_spell( 1272464 );
   }
 
-  // Shared Talent Spells
-  talent.shared_spell.rushing_jade_wind_buff = find_spell( 116847 );
-  talent.shared_spell.rushing_jade_wind_tick = find_spell( 148187 );
-
   // Register passives
   // Instant Spells with a reduced GCD
   register_passive_affect_list( baseline.brewmaster.aura_2, affect_list_t( 3 ).remove_label( 640 ) );
@@ -5657,10 +5714,6 @@ void monk_t::init_background_actions()
 {
   using namespace actions;
   base_t::init_background_actions();
-
-  // we just look it up via `find_action` anyway, so it doesn't need to explicitly
-  // be set anywhere (for now)
-  new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
   action.chi_wave = new chi_wave_t( this );
@@ -5840,8 +5893,8 @@ void monk_t::create_buffs()
   buff.fortifying_brew = make_buff_fallback<buffs::fortifying_brew_t>(
       talent.monk.fortifying_brew->ok() && specialization() == MONK_BREWMASTER, this, "fortifying_brew" );
 
-  buff.rushing_jade_wind = make_buff_fallback<buffs::rushing_jade_wind_buff_t>(
-      talent.brewmaster.rushing_jade_wind->ok(), this, "rushing_jade_wind" );
+  buff.rushing_jade_wind = make_buff_fallback( talent.brewmaster.rushing_jade_wind->ok(), this, "rushing_jade_wind",
+                                               talent.brewmaster.rushing_jade_wind_buff );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", baseline.monk.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
@@ -5881,8 +5934,7 @@ void monk_t::create_buffs()
                                               talent.brewmaster.empty_the_cellar_buff );
 
   buff.exploding_keg = make_buff_fallback( talent.brewmaster.exploding_keg->ok(), this, "exploding_keg",
-                                           talent.brewmaster.exploding_keg )
-                           ->set_default_value_from_effect( 2 );
+                                           talent.brewmaster.exploding_keg );
 
   if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
@@ -6102,12 +6154,10 @@ void monk_t::create_buffs()
 
   buff.aspect_of_harmony.construct_buffs( this );
 
-  buff.balanced_stratagem_magic =
-      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic",
-                          talent.master_of_harmony.balanced_stratagem_magic );
-  buff.balanced_stratagem_physical =
-      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical",
-                          talent.master_of_harmony.balanced_stratagem_physical );
+  buff.balanced_stratagem_magic = make_buff_fallback<buffs::balanced_stratagem_magic_t>(
+      talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic" );
+  buff.balanced_stratagem_physical = make_buff_fallback<buffs::balanced_stratagem_physical_t>(
+      talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical" );
 
   // Master of Harmony
   buff.harmonic_surge = make_buff_fallback( talent.master_of_harmony.harmonic_surge->ok(), this, "harmonic_surge",
@@ -6397,16 +6447,21 @@ void monk_t::init_special_effects()
         } );
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
-    create_proc_callback( { talent.master_of_harmony.balanced_stratagem.spell() } )
-        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return state->action->school != SCHOOL_NONE;
-                                              } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          if ( state->action->school == SCHOOL_PHYSICAL )
-            buff.balanced_stratagem_magic->trigger();
-          if ( state->action->school != SCHOOL_PHYSICAL )
-            buff.balanced_stratagem_physical->trigger();
+    create_proc_callback( { talent.master_of_harmony.balanced_stratagem,
+                            static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_CAST_SUCCESSFUL ),
+                            static_cast<proc_flag2>( PF2_ALL_CAST | PF2_ALL_HIT ) } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+              return debug_cast<buffs::balanced_stratagem_t *>( buff.balanced_stratagem_magic.get() )
+                         ->trigger( state ) ||
+                     debug_cast<buffs::balanced_stratagem_t *>( buff.balanced_stratagem_physical.get() )
+                         ->trigger( state );
+            } )
+        ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
+          cb->proc_chance                       = 1.0;
+          cb->can_proc_from_procs               = true;
+          cb->can_only_proc_from_class_abilites = true;
         } );
 
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )

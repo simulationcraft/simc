@@ -23,6 +23,7 @@
 #include <queue>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "simulationcraft.hpp"
@@ -332,6 +333,17 @@ public:
   void trigger_path_of_resurgence();
 
   bool heal_ticking();
+};
+
+struct balanced_stratagem_t : monk_buff_t<>
+{
+  std::unordered_set<unsigned> allowlist;
+
+  balanced_stratagem_t( monk_t *player, std::string_view name, const spell_data_t *spell_data,
+                        std::unordered_set<unsigned> allowlist );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( const action_state_t * );
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
@@ -676,12 +688,6 @@ public:
   {
     struct
     {
-      const spell_data_t *rushing_jade_wind_buff;
-      const spell_data_t *rushing_jade_wind_tick;
-    } shared_spell;
-
-    struct
-    {
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
@@ -791,6 +797,8 @@ public:
       player_talent_t special_delivery;
       const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
+      const spell_data_t *rushing_jade_wind_buff;
+      const spell_data_t *rushing_jade_wind_tick;
       player_talent_t spirit_of_the_ox;
       // row 5
       player_talent_t jade_flash;
