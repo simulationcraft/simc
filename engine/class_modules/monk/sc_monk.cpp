@@ -165,7 +165,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.dance_of_chiji );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.heart_of_the_jade_serpent );
+  parse_effects( p()->buff.heart_of_the_jade_serpent,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_unity_within->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_yulons_avatar );
   parse_effects( p()->buff.heart_of_the_jade_serpent_unity_within );
   parse_effects( p()->buff.jade_sanctuary );
@@ -4882,21 +4883,12 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
 
-  effect_mask_t em = effect_mask_t( true ).disable( 8 );
-  parse_effects( buff.heart_of_the_jade_serpent, em );
+  effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
+                                                                           : effect_mask_t( true ).disable( 8 );
+  parse_effects( buff.heart_of_the_jade_serpent, em,
+                 [ & ] { return !buff.heart_of_the_jade_serpent_unity_within->check(); } );
   parse_effects( buff.heart_of_the_jade_serpent_yulons_avatar, em );
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
-
-  if ( talent.conduit_of_the_celestials.flowing_wisdom->ok() )
-  {
-    effect_mask_t em = effect_mask_t( false ).enable( 8 );
-    parse_effects( talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff, em, [ & ]( double value ) {
-      double stacks =
-          buff.heart_of_the_jade_serpent->check() ||
-          buff.heart_of_the_jade_serpent_unity_within->check() + buff.heart_of_the_jade_serpent_yulons_avatar->check();
-      return std::pow( value, stacks );
-    } );
-  }
 
   // Midnight S1 Set Effects
   // Midnight S2 Set Effects
