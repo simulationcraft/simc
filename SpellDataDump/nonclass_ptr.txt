@@ -238342,6 +238342,9 @@ Effects          :
 #1 (id=1232878)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 0.75 | Scaled Value: 0.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#2 (id=1307528)  : Apply Aura (6) | Modify Critical Heal Bonus (50)
+                   Base Value: 0.75 | Scaled Value: 0.75 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Eyes of the Eagle (id=1236701) [Passive] 
 School           : Physical
@@ -238351,6 +238354,9 @@ Effects          :
 #1 (id=1232879)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 1.25 | Scaled Value: 1.25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#2 (id=1307529)  : Apply Aura (6) | Modify Critical Heal Bonus (50)
+                   Base Value: 1.25 | Scaled Value: 1.25 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Mark of the Magister (id=1236707) [Passive] 
 School           : Physical
