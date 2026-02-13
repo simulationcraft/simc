@@ -2244,6 +2244,22 @@ class SpellDataGenerator(DataGenerator):
           ( 438973, 0 ),    # Diabolist - Felseeker
           ( 434404, 0 ),    # Diabolist - Felseeker
           ( 438823, 0 ),    # Diabolic Bolt (pet spell)
+          ( 1269885, 0 ),   # Diabolic Gaze
+          ( 1269886, 0 ),   # Diabolic Gaze
+          ( 1277099, 5 ),   # Soul Barrage (pet spell)
+          ( 1277116, 5 ),   # Greater Felbolt (pet spell)
+          ( 1277117, 5 ),   # Abyssal Bite (pet spell)
+          ( 1277879, 0 ),   # Echo of Sargeras
+          ( 1279998, 0 ),   # Seed of Corruption Is Out [DNT]
+          ( 1280307, 5 ),   # Soul Barrage (pet spell)
+          ( 1280457, 5 ),   # Mind Sear (pet spell)
+          ( 1280460, 5 ),   # Mind Sear (pet spell)
+          ( 1280461, 5 ),   # Mind Sear (pet spell)
+          ( 1282507, 5 ),   # Shadow Nova (pet spell)
+          ( 1282533, 5 ),   # Blaze (pet spell)
+          ( 1282534, 5 ),   # Blaze (pet spell)
+          ( 1282748, 5 ),   # Blaze (pet spell)
+          ( 1282757, 5 ),   # Shadow Nova (pet spell)
         ),
 
         # Monk:
