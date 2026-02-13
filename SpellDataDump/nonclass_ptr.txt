@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
