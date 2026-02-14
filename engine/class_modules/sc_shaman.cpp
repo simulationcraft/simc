@@ -1412,6 +1412,7 @@ public:
     const spell_data_t* maelstrom;
     const spell_data_t* lava_surge;
     const spell_data_t* inundate;
+    const spell_data_t* stormkeeper_2;      // charges
 
     // Enhancement
     const spell_data_t* critical_strikes;
@@ -8221,8 +8222,7 @@ struct stormkeeper_t : public shaman_spell_t
     }
 
     p()->summon_ancestor();
-
-    p()->buff.stormkeeper->trigger(2);
+    p()->buff.stormkeeper->trigger( 2 ); //p()->spec.stormkeeper_2->charges() );
 
     p()->buff.mid1_ele_2pc->trigger();
 
@@ -10458,6 +10458,7 @@ void shaman_t::init_spells()
   spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
   spec.inundate          = find_specialization_spell( "Inundate" );
+  spec.stormkeeper_2     = find_spell( 383009 );
 
   // Enhancement
   spec.critical_strikes   = find_specialization_spell( "Critical Strikes" );
@@ -13488,14 +13489,6 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    // This is gross but the current value for the stormkeeper spell
-    // when resolved is 0 and not 2, but this achieves the end goal
-    // so whatever man
-    /* hotfix::register_spell( "Shaman", "2024-09-06", "Manually set Stormkeeper max stacks", 191634 )
-      .field( "max_stack" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 0.0 );*/
 
     hotfix::register_effect( "Shaman", "2025-10-19", "Manually add Label to Enhancement 12.0 4PC set bonus", 1276472 )
       .field( "misc_value2" )
