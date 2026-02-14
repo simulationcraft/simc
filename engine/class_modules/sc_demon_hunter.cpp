@@ -6275,7 +6275,7 @@ struct void_ray_t
       background = dual = true;
       aoe               = -1;
 
-      shattered_souls_base_chance *= p->talent.devourer.waste_not->effectN( 1 ).percent();
+      shattered_souls_base_chance *= 1.0 + p->talent.devourer.waste_not->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6307,11 +6307,6 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
-
-      if ( p()->talent.devourer.waste_not->ok() )
-      {
-        m *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
-      }
 
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.

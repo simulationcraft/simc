@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <memory>
+#include <optional>
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -1324,31 +1325,23 @@ public:
   {
     ab::execute();
 
-    if ( decrements_tip_of_the_spear && p()->buffs.tip_of_the_spear->check() )
+    if ( affected_by.wallop.direct )
+      p()->buffs.wallop->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    // Tip removal and effects are triggered on impact but only once
+    if ( decrements_tip_of_the_spear && s->chain_target == 0 && p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.stargazer->trigger();
 
-      /* On Survival, Sentinel's Mark applies to a random target hit for AoE spells. 
-         For now, pick a random target in the target_list(), even if they were not hit.
-         Results should be unaffected but ideally it would be accurate.
-
-         Note: This same logic is used in boomstick_t::execute().
-
-         2026-01-18: Needs a revisit after class implementation is done, slice the vector probably.
-
-         TODO reconfirm before launch */
-      if ( this->aoe )
-      {
-        auto tl = this->target_list();
-        p()->rng().shuffle( tl.begin(), tl.end() );
-        p()->trigger_eagles_mark( tl.front(), true );
-        this->target_cache.is_valid = false;
-      }
-      else
-      {
-        p()->trigger_eagles_mark( this->target, true );
-      }
+      // 2026-02-13: For Survival, Sentinel's Mark applies to a random target hit for AoE spells.
+      //             Tipped Wildfire Bombs can also trigger an additional mark after consuming one so make an event.
+      make_event( p()->sim, [ this ]() { p()->trigger_eagles_mark( get_random_valid_target(), true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -1360,14 +1353,6 @@ public:
         }
       }
     }
-
-    if ( affected_by.wallop.direct )
-      p()->buffs.wallop->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1612,6 +1597,40 @@ public:
     const bool in_combat = ab::player -> in_combat;
     if ( ab::is_precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
+  }
+
+  player_t* get_random_valid_target( std::optional<int> aoe_override = std::nullopt ) const
+  {
+    const int aoe = aoe_override.value_or( ab::aoe );
+
+    switch ( aoe )
+    {
+      case 0: 
+        return ab::target;
+
+      case -1:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() )
+          return p()->rng().range( tl );
+
+        break;
+      }
+
+      // Capped targets
+      default:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() && aoe > 0 )
+        {
+          const size_t cap = std::min<size_t>( aoe, tl.size() );
+          const size_t t   = p()->rng().template range<size_t>( 0, cap );
+          return tl[ t ];
+        }
+        break;
+      }
+    }
+    return ab::target;
   }
 };
 
@@ -1882,7 +1901,7 @@ struct dark_hound_t final : public dire_critter_t
   dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 2;
+    owner_coeff.ap_from_ap = 1.5; // TEMP Unconfirmed until logs are available
     auto_attack_multiplier = 4;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
@@ -3704,10 +3723,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   if ( cooldowns.sentinels_mark->down() )
     return;
 
-  /* Further testing is required on the calculation sequence for this chance. 
-     When is Feathered Frenzy's bonus applied?
-     How does Lunar Calling affect it?
-     TODO reconfirm before launch */
   auto spec = specialization();
   double chance = 0;
   double lunar_calling_bonus = talents.lunar_calling->effectN( spec == HUNTER_MARKSMANSHIP ? 1 : 2 ).percent();
@@ -3716,18 +3731,23 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     chance += specs.spotters_mark_data->effectN( 1 ).percent();
 
-    /* 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
-       TODO reconfirm before launch */
+    // 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
     chance += talents.moons_blessing->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
 
-    if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
-      chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+    if ( buffs.trueshot->check() )
+    {
+      if ( talents.feathered_frenzy.ok() )
+        chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+
+      chance += lunar_calling_bonus;
+    }
   }
   else if ( spec == HUNTER_SURVIVAL )
   {
     chance += talents.sentinel->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
+
+    if ( buffs.takedown->check() )
+      chance += lunar_calling_bonus;
   }
 
   if ( rng().roll( chance ) )
@@ -6171,10 +6191,7 @@ struct boomstick_t : public hunter_spell_t
 
       p()->buffs.stargazer->trigger();
       
-      auto tl = target_list();
-      p()->rng().shuffle( tl.begin(), tl.end() );
-      p()->trigger_eagles_mark( tl.front(), true );
-      target_cache.is_valid = false;
+      p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
       
       if ( p()->cooldowns.strike_as_one->up() )
       {

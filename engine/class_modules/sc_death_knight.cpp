@@ -2077,6 +2077,7 @@ public:
   double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
+  void trigger_rune_of_the_apocalypse( player_t* target );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
@@ -3234,28 +3235,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
            rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( state->target );
 
-      if ( triggers_apocalypse && dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( state->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( state->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      if ( triggers_apocalypse  )
+        dk()->trigger_rune_of_the_apocalypse( state->target );
     }
 
     bool ready() override
@@ -3507,28 +3488,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( s->target );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
 
     bool ready() override
@@ -3597,6 +3557,34 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       background = true;
       aoe        = -1;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_spell_t<lesser_ghoul_pet_t>::impact( s );
+
+      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
+      {
+        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
+
+        death_knight_td_t* td = dk()->get_target_data( s->target );
+
+        switch ( n )
+        {
+          case runeforge_apocalypse_e::DEATH:
+            td->debuff.apocalypse_death->trigger();
+            break;
+          case runeforge_apocalypse_e::FAMINE:
+            td->debuff.apocalypse_famine->trigger();
+            break;
+          case runeforge_apocalypse_e::PESTILENCE:
+            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
+            break;
+          case runeforge_apocalypse_e::WAR:
+            td->debuff.apocalypse_war->trigger();
+            break;
+        }
+      }
     }
   };
 
@@ -4385,7 +4373,7 @@ struct magus_pet_t : public death_knight_pet_t
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.466;
+    owner_coeff.ap_from_ap = 0.56;
   }
 
   void arise() override
@@ -10713,12 +10701,17 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       }
     }
 
-    if ( execute_state && p()->talent.frost.frostbane )
+    if ( execute_state && p()->talent.frost.frostbane && !p()->buffs.frostbane->up() )
     {
-      const int other_targets = execute_state->n_targets - targets_max_razorice;
       // 11.2 TODO find actual proc chance
       // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
-      if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
+      double chance = .195;
+
+      if (execute_state->n_targets > 2)
+        chance = std::min( ( .09 * (execute_state->n_targets - targets_max_razorice) ) + ( .32 * targets_max_razorice ),
+                           .925 );
+
+      if ( p()->rng().roll( chance ) )
         p()->buffs.frostbane->trigger();
     }
   }
@@ -11740,6 +11733,9 @@ struct putrefy_aoe_t final : public death_knight_spell_t
             s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
         dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
       }
+
+      // TODO: Does the ST hit apply these too?
+      p()->trigger_rune_of_the_apocalypse( s->target );
     }
   }
 
@@ -13685,6 +13681,32 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   active_dnds.push_back( tracker );
 }
 
+void death_knight_t::trigger_rune_of_the_apocalypse( player_t* t )
+{
+  if ( !has_runeforge( RUNEFORGE_APOCALYPSE ) )
+    return;
+
+  int n = as<int>( std::floor( rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
+
+  death_knight_td_t* td = get_target_data( t );
+
+  switch ( n )
+  {
+    case runeforge_apocalypse_e::DEATH:
+      td->debuff.apocalypse_death->trigger();
+      break;
+    case runeforge_apocalypse_e::FAMINE:
+      td->debuff.apocalypse_famine->trigger();
+      break;
+    case runeforge_apocalypse_e::PESTILENCE:
+      runeforge_actions.apocalypse_pestilence->execute_on_target( t );
+      break;
+    case runeforge_apocalypse_e::WAR:
+      td->debuff.apocalypse_war->trigger();
+      break;
+  }
+}
+
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if ( !fn )
@@ -13695,38 +13717,7 @@ const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 
 bool death_knight_t::has_runeforge( runeforges_e rf ) const
 {
-  bool has_runeforge = false;
-  switch ( rf )
-  {
-    case RUNEFORGE_NONE:
-      has_runeforge = false;
-      break;
-    case RUNEFORGE_APOCALYPSE:
-      has_runeforge = mh_runeforge == RUNEFORGE_APOCALYPSE || oh_runeforge == RUNEFORGE_APOCALYPSE;
-      break;
-    case RUNEFORGE_FALLEN_CRUSADER:
-      has_runeforge = mh_runeforge == RUNEFORGE_FALLEN_CRUSADER || oh_runeforge == RUNEFORGE_FALLEN_CRUSADER;
-      break;
-    case RUNEFORGE_RAZORICE:
-      has_runeforge = mh_runeforge == RUNEFORGE_RAZORICE || oh_runeforge == RUNEFORGE_RAZORICE;
-      break;
-    case RUNEFORGE_SANGUINATION:
-      has_runeforge = mh_runeforge == RUNEFORGE_SANGUINATION || oh_runeforge == RUNEFORGE_SANGUINATION;
-      break;
-    case RUNEFORGE_SPELLWARDING:
-      has_runeforge = mh_runeforge == RUNEFORGE_SPELLWARDING || oh_runeforge == RUNEFORGE_SPELLWARDING;
-      break;
-    case RUNEFORGE_STONESKIN_GARGOYLE:
-      has_runeforge = mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE || oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE;
-      break;
-    case RUNEFORGE_UNENDING_THIRST:
-      has_runeforge = mh_runeforge == RUNEFORGE_UNENDING_THIRST || oh_runeforge == RUNEFORGE_UNENDING_THIRST;
-      break;
-    default:
-      break;
-  }
-
-  return has_runeforge;
+  return mh_runeforge == rf || oh_runeforge == rf;
 }
 
 void death_knight_t::set_runeforges()
@@ -17351,51 +17342,72 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (MH) nerfed 5% ", 331344,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Virulent Plague nerfed 18%", 281049,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.24236 )
-        .verification_value( 1.30775 );
+        .modifier( 0.2177715 )
+        .verification_value( 0.265575 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (OH) nerfed 5% ", 60372,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Dread Plague nerfed 18%", 1239728,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.24236 )
-        .verification_value( 1.30775 );
+        .modifier( 0.365925 )
+        .verification_value( 0.44625 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (2H)  nerfed 5% ", 815754,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.83915 )
-        .verification_value( 1.93595 );
-
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Mawsworn Menace Oblit mod nerfed 50% ", 1168098,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Pestilence Nerfed to 100% Remaining damage", 1285178,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 5 )
-        .verification_value( 10 );
+        .modifier( 100 )
+        .verification_value( 150 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Frost RotA 2P Nerfed ~57%", 1233621,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 35 );
-
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Frost Exterminate first hit buffed 10% ", 1174046,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (Main) nerfed 10%", 315517,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.07974 )
-        .verification_value( 3.70886 );
-  }*/
+        .modifier( 0.568656 )
+        .verification_value( 0.63184 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (AoE) nerfed 10%", 872659,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.2274651 )
+        .verification_value( 0.252739 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (Main) nerfed 10%", 1015149,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.02105 )
+        .verification_value( 1.1345 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (AoE) nerfed 10%", 1274362,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.4084245 )
+        .verification_value( 0.453805 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Visceral Strength reduced to 4% Strength", 1123972,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 4 )
+        .verification_value( 8 );
+
+    hotfix::register_spell( "Death Knight", "2026-2-13", "Incite Terror max stack reduced to 3", 458478,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "max_stack" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 3 )
+        .verification_value( 5 );
+  }
 
   void init( player_t* ) const override
   {

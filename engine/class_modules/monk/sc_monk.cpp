@@ -165,7 +165,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.dance_of_chiji );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.heart_of_the_jade_serpent );
+  parse_effects( p()->buff.heart_of_the_jade_serpent,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_unity_within->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_yulons_avatar );
   parse_effects( p()->buff.heart_of_the_jade_serpent_unity_within );
   parse_effects( p()->buff.jade_sanctuary );
@@ -2975,13 +2976,6 @@ struct breath_of_fire_t : public monk_spell_t
       background = true;
       aoe        = -1;
     }
-
-    void execute() override
-    {
-      monk_spell_t::execute();
-
-      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
-    }
   };
 
   action_t *dot;
@@ -3407,6 +3401,39 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
   strength_of_the_black_ox_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
     base      = new impact_t( player, BASE );
+    celestial = new impact_t( player, CELESTIAL );
+  }
+};
+
+struct flight_of_the_red_crane_t : conduit_of_the_celestials_container_t
+{
+  enum fotrc_source_e
+  {
+    BASE,
+    CELESTIAL
+  };
+
+  struct impact_t : monk_spell_t
+  {
+    fotrc_source_e source;
+
+    impact_t( monk_t *player, fotrc_source_e source )
+      : monk_spell_t( player, fmt::format( "flight_of_the_red_crane_damage{}", BASE ? "" : "_celestial" ),
+                      player->talent.conduit_of_the_celestials.flight_of_the_red_crane_damage ),
+        source( source )
+    {
+      background = true;
+      aoe        = data().effectN( 1 ).chain_target();
+
+      if ( source == CELESTIAL )
+        if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
+             effect.ok() )
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+    }
+  };
+
+  flight_of_the_red_crane_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
+  {
     celestial = new impact_t( player, CELESTIAL );
   }
 };
@@ -4882,21 +4909,12 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
 
-  effect_mask_t em = effect_mask_t( true ).disable( 8 );
-  parse_effects( buff.heart_of_the_jade_serpent, em );
+  effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
+                                                                           : effect_mask_t( true ).disable( 8 );
+  parse_effects( buff.heart_of_the_jade_serpent, em,
+                 [ & ] { return !buff.heart_of_the_jade_serpent_unity_within->check(); } );
   parse_effects( buff.heart_of_the_jade_serpent_yulons_avatar, em );
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
-
-  if ( talent.conduit_of_the_celestials.flowing_wisdom->ok() )
-  {
-    effect_mask_t em = effect_mask_t( false ).enable( 8 );
-    parse_effects( talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff, em, [ & ]( double value ) {
-      double stacks =
-          buff.heart_of_the_jade_serpent->check() ||
-          buff.heart_of_the_jade_serpent_unity_within->check() + buff.heart_of_the_jade_serpent_yulons_avatar->check();
-      return std::pow( value, stacks );
-    } );
-  }
 
   // Midnight S1 Set Effects
   // Midnight S2 Set Effects
@@ -5506,6 +5524,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.unity_within_buff                 = find_spell( 443592 );
     talent.conduit_of_the_celestials.unity_within_heart_of_the_jade_serpent_buff = find_spell( 443616 );
     talent.conduit_of_the_celestials.unity_within_dmg_mult                       = find_spell( 443591 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_damage              = find_spell( 443611 );
   }
 
   // monk_t::talent::master_of_harmony
@@ -5660,6 +5679,9 @@ void monk_t::init_background_actions()
 
   if ( sbt )
     action.strength_of_the_black_ox = strength_of_the_black_ox_t( this );
+
+  if ( uw )
+    action.flight_of_the_red_crane = flight_of_the_red_crane_t( this );
 
   // Shado-Pan
   action.flurry_strikes = new flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
@@ -6077,6 +6099,7 @@ void monk_t::create_buffs()
 
                             action.strength_of_the_black_ox.celestial->execute();
                             action.courage_of_the_white_tiger.celestial->execute();
+                            action.flight_of_the_red_crane.celestial->execute();
 
                             buff.heart_of_the_jade_serpent_unity_within->trigger();
                           } );
@@ -6714,25 +6737,18 @@ void monk_t::combat_begin()
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
-    auto callback = [ & ] {
-      const auto out_of_combat = [ & ] { buff.tigereye_brew_1->trigger(); };
-
-      const auto internal = [ this, &out_of_combat ]( const auto &fn ) -> void {
-        auto wrapped_fn   = [ fn ] { fn( fn ); };
-        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-
-        if ( !sim->active_enemies &&
-             buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
-          make_event<events::delayed_cb_event_t>( *sim, this, 2_s, out_of_combat );
-
-        buff.tigereye_brew_1->trigger();
-        make_event<events::delayed_cb_event_t>( *sim, this, period, wrapped_fn );
-      };
-      internal( internal );
+    const auto period_fn = []( monk_t *player ) -> timespan_t {
+      return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
-    // Period is hasted
-    timespan_t initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-    make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
+    const auto callback = []( monk_t *player ) -> void {
+      player->buff.tigereye_brew_1->trigger();
+
+      if ( !player->sim->active_enemies && player->buff.tigereye_brew_1->stack() <
+                                               player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
+        make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
+    };
+    auto data = std::make_unique<events::repeating_dynamic_period_cb_event_data_t>( period_fn, callback );
+    make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, std::move( data ) );
 
     buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }

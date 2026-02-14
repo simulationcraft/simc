@@ -1837,9 +1837,7 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
     ranger_captains_iridescent_insignia_cb_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ), cooldown( nullptr ), cdr( 0_s )
     {
-      // Dont find the cooldown til init finished, as it wont exist when this is created.
-      effect.player->register_init_finished_callback(
-          [ & ]( player_t* p ) { cooldown = effect.player->find_cooldown( "silverstrike_trick_shot_1260266" ); } );
+      cooldown = effect.player->get_cooldown( "silverstrike_trick_shot_1260266" );
 
       cdr = timespan_t::from_seconds( -effect.player->find_spell( 1260265 )->effectN( 2 ).base_value() );
     }

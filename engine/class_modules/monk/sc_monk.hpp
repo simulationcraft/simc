@@ -482,6 +482,7 @@ public:
     // Conduit of the Celestials
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
     actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
+    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
 
     // Master of Harmony
     propagate_const<action_t *> harmonic_surge;
@@ -1008,6 +1009,8 @@ public:
       const spell_data_t *unity_within_buff;
       const spell_data_t *unity_within_heart_of_the_jade_serpent_buff;
       const spell_data_t *unity_within_dmg_mult;
+      // Row Crackbird
+      const spell_data_t *flight_of_the_red_crane_damage;
     } conduit_of_the_celestials;
 
     // Master of Harmony
@@ -1218,6 +1221,60 @@ struct delayed_execute_event_t : event_t
     if ( target->is_sleeping() )
       return;
     action->execute_on_target( target );
+  }
+};
+
+struct delayed_buff_trigger_event_t : event_t
+{
+  buff_t *buff;
+
+  delayed_buff_trigger_event_t( monk_t *player, buff_t *buff, timespan_t delay )
+    : event_t( *player->sim, delay ), buff( buff )
+  {
+  }
+
+  const char *name() const override
+  {
+    return buff->name();
+  }
+
+  void execute() override
+  {
+    buff->trigger();
+  }
+};
+
+struct repeating_dynamic_period_cb_event_data_t
+{
+  std::function<timespan_t( monk_t * )> period_fn;
+  std::function<void( monk_t * )> callback;
+
+  repeating_dynamic_period_cb_event_data_t( std::function<timespan_t( monk_t * )> period_fn,
+                                            std::function<void( monk_t * )> callback )
+    : period_fn( std::move( period_fn ) ), callback( std::move( callback ) )
+  {
+  }
+};
+
+struct repeating_dynamic_period_cb_event_t : event_t
+{
+  monk_t *player;
+  std::unique_ptr<repeating_dynamic_period_cb_event_data_t> data;
+
+  repeating_dynamic_period_cb_event_t( monk_t *player, std::unique_ptr<repeating_dynamic_period_cb_event_data_t> data )
+    : event_t( *player->sim, data->period_fn( player ) ), player( player ), data( std::move( data ) )
+  {
+  }
+
+  const char *name() const override
+  {
+    return "repeating_dynamic_period_cb_event_t";
+  }
+
+  void execute() override
+  {
+    data->callback( player );
+    make_event<repeating_dynamic_period_cb_event_t>( *player->sim, player, std::move( data ) );
   }
 };
 
