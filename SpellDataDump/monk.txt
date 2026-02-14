@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -14117,7 +14117,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
-Hotfixed         : Sub Type (4 -> 108), Affects Spells
 #3 (id=1026496)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Target: Self (1)
 Description      : Tiger Palm's damage is increased by $s2% and reduces the remaining cooldown of your Brews by ${$s3/1000}.1 additional sec.

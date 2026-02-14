@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1893,7 +1893,6 @@ Description      : Unleash a flurry of ice, striking the target $s1 times for a 
 |CFFffffffApplies ${$1246769s2*$s1} $lstack:stacks; of Freezing.|R
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
@@ -7740,7 +7739,6 @@ Description      : $@spelldesc270233
 Tooltip          : Blizzard is instant cast.
 
 Name             : Freezing Rain (id=270233) [Spell Family (3), Passive] 
-Hotfixed         : Proc Flags 1 (65536 -> 0), Attributes, Proc Flags 2 (0 -> 4)
 Talent Entry     : Frost [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
@@ -10980,7 +10978,6 @@ Effects          :
 Description      : Alters the fabric of time, returning you to your current location and health when cast a second time, or after ${$110909d+$s3} sec. Effect negated by long distance or death.
 
 Name             : Alter Time (id=342246) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13991,7 +13988,6 @@ Effects          :
 Description      : $@spelldesc389713
 
 Name             : Ice Cold (id=414658) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic

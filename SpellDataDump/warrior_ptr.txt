@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -155,7 +155,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=357)      : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.87424 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : AP Coefficient (2.3952 -> 2.87424)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Strikes all enemies in front of you for $s1 Physical damage. Deals reduced damage beyond $s2 targets.
@@ -818,7 +817,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.64394 | PvP Coefficient: 1.1625 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (5.80492 -> 4.64394)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -1011,7 +1009,6 @@ Description      : A direct strike, dealing $s1 Physical damage.
 Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : War Stomp (desc=Racial) (id=20549) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
 School           : Physical
@@ -1318,7 +1315,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.24203 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (3.85639 -> 4.24203)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Resource: rage | Target: Self (1)
                    Modified By: Recklessness (1719 effect#6), Merciless Assault (409983 effect#1), Burst of Power (437121 effect#3)
@@ -1377,7 +1373,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=14132)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.30594 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.88243 -> 2.30594)
 #2 (id=155551)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
                    Modified By: Recklessness (1719 effect#6), The Wall (335239 effect#2), Outburst (364010 effect#3)
@@ -1656,7 +1651,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.71635 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (2.0895 -> 2.71635)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: Source (22)
 #3 (id=1134341)  : Energize Power (30)
@@ -2353,7 +2347,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=86555)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.72498 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.15623 -> 1.72498)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -2496,7 +2489,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.71635 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (2.0895 -> 2.71635)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -2516,7 +2508,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=101983)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.72498 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.15623 -> 1.72498)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -2649,7 +2640,6 @@ Effects          :
 Description      : You take half falling damage.
 
 Name             : Quaking Palm (desc=Racial) (id=107079) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Pandaren (0x3800000)
 School           : Physical
@@ -2739,7 +2729,6 @@ Effects          :
 #8 (id=1169538)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Sub Type (101 -> 87), Base Value (3 -> -3)
 #9 (id=1193928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
@@ -3232,7 +3221,6 @@ Effects          :
 #6 (id=261027)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 2670 (Label) | Target: Self (1)
                    Affected Spells (Label): Fueled by Violence (383103)
-Hotfixed         : Base Value (0 -> 25)
 #7 (id=261028)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456), Ignore Pain (1277297)
@@ -3246,7 +3234,6 @@ Hotfixed         : Base Value (0 -> 25)
 #10 (id=261031)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 150 | Scaled Value: 150 | Misc Value 2: 3927 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike Ground Current (460670)
-Hotfixed         : Sub Type (108 -> 218), Base Value (0 -> 150), Misc Value 2 (0 -> 3927), Affects Spells, PvP Coefficient (0.27 -> 1)
 #11 (id=261032)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shockwave (46968), Shockwave (132168), Shockwave (441668)
@@ -3306,7 +3293,6 @@ Effects          :
 #11 (id=261052)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 3306 (Label) | Target: Self (1)
                    Affected Spells (Label): Colossal Might (440989)
-Hotfixed         : Base Value (2 -> 0)
 #12 (id=261053)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=261054)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3341,7 +3327,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191013)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 100)
 #6 (id=831458)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=877674)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -3362,7 +3347,6 @@ Hotfixed         : Base Value (150 -> 100)
 #11 (id=1155238) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 33 | Scaled Value: 33 | Misc Value 2: 3164 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike (435791)
-Hotfixed         : Base Value (0 -> 33)
 #12 (id=1155555) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3927 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike Ground Current (460670)
@@ -3994,7 +3978,6 @@ Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.9438 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : AP Coefficient (11.375 -> 11.9438)
                    Modified By: Bloodsport (279172 effect#3)
 #2 (id=299580)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -4420,10 +4403,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=801270)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 150)
 #3 (id=801429)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 10)
 Description      : Your maximum health is increased by $s3% and every ${$s2/10} Rage you spend heals you for ${$s1/10}% of your maximum health.
 
 Name             : Second Wind (id=202147) [Spell Family (4)] 
@@ -6631,7 +6612,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01771 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.52214 -> 2.01771)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -6654,7 +6634,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
 Effects          :
 #1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.242466 | Mechanic: Bleed | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.34638 -> 0.242466)
 Description      : Causes the target to suffer $o1 Bleed damage over $d. If this effect is reapplied, any remaining damage will be added to the new Deep Wounds.
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -8980,7 +8959,6 @@ Attributes       : No Active Defense (21), No AutoCast (AI) (49), Always AOE Lin
 Effects          :
 #1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.7 | Radius: 0 - 10 yards | Target: at Area (87) -> Line to Enemy (134)
-Hotfixed         : AP Coefficient (1.4 -> 0.7)
 #2 (id=818173)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: at Area (87)
 Description      : $@spelldesc262150
@@ -9966,7 +9944,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.09046 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.62769 -> 5.09046)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Resource: rage | Target: Self (1)
                    Modified By: Recklessness (1719 effect#6), Merciless Assault (409983 effect#1), Burst of Power (437121 effect#3)
@@ -10028,7 +10005,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.58746 -> 2.06997)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -10048,7 +10024,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.58746 -> 2.06997)
 Description      : $@spelldesc335097
 
 Name             : Leaper (id=335214) [Spell Family (4), Passive] 
@@ -15121,12 +15096,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Cleave (845), Slam (1464), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459), Heroic Strike (1269383)
                    Family Flags: 21, 22, 25
-Hotfixed         : Base Value (15 -> 20)
 #2 (id=1184820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Revenge (6572), Shield Slam (23922), Revenge (1215174)
                    Family Flags: 10, 41
-Hotfixed         : Base Value (10 -> 15)
 #3 (id=1210713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
@@ -15228,7 +15201,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1125684)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.52139 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (2.17342 -> 1.52139)
 #2 (id=1125685)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Outburst (364010 effect#2)
@@ -15311,7 +15283,6 @@ Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range 
 Effects          :
 #1 (id=1126722)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.551 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.034 -> 1.551)
 #2 (id=1126723)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
                    Modified By: Thorim's Might (436152 effect#1)
@@ -16132,7 +16103,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=1289791)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 #4 (id=1300777)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 Description      : $?c1[Mortal Strike and Cleave when it hits $s2 or more targets have][Bloodthirst has] a $?c1[$s3][$s4]% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
@@ -16186,7 +16156,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1141376)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 20), PvP Coefficient (2 -> 1)
 Description      : Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.
 
 Name             : Slayer's Malice (id=444779) [Spell Family (4), Passive, Hidden] 
@@ -16204,12 +16173,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Execute (5308), Overpower (7384), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Dreadnaught (315961), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 2, 29
-Hotfixed         : Base Value (20 -> 15)
 #2 (id=1184814)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Execute (5308), Raging Blow (85384), Raging Blow (96103), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Crushing Blow (335098), Crushing Blow (335100), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29, 45
-Hotfixed         : Base Value (20 -> 15)
 Description      : $?c1[Overpower][Raging Blow] and Execute damage increased by $?c1[$s1][$s2]%.
 
 Name             : Unrelenting Onslaught (id=444780) [Spell Family (4), Passive, Hidden] 
@@ -17004,9 +16971,9 @@ Effects          :
 #2 (id=1164106)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=1164111)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1218193)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
 #5 (id=1229368)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Misc Value 2: -29 | Target: Self (1)
                    Affected School(s): Physical

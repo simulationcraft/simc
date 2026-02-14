@@ -317,6 +317,7 @@ void acuity_of_the_rendorei( special_effect_t& effect )
 // 1236721 Rank 2 Driver
 // 1241729 RPPM
 // 1241759 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void arcane_mastery( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "genius_insight" );
@@ -337,6 +338,7 @@ void arcane_mastery( special_effect_t& effect )
 // 1236725 Rank 2 Driver
 // 1241722 RPPM
 // 1241761 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void janalais_precision( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "precision_of_the_dragonhawk" );
@@ -358,6 +360,7 @@ void janalais_precision( special_effect_t& effect )
 // 1236730 Rank 2 Driver
 // 1241727 RPPM
 // 1241764 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void worldsoul_tenacity( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "natures_tenacity" );
@@ -369,6 +372,30 @@ void worldsoul_tenacity( special_effect_t& effect )
 
   effect.custom_buff = buff;
   effect.spell_id    = 1241727;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Strength of Halazzi
+// 1236733 Rank 1 Driver
+// 1236734 Rank 2 Driver
+// 1241721 RPPM
+// 1241784 Damage
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void strength_of_halazzi( special_effect_t& effect )
+{
+  auto damage = effect.player->find_action( "halazzis_claws" );
+  if ( !damage )
+  {
+    damage          = create_proc_action<generic_proc_t>( "halazzis_claws", effect, "halazzis_claws",
+                                                          effect.player->find_spell( 1241784 ) );
+    damage->base_td = effect.driver()->effectN( 1 ).average( effect );
+    // No Role Mult currently
+    // damage->base_ta_multiplier *= role_mult( effect );
+  }
+
+  effect.execute_action = damage;
+  effect.spell_id       = 1241721;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -936,12 +963,11 @@ void void_( special_effect_t& effect )
 // 1245054 Embellishment Driver
 // 1245050 Trinket Driver
 // 1252457 RPPM
-// 1252486 Haste Buff - Elemental, Aberration
+// 1252486 Haste Buff - Elemental, Aberration, Demon
 // 1252487 Crit Buff - Mechanical
 // 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
-// 1252489 Versatility Buff - Undead
+// 1252489 Versatility Buff - Undead, Giant, Not Specified
 // TODO: What happens with both the trinket, and embellishment active?
-// TODO: Figure out what Giant, and Demon trigger.
 void hunt( special_effect_t& effect )
 {
   struct hunt_cb_t : public dbc_proc_callback_t
@@ -961,9 +987,9 @@ void hunt( special_effect_t& effect )
     race_e race;
     mode_e mode;
 
-    // TODO Add L'ura's race mapping when known.
-    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
-                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
+    // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff like Undead and Giant.
+    std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
+                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_UNDEAD };
 
     std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
                                           RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
@@ -1001,7 +1027,11 @@ void hunt( special_effect_t& effect )
 
       if ( mode == MODE_SPECIFIED )
       {
-        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to get the proper buff.
+        if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
+          race = RACE_UNDEAD;
+        else
+          race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
         if ( !range::contains( valid_races, race ) )
         {
           std::vector<std::string> valid_strings;
@@ -1056,16 +1086,16 @@ void hunt( special_effect_t& effect )
           break;
         case RACE_ABERRATION:
         case RACE_ELEMENTAL:
+        case RACE_DEMON:
           haste_buff->trigger();
           break;
         case RACE_MECHANICAL:
           crit_buff->trigger();
           break;
+        case RACE_GIANT:
         case RACE_UNDEAD:
           vers_buff->trigger();
           break;
-        case RACE_DEMON:
-        case RACE_GIANT:
         default:
           break;
       }
@@ -1684,6 +1714,317 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Void Execution Mandate
+// 1250557 Driver & Haste Buff
+// 1263355 Debuff
+// 1263357 Stacking Crit Buff
+void void_execution_mandate( special_effect_t& effect )
+{
+  struct marked_for_execution_t : public generic_proc_t
+  {
+    buff_t* buff;
+    marked_for_execution_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, buff_t* b )
+      : generic_proc_t( e, n, s ), buff( b )
+    {
+      target_debuff = s;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      get_debuff( s->target )->trigger();
+      buff->trigger();
+    }
+  };
+
+  auto crit_buff =
+      create_buff<stat_buff_t>( effect.player, "impending_execution", effect.player->find_spell( 1263357 ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "void_execution_mandate", effect.driver() )
+                        ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
+                        ->set_expire_callback( [ crit_buff ]( buff_t*, int, timespan_t ) { crit_buff->expire(); } );
+
+  auto debuff = create_proc_action<marked_for_execution_t>( "marked_for_execution", effect, "marked_for_execution",
+                                                            effect.driver()->effectN( 1 ).trigger(), haste_buff );
+
+  effect.execute_action = debuff;
+
+  auto impending          = new special_effect_t( effect.player );
+  impending->name_str     = "impending_execution_proc";
+  impending->item         = effect.item;
+  impending->spell_id     = effect.driver()->id();
+  impending->cooldown_    = 0_ms; // Cooldown is for on use effect, not the equip effect.
+  impending->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( impending );
+
+  auto impending_cb = new dbc_proc_callback_t( effect.player, *impending );
+  impending_cb->initialize();
+  impending_cb->activate();
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+                                                               [ debuff, crit_buff ]( auto, auto, auto s ) {
+                                                                 if ( debuff->get_debuff( s->target )->check() )
+                                                                   crit_buff->trigger();
+                                                               } );
+}
+
+// Emberwing Feather
+// 1250508 Driver & Haste Buff
+// 1255853 Crit Debuff
+// 1255856 Mastery Debuff
+// 1255857 Vers Debuff
+// TODO: What is the low chance? Not in data, needs testing.
+void emberwing_feather( special_effect_t& effect )
+{
+  struct emberwing_heatwave_t : public generic_proc_t
+  {
+    buff_t* buff;
+    std::array<buff_t*, 3> debuffs;
+
+    emberwing_heatwave_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : generic_proc_t( e, n, s ), buff( nullptr )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+
+      buff = make_buff<stat_buff_t>( e.player, "emberwing_heatwave", s )
+                 ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) )
+                 ->set_cooldown( 0_ms );
+
+      buff_t* crit_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_crit", e.player->find_spell( 1255853 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Crit" );
+      debuffs[ 0 ] = crit_debuff;
+
+      buff_t* mast_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_mast", e.player->find_spell( 1255856 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Mastery" );
+      debuffs[ 1 ] = mast_debuff;
+
+      buff_t* vers_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_vers", e.player->find_spell( 1255857 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Vers" );
+      debuffs[ 2 ] = vers_debuff;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+      // Assume "low" chance means flat 10% chance for now until we have more testing data
+      if ( rng().roll( 0.1 ) )
+        rng().range( debuffs )->trigger();
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<emberwing_heatwave_t>( "emberwing_heatwave", effect, "emberwing_heatwave", effect.driver() );
+}
+
+// Ranger-Captain's Iridescent Insignia
+// 1260265 Equip/Value Driver
+// 1260266 Damage / On use Driver
+void ranger_captains_iridescent_insignia( special_effect_t& effect )
+{
+  auto equip_driver = effect.player->find_spell( 1260265 );
+  assert( equip_driver && "Ranger-Captain's Iridescent Insignia missing equip driver" );
+
+  struct ranger_captains_iridescent_insignia_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* cooldown;
+    timespan_t cdr;
+
+    ranger_captains_iridescent_insignia_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ), cooldown( nullptr ), cdr( 0_s )
+    {
+      cooldown = effect.player->get_cooldown( "silverstrike_trick_shot_1260266" );
+
+      cdr = timespan_t::from_seconds( -effect.player->find_spell( 1260265 )->effectN( 2 ).base_value() );
+    }
+
+    void execute( action_t*, action_state_t* )
+    {
+      assert( cooldown && "Ranger-Captain's Iridescent Insignia couldnt find item cooldown" );
+      if ( cooldown )
+        cooldown->adjust( cdr );
+    }
+  };
+
+  struct silverstrike_trick_shot_t : public generic_proc_t
+  {
+    silverstrike_trick_shot_t( const special_effect_t& e, std::string_view n, const spell_data_t* val )
+      : generic_proc_t( e, n, e.driver() )
+    {
+      base_dd_min = base_dd_max = val->effectN( 1 ).average( e );
+      cooldown->duration        = 0_s;  // Handled by the special effect
+      base_multiplier *= role_mult( e );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      // Assume this uses the highest crit chance
+      if ( player->cache.spell_crit_chance() > player->cache.attack_crit_chance() )
+        m *= 1.0 + player->cache.spell_crit_chance();
+
+      else
+        m *= 1.0 + player->cache.attack_crit_chance();
+
+      return m;
+    }
+  };
+
+  auto equip          = new special_effect_t( effect.player );
+  equip->name_str     = "iridescent_insignia_cdr_proc";
+  equip->item         = effect.item;
+  equip->spell_id     = equip_driver->id();
+  equip->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( equip );
+
+  auto equip_cb = new ranger_captains_iridescent_insignia_cb_t( *equip );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  auto damage           = create_proc_action<silverstrike_trick_shot_t>( "silverstrike_trick_shot", effect,
+                                                                         "silverstrike_trick_shot", equip_driver );
+  effect.execute_action = damage;
+}
+
+// Eye of the Drowning Void
+// 1250601 Driver
+// 1255476 Damage
+// TODO: Does this have the increased damage per target hit?
+void eye_of_the_drowning_void( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "eye_of_the_drowning_void", effect, "eye_of_the_drowning_void",
+                                                        effect.driver()->effectN( 1 ).trigger() );
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->split_aoe_damage                  = true;
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Latch's Crooked Hook
+// 1254193 Use Driver
+// 1255379 Values
+// 1255298 Ground Impact Damage
+// 1254328 Main damage
+// TODO: Does the aoe effect increase per target hit?
+void latchs_crooked_hook( special_effect_t& effect )
+{
+  struct latchs_crooked_hook_t : public generic_proc_t
+  {
+    action_t* main_damage;
+    action_t* impact_damage;
+
+    latchs_crooked_hook_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
+    {
+      auto values = e.player->find_spell( 1255379 );
+      assert( values && "Latch's Cooked Hook unable to find Value Spell" );
+
+      target_debuff      = e.driver();
+      cooldown->duration = 0_ms;  // Handled by the special effect
+      aoe                = -1;
+
+      main_damage              = create_proc_action<generic_proc_t>( "latchs_crooked_hook", e, "latchs_crooked_hook",
+                                                                     e.player->find_spell( 1254328 ) );
+      main_damage->base_dd_min = main_damage->base_dd_max = values->effectN( 2 ).average( e );
+      main_damage->base_multiplier *= role_mult( e );
+
+      impact_damage = create_proc_action<generic_aoe_proc_t>(
+          "latchs_crooked_hook_impact", e, "latchs_crooked_hook_impact", e.player->find_spell( 1255298 ) );
+      impact_damage->base_dd_min = impact_damage->base_dd_max = values->effectN( 1 ).average( e );
+      impact_damage->base_multiplier *= role_mult( e );
+      impact_damage->split_aoe_damage = true;
+
+      main_damage->add_child( impact_damage );
+    }
+
+    buff_t* create_debuff( player_t* target ) override
+    {
+      auto debuff = generic_proc_t::create_debuff( target );
+      debuff->set_expire_callback( [ &, target ]( buff_t*, int, timespan_t d ) {
+        if ( d == 0_ms )
+          impact_damage->execute_on_target( target );
+      } );
+
+      return debuff;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      assert( execute_state && "Latch's Crooked Hook unable to get execute state" );
+      get_debuff( execute_state->target )->trigger();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      main_damage->execute_on_target( s->target );
+    }
+  };
+
+  auto missile = create_proc_action<latchs_crooked_hook_t>( "latchs_crooked_hook_missile", effect, "latchs_crooked_hook_missile" );
+
+  effect.execute_action = missile;
+}
+
+// Lightspire Core
+// 1250527 Driver & Passive Mastery Buff
+// 1263768 Light mastery buff
+// 1263762 Area Trigger
+// TODO: Emulate not standing in the light
+void lightspire_core( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "lightspire_core", effect.driver() )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) )
+                  ->set_rppm( RPPM_DISABLE )
+                  ->set_chance( 1.01 );
+
+  effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
+
+  auto light_buff = create_buff<stat_buff_t>( effect.player, "lights_blessing", effect.player->find_spell( 1263768 ) )
+                        ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
+                        ->set_duration( effect.player->find_spell( 1263762 )->duration() );
+
+  effect.custom_buff = light_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Magister's Alchemist Stone
+// 1280591 Driver
+// 299788 Strength Buff
+// 299789 Agility Buff
+// 299790 Int Buff
+void magisters_alchemist_stone( special_effect_t& e )
+{
+  auto stat = e.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  const spell_data_t* buff_spell;
+  switch ( stat )
+  {
+    case STAT_STRENGTH:
+      buff_spell = e.player->find_spell( 299788 );
+      break;
+    case STAT_AGILITY:
+      buff_spell = e.player->find_spell( 299789 );
+      break;
+    default:
+      buff_spell = e.player->find_spell( 299790 );
+      break;
+  }
+
+  auto buff = create_buff<stat_buff_t>( e.player, buff_spell )
+                  ->add_stat_from_effect_type( A_MOD_STAT, buff_spell->effectN( 1 ).average( e ) );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1922,6 +2263,7 @@ void register_special_effects()
   register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
+  register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -1958,6 +2300,14 @@ void register_special_effects()
   register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
   register_special_effect( 1253110, trinkets::withered_saptors_paw );
   register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
+  register_special_effect( 1250557, trinkets::void_execution_mandate );
+  register_special_effect( 1250508, trinkets::emberwing_feather );
+  register_special_effect( 1260266, trinkets::ranger_captains_iridescent_insignia );
+  register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
+  register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
+  register_special_effect( 1254193, trinkets::latchs_crooked_hook );
+  register_special_effect( 1250527, trinkets::lightspire_core );
+  register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor

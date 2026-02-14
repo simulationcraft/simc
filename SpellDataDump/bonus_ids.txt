@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -4343,6 +4343,9 @@ bonus_id={ 7745 }, stats={ 100% Crit [0.0460] }
 bonus_id={ 7746 }, stats={ 100% Haste [0.0940] }
 bonus_id={ 7747 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358569, index=2, type=equip) }
 bonus_id={ 7748 }, effects={ Harsh Tutelage (id=358571, index=2, type=equip) }
+bonus_id={ 7753 }, base_ilevel={ 71 }, req_ilevel={ 60 }
+bonus_id={ 7754 }, base_ilevel={ 72 }, req_ilevel={ 60 }
+bonus_id={ 7755 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 7880 }, quality={ epic }, ilevel={ 233 @plvl 0 - 233 @plvl 0 }
 bonus_id={ 7881 }, quality={ epic }, ilevel={ 262 @plvl 0 - 262 @plvl 0 }
 bonus_id={ 7883 }, ilevel={ 5 @plvl 1 - 220 @plvl 60 }
@@ -4932,9 +4935,9 @@ bonus_id={ 9115 }, base_ilevel={ 69 }, req_ilevel={ 60 }, quality={ epic }
 bonus_id={ 9116 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 9117 }, base_ilevel={ 71 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }
-bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }
-bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }
-bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }
+bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }
 bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }

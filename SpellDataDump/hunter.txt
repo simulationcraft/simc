@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65848 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -21804,7 +21804,7 @@ Name             : Raptor Swipe (id=1262343) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
-Resource         : 30 Focus (2) (id=312838)[Hotfixed: Cost (20 -> 30)]
+Resource         : 30 Focus (2) (id=312838)
 Range            : 100 yards
 Max Targets      : 5
 GCD              : 1.5 seconds
