@@ -1951,6 +1951,8 @@ public:
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                   action_priority_list_t* assisted_combat ) override;
   std::string generate_bloodlust_options();
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -12706,9 +12708,23 @@ std::vector<std::string> shaman_t::action_names_from_spell_id( unsigned int spel
 parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                     const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1271904 )  // Skyfury Highlight
-    return { "0" }; //lets just ignore it for today TODO
+
+  if ( step.spell_id == 318038 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 382027 )
+    return { "talent.flametongue_weapon" };
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 384087 )
+    return { "0" };
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 384087 )
+    return { "1" };
   return parse_player_effects_t::parse_assisted_combat_rule( rule, step );
+}
+
+void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                         action_priority_list_t* assisted_combat )
+{
+  if ( step.spell_id == 462854 )
+    return;
+
+  player_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 // shaman_t::moving =========================================================
