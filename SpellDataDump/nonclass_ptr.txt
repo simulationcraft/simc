@@ -228570,10 +228570,12 @@ Effects          :
 Description      : $@spelldesc386692
 
 Name             : Lightbloom Energy (id=1225830) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215278)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228581,10 +228583,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Lightbloom Energy, granting additional Motes of Light when skinned.
 
 Name             : Wild Energy (id=1225834) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215283)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228592,10 +228596,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Wild Energy, granting additional Motes of Wild Magic when skinned.
 
 Name             : Primal Energy (id=1225835) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215284)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228603,10 +228609,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Primal Energy, granting additional Motes of Primal Energy when skinned.
 
 Name             : Void Energy (id=1225836) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215285)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
