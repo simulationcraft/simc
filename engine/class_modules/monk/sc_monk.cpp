@@ -2976,13 +2976,6 @@ struct breath_of_fire_t : public monk_spell_t
       background = true;
       aoe        = -1;
     }
-
-    void execute() override
-    {
-      monk_spell_t::execute();
-
-      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
-    }
   };
 
   action_t *dot;
@@ -6706,14 +6699,14 @@ void monk_t::combat_begin()
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
-    const auto period_fn = [] ( monk_t* player ) -> timespan_t {
+    const auto period_fn = []( monk_t *player ) -> timespan_t {
       return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
-    const auto callback = []( monk_t* player ) -> void {
+    const auto callback = []( monk_t *player ) -> void {
       player->buff.tigereye_brew_1->trigger();
 
-      if ( !player->sim->active_enemies &&
-             player->buff.tigereye_brew_1->stack() < player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
+      if ( !player->sim->active_enemies && player->buff.tigereye_brew_1->stack() <
+                                               player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
         make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
     };
     make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, period_fn, callback );
