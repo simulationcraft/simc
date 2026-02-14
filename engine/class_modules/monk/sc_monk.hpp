@@ -482,6 +482,7 @@ public:
     // Conduit of the Celestials
     actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
     actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
+    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
 
     // Master of Harmony
     propagate_const<action_t *> harmonic_surge;
@@ -1008,6 +1009,8 @@ public:
       const spell_data_t *unity_within_buff;
       const spell_data_t *unity_within_heart_of_the_jade_serpent_buff;
       const spell_data_t *unity_within_dmg_mult;
+      // Row Crackbird
+      const spell_data_t *flight_of_the_red_crane_damage;
     } conduit_of_the_celestials;
 
     // Master of Harmony

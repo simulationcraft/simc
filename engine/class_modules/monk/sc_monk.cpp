@@ -3405,6 +3405,39 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
   }
 };
 
+struct flight_of_the_red_crane_t : conduit_of_the_celestials_container_t
+{
+  enum fotrc_source_e
+  {
+    BASE,
+    CELESTIAL
+  };
+
+  struct impact_t : monk_spell_t
+  {
+    fotrc_source_e source;
+
+    impact_t( monk_t *player, fotrc_source_e source )
+      : monk_spell_t( player, fmt::format( "flight_of_the_red_crane_damage{}", BASE ? "" : "_celestial" ),
+                      player->talent.conduit_of_the_celestials.flight_of_the_red_crane_damage ),
+        source( source )
+    {
+      background = true;
+      aoe        = data().effectN( 1 ).chain_target();
+
+      if ( source == CELESTIAL )
+        if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
+             effect.ok() )
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+    }
+  };
+
+  flight_of_the_red_crane_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
+  {
+    celestial = new impact_t( player, CELESTIAL );
+  }
+};
+
 struct niuzao_spell_t : public monk_spell_t
 {
   niuzao_spell_t( monk_t *p, std::string_view options_str )
@@ -5491,6 +5524,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.unity_within_buff                 = find_spell( 443592 );
     talent.conduit_of_the_celestials.unity_within_heart_of_the_jade_serpent_buff = find_spell( 443616 );
     talent.conduit_of_the_celestials.unity_within_dmg_mult                       = find_spell( 443591 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_damage              = find_spell( 443611 );
   }
 
   // monk_t::talent::master_of_harmony
@@ -5645,6 +5679,9 @@ void monk_t::init_background_actions()
 
   if ( sbt )
     action.strength_of_the_black_ox = strength_of_the_black_ox_t( this );
+
+  if ( uw )
+    action.flight_of_the_red_crane = flight_of_the_red_crane_t( this );
 
   // Shado-Pan
   action.flurry_strikes = new flurry_strikes_t( talent.shado_pan.flurry_strikes->ok(), this );
@@ -6062,6 +6099,7 @@ void monk_t::create_buffs()
 
                             action.strength_of_the_black_ox.celestial->execute();
                             action.courage_of_the_white_tiger.celestial->execute();
+                            action.flight_of_the_red_crane.celestial->execute();
 
                             buff.heart_of_the_jade_serpent_unity_within->trigger();
                           } );
