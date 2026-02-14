@@ -6706,25 +6706,17 @@ void monk_t::combat_begin()
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
-    auto callback = [ & ] {
-      const auto out_of_combat = [ & ] { buff.tigereye_brew_1->trigger(); };
-
-      const auto internal = [ this, &out_of_combat ]( const auto &fn ) -> void {
-        auto wrapped_fn   = [ fn ] { fn( fn ); };
-        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-
-        if ( !sim->active_enemies &&
-             buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
-          make_event<events::delayed_cb_event_t>( *sim, this, 2_s, out_of_combat );
-
-        buff.tigereye_brew_1->trigger();
-        make_event<events::delayed_cb_event_t>( *sim, this, period, wrapped_fn );
-      };
-      internal( internal );
+    const auto period_fn = [] ( monk_t* player ) -> timespan_t {
+      return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
-    // Period is hasted
-    timespan_t initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-    make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
+    const auto callback = []( monk_t* player ) -> void {
+      player->buff.tigereye_brew_1->trigger();
+
+      if ( !player->sim->active_enemies &&
+             player->buff.tigereye_brew_1->stack() < player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
+        make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
+    };
+    make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, period_fn, callback );
 
     buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }

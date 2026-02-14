@@ -1221,6 +1221,53 @@ struct delayed_execute_event_t : event_t
   }
 };
 
+struct delayed_buff_trigger_event_t : event_t
+{
+  buff_t *buff;
+
+  delayed_buff_trigger_event_t( monk_t *player, buff_t *buff, timespan_t delay )
+    : event_t( *player->sim, delay ), buff( buff )
+  {
+  }
+
+  const char *name() const override
+  {
+    return buff->name();
+  }
+
+  void execute() override
+  {
+    buff->trigger();
+  }
+};
+
+struct repeating_dynamic_period_cb_event_t : event_t
+{
+  std::function<timespan_t( monk_t * )> period_fn;
+  std::function<void( monk_t * )> callback;
+  monk_t *player;
+
+  repeating_dynamic_period_cb_event_t( monk_t *player, std::function<timespan_t( monk_t * )> period_fn,
+                                       std::function<void( monk_t * )> callback )
+    : event_t( *player->sim, period_fn( player ) ),
+      period_fn( std::move( period_fn ) ),
+      callback( std::move( callback ) ),
+      player( player )
+  {
+  }
+
+  const char *name() const override
+  {
+    return "repeating_dynamic_period_cb_event_t";
+  }
+
+  void execute() override
+  {
+    callback( player );
+    make_event<repeating_dynamic_period_cb_event_t>( *player->sim, player, period_fn, callback );
+  }
+};
+
 struct delayed_cb_event_t : event_t
 {
   std::function<void()> cb;
