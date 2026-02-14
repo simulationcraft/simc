@@ -12707,7 +12707,7 @@ parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assist
                                                                     const assisted_combat_step_data_t& step ) const
 {
   if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1271904 )  // Skyfury Highlight
-    return { "aura.skyfury.down" };
+    return { "0" }; //lets just ignore it for today TODO
   return parse_player_effects_t::parse_assisted_combat_rule( rule, step );
 }
 
