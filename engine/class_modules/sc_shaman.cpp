@@ -1225,6 +1225,7 @@ public:
     buff_t* ancestral_swiftness;
     buff_t* thunderstrike_ward;
     buff_t* purging_flames;
+    buff_t* mid1_ele_2pc;
 
     buff_t* storms_eye;
 
@@ -8223,6 +8224,8 @@ struct stormkeeper_t : public shaman_spell_t
 
     p()->buff.stormkeeper->trigger(2);
 
+    p()->buff.mid1_ele_2pc->trigger();
+
   }
 
   bool ready() override
@@ -11972,6 +11975,9 @@ void shaman_t::create_buffs()
 
   buff.purging_flames = make_buff( this, "purging_flames", find_spell( 1259491 ) );
 
+  buff.mid1_ele_2pc = make_buff( this, "thunderous_velocity", find_spell( 1272101 ) )
+                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) );
+
   //
   // Enhancement
   //
@@ -12266,16 +12272,12 @@ bool shaman_t::validate_actor()
                    util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     return false;
   }
-#ifdef NDEBUG
 
-  if ( ( specialization() == SHAMAN_ELEMENTAL ) && ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) ) )
-    {
-      throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
-      return false;
-    }
-
-
-#endif  // !NDEBUG
+  if ( !is_ptr() )
+  {
+    throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
+    return false;
+  }
 
   // Restoration isn't supported atm
   if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION &&
