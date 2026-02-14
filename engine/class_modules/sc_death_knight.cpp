@@ -4269,13 +4269,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     dk()->buffs.dance_of_midnight_2->trigger( duration );
   }
 
-  void demise() override
-  {
-    death_knight_pet_t::demise();
-    if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      dk()->buffs.gift_of_the_sanlayn->expire();
-  }
-
   void reschedule_drw()
   {
     if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
@@ -9161,15 +9154,11 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.bone_shield->trigger( bone_shield_stack_gain );
     }
 
-    // Only summon the rune weapons if the buff is down.
-    if ( !p()->buffs.dancing_rune_weapon->up() )
-    {
-      // As of Dec 29th, 2025 everlasting bond spawns first
-      if ( p()->talent.blood.everlasting_bond.ok() )
-        p()->pets.everlasting_bond_pet.spawn();
+    // As of Dec 29th, 2025 everlasting bond spawns first
+    if ( p()->talent.blood.everlasting_bond.ok() )
+      p()->pets.everlasting_bond_pet.spawn();
 
-      p()->pets.dancing_rune_weapon_pet.spawn();
-    }
+    p()->pets.dancing_rune_weapon_pet.spawn();
 
     if ( p()->talent.sanlayn.the_blood_is_life.ok() )
       p()->pet_summon.blood_beast->execute();
@@ -9178,7 +9167,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.blood_mist->trigger();
 
     if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      p()->buffs.gift_of_the_sanlayn->trigger();
+      p()->buffs.gift_of_the_sanlayn->trigger( p()->talent.blood.dancing_rune_weapon->duration() );
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
       p()->buffs.exterminate->trigger();
