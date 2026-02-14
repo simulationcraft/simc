@@ -12706,6 +12706,8 @@ std::vector<std::string> shaman_t::action_names_from_spell_id( unsigned int spel
 parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                     const assisted_combat_step_data_t& step ) const
 {
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1271904 )  // Arcane Intellect Highlight
+    return { "aura.skyfury.down" };
   return parse_player_effects_t::parse_assisted_combat_rule( rule, step );
 }
 
