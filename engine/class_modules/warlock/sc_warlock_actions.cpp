@@ -3303,15 +3303,20 @@ using namespace helpers;
     {
       harmful = may_crit = false;
 
+      // The talent spell (1251778) has 0s cooldown in Midnight DBC data,
+      // but the actual in-game cooldown is 45s. Hardcode until DBC is fixed.
+      cooldown->duration = timespan_t::from_seconds( 45.0 );
+
       triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     void execute() override
     {
       warlock_spell_t::execute();
-      
+
       p()->buffs.vilefiend->trigger( -1, 1.0 ); // Set value to 1.0 to allow Houndmasters Gambit talent to apply
-      p()->warlock_pet_list.vilefiends.spawn( p()->talents.summon_vilefiend->duration() );
+      // Talent spell 1251778 has 0s duration — spell 1251781 has the correct 15s
+      p()->warlock_pet_list.vilefiends.spawn( p()->find_spell( 1251781 )->duration() );
     }
   };
 
@@ -4181,6 +4186,10 @@ using namespace helpers;
 
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
+
+      // Spell data has 3 charges / 45s recharge but the charge system
+      // was never initialized, causing infinite-cast loops
+      cooldown->charges = as<int>( data().charges() );
     }
 
     void execute() override

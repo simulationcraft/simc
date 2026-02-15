@@ -639,16 +639,8 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
 
 bool warlock_t::validate_actor()
 {
-  // TODO: Remove this when Midnight is properly supported
-  if ( sim->dbc->wowv() < wowv_t( 13, 0, 0 ) )
-  {
-    std::string patch = "Midnight prepatch";
-    if ( sim->dbc->wowv() > wowv_t( 12, 0, 0 ) )
-      patch = "Midnight";
-    throw sc_unsupported_specialization( fmt::format( "Warlock sims are non functional for {}", patch ) );
-    return false;
-  }
-
+  // Warlock Midnight support: guard removed — all three specs now sim
+  // with vilefiend and dimensional_rift fixes below
   return true;
 }
 

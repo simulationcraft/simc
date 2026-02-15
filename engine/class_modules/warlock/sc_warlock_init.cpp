@@ -376,6 +376,9 @@ namespace warlock
     warlock_pet_list.doomguards.set_default_duration( talents.doomguard->duration() );
 
     warlock_pet_list.greater_dreadstalkers.set_default_duration( tier.greater_dreadstalker->duration() );
+
+    // Talent spell 1251778 has 0s duration — spell 1251781 has the correct 15s
+    warlock_pet_list.vilefiends.set_default_duration( find_spell( 1251781 )->duration() );
   }
 
   void warlock_t::init_spells_destruction()
@@ -773,8 +776,9 @@ namespace warlock
     buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
                           ->set_duration( talents.call_dreadstalkers_2->duration() );
 
+    // Talent spell 1251778 has 0s duration — spell 1251781 has the correct 15s
     buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 2 )
-                      ->set_duration( talents.summon_vilefiend->duration() );
+                      ->set_duration( find_spell( 1251781 )->duration() );
 
     buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
                    ->set_duration( talents.summon_demonic_tyrant->duration() );
