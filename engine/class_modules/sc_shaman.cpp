@@ -2384,6 +2384,7 @@ public:
 
   bool affected_by_stormkeeper_cast_time;
   bool affected_by_stormkeeper_damage;
+  bool affected_by_stormkeeper_damage_tier;
 
   bool affected_by_elemental_unity_fe_da;
   bool affected_by_elemental_unity_fe_ta;
@@ -2414,6 +2415,7 @@ public:
       affected_by_ans_cast_time( false ),
       affected_by_stormkeeper_cast_time( false ),
       affected_by_stormkeeper_damage( false ),
+      affected_by_stormkeeper_damage_tier( false ),
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
       affected_by_elemental_unity_se_da( false ),
@@ -2448,9 +2450,10 @@ public:
     }
 
     affected_by_stormkeeper_cast_time =
-        ab::data().affected_by( player->find_spell( 191634 )->effectN( 1 ) );  // TODO Hawk: This is automated right?
+        ab::data().affected_by( player->find_spell( 191634 )->effectN( 1 ) );
     affected_by_stormkeeper_damage    =
-        ab::data().affected_by( player->find_spell( 191634 )->effectN( 2 ) );  // TODO Hawk: This is automated right?
+        ab::data().affected_by( player->find_spell( 191634 )->effectN( 2 ) );
+    affected_by_stormkeeper_damage_tier = ab::data().affected_by( player->find_spell( 191634 )->effectN( 4 ) );
 
     affected_by_ns_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) ) ||
                           ab::data().affected_by( player->talent.natures_swiftness->effectN( 3 ) );
@@ -3102,6 +3105,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       m *= 1.0 + p()->buff.stormkeeper->value();
+    }
+
+    if ( affected_by_stormkeeper_damage_tier && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
+    {
+      m *= 1.0 + p()->buff.stormkeeper->data().effectN(4).percent();
     }
 
     return m;
@@ -6017,7 +6025,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
     chained_overload_base_t( p, "chain_lightning_overload", t, p->find_spell( 45297 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   {
-    affected_by_master_of_the_elements = true;
+    affected_by_master_of_the_elements  = true;
   }
 
   void impact( action_state_t* state ) override
@@ -6953,6 +6961,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
+    affected_by_stormkeeper_damage_tier = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
   }
 
   void impact( action_state_t* state ) override
@@ -8323,7 +8332,7 @@ struct stormkeeper_t : public shaman_spell_t
     }
 
     p()->summon_ancestor();
-    p()->buff.stormkeeper->trigger( 2 ); //p()->spec.stormkeeper_2->charges() );
+    p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
 
     p()->buff.mid1_ele_2pc->trigger();
 
