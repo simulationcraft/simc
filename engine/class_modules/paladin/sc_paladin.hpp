@@ -205,6 +205,8 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* judge_jury_and_executioner;
 
+    buff_t* execution_sentence;
+
     buff_t* echoes_of_wrath;  // DF3 4pc
 
     // TWW Hero Talents
@@ -760,7 +762,6 @@ public:
   int divine_inspiration_next;
 
   double reflection_of_radiance_proc_chance;
-  double es_accum;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -1268,19 +1269,6 @@ public:
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;
-  }
-
-  virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
-  {
-    ab::assess_damage( typ, s );
-
-    paladin_td_t* td = this->td( s->target );
-
-    if ( td->debuff.execution_sentence_gather->check() && !dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
-    {
-      // Damage is accumulated as is now
-      p()->accumulate_es_damage( s, 1.0 );
-    }
   }
 };
 

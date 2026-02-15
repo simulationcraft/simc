@@ -233,7 +233,8 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
   void execute() override
   {
-    p()->es_accum = 0.0;
+    p()->buffs.execution_sentence->trigger();
+
     paladin_melee_attack_t::execute();
 
     if ( p()->talents.judge_jury_and_executioner->ok() )
@@ -1014,12 +1015,19 @@ struct sun_sear_t : public paladin_spell_t
 
 void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
 {
+  if ( !buffs.execution_sentence->up() )
+    return;
+
+  double es_accum = buffs.execution_sentence->check_value();
+
   double amount_accumulated = s->result_total * mult;
 
   sim->print_debug( "{}'s Execution Sentence accumulates {} additional damage: {} -> {}", name_str,
     amount_accumulated, es_accum, es_accum + amount_accumulated );
 
   es_accum += amount_accumulated;
+
+  buffs.execution_sentence->current_value = es_accum;
 }
 
 void paladin_t::trigger_es_explosion( player_t* target )
@@ -1029,7 +1037,7 @@ void paladin_t::trigger_es_explosion( player_t* target )
   // 14.02.26 Fluttershy - ES still only accumulates 10% of the damage
   if ( bugs )
     perc = .1;
-  double accumulated = es_accum * perc;
+  double accumulated = buffs.execution_sentence->check_value() * perc;
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
@@ -1038,6 +1046,8 @@ void paladin_t::trigger_es_explosion( player_t* target )
   explosion->set_target( target );
   explosion->accumulated = ta;
   explosion->schedule_execute();
+
+  buffs.execution_sentence->expire();
 }
 
 // Initialization
@@ -1123,6 +1133,10 @@ void paladin_t::create_buffs_retribution()
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
   buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
+
+  buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
+    ->set_default_value( 0.0 )
+    ->set_duration( 10025_ms ); // make it slightly longer than the debuff to avoid races with expiry
 }
 
 void paladin_t::init_rng_retribution()

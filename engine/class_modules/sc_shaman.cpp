@@ -602,7 +602,7 @@ public:
                  ( distance < 0 && distance >= -m_max_draw );
         } ) == pos.end();
 
-        if ( ++shuffle_attempts > 10 )
+        if ( ++shuffle_attempts > 100 )
         {
           range::fill( entries, FAIL );
           position = entries.begin();
@@ -654,6 +654,102 @@ public:
       }
     }
 #endif // NDEBUG
+  }
+};
+
+template <typename T>
+class deck_rng_wrapper_t
+{
+  public:
+  using param_fn_t = std::function<std::tuple<unsigned, unsigned, unsigned>(deck_rng_wrapper_t&)>;
+
+  private:
+  std::string     m_name;
+  player_t*       m_actor;
+  shuffled_rng_t* m_rng;
+
+  unsigned        m_total;
+  int             m_success;
+
+  // Deck parametrization callback, returns a tuple <total_cards, success_cards, max_card_draw>
+  param_fn_t      m_param_fn;
+
+  public:
+  deck_rng_wrapper_t() = default;
+
+  deck_rng_wrapper_t( util::string_view name_, player_t* a_ ) : m_name( name_ ), m_actor( a_ ),
+    m_rng( nullptr ), m_total( 0U ), m_success( -1 )
+  { }
+
+  unsigned opt_total() const
+  { return m_total; }
+
+  int opt_success() const
+  { return m_success; }
+
+  player_t* actor() const
+  { return m_actor; }
+
+  bool trigger() const
+  { assert( m_rng ); return m_rng->trigger(); }
+
+  void create_options()
+  {
+    std::string success_str = fmt::format( "shaman.{}_deck_success", m_name );
+    std::string total_str = fmt::format( "shaman.{}_deck_total", m_name );
+
+    m_actor->add_option( opt_uint( success_str, m_total, 0U, 10000U ) );
+    m_actor->add_option( opt_int( total_str, m_success, 1U, 10000U ) );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) const
+  {
+    if ( util::str_compare_ci( name, fmt::format( "{}_proc_left", m_name ) ) )
+    {
+      return make_fn_expr( name, [ rng = this->m_rng ]() {
+        return rng->count_remains( shuffled_rng_e::SUCCESS );
+      } );
+    }
+    else if ( util::str_compare_ci( name, fmt::format( "{}_fail_left", m_name ) ) )
+    {
+      return make_fn_expr( name, [ rng = this->m_rng ]() {
+        return rng->count_remains( shuffled_rng_e::FAIL );
+      } );
+    }
+    else if ( util::str_compare_ci( name, fmt::format( "{}_draws_left", m_name ) ) )
+    {
+      return make_fn_expr( name, [ rng = this->m_rng ]() {
+        return rng->entry_remains();
+      } );
+    }
+
+    return nullptr;
+  }
+
+  deck_rng_wrapper_t& set_param_fn( const param_fn_t& fn_ )
+  { m_param_fn = fn_; return *this; }
+
+  void build()
+  {
+    auto params = m_param_fn( *this );
+
+    if ( std::get<0>( params ) < std::get<1>( params ) * ( std::get<2>( params ) + 1 ) )
+    {
+      m_actor->sim->error(
+        "{} cannot build a deck {} with parameters draws_per_event={}, "
+        "successful_cards={}, total_cards={}",
+        m_actor->name(), m_name, std::get<2>( params ), std::get<1>( params ),
+        std::get<0>( params ) );
+      m_actor->sim->cancel();
+      return;
+    }
+
+    m_actor->sim->print_debug( "{} constructing dre_deck {}, n_success={}, n_total={}, max_draw={}",
+      m_actor->name(), m_name, std::get<1>( params ), std::get<0>( params ), std::get<2>( params ) );
+
+    m_rng = m_actor->get_rng<T>( m_name,
+      std::get<1>( params ), std::get<0>( params ), std::get<2>( params )
+    );
   }
 };
 } // Namespace rng ends
@@ -1314,10 +1410,6 @@ public:
     int tww3_farseer_set = 0;
     int tww3_stormbringer_set = 0;
 
-    // New deck dre implementation
-    unsigned n_dre_draw_success = 2; // Number of successs in the deck
-    int n_dre_draws = -1; // Total cards in the deck
-
     // Chance on Crash Lightning target to sit in the Crash Lightning (Unleashed) puddle
     double crash_lightning_su_hit_chance = 0.85;
   } options;
@@ -1741,7 +1833,15 @@ public:
     accumulated_rng_t* lively_totems_ptr;
 
     // New deeply rooted elements RNG
-    shuffled_rng_t* deeply_rooted_elements;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> deeply_rooted_elements;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
+
+    rng_obj_t( shaman_t* s ) :
+      awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
+      ancient_fellowship( nullptr ), routine_communication( nullptr ), imbuement_mastery( nullptr ),
+      lively_totems_ptr( nullptr ),
+      deeply_rooted_elements( "dre", s ), tempest_enh( "tempest", s )
+    { }
   } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
@@ -1756,8 +1856,8 @@ public:
 
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : parse_player_effects_t( sim, SHAMAN, name, r ),
-      lava_surge_during_lvb( false ),
       sk_during_cast( false ),
+      lava_surge_during_lvb( false ),
       ls_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
@@ -1780,7 +1880,7 @@ public:
       uptime(),
       talent(),
       spell(),
-      rng_obj()
+      rng_obj( this )
   {
     // Cooldowns
     cooldown.ascendance         = get_cooldown( "ascendance" );
@@ -1941,7 +2041,6 @@ public:
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
   void datacollection_end() override;
-
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
 
   // APL releated methods
@@ -9874,24 +9973,14 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
   if ( util::str_compare_ci( name, "total_awaken_count" ) )
     return make_fn_expr( name, [ this ]() { return as<double>( aws_counter ); } );
 
-  if ( util::str_compare_ci( name, "dre_proc_left" ) )
+  if ( auto expr = rng_obj.deeply_rooted_elements.create_expression( name ) )
   {
-    return make_fn_expr( name, [ rng = rng_obj.deeply_rooted_elements ]() {
-        return rng->count_remains( SUCCESS );
-    } );
+    return expr;
   }
 
-  if ( util::str_compare_ci( name, "dre_fail_left" ) )
+  if ( auto expr = rng_obj.tempest_enh.create_expression( name ) )
   {
-    return make_fn_expr( name, [ rng = rng_obj.deeply_rooted_elements ]() {
-        return rng->count_remains( FAIL );
-    } );
-  }
-  if ( util::str_compare_ci( name, "dre_draws_left" ) )
-  {
-    return make_fn_expr( name, [ rng = rng_obj.deeply_rooted_elements ]() {
-        return rng->entry_remains();
-    } );
+    return expr;
   }
 
   if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
@@ -10196,12 +10285,11 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.tww3_farseer_set", options.tww3_farseer_set, 0, 4 ) );
   add_option( opt_int( "shaman.tww3_stormbringer_set", options.tww3_stormbringer_set, 0, 4 ) );
 
-  // New DRE shuffled deck options
-  add_option( opt_uint( "shaman.dre_deck_success", options.n_dre_draw_success, 0, 10000U ) );
-  add_option( opt_int( "shaman.dre_deck_total", options.n_dre_draws, 1, 10000U ) );
-
   add_option( opt_float( "shaman.crash_lightning_su_hit_chance",
     options.crash_lightning_su_hit_chance, 0.0 , 1.0 ) );
+
+  rng_obj.tempest_enh.create_options();
+  rng_obj.deeply_rooted_elements.create_options();
 }
 
 // shaman_t::create_profile ================================================
@@ -10243,9 +10331,6 @@ void shaman_t::copy_from( player_t* source )
   options.surging_totem_miss_chance = p->options.surging_totem_miss_chance;
 
   options.chain_lightning_target_rng = p->options.chain_lightning_target_rng;
-
-  options.n_dre_draws = p->options.n_dre_draws;
-  options.n_dre_draw_success = p->options.n_dre_draw_success;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -11022,7 +11107,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   for ( auto draw = 0U; draw < draws; ++draw )
   {
     dre_attempts++;
-    if ( rng_obj.deeply_rooted_elements->trigger() )
+    if ( rng_obj.deeply_rooted_elements.trigger() )
     {
       assert( !success );
       success = true;
@@ -11467,7 +11552,7 @@ void shaman_t::trigger_tempest( T resource_count )
     return;
   }
   double tempest_chance = 0.0;
-  if (specialization() == SHAMAN_ELEMENTAL)
+  if ( specialization() == SHAMAN_ELEMENTAL )
   {
     tempest_chance = talent.tempest->effectN( 1 ).percent() * 0.01 * resource_count;
     if (talent.awakening_storms.ok())
@@ -11475,7 +11560,7 @@ void shaman_t::trigger_tempest( T resource_count )
       tempest_chance += talent.awakening_storms->effectN( 3 ).percent() * 0.01 * resource_count;
     }
   }
-  else if (specialization() == SHAMAN_ENHANCEMENT)
+  else if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     tempest_chance = talent.tempest->effectN( 2 ).percent() * 0.01 * resource_count;
   }
@@ -11487,7 +11572,25 @@ void shaman_t::trigger_tempest( T resource_count )
   sim->print_debug( "{} attempts to proc tempest on {} consumed: chance={}", name(), resource_count,
     tempest_chance );
 
-  if ( rng().roll( tempest_chance ) )
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    bool success = false;
+
+    for ( auto draw = 0U; draw < as<unsigned>( resource_count ); ++draw )
+    {
+      if ( rng_obj.tempest_enh.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    if ( success )
+    {
+      buff.tempest->trigger();
+    }
+  }
+  else if ( specialization() == SHAMAN_ELEMENTAL && rng().roll( tempest_chance ) )
   {
     buff.tempest->trigger();
   }
@@ -12202,43 +12305,34 @@ void shaman_t::init_rng()
 
   if ( talent.deeply_rooted_elements.ok() )
   {
-    auto n_dre_draws = options.n_dre_draws != -1 ? as<unsigned>( options.n_dre_draws ) : 0U;
-    auto max_dre_draw = 0;
-    switch ( specialization() )
-    {
-      case SHAMAN_ENHANCEMENT:
-        max_dre_draw = 10; // TODO: Always keep at 10?
-        if ( options.n_dre_draws == -1 )
-        {
-          n_dre_draws = static_cast<unsigned>(
-            options.n_dre_draw_success /
-              ( talent.deeply_rooted_elements->effectN( 3 ).base_value() / 10.0 / 100.0 )
-          );
-        }
-        break;
-      default:
-        break;
-    }
+    rng_obj.deeply_rooted_elements
+      .set_param_fn( [ this ]( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+        // Default: 2 successful procs per deck
+        auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
+        // Default: Total based on deeply rooted elements script value (333)
+        auto n_total = obj.opt_total() > 0
+          ? obj.opt_total()
+          : static_cast<unsigned>(
+              n_draws / ( talent.deeply_rooted_elements->effectN( 3 ).base_value() / 10.0 / 100.0 )
+            );
+        return std::make_tuple( n_total, n_draws, 10U );
+      } )
+      .build();
+  }
 
-    if ( n_dre_draws < options.n_dre_draw_success * ( max_dre_draw + 1 ) )
-    {
-      sim->error(
-        "{} cannot build a deck with parameters shaman.n_dre_draws ({}), "
-        "shaman.n_dre_draw_success ({}), minimum deck size ({})",
-        name(), n_dre_draws, options.n_dre_draw_success,
-        options.n_dre_draw_success * ( max_dre_draw + 1 ) );
-      sim->cancel();
-    }
-
-    rng_obj.deeply_rooted_elements = get_rng<rng::dre_deck_rng_t>( "deeply_rooted_elements",
-      options.n_dre_draw_success,
-      n_dre_draws,
-      max_dre_draw
-    );
+  if ( talent.tempest.ok() && specialization() == SHAMAN_ENHANCEMENT )
+  {
+    rng_obj.tempest_enh
+      .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+        // Default: 2 successful procs per deck
+        auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
+        // Default: 200 total cards
+        auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 100U;
+        return std::make_tuple( n_total, n_draws, 10U );
+      } )
+      .build();
   }
 }
-
-
 
 void shaman_t::init_special_effects()
 {
@@ -12708,6 +12802,11 @@ std::vector<std::string> shaman_t::action_names_from_spell_id( unsigned int spel
 parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                     const assisted_combat_step_data_t& step ) const
 {
+  // 2026-02-15 Buff (Voltaic Blaze) no longer exists but it still referenced in the client data
+  if ( rule.condition_value_1 == 470058 )
+  {
+    return { "0" };
+  }
 
   if ( step.spell_id == 318038 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 382027 )
     return { "talent.flametongue_weapon" };
