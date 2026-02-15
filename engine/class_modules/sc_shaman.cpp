@@ -3245,7 +3245,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if (!proc_of_proc && p()->talent.feedback_loop_3.ok())
     {
-      trigger_elemental_overload(source_state, p()->talent.feedback_loop_3->effectN( 1 ).base_value(), true );
+      trigger_elemental_overload( source_state, p()->talent.feedback_loop_3->effectN( 1 ).percent(), true );
     }
 
     return true;
