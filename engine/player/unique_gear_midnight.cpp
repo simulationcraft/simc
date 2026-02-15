@@ -714,15 +714,32 @@ void thalassian_phoenix_torque( special_effect_t& effect )
 // 1252202 Buff
 void signet_of_azerothian_blessings( special_effect_t& effect )
 {
-  auto value = effect.driver()->effectN( 1 ).average( effect );
-  value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
-  value *= bandolier_mul( effect.player );
+  auto base_value = effect.driver()->effectN( 1 ).average( effect ) / 4;
+  std::unordered_map<stat_e, double> values    = { { STAT_HASTE_RATING, 1.0 },
+                                                   { STAT_CRIT_RATING, 1.0 },
+                                                   { STAT_MASTERY_RATING, 1.0 },
+                                                   { STAT_VERSATILITY_RATING, 1.0 } };
+
+  std::unordered_map<stat_e, gem_color_e> gems = { { STAT_HASTE_RATING, GEM_PERIDOT },
+                                                   { STAT_CRIT_RATING, GEM_GARNET },
+                                                   { STAT_MASTERY_RATING, GEM_AMETHYST },
+                                                   { STAT_VERSATILITY_RATING, GEM_LAPIS } };
 
   auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings",
                                         effect.driver()->effectN( 1 ).trigger() );
 
   for ( auto stat : secondary_ratings )
-    buff->add_stat( stat, value );
+  {
+    int count = 0;
+    for( auto gem : equipped_gem_list( effect.player, gem_colors ) )
+      if ( gem == gems.at( stat ) )
+        count++;
+
+    values.at( stat ) =
+        base_value * ( 1.0 + count * effect.driver()->effectN( 2 ).percent() ) * bandolier_mul( effect.player );
+
+    buff->add_stat( stat, values.at( stat ) );
+  }
 
   effect.custom_buff = buff;
 

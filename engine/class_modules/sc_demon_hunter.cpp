@@ -9049,6 +9049,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     buff_period   = timespan_t::zero();
     tick_behavior = buff_tick_behavior::NONE;
+    // Spell 187827 has a Periodic Dummy effect (#7, 2s period) for visual/server logic that
+    // SimC doesn't model. Without this override, init() -> set_period() detects the periodic
+    // effect and sets refresh_behavior=TICK, but tick_behavior=NONE means no tick_event is
+    // ever created. This mismatch causes an assertion failure when Meta is refreshed (e.g.
+    // hardcasting Meta during an active Untethered Rage-procced Meta).
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     switch ( p->specialization() )
     {
