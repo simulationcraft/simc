@@ -139,7 +139,6 @@ using namespace helpers;
       if ( debug_cast<const warlock_spell_state_t*>( s )->mg_tick )
         return result_amount_type::DMG_DIRECT;
 
-      //return spell_t::report_amount_type( s );
       return parse_action_effects_t<spell_t>::report_amount_type( s );
     }
 
@@ -214,10 +213,6 @@ using namespace helpers;
     * --
     * parse_effects( warlock_base.affliction_warlock );
     * --
-    * Buff that is modified by a talent (Buff with a talent that modifies an effect to have a value)
-    * --
-    * parse_effects( buff.rolling_havoc, talents.rolling_havoc );
-    * --
     ** apply_target_effects() **
     * Debuff
     * --
@@ -238,17 +233,15 @@ using namespace helpers;
       if ( affliction() )
       {
         parse_effects( p()->warlock_base.potent_afflictions ); // 77215
-        parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571/1260279  // Effect #3 is handled in a custom action_state
+        parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571/1260279 // Effect #3 is handled in a custom action_state
         parse_effects( p()->buffs.shard_instability ); // 1260269
       }
 
       // Demonology
       if ( demonology() )
       {
-        parse_effects( p()->buffs.demonic_core ); // 264173
         parse_effects( p()->warlock_base.master_demonologist ); // 77219
-        // NOTE: Currently 'parse_effects' system does not support some of the Power Siphon dmg amp modifiers spell effects, so we manually override the value. // TODO: Is this still the case in Midnight?
-        // TODO: Verify if this Power Siphon effect is working correctly
+        parse_effects( p()->buffs.demonic_core ); // 264173
         parse_effects( p()->buffs.power_siphon ); // 334581
       }
 
@@ -256,7 +249,7 @@ using namespace helpers;
       if ( destruction() )
       {
         parse_effects( p()->buffs.backdraft ); // 117828
-        parse_effects( p()->buffs.fiendish_cruelty ); // 1245664  // TODO: check if this buff is applying the power cost reduction properly
+        parse_effects( p()->buffs.fiendish_cruelty ); // 1245664 // TODO: check if this buff is applying the power cost reduction properly
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
         parse_effects( p()->buffs.conflagration_of_chaos_cf ); // 387109
         parse_effects( p()->buffs.conflagration_of_chaos_sb ); // 387110
@@ -277,7 +270,7 @@ using namespace helpers;
       // Hellcaller
       if ( hellcaller() )
       {
-        parse_effects( p()->buffs.malevolence ); // 442726  // TODO: Check that the effectiveness of Through the Felvine is increased by 100% during Malevolence with this parse_effects
+        parse_effects( p()->buffs.malevolence ); // 442726 // TODO: Check that the effectiveness of Through the Felvine is increased by 100% during Malevolence with this parse_effects
       }
 
       // Soul Harvester
@@ -536,8 +529,9 @@ using namespace helpers;
       if ( affliction() && affected_by.summon_darkglare && p()->warlock_pet_list.darkglares.n_active_pets() > 0 )
         m *= 1.0 + p()->talents.summon_darkglare->effectN( 4 ).percent();
 
+      // NOTE: 2026-02-17 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
-        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count( !p()->bugs );
 
       return m;
     }
@@ -1345,8 +1339,10 @@ using namespace helpers;
     shared_fate_t( warlock_t* p )
       : warlock_spell_t( "Shared Fate", p, p->hero.shared_fate_dot )
     {
-      aoe = -1; // DoT is applied in AoE
       background = dual = true;
+      aoe = -1; // DoT is applied in AoE
+      // NOTE: Despite what its description says, the damage of Shared Fate does not seem to deal reduced damage beyond 8 targets
+      // reduced_aoe_targets = as<int>( p->hero.shared_fate->effectN( 1 ).base_value() );
     }
   };
 
@@ -1412,7 +1408,7 @@ using namespace helpers;
       if ( twin != nullptr )
       {
         const auto& tl = target_list();
-        if ( auto twin_target = p()->get_smart_target( tl, &warlock_td_t::dots_t::agony, target, twin_range ) )
+        if ( auto twin_target = p()->get_smart_target( tl, &warlock_td_t::dots_t::agony, target, twin_range, true ) )
           twin->execute_on_target( twin_target );
       }
 
@@ -1491,7 +1487,7 @@ using namespace helpers;
         if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
         {
           // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
-          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_summon->duration() );
+          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
         }
 
@@ -1506,7 +1502,7 @@ using namespace helpers;
       if ( p()->talents.cascading_calamity.ok() && dot->is_ticking() )
         p()->buffs.cascading_calamity->trigger();
 
-      // timespan_t dot_new_last_duration = dot->time_to_next_full_tick() + composite_dot_duration( s );  // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
+      // timespan_t dot_new_last_duration = dot->time_to_next_full_tick() + composite_dot_duration( s ); // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
       timespan_t dot_new_last_duration = composite_dot_duration( s );
       // NOTE: If Blizzard change the UA DoT Behavior, this need to be redesigned
       assert( dot_behavior == DOT_REFRESH_DURATION && "UA DoT Behavior has changed." );
@@ -1749,7 +1745,7 @@ using namespace helpers;
         if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
         {
           // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
-          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_summon->duration() );
+          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
         }
 
@@ -2070,7 +2066,10 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        // TODO: Only one target can have haunt debuff. Is this exclusivity managed here in some way?
+        // Haunt debuff can only be active on one target at same time
+        if ( p()->haunt_target )
+          td( p()->haunt_target )->debuffs.haunt->expire();
+
         td( s->target )->debuffs.haunt->trigger();
       }
     }
@@ -2359,7 +2358,7 @@ using namespace helpers;
           for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
           {
             // auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
-            auto ev = make_event<imp_delay_event_t>( *sim, p(), 1.0, 1.0, i-1 ); // TODO: test this
+            auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i-1 ); // TODO: test this
             p()->wild_imp_spawns.push_back( ev );
           }
         }
@@ -2376,7 +2375,7 @@ using namespace helpers;
             if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
             {
               // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
-              p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_summon->duration() );
+              p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
               p()->buffs.manifested_demonic_soul->trigger();
             }
 
@@ -2410,7 +2409,7 @@ using namespace helpers;
       if ( diabolist() && p()->executing != this && p()->buffs.ruination->check() )
         return false;
 
-      if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 3.0 )  // TODO: Is this needed?
+      if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 3.0 ) // TODO: Is this needed?
         return false;
 
       return warlock_spell_t::ready();
@@ -2595,9 +2594,13 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        // TODO: Is this still happening? Do the Imp Gang Boss implosions do 100% more damage? Check ingame
-        if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+        // NOTE: 2026-02-17 The Imp Gang Boss Wild Imps implosions do not do 100% more damage (bug?)
+        if ( !p()->bugs && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss_buff->effectN( 2 ).percent();
+        
+        // NOTE: 2026-02-17 The Unstable Soul Wild Imps implosions do not do 50% more damage (bug?)
+        if ( !p()->bugs && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.unstable_soul->check() )
+          m *= 1.0 + p()->talents.unstable_soul_buff->effectN( 1 ).percent();
 
         return m;
       }
@@ -2634,51 +2637,64 @@ using namespace helpers;
       // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
       timespan_t imp_travel_time = calc_imp_travel_time( 65 );
 
+      auto imps = p()->warlock_pet_list.wild_imps.active_pets();
+
+      // NOTE: 2026-02-17: Seems than older wild imps (or with less energy ) are prioritized for implosion.
+      // It hasn't yet been determined whether those with less energy or the oldest are prioritized first.
+      // The Imp Gang Boss / Unstable Soul buffs do not seem to affect the selection.
+      // There also seem to exist some unusual interactions with the priority of wild imps to implode (not implemented):
+      // - The distance of the wild imps from the player can affect their selection.
+      // - When there are many imps (more than 9), the selection of some of them seems to become somewhat random
+      //   (maybe not random; in any case, their actual behavior in this situation has not been fully determined).
+      range::sort( imps, [ &bugs = p()->bugs ]( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+        double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+        double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+        if ( lv == rv )
+          return imp1->actor_spawn_index < imp2->actor_spawn_index;
+
+        return lv < rv;
+      } );
+
       unsigned launch_counter = 0;
-      for ( auto imp : p()->warlock_pet_list.wild_imps )
+      for ( auto imp : imps )
       {
-        if ( !imp->is_sleeping() )
-        {
-          implosion_aoe_t* ex = explosion;
-          player_t* tar = target;
-          double dist = p()->get_player_distance( *tar );
+        implosion_aoe_t* ex = explosion;
+        player_t* tar = target;
+        double dist = p()->get_player_distance( *tar );
 
-          imp->trigger_movement( dist, movement_direction_type::TOWARDS );
-          imp->interrupt();
-          imp->imploded = true;
+        imp->trigger_movement( dist, movement_direction_type::TOWARDS );
+        imp->interrupt();
+        imp->imploded = true;
 
-          // Imps launched with Implosion appear to be staggered and snapshot when they impact
-          // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
-          // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
-          // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
-          make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
-            if ( imp && !imp->is_sleeping() )
-            {
-              ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
-              ex->set_target( tar );
-              ex->next_imp = imp;
-              ex->execute();
-            }
-          } );
-
-          launch_counter++;
-
-          // TODO: They are currently being selected from the list in no particular order; check ingame if there is any priority when sacrificing the (max-6) wild imps
-          if ( launch_counter >= as<unsigned>( data().effectN( 1 ).base_value() ) )
-            break;
-        }
-
-        if ( p()->talents.to_hell_and_back.ok() )
-        {
-          unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
-          if ( new_imps > 0 )
+        // Imps launched with Implosion appear to be staggered and snapshot when they impact
+        // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
+        // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
+        // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
+        make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
+          if ( imp && !imp->is_sleeping() )
           {
-            auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
-            for ( auto imp : imps )
-            {
-              imp->buffs.imp_gang_boss->trigger();
-              imp->buffs.unstable_soul->trigger();
-            }
+            ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
+            ex->set_target( tar );
+            ex->next_imp = imp;
+            ex->execute();
+          }
+        } );
+
+        launch_counter++;
+
+        if ( launch_counter >= as<unsigned>( data().effectN( 1 ).base_value() ) )
+          break;
+      }
+      if ( p()->talents.to_hell_and_back.ok() )
+      {
+        unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        if ( new_imps > 0 )
+        {
+          auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
+          for ( auto imp : imps )
+          {
+            imp->buffs.imp_gang_boss->trigger();
+            imp->buffs.unstable_soul->trigger();
           }
         }
       }
@@ -2765,6 +2781,27 @@ using namespace helpers;
     }
   };
 
+  // Dreadstalkers Blighted Maw uses Player as a source, not the Pet
+  struct blighted_maw_t : public warlock_spell_t
+  {
+    blighted_maw_t( warlock_t* p )
+      : warlock_spell_t( "Blighted Maw", p, p->talents.blighted_maw_dmg )
+    {
+      background = dual = true;
+      may_crit = false;
+      base_dd_min = base_dd_max = 0;
+    }
+
+    void init_finished() override
+    {
+      warlock_spell_t::init_finished();
+
+      // NOTE: Blighted Maw was expected to ignore multipliers, but it doesn't (bug?)
+      if ( !p()->bugs )
+        snapshot_flags &= STATE_NO_MULTIPLIER;
+    }
+  };
+
   struct power_siphon_t : public warlock_spell_t
   {
     power_siphon_t( warlock_t* p, util::string_view options_str )
@@ -2801,18 +2838,27 @@ using namespace helpers;
 
       auto imps = p()->warlock_pet_list.wild_imps.active_pets();
 
-      range::sort(
-        imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
-          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
-          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+      range::sort( imps, [ &bugs = p()->bugs ]( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+        double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+        double rv = imp2->resources.current[ RESOURCE_ENERGY ];
 
-          // TODO: Is this still the case in Midnight?
-          // Power Siphon deprioritizes Wild Imps that are Gang Bosses or empowered by Summon Demonic Tyrant
-          // Padding ensures they still sort in order at the back of the list
+        // Power Siphon deprioritizes Wild Imps that are Gang Bosses
+        // Padding ensures they still sort in order at the back of the list
+        // NOTE: 2026-02-17: This is not longer true in Midnight (bug?)
+        if ( !bugs )
+        {
           lv += ( imp1->buffs.imp_gang_boss->check() ) ? 200.0 : 0.0;
           rv += ( imp2->buffs.imp_gang_boss->check() ) ? 200.0 : 0.0;
+        }
 
-          if ( lv == rv )
+        if ( lv == rv )
+        {
+          // NOTE: In Midnight, if they have the same energy, they are no longer prioritized by expiration time first, but directly by spawn time (bug?)
+          if ( bugs )
+          {
+            return imp1->actor_spawn_index < imp2->actor_spawn_index;
+          }
+          else
           {
             timespan_t lr = imp1->expiration->remains();
             timespan_t rr = imp2->expiration->remains();
@@ -2820,12 +2866,12 @@ using namespace helpers;
             {
               return imp1->actor_spawn_index < imp2->actor_spawn_index;
             }
-
             return lr < rr;
           }
+        }
 
-          return lv < rv;
-        } );
+        return lv < rv;
+      } );
 
       unsigned max_imps = as<int>( p()->talents.power_siphon->effectN( 1 ).base_value() );
 
@@ -2883,7 +2929,7 @@ using namespace helpers;
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
       int demon_counter = 0;
-      const timespan_t extension_time = 15_s;  // TODO: Where is this 15_s in the spell data?
+      const timespan_t extension_time = 15_s; // TODO: Where is this 15_s in the spell data?
 
       for ( auto wild_imp : p()->warlock_pet_list.wild_imps )
       {
@@ -3033,7 +3079,7 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok();  // TODO: Check if Fiendish Cruelty actually affects FnB's Incinerate and how it affects it
+        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // TODO: Check if Fiendish Cruelty actually affects FnB's Incinerate and how it affects it
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
       }
@@ -3221,10 +3267,6 @@ using namespace helpers;
       dot->current_action->calculate_tick_amount( state, 1.0 );
 
       double tick_base_damage = state->result_raw;
-
-      // if ( td( target )->debuffs.conflagrate->up() )
-      //   tick_base_damage /= 1.0 + td( target )->debuffs.conflagrate->check_value();
-
       timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
       timespan_t dot_tick_time = dot->current_action->tick_time( state );
       double ticks_left = remaining / dot_tick_time;
@@ -3267,13 +3309,6 @@ using namespace helpers;
           break;
         default:
           break;
-      }
-
-      if ( p()->talents.avatar_of_destruction.ok() && rng().roll( p()->rng_settings.avatar_of_destruction_dr.setting_value ) )
-      {
-        p()->warlock_pet_list.overfiends.spawn();
-        p()->buffs.summon_overfiend->trigger();
-        p()->procs.avatar_of_destruction->occur();
       }
     }
   };
@@ -3419,7 +3454,17 @@ using namespace helpers;
       if ( p()->talents.dimensional_rift.ok() && rng().roll( p()->talents.dimensional_rift->effectN( 1 ).percent() ) )
       {
         p()->procs.dimensional_rift->occur();
-        dimensional_rift->execute_on_target( target );
+
+        if ( p()->talents.avatar_of_destruction.ok() && rng().roll( p()->rng_settings.avatar_of_destruction_dr.setting_value ) )
+        {
+          p()->warlock_pet_list.overfiends.spawn();
+          p()->buffs.summon_overfiend->trigger();
+          p()->procs.avatar_of_destruction->occur();
+        }
+        else
+        {
+          dimensional_rift->execute_on_target( target );
+        }
       }
     }
 
@@ -3451,7 +3496,7 @@ using namespace helpers;
   struct conflagrate_t : public warlock_spell_t
   {
     warlock_spell_t* spread_dot;
-    double spread_range = 8.0;  // TODO: Check if this is indeed the range, and also check where this value would be in the spell data
+    double spread_range = 8.0; // TODO: Check if this is indeed the range, and also check where this value would be in the spell data
 
     conflagrate_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate, options_str )
@@ -3485,21 +3530,21 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      // TODO: It's still needed to make it so that if the hit is from a duplication havoc conflagrate, it doesn't activate roaring blaze, just like happens ingame
-      if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
+      // NOTE: Roaring Blaze doesn't apply to havoc targets
+      if ( p()->talents.roaring_blaze.ok() && ( s->chain_target == 0 ) && result_is_hit( s->result ) )
       {
         if ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() )
         {
           int n_spread = as<int>( p()->talents.roaring_blaze->effectN( 2 ).base_value() );
           const auto& tl = target_list();
-          // TOCHECK: It appears there is a bug ingame where the dot spreads to an additional target, but only if that target already has the dot
+          // NOTE: 2026-02-17 It appears there is a bug ingame where the dot spreads to an additional target, but only if that target already has the dot
           if ( p()->bugs )
           {
-            auto spread_targets = p()->get_smart_targets( tl, &warlock_td_t::dots_t::agony, n_spread + 1, s->target, spread_range );
+            auto spread_targets = p()->get_smart_targets( tl, &warlock_td_t::dots_t::immolate, n_spread + 1, s->target, spread_range, false );
             int c = 0;
             for ( auto t : spread_targets )
             {
-              if ( c < 3 || ( td( t )->dots.immolate->is_ticking() || td( t )->dots.wither->is_ticking() ) )
+              if ( c < n_spread || ( td( t )->dots.immolate->is_ticking() || td( t )->dots.wither->is_ticking() ) )
                 spread_dot->execute_on_target( t );
 
               c++;
@@ -3507,7 +3552,7 @@ using namespace helpers;
           }
           else
           {
-            auto spread_targets = p()->get_smart_targets( tl, &warlock_td_t::dots_t::agony, n_spread, s->target, spread_range );
+            auto spread_targets = p()->get_smart_targets( tl, &warlock_td_t::dots_t::immolate, n_spread, s->target, spread_range, false );
             for ( auto t : spread_targets )
               spread_dot->execute_on_target( t );
           }
@@ -4089,8 +4134,8 @@ using namespace helpers;
         {
           hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
           hog_impact_spell->state.shards_used = as<int>( p->hero.ruination_buff->effectN( 2 ).base_value() );
-          hog_impact_spell->state.rancora_empowered = false;      // Ruination HoG impact is never rancora empowered
-          hog_impact_spell->state.allow_succulent_soul = false;   // Ruination HoG impact can't benefit from succulent soul
+          hog_impact_spell->state.rancora_empowered = false;    // Ruination HoG impact is never rancora empowered
+          hog_impact_spell->state.allow_succulent_soul = false; // Ruination HoG impact can't benefit from succulent soul
         }
       }
 
@@ -4361,7 +4406,7 @@ using namespace helpers;
   {
     warlock_t* p = static_cast<warlock_t*>( player() );
 
-    // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )  // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
+    // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms ) // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
     // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms && dot->current_stack() > 1 )
     if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )
     {
@@ -4449,6 +4494,8 @@ using namespace helpers;
     {
       if ( default_pet == "sayaad" || default_pet == "succubus" || default_pet == "incubus" )
         return new summon_main_pet_t( default_pet, this, 366222 );
+      if ( default_pet == "felguard" )
+        return new summon_main_pet_t( "felguard", this, 30146 );
 
       return new summon_main_pet_t( default_pet, this );
     }
@@ -4598,6 +4645,7 @@ using namespace helpers;
   void warlock_t::create_demonology_proc_actions()
   {
     proc_actions.doom_proc = new doom_t( this );
+    proc_actions.blighted_maw = new blighted_maw_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()

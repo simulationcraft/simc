@@ -71,14 +71,16 @@ struct warlock_pet_t : public pet_t
 
   struct buffs_t
   {
-    propagate_const<buff_t*> embers;  // Infernal Shard Generation
+    propagate_const<buff_t*> embers; // Infernal Shard Generation
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> unstable_soul;
     propagate_const<buff_t*> ferocity_of_fharg;
     propagate_const<buff_t*> demonic_power;
+    propagate_const<buff_t*> grimoire_of_service;
   } buffs;
 
   bool is_main_pet = false;
+  bool is_diabolist_guardian = false;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
 
   warlock_pet_t( warlock_t*, util::string_view, pet_e, bool = false );
@@ -86,7 +88,6 @@ struct warlock_pet_t : public pet_t
   void init_action_list() override;
   void create_buffs() override;
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
-  double composite_player_multiplier( school_e ) const override;
   double composite_melee_haste() const override;
   double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
@@ -183,7 +184,7 @@ template <class ACTION_BASE>
 struct warlock_pet_action_t : public parse_action_effects_t<ACTION_BASE>
 {
 private:
-  typedef parse_action_effects_t<ACTION_BASE> ab;  // action base, eg. spell_t
+  typedef parse_action_effects_t<ACTION_BASE> ab; // action base, eg. spell_t
 public:
   typedef warlock_pet_action_t base_t;
 
@@ -361,6 +362,7 @@ struct felhunter_pet_t : public warlock_pet_t
 {
   felhunter_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
@@ -369,6 +371,7 @@ struct imp_pet_t : public warlock_pet_t
   double firebolt_cost;
 
   imp_pet_t( warlock_t*, util::string_view );
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
 };
@@ -377,6 +380,7 @@ struct sayaad_pet_t : public warlock_pet_t
 {
   sayaad_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
 };
@@ -385,6 +389,7 @@ struct voidwalker_pet_t : public warlock_pet_t
 {
   voidwalker_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
@@ -403,6 +408,7 @@ struct felguard_pet_t : public warlock_pet_t
 
   felguard_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
 };
@@ -421,6 +427,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   void demise() override;
   void finish_moving() override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 
 private:
   void reschedule_firebolt();
@@ -441,6 +448,7 @@ struct dreadstalker_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   void queue_dreadbite();
 };
 
@@ -456,6 +464,7 @@ struct vilefiend_t : public warlock_simple_pet_t
   void create_buffs() override;
   void arise() override;
   void demise() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
@@ -466,6 +475,8 @@ struct demonic_tyrant_t : public warlock_pet_t
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 };
 
 struct doomguard_t : public warlock_simple_pet_t
@@ -475,24 +486,33 @@ struct doomguard_t : public warlock_simple_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
   void demise() override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 };
 
-struct grimoire_imp_lord_t : public warlock_pet_t  //  TODO: warlock_simple_pet_t or warlock_pet_t ?
+struct grimoire_imp_lord_t : public warlock_pet_t
 {
+  double max_energy_threshold;
+
   grimoire_imp_lord_t( warlock_t* );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
   void demise() override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 };
 
-struct grimoire_fel_ravager_t : public warlock_pet_t  //  TODO: warlock_simple_pet_t or warlock_pet_t ?
+struct grimoire_fel_ravager_t : public warlock_pet_t
 {
+  double max_energy_threshold;
+
   grimoire_fel_ravager_t( warlock_t* );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
   void demise() override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 };
 }  // namespace demonology
 
@@ -572,7 +592,7 @@ namespace diabolist
     overlord_t( warlock_t*, util::string_view = "overlord" );
     void arise() override;
     action_t* create_action( util::string_view, util::string_view ) override;
-    double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
+    double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   };
 
   struct mother_of_chaos_t : public warlock_pet_t

@@ -121,6 +121,7 @@ struct warlock_t : public parse_player_effects_t
 public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
+  player_t* haunt_target; // Used for tracking the current haunt target
   double agony_accumulator;
   double corruption_accumulator;
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
@@ -221,7 +222,6 @@ public:
     const spell_data_t* agony;
     player_talent_t unstable_affliction;
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise (learned automatically)
-    // const spell_data_t* unstable_affliction_3; // +5 seconds to duration (learned automatically)
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
     const spell_data_t* seed_of_corruption_is_out_dnt;
@@ -327,7 +327,7 @@ public:
     player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
     player_talent_t tyrants_oblation;
     const spell_data_t* tyrants_oblation_buff;
-    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave
+    player_talent_t antoran_armaments;
     player_talent_t flametouched;
     const spell_data_t* ferocity_of_fharg_buff;
 
@@ -340,10 +340,11 @@ public:
     player_talent_t doom;
     const spell_data_t* doom_debuff;
     const spell_data_t* doom_dmg;
-    player_talent_t hellbent_commander;
+    player_talent_t hellbent_commander; // TODO: Hellbent Commander has some strange interactions, such as temporarily losing 6 stacks when 3 imps demise (implement this behavior?)
     const spell_data_t* hellbent_commander_buff;
     player_talent_t grimoire_imp_lord;
     player_talent_t grimoire_fel_ravager;
+    const spell_data_t* grimoire_of_service_buff;
     player_talent_t summon_vilefiend;
     const spell_data_t* vilefiend;
     const spell_data_t* bile_spit;
@@ -422,7 +423,7 @@ public:
     // Summoner's Embrace (shared with Affliction)
     // Grimoire of Sacrifice (shared with Affliction)
 
-    player_talent_t ruin; // Damage increase to several spells TODO: Review behavior
+    player_talent_t ruin; // Damage increase to several spells
     player_talent_t improved_chaos_bolt;
     player_talent_t destructive_rapidity;
     player_talent_t devastation;
@@ -439,7 +440,7 @@ public:
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
     player_talent_t inferno;
-    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
+    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
@@ -564,8 +565,7 @@ public:
     const spell_data_t* shadow_of_death_energize;
 
     player_talent_t manifested_avarice;
-    const spell_data_t* manifested_avarice_summon;
-    const spell_data_t* manifested_demonic_soul_buff;
+    const spell_data_t* manifested_avarice_spell;
     player_talent_t shared_vessel;
     player_talent_t eternal_hunger;
   } hero;
@@ -585,6 +585,7 @@ public:
     action_t* diabolic_gaze_1;
     action_t* diabolic_gaze_2;
     action_t* diabolic_gaze_3;
+    action_t* blighted_maw;
   } proc_actions;
 
   struct tier_sets_t
@@ -598,7 +599,7 @@ public:
     propagate_const<cooldown_t*> dark_harvest;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> summon_doomguard;
-    propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
+    propagate_const<cooldown_t*> felstorm_icd;
     propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
     propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
@@ -761,11 +762,10 @@ public:
     rng_setting_t nightfall = { 0.13, 0.13, "nightfall" };
 
     // Demonology
-    rng_setting_t pact_of_the_eredruin = { 0.40, 0.40, "pact_of_the_eredruin" };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
 
     // Destruction
-    rng_setting_t avatar_of_destruction_dr = { 0.60, 0.60, "avatar_of_destruction_dr" };  // TODO:  Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t avatar_of_destruction_dr = { 0.60, 0.60, "avatar_of_destruction_dr" }; // TODO:  Need to calculate ingame the type of RNG and the average RNG
 
     // Diabolist
 
@@ -780,7 +780,7 @@ public:
     rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
     rng_setting_t feast_of_souls_aff = { 0.15, 0.15, "feast_of_souls" };
     rng_setting_t feast_of_souls_demo = { 0.0975, 0.0975, "feast_of_souls" };
-    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };  // TODO: Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" }; // TODO: Need to calculate ingame the type of RNG and the average RNG
   } rng_settings;
 
   int initial_soul_shards;
@@ -814,7 +814,7 @@ public:
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
-  int active_demon_count() const;
+  int active_demon_count( bool include_diabolist = true ) const;
   std::pair<timespan_t, timespan_t> dreadstalkers_delay_duration_adjustment_helper( const player_t& target ); // TODO: Move to helpers? or implement in call_dreadstalkers_t?
   void create_actions() override;
   void create_affliction_proc_actions();
@@ -836,6 +836,7 @@ public:
   void init_assessors() override;
   void init_finished() override;
   void invalidate_cache( cache_e c ) override;
+  double composite_mastery() const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   std::string default_potion() const override { return warlock_apl::potion( this ); }
   std::string default_flask() const override { return warlock_apl::flask( this ); }

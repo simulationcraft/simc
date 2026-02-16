@@ -28,7 +28,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs.haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_cooldown( 0_ms );
+                      ->set_cooldown( 0_ms )
+                      ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                        p.haunt_target = ( cur == 0 ) ? nullptr : b->player;
+                      } );
 
   // Demonology
   debuffs.doom = make_buff( *this, "doom", p.talents.doom_debuff )
@@ -37,7 +40,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                        {
                          p.proc_actions.doom_proc->execute_on_target( b->player );
                        }
-                       } );
+                     } );
 
   // Destruction
   dots.immolate = target->get_dot( "immolate", &p );
@@ -151,7 +154,7 @@ void warlock_td_t::target_demise()
 
 int warlock_td_t::count_affliction_dots() const
 {
-  // NOTE: Shared Fate and Soul Anathema DoTs do not count (they do not affect effects influenced by this count)
+  // NOTE: [Drain Soul, Malefic Grasp, Shared Fate, Soul Anathema] DoTs do not count (they do not affect effects influenced by this count)
   int count = 0;
 
   if ( dots.agony->is_ticking() )
@@ -160,17 +163,16 @@ int warlock_td_t::count_affliction_dots() const
   if ( dots.corruption->is_ticking() )
     count++;
 
+  // NOTE: 2026-02-17: Currently Wither is bugged and does not count
+  if ( !warlock.bugs && dots.wither->is_ticking() )
+    count++;
+
   if ( dots.seed_of_corruption->is_ticking() )
     count++;
 
   // NOTE: UA counts as 1 dot does not matter how many stacks
   if ( dots.unstable_affliction->is_ticking() )
     count++;
-
-  if ( dots.wither->is_ticking() )
-    count++;
-
-  // TODO: Check if Malefic Grasp and Drain Soul count
 
   return count;
 }
@@ -307,6 +309,19 @@ void warlock_t::invalidate_cache( cache_e c )
   }
 }
 
+double warlock_t::composite_mastery() const
+{
+  double m = parse_player_effects_t::composite_mastery();
+
+  if ( hero.shared_vessel.ok() )
+  {
+    if ( buffs.manifested_demonic_soul->check() )
+      m += hero.shared_vessel->effectN( 1 ).base_value();
+  }
+
+  return m;
+}
+
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
 int warlock_t::get_spawning_imp_count()
 { return as<int>( wild_imp_spawns.size() ); }
@@ -356,7 +371,7 @@ timespan_t warlock_t::time_to_imps( int count )
   }
 }
 
-int warlock_t::active_demon_count() const
+int warlock_t::active_demon_count( bool include_diabolist ) const
 {
   int count = 0;
 
@@ -369,6 +384,10 @@ int warlock_t::active_demon_count() const
     if ( lock_pet->is_sleeping() )
       continue;
 
+    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls and Hellbent Commander)
+    if ( !include_diabolist && lock_pet->is_diabolist_guardian )
+      continue;
+    
     count++;
   }
 
@@ -433,7 +452,6 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
     profile_str += append_rng_option( rng_settings.agony );
     profile_str += append_rng_option( rng_settings.nightfall );
-    profile_str += append_rng_option( rng_settings.pact_of_the_eredruin );
     profile_str += append_rng_option( rng_settings.avatar_of_destruction_dr );
     profile_str += append_rng_option( rng_settings.spiteful_reconstitution );
     profile_str += append_rng_option( rng_settings.blackened_soul );
@@ -465,7 +483,6 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
   rng_settings.agony = p->rng_settings.agony;
   rng_settings.nightfall = p->rng_settings.nightfall;
-  rng_settings.pact_of_the_eredruin = p->rng_settings.pact_of_the_eredruin;
   rng_settings.avatar_of_destruction_dr = p->rng_settings.avatar_of_destruction_dr;
   rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
   rng_settings.blackened_soul = p->rng_settings.blackened_soul;
@@ -587,12 +604,13 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
       action_state_t* agony_state = agony->current_action->get_state( agony->state );
       timespan_t dot_tick_time    = agony->current_action->tick_time( agony_state );
+      double creeping_death_mul   = talents.creeping_death.ok() ? ( 1.0 + talents.creeping_death->effectN( 1 ).percent() ) : 1.0;
 
       // Seeks to return the average expected time for the player to generate a single soul shard.
       // TOCHECK regularly.
 
-      double average =
-          1.0 / ( 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) ) * dot_tick_time.total_seconds() / active_agonies;
+      double average = 1.0 / ( ( rng_settings.agony.setting_value / 2.0 ) * std::pow( active_agonies, -2.0 / 3.0 ) * creeping_death_mul )
+                       * dot_tick_time.total_seconds() / active_agonies;
 
       if ( sim->debug )
         sim->out_debug.printf( "time to shard return: %f", average );
@@ -733,10 +751,6 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 * --
 * parse_effects( warlock_base.affliction_warlock );
 * --
-* Buff that is modified by a talent (Buff with a talent that modifies an effect to have a value)
-* --
-* parse_effects( buff.rolling_havoc, talents.rolling_havoc );
-* --
 ****** This system CAN NOT handle buffs that modify other buffs and/or debuffs. ******
 * Debuff
 * --
@@ -760,6 +774,8 @@ void warlock_t::parse_player_effects()
   // Affliction
   if ( affliction() )
   {
+    // Affliction Mastery
+    parse_effects( warlock_base.potent_afflictions ); // 77215
     // Affliction Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
   }
@@ -767,15 +783,15 @@ void warlock_t::parse_player_effects()
   // Demonology
   if ( demonology() )
   {
-    // Demonology Debuffs/DoTs
+    // Demonology Mastery
+    parse_effects( warlock_base.master_demonologist ); // 77219
+    // Demonology Buffs
+    parse_effects( buffs.hellbent_commander ); // 1281559
   }
 
   // Destruction
   if ( destruction() )
   {
-    // Destruction Buffs
-
-    // Destruction Debuffs/DoTs
   }
 
   // Diabolist
@@ -796,7 +812,7 @@ void warlock_t::parse_player_effects()
   // Soul Harvester
   if ( soul_harvester() )
   {
-    parse_effects( buffs.manifested_demonic_soul ); // 1269042  // TODO: Need to check if this parse_effects works in doubling the mastery effect when the buff is active?
+    //parse_effects( buffs.manifested_demonic_soul ); // 1269042 // Implemented manually in 'composite_mastery'
   }
 }
 
