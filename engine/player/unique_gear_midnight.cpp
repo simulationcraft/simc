@@ -2386,6 +2386,7 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
+  register_special_effect( 1259293, trinkets::vaelgors_final_stare );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
