@@ -6525,6 +6525,17 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= p()->spell.ascendance->effectN( 10 ).percent();
     }
 
+    if ( exec_type == spell_variant::PURGING_FLAMES && p()->bugs )
+    {
+      m *= p()->talent.purging_flames->effectN( 1 ).percent();
+    }
+
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      m *= 1.0 + this->composite_crit_chance();
+    }
+
+
     return m;
   }
 
@@ -6839,11 +6850,11 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::impact( s );
   }
 
-    double action_multiplier() const override
+  double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( exec_type == spell_variant::PURGING_FLAMES )
+    if ( exec_type == spell_variant::PURGING_FLAMES && p()->bugs)
     {
       m *= p()->talent.purging_flames->effectN( 1 ).percent();
     }
@@ -7226,6 +7237,8 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     if ( exec_type == spell_variant::FUSION_OF_ELEMENTS )
     {
       m *= p()->talent.fusion_of_elements->effectN( 1 ).percent();
+      m /= p()->talent.mountains_will_fall->effectN( 1 )
+               .percent();  // Remove MWTF multiplier, cause bug
     }
     return m;
   }
@@ -11564,10 +11577,6 @@ void shaman_t::trigger_tempest( T resource_count )
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     tempest_chance = talent.tempest->effectN( 1 ).percent() * 0.01 * resource_count;
-    if (talent.awakening_storms.ok())
-    {
-      tempest_chance += talent.awakening_storms->effectN( 3 ).percent() * 0.01 * resource_count;
-    }
   }
   else if ( specialization() == SHAMAN_ENHANCEMENT )
   {
