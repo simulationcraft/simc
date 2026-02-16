@@ -2014,10 +2014,8 @@ void magisters_alchemist_stone( special_effect_t& e )
 // Vaelgor's Final Stare
 // 1259293 Driver
 // 1260459 Nullsight buff
-void vaelgors_final_stare( special_effect_t& effect )
-{
-  struct vaelgors_buff_t final : public stat_buff_t
-  {
+void vaelgors_final_stare( special_effect_t& effect ){
+  struct vaelgors_buff_t final : public stat_buff_t{
     const special_effect_t& effect;
     const spell_data_t* value_spell;
     int current_tick;
@@ -2031,7 +2029,7 @@ void vaelgors_final_stare( special_effect_t& effect )
         current_tick( 0 ),
         buff_val( 0 ),
         decrease( 0 )
-    {
+      {
       auto n_ticks = e.driver()->duration() / e.driver()->effectN( 3 ).period();
       value_spell  = e.player->find_spell( 1260459 );
       buff_val     = value_spell->effectN( 1 ).average( e );
@@ -2041,22 +2039,16 @@ void vaelgors_final_stare( special_effect_t& effect )
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
     }
 
-    double current_value()
-    {
+    double current_value(){
       double value = buff_val - ( decrease * current_tick );
-
       return value;
     }
 
-    void recalculate()
-    {
+    void recalculate(){
       current_tick++;
-      for ( auto& buff_stat : stats )
-      {
+      for ( auto& buff_stat : stats ){
         double delta = buff_stat.current_value - current_value();
-
-        if ( delta > 0 )
-        {
+        if ( delta > 0 ){
           player->stat_loss( 
             buff_stat.stat, 
             decrease, 
@@ -2065,8 +2057,7 @@ void vaelgors_final_stare( special_effect_t& effect )
             buff_duration() > timespan_t::zero() 
           );
         }
-        else if ( delta < 0 )
-        {
+        else if ( delta < 0 ){
           player->stat_gain( 
             buff_stat.stat, 
             std::fabs( delta ), 
@@ -2077,17 +2068,13 @@ void vaelgors_final_stare( special_effect_t& effect )
       }
     }
 
-    void recalculate_expiry()
-    {
-      for ( auto& buff_stat : stats )
-      {
+    void recalculate_expiry(){
+      for ( auto& buff_stat : stats ){
         double delta = current_value();
-        if ( delta > 0 )
-        {
+        if ( delta > 0 ){
           player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        else if ( delta < 0 )
-        {
+        else if ( delta < 0 ){
           player->stat_gain( 
             buff_stat.stat,
             std::fabs( delta ), 
@@ -2100,16 +2087,14 @@ void vaelgors_final_stare( special_effect_t& effect )
       }
     }
 
-    void expire_override( int s, timespan_t d ) override
-    {
+    void expire_override( int s, timespan_t d ) override{
       // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
       buff_t::expire_override( s, d );
       recalculate_expiry();
       current_tick = 0;
     }
 
-    void reset() override
-    {
+    void reset() override{
       stat_buff_t::reset();
       current_tick = 0;
     }
