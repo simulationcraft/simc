@@ -519,7 +519,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#11), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Twilight Corruption (373065 effect#1), Shadowy Insight (375981 effect#4), Shadowy Insight (375981 effect#5), Thought Harvester (406788 effect#1), Void Blast (450404 effect#3)
+Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#11), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Twilight Corruption (373065 effect#1), Shadowy Insight (375981 effect#4), Shadowy Insight (375981 effect#5), Thought Harvester (406788 effect#1), Void Blast (450404 effect#3), Shadowy Insight (1287613 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12924,6 +12924,7 @@ Effects          :
 Description      : $@spelldesc375901
 
 Name             : Shadowy Insight (id=375981) [Spell Family (6)] 
+Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12933,7 +12934,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2610: Priest Shadow 10.1 Class Set 2pc (405557 effect#1), Priest Shadow 10.1 Class Set 2pc (405557 effect#2), Dark Thoughts (1240388 effect#1)
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -14796,10 +14797,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1053895)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Misc Value: 12 | Misc Value 2: 2610 (Label) | Target: Self (1)
-                   Affected Spells (Label): Shadowy Insight (375981)
+                   Affected Spells (Label): Shadowy Insight (375981), Shadowy Insight (1287613)
 #2 (id=1074377)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.5 | Misc Value: 23 | Misc Value 2: 2610 (Label) | Target: Self (1)
-                   Affected Spells (Label): Shadowy Insight (375981)
+                   Affected Spells (Label): Shadowy Insight (375981), Shadowy Insight (1287613)
 #3 (id=1076946)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Increases the chance for Shadowy Insight to trigger by $s3%. When consuming Shadowy Insight, Mind Blast deals $s1% increased damage and generates ${$s2/100} additional Insanity.
@@ -16555,7 +16556,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#11), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Twilight Corruption (373065 effect#1), Shadowy Insight (375981 effect#4), Shadowy Insight (375981 effect#5), Thought Harvester (406788 effect#1), Void Blast (450404 effect#3)
+Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#11), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Twilight Corruption (373065 effect#1), Shadowy Insight (375981 effect#4), Shadowy Insight (375981 effect#5), Thought Harvester (406788 effect#1), Void Blast (450404 effect#3), Shadowy Insight (1287613 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18698,7 +18699,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1238729)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Misc Value 2: 2610 (Label) | Target: Self (1)
-                   Affected Spells (Label): Shadowy Insight (375981)
+                   Affected Spells (Label): Shadowy Insight (375981), Shadowy Insight (1287613)
 #2 (id=1238730)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Increases the chance for Shadowy Insight to occur by $s2%. When consuming Shadowy Insight, Mind Blast generates ${$s1/100} additional Insanity.
@@ -20723,4 +20724,25 @@ Effects          :
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0, 4, 99
 Description      : Healing is increased by $s1%.
+
+Name             : Shadowy Insight (id=1287613) [Spell Family (6), Hidden] 
+Hotfixed         : NEW SPELL
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 2610: Priest Shadow 10.1 Class Set 2pc (405557 effect#1), Priest Shadow 10.1 Class Set 2pc (405557 effect#2), Dark Thoughts (1240388 effect#1)
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1305233)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1602 (Category) | Target: Self (1)
+                   Affected Spells (Category): Mind Blast (8092), Void Blast (450983)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc375888
+Tooltip          : Your next Mind Blast is instant cast.
 
