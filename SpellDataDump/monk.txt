@@ -24241,7 +24241,8 @@ Proc Flags       : Helpful Periodic
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143)
 Effects          :
 #1 (id=1293198)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Renewing Mist's healing is increased by $s1% on your lowest health ally with its effect.
 
 Name             : Clear Transmog Outfit (id=1283375) [Hidden] 
