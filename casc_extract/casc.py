@@ -432,6 +432,7 @@ class BLTEExtract:
     def extract_data(self, file_key, file_md5sum, data_file_number,
                      data_file_offset, blte_file_size):
         path = os.path.join(self.options.data_dir, 'Data', 'data', f'data.{data_file_number:03d}')
+        file_key_hex = codecs.encode(file_key, 'hex').decode()
 
         if not self.open(path):
             return None
@@ -442,16 +443,20 @@ class BLTEExtract:
         blte_len = struct.unpack('<I', self.fd.read(4))[0]
 
         if blte_len != blte_file_size:
-            self.options.parser.error(
-                f'Invalid file length, expected {blte_file_size} got {blte_len}'
+            # FIXME: some files don't extract?
+            # https://github.com/simulationcraft/simc/issues/10033
+            print(
+                f'Invalid file length, expected {blte_file_size} got '
+                f'{blte_len} (for {file_key_hex})'
             )
+            return None
 
         # Key is apparently in reverse byte order, and only 9 bytes of it are relevant (as in the
         # index structures)
         for idx in range(0, 9):
             if file_key[idx] != key[len(key) - 1 - idx]:
                 self.options.parser.error(
-                    f"Invalid file key for {codecs.encode(file_key, 'hex').decode('utf-8')}, "
+                    f"Invalid file key for {file_key_hex}, "
                     f"got {codecs.encode(key, 'hex').decode('utf-8')}")
 
         # Skip 10 bytes of unknown data

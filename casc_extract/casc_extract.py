@@ -33,6 +33,12 @@ parser.add_option( '--locale', action = 'store', dest = 'locale', default = 'en_
 parser.add_option( '--ribbit', action = 'store_true', dest = 'ribbit', default = False, help = 'Use Ribbit for configuration information')
 parser.add_option( '--bgdl', action = 'store_true', dest = 'bgdl', default = False, help = 'Download background downloader files' )
 parser.add_option( '--custom', type='string', dest = 'custom_build', default = None, help = 'Use a custom Build Config')
+parser.add_option(
+	'--continue_on_failure',
+	action='store_true',
+	default=False,
+	help='If any file fails to extract in "batch" or "unpack" mode, continue trying to extract other files',
+)
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
@@ -108,7 +114,11 @@ if __name__ == '__main__':
 				print('Extracting %s (id=%d) ...' % (file_name, file_data_id))
 
 				if not blte.extract_file(*extract_data):
-					sys.exit(1)
+					print(f'Failed to extract data for {file_name}', file=sys.stderr)
+					if opts.continue_on_failure:
+						continue
+					else:
+						sys.exit(1)
 		else:
 			cdn = casc.CDNIndex(opts)
 			if not cdn.open():
@@ -151,14 +161,21 @@ if __name__ == '__main__':
 				result = blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
 				if not result:
 					print('Failed to extract data for %s %s' % (opts.locale, file_name), file=sys.stderr)
-					sys.exit(1)
+					if opts.continue_on_failure:
+						continue
+					else:
+						sys.exit(1)
 
 	elif opts.mode == 'unpack':
 		blte = casc.BLTEExtract(opts)
-		for file in args:
-			print('Extracting %s ...')
-			if not blte.extract_blte_file(file):
-				sys.exit(1)
+		for file_name in args:
+			print(f'Extracting {file_name}...')
+			if not blte.extract_blte_file(file_name):
+				print(f'Failed to extract data for {file_name}', file=sys.stderr)
+				if opts.continue_on_failure:
+					continue
+				else:
+					sys.exit(1)
 
 	elif opts.mode == 'extract':
 		build = None
