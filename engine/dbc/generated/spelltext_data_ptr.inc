@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65893
-static constexpr std::array<spelltext_data_t, 28626> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28627> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28625,6 +28625,7 @@ static constexpr std::array<spelltext_data_t, 28626> __ptr_spelltext_data { {
   { 1286247, "$@spelldesc191034", 0, 0 },
   { 1286400, "$@spelldesc1265052", "Haste increased by $W1%.", 0 },
   { 1286623, "$@spelldesc1241711\r\n", 0, 0 },
+  { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
