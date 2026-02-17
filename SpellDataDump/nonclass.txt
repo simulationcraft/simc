@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65899 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -252437,17 +252437,6 @@ Effects          :
 #2 (id=1281294)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.
-
-Name             : Weak Bloomline (id=1269454) 
-School           : Physical
-Spell Type       : None
-Attributes       : Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1281297)  : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
-#2 (id=1281298)  : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical

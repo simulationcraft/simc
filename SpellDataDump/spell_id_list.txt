@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65893
+Class Spell ID List, wow build 12.0.1.65899
 
 Death Knight
 3714     Path of Frost
@@ -20231,7 +20231,7 @@ Shaman
 382888   Flurry
 382889   Flurry
 382947  *Ancestral Defense
-383009  *Stormkeeper
+383009   Stormkeeper
 383010   Elemental Orbit
 383011  *Call of the Elements
 383012  *Creation Core
