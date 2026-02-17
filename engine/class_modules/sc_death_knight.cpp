@@ -4386,7 +4386,7 @@ struct magus_pet_t : public death_knight_pet_t
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.5594;
+    owner_coeff.ap_from_ap = 0.4664;
   }
 
   void arise() override
@@ -17355,7 +17355,7 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2026-2-13", "Virulent Plague nerfed 18%", 281049,
@@ -17421,6 +17421,7 @@ struct death_knight_module_t : public module_t
         .modifier( 3 )
         .verification_value( 5 );
   }
+  */
 
   void init( player_t* ) const override
   {

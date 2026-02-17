@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65899 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -232301,7 +232301,8 @@ Effects          :
 #8 (id=1225230)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225231)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Hotfixed         : Misc Value (917504 -> 1879048192)
 #10 (id=1225232) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225233) : Apply Aura (6) | Attribute (29)
@@ -238945,7 +238946,7 @@ Labels           : 4875
                  : 4880
 Category Cooldown: 300 seconds
 Proc Chance      : 100%
-Real PPM         : 10
+Real PPM         : 6
 Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Unknown (508)
 Effects          :
@@ -238953,7 +238954,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 406.9404 (coefficient=3.104508) | Stat: StrAgiInt | Target: Self (1)
 Hotfixed         : Coefficient (6.209017 -> 3.104508)
 #2 (id=1234844)  : Apply Aura (6) | Proc Trigger Spell (42): Draught of Rampant Abandon
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154 | Target: Self (1)
+Hotfixed         : Target 1 (0 -> 1)
 Description      : Increases $pri by $s0 for $d. While under the effects of this potion the Void may extract its toll, opening a void zone at your feet.
 Tooltip          : $pri increased by $s0.
 
@@ -239217,7 +239219,8 @@ Triggered By     : Draught of Rampant Abandon (1236998)
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401)
 Effects          :
 #1 (id=1233757)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38015 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38015 | Target: at Self (18)
+Hotfixed         : Target 1 (1 -> 18)
 
 Name             : Burst of Zealotry (id=1237158) 
 School           : Holy
@@ -241652,6 +241655,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: Back of Self (48) -> Random in Area (86)
 
 Name             : Battle Fervor (id=1243871) [Passive, Hidden] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -241665,7 +241669,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 7.462412 (coefficient=0.05693) | Trigger Spell: 1246780 | Target: Self (1)
 #2 (id=1244341)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.
+Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times.
 
 Name             : Ranger-General's Call (id=1243876) [Passive, Hidden] 
 School           : Physical
@@ -244814,12 +244818,13 @@ Your damaging spells and abilities can call a beam of radiant light nearby. Stan
 
 
 Name             : Murder Row Fishhook (id=1250528) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Melee
 Range            : 50 yards
 Duration         : 10 seconds
 Triggered By     : Murder Row Fishhook (1250529)
-Attributes       : Extra Initial Period (169), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254624)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250529 | Target: Targeted Enemy (6)
@@ -252437,17 +252442,6 @@ Effects          :
 #2 (id=1281294)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.
-
-Name             : Weak Bloomline (id=1269454) 
-School           : Physical
-Spell Type       : None
-Attributes       : Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1281297)  : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
-#2 (id=1281298)  : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical

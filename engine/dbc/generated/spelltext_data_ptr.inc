@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65893
-static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28627> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17256,6 +17256,7 @@ static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
   {  382957, "Use: Hurl a Smoldering Inferno at the target that deals between ${$s1*.3}-$s1 Fire damage. Damage dealt is determined by the top-most card of the deck.", 0, 0 },
   {  382958, "Equip: Periodically shuffle the deck while in combat.\r\n\r\n", "Shuffles cards. (DNT)", 0 },
   {  382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
+  {  383009, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
   {  383010, "Increases the number of Elemental Shields you can have active on yourself by 1.\r\n\r\nYou can have Earth Shield on yourself and one ally at the same time.", 0, 0 },
   {  383013, "Summons a totem at your feet that removes all Poison effects from a nearby party or raid member within $403922a yards every $383014t1 sec for $d.", 0, 0 },
   {  383014, "$@spelldesc383013", "Cleansing all Poison effects from a nearby party or raid member every $t1 sec.", 0 },
@@ -26420,7 +26421,7 @@ static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
   { 1243818, "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.", 0, 0 },
   { 1243828, "$@spelldesc1243818", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 1243843, "$@spelldesc1243818", "Intellect increased by $w1.", 0 },
-  { 1243871, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", 0, 0 },
+  { 1243871, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times.", 0, 0 },
   { 1243876, "Dealing damage to a target has a chance to mark them, causing an Elven Ranger to launch a Surprise Attack from afar! This surprise attack deals ${$<rolemult>*$s1} Physical damage to the target.", 0, 0 },
   { 1243883, "Your damaging spells and abilities have a chance to afflict your target with a Necrotic Hex, inflicting ${$<rolemult>*$s1*$1258590d} Nature damage over $1258590d.\r\n\r\nThis hex spreads to enemies near your original victim every time it deals damage, up to $s2 times.", 0, 0 },
   { 1243903, "Your spells and abilities have a chance to resonate with the Worldsoul, creating an Orb of Azerothian Power nearby. Gathering this orb empowers you, granting $1246739s1 of your highest secondary stat for $1246739d.", 0, 0 },
@@ -28624,11 +28625,13 @@ static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
   { 1286247, "$@spelldesc191034", 0, 0 },
   { 1286400, "$@spelldesc1265052", "Haste increased by $W1%.", 0 },
   { 1286623, "$@spelldesc1241711\r\n", 0, 0 },
+  { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65893
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  { 1243871,  0, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times." },
 } };
 
 // Spell description variables, wow build 12.0.1.65893

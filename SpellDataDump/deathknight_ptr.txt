@@ -22423,7 +22423,8 @@ Family Flags     : 43, 78, 119
 Attributes       : No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1242146)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.25 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.845 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (2.25 -> 1.845), Target 1 (53 -> 87)
 Description      : $@spelldesc1240996
 
 Name             : Scourging (id=1242604) [Spell Family (15), Passive] 
