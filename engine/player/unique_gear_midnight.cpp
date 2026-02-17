@@ -2013,29 +2013,28 @@ void magisters_alchemist_stone( special_effect_t& e )
 
 // Vaelgor's Final Stare
 // 1259293 Driver
-// 1260459 Nullsight buff
+// 1260459 Nullsight/value spell
 void vaelgors_final_stare( special_effect_t& effect ){
-  struct vaelgors_buff_t final : public stat_buff_t{
+  struct nullsight final : public stat_buff_t{
     const special_effect_t& effect;
     const spell_data_t* value_spell;
     int current_tick;
     double buff_val;
     double decrease;
 
-    vaelgors_buff_t( const special_effect_t& e )
-      : stat_buff_t( e.player, "vaelgors_final_stare", e.driver() ),
+    nullsight( const special_effect_t& e )
+      : stat_buff_t( e.player, "nullsight", e.player->find_spell( 1260459 ) ),
         effect( e ),
         value_spell( nullptr ),
         current_tick( 0 ),
         buff_val( 0 ),
         decrease( 0 )
       {
-      auto n_ticks = e.driver()->duration() / e.driver()->effectN( 3 ).period();
       value_spell  = e.player->find_spell( 1260459 );
-      buff_val     = value_spell->effectN( 1 ).average( e );
+      auto n_ticks = value_spell->duration() / value_spell->effectN( 3 ).period();
+      buff_val     = e.driver()->effectN( 1 ).average( e );
       decrease     = buff_val / n_ticks;
-
-      set_stat_from_effect( 1, value_spell->effectN( 1 ).average( e ) );
+      set_stat_from_effect( 1, buff_val );
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
     }
 
@@ -2047,24 +2046,13 @@ void vaelgors_final_stare( special_effect_t& effect ){
     void recalculate(){
       current_tick++;
       for ( auto& buff_stat : stats ){
-        double delta = buff_stat.current_value - current_value();
-        if ( delta > 0 ){
-          player->stat_loss( 
-            buff_stat.stat, 
-            decrease, 
-            stat_gain, 
-            nullptr, 
-            buff_duration() > timespan_t::zero() 
-          );
-        }
-        else if ( delta < 0 ){
-          player->stat_gain( 
-            buff_stat.stat, 
-            std::fabs( delta ), 
-            stat_gain, nullptr,               
-            buff_duration() > timespan_t::zero() 
-          );
-        }
+        player->stat_loss(
+          buff_stat.stat, 
+          decrease, 
+          stat_gain, 
+          nullptr, 
+          buff_duration() > timespan_t::zero() 
+        );
       }
     }
 
@@ -2072,16 +2060,22 @@ void vaelgors_final_stare( special_effect_t& effect ){
       for ( auto& buff_stat : stats ){
         double delta = current_value();
         if ( delta > 0 ){
-          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-        }
-        else if ( delta < 0 ){
-          player->stat_gain( 
-            buff_stat.stat,
-            std::fabs( delta ), 
-            stat_gain, 
+          player->stat_loss( 
+            buff_stat.stat, 
+            delta, 
+            stat_gain,
             nullptr,
             buff_duration() > timespan_t::zero() 
           );
+        }
+        else if ( delta < 0 ){
+          player->stat_gain( 
+          buff_stat.stat, 
+          std::fabs( delta ), 
+          stat_gain, 
+          nullptr,
+          buff_duration() > timespan_t::zero() 
+        );
         }
         buff_stat.current_value = 0;
       }
@@ -2100,7 +2094,7 @@ void vaelgors_final_stare( special_effect_t& effect ){
     }
   };
 
-  effect.custom_buff = make_buff<vaelgors_buff_t>( effect );
+  effect.custom_buff = make_buff<nullsight>( effect );
 }
 
 }  // namespace trinkets
