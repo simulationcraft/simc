@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65893
-static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28626> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17256,6 +17256,7 @@ static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
   {  382957, "Use: Hurl a Smoldering Inferno at the target that deals between ${$s1*.3}-$s1 Fire damage. Damage dealt is determined by the top-most card of the deck.", 0, 0 },
   {  382958, "Equip: Periodically shuffle the deck while in combat.\r\n\r\n", "Shuffles cards. (DNT)", 0 },
   {  382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
+  {  383009, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
   {  383010, "Increases the number of Elemental Shields you can have active on yourself by 1.\r\n\r\nYou can have Earth Shield on yourself and one ally at the same time.", 0, 0 },
   {  383013, "Summons a totem at your feet that removes all Poison effects from a nearby party or raid member within $403922a yards every $383014t1 sec for $d.", 0, 0 },
   {  383014, "$@spelldesc383013", "Cleansing all Poison effects from a nearby party or raid member every $t1 sec.", 0 },
