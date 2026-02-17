@@ -4161,7 +4161,7 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::dismiss( expired );
 
-    o()->buff.fire_elemental->expire();
+    o()->buff.storm_elemental->expire();
   }
 };
 
@@ -7112,6 +7112,11 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->trigger_whirling_air( execute_state );
     }
+
+    if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
+    {
+      p()->buff.wind_gust->trigger();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -8249,6 +8254,12 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
+    if ( p()->talent.call_of_fire.ok() )
+    {
+      p()->summon_elemental( p()->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE,
+                             p()->spell.fire_elemental->duration() );
+    }
+
     // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -8274,11 +8285,6 @@ struct ascendance_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->action.doom_winds_asc->execute_on_target( target );
-    }
-    if ( p()->talent.call_of_fire.ok() )
-    {
-      p()->summon_elemental( p()->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE,
-                             p()->spell.fire_elemental->duration() );
     }
   }
 
@@ -12062,7 +12068,7 @@ void shaman_t::create_buffs()
                        ->set_default_value_from_effect_type( A_HASTE_ALL );
 
   buff.power_of_the_maelstrom =
-      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )
+      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
           ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   // PvP
