@@ -819,6 +819,7 @@ enum class spell_variant : unsigned
   PRIMORDIAL_STORM,
   RIDE_THE_LIGHTNING,
   PURGING_FLAMES,
+  VOLTAIC_BLAZE,
 };
 
 enum class strike_variant : unsigned
@@ -1200,7 +1201,7 @@ public:
     action_t* chain_lightning_ws_rtl;
     action_t* ti_trigger;
     action_t* flame_shock_asc;
-    action_t* flame_shock_lmt;
+    action_t* flame_shock_vb;
     action_t* flame_shock;
     action_t* elemental_blast;
 
@@ -1835,12 +1836,15 @@ public:
     // New deeply rooted elements RNG
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> deeply_rooted_elements;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_ele;
 
     rng_obj_t( shaman_t* s ) :
       awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
       ancient_fellowship( nullptr ), routine_communication( nullptr ), imbuement_mastery( nullptr ),
       lively_totems_ptr( nullptr ),
-      deeply_rooted_elements( "dre", s ), tempest_enh( "tempest", s )
+        deeply_rooted_elements( "dre", s ),
+        tempest_enh( "tempest", s ),
+        tempest_ele( "tempest_ele", s )
     { }
   } rng_obj;
 
@@ -2691,19 +2695,28 @@ public:
   double action_da_multiplier() const override  // TODO Hawk: This is automated right?
   {
     double m = ab::action_da_multiplier();
-    if ( !p()->bugs )
-    {
-      if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
-             p()->buff.fire_elemental->check() ) )
-      {
-        m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
-      }
 
-      if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
-             p()->buff.storm_elemental->check() ) )
-      {
-        m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
-      }
+    if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() && p()->buff.fire_elemental->check() &&
+           !p()->talent.primal_elementalist.ok() ) )
+    {
+      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
+    }
+
+    if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() && p()->buff.fire_elemental->check() &&
+           p()->talent.primal_elementalist.ok() ) )
+    {
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 1 ).percent();
+    }
+
+    if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.storm_elemental->check() && !p()->talent.primal_elementalist.ok() ) )
+    {
+      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+    }
+    if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() ) )
+    {
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 3 ).percent();
     }
 
     if ( ( affected_by_flametongue_da && p()->talent.flametongue_weapon.ok() &&
@@ -2724,18 +2737,29 @@ public:
   double action_ta_multiplier() const override
   {
     double m = ab::action_ta_multiplier();
-    if ( !p()->bugs )
+    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+         !p()->talent.primal_elementalist.ok() )
     {
-      if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() )
-      {
-        m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
-      }
-
-      if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() )
-      {
-        m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
-      }
+      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
     }
+    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+         p()->talent.primal_elementalist.ok() )
+    {
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 1 ).percent();
+    }
+
+    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+         !p()->talent.primal_elementalist.ok() )
+    {
+      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+    }
+
+    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() && 
+        p()->talent.primal_elementalist.ok() )
+    {
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 3 ).percent();
+    }
+  
     if ( ( affected_by_flametongue_ta && p()->talent.flametongue_weapon.ok() &&
            p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE ) )
     {
@@ -3537,7 +3561,7 @@ struct pet_action_t : public T_ACTION
     double m = T_ACTION::action_da_multiplier();
 
     if ( affected_by_elemental_unity_fe_da && o()->talent.elemental_unity.ok() &&
-         o()->buff.fire_elemental->check() )
+         o()->buff.fire_elemental->check())
     {
       m *= 1.0 + o()->buff.fire_elemental->data().effectN( 4 ).percent();
     }
@@ -4162,6 +4186,7 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::dismiss( expired );
 
     o()->buff.storm_elemental->expire();
+    o()->buff.wind_gust->expire();
   }
 };
 
@@ -7990,6 +8015,12 @@ public:
         cooldown = player->get_cooldown( "__flame_shock_secondary" );
         base_costs[ RESOURCE_MANA ] = 0;
         break;
+      case spell_variant::VOLTAIC_BLAZE:
+        maelstrom_gain = 0;
+        background     = true;
+        cooldown       = player->get_cooldown( "__flame_shock_secondary" );
+        base_costs[ RESOURCE_MANA ] = 0;
+        break;
       default:
         assert( 0 );
         break;
@@ -9626,7 +9657,6 @@ struct voltaic_blaze_t : public shaman_spell_t
       background = dual = true;
       stats = player->get_stats( "voltaic_blaze" );
       aoe = 1 + as<int>( player->talent.voltaic_blaze->effectN( 4 ).base_value() );
-      maelstrom_gain    = player->spec.maelstrom->effectN( 14 ).resource( RESOURCE_MAELSTROM );
     }
 
     double composite_target_crit_chance( player_t* /* t */ ) const override
@@ -9636,7 +9666,7 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       shaman_spell_t::impact( state );
 
-      p()->trigger_secondary_flame_shock( state->target, spell_variant::NORMAL );
+      p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
     }
   };
 
@@ -10011,6 +10041,11 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return expr;
   }
 
+  if (auto expr = rng_obj.tempest_ele.create_expression( name ) )
+  {
+    return expr;
+  }
+
   if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
     return make_fn_expr( name, [ this ]() {
       if ( !spell.tww3_stormbringer_2pc->ok() )
@@ -10165,10 +10200,14 @@ void shaman_t::create_actions()
     dummy.stormblast = new dummy_action_t( this, talent.stormblast, "stormblast" );
   }
 
-  if ( specialization() == SHAMAN_ELEMENTAL && ( talent.ascendance.ok() ||
-       talent.deeply_rooted_elements.ok() ) )
+  if ( specialization() == SHAMAN_ELEMENTAL && ( talent.ascendance.ok() || talent.deeply_rooted_elements.ok() ) )
   {
     action.flame_shock_asc = new flame_shock_t( this, spell_variant::ASCENDANCE );
+  }
+
+    if ( specialization() == SHAMAN_ELEMENTAL && ( talent.voltaic_blaze.ok() ) )
+  {
+    action.flame_shock_vb = new flame_shock_t( this, spell_variant::VOLTAIC_BLAZE );
   }
 
   if ( talent.thorims_invocation.ok() )
@@ -10317,6 +10356,7 @@ void shaman_t::create_options()
     options.crash_lightning_su_hit_chance, 0.0 , 1.0 ) );
 
   rng_obj.tempest_enh.create_options();
+  rng_obj.tempest_ele.create_options();
   rng_obj.deeply_rooted_elements.create_options();
 }
 
@@ -11160,6 +11200,10 @@ void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant va
   {
     fs = action.flame_shock_asc;
   }
+  if ( variant == spell_variant::VOLTAIC_BLAZE )
+  {
+    fs = action.flame_shock_vb;
+  }
 
   fs->execute_on_target( target );
 }
@@ -11614,9 +11658,23 @@ void shaman_t::trigger_tempest( T resource_count )
       buff.tempest->trigger();
     }
   }
-  else if ( specialization() == SHAMAN_ELEMENTAL && rng().roll( tempest_chance ) )
+  else if ( specialization() == SHAMAN_ELEMENTAL )
   {
-    buff.tempest->trigger();
+    bool success = false;
+
+    for ( auto draw = 0U; draw < as<unsigned>( resource_count ); ++draw )
+    {
+      if ( rng_obj.tempest_ele.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    if ( success )
+    {
+      buff.tempest->trigger();
+    }
   }
 }
 
@@ -12347,14 +12405,27 @@ void shaman_t::init_rng()
   if ( talent.tempest.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
     rng_obj.tempest_enh
-      .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
-        // Default: 2 successful procs per deck
-        auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
-        // Default: 200 total cards
-        auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 100U;
-        return std::make_tuple( n_total, n_draws, 10U );
-      } )
-      .build();
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 2 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
+          // Default: 200 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 100U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
+  }
+
+    if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
+  {
+    rng_obj.tempest_ele
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 2 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
+          // Default: 333 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 333U;
+          return std::make_tuple( n_total, n_draws, 90U );
+        } )
+        .build();
   }
 }
 
