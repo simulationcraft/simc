@@ -241654,6 +241654,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: Back of Self (48) -> Random in Area (86)
 
 Name             : Battle Fervor (id=1243871) [Passive, Hidden] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -241667,7 +241668,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 7.462412 (coefficient=0.05693) | Trigger Spell: 1246780 | Target: Self (1)
 #2 (id=1244341)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.
+Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times.
 
 Name             : Ranger-General's Call (id=1243876) [Passive, Hidden] 
 School           : Physical
@@ -244816,12 +244817,13 @@ Your damaging spells and abilities can call a beam of radiant light nearby. Stan
 
 
 Name             : Murder Row Fishhook (id=1250528) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Melee
 Range            : 50 yards
 Duration         : 10 seconds
 Triggered By     : Murder Row Fishhook (1250529)
-Attributes       : Extra Initial Period (169), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254624)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250529 | Target: Targeted Enemy (6)
