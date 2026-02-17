@@ -19794,7 +19794,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 6462: Unholy Death Knight (137007 effect#19)
-Stacks           : 3 maximum
+Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Incite Terror (434151)
 Attributes       : DoT Stacking Rule (103), Aura Points On Client (268)
