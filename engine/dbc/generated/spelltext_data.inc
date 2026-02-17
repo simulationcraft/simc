@@ -26421,7 +26421,7 @@ static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
   { 1243818, "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.", 0, 0 },
   { 1243828, "$@spelldesc1243818", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 1243843, "$@spelldesc1243818", "Intellect increased by $w1.", 0 },
-  { 1243871, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", 0, 0 },
+  { 1243871, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times.", 0, 0 },
   { 1243876, "Dealing damage to a target has a chance to mark them, causing an Elven Ranger to launch a Surprise Attack from afar! This surprise attack deals ${$<rolemult>*$s1} Physical damage to the target.", 0, 0 },
   { 1243883, "Your damaging spells and abilities have a chance to afflict your target with a Necrotic Hex, inflicting ${$<rolemult>*$s1*$1258590d} Nature damage over $1258590d.\r\n\r\nThis hex spreads to enemies near your original victim every time it deals damage, up to $s2 times.", 0, 0 },
   { 1243903, "Your spells and abilities have a chance to resonate with the Worldsoul, creating an Orb of Azerothian Power nearby. Gathering this orb empowers you, granting $1246739s1 of your highest secondary stat for $1246739d.", 0, 0 },
@@ -28627,7 +28627,8 @@ static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65899
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1243871,  0, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times." },
 } };
 
 // Spell description variables, wow build 12.0.1.65899
