@@ -26407,8 +26407,9 @@ Proc Flags       : Cast Successful
 Triggered By     : Dream Guide (1278886)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1291244)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Regrowth
+#1 (id=1291244)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Regrowth | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Misc Value 2: -100 | Trigger Spell: 8936 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 #2 (id=1291245)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 8936 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)

@@ -19818,10 +19818,11 @@ Effects          :
 Description      : $@spelldesc469314
 
 Name             : Voltaic Blaze (id=470057) [Spell Family (11)] 
+Hotfixed         : School (8 -> 12)
 Talent Entry     : Enhancement [tree=spec, row=6, col=6, max_rank=1, req_points=8, replace="Flame Shock" (id=470411)]
                  : Elemental [tree=spec, row=9, col=6, max_rank=1, req_points=20, replace="Flame Shock" (id=470411)]
 Class            : Shaman
-School           : Nature
+School           : Firestorm
 Spell Type       : Magic
 Resource         : 0.3% Base Mana (0) (id=312113)
 Range            : 40 yards

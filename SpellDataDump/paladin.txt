@@ -16194,6 +16194,7 @@ Effects          :
 Description      : Your damage over time effects deal $s1% more damage.
 
 Name             : Lightforged Blessing (id=403460) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -16203,10 +16204,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
 Family Flags     : 41, 46
-Attributes       : Exclude Caster (51), Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Exclude Caster (51), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1050431)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Lightforged Blessing (id=403479) [Spell Family (10), Passive, Hidden] 
@@ -17287,6 +17289,7 @@ Effects          :
 Description      : The critical strikes of your Holy Power generating abilities grant you $s1% Haste for $407065d.
 
 Name             : Lightforged Blessing (id=407467) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -17296,10 +17299,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
 Family Flags     : 41, 46
-Attributes       : Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070945)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Target: Self (1)
+Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : @$spelldesc406468
 
 Name             : Consecrated Blade (id=407475) [Spell Family (10), Hidden] 
