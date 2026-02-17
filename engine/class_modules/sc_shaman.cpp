@@ -3869,7 +3869,7 @@ struct primal_elemental_t : public shaman_pet_t
     return shaman_pet_t::create_action( name, options_str );
   }
 
-  double composite_attack_power_multiplier() const override  // TODO Hawk: This is automated right?
+  double composite_attack_power_multiplier() const override
   {
     double m = pet_t::composite_attack_power_multiplier();
 
@@ -3878,7 +3878,7 @@ struct primal_elemental_t : public shaman_pet_t
     return m;
   }
 
-  double composite_spell_power_multiplier() const override // TODO Hawk: This is automated right?
+  double composite_spell_power_multiplier() const override
   {
     double m = pet_t::composite_spell_power_multiplier();
 
@@ -8287,8 +8287,7 @@ struct ascendance_t : public shaman_spell_t
 
     if ( p()->talent.call_of_fire.ok() )
     {
-      p()->summon_elemental( p()->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE,
-                             p()->spell.fire_elemental->duration() );
+      p()->summon_elemental( p()->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE );
     }
 
     // Refresh Flame Shock to max duration
