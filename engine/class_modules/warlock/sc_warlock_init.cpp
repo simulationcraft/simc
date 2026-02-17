@@ -187,6 +187,10 @@ namespace warlock
     talents.shadow_of_nathreza_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 2 ); // Should be ID 1261990 (II)
     talents.shadow_of_nathreza_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 3 ); // Should be ID 1261992 (III)
 
+    // Additional Tier Set spell data
+    tier.wl_affliction_12_0_class_set_2pc = sets->set( WARLOCK_AFFLICTION, MID1, B2 ); // Should be ID 1264869
+    tier.wl_affliction_12_0_class_set_4pc = sets->set( WARLOCK_AFFLICTION, MID1, B4 ); // Should be ID 1264870
+
     // Initialize some default values for pet spawners
     warlock_pet_list.darkglares.set_default_duration( talents.summon_darkglare->duration() );
   }
@@ -306,6 +310,10 @@ namespace warlock
     talents.dominion_of_argus_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 1 ); // Should be ID 1276163 (I)
     talents.dominion_of_argus_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 2 ); // Should be ID 1276190 (II)
     talents.dominion_of_argus_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 3 ); // Should be ID 1276222 (III)
+
+    // Additional Tier Set spell data
+    tier.wl_demonology_12_0_class_set_2pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B2 ); // Should be ID 1264871
+    tier.wl_demonology_12_0_class_set_4pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B4 ); // Should be ID 1264872
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -450,6 +458,10 @@ namespace warlock
     talents.embers_of_nihilam_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 1 ); // Should be ID 1265770 (I)
     talents.embers_of_nihilam_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 2 ); // Should be ID 1265772 (II)
     talents.embers_of_nihilam_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 3 ); // Should be ID 1265774 (III)
+
+    // Additional Tier Set spell data
+    tier.wl_destruction_12_0_class_set_2pc = sets->set( WARLOCK_DESTRUCTION, MID1, B2 ); // Should be ID 1264873
+    tier.wl_destruction_12_0_class_set_4pc = sets->set( WARLOCK_DESTRUCTION, MID1, B4 ); // Should be ID 1264874
 
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );

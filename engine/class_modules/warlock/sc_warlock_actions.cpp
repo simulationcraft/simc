@@ -1412,13 +1412,18 @@ using namespace helpers;
           twin->execute_on_target( twin_target );
       }
 
-      if ( p()->talents.sudden_onset.ok() )
-      {
-        int delta = ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() ) - td( execute_state->target )->dots.agony->current_stack();
+      int initial_stacks = 0;
 
-        if ( delta > 0 )
-          td( execute_state->target )->dots.agony->increment( delta );
-      }
+      if ( p()->talents.sudden_onset.ok() )
+        initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
+
+      if ( active_4pc<MID1>() )
+        initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
+
+      int delta_stacks = initial_stacks - td( execute_state->target )->dots.agony->current_stack();
+
+      if ( delta_stacks > 0 )
+          td( execute_state->target )->dots.agony->increment( delta_stacks );
     }
 
     void tick( dot_t* d ) override

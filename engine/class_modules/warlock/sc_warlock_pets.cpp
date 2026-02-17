@@ -1091,6 +1091,16 @@ void dreadstalker_t::demise()
   warlock_pet_t::demise();
 }
 
+double dreadstalker_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( o()->active_4pc<MID1>() )
+    m *= 1.0 + o()->tier.wl_demonology_12_0_class_set_4pc->effectN( 1 ).percent();
+
+  return m;
+}
+
 double dreadstalker_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();

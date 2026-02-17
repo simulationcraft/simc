@@ -590,6 +590,12 @@ public:
 
   struct tier_sets_t
   {
+    const spell_data_t* wl_affliction_12_0_class_set_2pc;
+    const spell_data_t* wl_affliction_12_0_class_set_4pc;
+    const spell_data_t* wl_demonology_12_0_class_set_2pc;
+    const spell_data_t* wl_demonology_12_0_class_set_4pc;
+    const spell_data_t* wl_destruction_12_0_class_set_2pc;
+    const spell_data_t* wl_destruction_12_0_class_set_4pc;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
