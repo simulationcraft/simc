@@ -4478,7 +4478,7 @@ using namespace helpers;
     // Pets
     if ( action_name == "summon_felhunter" )
       return new summon_main_pet_t( "felhunter", this );
-    if ( action_name == "summon_felguard" && demonology() && talents.summon_felguard.ok() )
+    if ( action_name == "summon_felguard" && demonology() )
       return new summon_main_pet_t( "felguard", this, 30146 );
     if ( action_name == "summon_sayaad" )
       return new summon_main_pet_t( "sayaad", this, 366222 );

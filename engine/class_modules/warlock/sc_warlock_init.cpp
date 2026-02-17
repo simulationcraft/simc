@@ -1130,6 +1130,9 @@ namespace warlock
     if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 335052 )
       return { "0", "Condition discarded as it checks for PvP talent." };
 
+    if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 387157 )
+      return { "", "Ritual of Ruin buff no longer exists" };
+
     return player_t::parse_assisted_combat_rule( rule, step );
   }
 
