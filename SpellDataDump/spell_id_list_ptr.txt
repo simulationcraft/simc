@@ -17116,6 +17116,7 @@ Priest
 1283669  Priest - Midnight PrePatch - 11.2 Class Set 4pc
 1283670  Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283671  Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1287613  Shadowy Insight
 
 Rogue
 53       Backstab
