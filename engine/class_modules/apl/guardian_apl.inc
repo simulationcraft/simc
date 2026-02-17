@@ -2,7 +2,7 @@ action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
 action_priority_list_t* bear = get_action_priority_list( "bear" );
 
-precombat->add_action( "variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.ursocs_endurance.enabled","Executed before combat begins. Accepts non-harmful actions only." );
+precombat->add_action( "variable,name=If_build,value=0","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&!talent.rip.enabled" );
 precombat->add_action( "cat_form,if=talent.rip.enabled" );
 precombat->add_action( "prowl,if=talent.rip.enabled" );
@@ -31,7 +31,7 @@ bear->add_action( "maul,if=buff.ravage.up&active_enemies<2" );
 bear->add_action( "raze,if=(buff.tooth_and_claw.stack>1|buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd|buff.vicious_cycle_maul.stack=3)" );
 bear->add_action( "thrash_bear,if=active_enemies>=5&talent.lunar_calling.enabled" );
 bear->add_action( "ironfur,target_if=!debuff.tooth_and_claw.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up|rage>90&variable.If_build=0|!debuff.tooth_and_claw.up&!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up" );
-bear->add_action( "ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1|rage>90&variable.If_build=1&!talent.fount_of_strength.enabled|rage>110&variable.If_build=1&talent.fount_of_strength.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up&talent.rage_of_the_sleeper.enabled))" );
+bear->add_action( "ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1|rage>90&variable.If_build=1&!talent.fount_of_strength.enabled|rage>110&variable.If_build=1&talent.fount_of_strength.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up))" );
 bear->add_action( "ironfur,if=!buff.ravage.up&(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1" );
 bear->add_action( "ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&(buff.incarnation.up|buff.berserk_bear.up)&!dot.rip.refreshable)" );
 bear->add_action( "rip,if=(buff.cat_form.up&buff.feline_potential.up)" );
