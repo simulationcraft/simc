@@ -4856,9 +4856,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295581)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -80 | Scaled Value: -80 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 0.625 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blind (2094), Blind (427773)
                    Family Flags: 24
+Hotfixed         : PvP Coefficient (1 -> 0.625)
 #2 (id=1102512)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Blind (2094), Blind (427773)
