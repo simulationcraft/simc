@@ -1,4 +1,4 @@
-// Spell text, wow build 12.0.1.65893
+// Spell text, wow build 12.0.1.65899
 static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17256,6 +17256,7 @@ static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
   {  382957, "Use: Hurl a Smoldering Inferno at the target that deals between ${$s1*.3}-$s1 Fire damage. Damage dealt is determined by the top-most card of the deck.", 0, 0 },
   {  382958, "Equip: Periodically shuffle the deck while in combat.\r\n\r\n", "Shuffles cards. (DNT)", 0 },
   {  382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
+  {  383009, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
   {  383010, "Increases the number of Elemental Shields you can have active on yourself by 1.\r\n\r\nYou can have Earth Shield on yourself and one ally at the same time.", 0, 0 },
   {  383013, "Summons a totem at your feet that removes all Poison effects from a nearby party or raid member within $403922a yards every $383014t1 sec for $d.", 0, 0 },
   {  383014, "$@spelldesc383013", "Cleansing all Poison effects from a nearby party or raid member every $t1 sec.", 0 },
@@ -28130,7 +28131,6 @@ static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
-  { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28626,11 +28626,11 @@ static constexpr std::array<spelltext_data_t, 28624> __spelltext_data { {
   { 1287949, "$@spelldesc198013", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.65893
+// spelltext hotfix entries, wow build 12.0.1.65899
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.1.65893
+// Spell description variables, wow build 12.0.1.65899
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29327,7 +29327,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.65893
+// spelldesc_vars hotfix entries, wow build 12.0.1.65899
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
