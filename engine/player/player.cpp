@@ -3773,7 +3773,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( base_expr != expr && show_diff )
     comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
-  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  auto action_names = action_names_from_spell_id( step.spell_id );
+  if ( action_names.empty() )
+  {
+    sim->print_debug(
+      "{} action name not found for assisted combat step {} with spell id {} and expression '{}', skipping.", *this,
+      step.order_index, step.spell_id, expr );
+  }
+
+  for ( const auto& name : action_names )
   {
     if ( name.empty() )
       continue;

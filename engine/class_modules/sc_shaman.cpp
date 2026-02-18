@@ -2754,12 +2754,12 @@ public:
       m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
     }
 
-    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() && 
+    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
         p()->talent.primal_elementalist.ok() )
     {
       m *= 1.0 + p()->talent.elemental_unity->effectN( 3 ).percent();
     }
-  
+
     if ( ( affected_by_flametongue_ta && p()->talent.flametongue_weapon.ok() &&
            p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE ) )
     {
@@ -10204,7 +10204,7 @@ void shaman_t::create_actions()
     action.flame_shock_asc = new flame_shock_t( this, spell_variant::ASCENDANCE );
   }
 
-    if ( specialization() == SHAMAN_ELEMENTAL && ( talent.voltaic_blaze.ok() ) )
+    if ( talent.voltaic_blaze.ok() )
   {
     action.flame_shock_vb = new flame_shock_t( this, spell_variant::VOLTAIC_BLAZE );
   }

@@ -84,7 +84,7 @@ void assassination( player_t* p )
   default_->add_action( "thistle_tea,if=energy.pct<50&fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
   default_->add_action( "call_action_list,name=cds", "Cooldown list takes priority" );
   default_->add_action( "call_action_list,name=core_dot", "Maintain dots when possible" );
-  default_->add_action( "call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0", "Build combo points until 5, or max with darkest night" );
+  default_->add_action( "call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0|(talent.crimson_tempest&spell_targets.fan_of_knives>=5&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives))", "Build combo points until 5, max with darkest night, or ignore finishers to spread more bleeds with CT" );
   default_->add_action( "call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0", "If combo point threshold is reached, spend them" );
 
   cds->add_action( "deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.up", "Cooldown list  Deathmark if bleeds are active, kingsbane is ready, and we have envenom TODO:check envenom buff requirement when apex talents are fixed" );

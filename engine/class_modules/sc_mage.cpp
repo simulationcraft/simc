@@ -4415,8 +4415,6 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
       int consume = ( p()->state.thermal_void_active ? 2 : 1 ) * freezing_consume;
-      p()->state.thermal_void_active = false;
-
       int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
                                          s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
 

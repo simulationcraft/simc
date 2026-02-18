@@ -294,6 +294,12 @@ inline bool any_of( Range&& r, UnaryPredicate p )
   return std::any_of( range::begin( r ), range::end( r ), p );
 }
 
+template <typename Range, typename UnaryPredicate>
+inline bool all_of( Range&& r, UnaryPredicate p )
+{
+  return std::all_of( range::begin( r ), range::end( r ), p );
+}
+
 /**
  * Check if a value is contained in a range
  *

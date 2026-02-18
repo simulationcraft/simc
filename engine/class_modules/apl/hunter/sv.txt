@@ -1,8 +1,8 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=summon_pet
+# Snapshot raid buffed stats before combat begins.
 actions.precombat+=/snapshot_stats
 
-# Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=plst,if=active_enemies<3&talent.howl_of_the_pack_leader
@@ -10,59 +10,64 @@ actions+=/call_action_list,name=plcleave,if=active_enemies>2&talent.howl_of_the_
 actions+=/call_action_list,name=sentst,if=active_enemies<3&!talent.howl_of_the_pack_leader
 actions+=/call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader
 
-# Cooldowns
-actions.cds=use_item,use_off_gcd=1,slot=trinket1
-actions.cds+=/use_item,use_off_gcd=1,slot=trinket2
-actions.cds+=/potion
-actions.cds+=/ancestral_call
-actions.cds+=/blood_fury
-actions.cds+=/berserking
-actions.cds+=/fireblood
-actions.cds+=/arcane_torrent
-actions.cds+=/bag_of_tricks
-actions.cds+=/lights_judgment
+# CDS
+actions.cds=blood_fury,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.takedown.up&buff.takedown.remains>7&!buff.power_infusion.up)
+actions.cds+=/ancestral_call,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/fireblood,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/berserking,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/muzzle
+actions.cds+=/potion,if=target.time_to_die<25|cooldown.takedown.ready
+actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
-# Single Target - Pack Leader
-actions.plst=kill_command,if=buff.tip_of_the_spear.stack=0|(buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains))
+#ST - PL
+actions.plst=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
 actions.plst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
-actions.plst+=/takedown,if=buff.tip_of_the_spear.up
+actions.plst+=/takedown,if=buff.tip_of_the_spear.stack=0
 actions.plst+=/flamefang_pitch
 actions.plst+=/boomstick,if=buff.tip_of_the_spear.up
-actions.plst+=/wildfire_bomb,if=buff.wyverns_cry.remains&buff.tip_of_the_spear.up
-actions.plst+=/raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up
-actions.plst+=/kill_command
+actions.plst+=/wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up|buff.tip_of_the_spear.up
+#actions.plst+=/hatchet_toss,if=buff.hogstrider.remains
+actions.plst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.plst+=/kill_command,if=cooldown.takedown.remains
+actions.plst+=/wildfire_bomb
+actions.plst+=/takedown
 
-# AoE - Pack Leader
-actions.plcleave=kill_command,if=buff.tip_of_the_spear.stack=0|(buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains))
-actions.plcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
-actions.plcleave+=/takedown,if=buff.tip_of_the_spear.up
-actions.plcleave+=/boomstick,if=buff.tip_of_the_spear.up
-actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up&charges_fractional>1.5
-actions.plcleave+=/wildfire_bomb,if=buff.wyverns_cry.remains&buff.tip_of_the_spear.up
-actions.plcleave+=/flamefang_pitch
-actions.plcleave+=/raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up
-actions.plcleave+=/kill_command
-
-# Single Target - Sentinel
+#ST - SENT
 actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0
-actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
+actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains
 actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
 actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
-actions.sentst+=/takedown,if=buff.tip_of_the_spear.up
+actions.sentst+=/takedown,if=buff.tip_of_the_spear.stack<2
 actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
 actions.sentst+=/moonlight_chakram,if=buff.tip_of_the_spear.up
 actions.sentst+=/flamefang_pitch,if=talent.flamefang_pitch
 actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up
 actions.sentst+=/kill_command
 
-# AoE - Sentinel
+
+#AOE - PL
+actions.plcleave=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
+actions.plcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.plcleave+=/takedown,if=buff.tip_of_the_spear.stack=0
+actions.plcleave+=/flamefang_pitch
+actions.plcleave+=/wildfire_bomb,if=full_recharge_time<gcd
+actions.plcleave+=/boomstick,if=buff.tip_of_the_spear.up
+actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up
+actions.plcleave+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.plcleave+=/kill_command,if=cooldown.takedown.remains
+actions.plcleave+=/wildfire_bomb
+actions.plcleave+=/takedown
+
+#AOE - Sent
 actions.sentcleave=kill_command,if=buff.tip_of_the_spear.stack=0
+actions.sentcleave+=/wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)
 actions.sentcleave+=/boomstick,if=buff.tip_of_the_spear.up
 actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
 actions.sentcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
 actions.sentcleave+=/takedown,if=buff.tip_of_the_spear.up
 actions.sentcleave+=/boomstick,if=buff.tip_of_the_spear.up
 actions.sentcleave+=/moonlight_chakram,if=buff.tip_of_the_spear.up
-actions.sentcleave+=/flamefang_pitch,if=talent.flamefang_pitch
+actions.sentcleave+=/flamefang_pitch,if=talent.flamefang_pitch&buff.tip_of_the_spear.up
 actions.sentcleave+=/raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up
 actions.sentcleave+=/kill_command

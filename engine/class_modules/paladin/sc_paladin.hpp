@@ -1735,7 +1735,6 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
-  bool triggers_sanctification   = false;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );

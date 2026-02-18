@@ -1264,6 +1264,7 @@ struct repeating_dynamic_period_cb_event_t : event_t
   repeating_dynamic_period_cb_event_t( monk_t *player, std::function<timespan_t( monk_t * )> period_fn,
                                        std::function<void( monk_t * )> callback )
     : event_t( *player->sim, period_fn( player ) ),
+      player( player ),
       data( std::make_unique<repeating_dynamic_period_cb_event_data_t>( period_fn, callback ) )
   {
   }

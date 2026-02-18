@@ -254,6 +254,67 @@ void potion_of_recklessness( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// Potion of Zealotry
+// 1238443 Driver & buff
+// 1237886 Damage Taken Debuff
+// 1237158 Damage
+// TODO: Does the debuff trigger before, or after the damage? Order will affect damage output
+void potion_of_zealotry( special_effect_t& effect )
+{
+  struct burst_of_zealotry_t : public generic_proc_t
+  {
+    const special_effect_t& effect;
+    player_t* last_target;
+
+    burst_of_zealotry_t( const special_effect_t& e )
+      : generic_proc_t( e, "burst_of_zealotry", 1237158 ), effect( e ), last_target( nullptr )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
+      target_debuff             = e.driver()->effectN( 1 ).trigger();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      if ( auto debuff = find_debuff( s->target ) )
+        m *= 1.0 + debuff->check() * effect.driver()->effectN( 4 ).percent();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( s->target != last_target )
+      {
+        last_target = s->target;
+
+        for ( auto& t : target_list() )
+          if ( auto debuff = find_debuff( t ) )
+            debuff->expire();
+      }
+
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() )->set_rppm( RPPM_DISABLE );
+
+  auto burst_of_zealotry            = new special_effect_t( effect.player );
+  burst_of_zealotry->name_str       = "burst_of_zealotry_proc";
+  burst_of_zealotry->spell_id       = effect.driver()->id();
+  burst_of_zealotry->cooldown_      = 0_ms; // Cooldown handled by the main special effect
+  burst_of_zealotry->execute_action = create_proc_action<burst_of_zealotry_t>( "burst_of_zealotry", effect );
+  effect.player->special_effects.push_back( burst_of_zealotry );
+
+  auto zealotry_cb = new dbc_proc_callback_t( effect.player, *burst_of_zealotry );
+  zealotry_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+}
+
 }  // namespace consumables
 
 namespace enchants
@@ -1542,7 +1603,8 @@ void sealed_chaos_urn( special_effect_t& effect )
                     else
                     {
                       effect.player->buffs.stunned->expire();
-                      effect.player->schedule_ready();
+                      if( !effect.player->readying )
+                        effect.player->schedule_ready();
                     }
                   } );
 
@@ -2241,6 +2303,7 @@ void register_special_effects()
   // Potions
   unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
+  unique_gear::register_special_effect( 1238443, consumables::potion_of_zealotry );
   // Oils
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
