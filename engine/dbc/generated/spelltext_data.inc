@@ -795,7 +795,7 @@ static constexpr std::array<spelltext_data_t, 28625> __spelltext_data { {
   {   24254, "Blasts the enemy with poison for $s1 Nature damage.", 0, 0 },
   {   24257, "Wounds the target for $s1 damage.", 0, 0 },
   {   24268, "Restores $s1 mana every $t1 sec for $d.", "Restores $s1 mana every $t1 sec.", 0 },
-  {   24275, "Hurls a divine hammer that strikes an enemy for $<damage> Holy damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
+  {   24275, "Hurls a divine hammer that strikes an enemy for $<damage> Holy damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", "Movement speed increased by $s4%.", 0 },
   {   24291, "Increases attack power by $s1 when fighting Dragonkin.", 0, 0 },
   {   24292, "Increases attack power by $s1 when fighting Dragonkin.", 0, 0 },
   {   24346, "Increases your Mojo.", 0, 0 },
@@ -28628,7 +28628,8 @@ static constexpr std::array<spelltext_data_t, 28625> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65899
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {   24275,  1, nullptr, "Movement speed increased by $s4%." },
   { 1243871,  0, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times." },
 } };
 
