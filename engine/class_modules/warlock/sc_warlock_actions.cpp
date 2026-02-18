@@ -1112,8 +1112,11 @@ using namespace helpers;
             p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
             if ( p()->talents.raging_demonfire.ok() )
             {
-              for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+              int extra_bolts = as<int>( p()->talents.raging_demonfire->effectN( 1 ).base_value() );
+              for ( int i = 0; i < extra_bolts; i++ )
+              {
                 p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+              }
             }
             p()->procs.demonfire_infusion_dot->occur();
           }
@@ -3222,8 +3225,11 @@ using namespace helpers;
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
         if ( p()->talents.raging_demonfire.ok() )
         {
-          for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+          int extra_bolts = as<int>( p()->talents.raging_demonfire->effectN( 1 ).base_value() );
+          for ( int i = 0; i < extra_bolts; i++ )
+          {
             p()->proc_actions.demonfire_infusion->execute_on_target( target );
+          }
         }
         p()->procs.demonfire_infusion_inc->occur();
       }
@@ -3279,8 +3285,11 @@ using namespace helpers;
           p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
           if ( p()->talents.raging_demonfire.ok() )
           {
-            for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+            int extra_bolts = as<int>( p()->talents.raging_demonfire->effectN( 1 ).base_value() );
+            for ( int i = 0; i < extra_bolts; i++ )
+            {
               p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            }
           }
           p()->procs.demonfire_infusion_dot->occur();
         }
@@ -4221,8 +4230,11 @@ using namespace helpers;
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
         if ( p()->talents.raging_demonfire.ok() )
         {
-          for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+          int extra_bolts = as<int>( p()->talents.raging_demonfire->effectN( 1 ).base_value() );
+          for ( int i = 0; i < extra_bolts; i++ )
+          {
             p()->proc_actions.demonfire_infusion->execute_on_target( target );
+          }
         }
         p()->procs.demonfire_infusion_inc->occur();
       }
