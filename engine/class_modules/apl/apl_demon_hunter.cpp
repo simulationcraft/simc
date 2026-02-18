@@ -95,6 +95,7 @@ void devourer( player_t* p )
   default_->add_action( "call_action_list,name=math_for_wizards", "Variables" );
   default_->add_action( "call_action_list,name=illicit_doping", "Acquire steroids like Potion, trinkets or PI" );
   default_->add_action( "void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up", "Smuggle an Eradicate into Meta if on AOE (+0.5%)" );
+  default_->add_action( "pierce_the_veil,if=buff.moment_of_craving.up&action.collapsing_star.ready" );
   default_->add_action( "voidblade,if=buff.void_metamorphosis_stack.at_max_stacks&talent.devourers_bite&talent.voidsurge" );
   default_->add_action( "the_hunt,if=buff.void_metamorphosis_stack.at_max_stacks&talent.devourers_bite&talent.voidsurge" );
   default_->add_action( "metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1" );

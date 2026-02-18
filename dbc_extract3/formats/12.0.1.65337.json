@@ -375,7 +375,8 @@
     "fields": [
       { "data_type": "S", "field": "name" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "i", "field": "id_expansion" }
+      { "data_type": "i", "field": "id_expansion" },
+      { "data_type": "i", "field": "id_parent_category" }
     ]
   },
   "CurrencyContainer": {
@@ -387,14 +388,6 @@
       { "data_type": "i", "field": "id_container_icon" },
       { "data_type": "i", "field": "containter_quality" },
       { "data_type": "i", "field": "unk_1" }
-    ]
-  },
-  "CurrencyCategory": {
-    "fields": [
-      { "data_type": "S", "field": "name_lang" },
-      { "data_type": "i", "field": "flags" },
-      { "data_type": "B", "field": "id_expansion" },
-      { "data_type": "i", "field": "id_parent_category" }
     ]
   },
   "CurrencyTypes": {
@@ -581,7 +574,7 @@
       { "data_type": "i", "field": "id_modified_crafting_reagent_item" },
       { "data_type": "B", "field": "unk_10" },
       { "data_type": "i", "field": "id_crafting_quality", "ref": "CraftingQuality" },
-      { "data_type": "i", "field": "unk_12" },
+      { "data_type": "i", "field": "id_item_squish_era" },
       { "data_type": "f", "field": "unk_13" },
       { "data_type": "B", "field": "unk_14" }
     ]
@@ -771,8 +764,8 @@
       { "data_type": "i", "field": "id_group_point_mod_set" },
       { "data_type": "i", "field": "min_mythic_plus_level" },
       { "data_type": "i", "field": "max_mythic_plus_level" },
-      { "data_type": "i", "field": "unk_1" },
-      { "data_type": "i", "field": "unk_2" }
+      { "data_type": "i", "field": "id_item_creation_context_group" },
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "ItemChildEquipment": {
@@ -796,6 +789,12 @@
     "parent": "ItemConversion",
     "fields": [
       { "data_type": "i", "field": "id_item" }
+    ]
+  },
+  "ItemCreationContext": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "item_context" }
     ]
   },
   "ItemDamageOneHand": {

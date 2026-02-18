@@ -2068,6 +2068,7 @@ class SpellDataGenerator(DataGenerator):
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
           ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
+          ( 383009, 0),                                 # Stormkeeper buff for tier set impl
         ),
 
         # Mage:

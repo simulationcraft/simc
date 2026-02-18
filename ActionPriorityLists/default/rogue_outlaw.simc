@@ -10,9 +10,9 @@ actions.precombat=apply_poison,nonlethal=none,lethal=instant
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth,precombat_seconds=2
-# Trickster builds can prepull Adrenaline Rush and Roll the Bones.
-actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=!hero_tree.fatebound
-actions.precombat+=/roll_the_bones,precombat_seconds=1,if=!hero_tree.fatebound
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush
+actions.precombat+=/slice_and_dice,precombat_seconds=1,if=talent.improved_adrenaline_rush
+actions.precombat+=/roll_the_bones,precombat_seconds=0,if=buff.loaded_dice.up
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat).
@@ -50,8 +50,8 @@ actions.build+=/pool_resource,for_next=1
 actions.build+=/ambush,if=talent.hidden_opportunity
 actions.build+=/sinister_strike
 
-# Cooldowns   Maintain Adrenaline Rush. With Improved AR, use at low CPs.
-actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)
+# Cooldowns   Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected.
+actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)
 # Maintain Blade Flurry at 2+ targets.
 actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 # Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree if Trickster.

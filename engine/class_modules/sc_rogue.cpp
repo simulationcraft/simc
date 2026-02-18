@@ -10300,7 +10300,7 @@ void rogue_t::create_buffs()
   {
     buffs.symbolic_victory
       ->set_direct_mod( spell.symbolic_victory_buff, 1 )
-      ->set_initial_stack( buffs.symbolic_victory->max_stack() );
+      ->set_initial_stack_to_max_stack();
   }
   else if ( spell.symbolic_victory_buff->ok() && specialization() == ROGUE_SUBTLETY )
   {
@@ -10500,8 +10500,8 @@ void rogue_t::create_buffs()
     ->set_is_stacking_mod( false );
 
   buffs.goremaws_bite = make_buff( this, "goremaws_bite", spec.goremaws_bite_buff )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
-  buffs.goremaws_bite->set_initial_stack( buffs.goremaws_bite->max_stack() );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
+    ->set_initial_stack_to_max_stack();
 
   // Set Bonus Items ========================================================
 

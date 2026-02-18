@@ -373,6 +373,7 @@ public:
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
+  buff_t* set_initial_stack_to_max_stack();
   buff_t* set_expire_at_max_stack( bool );
   buff_t* set_consume_all_stacks( bool );
   buff_t* set_cooldown( timespan_t duration );

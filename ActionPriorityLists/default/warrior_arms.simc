@@ -44,7 +44,7 @@ actions+=/run_action_list,name=slayer_aoe,if=talent.slayers_dominance&active_ene
 actions+=/run_action_list,name=slayer_execute,target_if=min:target.health.pct,if=talent.slayers_dominance&variable.execute_phase
 actions+=/run_action_list,name=slayer_st,if=talent.slayers_dominance
 
-actions.colossus_aoe=rend,if=!dot.rend.remains<=gcd
+actions.colossus_aoe=rend,if=!dot.rend_dot.remains<=gcd
 actions.colossus_aoe+=/sweeping_strikes,if=(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes
 actions.colossus_aoe+=/ravager
 actions.colossus_aoe+=/colossus_smash
@@ -63,7 +63,7 @@ actions.colossus_aoe+=/execute,if=talent.improved_execute
 actions.colossus_aoe+=/whirlwind
 
 actions.colossus_execute=sweeping_strikes,if=active_enemies>1
-actions.colossus_execute+=/rend,if=dot.rend.remains<=gcd&!talent.bloodletting
+actions.colossus_execute+=/rend,if=dot.rend_dot.remains<=gcd&!talent.bloodletting
 actions.colossus_execute+=/champions_leap
 actions.colossus_execute+=/champions_spear
 actions.colossus_execute+=/ravager,if=cooldown.colossus_smash.remains<=gcd
@@ -78,7 +78,7 @@ actions.colossus_execute+=/overpower
 actions.colossus_execute+=/bladestorm
 actions.colossus_execute+=/wrecking_throw
 
-actions.colossus_st=rend,if=dot.rend.remains<=gcd|cooldown.avatar.remains<1&cooldown.colosus.remains<1&dot.rend.remains<=10
+actions.colossus_st=rend,if=dot.rend_dot.remains<=gcd|cooldown.avatar.remains<1&cooldown.colosus.remains<1&dot.rend_dot.remains<=10
 actions.colossus_st+=/ravager
 actions.colossus_st+=/avatar
 actions.colossus_st+=/colossus_smash
@@ -90,10 +90,10 @@ actions.colossus_st+=/mortal_strike
 actions.colossus_st+=/execute,if=cooldown.demolish.remains>10
 actions.colossus_st+=/overpower
 actions.colossus_st+=/wrecking_throw
-actions.colossus_st+=/rend,if=dot.rend.remains<=gcd*5
+actions.colossus_st+=/rend,if=dot.rend_dot.remains<=gcd*5
 actions.colossus_st+=/slam
 
-actions.slayer_aoe=rend,if=!dot.rend.remains&talent.rend|dot.rend.remains<8
+actions.slayer_aoe=rend,if=!dot.rend_dot.remains&talent.rend|dot.rend_dot.remains<8
 actions.slayer_aoe+=/sweeping_strikes,if=(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes
 actions.slayer_aoe+=/avatar
 actions.slayer_aoe+=/colossus_smash
@@ -117,7 +117,7 @@ actions.slayer_aoe+=/slam
 actions.slayer_aoe+=/storm_bolt,if=buff.bladestorm.up
 
 actions.slayer_execute=sweeping_strikes,if=active_enemies>1&(!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4)|!talent.broad_strokes
-actions.slayer_execute+=/rend,if=dot.rend.remains<=gcd&!talent.bloodletting
+actions.slayer_execute+=/rend,if=dot.rend_dot.remains<=gcd&!talent.bloodletting
 actions.slayer_execute+=/avatar
 actions.slayer_execute+=/champions_leap
 actions.slayer_execute+=/champions_spear
@@ -143,7 +143,7 @@ actions.slayer_st+=/mortal_strike
 actions.slayer_st+=/bladestorm,if=cooldown.colossus_smash.remains>5
 actions.slayer_st+=/overpower
 actions.slayer_st+=/wrecking_throw
-actions.slayer_st+=/rend,if=dot.rend.remains<=5
+actions.slayer_st+=/rend,if=dot.rend_dot.remains<=5
 actions.slayer_st+=/slam
 actions.slayer_st+=/storm_bolt,if=buff.bladestorm.up
 

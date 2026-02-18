@@ -2723,8 +2723,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     if ( p()->talents.splintering_orbs.ok() )
     {
       int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
-      // TODO: Conjures up to 4 splinters despite spelldata claiming 2
-      int max_count = p()->bugs ? 2 * count : as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+      int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
       assert( count > 0 );
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
@@ -4416,22 +4415,16 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
       int consume = ( p()->state.thermal_void_active ? 2 : 1 ) * freezing_consume;
-      p()->state.thermal_void_active = false;
-
       int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
                                          s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
 
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      if ( stacks >= 1 || p()->bugs )
-      {
-        // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
-        timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
-        whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
-        p()->cooldowns.frozen_orb->adjust( -whiteout );
-        p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
-      }
+      timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
+      whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
+      p()->cooldowns.frozen_orb->adjust( -whiteout );
+      p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
     }
   }
 
@@ -7034,8 +7027,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier = old_mult;
   }
 
-  // TODO: HoF doesn't seem to need any shattered stacks to trigger
-  if ( shatter_stacks > 0 || bugs )
+  if ( shatter_stacks > 0 )
   {
     action_t* hof = this->action.hand_of_frost;
     double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
@@ -7197,10 +7189,8 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   
   // https://www.desmos.com/calculator/7akzzy14fg;
   // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
-  // Bug: Fire's total rate is 12%, not the tooltip's 20% -- Sphere's effectN1 in-game is (probably?) unmodified by 137019's effectN7.
+  // TODO: Does Fire use the same BLP formula?
   double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
-  if ( bugs )
-    proc_chance -= spec.fire_mage->effectN( 7 ).percent();
   proc_chance = -0.202381 * proc_chance * proc_chance + 0.550833 * proc_chance - 0.0481071;
 
   state.sphere_blp_count++;

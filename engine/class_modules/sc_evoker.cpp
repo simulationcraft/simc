@@ -4771,7 +4771,7 @@ struct azure_sweep_t : public azure_strike_base_t
   timespan_t mid1_es_cdr;
   azure_sweep_t( evoker_t* p, std::string_view options_str )
     : azure_strike_base_t( "azure_sweep", p, p->talent.azure_sweep_spell, options_str ),
-      mid1_es_cdr( p->sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 2 ).time_value() )
+      mid1_es_cdr( -p->sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 2 ).time_value() )
   {
     aoe = -1;
   }
@@ -9392,7 +9392,8 @@ void evoker_t::init_spells()
   // Scalecommander
   talent.scalecommander.mass_disintegrate               = HT( "Mass Disintegrate" );
   talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
-  talent.scalecommander.mass_eruption                   = HT( "Mass Eruption" );
+  talent.scalecommander.mass_eruption =
+      specialization() == EVOKER_AUGMENTATION ? HT( "Mass Eruption" ) : player_talent_t();
   talent.scalecommander.mass_eruption_damage            = find_spell( 438653 );
   talent.scalecommander.mass_eruption_buff              = find_spell( 438588 );
   talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
@@ -9663,17 +9664,17 @@ void evoker_t::create_buffs()
     buff.imminent_destruction->set_initial_stack( as<int>( talent.imminent_destruction->effectN( 1 ).base_value() ) );
 
   buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
-                              ->set_default_value_from_effect( 1 );
-  buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
+                              ->set_default_value_from_effect( 1 )
+                              ->set_initial_stack_to_max_stack();
 
   buff.iridescence_blue_disintegrate =
       MBF( talent.iridescence.ok(), this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
           ->set_quiet( true )
           ->set_default_value( buff.iridescence_blue->default_value );
 
-  buff.iridescence_red =
-      MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )->set_default_value_from_effect( 1 );
-  buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
+  buff.iridescence_red = MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )
+                           ->set_default_value_from_effect( 1 )
+                           ->set_initial_stack_to_max_stack();
 
   buff.limitless_potential =
       MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF1, B2 ), this, "limitless_potential", find_spell( 394402 ) )

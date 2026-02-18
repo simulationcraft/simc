@@ -1035,6 +1035,12 @@ buff_t* buff_t::modify_initial_stack( int initial_stack )
   return this;
 }
 
+buff_t* buff_t::set_initial_stack_to_max_stack()
+{
+  set_initial_stack( max_stack() );
+  return this;
+}
+
 buff_t* buff_t::set_expire_at_max_stack( bool expire )
 {
   if ( is_fallback )

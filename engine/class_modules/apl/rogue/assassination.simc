@@ -20,8 +20,8 @@ actions+=/thistle_tea,if=energy.pct<50&fight_remains<10
 actions+=/call_action_list,name=cds
 # Maintain dots when possible
 actions+=/call_action_list,name=core_dot
-# Build combo points until 5, or max with darkest night
-actions+=/call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0
+# Build combo points until 5, max with darkest night, or ignore finishers to spread more bleeds with CT
+actions+=/call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0|(talent.crimson_tempest&spell_targets.fan_of_knives>=5&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives))
 # If combo point threshold is reached, spend them
 actions+=/call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0
 

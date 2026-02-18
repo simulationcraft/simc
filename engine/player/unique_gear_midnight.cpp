@@ -254,6 +254,67 @@ void potion_of_recklessness( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// Potion of Zealotry
+// 1238443 Driver & buff
+// 1237886 Damage Taken Debuff
+// 1237158 Damage
+// TODO: Does the debuff trigger before, or after the damage? Order will affect damage output
+void potion_of_zealotry( special_effect_t& effect )
+{
+  struct burst_of_zealotry_t : public generic_proc_t
+  {
+    const special_effect_t& effect;
+    player_t* last_target;
+
+    burst_of_zealotry_t( const special_effect_t& e )
+      : generic_proc_t( e, "burst_of_zealotry", 1237158 ), effect( e ), last_target( nullptr )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
+      target_debuff             = e.driver()->effectN( 1 ).trigger();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      if ( auto debuff = find_debuff( s->target ) )
+        m *= 1.0 + debuff->check() * effect.driver()->effectN( 4 ).percent();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( s->target != last_target )
+      {
+        last_target = s->target;
+
+        for ( auto& t : target_list() )
+          if ( auto debuff = find_debuff( t ) )
+            debuff->expire();
+      }
+
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() )->set_rppm( RPPM_DISABLE );
+
+  auto burst_of_zealotry            = new special_effect_t( effect.player );
+  burst_of_zealotry->name_str       = "burst_of_zealotry_proc";
+  burst_of_zealotry->spell_id       = effect.driver()->id();
+  burst_of_zealotry->cooldown_      = 0_ms; // Cooldown handled by the main special effect
+  burst_of_zealotry->execute_action = create_proc_action<burst_of_zealotry_t>( "burst_of_zealotry", effect );
+  effect.player->special_effects.push_back( burst_of_zealotry );
+
+  auto zealotry_cb = new dbc_proc_callback_t( effect.player, *burst_of_zealotry );
+  zealotry_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+}
+
 }  // namespace consumables
 
 namespace enchants
@@ -404,61 +465,30 @@ void strength_of_halazzi( special_effect_t& effect )
 
 namespace embellishments
 {
-// 1229511 driver
+// 1283697 Driver
+// 1229511 rppm
 // 1229746 buff
 // 1230205 area trigger
 void arcanoweave_lining( special_effect_t& effect )
 {
-  effect.player->sim->error( error_level_e::PLACEHOLDER, "midnight.arcanoweave_lining_uptime set to 0.9" );
-
-  auto buff_amount = effect.driver()->effectN( 1 ).average( effect );
-
-  struct arcanoweave_insight_buff_t : public stat_buff_t
-  {
-    rng::truncated_gauss_t interval;
-
-    arcanoweave_insight_buff_t( const special_effect_t& e )
-      : stat_buff_t( e.player, "arcanoweave_insight", e.player->find_spell( 1229746 ) ),
-        interval( e.player->midnight_opts.arcanoweave_lining_update_interval,
-                  e.player->midnight_opts.arcanoweave_lining_update_stddev )
-    {
-      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    }
-  };
-
-  auto uptime_pct = effect.player->midnight_opts.arcanoweave_lining_uptime;
-  if ( uptime_pct <= 0.0 )
-    return;
+  // EffectN 2 percent goes to the player
+  // EffectN 3 percent goes to the ally
+  auto buff_amount = effect.driver()->effectN( 1 ).average( effect ) * effect.driver()->effectN( 2 ).percent();
 
   if ( auto buff = buff_t::find( effect.player, "arcanoweave_insight" ) )
   {
     // add stat from 2nd copy of embellishment
-    debug_cast<arcanoweave_insight_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
+    debug_cast<stat_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
     return;
   }
 
-  auto insight = make_buff<arcanoweave_insight_buff_t>( effect );
-  insight->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
+  auto buff = create_buff<stat_buff_t>( effect.player, "arcanoweave_insight", effect.player->find_spell( 1229746 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
 
-  if ( uptime_pct >= 1.0 )
-  {
-    effect.player->register_precombat_begin( [ insight ]( player_t* ) { insight->trigger(); } );
-  }
-  else
-  {
-    effect.player->register_precombat_begin( [ insight, uptime_pct ]( player_t* p ) {
-      insight->trigger();
+  effect.custom_buff = buff;
+  effect.spell_id    = 1229511;
 
-      make_repeating_event(
-          p->sim, [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
-          [ insight, p, uptime_pct ] {                                             // gauss rng uptime check
-            if ( p->rng().roll( uptime_pct ) )
-              insight->trigger();
-            else
-              insight->expire();
-          } );
-    } );
-  }
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // 1241711 driver
@@ -714,15 +744,32 @@ void thalassian_phoenix_torque( special_effect_t& effect )
 // 1252202 Buff
 void signet_of_azerothian_blessings( special_effect_t& effect )
 {
-  auto value = effect.driver()->effectN( 1 ).average( effect );
-  value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
-  value *= bandolier_mul( effect.player );
+  auto base_value = effect.driver()->effectN( 1 ).average( effect );
+  std::unordered_map<stat_e, double> values    = { { STAT_HASTE_RATING, 1.0 },
+                                                   { STAT_CRIT_RATING, 1.0 },
+                                                   { STAT_MASTERY_RATING, 1.0 },
+                                                   { STAT_VERSATILITY_RATING, 1.0 } };
+
+  std::unordered_map<stat_e, gem_color_e> gems = { { STAT_HASTE_RATING, GEM_PERIDOT },
+                                                   { STAT_CRIT_RATING, GEM_GARNET },
+                                                   { STAT_MASTERY_RATING, GEM_AMETHYST },
+                                                   { STAT_VERSATILITY_RATING, GEM_LAPIS } };
 
   auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings",
                                         effect.driver()->effectN( 1 ).trigger() );
 
   for ( auto stat : secondary_ratings )
-    buff->add_stat( stat, value );
+  {
+    int count = 0;
+    for( auto gem : equipped_gem_list( effect.player, gem_colors ) )
+      if ( gem == gems.at( stat ) )
+        count++;
+
+    values.at( stat ) =
+        base_value * ( 1.0 + count * effect.driver()->effectN( 2 ).percent() ) * bandolier_mul( effect.player );
+
+    buff->add_stat( stat, values.at( stat ) );
+  }
 
   effect.custom_buff = buff;
 
@@ -964,8 +1011,8 @@ void void_( special_effect_t& effect )
 // 1245050 Trinket Driver
 // 1252457 RPPM
 // 1252486 Haste Buff - Elemental, Aberration, Demon
-// 1252487 Crit Buff - Mechanical
-// 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
+// 1252487 Crit Buff - Beast, Mechanical
+// 1252488 Mastery Buff - Humanoid, Dragonkin
 // 1252489 Versatility Buff - Undead, Giant, Not Specified
 // TODO: What happens with both the trinket, and embellishment active?
 void hunt( special_effect_t& effect )
@@ -1079,7 +1126,6 @@ void hunt( special_effect_t& effect )
     {
       switch ( r )
       {
-        case RACE_BEAST:
         case RACE_HUMANOID:
         case RACE_DRAGONKIN:
           mastery_buff->trigger();
@@ -1089,6 +1135,7 @@ void hunt( special_effect_t& effect )
         case RACE_DEMON:
           haste_buff->trigger();
           break;
+        case RACE_BEAST:
         case RACE_MECHANICAL:
           crit_buff->trigger();
           break;
@@ -1556,7 +1603,8 @@ void sealed_chaos_urn( special_effect_t& effect )
                     else
                     {
                       effect.player->buffs.stunned->expire();
-                      effect.player->schedule_ready();
+                      if( !effect.player->readying )
+                        effect.player->schedule_ready();
                     }
                   } );
 
@@ -2255,6 +2303,7 @@ void register_special_effects()
   // Potions
   unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
+  unique_gear::register_special_effect( 1238443, consumables::potion_of_zealotry );
   // Oils
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );

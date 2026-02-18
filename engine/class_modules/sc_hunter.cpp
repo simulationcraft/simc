@@ -1901,7 +1901,7 @@ struct dark_hound_t final : public dire_critter_t
   dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 2;
+    owner_coeff.ap_from_ap = 1.5; // TEMP Unconfirmed until logs are available
     auto_attack_multiplier = 4;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
@@ -2262,6 +2262,16 @@ struct natures_ally_pet_t final : public hunter_main_pet_base_t
   natures_ally_pet_t( hunter_t* owner ) : hunter_main_pet_base_t( owner, "natures_ally_pet", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void create_buffs() override
+  {
+    hunter_main_pet_base_t::create_buffs();
+
+    // Nature's Ally pets have a unique Bestial Wrath aura
+    buffs.bestial_wrath =
+      make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -3698,7 +3708,7 @@ void hunter_t::consume_precise_shots()
   if ( !buffs.precise_shots->check() )
     return;
 
-  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
+  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() );
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
@@ -4891,6 +4901,7 @@ struct lunar_storm_t : hunter_ranged_attack_t
   {
     background = dual = true;
     aoe = -1;
+    reduced_aoe_targets = 8; // TEMP use spelldata when it exists
   }
 };
 
@@ -6644,11 +6655,11 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
+
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
-
-      trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )

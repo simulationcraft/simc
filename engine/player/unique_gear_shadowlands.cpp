@@ -658,9 +658,9 @@ void memory_of_past_sins( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "shattered_psyche" );
   if ( !buff )
   {
-    buff = make_buff( effect.player, "shattered_psyche", effect.driver() );
-    buff->set_initial_stack( buff->max_stack() );
-    buff->set_cooldown( 0_s );
+    buff = make_buff( effect.player, "shattered_psyche", effect.driver() )
+      ->set_initial_stack_to_max_stack()
+      ->set_cooldown( 0_ms );
   }
 
   action_t* damage = create_proc_action<shattered_psyche_damage_t>( "shattered_psyche", effect );

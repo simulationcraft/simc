@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -201273,9 +201273,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146746)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.4684526 (coefficient=-0.013929) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -2.666672 (coefficient=-0.079291) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (-0.013929 -> -0.079291)
 #2 (id=1146747)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.581015 (coefficient=0.04701) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.00001 (coefficient=0.356809) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (0.04701 -> 0.356809)
 
 Name             : Cursed Versatility (id=448327) [Passive] 
 School           : Arcane
@@ -201290,9 +201292,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146748)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.5855574 (coefficient=-0.017411) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -3.999991 (coefficient=-0.118936) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (-0.017411 -> -0.118936)
 #2 (id=1146749)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.961622 (coefficient=0.058327) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.66668 (coefficient=0.4361) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (0.058327 -> 0.4361)
 
 Name             : Cursed Versatility (id=448328) [Passive] 
 School           : Arcane
@@ -201307,9 +201311,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146750)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.6734027 (coefficient=-0.020023) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -5.333344 (coefficient=-0.158582) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (-0.020023 -> -0.158582)
 #2 (id=1146751)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2.283677 (coefficient=0.067903) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.33332 (coefficient=0.51539) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (0.067903 -> 0.51539)
 
 Name             : Cursed Mastery (id=448331) [Passive] 
 School           : Arcane
@@ -201324,9 +201330,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146754)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.4684526 (coefficient=-0.013929) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -2.666672 (coefficient=-0.079291) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (-0.013929 -> -0.079291)
 #2 (id=1146755)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.581015 (coefficient=0.04701) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.00001 (coefficient=0.356809) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.04701 -> 0.356809)
 
 Name             : Cursed Mastery (id=448332) [Passive] 
 School           : Arcane
@@ -201341,9 +201349,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146756)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.5855574 (coefficient=-0.017411) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -3.999991 (coefficient=-0.118936) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (-0.017411 -> -0.118936)
 #2 (id=1146757)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.961622 (coefficient=0.058327) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.66668 (coefficient=0.4361) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.058327 -> 0.4361)
 
 Name             : Cursed Mastery (id=448333) [Passive] 
 School           : Arcane
@@ -201358,9 +201368,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146758)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.6734027 (coefficient=-0.020023) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -5.333344 (coefficient=-0.158582) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (-0.020023 -> -0.158582)
 #2 (id=1146759)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2.283677 (coefficient=0.067903) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.33332 (coefficient=0.51539) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.067903 -> 0.51539)
 
 Name             : Cursed Haste (id=448334) [Passive] 
 School           : Arcane
@@ -201375,9 +201387,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146760)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.6734027 (coefficient=-0.020023) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -5.333344 (coefficient=-0.158582) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (-0.020023 -> -0.158582)
 #2 (id=1146761)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2.283677 (coefficient=0.067903) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.33332 (coefficient=0.51539) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (0.067903 -> 0.51539)
 
 Name             : Cursed Haste (id=448335) [Passive] 
 School           : Arcane
@@ -201392,9 +201406,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146762)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.4684526 (coefficient=-0.013929) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -2.666672 (coefficient=-0.079291) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (-0.013929 -> -0.079291)
 #2 (id=1146763)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.581015 (coefficient=0.04701) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.00001 (coefficient=0.356809) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (0.04701 -> 0.356809)
 
 Name             : Cursed Haste (id=448336) [Passive] 
 School           : Arcane
@@ -201409,9 +201425,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146764)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.5855574 (coefficient=-0.017411) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -3.999991 (coefficient=-0.118936) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (-0.017411 -> -0.118936)
 #2 (id=1146765)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.961622 (coefficient=0.058327) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.66668 (coefficient=0.4361) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (0.058327 -> 0.4361)
 
 Name             : Cursed Critical Strike (id=448337) [Passive] 
 School           : Arcane
@@ -201426,9 +201444,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146766)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.4684526 (coefficient=-0.013929) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -2.666672 (coefficient=-0.079291) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (-0.013929 -> -0.079291)
 #2 (id=1146767)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 5.3561 | Scaled Value: 1.581015 (coefficient=0.04701) | Rating: Crit | Target: Self (1)
+                   Base Value: 5.3561 | Scaled Value: 12.00001 (coefficient=0.356809) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.04701 -> 0.356809)
 
 Name             : Cursed Critical Strike (id=448338) [Passive] 
 School           : Arcane
@@ -201443,9 +201463,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146768)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.5855574 (coefficient=-0.017411) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -3.999991 (coefficient=-0.118936) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (-0.017411 -> -0.118936)
 #2 (id=1146769)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1.961622 (coefficient=0.058327) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.66668 (coefficient=0.4361) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.058327 -> 0.4361)
 
 Name             : Cursed Critical Strike (id=448339) [Passive] 
 School           : Arcane
@@ -201460,9 +201482,11 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1146770)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -0.6734027 (coefficient=-0.020023) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -5.333344 (coefficient=-0.158582) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (-0.020023 -> -0.158582)
 #2 (id=1146771)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2.283677 (coefficient=0.067903) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.33332 (coefficient=0.51539) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.067903 -> 0.51539)
 
 Name             : Surekian Grace (id=448433) 
 School           : Physical
@@ -228546,10 +228570,12 @@ Effects          :
 Description      : $@spelldesc386692
 
 Name             : Lightbloom Energy (id=1225830) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215278)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228557,10 +228583,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Lightbloom Energy, granting additional Motes of Light when skinned.
 
 Name             : Wild Energy (id=1225834) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215283)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228568,10 +228596,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Wild Energy, granting additional Motes of Wild Magic when skinned.
 
 Name             : Primal Energy (id=1225835) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215284)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -228579,10 +228609,12 @@ Description      : Throw the diffusing device at the targeted skinnable creature
 Tooltip          : Infused with Primal Energy, granting additional Motes of Primal Energy when skinned.
 
 Name             : Void Energy (id=1225836) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
+Attributes       : Allow Aura While Dead (116), Aura Is Buff (140)
 Effects          :
 #1 (id=1215285)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -232191,7 +232223,8 @@ Effects          :
 #8 (id=1225208)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225209)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, RunSpeed | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+Hotfixed         : Misc Value (9984 -> 1792)
 #10 (id=1225210) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225211) : Apply Aura (6) | Attribute (29)
@@ -232269,7 +232302,8 @@ Effects          :
 #8 (id=1225230)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #9 (id=1225231)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Hotfixed         : Misc Value (917504 -> 1879048192)
 #10 (id=1225232) : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
 #11 (id=1225233) : Apply Aura (6) | Attribute (29)
@@ -238318,6 +238352,9 @@ Effects          :
 #1 (id=1232878)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 0.75 | Scaled Value: 0.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#2 (id=1307528)  : Apply Aura (6) | Modify Critical Heal Bonus (50)
+                   Base Value: 0.75 | Scaled Value: 0.75 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Eyes of the Eagle (id=1236701) [Passive] 
 School           : Physical
@@ -238327,6 +238364,9 @@ Effects          :
 #1 (id=1232879)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 1.25 | Scaled Value: 1.25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#2 (id=1307529)  : Apply Aura (6) | Modify Critical Heal Bonus (50)
+                   Base Value: 1.25 | Scaled Value: 1.25 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Mark of the Magister (id=1236707) [Passive] 
 School           : Physical
@@ -238907,7 +238947,7 @@ Labels           : 4875
                  : 4880
 Category Cooldown: 300 seconds
 Proc Chance      : 100%
-Real PPM         : 10
+Real PPM         : 6
 Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Unknown (508)
 Effects          :
@@ -238915,7 +238955,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 406.9404 (coefficient=3.104508) | Stat: StrAgiInt | Target: Self (1)
 Hotfixed         : Coefficient (6.209017 -> 3.104508)
 #2 (id=1234844)  : Apply Aura (6) | Proc Trigger Spell (42): Draught of Rampant Abandon
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237154 | Target: Self (1)
+Hotfixed         : Target 1 (0 -> 1)
 Description      : Increases $pri by $s0 for $d. While under the effects of this potion the Void may extract its toll, opening a void zone at your feet.
 Tooltip          : $pri increased by $s0.
 
@@ -239179,7 +239220,8 @@ Triggered By     : Draught of Rampant Abandon (1236998)
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401)
 Effects          :
 #1 (id=1233757)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38015 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38015 | Target: at Self (18)
+Hotfixed         : Target 1 (1 -> 18)
 
 Name             : Burst of Zealotry (id=1237158) 
 School           : Holy
@@ -241614,6 +241656,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: Back of Self (48) -> Random in Area (86)
 
 Name             : Battle Fervor (id=1243871) [Passive, Hidden] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -241627,7 +241670,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 7.462412 (coefficient=0.05693) | Trigger Spell: 1246780 | Target: Self (1)
 #2 (id=1244341)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.
+Description      : Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times.
 
 Name             : Ranger-General's Call (id=1243876) [Passive, Hidden] 
 School           : Physical
@@ -244776,12 +244819,13 @@ Your damaging spells and abilities can call a beam of radiant light nearby. Stan
 
 
 Name             : Murder Row Fishhook (id=1250528) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Melee
 Range            : 50 yards
 Duration         : 10 seconds
 Triggered By     : Murder Row Fishhook (1250529)
-Attributes       : Extra Initial Period (169), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254624)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250529 | Target: Targeted Enemy (6)
@@ -245540,7 +245584,8 @@ Triggered By     : Boon of Azerothian Blessings (1252202)
 Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149), No Aura Log (202), Aura Points On Client (268), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1256794)  : Apply Aura (6) | Proc Trigger Spell (42): Boon of Azerothian Blessings | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 56.27967 (coefficient=0.429352) | Trigger Spell: 1252202 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.06992 (coefficient=0.107338) | Trigger Spell: 1252202 | Target: Self (1)
+Hotfixed         : Coefficient (0.429352 -> 0.107338)
 #2 (id=1264587)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Your spells and abilities may cause the signet to resonate with the Worldsoul, granting you a boon of $s1 to all of your secondary stats for $1252202d.

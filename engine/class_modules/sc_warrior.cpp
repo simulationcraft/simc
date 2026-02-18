@@ -2323,12 +2323,7 @@ struct slayers_strike_t : public warrior_attack_t
       }
     }
 
-    // TODO this uses a different async behavior than what is default in simc.  This looks to be
-    // Used by a lot of new spells now, so may be the default wow implementation these days
-    // When you get a proc with max stats, rather than remove the oldest stack, and push on a fresh stack
-    // it now appears to just refresh the buff on the top of the stack, leaving the bottom buffs untouched, so
-    // they expire earlier than you would expect.
-    if ( p()->talents.slayer.slayers_dominance->ok() && !p()->buff.executioner->at_max_stacks() )
+    if ( p()->talents.slayer.slayers_dominance->ok() )
       p()->buff.executioner->trigger();
   }
 
@@ -3054,12 +3049,6 @@ struct mortal_strike_t : public warrior_attack_t
     if( !background )
       p()->buff.tactical_edge->decrement();
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
-
     if ( !background )
       p()->buff.battlelord->expire();
   }
@@ -3114,6 +3103,12 @@ struct mortal_strike_t : public warrior_attack_t
             s->n_targets >= p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 2 ).base_value() )
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
+    }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
     }
   }
 
@@ -3438,6 +3433,16 @@ struct slam_base_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3449,12 +3454,6 @@ struct slam_base_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
@@ -4083,19 +4082,17 @@ struct execute_damage_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->buff.sudden_death->up() )
-    {
-      if ( p()->talents.slayer.unrelenting_onslaught->ok() )
-      {
-        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
-        // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
-        if ( state->target == p()->target && p()->buff.executioner->up() )
-          td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
-      }
-    }
-
     if ( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
+
+    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
+      p()->active.fatality->execute_on_target( state->target );
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 };
 
@@ -4197,6 +4194,12 @@ struct execute_arms_t : public warrior_attack_t
           p()->cooldown.reap_the_storm_icd->start();
         }
       }
+
+      if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
+      {
+          p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * p()->buff.executioner->stack() ) ) );
+          td( p()->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
+      }
     }
 
     if ( rng().roll( shield_slam_reset ) )
@@ -4213,24 +4216,10 @@ struct execute_arms_t : public warrior_attack_t
       {
         lightning_strike->execute();
       }
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
     }
 
     if ( p()->talents.arms.executioners_precision.ok() )
       p()->buff.executioners_precision->trigger();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
-      p()->active.fatality->execute_on_target( state->target );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4298,13 +4287,7 @@ struct execute_main_hand_t : public warrior_attack_t
   void impact( action_state_t* state ) override
   {
     warrior_attack_t::impact( state );
-    if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.sudden_death->up() )
-    {
-      p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
-      // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
-      if ( state->target == p()->target && p()->buff.executioner->up() )
-        td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
-    }
+
     if( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
   }
@@ -4421,6 +4404,12 @@ struct execute_fury_t : public warrior_attack_t
           p()->cooldown.reap_the_storm_icd->start();
         }
       }
+
+      if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
+      {
+        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * p()->buff.executioner->stack() ) ) );
+        td( p()->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
+      }
     }
 
     if ( p()->talents.mountain_thane.lightning_strikes->ok() )
@@ -4436,8 +4425,6 @@ struct execute_fury_t : public warrior_attack_t
 
     if ( p()->talents.fury.executioners_wrath->ok() )
       p()->buff.executioners_wrath->trigger();
-
-
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5287,6 +5274,12 @@ struct overpower_t : public warrior_attack_t
     {
       dreadnaught->execute_on_target( s->target );
     }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   void execute() override
@@ -5307,12 +5300,6 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
@@ -8117,7 +8104,7 @@ void warrior_t::create_buffs()
   buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
   buff.steadfast_as_the_peaks = new buffs::steadfast_as_the_peaks_buff_t( *this, "steadfast_as_the_peaks", find_spell( 437152 ) );
   buff.burst_of_power         = make_buff( this, "burst_of_power", find_spell( 437121 ) )
-                                  ->set_initial_stack( find_spell( 437121 )->max_stacks() )
+                                  ->set_initial_stack_to_max_stack()
                                   ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
                                   ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
 

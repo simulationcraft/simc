@@ -56,6 +56,6 @@ jobs:
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
-    needs: [build]
+    needs: [build, spec-test] # requires spec-test as this job downloads files generated from spec-test
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml

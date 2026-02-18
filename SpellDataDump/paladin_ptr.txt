@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65867 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -782,6 +782,7 @@ Effects          :
 Description      : Increases the duration of Hammer of Justice by $/1000;S1 sec.
 
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -789,6 +790,7 @@ Resource         : 0.6% Base Mana (0) (id=305324) w/ Holy Paladin (id=137029)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
+Duration         : 5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1895 (Type 0x1): Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1), Improved Judgment (405461 effect#2), Holy Paladin (1258016 effect#13)
 Labels           : 16: Class Spells
@@ -797,7 +799,7 @@ Labels           : 16: Class Spells
                  : 2580
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2, #7), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2, #8, #25), Holy Paladin (137029 effects: #3, #4, #18), Avenging Crusader (216331 effect#7), Avenging Wrath (231895 effects: #1, #2, #4), Mastery: Highlord's Judgment (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3, #7), Zealot's Paragon (391142 effect#2), Veneration (392939 effect#1), Luminous Force (394550 effect#1), Blades of Light (403664 effect#1), Paladin Retribution 10.1 Class Set 2pc (405549 effects: #1, #2), Paladin Retribution 10.1 Class Set 4pc (405550 effect#2), Retribution Paladin (412314 effects: #1, #2, #7), Awakening (414193 effect#2), Final Verdict (414949 effect#1), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4, #9), Luminosity (431402 effect#2), Blessing of An'she (445206 effects: #1, #2), Highlord's Judgment (449198 effects: #3, #4), Endless Wrath (452244 effect#1), Avenging Wrath (454351 effects: #1, #2, #7), Avenging Wrath (454373 effects: #1, #2, #4), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Sweeping Verdict (1246488 effect#3), Protection Paladin (1256936 effects: #1, #2), Retribution Paladin (1258011 effects: #3, #4), Holy Paladin (1258016 effect#2), Seal of the Templar (1263252 effect#3), Glory of the Vanguard (1267211 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Family Flags     : 27, 39, 65
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combat Feedback When Usable (137), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combat Feedback When Usable (137), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), No Attack Parry (248), No Attack Block (256), Show Cooldown As Charge Up (386), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=14488)    : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.43871 | Target: Targeted Enemy (6)
@@ -805,9 +807,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
 #3 (id=1259264)  : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.07903 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+#4 (id=1307959)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Hurls a divine hammer that strikes an enemy for $<damage> Holy damage.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
+Tooltip          : Movement speed increased by $s4%.
 Variables        : $pvp=$?a134735[${1.15}][${1}]}
 $retribution=$?a137027[${1.00*$<pvp>}][${1}]
 $damage=${$s1*$<retribution>}
@@ -14856,6 +14862,7 @@ Effects          :
 Description      : Avenging Wrath empowers your next $?c3[damage dealing single target Holy Power ability to automatically activate Divine Storm][Word of Glory to automatically activate Light of Dawn] with $s2% increased effectiveness.
 
 Name             : Empyrean Legacy (id=387178) [Spell Family (10)] 
+Hotfixed         : Max stacks (0 -> 2)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14863,7 +14870,8 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Stacks           : 1 initial, 1 maximum
+                 : 6465
+Stacks           : 1 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Magic Heal
 Triggered By     : Empyrean Legacy (387170)
@@ -16179,6 +16187,7 @@ Effects          :
 Description      : Your damage over time effects deal $s1% more damage.
 
 Name             : Lightforged Blessing (id=403460) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -16188,10 +16197,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
 Family Flags     : 41, 46
-Attributes       : Exclude Caster (51), Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Exclude Caster (51), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1050431)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Lightforged Blessing (id=403479) [Spell Family (10), Passive, Hidden] 
@@ -17272,6 +17282,7 @@ Effects          :
 Description      : The critical strikes of your Holy Power generating abilities grant you $s1% Haste for $407065d.
 
 Name             : Lightforged Blessing (id=407467) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -17281,10 +17292,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
 Family Flags     : 41, 46
-Attributes       : Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070945)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Target: Self (1)
+Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : @$spelldesc406468
 
 Name             : Consecrated Blade (id=407475) [Spell Family (10), Hidden] 
@@ -19688,11 +19700,13 @@ Effects          :
                    Affected Spells: Devotion Aura (465), Crusader Aura (32223), Retribution Aura (183435), Concentration Aura (317920)
                    Family Flags: 6, 17, 26, 94
 #2 (id=1121231)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
-                   Base Value: 150 | Scaled Value: 150 | Target: Targeted Ally (21)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.66667 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1 -> 0.66667)
 #3 (id=1121452)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #4 (id=1121791)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #5 (id=1121809)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Ally (21)
 Description      : While wielding a Holy Bulwark, gain an absorb shield for ${$s2/10}.1% of your max health and an additional ${$s4/10}.1% every $t2 sec. Lasts $d.
@@ -23313,7 +23327,8 @@ Effects          :
 #1 (id=1240318)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1240319)  : Dummy (3)
-                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Base Value (125 -> 30)
 Description      : Judgment critical strikes empower your next Word of Glory to automatically activate Light of Dawn at $s2% effectiveness.
 
 Name             : Hammer of Wrath (id=1241410) [Spell Family (10)] 
@@ -23737,8 +23752,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1246375)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.75 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8125 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+Hotfixed         : SP Coefficient (3.75 -> 2.8125)
 #2 (id=1246376)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All

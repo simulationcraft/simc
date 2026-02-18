@@ -2077,6 +2077,7 @@ public:
   double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
+  void trigger_rune_of_the_apocalypse( player_t* target );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
@@ -2587,25 +2588,30 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead, guardian;
+  struct
+  {
+    bool commander_of_the_dead = false;
+    bool grave_mastery = false;
+    bool mastery_dreadblade_crit = false;
+  } affected_by;
+
+  bool use_auto_attack, precombat_spawn, guardian;
   timespan_t precombat_spawn_adjust;
   bool is_magus;
   double commander_value;
-  bool affected_by_grave_mastery;
   buff_t* grave_mastery;
   buff_t* mastery_dreadblade_crit;
 
   death_knight_pet_t( death_knight_t* player, std::string_view name, pet_e type = PET_DEATH_KNIGHT, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
     : pet_t( player->sim, player, name, type, guardian, dynamic ),
+      affected_by(),
       use_auto_attack( auto_attack ),
       precombat_spawn( false ),
-      affected_by_commander_of_the_dead( false ),
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       is_magus( false ),
       commander_value( 0 ),
-      affected_by_grave_mastery( false ),
       grave_mastery( nullptr ),
       mastery_dreadblade_crit( nullptr )
   {
@@ -2618,6 +2624,8 @@ struct death_knight_pet_t : public pet_t
     {
       commander_value = 1.0 + player->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
     }
+
+    affected_by.mastery_dreadblade_crit = player->mastery.dreadblade_pet_crit->ok();
   }
 
   target_specific_t<death_knight_pet_td_t> target_data;
@@ -2775,10 +2783,10 @@ struct death_knight_pet_t : public pet_t
 
     dk()->dk_active_pets.push_back( this );
 
-    if ( dk()->mastery.dreadblade->ok() )
+    if ( dk()->mastery.dreadblade->ok() && affected_by.mastery_dreadblade_crit )
       mastery_dreadblade_crit->trigger();
 
-    if ( dk()->talent.unholy.grave_mastery.ok() && affected_by_grave_mastery )
+    if ( dk()->talent.unholy.grave_mastery.ok() && affected_by.grave_mastery )
       grave_mastery->trigger();
   }
 
@@ -2814,7 +2822,7 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && affected_by_commander_of_the_dead &&
+    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && affected_by.commander_of_the_dead &&
          dk()->buffs.commander_of_the_dead->check() )
     {
       m *= commander_value;
@@ -3234,28 +3242,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
            rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( state->target );
 
-      if ( triggers_apocalypse && dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( state->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( state->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      if ( triggers_apocalypse  )
+        dk()->trigger_rune_of_the_apocalypse( state->target );
     }
 
     bool ready() override
@@ -3350,7 +3338,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
     owner_coeff.ap_from_ap    = 0.474;
     if ( owner->spec.raise_dead->ok() )
     {
@@ -3507,28 +3495,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( s->target );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
 
     bool ready() override
@@ -3598,14 +3565,42 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe        = -1;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_spell_t<lesser_ghoul_pet_t>::impact( s );
+
+      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
+      {
+        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
+
+        death_knight_td_t* td = dk()->get_target_data( s->target );
+
+        switch ( n )
+        {
+          case runeforge_apocalypse_e::DEATH:
+            td->debuff.apocalypse_death->trigger();
+            break;
+          case runeforge_apocalypse_e::FAMINE:
+            td->debuff.apocalypse_famine->trigger();
+            break;
+          case runeforge_apocalypse_e::PESTILENCE:
+            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
+            break;
+          case runeforge_apocalypse_e::WAR:
+            td->debuff.apocalypse_war->trigger();
+            break;
+        }
+      }
+    }
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
     resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
   }
 
   resource_e primary_resource() const override
@@ -3650,6 +3645,10 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void dismiss( bool expired = false ) override
   {
+    // These expire before ruptured viscera triggers
+    mastery_dreadblade_crit->expire();
+    grave_mastery->expire();
+
     if ( dk()->talent.unholy.necromancers_cunning.ok() && expired && !sim->event_mgr.canceled )
       ruptured_viscera->execute();
 
@@ -3764,8 +3763,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, "gargoyle", PET_GARGOYOLE, true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
   {
     resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
   }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
@@ -3890,8 +3889,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 3_s;
 
-    affected_by_grave_mastery         = true;
-    affected_by_commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
 
     // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
     // can wake up the pet when it needs to re-execute this action.
@@ -4269,13 +4268,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     dk()->buffs.dance_of_midnight_2->trigger( duration );
   }
 
-  void demise() override
-  {
-    death_knight_pet_t::demise();
-    if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      dk()->buffs.gift_of_the_sanlayn->expire();
-  }
-
   void reschedule_drw()
   {
     if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
@@ -4377,11 +4369,13 @@ struct magus_pet_t : public death_knight_pet_t
   magus_pet_t( death_knight_t* owner, std::string_view name = "dt_magus" )
     : death_knight_pet_t( owner, name, PET_MAGUS_OF_THE_DEAD, true, false )
   {
-    resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
-    is_magus                          = true;
-    npc_id                            = 163366;
+    resource_regeneration               = regen_type::DISABLED;
+    affected_by.commander_of_the_dead   = true;
+    affected_by.grave_mastery           = true;
+    if ( dk()->bugs )
+      affected_by.mastery_dreadblade_crit = false;
+    is_magus                            = true;
+    npc_id                              = 163366;
   }
 
   resource_e primary_resource() const override
@@ -4392,7 +4386,7 @@ struct magus_pet_t : public death_knight_pet_t
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.466;
+    owner_coeff.ap_from_ap = 0.4664;
   }
 
   void arise() override
@@ -4492,7 +4486,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
                                       : dk()->talent.sanlayn.the_blood_is_life->effectN( 2 ).percent();
 
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
   }
 
   void demise() override
@@ -4604,7 +4598,7 @@ struct horseman_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap    = 0.70125;
     resource_regeneration     = regen_type::DISABLED;
     auto_attack_multiplier    = 0.75;
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
   }
 
   void arise() override
@@ -5217,9 +5211,9 @@ struct abomination_pet_t : public death_knight_pet_t
     npc_id                            = owner->spell.summon_abomination->effectN( 1 ).misc_value1();
     main_hand_weapon.type             = WEAPON_BEAST;
     main_hand_weapon.swing_time       = 3.6_s;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
-    owner_coeff.ap_from_ap            = 2.4;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
+    owner_coeff.ap_from_ap            = 2.34;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
@@ -5237,10 +5231,6 @@ struct abomination_pet_t : public death_knight_pet_t
 
   void arise() override
   {
-    death_knight_pet_t::arise();
-    // Assume precombat abominations have to walk far further than normal
-    double dist = precombat_spawn ? 15 : rng().range( 0, dk()->spell.summon_abomination->effectN( 1 ).radius() );
-    trigger_pet_movement( dist );
     // Period information hasnt been found in data, hard coding for now.
     make_event<disease_cloud_event_t>( *sim, this, 2_s );
     for ( auto& target : sim->target_non_sleeping_list )
@@ -5249,6 +5239,10 @@ struct abomination_pet_t : public death_knight_pet_t
       if ( !td->debuff.disease_cloud->check() )
         td->debuff.disease_cloud->trigger();
     }
+    death_knight_pet_t::arise();
+    // Assume precombat abominations have to walk far further than normal
+    double dist = precombat_spawn ? 15 : rng().range( 0, dk()->spell.summon_abomination->effectN( 1 ).radius() );
+    trigger_pet_movement( dist );
   }
 
   void demise() override
@@ -9161,15 +9155,11 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.bone_shield->trigger( bone_shield_stack_gain );
     }
 
-    // Only summon the rune weapons if the buff is down.
-    if ( !p()->buffs.dancing_rune_weapon->up() )
-    {
-      // As of Dec 29th, 2025 everlasting bond spawns first
-      if ( p()->talent.blood.everlasting_bond.ok() )
-        p()->pets.everlasting_bond_pet.spawn();
+    // As of Dec 29th, 2025 everlasting bond spawns first
+    if ( p()->talent.blood.everlasting_bond.ok() )
+      p()->pets.everlasting_bond_pet.spawn();
 
-      p()->pets.dancing_rune_weapon_pet.spawn();
-    }
+    p()->pets.dancing_rune_weapon_pet.spawn();
 
     if ( p()->talent.sanlayn.the_blood_is_life.ok() )
       p()->pet_summon.blood_beast->execute();
@@ -9178,7 +9168,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.blood_mist->trigger();
 
     if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      p()->buffs.gift_of_the_sanlayn->trigger();
+      p()->buffs.gift_of_the_sanlayn->trigger( p()->talent.blood.dancing_rune_weapon->duration() );
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
       p()->buffs.exterminate->trigger();
@@ -11756,6 +11746,9 @@ struct putrefy_aoe_t final : public death_knight_spell_t
             s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
         dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
       }
+
+      // TODO: Does the ST hit apply these too?
+      p()->trigger_rune_of_the_apocalypse( s->target );
     }
   }
 
@@ -13701,6 +13694,32 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   active_dnds.push_back( tracker );
 }
 
+void death_knight_t::trigger_rune_of_the_apocalypse( player_t* t )
+{
+  if ( !has_runeforge( RUNEFORGE_APOCALYPSE ) )
+    return;
+
+  int n = as<int>( std::floor( rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
+
+  death_knight_td_t* td = get_target_data( t );
+
+  switch ( n )
+  {
+    case runeforge_apocalypse_e::DEATH:
+      td->debuff.apocalypse_death->trigger();
+      break;
+    case runeforge_apocalypse_e::FAMINE:
+      td->debuff.apocalypse_famine->trigger();
+      break;
+    case runeforge_apocalypse_e::PESTILENCE:
+      runeforge_actions.apocalypse_pestilence->execute_on_target( t );
+      break;
+    case runeforge_apocalypse_e::WAR:
+      td->debuff.apocalypse_war->trigger();
+      break;
+  }
+}
+
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if ( !fn )
@@ -13711,38 +13730,7 @@ const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 
 bool death_knight_t::has_runeforge( runeforges_e rf ) const
 {
-  bool has_runeforge = false;
-  switch ( rf )
-  {
-    case RUNEFORGE_NONE:
-      has_runeforge = false;
-      break;
-    case RUNEFORGE_APOCALYPSE:
-      has_runeforge = mh_runeforge == RUNEFORGE_APOCALYPSE || oh_runeforge == RUNEFORGE_APOCALYPSE;
-      break;
-    case RUNEFORGE_FALLEN_CRUSADER:
-      has_runeforge = mh_runeforge == RUNEFORGE_FALLEN_CRUSADER || oh_runeforge == RUNEFORGE_FALLEN_CRUSADER;
-      break;
-    case RUNEFORGE_RAZORICE:
-      has_runeforge = mh_runeforge == RUNEFORGE_RAZORICE || oh_runeforge == RUNEFORGE_RAZORICE;
-      break;
-    case RUNEFORGE_SANGUINATION:
-      has_runeforge = mh_runeforge == RUNEFORGE_SANGUINATION || oh_runeforge == RUNEFORGE_SANGUINATION;
-      break;
-    case RUNEFORGE_SPELLWARDING:
-      has_runeforge = mh_runeforge == RUNEFORGE_SPELLWARDING || oh_runeforge == RUNEFORGE_SPELLWARDING;
-      break;
-    case RUNEFORGE_STONESKIN_GARGOYLE:
-      has_runeforge = mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE || oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE;
-      break;
-    case RUNEFORGE_UNENDING_THIRST:
-      has_runeforge = mh_runeforge == RUNEFORGE_UNENDING_THIRST || oh_runeforge == RUNEFORGE_UNENDING_THIRST;
-      break;
-    default:
-      break;
-  }
-
-  return has_runeforge;
+  return mh_runeforge == rf || oh_runeforge == rf;
 }
 
 void death_knight_t::set_runeforges()
@@ -17370,48 +17358,70 @@ struct death_knight_module_t : public module_t
   /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (MH) nerfed 5% ", 331344,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Virulent Plague nerfed 18%", 281049,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.24236 )
-        .verification_value( 1.30775 );
+        .modifier( 0.2177715 )
+        .verification_value( 0.265575 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (OH) nerfed 5% ", 60372,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Dread Plague nerfed 18%", 1239728,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.24236 )
-        .verification_value( 1.30775 );
+        .modifier( 0.365925 )
+        .verification_value( 0.44625 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Obliterate (2H)  nerfed 5% ", 815754,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.83915 )
-        .verification_value( 1.93595 );
-
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Mawsworn Menace Oblit mod nerfed 50% ", 1168098,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Pestilence Nerfed to 100% Remaining damage", 1285178,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 5 )
-        .verification_value( 10 );
+        .modifier( 100 )
+        .verification_value( 150 );
 
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Frost RotA 2P Nerfed ~57%", 1233621,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 35 );
-
-    hotfix::register_effect( "Death Knight", "2025-8-11", "Frost Exterminate first hit buffed 10% ", 1174046,
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (Main) nerfed 10%", 315517,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.07974 )
-        .verification_value( 3.70886 );
-  }*/
+        .modifier( 0.568656 )
+        .verification_value( 0.63184 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (AoE) nerfed 10%", 872659,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.2274651 )
+        .verification_value( 0.252739 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (Main) nerfed 10%", 1015149,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.02105 )
+        .verification_value( 1.1345 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (AoE) nerfed 10%", 1274362,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.4084245 )
+        .verification_value( 0.453805 );
+
+    hotfix::register_effect( "Death Knight", "2026-2-13", "Visceral Strength reduced to 4% Strength", 1123972,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 4 )
+        .verification_value( 8 );
+
+    hotfix::register_spell( "Death Knight", "2026-2-13", "Incite Terror max stack reduced to 3", 458478,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "max_stack" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 3 )
+        .verification_value( 5 );
+  }
+  */
 
   void init( player_t* ) const override
   {

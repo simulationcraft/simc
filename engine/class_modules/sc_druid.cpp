@@ -11737,8 +11737,8 @@ void druid_t::create_buffs()
 
   buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 450346 ) )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_consume_all_stacks( false );
-  buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
+    ->set_consume_all_stacks( false )
+    ->set_initial_stack_to_max_stack();
 
   buff.eclipse_lunar =
     make_fallback<eclipse_buff_t<eclipse_e::LUNAR>>( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar );

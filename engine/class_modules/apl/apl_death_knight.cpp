@@ -12,7 +12,7 @@ std::string potion( const player_t* p )
 {
   std::string frost_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  std::string unholy_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
+  std::string unholy_potion = ( p->true_level >= 81 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 
   std::string blood_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 

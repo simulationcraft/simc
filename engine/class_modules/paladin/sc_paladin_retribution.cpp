@@ -192,8 +192,6 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     void impact( action_state_t* s ) override
     {
-      paladin_melee_attack_t::impact( s );
-
       if ( result_is_hit( s->result ) )
       {
         auto tgt = td( s->target );
@@ -201,6 +199,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
           tgt->debuff.execution_sentence->trigger();
         tgt->debuff.execution_sentence_gather->trigger();
       }
+      paladin_melee_attack_t::impact( s );
     }
 
     void init() override
@@ -234,9 +233,9 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
   void execute() override
   {
-    paladin_melee_attack_t::execute();
-
     p()->buffs.execution_sentence->trigger();
+
+    paladin_melee_attack_t::execute();
 
     if ( p()->talents.judge_jury_and_executioner->ok() )
     {
@@ -1002,7 +1001,6 @@ struct highlords_judgment_t : public paladin_spell_t
   highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
   {
     background = true;
-    skip_es_accum = true;
   }
 };
 
@@ -1035,7 +1033,11 @@ void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
-  double accumulated = buffs.execution_sentence->check_value() * talents.execution_sentence->effectN( 2 ).percent();
+  double perc        = talents.execution_sentence->effectN( 2 ).percent();
+  // 14.02.26 Fluttershy - ES still only accumulates 10% of the damage
+  if ( bugs )
+    perc = .1;
+  double accumulated = buffs.execution_sentence->check_value() * perc;
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
@@ -1044,6 +1046,8 @@ void paladin_t::trigger_es_explosion( player_t* target )
   explosion->set_target( target );
   explosion->accumulated = ta;
   explosion->schedule_execute();
+
+  buffs.execution_sentence->expire();
 }
 
 // Initialization
@@ -1131,7 +1135,8 @@ void paladin_t::create_buffs_retribution()
   buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
 
   buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
-    ->set_default_value( 0.0 );
+    ->set_default_value( 0.0 )
+    ->set_duration( 10025_ms ); // make it slightly longer than the debuff to avoid races with expiry
 }
 
 void paladin_t::init_rng_retribution()
