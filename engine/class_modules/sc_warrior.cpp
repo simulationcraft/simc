@@ -3049,12 +3049,6 @@ struct mortal_strike_t : public warrior_attack_t
     if( !background )
       p()->buff.tactical_edge->decrement();
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
-
     if ( !background )
       p()->buff.battlelord->expire();
   }
@@ -3109,6 +3103,12 @@ struct mortal_strike_t : public warrior_attack_t
             s->n_targets >= p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 2 ).base_value() )
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
+    }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
     }
   }
 
@@ -3433,6 +3433,16 @@ struct slam_base_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3444,12 +3454,6 @@ struct slam_base_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
@@ -4083,6 +4087,12 @@ struct execute_damage_t : public warrior_attack_t
 
     if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
       p()->active.fatality->execute_on_target( state->target );
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 };
 
@@ -4206,12 +4216,6 @@ struct execute_arms_t : public warrior_attack_t
       {
         lightning_strike->execute();
       }
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
     }
 
     if ( p()->talents.arms.executioners_precision.ok() )
@@ -5270,6 +5274,12 @@ struct overpower_t : public warrior_attack_t
     {
       dreadnaught->execute_on_target( s->target );
     }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   void execute() override
@@ -5290,12 +5300,6 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
