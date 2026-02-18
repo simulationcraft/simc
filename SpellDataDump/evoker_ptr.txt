@@ -12858,6 +12858,7 @@ You and your allies have a chance to trigger a Bombardment when attacking marked
 Variables        : $dmg=${$INT*4.75*(1+$@versadmg)*$pctD}
 
 Name             : Bombardments (id=434473) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -12870,7 +12871,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 30%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered By     : Bombardments (434300)
-Attributes       : Can Proc From Procs (122), Nameplate Enemy Debuffs (426)
+Attributes       : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1124491)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
