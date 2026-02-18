@@ -4080,6 +4080,9 @@ struct execute_damage_t : public warrior_attack_t
 
     if ( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
+
+    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
+      p()->active.fatality->execute_on_target( state->target );
   }
 };
 
@@ -4213,14 +4216,6 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->talents.arms.executioners_precision.ok() )
       p()->buff.executioners_precision->trigger();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
-      p()->active.fatality->execute_on_target( state->target );
   }
 
   bool target_ready( player_t* candidate_target ) override
