@@ -410,7 +410,6 @@ namespace warlock
 
     talents.improved_chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Bolt" ); // Should be ID 456951
 
-    // TODO: Does the reduction in time between ticks affect all types of infernals?
     talents.destructive_rapidity = find_talent_spell( talent_tree::SPECIALIZATION, "Destructive Rapidity" ); // Should be ID 1244928
 
     talents.devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Devastation" ); // Should be ID 454735
@@ -507,8 +506,8 @@ namespace warlock
     hero.flames_of_xoroth = find_talent_spell( talent_tree::HERO, "Flames of Xoroth" ); // Should be ID 429657
 
     hero.abyssal_dominion = find_talent_spell( talent_tree::HERO, "Abyssal Dominion" ); // Should be ID 429581
-    hero.abyssal_dominion_buff = conditional_spell_lookup( hero.abyssal_dominion.ok(), 456323 );
-    hero.infernal_fragmentation = conditional_spell_lookup( hero.abyssal_dominion.ok() && warlock_base.destruction_warlock, 456310 );
+    hero.abyssal_dominion_buff = conditional_spell_lookup( hero.abyssal_dominion.ok() && warlock_base.demonology_warlock->ok(), 456323 );
+    hero.infernal_fragmentation = conditional_spell_lookup( hero.abyssal_dominion.ok() && warlock_base.destruction_warlock->ok(), 456310 );
 
     hero.gloom_of_nathreza = find_talent_spell( talent_tree::HERO, "Gloom of Nathreza" ); // Should be ID 429899
 
@@ -516,8 +515,8 @@ namespace warlock
     hero.ruination_buff = conditional_spell_lookup( hero.ruination.ok(), 433885 );
     hero.ruination_cast = conditional_spell_lookup( hero.ruination.ok(), 434635 );
     hero.ruination_impact = conditional_spell_lookup( hero.ruination.ok(), 434636 );
-    hero.diabolic_imp = conditional_spell_lookup( hero.ruination.ok() && warlock_base.destruction_warlock, 438822 );
-    hero.diabolic_bolt = conditional_spell_lookup( hero.ruination.ok() && warlock_base.destruction_warlock, 438823 );
+    hero.diabolic_imp = conditional_spell_lookup( hero.ruination.ok() && warlock_base.destruction_warlock->ok(), 438822 );
+    hero.diabolic_bolt = conditional_spell_lookup( hero.ruination.ok() && warlock_base.destruction_warlock->ok(), 438823 );
 
     hero.diabolic_oculi = find_talent_spell( talent_tree::HERO, "Diabolic Oculi" ); // Should be ID 1268709
     hero.demonic_oculi_buff = conditional_spell_lookup( hero.diabolic_oculi.ok(), 1269643 );
@@ -607,7 +606,7 @@ namespace warlock
     hero.shadow_of_death_energize = conditional_spell_lookup( hero.shadow_of_death.ok(), 449858 );
 
     hero.manifested_avarice = find_talent_spell( talent_tree::HERO, "Manifested Avarice" ); // Should be ID 1268884
-    hero.manifested_avarice_spell = conditional_spell_lookup( hero.manifested_avarice, 1269042 );
+    hero.manifested_avarice_spell = conditional_spell_lookup( hero.manifested_avarice.ok(), 1269042 );
 
     hero.shared_vessel = find_talent_spell( talent_tree::HERO, "Shared Vessel" ); // Should be ID 1268889
 

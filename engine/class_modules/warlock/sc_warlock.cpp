@@ -46,7 +46,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots.immolate = target->get_dot( "immolate", &p );
 
   debuffs.lake_of_fire = make_buff( *this, "lake_of_fire", p.talents.lake_of_fire_debuff )
-                             ->set_default_value_from_effect( 1 );
+                             ->set_default_value_from_effect( 1 )
+                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                             ->set_max_stack( 1 );
 
   debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
@@ -387,7 +389,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
     // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls and Hellbent Commander)
     if ( !include_diabolist && lock_pet->is_diabolist_guardian )
       continue;
-    
+
     count++;
   }
 

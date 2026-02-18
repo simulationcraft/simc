@@ -249,7 +249,7 @@ using namespace helpers;
       if ( destruction() )
       {
         parse_effects( p()->buffs.backdraft ); // 117828
-        parse_effects( p()->buffs.fiendish_cruelty ); // 1245664 // TODO: check if this buff is applying the power cost reduction properly
+        parse_effects( p()->buffs.fiendish_cruelty ); // 1245664
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
         parse_effects( p()->buffs.conflagration_of_chaos_cf ); // 387109
         parse_effects( p()->buffs.conflagration_of_chaos_sb ); // 387110
@@ -270,7 +270,7 @@ using namespace helpers;
       // Hellcaller
       if ( hellcaller() )
       {
-        parse_effects( p()->buffs.malevolence ); // 442726 // TODO: Check that the effectiveness of Through the Felvine is increased by 100% during Malevolence with this parse_effects
+        //parse_effects( p()->buffs.malevolence ); // 442726 // Increased effectiveness of Through the Felvine during Malevolence implemented manually
       }
 
       // Soul Harvester
@@ -296,7 +296,7 @@ using namespace helpers;
       if ( destruction() )
       {
         parse_target_effects( d_fn( &warlock_td_t::dots_t::immolate ), p()->warlock_base.immolate_dot ); // 157736
-        parse_target_effects( d_fn( &warlock_td_t::debuffs_t::lake_of_fire ), p()->talents.lake_of_fire_debuff ); // 157736
+        parse_target_effects( d_fn( &warlock_td_t::debuffs_t::lake_of_fire ), p()->talents.lake_of_fire_debuff ); // 1244918
       }
 
       // Diabolist
@@ -326,7 +326,9 @@ using namespace helpers;
           {
             if ( p()->rain_of_chaos_rng->trigger() )
             {
-              auto spawned = p()->warlock_pet_list.rocs.spawn( p()->talents.summon_infernal_roc->duration() );
+              // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+              const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+              auto spawned = p()->warlock_pet_list.rocs.spawn( p()->talents.summon_infernal_roc->duration() + dur_adjust );
               for ( pets::destruction::infernal_t* s : spawned )
               {
                 s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
@@ -346,8 +348,7 @@ using namespace helpers;
           if ( destruction() )
             adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 2 ).base_value() );
 
-          // TOCHECK: 2025-08-16 Currently Infernal Machine talent is bugged for Demonology and does not work
-          if ( demonology() && !p()->bugs && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
+          if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
           if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
@@ -1109,6 +1110,11 @@ using namespace helpers;
           if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
           {
             p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            if ( p()->talents.raging_demonfire.ok() )
+            {
+              for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+                p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            }
             p()->procs.demonfire_infusion_dot->occur();
           }
         }
@@ -1117,7 +1123,7 @@ using namespace helpers;
         if ( !td( d->target )->debuffs.blackened_soul->check() )
         {
           bool collapse = false;
-          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() > 1 && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() > 1 && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
           collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() >= as<int>( p()->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
           if ( collapse )
           {
@@ -1341,7 +1347,7 @@ using namespace helpers;
     {
       background = dual = true;
       aoe = -1; // DoT is applied in AoE
-      // NOTE: Despite what its description says, the damage of Shared Fate does not seem to deal reduced damage beyond 8 targets
+      // Despite what its description says, the damage of Shared Fate does not seem to deal reduced damage beyond 8 targets
       // reduced_aoe_targets = as<int>( p->hero.shared_fate->effectN( 1 ).base_value() );
     }
   };
@@ -1482,7 +1488,7 @@ using namespace helpers;
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // NOTE: Seems that Shard Instability buff takes effect (and is consumed) even if it is obtained while Unstable Affliction is being cast
+      // Seems that Shard Instability buff takes effect (and is consumed) even if it is obtained while Unstable Affliction is being cast
       p()->buffs.shard_instability->decrement();
 
       if ( soul_harvester() && p()->buffs.succulent_soul->check() )
@@ -1521,7 +1527,7 @@ using namespace helpers;
         // However, ingame, the duration does not add the last tick and only refresh the dot to the total duration (always 8 seconds)
         dot_t* dot = td( s->target )->dots.unstable_affliction;
         if ( dot->duration() > dot_new_last_duration )
-          dot->adjust_duration(dot_new_last_duration - dot->duration() );
+          dot->adjust_duration( dot_new_last_duration - dot->duration() );
 
         make_event<ua_stack_event_t>( *sim, p(), dot, dot_new_last_duration );
       }
@@ -1550,6 +1556,36 @@ using namespace helpers;
           }
         }
       }
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      // The base effect of Through the Felvine is automatically applied by the parse_effects system
+      // However, it is necessary to manually apply its duplicate effect during Malevolence
+      if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
+      {
+        double felvine_mul = p()->hero.through_the_felvine->effectN( 1 ).percent();
+        m *= 1.0 + felvine_mul / ( 1.0 + felvine_mul );
+      }
+
+      return m;
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      // The base effect of Through the Felvine is automatically applied by the parse_effects system
+      // However, it is necessary to manually apply its duplicate effect during Malevolence
+      if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
+      {
+        double felvine_mul = p()->hero.through_the_felvine->effectN( 2 ).percent();
+        m *= 1.0 + felvine_mul / ( 1.0 + felvine_mul );
+      }
+
+      return m;
     }
   };
 
@@ -1621,6 +1657,14 @@ using namespace helpers;
       double composite_da_multiplier( const action_state_t* s ) const override
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
+
+        // The base effect of Through the Felvine is automatically applied by the parse_effects system
+        // However, it is necessary to manually apply its duplicate effect during Malevolence
+        if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
+        {
+          double felvine_mul = p()->hero.through_the_felvine->effectN( 3 ).percent();
+          m *= 1.0 + felvine_mul / ( 1.0 + felvine_mul );
+        }
 
         // TODO: I'm not sure if this will work ingame in this way along with show the seeds
         // TODO: In the ingame tests, it seemed to always apply to the same target in all explosions (the main target of the main seed)
@@ -2362,8 +2406,8 @@ using namespace helpers;
           // Imps then spawn roughly every 0.18 seconds seconds after the damage event.
           for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
           {
-            // auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
-            auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i-1 ); // TODO: test this
+            // auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i ); // Old behavior
+            auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i-1 );
             p()->wild_imp_spawns.push_back( ev );
           }
         }
@@ -2602,7 +2646,7 @@ using namespace helpers;
         // NOTE: 2026-02-17 The Imp Gang Boss Wild Imps implosions do not do 100% more damage (bug?)
         if ( !p()->bugs && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss_buff->effectN( 2 ).percent();
-        
+
         // NOTE: 2026-02-17 The Unstable Soul Wild Imps implosions do not do 50% more damage (bug?)
         if ( !p()->bugs && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.unstable_soul->check() )
           m *= 1.0 + p()->talents.unstable_soul_buff->effectN( 1 ).percent();
@@ -3176,12 +3220,19 @@ using namespace helpers;
       if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
       {
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        if ( p()->talents.raging_demonfire.ok() )
+        {
+          for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+            p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        }
         p()->procs.demonfire_infusion_inc->occur();
       }
 
       p()->buffs.backdraft->decrement();
 
-      p()->buffs.chaotic_inferno->decrement();
+      // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
+      if ( time_to_execute == 0_ms )
+        p()->buffs.chaotic_inferno->decrement();
     }
 
     void impact( action_state_t* s ) override
@@ -3226,6 +3277,11 @@ using namespace helpers;
         if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
         {
           p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+          if ( p()->talents.raging_demonfire.ok() )
+          {
+            for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+              p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+          }
           p()->procs.demonfire_infusion_dot->occur();
         }
       }
@@ -3450,10 +3506,13 @@ using namespace helpers;
 
       if ( p()->talents.chaotic_inferno.ok() )
       {
-        bool success = p()->buffs.chaotic_inferno->trigger();
-
-        if ( success )
-          p()->procs.chaotic_inferno->occur();
+        // Delay the buff a bit to simulate the ingame behavior where an Incinerate cast
+        // queued right after a Chaos Bolt that procs Chaotic Inferno is not affected by it
+        make_event( *sim, 10_ms, [ this ] {
+          bool success = p()->buffs.chaotic_inferno->trigger();
+          if ( success )
+            p()->procs.chaotic_inferno->occur();
+        } );
       }
 
       if ( p()->talents.dimensional_rift.ok() && rng().roll( p()->talents.dimensional_rift->effectN( 1 ).percent() ) )
@@ -3481,6 +3540,21 @@ using namespace helpers;
       // TODO: Check how Touch of Rancora behaves in Midnight and be careful that 'parse_effects' may already be applying the damage buff
       if ( debug_cast<const chaos_bolt_state_t*>( s )->rancora_empowered )
         m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      // The base effect of Through the Felvine is automatically applied by the parse_effects system
+      // However, it is necessary to manually apply its duplicate effect during Malevolence
+      if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
+      {
+        double felvine_mul = p()->hero.through_the_felvine->effectN( 4 ).percent();
+        m *= 1.0 + felvine_mul / ( 1.0 + felvine_mul );
+      }
 
       return m;
     }
@@ -3535,7 +3609,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      // NOTE: Roaring Blaze doesn't apply to havoc targets
+      // Roaring Blaze doesn't apply to havoc targets
       if ( p()->talents.roaring_blaze.ok() && ( s->chain_target == 0 ) && result_is_hit( s->result ) )
       {
         if ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() )
@@ -3617,6 +3691,14 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_persistent_multiplier( s );
 
+        // The base effect of Through the Felvine is automatically applied by the parse_effects system
+        // However, it is necessary to manually apply its duplicate effect during Malevolence
+        if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
+        {
+          double felvine_mul = p()->hero.through_the_felvine->effectN( 5 ).percent();
+          m *= 1.0 + felvine_mul / ( 1.0 + felvine_mul );
+        }
+
         if ( p()->buffs.crashing_chaos->check() )
           m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
@@ -3630,7 +3712,7 @@ using namespace helpers;
       may_miss = may_crit = false;
       base_tick_time = 1_s;
       dot_duration = 0_s;
-      aoe = -1; // NOTE: Needed to apply Pyrogenics // TODO: Pyrogenics not longer exists in Midnight, is this still needed?
+      aoe = -1;
 
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
@@ -3688,11 +3770,12 @@ using namespace helpers;
     }
   };
 
-  // TODO: The Lake of Fire Debuff is not yet implemented (Immolate/Wither dmg increased)
   struct lake_of_fire_t : public warlock_spell_t
   {
     struct lake_of_fire_tick_t : public warlock_spell_t
     {
+      timespan_t pulse_time;
+
       lake_of_fire_tick_t( warlock_t* p )
         : warlock_spell_t( "Lake of Fire (tick)", p, p->talents.lake_of_fire_tick )
       {
@@ -3700,9 +3783,18 @@ using namespace helpers;
         aoe = -1;
         radius = p->talents.cataclysm->effectN( 1 ).radius();
 
+        // TODO: Lake of Fire is doing double the expected damage, but we can't find where that multiplier effect is in the spell data.
+        if ( p->bugs )
+          base_dd_multiplier *= 2.0;
+
         affected_by.chaotic_energies = true;
-        affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
-        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        td( s->target )->debuffs.lake_of_fire->trigger( pulse_time + 1_ms );
       }
     };
 
@@ -3713,7 +3805,7 @@ using namespace helpers;
       may_miss = may_crit = false;
       base_tick_time = 1_s;
       dot_duration = 0_s;
-      aoe = -1; // TODO: Needed?
+      aoe = -1;
 
       if ( !p->proc_actions.lake_of_fire_tick )
       {
@@ -3725,6 +3817,9 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
+
+      // No need to use a custom action_state thanks to Cataclysm cooldown
+      debug_cast<lake_of_fire_tick_t*>( p()->proc_actions.lake_of_fire_tick )->pulse_time = base_tick_time * player->cache.spell_haste();
 
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
@@ -3741,7 +3836,7 @@ using namespace helpers;
   struct cataclysm_t : public warlock_spell_t
   {
     warlock_spell_t* applied_dot;
-    // warlock_spell_t* lake_of_fire;
+    lake_of_fire_t* lake_of_fire;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str )
@@ -3762,9 +3857,17 @@ using namespace helpers;
 
       if ( p->talents.lake_of_fire.ok() )
       {
-        impact_action = new lake_of_fire_t( p, "" );
-        add_child( impact_action );
+        lake_of_fire = new lake_of_fire_t( p, "" );
+        add_child( lake_of_fire );
       }
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      lake_of_fire->set_target( target );
+      lake_of_fire->execute();
     }
 
     void impact( action_state_t* s ) override
@@ -3785,8 +3888,6 @@ using namespace helpers;
       : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str ),
       havoc_rancora_mod_value( 0.8 )
     {
-      // cooldown->hasted = true;
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
@@ -3908,7 +4009,7 @@ using namespace helpers;
       if ( s->chain_target != 0 )
         m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
-      if ( ( s->chain_target == 0 || !p()->bugs ) && demonfire_infusion )
+      if ( demonfire_infusion )
         m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
 
       return m;
@@ -3990,7 +4091,9 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.infernals.spawn();
+      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() + dur_adjust );
     }
   };
 
@@ -4084,6 +4187,8 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
 
       affected_by.havoc = true;
+
+      triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // Infernal Bolt crits can trigger Fiendish Cruelty
     }
 
     void init() override
@@ -4092,7 +4197,7 @@ using namespace helpers;
 
       if ( destruction() && affected_by.havoc )
       {
-        // NOTE: 2025-08-27 Infernal Bolt Havoc deals 100% of the original damage (bug?)
+        // NOTE: 2026-02-18 Infernal Bolt Havoc deals 100% of the original damage to havoc target (bug?)
         base_aoe_multiplier *= p()->bugs ? havoc_mod_value : ( p()->talents.havoc_debuff->effectN( 1 ).percent() );
         p()->havoc_spells.push_back( this );
       }
@@ -4110,13 +4215,23 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
+      // 2026-02-18 Infernal Bolt can proc Demonfire Infusion
       if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
       {
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        if ( p()->talents.raging_demonfire.ok() )
+        {
+          for ( int i = 0; i < p()->talents.raging_demonfire->effectN( 1 ).base_value(); i++ )
+            p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        }
         p()->procs.demonfire_infusion_inc->occur();
       }
 
       p()->buffs.infernal_bolt->decrement();
+
+      // NOTE: 2026-02-18 Infernal Bolt benefits from Chaotic Inferno but does not consume the effect (bug?)
+      if ( !p()->bugs )
+        p()->buffs.chaotic_inferno->decrement();
     }
   };
 
@@ -4193,11 +4308,10 @@ using namespace helpers;
     eye_explosion_t( warlock_t* p )
       : warlock_spell_t( "Eye Explosion", p, p->hero.eye_explosion )
     {
-      // TODO: Is it affected by destruction mastery? Check
+      // Affected by Chaotis Energies (Destruction Mastery)
       affected_by.chaotic_energies = destruction();
 
       background = true;
-      may_miss = false; // TODO: Is this true? and needed?
       aoe = -1;
       reduced_aoe_targets = as<int>( p->hero.diabolic_oculi->effectN( 1 ).base_value() );
     }
@@ -4234,11 +4348,10 @@ using namespace helpers;
     diabolic_gaze_1_t( warlock_t* p )
       : warlock_spell_t( "Diabolic Gaze (1)", p, p->hero.diabolic_gaze_dmg_1 )
     {
-      // TODO: Is it affected by destruction mastery? Check
-      affected_by.chaotic_energies = destruction();
+      // Not affected by Chaotis Energies (Destruction Mastery)
+      // Excluded (not whitelisted) from many warlock talents/spells (bug?)
 
-      background = dual = true;
-      may_miss = false; // TODO: Is this true? and needed?
+      background = true;
     }
   };
 
@@ -4247,11 +4360,9 @@ using namespace helpers;
     diabolic_gaze_2_t( warlock_t* p )
       : warlock_spell_t( "Diabolic Gaze (2)", p, p->hero.diabolic_gaze_dmg_2 )
     {
-      // TODO: Is it affected by destruction mastery? Check
-      affected_by.chaotic_energies = destruction();
+      // Not affected by Chaotis Energies (Destruction Mastery)
 
-      background = dual = true;
-      may_miss = false; // TODO: Is this true? and needed?
+      background = true;
     }
   };
 
@@ -4260,11 +4371,10 @@ using namespace helpers;
     diabolic_gaze_3_t( warlock_t* p )
       : warlock_spell_t( "Diabolic Gaze (3)", p, p->hero.diabolic_gaze_dmg_3 )
     {
-      // TODO: Is it affected by destruction mastery? Check
-      affected_by.chaotic_energies = destruction();
+      // Not affected by Chaotis Energies (Destruction Mastery)
+      // Excluded (not whitelisted) from many warlock talents/spells (bug?)
 
-      background = dual = true;
-      may_miss = false; // TODO: Is this true? and needed?
+      background = true;
     }
   };
 
@@ -4321,7 +4431,7 @@ using namespace helpers;
 
       if( malevolence )
       {
-        stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) + as<int> ( p->hero.alzzins_iniquity->effectN( 2 ).base_value() ) ;
+        stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
       }
 
       tdata->dots.wither->increment( stacks );
@@ -4339,7 +4449,7 @@ using namespace helpers;
       if ( !tdata->debuffs.blackened_soul->check() )
       {
         bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
-        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
         collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
         if ( collapse )

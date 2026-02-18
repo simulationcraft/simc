@@ -1728,8 +1728,8 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", o()->talents.immolation_buff )
                    ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
-                        damage->execute_on_target( target );
-                     } );
+                     damage->execute_on_target( target );
+                   } );
 }
 
 void infernal_t::arise()
@@ -1748,7 +1748,8 @@ void infernal_t::arise()
     melee_attack->schedule_execute();
   } );
 
-  make_event( *sim, delay + 750_ms, [ this ] {
+  timespan_t immolation_delay = rng().range( 0_ms, 750_ms );
+  make_event( *sim, delay + immolation_delay, [ this ] {
     immolation->trigger();
   } );
 }
@@ -1758,7 +1759,11 @@ void infernal_t::demise()
   warlock_pet_t::demise();
 
   if ( o()->hero.abyssal_dominion.ok() && type == MAIN )
-    make_event( sim, [ this ] { o()->warlock_pet_list.fragments.spawn( 2u ); } );
+    make_event( sim, [ this ] {
+      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      o()->warlock_pet_list.fragments.spawn( o()->hero.infernal_fragmentation->duration() + dur_adjust, 2u );
+    } );
 }
 
 double infernal_t::composite_player_multiplier( school_e school ) const
@@ -1940,6 +1945,21 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
 
     return s->result_total;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    double min_percentage = p()->o()->talents.chaos_incarnate.ok() ? p()->o()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+    double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
+
+    if ( p()->o()->normalize_destruction_mastery )
+      chaotic_energies_rng = ( min_percentage + 1.0 ) / 2.0;
+
+    m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
+
+    return m;
   }
 };
 
