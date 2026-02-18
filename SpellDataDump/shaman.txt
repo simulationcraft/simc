@@ -13833,32 +13833,44 @@ Effects          :
 Description      : Reduces the cooldown of most totems by ${$s1/-1000} sec.
 
 Name             : Mana Spring (id=381930) [Spell Family (11), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=23]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 10
+Max Scaling Level: 100
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), No Caster Aura Icon (187), No Aura Log (202)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Caster Aura Icon (187), No Aura Log (202)
 Effects          :
 #1 (id=1013069)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1035495)  : Apply Aura (6) | Periodic Dummy (226): every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1306901)  : Apply Aura (6) | Dummy (4) | Scaling Class: Restore Health/Resource (-2)
+                   Base Value: 0 | Scaled Value: 125.0625 (coefficient=0.000667) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=1306902)  : Apply Aura (6) | Dummy (4) | Scaling Class: Restore Health/Resource (-2)
+                   Base Value: 0 | Scaled Value: 187.5 (coefficient=0.001) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#5 (id=1306903)  : Apply Aura (6) | Dummy (4) | Scaling Class: Restore Health/Resource (-2)
+                   Base Value: 0 | Scaled Value: 187.5 (coefficient=0.001) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Your $?!s137041[Lava Burst][]$?s137039[ and Riptide][]$?s137041[Stormstrike][] casts restore $?a137040[$381931s1]?a137041[$404550s1][$404551s1] mana to you and $s1 allies nearest to you within $395192a1 yards.
 
 Allies can only benefit from one Shaman's Mana Spring effect at a time, prioritizing healers.
 
 Name             : Mana Spring (id=381931) [Spell Family (11)] 
+Hotfixed         : Max Scaling Level (80 -> 90)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Max Scaling Level: 80
+Max Scaling Level: 90
 Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
@@ -13867,7 +13879,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1013071)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 25.0125 (coefficient=0.000667) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 125.0625 (coefficient=0.000667) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Flash of Lightning (id=381936) [Spell Family (11), Passive, Hidden] 
@@ -15292,7 +15304,8 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035468)  : Dummy (3)
-                   Base Value: 0.1 | Scaled Value: 0.1 | Radius: 0 - 40 yards | Target: at Area (87) -> At Ally in Area (31)
+                   Base Value: 0.1 | Scaled Value: 0.1 | Radius: 0 - 40 yards | Target: at Area (87) -> Raid in Area (56)
+Hotfixed         : Target 2 (31 -> 56)
 Description      : $@spelldesc381930
 
 Name             : Mana Spring (id=395197) [Spell Family (11), Hidden] 
@@ -15353,11 +15366,12 @@ Description      : $@spelldesc383013
 Tooltip          : Cleansing all Poison effects from a nearby party or raid member within $a yards every $t1 sec.
 
 Name             : Mana Spring (id=404550) [Spell Family (11)] 
+Hotfixed         : Max Scaling Level (80 -> 90)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Max Scaling Level: 80
+Max Scaling Level: 90
 Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
@@ -15366,15 +15380,16 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1052177)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 37.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 187.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Mana Spring (id=404551) [Spell Family (11)] 
+Hotfixed         : Max Scaling Level (80 -> 100)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Max Scaling Level: 80
+Max Scaling Level: 100
 Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
@@ -15383,7 +15398,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1052178)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 37.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 187.5 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
 Name             : Shaman Elemental 10.1 Class Set 2pc (id=405565) [Spell Family (11), Passive, Hidden] 
