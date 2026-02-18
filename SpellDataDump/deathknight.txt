@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65899 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -22444,7 +22444,7 @@ Attributes       : No Threat (42), Not In Spellbook (143), Do Not Log on Learn (
 Effects          :
 #1 (id=1242146)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.845 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : Target 1 (53 -> 87)
+Hotfixed         : AP Coefficient (2.25 -> 1.845), Target 1 (53 -> 87)
 Description      : $@spelldesc1240996
 
 Name             : Scourging (id=1242604) [Spell Family (15), Passive] 

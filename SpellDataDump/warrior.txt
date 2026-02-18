@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65899 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -306,7 +306,6 @@ Variables        : $baseDmg=${3*$199658s1}
 $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 
 Name             : Hamstring (id=1715) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -823,7 +822,6 @@ Description      : A vicious strike that deals $s1 Physical damage and reduces t
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
 School           : Physical
@@ -4094,7 +4092,6 @@ Description      : When activated, your next Mortal Strike will deal $m1% increa
 Tooltip          : Damage done by your next Mortal Strike increased by $m1%, and causes the target to take $198819m1% reduced healing for $198819d.
 
 Name             : Mortal Strike (desc=PvP Talent) (id=198819) [Spell Family (4)] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -18038,7 +18035,6 @@ Description      : $@spelldesc1244088
 Tooltip          : $?$w2=0[$w1% of damage taken is redirected to $@auracaster.][Taking ${$s1*$e1}% of damage taken by allies until at least $w2 more damage is taken.]
 
 Name             : Piercing Howl (id=1244157) [Spell Family (4)] 
-Hotfixed         : Mechanic (11 -> 0)
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
