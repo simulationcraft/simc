@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65940
-static constexpr std::array<spelltext_data_t, 28625> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28626> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26524,7 +26524,7 @@ static constexpr std::array<spelltext_data_t, 28625> __spelltext_data { {
   { 1245051, "Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.\r\n\r\nThis effect is augmented by Darkmoon Sigil: Rot.\r\n", 0, 0 },
   { 1245052, "Your damaging spells and abilities have the chance to embolden you in Void Glass granting $s1 Versatility over $1244617d. Multiple applications can overlap.", 0, 0 },
   { 1245053, "Your damaging spells and abilities have the chance to grant $@spellname1245025, increasing your lowest secondary stat by $s1 for $1245025d.\r\n\r\nWhen an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.", 0, 0 },
-  { 1245054, "Your spells and abilities have the chance to grant $1252457s2 secondary stats for $1252487d  based on the target creature's type.", 0, 0 },
+  { 1245054, "Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type.", 0, 0 },
   { 1245055, "Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.", 0, 0 },
   { 1245089, "Casting Soul Fire summons an Overfiend.\r\n\r\nOpening a Dimensional Rift has a chance to summon an Overfiend instead.\r\n\r\n$@spellicon434587 $@spellname434587\r\n$@spelldesc434587", 0, 0 },
   { 1245148, "Your harmful abilities may cause your mind to tear piece by piece. At the tenth tear, you succumb to Arcane Insanity granting you $s1 Haste while periodically recovering your sanity over time.\r\n\r\nSlaying an enemy or witnessing an ally's death instantly tears at your sanity.", 0, 0 },
@@ -28625,12 +28625,14 @@ static constexpr std::array<spelltext_data_t, 28625> __spelltext_data { {
   { 1286623, "$@spelldesc1241711\r\n", 0, 0 },
   { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287949, "$@spelldesc198013", 0, 0 },
+  { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.65940
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
   {   24275,  1, nullptr, "Movement speed increased by $s4%." },
   { 1243871,  0, "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1, stacking up to $s2 times.", "Your spells and abilities have a chance to fill you with Battle Fervor. Battle Fervor increases your Haste by $s1 for $1246780d, stacking up to $s2 times." },
+  { 1245054,  0, "Your spells and abilities have the chance to grant $1252457s2 secondary stats for $1252487d  based on the target creature's type.", "Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type." },
 } };
 
 // Spell description variables, wow build 12.0.1.65940
