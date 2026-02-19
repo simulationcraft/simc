@@ -4550,7 +4550,7 @@ using namespace helpers;
       if ( candidates.empty() )
         return;
 
-      target = candidates[ p->rng().range( candidates.size() ) ];
+      target = p->rng().range( candidates );
     }
 
     echo_action->execute_on_target( target );
