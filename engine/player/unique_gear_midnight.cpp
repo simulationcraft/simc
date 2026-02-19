@@ -2013,16 +2013,16 @@ void magisters_alchemist_stone( special_effect_t& e )
 
 // Vaelgor's Final Stare
 // 1259293 Driver
-// 1260459 Nullsight/value spell
+// 1260459 Nullsight 
 void vaelgors_final_stare( special_effect_t& effect ){
-  struct nullsight final : public stat_buff_t{
+  struct nullsight_t final : public stat_buff_t{
     const special_effect_t& effect;
     const spell_data_t* value_spell;
     int current_tick;
     double buff_val;
     double decrease;
 
-    nullsight( const special_effect_t& e )
+    nullsight_t( const special_effect_t& e )
       : stat_buff_t( e.player, "nullsight", e.player->find_spell( 1260459 ) ),
         effect( e ),
         value_spell( nullptr ),
@@ -2030,9 +2030,9 @@ void vaelgors_final_stare( special_effect_t& effect ){
         buff_val( 0 ),
         decrease( 0 )
       {
-      value_spell  = e.player->find_spell( 1260459 );
-      auto n_ticks = value_spell->duration() / value_spell->effectN( 3 ).period();
-      buff_val     = e.driver()->effectN( 1 ).average( e );
+      value_spell  = e.driver();
+      auto n_ticks = data().duration() / data().effectN( 3 ).period();
+      buff_val     = value_spell->effectN( 1 ).average( e );
       decrease     = buff_val / n_ticks;
       set_stat_from_effect( 1, buff_val );
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
@@ -2094,7 +2094,7 @@ void vaelgors_final_stare( special_effect_t& effect ){
     }
   };
 
-  effect.custom_buff = make_buff<nullsight>( effect );
+  effect.custom_buff = make_buff<nullsight_t>( effect );
 }
 
 }  // namespace trinkets
