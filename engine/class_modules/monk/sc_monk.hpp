@@ -289,8 +289,11 @@ private:
   struct accumulator_t : monk_buff_t<>
   {
     aspect_of_harmony_t *aspect_of_harmony;
+    sc_timeline_t pool_size_percent;  // pool as a fraction of current maximum hp
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
+    void adjust( double amount );
+    void expire_override( int, timespan_t ) override;
   };
 
   struct spender_t : monk_buff_t<>
@@ -332,6 +335,11 @@ public:
   void trigger_path_of_resurgence();
 
   bool heal_ticking();
+
+  const sc_timeline_t &pool_size_percent() const
+  {
+    return accumulator->pool_size_percent;
+  }
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
