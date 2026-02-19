@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2503,18 +2503,14 @@ Effects          :
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259398), Kill Command (259489), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Flamefang Pitch (1251595), Flamefang Pitch (1251614), Hemorrhaging Strikes (1251683), Wildfire Imbuement (1252966), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Raptor Swipe (1262343), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096), Let Fly! (1271682)
                    Family Flags: 106
-Hotfixed         : Base Value (0 -> -4)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259398), Kill Command (259489), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Flamefang Pitch (1251595), Flamefang Pitch (1251614), Hemorrhaging Strikes (1251683), Wildfire Imbuement (1252966), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Raptor Swipe (1262343), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096), Let Fly! (1271682)
                    Family Flags: 106
-Hotfixed         : Base Value (0 -> -4)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
-Hotfixed         : Base Value (0.16 -> -4)
 #4 (id=191132)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -4)
 #5 (id=191133)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #6 (id=260877)   : Apply Aura (6) | Modify Power Regen (110)
@@ -2522,15 +2518,12 @@ Hotfixed         : Base Value (0 -> -4)
 #7 (id=1302323)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Doses (31)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 31 | Misc Value 2: 4691 (Label) | Target: Self (1)
                    Affected Spells (Label): Wyvern's Cry (471881)
-Hotfixed         : Base Value (5 -> 0)
 #8 (id=1302324)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Misc Value 2: 4691 (Label) | Target: Self (1)
                    Affected Spells (Label): Wyvern's Cry (471881)
-Hotfixed         : Base Value (5 -> 0)
 #9 (id=1302325)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 4692 (Label) | Target: Self (1)
                    Affected Spells (Label): Howl of the Pack Leader (471876)
-Hotfixed         : Base Value (5 -> 0)
 
 Name             : Counter Shot (id=147362) [Spell Family (9)] 
 Talent Entry     : Beast Mastery [tree=class, row=4, col=4, max_rank=1, req_points=0]
@@ -5719,7 +5712,6 @@ Description      : $@spelldesc248089
 Tooltip          : $s1% increased chance for the Hunter to cause a critical strike.
 
 Name             : Rapid Fire (id=257044) [Spell Family (9)] 
-Hotfixed         : Cooldown (20000 -> 16000)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5852,11 +5844,9 @@ Effects          :
                    Modified By: Light Ammo (378913 effect#2)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (75 -> 60)
                    Modified By: Blighted Quiver (1264291 effect#2)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (75 -> 60)
                    Modified By: Blighted Quiver (1264291 effect#3)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
@@ -8697,7 +8687,6 @@ Effects          :
 #2 (id=752442)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1715 (Category) | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
-Hotfixed         : Base Value (60 -> 40)
 #3 (id=752449)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Modified By: Unerring Vision (474738 effect#1)
@@ -11071,7 +11060,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1007207)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self (1)
-Hotfixed         : Base Value (1000 -> 2000)
 Description      : Consuming Precise Shots reduces the cooldown of Aimed Shot by ${$s1/1000}.2 sec.
 
 Name             : Improved Deathblow (id=378769) [Spell Family (9), Passive] 
@@ -11577,7 +11565,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
-Hotfixed         : Base Value (2 -> 1), PvP Coefficient (0.5 -> 1)
 #2 (id=1193943)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
@@ -14827,7 +14814,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1186803)  : Apply Aura (6) | Dummy (4)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (70 -> 65)
                    Modified By: Light Ammo (378913 effect#3), Blighted Quiver (1264291 effect#4)
 #2 (id=1226132)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -15095,7 +15081,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 14.4 | PvP Coefficient: 0.5 | Radius: 8 yards | Target: at Enemy in Area (16)
 #2 (id=1189826)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 5)
 Description      : $@spelldesc471876
 
 Name             : Boar Charge (id=471947) [Spell Family (9)] 
@@ -15290,12 +15275,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1190440)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 5)
 #3 (id=1190441)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Raptor Strike (265189), Raptor Swipe (1262293), Raptor Swipe (1262343)
                    Family Flags: 80
-Hotfixed         : Base Value (15 -> 5)
 #4 (id=1226146)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (217207), Frenzy (272795)
@@ -15940,12 +15923,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Trueshot (288613)
                    Family Flags: 53
-Hotfixed         : Misc Value (32 -> 23)
 #2 (id=1194574)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Trueshot (288613)
                    Family Flags: 53
-Hotfixed         : Misc Value (33 -> 32)
 Description      : Trueshot now increases your critical strike chance by an additional $s1% and increases your critical strike damage by an additional $s2%.
 
 Name             : Solitary Companion (id=474746) [Spell Family (9), Passive] 
@@ -17078,7 +17059,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1256574)  : School Damage (2): physical | Attributes: Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2 -> 1.8)
 Description      : $@spelldesc1251717
 
 Name             : Savagery (id=1251790) [Spell Family (9), Passive, Hidden] 
@@ -17571,7 +17551,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Trueshot (288613)
                    Family Flags: 53
-Hotfixed         : Base Value (4000 -> 2000)
 #4 (id=1260076)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Takedown (1250646), Takedown (1253859), Takedown (1253862)
@@ -17583,7 +17562,6 @@ Hotfixed         : Base Value (4000 -> 2000)
 #6 (id=1276520)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 6394 (Label) | Target: Self (1)
                    Affected Spells (Label): Moonlight Chakram (1264946)
-Hotfixed         : Base Value (4000 -> 2000)
 Description      : $?c2[Precise Shots damage bonus][Tip of the Spear damage bonus] increased by $?c2[$s1][$s2]%.
 
 $?c2[Trueshot][Takedown] duration increased by $?c2[${$s3/1000} ][${$s4/1000}] sec.
@@ -18215,7 +18193,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126
 Effects          :
 #1 (id=1270863)  : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.075 | Radius: 0 - 20 yards | Target: Source (22) -> Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : AP Coefficient (6.75 -> 6.075)
 Description      : $@spelldesc1261193
 
 Name             : Wildfire Shells (id=1261229) [Spell Family (9), Passive, Hidden] 
