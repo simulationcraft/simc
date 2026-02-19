@@ -453,10 +453,13 @@ namespace warlock
 
     talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
 
-    // TODO: Not Yet Implemented
     talents.embers_of_nihilam_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 1 ); // Should be ID 1265770 (I)
     talents.embers_of_nihilam_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 2 ); // Should be ID 1265772 (II)
     talents.embers_of_nihilam_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Embers of Nihilam", 3 ); // Should be ID 1265774 (III)
+    talents.echo_of_sargeras = conditional_spell_lookup( talents.embers_of_nihilam_1.ok(), 1265884 );
+    talents.vision_of_nihilam = conditional_spell_lookup( talents.embers_of_nihilam_2.ok(), 1265939 );
+
+    cooldowns.echo_of_sargeras->duration = talents.embers_of_nihilam_3->internal_cooldown();
 
     // Additional Tier Set spell data
     tier.wl_destruction_12_0_class_set_2pc = sets->set( WARLOCK_DESTRUCTION, MID1, B2 ); // Should be ID 1264873
@@ -765,6 +768,11 @@ namespace warlock
                               ->set_default_value_from_effect( 1 )
                               ->set_chance( talents.alythesss_ire->effectN( 1 ).percent() ); // TODO: Check RNG type
 
+    buffs.vision_of_nihilam = make_buff( this, "vision_of_nihilam", talents.vision_of_nihilam )
+                                  ->set_default_value( talents.embers_of_nihilam_2->effectN( 1 ).percent() )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+
     buffs.summon_overfiend = make_buff( this, "summon_overfiend", talents.overfiend_buff )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                  ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
@@ -1025,6 +1033,10 @@ namespace warlock
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.demonfire_infusion_inc = get_proc( "demonfire_infusion_incinerate" );
     procs.demonfire_infusion_dot = get_proc( "demonfire_infusion_dot" );
+    procs.echo_of_sargeras = get_proc( "echo_of_sargeras" );
+    procs.echo_of_sargeras_cb = get_proc( "echo_of_sargeras_cb" );
+    procs.echo_of_sargeras_sb = get_proc( "echo_of_sargeras_sb" );
+    procs.echo_of_sargeras_rof = get_proc( "echo_of_sargeras_rof" );
   }
 
   void warlock_t::init_procs_diabolist()
@@ -1268,6 +1280,7 @@ namespace warlock
     add_rng_option( rng_settings.feast_of_souls_aff );
     add_rng_option( rng_settings.feast_of_souls_demo );
     add_rng_option( rng_settings.manifested_avarice );
+    add_rng_option( rng_settings.echo_of_sargeras );
   }
 
   void warlock_t::combat_begin()

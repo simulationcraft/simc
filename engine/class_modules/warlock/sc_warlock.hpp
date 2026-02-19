@@ -461,6 +461,8 @@ public:
     player_talent_t embers_of_nihilam_1;
     player_talent_t embers_of_nihilam_2;
     player_talent_t embers_of_nihilam_3;
+    const spell_data_t* echo_of_sargeras; // Damage spell (1265884)
+    const spell_data_t* vision_of_nihilam; // Crit/Haste buff (1265939)
   } talents;
 
   struct hero_talents_t
@@ -586,6 +588,10 @@ public:
     action_t* diabolic_gaze_2;
     action_t* diabolic_gaze_3;
     action_t* blighted_maw;
+    action_t* echo_of_sargeras;
+    action_t* echo_of_sargeras_cb;
+    action_t* echo_of_sargeras_sb;
+    action_t* echo_of_sargeras_rof;
   } proc_actions;
 
   struct tier_sets_t
@@ -606,6 +612,7 @@ public:
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> summon_doomguard;
     propagate_const<cooldown_t*> felstorm_icd;
+    propagate_const<cooldown_t*> echo_of_sargeras; // ICD for Embers of Nihilam rank 4 procs
     propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
     propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
@@ -650,6 +657,7 @@ public:
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> alythesss_ire;
     propagate_const<buff_t*> summon_overfiend;
+    propagate_const<buff_t*> vision_of_nihilam;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;
@@ -737,6 +745,10 @@ public:
     proc_t* demonfire_infusion_inc;
     proc_t* demonfire_infusion_dot;
     proc_t* alythesss_ire;
+    proc_t* echo_of_sargeras;
+    proc_t* echo_of_sargeras_cb;
+    proc_t* echo_of_sargeras_sb;
+    proc_t* echo_of_sargeras_rof;
 
     // Diabolist
 
@@ -772,6 +784,7 @@ public:
 
     // Destruction
     rng_setting_t avatar_of_destruction_dr = { 0.60, 0.60, "avatar_of_destruction_dr" }; // TODO:  Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t echo_of_sargeras = { 0.25, 0.25, "echo_of_sargeras" }; // TOCHECK: Proc rate not in spell data
 
     // Diabolist
 
@@ -959,5 +972,7 @@ namespace helpers
   void nightfall_updater( warlock_t* p, dot_t* d );
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
+
+  void trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc );
 }
 }  // namespace warlock

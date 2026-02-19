@@ -3234,6 +3234,13 @@ using namespace helpers;
         p()->procs.demonfire_infusion_inc->occur();
       }
 
+      if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
+      {
+        p()->proc_actions.echo_of_sargeras->execute_on_target( target );
+        p()->procs.echo_of_sargeras->occur();
+        p()->buffs.vision_of_nihilam->trigger();
+      }
+
       p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
@@ -3465,6 +3472,9 @@ using namespace helpers;
 
       if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() ) )
         internal_combustion->execute_on_target( s->target );
+
+      if ( p()->talents.embers_of_nihilam_3.ok() && result_is_hit( s->result ) )
+        helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_cb, p()->procs.echo_of_sargeras_cb );
     }
 
     void schedule_execute( action_state_t* s ) override
@@ -3751,6 +3761,9 @@ using namespace helpers;
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
+      if ( p()->talents.embers_of_nihilam_3.ok() )
+        helpers::trigger_echo_of_sargeras( p(), execute_state->target, p()->proc_actions.echo_of_sargeras_rof, p()->procs.echo_of_sargeras_rof );
+
       p()->buffs.crashing_chaos->decrement();
 
       if ( p()->talents.alythesss_ire.ok() )
@@ -3925,6 +3938,9 @@ using namespace helpers;
       if ( result_is_hit( s->result ) )
       {
         td( s->target )->debuffs.shadowburn->trigger();
+
+        if ( p()->talents.embers_of_nihilam_3.ok() )
+          helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_sb, p()->procs.echo_of_sargeras_sb );
       }
     }
 
@@ -4180,6 +4196,31 @@ using namespace helpers;
         p()->buffs.summon_overfiend->trigger();
         p()->procs.avatar_of_destruction->occur();
       }
+    }
+  };
+
+  struct echo_of_sargeras_t : public warlock_spell_t
+  {
+    echo_of_sargeras_t( warlock_t* p, util::string_view name = "echo_of_sargeras", double effectiveness = 1.0 )
+      : warlock_spell_t( name, p, p->talents.echo_of_sargeras )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = as<int>( p->talents.echo_of_sargeras->effectN( 3 ).base_value() );
+
+      spell_power_mod.direct = p->talents.echo_of_sargeras->effectN( 1 ).sp_coeff();
+
+      base_dd_multiplier *= effectiveness;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( s->chain_target != 0 )
+        m *= p()->talents.echo_of_sargeras->effectN( 2 ).sp_coeff() / p()->talents.echo_of_sargeras->effectN( 1 ).sp_coeff();
+
+      return m;
     }
   };
 
@@ -4486,6 +4527,38 @@ using namespace helpers;
       p->cooldowns.blackened_soul->start();
   }
 
+  void helpers::trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc )
+  {
+    if ( p->cooldowns.echo_of_sargeras->down() )
+      return;
+
+    // If no valid target provided, find a random target with Immolate or Wither ticking
+    if ( !target || target->is_sleeping() )
+    {
+      std::vector<player_t*> candidates;
+
+      for ( const auto t : p->sim->target_non_sleeping_list )
+      {
+        warlock_td_t* tdata = p->get_target_data( t );
+        if ( !tdata )
+          continue;
+
+        if ( tdata->dots.immolate->is_ticking() || tdata->dots.wither->is_ticking() )
+          candidates.push_back( t );
+      }
+
+      if ( candidates.empty() )
+        return;
+
+      target = candidates[ p->rng().range( candidates.size() ) ];
+    }
+
+    echo_action->execute_on_target( target );
+    proc->occur();
+    p->buffs.vision_of_nihilam->trigger();
+    p->cooldowns.echo_of_sargeras->start();
+  }
+
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp, int _index ) : player_event_t( *p, timespan_t::from_millis( delay ) )
   {
@@ -4778,6 +4851,16 @@ using namespace helpers;
   void warlock_t::create_destruction_proc_actions()
   {
     proc_actions.demonfire_infusion = new channel_demonfire_tick_t( this, true );
+
+    if ( talents.embers_of_nihilam_1.ok() )
+      proc_actions.echo_of_sargeras = new echo_of_sargeras_t( this );
+
+    if ( talents.embers_of_nihilam_3.ok() )
+    {
+      proc_actions.echo_of_sargeras_cb = new echo_of_sargeras_t( this, "echo_of_sargeras_cb", talents.embers_of_nihilam_3->effectN( 1 ).percent() );
+      proc_actions.echo_of_sargeras_sb = new echo_of_sargeras_t( this, "echo_of_sargeras_sb", talents.embers_of_nihilam_3->effectN( 2 ).percent() );
+      proc_actions.echo_of_sargeras_rof = new echo_of_sargeras_t( this, "echo_of_sargeras_rof", talents.embers_of_nihilam_3->effectN( 3 ).percent() );
+    }
   }
 
   void warlock_t::create_diabolist_proc_actions()

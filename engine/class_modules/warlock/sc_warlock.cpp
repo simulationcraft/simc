@@ -209,6 +209,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.summon_doomguard = get_cooldown( "summon_doomguard" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
+  cooldowns.echo_of_sargeras = get_cooldown( "echo_of_sargeras_icd" );
   cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
   cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
 
