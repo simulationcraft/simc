@@ -15359,6 +15359,7 @@ Name             : Merithra's Blessing (desc=Green) (id=1256581) [Spell Family (
 Class            : Evoker
 School           : Nature
 Spell Type       : None
+Resource         : 1.54% Base Mana (0) (id=313278)[Hotfixed: NEW POWER]
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 46 yards/sec
