@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66013 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -2656,7 +2656,6 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=85629)    : School Damage (2): frost | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.67584 | PvP Coefficient: 1.75 | Radius: 9.5 yards | Target: at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.8448 -> 0.67584)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -3527,16 +3526,13 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (468655)
                    Family Flags: 108
-Hotfixed         : Base Value (-20 -> -10)
 #8 (id=1304824)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (468655)
                    Family Flags: 108
-Hotfixed         : Base Value (-20 -> -10)
 #9 (id=1307405)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Misc Value 2: 6322 (Label) | Target: Self (1)
                    Affected Spells (Label): Splintering Orbs (444256)
-Hotfixed         : NEW EFFECT
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
@@ -3569,7 +3565,6 @@ Effects          :
 #7 (id=1300544)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 6322 (Label) | Target: Self (1)
                    Affected Spells (Label): Splintering Orbs (444256)
-Hotfixed         : Base Value (10 -> 0)
 
 Name             : Arcane Missiles (id=139678) 
 Class            : Mage
@@ -4521,7 +4516,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=278848)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.4428 | Radius: 0 - 12 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.492 -> 0.4428)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc190356
 
@@ -5110,7 +5104,6 @@ Effects          :
 #2 (id=1283970)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-Hotfixed         : Sub Type (341 -> 453)
 Description      : Fire Blast gains $s1 additional charge and its cooldown is reduced by ${-$s2/1000}.1 sec.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3), Passive] 
@@ -6140,7 +6133,6 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.448 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.72 -> 2.448)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc116
 
@@ -10964,7 +10956,6 @@ Effects          :
 Description      : $@spelldesc342231
 
 Name             : Alter Time (id=342245) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
@@ -10990,7 +10981,6 @@ Effects          :
 Description      : Alters the fabric of time, returning you to your current location and health when cast a second time, or after ${$110909d+$s3} sec. Effect negated by long distance or death.
 
 Name             : Alter Time (id=342246) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -14883,7 +14873,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Glacial Spike (228600), Glacial Spike (1236209), Glacial Spike (1236211), Glacial Spike (1262860), Glacial Spike (1262862)
                    Family Flags: 64
-Hotfixed         : Base Value (25 -> 15)
 #2 (id=1290718)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=1290719)  : Apply Aura (6) | Dummy (4)
@@ -15210,7 +15199,6 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.453 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.41184 -> 0.453)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
@@ -15259,7 +15247,6 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=1139865)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4365 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.873 -> 0.4365)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Conjure raw Arcane magic into a sharp projectile that deals $s1 Arcane damage.
 
@@ -15296,7 +15283,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1140588)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Base Value (2 -> 4)
 #2 (id=1141267)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1141870)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15334,7 +15320,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Trigger Spell: 114923 | Target: Self (1)
 #4 (id=1141731)  : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 60)
 #5 (id=1141732)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
@@ -16088,7 +16073,6 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Po
 Effects          :
 #1 (id=1150371)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.4 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (2.4 -> 1)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
@@ -17550,12 +17534,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451), Arcane Pulse (1241462), Arcane Pulse (1243460)
                    Family Flags: 18, 29
-Hotfixed         : Base Value (25 -> 15)
 #4 (id=1283581)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Blizzard (190356), Blizzard (190357), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (468655), Freezing Winds (1247554), Blizzard (1248829)
                    Family Flags: 5, 7
-Hotfixed         : Base Value (15 -> 25)
 Description      : $?c1[Arcane Blast and Arcane Pulse damage increased by $s3%.
 
 Casting Touch of the Magi conjures $s1 Arcane Splinters][Frostbolt and Blizzard damage increased by $s4%.
@@ -18927,11 +18909,9 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1248791)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9738 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.082 -> 0.9738)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1293650)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.225 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.25 -> 0.225)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1246769
 
@@ -19317,7 +19297,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Shatter (1246949), Winter's End (1280757)
                    Family Flags: 35
-Hotfixed         : Base Value (10 -> 15)
 #4 (id=1250594)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Pyroblast (11366), Pyroblast (460475), Pyroblast (1262863)
@@ -19330,7 +19309,6 @@ Hotfixed         : Base Value (10 -> 15)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Blizzard (190356), Blizzard (190357), Freezing Winds (1247554), Blizzard (1248829)
                    Family Flags: 7
-Hotfixed         : Base Value (10 -> 15)
 Description      : Your $?a137020[Fire]?a137019[Frost][Frost and Fire] spells deal $?a137020[$s1]?a137019[$s2][$s1]% increased critical strike damage.
 
 $?a137020[Shatter damage increased by $s3%.
@@ -19963,12 +19941,10 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757)
                    Family Flags: 3
-Hotfixed         : Base Value (0 -> -5)
 #2 (id=1264855)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757)
                    Family Flags: 3
-Hotfixed         : Base Value (0 -> -5)
 #3 (id=1264856)  : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 2 (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
@@ -20345,12 +20321,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
-Hotfixed         : Base Value (25 -> 15)
 #5 (id=1283578)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Shatter (1246949), Winter's End (1280757)
                    Family Flags: 35
-Hotfixed         : Base Value (10 -> 20)
 Description      : $?c1[Casting Arcane Barrage while at $s1 or more Arcane Salvo stacks refunds $s2 Arcane Salvo $Lstack:stacks;.
 
 Arcane Barrage damage increased by $s4%.][Ice Lance Shatters $s3 additional $Lstack:stacks; of Freezing.
@@ -21177,7 +21151,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1293701)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.0625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.25 -> 0.0625)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1247775
 

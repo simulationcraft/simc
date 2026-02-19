@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66013 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -66,7 +66,6 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=145)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.935505 | PvP Coefficient: 1.04348 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.813483 -> 0.935505), PvP Coefficient (1.2 -> 1.04348)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -937,7 +936,6 @@ Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic a
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.59309 | PvP Coefficient: 0.440266 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.99424 -> 3.59309), PvP Coefficient (0.528319 -> 0.440266)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1550,7 +1548,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.38084 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (3.6507 -> 4.38084)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1838,7 +1835,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.459162 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.41742 -> 0.459162)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -3997,7 +3993,6 @@ Effects          :
 #7 (id=1300817)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 5186 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Demonic Touch (1269221)
-Hotfixed         : Base Value (0 -> -25)
 #8 (id=1300819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -4006,7 +4001,6 @@ Hotfixed         : Base Value (0 -> -25)
 #10 (id=1300824) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -2.5 | Scaled Value: -2.5 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
-Hotfixed         : Base Value (50 -> -2.5)
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
@@ -4068,11 +4062,9 @@ Effects          :
 #17 (id=1222482) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 93.2 | Scaled Value: 93.2 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
-Hotfixed         : Base Value (176 -> 93.199997)
 #18 (id=1222483) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: -12.25 | Misc Value 2: 5326 (Label) | Target: Self (1)
                    Affected Spells (Label): Ruination (434636)
-Hotfixed         : SP Coefficient (0 -> -12.25), Base Value (35 -> 0)
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock
@@ -4197,7 +4189,6 @@ Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Aura Never
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58469 | PvP Coefficient: 1.04348 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.508426 -> 0.58469), PvP Coefficient (1.2 -> 1.04348)
 #2 (id=839431)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
@@ -21466,7 +21457,6 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1289254)  : School Damage (2): magic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.924 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.68 -> 0.924)
 Description      : The Antoran Inquisitor fires a bolt of fel at their target, inflicting $s1 Chaos damage.
 
 Name             : Greater Felbolt (desc=Basic Attack) (id=1277116) [Spell Family (5)] 
@@ -21725,7 +21715,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Channel Target (77)
 #2 (id=1293385)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.31 | Radius: 10 yards | Target: at Channel Target (76) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (4.2 -> 2.31)
 Description      : $@spelldesc1280457
 
 Name             : Mind Sear (id=1280461) [Spell Family (5), Hidden] 
@@ -21974,7 +21963,6 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1296320)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.31 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (4.2 -> 2.31)
 #2 (id=1296321)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Dark magic is unleashed at the target's location, inflicting $s1 Shadow damage to all enemies within $a1 yards.
@@ -22012,7 +22000,6 @@ Triggered By     : Blaze (1282533)
 Effects          :
 #1 (id=1296369)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.31 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (4.2 -> 2.31)
 #2 (id=1296370)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1282533

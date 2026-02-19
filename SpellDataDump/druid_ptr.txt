@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65893 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66013 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -886,7 +886,7 @@ Name             : Moonfire (id=8921) [Spell Family (7)]
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
-Resource         : 0.8% Base Mana (0) (id=11196) w/ Restoration Druid (id=137012)[Hotfixed: Percent Cost (1.2 -> 0.8)]
+Resource         : 0.8% Base Mana (0) (id=11196) w/ Restoration Druid (id=137012)
 Resource         : 4% Base Mana (0) (id=305266) w/ Initial Druid (id=417382)
 Spell Level      : 2
 Range            : 40 yards
@@ -4908,21 +4908,16 @@ Effects          :
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
-Hotfixed         : Base Value (30 -> 34)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 34 | Scaled Value: 34 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
-Hotfixed         : Base Value (30 -> 34)
 #3 (id=191155)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 34)
 #4 (id=191156)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 34)
 #5 (id=191157)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 343 | Scaled Value: 343 | Target: Self (1)
-Hotfixed         : Base Value (330 -> 343)
 #6 (id=260767)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
@@ -4986,18 +4981,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
-Hotfixed         : Base Value (65 -> 0), Points per Level (0 -> 1)
 #4 (id=191152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
-Hotfixed         : Base Value (65 -> 0), Points per Level (0 -> 1)
 #5 (id=191153)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 0), Points per Level (0 -> 1)
 #6 (id=260747)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 0), Points per Level (0 -> 1)
 #7 (id=260748)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #8 (id=260749)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
@@ -5010,22 +5001,18 @@ Hotfixed         : Base Value (65 -> 0), Points per Level (0 -> 1)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (-41 -> -20)
 #11 (id=876349)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (-41 -> -20)
 #12 (id=1032349) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 169 | Scaled Value: 169 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-Hotfixed         : Base Value (115 -> 169)
 #13 (id=1032350) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 68 | Scaled Value: 68 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626), Starsurge (1271222)
                    Family Flags: 89
-Hotfixed         : Base Value (20 -> 68)
 #14 (id=1039258) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 48 | Scaled Value: 48 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -5070,12 +5057,10 @@ Hotfixed         : Base Value (20 -> 68)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : NEW EFFECT
 #25 (id=1307596) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -5091,18 +5076,14 @@ Effects          :
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Meteorites (1240913), Solar Bolt (1261573), Lunar Bolt (1263137), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243)
                    Family Flags: 18
-Hotfixed         : Base Value (6 -> 9)
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Meteorites (1240913), Solar Bolt (1261573), Lunar Bolt (1263137), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243)
                    Family Flags: 18
-Hotfixed         : Base Value (6 -> 9)
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 9)
 #4 (id=191148)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 9)
 #5 (id=191149)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 #6 (id=260777)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -14696,7 +14677,6 @@ Effects          :
 #4 (id=1307667)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Misc Value 2: 2691 (Label) | Target: Self (1)
                    Affected Spells (Label): Moonfire (8921), Moonfire (164812), Fury of Elune (211545), Fury of Elune (394111), Moonless Night (400360), Lunar Beam (414613), Red Moon (1252871), Lunar Beam (1270292)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc370695
 
 Name             : Fury of Nature (id=370704) [Spell Family (7), Passive] 
@@ -19434,11 +19414,9 @@ Effects          :
 #5 (id=1204429)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 4367 (Label)
                    Affected Spells (Label): Fury of Nature (370701), Fury of Nature (370704)
-Hotfixed         : Base Value (10 -> 0)
 #6 (id=1204430)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 4367 (Label)
                    Affected Spells (Label): Fury of Nature (370701), Fury of Nature (370704)
-Hotfixed         : Base Value (10 -> 0)
 Description      : $?a137013[Starfire deals $s1% increased damage to its primary target.
 
 Wrath no longer changes your Eclipse ability's mode to Solar Eclipse.][Thrash now deals Arcane damage and its damage is increased by $s2%.]
@@ -24452,12 +24430,10 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
-Hotfixed         : Base Value (-8 -> -2)
 #2 (id=1266733)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
-Hotfixed         : Base Value (-8 -> -2)
 #3 (id=1266734)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079)
@@ -26416,7 +26392,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291244)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Regrowth | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Misc Value 2: -100 | Trigger Spell: 8936 | Target: Self (1)
-Hotfixed         : Attribute (0 -> 64)
 #2 (id=1291245)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 8936 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
