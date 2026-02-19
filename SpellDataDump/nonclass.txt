@@ -242257,6 +242257,7 @@ Description      : Your damaging spells and abilities have the chance to grant $
 When an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.
 
 Name             : Hunt (id=1245054) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -242264,7 +242265,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245930)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hunt | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 198.7753 (coefficient=1.516437) | Trigger Spell: 1252457 | Target: Self (1)
-Description      : Your spells and abilities have the chance to grant $1252457s2 secondary stats for $1252487d  based on the target creature's type.
+Description      : Your spells and abilities have the chance to grant $s1 secondary stats for $1252487d  based on the target creature's type.
 
 Name             : Rot (id=1245055) [Passive] 
 School           : Physical
@@ -253549,4 +253550,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 Description      : $@spelldesc1241711
 
+
+Name             : Add Keystone Affix: Lindormi's Guidance (id=1289155) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Attributes       : Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=1307381)  : Modify Keystone (258)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 165
+Hotfixed         : NEW EFFECT
+Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
 

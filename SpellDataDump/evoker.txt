@@ -2481,13 +2481,13 @@ GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Legacy of the Lifebinder (1264269 effect#2)
+Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Legacy of the Lifebinder (1264269 effect#2)
 Category Flags   : Unknown (7)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1466: Green Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12), Burning Adrenaline (444020 effect#1)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14), Burning Adrenaline (444020 effect#1)
 Family Flags     : 25
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12)
@@ -2842,13 +2842,13 @@ Resource         : 1.8% Base Mana (0) (id=232525) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12), Ebon Might (395296 effect#4), Font of Magic (408083 effect#3), Font of Magic (411212 effect#3), Burning Adrenaline (444020 effect#1)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14), Ebon Might (395296 effect#4), Font of Magic (408083 effect#3), Font of Magic (411212 effect#3), Burning Adrenaline (444020 effect#1)
 Family Flags     : 15
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
@@ -3612,7 +3612,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (24 seconds cooldown)
-Category         : 2471 (Type 0x0): Preservation Evoker (356810 effect#8), Preservation Evoker (356810 effect#21), Wings of Liberty (1241704 effect#1), Evoker Preservation 12.0 Class Set 2pc (1264823 effect#2)
+Category         : 2471 (Type 0x0): Preservation Evoker (356810 effect#8), Preservation Evoker (356810 effect#21), Flow State (390148 effect#12), Wings of Liberty (1241704 effect#1), Evoker Preservation 12.0 Class Set 2pc (1264823 effect#2)
 Labels           : 16: Class Spells
                  : 219
                  : 292
@@ -4528,7 +4528,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1466: Green Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14)
 Family Flags     : 30
 Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Always Require PvP Target Match (430), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12)
@@ -7929,13 +7929,13 @@ Resource         : 1.8% Base Mana (0) (id=265448) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12), Ebon Might (395296 effect#4), Font of Magic (408083 effect#3), Font of Magic (411212 effect#3), Burning Adrenaline (444020 effect#1)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14), Ebon Might (395296 effect#4), Font of Magic (408083 effect#3), Font of Magic (411212 effect#3), Burning Adrenaline (444020 effect#1)
 Family Flags     : 15
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
@@ -8037,13 +8037,13 @@ GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Legacy of the Lifebinder (1264269 effect#2)
+Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Legacy of the Lifebinder (1264269 effect#2)
 Category Flags   : Unknown (7)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1466: Green Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12), Burning Adrenaline (444020 effect#1)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14), Burning Adrenaline (444020 effect#1)
 Family Flags     : 25
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12)
@@ -8088,7 +8088,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1466: Green Evoker Spells
-Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#12)
+Affecting Spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#14)
 Family Flags     : 30
 Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Always Require PvP Target Match (430), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12)
@@ -8563,17 +8563,30 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1523 (Label) | Target: Self (1)
                    Affected Spells (Label): Tail Swipe (368970)
 #10 (id=1041836) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2281 (Category) | Target: Self (1)
-#11 (id=1041837) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2456 (Category) | Target: Self (1)
+                   Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
+Hotfixed         : Misc Value (2281 -> 2456)
+#11 (id=1041837) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2054 (Category) | Target: Self (1)
+                   Affected Spells (Category): Dream Breath (355936), Dream Breath (382614)
+Hotfixed         : Sub Type (218 -> 148), Base Value (-10 -> 10), Misc Value (21 -> 2054), Misc Value 2 (1216 -> 0)
+#12 (id=1221859) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2471 (Category) | Target: Self (1)
+                   Affected Spells (Category): Verdant Embrace (360995)
+Hotfixed         : Sub Type (108 -> 148), Base Value (-10 -> 10), Misc Value (1 -> 2471), Affects Spells
+#13 (id=1237459) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 21 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Spells (1216)
-#12 (id=1221859) : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+Hotfixed         : Misc Value (10 -> 21)
+#14 (id=1308072) : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Dream Breath (355936), Fire Breath (357208), Spiritbloom (367226), Fire Breath (382266), Dream Breath (382614), Spiritbloom (382731)
                    Family Flags: 15, 25, 30
-#13 (id=1237459) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
+Hotfixed         : NEW EFFECT
+#15 (id=1308073) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Spells (1216)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc385696
 Tooltip          : Time is moving $w1% faster.
 
@@ -15360,6 +15373,7 @@ Name             : Merithra's Blessing (desc=Green) (id=1256581) [Spell Family (
 Class            : Evoker
 School           : Nature
 Spell Type       : None
+Resource         : 1.54% Base Mana (0) (id=313278)[Hotfixed: NEW POWER]
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 46 yards/sec

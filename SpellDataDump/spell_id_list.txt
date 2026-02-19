@@ -6233,6 +6233,9 @@ Evoker
 1283653  Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283654  Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1286123  Devastation Evoker
+1289618 *Blistering Scales
+1289630 *Source of Magic
+1289631 *Timelessness
 
 Hunter
 75       Auto Shot
