@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66013 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -242246,7 +242246,6 @@ Description      : Your damaging spells and abilities have the chance to grant $
 When an allied player dies, gain $s2 of your highest secondary stat for $1245025d. This effect can only occur once every 5 min.
 
 Name             : Hunt (id=1245054) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -253562,13 +253561,11 @@ Description      : $@spelldesc1241711
 
 
 Name             : Add Keystone Affix: Lindormi's Guidance (id=1289155) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1307381)  : Modify Keystone (258)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 165
-Hotfixed         : NEW EFFECT
 Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
 
