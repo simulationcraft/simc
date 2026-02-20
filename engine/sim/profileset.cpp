@@ -463,6 +463,7 @@ void profilesets_t::cleanup_work()
 // Wait until we have all the work done
 void profilesets_t::finalize_work()
 {
+  fmt::print( "Finalizing profileset work...\n" );
   // Nothing to finalize for sequential profileset model
   if ( m_mode == SEQUENTIAL )
   {
@@ -491,6 +492,7 @@ void profilesets_t::finalize_work()
 
 void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>& ptr_set )
 {
+  fmt::print( "Generating work for profileset '{}'...\n", ptr_set->name() );
   if ( m_mode == SEQUENTIAL )
   {
     auto original_opts = parent->control;
@@ -747,8 +749,10 @@ std::string profilesets_t::current_profileset_name()
 
 bool profilesets_t::iterate( sim_t* parent )
 {
+  fmt::print( "Iterating through profilesets...\n" );
   if ( parent -> profileset_map.empty() )
   {
+    fmt::print( "No profilesets found.\n" );
     return true;
   }
 
@@ -801,6 +805,7 @@ bool profilesets_t::iterate( sim_t* parent )
   if ( parent->rethrow_exception_queue() )
     return false;
 
+  fmt::print( "Finished profileset iteration.\n" );
   return true;
 }
 
