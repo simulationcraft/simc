@@ -2073,7 +2073,7 @@ void vaelgors_final_stare( special_effect_t& effect )
       : stat_buff_t( p, n, e.player->find_spell( 1260459 ) ), buff_val( 0 ), decrease( 0 )
     {
       auto n_ticks = data().duration() / data().effectN( 3 ).period();
-      buff_val     = e.player->find_spell(1259293)->effectN( 1 ).average( e );
+      buff_val     = e.driver()->effectN( 1 ).average( e );
       decrease     = buff_val / n_ticks;
       set_stat_from_effect( 1, buff_val );
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
@@ -2087,11 +2087,12 @@ void vaelgors_final_stare( special_effect_t& effect )
       }
     }
 
-
     void expire_override( int s, timespan_t d ) override
     {
-      // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
       buff_t::expire_override( s, d );
+      for ( auto& buff_stat : stats ){
+        buff_stat.current_value = 0;
+      }
     }
   };
 
