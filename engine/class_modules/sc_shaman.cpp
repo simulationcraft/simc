@@ -6063,6 +6063,17 @@ struct chain_lightning_overload_t : public chained_overload_base_t
     affected_by_master_of_the_elements  = true;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = chained_overload_base_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
@@ -7010,6 +7021,17 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     affected_by_stormkeeper_damage_tier = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
@@ -7267,6 +7289,17 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
         p->talent.mountains_will_fall->effectN( 1 ).percent(), type )
   {
     affected_by_master_of_the_elements = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -7865,6 +7898,17 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
         p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
