@@ -293,7 +293,6 @@ private:
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
     void adjust( double amount );
-    void expire_override( int, timespan_t ) override;
   };
 
   struct spender_t : monk_buff_t<>

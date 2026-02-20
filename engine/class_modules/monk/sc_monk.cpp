@@ -4486,6 +4486,18 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
     aspect_of_harmony( aspect_of_harmony )
 {
   set_default_value( 0.0 );
+
+  set_refresh_behavior( buff_refresh_behavior::DURATION );
+  set_period( 1_s );
+  set_tick_behavior( buff_tick_behavior::REFRESH );
+  set_partial_tick( true );
+
+  freeze_stacks = true;
+
+  set_tick_callback( [ = ]( buff_t *buff, int, timespan_t ) {
+    if ( buff->sim->current_iteration == 0 )  // only collect data from the first iteration
+      pool_size_percent.add_max( buff->sim->current_time(), buff->check_value() / buff->player->max_health() );
+  } );
 }
 
 void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *state )
@@ -4543,17 +4555,6 @@ void aspect_of_harmony_t::accumulator_t::adjust( double amount )
     monk_buff_t::expire();
 
   sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", amount, previous, value );
-
-  if ( sim->current_iteration == 0 )  // only collect data from the first iteration
-    pool_size_percent.add_max( sim->current_time(), value / p().max_health() );
-}
-
-void aspect_of_harmony_t::accumulator_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-{
-  monk_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-  if ( sim->current_iteration == 0 )  // only collect data from the first iteration
-    pool_size_percent.add_max( sim->current_time(), 0 );
 }
 
 aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
