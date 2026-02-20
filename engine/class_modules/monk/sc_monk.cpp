@@ -6404,13 +6404,15 @@ void monk_t::init_special_effects()
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
                                                 // TODO: don't hardcode these ids
-                                                constexpr std::array<unsigned, 6> blacklist = {
+                                                constexpr std::array<unsigned, 8> blacklist = {
                                                     216521,  // celestial fortune
                                                     178173,  // goto expire
                                                     124507,  // goto trigger
                                                     387621,  // dragonfire brew
                                                     115129,  // expel harm damage
                                                     124255,  // stagger
+                                                    450820,  // purified spirit
+                                                    450763,  // aspect of harmony tick
                                                 };
                                                 if ( range::contains( blacklist, action->id ) )
                                                   return false;
