@@ -182,10 +182,13 @@ namespace warlock
 
     talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
-    // TODO: Not Yet Implemented
+    // Affliction Apex
     talents.shadow_of_nathreza_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 1 ); // Should be ID 1261984 (I)
     talents.shadow_of_nathreza_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 2 ); // Should be ID 1261990 (II)
     talents.shadow_of_nathreza_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 3 ); // Should be ID 1261992 (III)
+    talents.shadow_of_nathreza_dot = conditional_spell_lookup( talents.shadow_of_nathreza_1.ok(), 1262710 );
+    talents.wrath_of_nathreza = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1262028 );
+    talents.wrath_of_nathreza_impact = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1278047 );
 
     // Additional Tier Set spell data
     tier.wl_affliction_12_0_class_set_2pc = sets->set( WARLOCK_AFFLICTION, MID1, B2 ); // Should be ID 1264869
@@ -1019,6 +1022,7 @@ namespace warlock
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
     procs.shard_instability = get_proc( "shard_instability" );
     procs.fatal_echoes = get_proc( "fatal_echoes" );
+    procs.wrath_of_nathreza = get_proc( "wrath_of_nathreza" );
   }
 
   void warlock_t::init_procs_demonology()
@@ -1088,6 +1092,7 @@ namespace warlock
   void warlock_t::init_rng_affliction()
   {
     ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
+    wrath_of_nathreza_rng = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
   }
 
   void warlock_t::init_rng_demonology()
