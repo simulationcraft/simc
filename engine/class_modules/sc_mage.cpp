@@ -7078,7 +7078,6 @@ void mage_t::trigger_mana_cascade()
   // This is still tied to the pet despite the other effects (Ashes of Inspiration,
   // Memory of Al'ar) being moved to Arcane Surge/Combustion.
   int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
-
   buffs.mana_cascade->execute( stacks );
 }
 
