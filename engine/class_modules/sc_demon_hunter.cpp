@@ -9481,6 +9481,12 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
               {
                 p.sim->print_debug( "{} triggers Wounded Quarry because Reaver's Mark was removed from target {}: {}",
                                     p.name(), p.last_reavers_mark_applied->name(), p.wounded_quarry_accumulator );
+                // Apply Chaos Brand multiplier to match periodic discharge behavior (line ~2874)
+                if ( p.last_reavers_mark_applied->debuffs.chaos_brand &&
+                     p.last_reavers_mark_applied->debuffs.chaos_brand->up() )
+                {
+                  p.wounded_quarry_accumulator *= 1.0 + p.spell.chaos_brand->effectN( 1 ).percent();
+                }
                 p.active.wounded_quarry->execute_on_target( p.last_reavers_mark_applied, p.wounded_quarry_accumulator );
               }
               p.wounded_quarry_accumulator = 0.0;
