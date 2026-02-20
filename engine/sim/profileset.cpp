@@ -106,6 +106,7 @@ std::string format_time( double seconds, bool milliseconds = true )
 // worker_t)
 void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*& profile_sim )
 {
+  fmt::print( "Simulating profileset '{}'...\n", set.name() );
   // Reset random seed for the profileset sims
   profile_sim -> seed = 0;
   profile_sim -> profileset_enabled = true;
@@ -123,6 +124,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     profile_sim -> progress_bar.set_phase( set.name() );
   }
 
+  fmt::print( "Execute profile sim '{}'.\n", set.name() );
   auto ret = profile_sim -> execute();
   if ( ret )
   {
@@ -136,12 +138,14 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
   if ( !ret || profile_sim -> is_canceled() )
   {
+    fmt::print( "Profile sim '{}' failed execution.\n", set.name() );
     return;
   }
 
   const auto player = profile_sim -> player_no_pet_list[ parent->profileset_report_player_index ];
   auto progress = profile_sim -> progress( nullptr, 0 );
 
+  fmt::print( "Set results for profileset '{}'.\n", set.name() );
   range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
     auto data = profileset::metric_data( player, metric );
 
@@ -157,6 +161,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
       .iterations( progress.current_iterations );
   } );
 
+  fmt::print( "Save data for profileset '{}'.\n", set.name() );
   if ( ! parent -> profileset_output_data.empty() )
   {
     const auto parent_player = parent -> player_no_pet_list[ parent->profileset_report_player_index ];
@@ -173,6 +178,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   parent -> event_mgr.total_events_processed += profile_sim -> event_mgr.total_events_processed;
 
   set.cleanup_options();
+  fmt::print( "Finished simulating profileset '{}'.\n", set.name() );
 }
 
 // Figure out if the option defines new actor(s) with their own scope
