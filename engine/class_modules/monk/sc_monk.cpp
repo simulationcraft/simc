@@ -5052,7 +5052,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 bool monk_t::validate_actor()
 {
-  sim->error( error_level_e::SEVERE, "Monk sims are non-functional for Midnight prepatch." );
+  // sim->error( error_level_e::SEVERE, "Monk sims are non-functional for Midnight prepatch." );
 
   if ( specialization() == MONK_MISTWEAVER )
   {
