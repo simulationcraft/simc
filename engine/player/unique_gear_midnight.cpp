@@ -2012,7 +2012,7 @@ void magisters_alchemist_stone( special_effect_t& e )
 }
 
 // Vaelgor's Final Stare
-// 1259293 Driver
+// 1259293 Driver??
 // 1260459 Nullsight 
 void vaelgors_final_stare( special_effect_t& effect )
 {
@@ -2032,7 +2032,7 @@ void vaelgors_final_stare( special_effect_t& effect )
         buff_val( 0 ),
         decrease( 0 )
       {
-      value_spell  = e.driver();
+      value_spell  = e.player->find_spell( 1259293 );
       auto n_ticks = data().duration() / data().effectN( 3 ).period();
       buff_val     = value_spell->effectN( 1 ).average( e );
       decrease     = buff_val / n_ticks;
