@@ -8152,7 +8152,9 @@ struct soul_cleave_t
     action_state_t* damage_state = damage->get_state();
     damage_state->target         = target;
     damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
-    damage_state->da_multiplier *= 1.0 + ( damage_spell->effectN( 3 ).percent() * fragments_consumed );
+    // Read per-fragment % from parent spell effectN(1), which Untethered Rage (1270448) effect#1 modifies.
+    // The damage sub-spell 228478 effectN(3) has a stale base value (20) that UR2 does not reach.
+    damage_state->da_multiplier *= 1.0 + ( data().effectN( 1 ).percent() * fragments_consumed );
     damage->schedule_execute( damage_state );
     damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
 
