@@ -7080,10 +7080,7 @@ void mage_t::trigger_mana_cascade()
   // Memory of Al'ar) being moved to Arcane Surge/Combustion.
   int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
 
-  if ( specialization() == MAGE_ARCANE )
-    buffs.mana_cascade->trigger( stacks );
-  else
-    buffs.mana_cascade->execute( stacks );
+  buffs.mana_cascade->execute( stacks );
 }
 
 void mage_t::trigger_fired_up()
