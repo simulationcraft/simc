@@ -1472,14 +1472,14 @@
   "SkillLineAbility": {
     "parent": "SkillLine",
     "fields": [
-      { "data_type": "q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "verb" },
       { "data_type": "S", "field": "verb_all" },
       { "data_type": "i", "field": "id" },
       { "data_type": "h", "field": "id_skill", "ref": "SkillLine", "formats": { "cpp": "%4u" } },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "h", "field": "req_skill_level" },
-      { "data_type": "i", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
+      { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
       { "data_type": "i", "field": "id_replace", "ref": "SpellName" },
       { "data_type": "i", "field": "acquire_method" },
       { "data_type": "h", "field": "max_learn_skill" },

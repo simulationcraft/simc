@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1544,7 +1544,6 @@ Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143),
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.6082 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
-Hotfixed         : AP Coefficient (1.863 -> 2.6082)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
 Description      : $@spelldesc113656
@@ -3118,19 +3117,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
-Hotfixed         : Affects Spells, Points per Level (0 -> 1)
 #4 (id=191106)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
-Hotfixed         : Affects Spells, Points per Level (0 -> 1)
 #5 (id=191107)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=260827)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260828)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
-Hotfixed         : Points per Level (0 -> 1)
 #8 (id=260829)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 92 | Scaled Value: 92 | Target: Self (1)
                    Affected Spells: Vivify (116670)
@@ -3146,31 +3142,25 @@ Hotfixed         : Points per Level (0 -> 1)
                    Base Value: 41 | Scaled Value: 41 | PvP Coefficient: 0.447
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-Hotfixed         : Base Value (106 -> 41)
 #12 (id=260833)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 56 | Scaled Value: 56
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : Base Value (128 -> 56)
 #13 (id=260834)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0.325
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
-Hotfixed         : Base Value (22 -> -17)
 #14 (id=260835)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 213 | Scaled Value: 213
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
-Hotfixed         : Base Value (358 -> 213)
 #15 (id=741702)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 242 | Scaled Value: 242 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-Hotfixed         : Base Value (400 -> 242)
 #16 (id=1266574) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Misc Value 2: 3441 (Label) | Target: Self (1)
                    Affected Spells (Label): Celestial Conduit (443038)
-Hotfixed         : Base Value (-15 -> -40)
 Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
@@ -3186,12 +3176,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
-Hotfixed         : Base Value (0 -> -10)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
-Hotfixed         : Base Value (0 -> -10)
 #3 (id=191101)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3235,7 +3223,6 @@ Hotfixed         : Base Value (0 -> -10)
                    Base Value: 188 | Scaled Value: 188 | PvP Coefficient: 1.385 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-Hotfixed         : Base Value (260 -> 188), PvP Coefficient (1 -> 1.385)
 #16 (id=984572)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
@@ -3248,7 +3235,6 @@ Hotfixed         : Base Value (260 -> 188), PvP Coefficient (1 -> 1.385)
                    Base Value: 1647 | Scaled Value: 1647 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
-Hotfixed         : Base Value (1244 -> 1647)
 #19 (id=1286217) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3053 (Label) | Target: Self (1)
                    Affected Spells (Label): Jadefire Stomp (388207), Jadefire Stomp (1248815)
@@ -7055,7 +7041,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=813291)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 4)
 Description      : Xuen strikes your enemies with Empowered Tiger Lightning every $s1 sec, dealing $s2% of the damage you and your summons have dealt to those targets in the last $s1 sec.
 
 Name             : Stagger (id=324393) [Spell Family (53)] 
@@ -10021,7 +10006,6 @@ Effects          :
 #2 (id=1180344)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
-Hotfixed         : Base Value (260 -> 200)
 Description      : $@spelldesc467293
 Tooltip          : Ancient Teachings transfers an additional $w2% damage to healing.
 
@@ -10783,7 +10767,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
-Hotfixed         : Base Value (160 -> 125)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -10978,7 +10961,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
-Hotfixed         : Base Value (15 -> 50)
 Description      : Tiger Palm damage increased by $s1%.
 
 Name             : Exploding Keg (id=388867) [Spell Family (53)] 
@@ -11355,7 +11337,6 @@ Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), 
 Effects          :
 #1 (id=1031561)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1 -> 0.5), PvP Coefficient (0.65 -> 1)
 #2 (id=1031562)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288634
 #3 (id=1031563)  : Energize Power (30)
@@ -13479,7 +13460,6 @@ Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), 
 Effects          :
 #1 (id=1138663)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.2 | Radius: 0 - 15 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (2.75 -> 2.2)
 Description      : $@spelldesc443028
 
 Name             : Celestial Conduit (id=443039) [Spell Family (53)] 
@@ -15294,7 +15274,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
-Hotfixed         : Base Value (20 -> 50)
 #3 (id=1151623)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Keg Smash (121253)
@@ -17136,7 +17115,6 @@ Effects          :
 #1 (id=1180358)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.516 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
-Hotfixed         : Base Value (260 -> 200)
 #2 (id=1241878)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Sta | Target: Self (1)
 Description      : Ancient Teachings transfers an additional $388026s2% damage to healing.
@@ -18952,7 +18930,6 @@ Attributes       : Passive (6), Do Not Display Range (126), Allow Class Ability 
 Effects          :
 #1 (id=1254684)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 60)
 Description      : After consuming Blackout Kick!, Rising Sun Kick has a $s1% chance to become Rushing Wind Kick.
 
 $@spellicon467307$@spellname467307:
@@ -19065,7 +19042,6 @@ Effects          :
 #21 (id=1305800) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Misc Value 2: 6424 (Label) | Target: Self (1)
                    Affected Spells (Label): Rushing Wind Kick (467307)
-Hotfixed         : NEW EFFECT
 
 Name             : Mistweaver Monk (id=1258138) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -20945,7 +20921,6 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spel
 Effects          :
 #1 (id=1293198)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Renewing Mist's healing is increased by $s1% on your lowest health ally with its effect.
 
 Name             : Monk - Midnight PrePatch - 11.2 Class Set 2pc (id=1283664) [Spell Family (53), Passive, Hidden] 

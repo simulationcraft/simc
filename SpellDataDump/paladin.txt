@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -393,7 +393,6 @@ Description      : Quickly heal a friendly target for $?$c1&$?a134735[${$s1*1}][
 |cFFFFFFFFGenerates $88852s1 Holy Power.][]
 
 Name             : Judgment (id=20271) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -466,7 +465,6 @@ Effects          :
 Description      : Increases the duration of Hammer of Justice by $/1000;S1 sec.
 
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
-Hotfixed         : Attributes, Tooltip
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -493,7 +491,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.07903 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=1307959)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Hurls a divine hammer that strikes an enemy for $<damage> Holy damage.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
@@ -1111,7 +1108,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.15125 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.92076 -> 2.15125)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 #3 (id=1050419)  : Trigger Spell (64): Lightforged Blessing
@@ -5234,7 +5230,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 80)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Ignore Aura State (262)
@@ -5546,7 +5541,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Suppress Target Pr
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.15125 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.92076 -> 2.15125)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -6862,7 +6856,6 @@ Description      : $@spelldesc275477
 Tooltip          : Deals $w1 Holy damage.
 
 Name             : Judgment (id=275773) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Replaces         : Judgment (id=20271)
 Class            : Holy Paladin
 School           : Holy
@@ -6890,7 +6883,6 @@ Description      : Judges the target, dealing $s1 Holy damage$?s231644[, and pre
 Variables        : $shield=${($SPS*$231644s1/100)*(1+$@versadmg)}
 
 Name             : Judgment (id=275779) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Replaces         : Judgment (id=20271)
 Class            : Protection Paladin
 School           : Holy
@@ -11443,7 +11435,6 @@ Effects          :
 Description      : Avenging Wrath empowers your next $?c3[damage dealing single target Holy Power ability to automatically activate Divine Storm][Word of Glory to automatically activate Light of Dawn] with $s2% increased effectiveness.
 
 Name             : Empyrean Legacy (id=387178) [Spell Family (10)] 
-Hotfixed         : Max stacks (0 -> 2)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -12768,7 +12759,6 @@ Effects          :
 Description      : Your damage over time effects deal $s1% more damage.
 
 Name             : Lightforged Blessing (id=403460) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -12782,7 +12772,6 @@ Attributes       : Exclude Caster (51), Not In Spellbook (143), Allow Class Abil
 Effects          :
 #1 (id=1050431)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Lightforged Blessing (id=403479) [Spell Family (10), Passive, Hidden] 
@@ -13779,7 +13768,6 @@ Effects          :
 Description      : The critical strikes of your Holy Power generating abilities grant you $s1% Haste for $407065d.
 
 Name             : Lightforged Blessing (id=407467) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -13793,7 +13781,6 @@ Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Cl
 Effects          :
 #1 (id=1070945)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Target: Self (1)
-Hotfixed         : SP Coefficient (1 -> 0), AP Coefficient (0 -> 1)
 Description      : @$spelldesc406468
 
 Name             : Consecrated Blade (id=407475) [Spell Family (10), Hidden] 
@@ -14587,7 +14574,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.98 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : AP Coefficient (2.465 -> 1.98)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
@@ -16179,12 +16165,10 @@ Effects          :
                    Family Flags: 6, 17, 26, 94
 #2 (id=1121231)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.66667 | Target: Targeted Ally (21)
-Hotfixed         : PvP Coefficient (1 -> 0.66667)
 #3 (id=1121452)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #4 (id=1121791)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #5 (id=1121809)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Ally (21)
 Description      : While wielding a Holy Bulwark, gain an absorb shield for ${$s2/10}.1% of your max health and an additional ${$s4/10}.1% every $t2 sec. Lasts $d.
@@ -16464,7 +16448,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to manifest a Holy Armament for a nearby ally.
 
 Name             : Sanctification (id=432977) [Spell Family (10), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Paladin
 School           : Physical
@@ -19612,7 +19595,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1240319)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : Base Value (125 -> 30)
 Description      : Judgment critical strikes empower your next Word of Glory to automatically activate Light of Dawn at $s2% effectiveness.
 
 Name             : Hammer of Wrath (id=1241410) [Spell Family (10)] 
@@ -20038,7 +20020,6 @@ Effects          :
 #1 (id=1246375)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8125 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
-Hotfixed         : SP Coefficient (3.75 -> 2.8125)
 #2 (id=1246376)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
@@ -20399,7 +20380,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Divine Hammer (198137)
                    Family Flags: 25
-Hotfixed         : NEW EFFECT
 
 Name             : Holy Paladin (id=1258016) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin

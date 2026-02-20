@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65940 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -589,10 +589,8 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste A
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.08 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (4.1112 -> 3.08)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1413 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.1884 -> 0.1413)
 #3 (id=808675)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19526 | Target: Targeted Enemy (6)
 #4 (id=1167235)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
@@ -811,7 +809,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 248.0043 (coefficient=1.892) | SP Coefficient: 1 | Rating: Haste | Target: Self (1)
 #2 (id=14743)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Power Word: Radiance (194509), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Shadow Mend (186263), Power Word: Radiance (194509), Benediction (1262763)
                    Family Flags: 6, 9, 11, 12, 22
 Description      : Grants $s1 haste and reduces the mana cost of your healing spells by $s2% for $d.
 Tooltip          : Haste increased by $s1.
@@ -1167,7 +1165,7 @@ Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=28280)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: -807.9801 (coefficient=-6.164) | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Holy Word: Sanctify (34861), Binding Heal (368276), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Holy Word: Sanctify (34861), Shadow Mend (186263), Binding Heal (368276), Benediction (1262763)
                    Family Flags: 6, 9, 11, 12, 28, 34, 37
 Description      : Your next healing spell costs $s1 less mana.
 Tooltip          : Your next healing spell costs $s1 less mana.
@@ -1861,7 +1859,6 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.43 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 35), PvP Coefficient (1 -> 1.43)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Power Word: Shield, Flash Heal, Plea, Penance, and Power Word: Radiance apply Atonement to your target for $194384d.
@@ -2279,11 +2276,11 @@ Effects          :
                    Family Flags: 11, 52
 #2 (id=156626)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #3 (id=164989)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 34 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 39 | Target: Self (1)
@@ -2291,7 +2288,7 @@ Effects          :
                    Family Flags: 11, 52
 #5 (id=1043134)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
                    Modified By: Empowered Surges (453799 effect#1)
 #6 (id=1155847)  : Apply Aura (6) | Set Action Button Spell Count (408): Flash Heal
@@ -2833,12 +2830,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (20 -> 0), Points per Level (0 -> 1)
 #5 (id=191079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (20 -> 0), Points per Level (0 -> 1)
 #6 (id=869198)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #7 (id=871790)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -2866,7 +2861,7 @@ Hotfixed         : Base Value (20 -> 0), Points per Level (0 -> 1)
                    Family Flags: 117
 #14 (id=1039629) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 48 | Scaled Value: 48 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #15 (id=1040387) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 191 | Scaled Value: 191 | Target: Self (1)
@@ -2905,18 +2900,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (44 -> 0), Points per Level (0 -> 1)
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (44 -> 0), Points per Level (0 -> 1)
 #6 (id=733881)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
-Hotfixed         : Base Value (44 -> 0), Points per Level (0 -> 1)
 #7 (id=743448)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
-Hotfixed         : Base Value (44 -> 0), Points per Level (0 -> 1)
 #8 (id=744373)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #9 (id=816833)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
@@ -2939,7 +2930,6 @@ Hotfixed         : Base Value (44 -> 0), Points per Level (0 -> 1)
                    Base Value: 43 | Scaled Value: 43 | Target: Self (1)
                    Affected Spells: Void Blast (450215), Void Blast (450983)
                    Family Flags: 57
-Hotfixed         : Base Value (10 -> 43)
 #15 (id=1032424) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
@@ -2958,7 +2948,7 @@ Hotfixed         : Base Value (10 -> 43)
                    Family Flags: 15
 #19 (id=1079597) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 23 | Scaled Value: 23 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #20 (id=1079598) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
@@ -2990,7 +2980,6 @@ Hotfixed         : Base Value (10 -> 43)
 #27 (id=1307309) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 6460 (Label) | Target: Self (1)
                    Affected Spells (Label): Piety (1246802)
-Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -3037,7 +3026,7 @@ Effects          :
                    Family Flags: 0
 #11 (id=1040379) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #12 (id=1040380) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 242 | Scaled Value: 242 | Target: Self (1)
@@ -3256,7 +3245,7 @@ Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), S
 Effects          :
 #1 (id=268054)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 3.619657 (coefficient=0.027614) | Target: Self (1)
-                   Affected Spells: Heal (2060), Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Heal (2060), Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11, 12
 Description      : Increases the healing done by your Heal and Flash Heal by $s1%.
 
@@ -3291,6 +3280,7 @@ Description      : $@spelldesc184915
 Tooltip          : Damage taken from the Priest's Mind spells increased by ${$w1}%.
 
 Name             : Shadow Mend (id=186263) [Spell Family (6)] 
+Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -3305,13 +3295,14 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
 Stance Mask      : 0x08000000
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #4), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Temporal Shift (225769 effect#2), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Measured Contemplation (341824 effect#1), Manifested Twilight (363943 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Occultist (1250293 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Archangel (81700 effects: #1, #2), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Temporal Shift (225769 effect#2), Rammal's Ulterior Motive (234711 effect#1), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Manifested Twilight (363943 effects: #1, #2, #3), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Occultist (1250293 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
 Triggered By     : Surge of Light (114255), Shadow Mend (1252217)
-Family Flags     : 52, 126
+Family Flags     : 11, 52, 126
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 19 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 14.25 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (19 -> 14.25)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
@@ -3546,13 +3537,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (10 -> 20)
                    Modified By: Iridi's Empowerment (224999 effect#2), Improved Voidform (341240 effect#2), Perfected Form (453917 effect#1)
 #2 (id=285131)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (10 -> 20)
                    Modified By: Iridi's Empowerment (224999 effect#3), Improved Voidform (341240 effect#3), Perfected Form (453917 effect#2)
 #3 (id=285132)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
@@ -4541,7 +4530,7 @@ Attributes       : Do Not Sheath (18), No Aura Cancel (31), Aura Points On Clien
 Effects          :
 #1 (id=307809)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 196685 | Target: Targeted Ally (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120644), Halo (120692), Halo (120696), Divine Star (122121), Divine Star (122128), Cosmic Ripple (243241), Binding Heal (368276), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Void Blast (450215), Void Blast (450983), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120644), Halo (120692), Halo (120696), Divine Star (122121), Divine Star (122128), Shadow Mend (186263), Cosmic Ripple (243241), Binding Heal (368276), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Void Blast (450215), Void Blast (450983), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 6, 9, 10, 11, 12, 28, 34, 57, 66, 93, 97, 98, 99, 117
 #2 (id=308008)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Target: Targeted Ally (21)
@@ -4592,13 +4581,13 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=312015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Smite (425529), Void Blast (450215), Benediction (1262763)
+                   Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Shadow Mend (186263), Smite (425529), Void Blast (450215), Benediction (1262763)
                    Family Flags: 7, 9, 11, 12
 #2 (id=312016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75
 #3 (id=356314)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Smite (585), Flash Heal (2061), Smite (425529), Void Blast (450215), Benediction (1262763)
+                   Affected Spells: Smite (585), Flash Heal (2061), Shadow Mend (186263), Smite (425529), Void Blast (450215), Benediction (1262763)
                    Family Flags: 7, 11
 Description      : While above $s2% health, the cast times of your Flash Heal, Heal, Prayer of Healing, and Smite are reduced by $s1%.
 
@@ -5438,7 +5427,7 @@ Attributes       : Do Not Sheath (18), No Aura Cancel (31), Do Not Display Range
 Effects          :
 #1 (id=354734)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
-                   Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Shadow Mend (186263), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 10, 11, 12
 Description      : $@spelldesc234710
 Tooltip          : Healing taken from the Priest's Flash Heal, Heal, and Holy Word: Serenity increased by $s1%.
@@ -6689,7 +6678,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=750255)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Heal (2060), Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Heal (2060), Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11, 12
 #2 (id=750256)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287336 | Target: Self (1)
@@ -8465,7 +8454,7 @@ Effects          :
                    Family Flags: 6
 #3 (id=1045830)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 39 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #4 (id=1045831)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Inner Shadow overrides Inner Light
                    Base Value: 355898 | Scaled Value: 355898 | Misc Value: 355897 | Misc Value 2: 2 | Target: Self (1)
@@ -8829,7 +8818,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66666 | Target: Self (1)
 #2 (id=907109)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.4 | Target: Self (1)
-                   Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Binding Heal (368276), Smite (425529), Void Blast (450215), Benediction (1262763)
+                   Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061), Shadow Mend (186263), Binding Heal (368276), Smite (425529), Void Blast (450215), Benediction (1262763)
                    Family Flags: 7, 9, 11, 12, 34
 #3 (id=908499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.4 | Target: Self (1)
@@ -9793,13 +9782,13 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=998678)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Smite (585), Prayer of Healing (596), Flash Heal (2061), Smite (425529), Void Blast (450215), Benediction (1262763)
+                   Affected Spells: Smite (585), Prayer of Healing (596), Flash Heal (2061), Shadow Mend (186263), Smite (425529), Void Blast (450215), Benediction (1262763)
                    Family Flags: 7, 9, 11
 #2 (id=998679)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75
 #3 (id=998680)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Smite (585), Flash Heal (2061), Smite (425529), Void Blast (450215), Benediction (1262763)
+                   Affected Spells: Smite (585), Flash Heal (2061), Shadow Mend (186263), Smite (425529), Void Blast (450215), Benediction (1262763)
                    Family Flags: 7, 11
 Description      : While above $s2% health, the cast time of your $?a137033[Flash Heal is]?a137032[Flash Heal and Smite are][Flash Heal, Prayer of Healing, and Smite are] reduced by $s1%.
 
@@ -9994,7 +9983,6 @@ Effects          :
 Description      : $@spelldesc375901
 
 Name             : Shadowy Insight (id=375981) [Spell Family (6)] 
-Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -10374,7 +10362,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1027703)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Penance (47750), Penance (186723), Power Word: Radiance (194509), Dark Reprimand (400171), Dark Reprimand (400187), Ultimate Penitence (421544), Penance (1232567), Dark Reprimand (1232615), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Penance (47750), Shadow Mend (186263), Penance (186723), Power Word: Radiance (194509), Dark Reprimand (400171), Dark Reprimand (400187), Ultimate Penitence (421544), Penance (1232567), Dark Reprimand (1232615), Benediction (1262763)
                    Family Flags: 11, 22, 48
 Description      : Flash Heal, Power Word: Shield, Penance, and Power Word: Radiance have a $s1% increased chance to critically heal.
 
@@ -10552,7 +10540,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1028125)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Prayer of Healing (596), Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Prayer of Healing (596), Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 9, 11
 Description      : Increases the critical strike chance of Flash Heal and Prayer of Healing by $s1%.
 
@@ -11302,7 +11290,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1033063)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 Description      : Increases healing done by Flash Heal by $s1%.
 
@@ -11345,7 +11333,7 @@ Attributes       : No Threat (42), Include In Advanced Combat Log (72), Can Proc
 Effects          :
 #1 (id=1034427)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Holy Nova (23455), Shadow Word: Death (32379), Penance (47666), Penance (47750), Holy Nova (132157), Penance (186723), Penance (186724), Power Word: Radiance (194509), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Mindgames (375901), Dark Reprimand (400171), Dark Reprimand (400187), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Void Blast (450215), Void Blast (450983), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Benediction (1262763), Searing Light (1280134)
+                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Holy Nova (23455), Shadow Word: Death (32379), Penance (47666), Penance (47750), Holy Nova (132157), Shadow Mend (186263), Penance (186723), Penance (186724), Power Word: Radiance (194509), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Mindgames (375901), Dark Reprimand (400171), Dark Reprimand (400187), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Void Blast (450215), Void Blast (450983), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Benediction (1262763), Searing Light (1280134)
                    Family Flags: 7, 11, 13, 22, 24, 26, 33, 47, 48, 49, 56, 79, 84, 108
 Description      : $@spelldesc393679
 Tooltip          : Next direct damage or healing spell increased by $s1%.
@@ -12554,7 +12542,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1123525)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Ultimate Serenity (1250581), Benediction (1262763)
+                   Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Shadow Mend (186263), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 10, 11, 12
 Description      : $?a137032[Your Flash Heal and Power Word: Shield are $s1%][Your Flash Heal and Holy Word: Serenity are $s1%] more effective when cast on yourself.
 
@@ -15293,7 +15281,7 @@ Effects          :
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #9 (id=1264782)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 19 | Scaled Value: 19 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #10 (id=1264783) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 85 | Scaled Value: 85 | Target: Self (1)
@@ -15670,7 +15658,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1248567)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
                    Modified By: Discipline Priest (137032 effect#27)
 #2 (id=1248568)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -15704,7 +15691,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1249148)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 Description      : Reduces the mana cost of Flash Heal by $s1%.
 
@@ -15952,7 +15939,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=1254711)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 2.68116 | PvP Coefficient: 1.512 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (2.39389 -> 2.68116)
 #2 (id=1254712)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $@spelldesc1246517
@@ -16129,6 +16115,7 @@ $@spellicon186263 $@spellname186263:
 $@spelldesc186263
 
 Name             : Shadow Mend (id=1252217) [Spell Family (6)] 
+Hotfixed         : Max stacks (0 -> 2), Internal Cooldown (0 -> 300)
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -16136,13 +16123,16 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+Internal Cooldown: 0.3 seconds
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Shadow Mend (1252215)
 Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1257298)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Shadow Mend overrides Flash Heal
+#1 (id=1257298)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Shadow Mend overrides Flash Heal | Attributes: Suppress Points Stacking (6)
                    Base Value: 186263 | Scaled Value: 186263 | Misc Value: 2061 | Trigger Spell: 186263 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1252215
 Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
@@ -16901,7 +16891,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1285511)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #2 (id=1285512)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 6250 (Label) | Target: Self (1)
@@ -16934,7 +16924,7 @@ Effects          :
                    Family Flags: 10, 28
 #2 (id=1285550)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Flash Heal (2061), Power Word: Radiance (194509), Plea (200829), Benediction (1262763)
+                   Affected Spells: Flash Heal (2061), Shadow Mend (186263), Power Word: Radiance (194509), Plea (200829), Benediction (1262763)
                    Family Flags: 8, 11, 22
 Description      : $?a137031&?a1246517[Holy Word: Serenity healing increased by $s1%.]?c2[Holy Word: Serenity and Holy Word: Sanctify healing increased by $s1%.][Flash Heal, Plea, and Power Word: Radiance healing increased by $s2%.]
 
@@ -17271,7 +17261,6 @@ Effects          :
 Description      : Healing is increased by $s1%.
 
 Name             : Shadowy Insight (id=1287613) [Spell Family (6), Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -17287,7 +17276,6 @@ Effects          :
 #1 (id=1305233)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1602 (Category) | Target: Self (1)
                    Affected Spells (Category): Mind Blast (8092), Void Blast (450983)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc375888
 Tooltip          : Your next Mind Blast is instant cast.
 

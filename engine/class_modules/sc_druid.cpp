@@ -7738,7 +7738,7 @@ struct moonfire_t final : public druid_spell_t
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->buff.galactic_guardian );
 
-    if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) )
+    if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) && !has_flag( flag_e::TREANT ) )
     {
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_ASTRAL_POWER;
@@ -8131,7 +8131,7 @@ struct starfall_t final : public ap_spender_t
       auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
       damage = p->get_secondary_action<starfall_damage_t>( pre + "_damage", damage_spell, f );
 
-      if ( p->talent.meteorites.ok() )
+      if ( p->talent.meteorites.ok() && !has_flag( flag_e::SYLVAN ) )
         meteorites = p->get_secondary_action<meteorites_t>( pre + "_meteorite", f );
     }
 
@@ -8818,13 +8818,15 @@ struct wrath_t final : public umbral_embrace_t<wrath_base_t>
       // as simc only looks at the average, apply a half strength modifier.
       auto val = p->talent.arcane_affinity->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + val * 0.5;
-      sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 50 );
+      sim->print_debug( "Arcane Affinity ({}) eff#1 modifying {} ({}) direct damage by {:.7g}%",
+                        p->talent.arcane_affinity->id(), *this, data().id(), val * 50 );
 
       // arcane affinity applies fully to umbral embrace'd wrath
       if ( umbral )
       {
         umbral->base_dd_multiplier *= 1.0 + val;
-        sim->print_debug( "{} base_dd_multiplier modified by {}%", *umbral, val * 100 );
+        sim->print_debug( "Arcane Affinity ({}) eff#1 modifying {} ({}) direct damage by {:.7g}%",
+                          p->talent.arcane_affinity->id(), *umbral, umbral->data().id(), val * 100 );
       }
     }
 
@@ -10504,8 +10506,6 @@ void druid_t::init_spells()
   register_passive_effect_mask( talent.circle_of_the_heavens, circle_mask );
   register_passive_effect_mask( talent.circle_of_the_wild, circle_mask );
 
-  register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
-    ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
   register_passive_effect_mask( talent.patient_custodian, specialization() == DRUID_FERAL
     ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
   register_passive_effect_mask( talent.strike_for_the_heart, specialization() == DRUID_FERAL
@@ -10517,12 +10517,20 @@ void druid_t::init_spells()
   if ( specialization() == DRUID_RESTORATION )
     deregister_passive_spell( talent.spirit_of_the_thicket );
 
-  // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
-  if ( bugs )
-    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
-
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
+
+  if ( bugs )
+  {
+    // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
+    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
+  }
+  else
+  {
+    // Bask in Moonlight is bugged and doesn't disable other spec's effects
+    register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
+      ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
+  }
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -11715,7 +11723,7 @@ void druid_t::create_actions()
 
     auto driver = get_secondary_action<starfall_t::starfall_driver_t>(
       "sylvan_beckoning_starfall_driver", find_trigger( spec.sylvan_beckoning_sf ).trigger(), find_spell( 1264676 ),
-      flag_e::NONE );
+      flag_e::SYLVAN );
     driver->name_str_reporting = "starfall";
     replace_stats( driver, driver->damage );
     active.sylvan_beckoning->add_child( driver );
@@ -12082,27 +12090,6 @@ void druid_t::init_special_effects()
         astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 1263250 ) )
         {
           proc = true;
-          /* TODO: determine if these bugs still exist
-          // eclipse snapshot script seems to be overriding all damage modifications including standard whitelists
-          if ( p->bugs )
-          {
-            da_multiplier_effects.clear();
-            ta_multiplier_effects.clear();
-            target_multiplier_effects.clear();
-            persistent_multiplier_effects.clear();
-          }
-
-          // double dips and snapshots eclipse via script
-          add_parse_entry( persistent_multiplier_effects )
-            .set_buff( p->buff.eclipse_lunar )
-            .set_type( USE_CURRENT )
-            .set_eff( &p->spec.eclipse_lunar->effectN( 7 ) );
-
-          add_parse_entry( persistent_multiplier_effects )
-            .set_buff( p->buff.eclipse_solar )
-            .set_type( USE_CURRENT )
-            .set_eff( &p->spec.eclipse_solar->effectN( 8 ) );
-          */
         }
       };
 
@@ -12114,6 +12101,14 @@ void druid_t::init_special_effects()
           smolder( p->get_secondary_action<astral_smolder_t>( "astral_smolder" ) ),
           smolder_mul( p->talent.ascendant_eclipses_2->effectN( 1 ).percent() )
       {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ); tmp->has_flag( flag_e::SYLVAN ) )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
 
       void execute( action_t*, action_state_t* s ) override
       {
