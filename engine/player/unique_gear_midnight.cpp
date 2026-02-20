@@ -2090,7 +2090,8 @@ void vaelgors_final_stare( special_effect_t& effect )
     void expire_override( int s, timespan_t d ) override
     {
       buff_t::expire_override( s, d );
-      for ( auto& buff_stat : stats ){
+      for ( auto& buff_stat : stats )
+      {
         buff_stat.current_value = 0;
       }
     }
