@@ -791,9 +791,7 @@ void warlock_t::parse_player_effects()
     // Affliction Mastery
     parse_effects( warlock_base.potent_afflictions ); // 77215
     // Affliction Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
-    parse_effects( talents.shadow_of_nathreza_2 ); // 1261990
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.shadow_of_nathreza_2 ); // 1261990
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt, talents.shadow_of_nathreza_2 );
   }
 
   // Demonology
