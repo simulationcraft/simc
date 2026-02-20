@@ -517,8 +517,10 @@ race_e util::parse_race_type( util::string_view name )
     return RACE_EARTHEN_HORDE;
   if ( name == "earthen_dwarf" )
     return RACE_EARTHEN_HORDE;
-  if ( name == "haranir" )
+  if ( name == "haranir" || name == "harronir" || name == "harronir_horde" )
     return RACE_HARANIR_HORDE;
+  if ( name == "harronir_alliance" )
+    return RACE_HARANIR_ALLIANCE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }

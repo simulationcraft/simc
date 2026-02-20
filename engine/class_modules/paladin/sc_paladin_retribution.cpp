@@ -674,8 +674,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       double proc_chance = data().effectN( 2 ).percent();
       if ( rng().roll( proc_chance ) )
       {
-        p()->cooldowns.judgment->reset( true );
-        p()->cooldowns.hammer_of_wrath->reset( true );
+        // Safeguard if one of those spells is not used in the APL, so it doesn't crash
+        if ( p()->cooldowns.judgment != nullptr )
+          p()->cooldowns.judgment->reset( true );
+        if ( p()->cooldowns.hammer_of_wrath != nullptr )
+          p()->cooldowns.hammer_of_wrath->reset( true );
       }
     }
   }

@@ -195,64 +195,38 @@ void potion_of_recklessness( special_effect_t& effect )
 {
   // The potion grants a positive buff to your highest secondary stat and
   // a negative buff to your lowest secondary stat.
-  struct recklessness_buff_t : public consumable_buff_t<stat_buff_t>
+  struct recklessness_t : public generic_proc_t
   {
-    double pos_crit = 0.0, pos_haste = 0.0, pos_vers = 0.0, pos_mast = 0.0;
-    double neg_crit = 0.0, neg_haste = 0.0, neg_vers = 0.0, neg_mast = 0.0;
+    std::unordered_map<stat_e, buff_t*> pos_map, neg_map;
 
-    recklessness_buff_t( const special_effect_t& e ) : consumable_buff_t( e.player, e.name(), e.driver() )
+    recklessness_t( const special_effect_t& e ) : generic_proc_t( e, e.driver()->name_cstr(), e.driver() )
     {
-      // Mapping from the driver effects
-      pos_crit = e.driver()->effectN( 2 ).average( e );
-      pos_haste = e.driver()->effectN( 3 ).average( e );
-      pos_vers  = e.driver()->effectN( 4 ).average( e );
-      pos_mast  = e.driver()->effectN( 5 ).average( e );
+      quiet = true;
 
-      neg_crit = e.driver()->effectN( 6 ).average( e );
-      neg_haste = e.driver()->effectN( 7 ).average( e );
-      neg_vers  = e.driver()->effectN( 8 ).average( e );
-      neg_mast  = e.driver()->effectN( 9 ).average( e );
-
-      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      // create and populate bonus/penalty maps. penalties will get '_penalty' suffix and ' Penalty' for reporting
+      create_all_stat_buffs( e, &data(), 0.0,
+        []( std::string n, const spelleffect_data_t& e ) {
+          return e.m_coefficient() < 0.0 ? fmt::format( "{}_penalty", n ) : n;
+        },
+        [ this ]( stat_e s, buff_t* b ) {
+          if ( static_cast<stat_buff_t*>( b )->stats.front().amount < 0.0 )
+            neg_map[ s ] = b->set_name_reporting( b->name_str_reporting + " Penalty" );
+          else
+            pos_map[ s ] = b;
+        } );
     }
 
-    void start( int s, double v, timespan_t d ) override
+    void execute() override
     {
-      auto high = util::highest_stat( source, secondary_ratings );
-      auto low = util::lowest_stat( source, secondary_ratings );
+      generic_proc_t::execute();
 
-      if ( !manual_stats_added )
-      {
-        // apply positive to highest secondary
-        switch ( high )
-        {
-          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, pos_crit ); break;
-          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, pos_haste ); break;
-          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, pos_vers ); break;
-          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, pos_mast ); break;
-          default: break;
-        }
-
-        // apply negative to lowest secondary
-        switch ( low )
-        {
-          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, neg_crit ); break;
-          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, neg_haste ); break;
-          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, neg_vers ); break;
-          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, neg_mast ); break;
-          default: break;
-        }
-      }
-
-      consumable_buff_t::start( s, v, d );
+      pos_map[ util::highest_stat( player, secondary_ratings ) ]->trigger();
+      neg_map[ util::lowest_stat( player, secondary_ratings ) ]->trigger();
     }
   };
 
-  auto buff = buff_t::find( effect.player, "potion_of_recklessness" );
-  if ( !buff )
-    buff = new recklessness_buff_t( effect );
-
-  effect.custom_buff = buff;
+  effect.disable_buff();
+  effect.execute_action = create_proc_action<recklessness_t>( "potion_of_recklessness", effect );
 }
 
 // Potion of Zealotry
@@ -460,7 +434,6 @@ void strength_of_halazzi( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace enchants
 
 namespace embellishments
@@ -595,6 +568,7 @@ void devouring_banding( special_effect_t& effect )
 
   effect.spell_id = effect.trigger()->id();
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
+    assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
     buff->execute_on_target( s->target );
   } );
@@ -722,7 +696,8 @@ void thalassian_phoenix_torque( special_effect_t& effect )
   damage->base_multiplier *= role_mult( effect );
   damage->base_multiplier *= bandolier_mul( effect.player );
 
-  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames", effect, effect.player->find_spell( 1251908 ) );
+  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames_heal", effect, effect.player->find_spell( 1251908 ) );
+  heal->name_str_reporting = "Heal";
   heal->base_dd_min = heal->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
   heal->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
   heal->base_multiplier *= role_mult( effect );
@@ -910,16 +885,23 @@ namespace darkmoon
 // TODO: What happens with both the trinket, and embellishment active?
 void blood( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1245025 ), effect.driver()->effectN( 1 ).average( effect ),
+    [ &buffs ]( stat_e s, buff_t* b ) { buffs[ s ] = b; }, do_setup );
+
   struct blood_cb_t : public dbc_proc_callback_t
   {
     std::unordered_map<stat_e, buff_t*> buffs;
-    blood_cb_t( const special_effect_t& e, const spell_data_t* value_driver ) : dbc_proc_callback_t( e.player, e )
-    {
-      create_all_stat_buffs( e, e.player->find_spell( 1245025 ), value_driver->effectN( 1 ).average( e ),
-                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
-    }
 
-    void execute( action_t*, action_state_t* s ) override
+    blood_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map )
+      : dbc_proc_callback_t( e.player, e ), buffs( map )
+    {}
+
+    void execute( action_t*, action_state_t* ) override
     {
       auto stat = util::lowest_stat( listener, secondary_ratings );
       for ( auto [ s, b ] : buffs )
@@ -932,11 +914,12 @@ void blood( special_effect_t& effect )
     }
   };
 
-  auto value_driver = effect.driver();
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
 
-  effect.spell_id = 1245012;
-
-  new blood_cb_t( effect, value_driver );
+    new blood_cb_t( effect, std::move( buffs ) );
+  }
 }
 
 // Rot
@@ -947,13 +930,14 @@ void blood( special_effect_t& effect )
 // TODO: What happens with both the trinket, and embellishment active?
 void rot( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
   struct root_rot_t : public generic_proc_t
   {
-    root_rot_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* value_driver )
-      : generic_proc_t( e, "root_rot", s )
+    root_rot_t( const special_effect_t& e ) : generic_proc_t( e, "root_rot", e.trigger()->effectN( 1 ).trigger() )
     {
-      base_td = value_driver->effectN( 1 ).average( e );
-      dot_max_stack = 1; // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
+      dot_max_stack = 1;  // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
     }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
@@ -970,9 +954,8 @@ void rot( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* target ) override
     {
-      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", player->find_spell( 1247411 ) )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
+      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+        ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
 
     void execute() override
@@ -982,12 +965,16 @@ void rot( special_effect_t& effect )
     }
   };
 
-  effect.execute_action =
-      create_proc_action<root_rot_t>( "root_rot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
+  auto dot = create_proc_action<root_rot_t>( "root_rot", effect );
+  dot->base_td += effect.driver()->effectN( 1 ).average( effect );
 
-  effect.spell_id = 1244332;
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
+    effect.execute_action = dot;
 
-  new dbc_proc_callback_t( effect.player, effect );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 // Void
@@ -997,13 +984,19 @@ void rot( special_effect_t& effect )
 // 1244617 Asyncronous Buff
 void void_( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.player->find_spell( 1244617 ) )
-                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
-                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
 
-  effect.custom_buff = buff;
-  effect.spell_id    = 1244253;
-  new dbc_proc_callback_t( effect.player, effect );
+  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.trigger()->effectN( 1 ).trigger() )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  if ( do_setup )
+  {
+    effect.custom_buff = buff;
+    effect.spell_id = effect.trigger()->id();
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 // Hunt
@@ -1017,6 +1010,30 @@ void void_( special_effect_t& effect )
 // TODO: What happens with both the trinket, and embellishment active?
 void hunt( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  for ( auto id : { 1252486, 1252487, 1252488, 1252489 } )
+  {
+    auto spell = effect.player->find_spell( id );
+    auto buff = create_buff<stat_buff_t>( effect.player, util::tokenize_fn( spell->name_cstr() ), spell )
+      ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+    buffs[ buff->stats.front().stat ] = buff;
+  }
+
+  // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
+  // like Undead and Giant.
+  static constexpr std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
+                                                        RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
+                                                        RACE_ABERRATION, RACE_ELEMENTAL,  RACE_UNDEAD };
+
+  static constexpr std::array<race_e, 9> valid_races = { RACE_BEAST,     RACE_ELEMENTAL, RACE_MECHANICAL,
+                                                         RACE_UNDEAD,    RACE_HUMANOID,  RACE_ABERRATION,
+                                                         RACE_DRAGONKIN, RACE_GIANT,     RACE_DEMON };
+
   struct hunt_cb_t : public dbc_proc_callback_t
   {
     enum mode_e
@@ -1027,41 +1044,13 @@ void hunt( special_effect_t& effect )
       MODE_RAID_RANDOM
     };
 
-    buff_t* haste_buff;
-    buff_t* crit_buff;
-    buff_t* mastery_buff;
-    buff_t* vers_buff;
+    std::unordered_map<stat_e, buff_t*> buffs;
     race_e race;
     mode_e mode;
 
-    // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff like Undead and Giant.
-    std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
-                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_UNDEAD };
-
-    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
-                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
-
-    hunt_cb_t( const special_effect_t& e, const spell_data_t* value_driver )
-      : dbc_proc_callback_t( e.player, e ),
-        haste_buff( nullptr ),
-        crit_buff( nullptr ),
-        mastery_buff( nullptr ),
-        vers_buff( nullptr ),
-        race( RACE_NONE ),
-        mode( MODE_RAID_RANDOM )
+    hunt_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map )
+      : dbc_proc_callback_t( e.player, e ), buffs( map ), race( RACE_NONE ), mode( MODE_RAID_RANDOM )
     {
-      haste_buff = make_buff<stat_buff_t>( e.player, "hasty_hunt", e.player->find_spell( 1252486 ) )
-                       ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      crit_buff = make_buff<stat_buff_t>( e.player, "focused_hunt", e.player->find_spell( 1252487 ) )
-                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      mastery_buff = make_buff<stat_buff_t>( e.player, "masterful_hunt", e.player->find_spell( 1252488 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      vers_buff = make_buff<stat_buff_t>( e.player, "versatile_hunt", e.player->find_spell( 1252489 ) )
-                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
       if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
            listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
         mode = MODE_ACTUAL;
@@ -1070,36 +1059,33 @@ void hunt( special_effect_t& effect )
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
         mode = MODE_RAID_RANDOM;
       else
+      {
         mode = MODE_SPECIFIED;
 
-      if ( mode == MODE_SPECIFIED )
-      {
-        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to get the proper buff.
+        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to
+        // get the proper buff.
         if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
           race = RACE_UNDEAD;
         else
           race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+
         if ( !range::contains( valid_races, race ) )
         {
           std::vector<std::string> valid_strings;
-          for (auto r : valid_races)
+          for ( auto r : valid_races )
           {
             std::string val = util::race_type_string( r );
             valid_strings.emplace_back( val );
           }
 
           e.player->sim->error( error_level_e::SEVERE,
-                                "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types "
-                                "are {}. Defaulting to targets actual race.",
+                                "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types are {}. "
+                                "Defaulting to targets actual race.",
                                 listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) );
-              
+
           mode = MODE_ACTUAL;
         }
       }
-      if ( mode == MODE_RANDOM )
-        pick_random_race();
-      if ( mode == MODE_RAID_RANDOM )
-        pick_random_raid_race();
     }
 
     void pick_random_race()
@@ -1118,7 +1104,7 @@ void hunt( special_effect_t& effect )
       // Pick a new random race each iteration
       if ( mode == MODE_RANDOM )
         pick_random_race();
-      if ( mode == MODE_RAID_RANDOM )
+      else if ( mode == MODE_RAID_RANDOM )
         pick_random_raid_race();
     }
 
@@ -1128,20 +1114,20 @@ void hunt( special_effect_t& effect )
       {
         case RACE_HUMANOID:
         case RACE_DRAGONKIN:
-          mastery_buff->trigger();
+          buffs[ STAT_MASTERY_RATING ]->trigger();
           break;
         case RACE_ABERRATION:
         case RACE_ELEMENTAL:
         case RACE_DEMON:
-          haste_buff->trigger();
+          buffs[ STAT_HASTE_RATING ]->trigger();
           break;
         case RACE_BEAST:
         case RACE_MECHANICAL:
-          crit_buff->trigger();
+          buffs[ STAT_CRIT_RATING ]->trigger();
           break;
         case RACE_GIANT:
         case RACE_UNDEAD:
-          vers_buff->trigger();
+          buffs[ STAT_VERSATILITY_RATING ]->trigger();
           break;
         default:
           break;
@@ -1157,13 +1143,13 @@ void hunt( special_effect_t& effect )
     }
   };
 
-  auto value_driver = effect.driver();
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
 
-  effect.spell_id = 1252457;
-
-  new hunt_cb_t( effect, value_driver );
+    new hunt_cb_t( effect, std::move( buffs ) );
+  }
 }
-
 }  // namespace darkmoon
 
 namespace trinkets
@@ -2073,6 +2059,68 @@ void magisters_alchemist_stone( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Vaelgor's Final Stare
+// 1259293 Driver
+// 1260459 Nullsight 
+void vaelgors_final_stare( special_effect_t& effect )
+{
+  struct nullsight_t final : public stat_buff_t
+  {
+    double buff_val;
+    double decrease;
+
+    nullsight_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : stat_buff_t( p, n, e.player->find_spell( 1260459 ) ), buff_val( 0 ), decrease( 0 )
+    {
+      auto n_ticks = data().duration() / data().effectN( 3 ).period();
+      buff_val     = e.driver()->effectN( 1 ).average( e );
+      decrease     = buff_val / n_ticks;
+      set_stat_from_effect( 1, buff_val );
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
+    }
+
+    double current_value()
+    {
+      double value = buff_val - ( decrease * current_tick );
+      return value;
+    }
+
+    void recalculate()
+    {
+      for ( auto& buff_stat : stats )
+      {
+        player->stat_loss( buff_stat.stat, decrease, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+      }
+    }
+
+    void recalculate_expiry()
+    {
+      for ( auto& buff_stat : stats )
+      {
+        double delta = current_value();
+        if ( delta > 0 )
+        {
+          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value = 0;
+      }
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
+      buff_t::expire_override( s, d );
+      recalculate_expiry();
+    }
+  };
+
+  effect.custom_buff = create_buff<nullsight_t>( effect.player, "nullsight", effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2167,10 +2215,10 @@ namespace sets
 // 1259276 tonic heal
 namespace
 {
-template <typename T>
+template <typename T, typename U>
 action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned id, double a )
 {
-  auto missile = create_proc_action<generic_proc_t>( n + "_missile", e, id );
+  auto missile = create_proc_action<U>( n + "_missile", e, id );
   auto impact = create_proc_action<T>( n, e, missile->data().effectN( 1 ).trigger() );
   impact->base_dd_min = impact->base_dd_max = a;
   missile->dual = true;
@@ -2194,12 +2242,12 @@ void murder_row_materials( special_effect_t& effect )
   auto crystal_amount = effect.trigger()->effectN( 2 ).average( effect );
   auto tonic_amount = effect.trigger()->effectN( 3 ).average( effect );
 
-  auto shiv =
-    create_mrm_action<generic_proc_t>( "murder_row_shiv", effect, 1259504, shiv_amount );
-  auto crystal =
-    create_mrm_action<generic_aoe_proc_t>( "slightlystabilized_arcanocrystal", effect, 1259503, crystal_amount );
-  auto tonic =
-    create_mrm_action<generic_heal_t>( "emergency_healing_tonic", effect, 1259508, tonic_amount );
+  auto shiv = create_mrm_action<generic_proc_t, generic_proc_t>(
+    "murder_row_shiv", effect, 1259504, shiv_amount );
+  auto crystal = create_mrm_action<generic_aoe_proc_t, generic_proc_t>(
+    "slightlystabilized_arcanocrystal",effect, 1259503, crystal_amount );
+  auto tonic = create_mrm_action<generic_heal_t, generic_heal_t>(
+    "emergency_healing_tonic", effect, 1259508, tonic_amount );
 
   effect.proc_flags2_ = PF2_CRIT;
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
@@ -2357,6 +2405,7 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
+  register_special_effect( 1259293, trinkets::vaelgors_final_stare );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor

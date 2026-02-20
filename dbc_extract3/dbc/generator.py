@@ -2263,6 +2263,11 @@ class SpellDataGenerator(DataGenerator):
           ( 1282534, 5 ),   # Blaze (pet spell)
           ( 1282748, 5 ),   # Blaze (pet spell)
           ( 1282757, 5 ),   # Shadow Nova (pet spell)
+          ( 1282501, 0 ),   # Dominion of Argus: Lady Sacrolash
+          ( 1282502, 0 ),   # Dominion of Argus: Grand Warlock Alythess
+          ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
+          ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
+          ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
         ),
 
         # Monk:

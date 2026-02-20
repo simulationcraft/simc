@@ -4254,7 +4254,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
       duality_pyroblast->execute_on_target( target );
 
     if ( p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4702,12 +4705,15 @@ struct meteor_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     if ( !background && p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
 
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
     
-    if ( p()->talents.sunfury_execution.ok() )
+    if ( p()->talents.pyroclasm.ok() && p()->talents.sunfury_execution.ok() )
        p()->buffs.pyroclasm->execute();
   }
 };
@@ -6235,9 +6241,6 @@ void mage_t::init_spells()
   cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
 
   // Register passives
-  // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
-  deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
-
   // Fire's Ire is dynamic and should not be applied as a passive
   deregister_passive_spell( talents.fires_ire );
 
@@ -6642,7 +6645,6 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 5 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )

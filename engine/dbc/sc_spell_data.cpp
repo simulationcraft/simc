@@ -804,6 +804,10 @@ struct spell_class_expr_t : public spell_list_expr_t
     }
 
     return filter_spells( [ label = it->spell_label, family = it->spell_family, mask = it->mask ]( const auto& spell ) {
+      // filter out racials & azerite
+      if ( spell.race_mask() || spell.power_id() || spell.essence_id() )
+        return false;
+
       return range::contains( spell.labels(), label, &spelllabel_data_t::label ) || spell.class_family() == family ||
              spell.class_mask() & mask;
     } );
