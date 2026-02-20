@@ -2461,7 +2461,6 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
-    // TODO: Check if Pyromaniac can trigger Cinderstorm.
     if ( ( last_hot_streak || p()->bugs ) && p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
