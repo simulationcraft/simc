@@ -2436,6 +2436,13 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
   void execute() override
   {
+    if ( last_hot_streak )
+    {
+      p()->trigger_fired_up();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
+      p()->trigger_mana_cascade();
+    }
+
     custom_state_spell_t::execute();
 
     // TODO: When exactly in execute does this trigger the first cinder?
@@ -2451,20 +2458,15 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
-      p()->trigger_fired_up();
-
-      p()->trigger_spellfire_sphere( MAGE_FIRE );
-      p()->trigger_mana_cascade();
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
-    // TODO: Check if Pyromaniac can trigger Fired Up and Cinderstorm.
+    // TODO: Check if Pyromaniac can trigger Cinderstorm.
     if ( ( last_hot_streak || p()->bugs ) && p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      // TODO: Pyromaniac increments Sphere's BLP (and thus can proc Spheres w/ the cap), 
-      // but it hasn't been tested whether it can roll the random chance.
+      p()->trigger_fired_up();
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
@@ -7096,7 +7098,7 @@ void mage_t::trigger_fired_up()
 
   if ( rng().roll( chance ) )
   {
-    buffs.fired_up->trigger();
+    buffs.fired_up->execute();
     cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
     buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
 
