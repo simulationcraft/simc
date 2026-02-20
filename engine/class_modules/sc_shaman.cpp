@@ -2857,7 +2857,7 @@ public:
       p()->buff.natures_swiftness->decrement();
     }
 
-    if ( ( affected_by_ans_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_ans_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background && p()->buff.ancestral_swiftness->up())
     {
       p()->buff.ancestral_swiftness->decrement();
     }
