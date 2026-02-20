@@ -3099,8 +3099,7 @@ struct mortal_strike_t : public warrior_attack_t
     auto target_data = td( s->target );
 
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID1, B4 ) &&
-            target_data && target_data->debuffs_colossus_smash->up() &&
-            s->n_targets >= p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 2 ).base_value() )
+            target_data && target_data->debuffs_colossus_smash->up() )
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
     }
