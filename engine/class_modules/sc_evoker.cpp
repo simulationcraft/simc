@@ -5635,7 +5635,7 @@ struct disintegrate_t : public essence_spell_t
       int max_targets_ = max_targets();
       max_targets_     = max_targets_ ? max_targets_ : 1;
 
-      auto buff_size = ( std::min( 3, max_targets_ ) - targets_ ) * mass_disint_mult;
+      auto buff_size = ( max_targets_ - targets_ ) * mass_disint_mult;
       buff_size      = buff_size > 0 ? buff_size : 0;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }

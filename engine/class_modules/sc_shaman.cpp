@@ -2785,6 +2785,16 @@ public:
       mul *= 1.0 + this->p()->talent.maelstrom_weapon->effectN( 5 ).percent() * this->maelstrom_weapon_stacks();
     }
 
+    if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
+    {
+      mul *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
+    }
+
+    if ( affected_by_ans_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
+    {
+      mul *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 2 ).percent();
+    }
+
     return mul;
   }
 
@@ -2841,12 +2851,12 @@ public:
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
 
-    if ( ( affected_by_ns_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_ns_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background && p()->buff.natures_swiftness->up())
     {
       p()->buff.natures_swiftness->decrement();
     }
 
-    if ( ( affected_by_ans_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_ans_cast_time ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background && p()->buff.ancestral_swiftness->up())
     {
       p()->buff.ancestral_swiftness->decrement();
     }
@@ -6052,6 +6062,17 @@ struct chain_lightning_overload_t : public chained_overload_base_t
     affected_by_master_of_the_elements  = true;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = chained_overload_base_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
@@ -6999,6 +7020,17 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     affected_by_stormkeeper_damage_tier = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
@@ -7256,6 +7288,17 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
         p->talent.mountains_will_fall->effectN( 1 ).percent(), type )
   {
     affected_by_master_of_the_elements = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -7854,6 +7897,17 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
         p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = elemental_overload_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -9540,8 +9594,12 @@ struct tempest_t : public shaman_spell_t
       } );
     }
 
+    if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
+    {
+      p()->buff.wind_gust->trigger();
+    }
+
     p()->buff.tempest->decrement();
-    p()->buff.master_of_the_elements->decrement();
 
     shaman_spell_t::execute();
 
@@ -12414,12 +12472,15 @@ void shaman_t::init_rng()
 
     if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
   {
+      unsigned int successes_per_deck = 2;
+      double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01; 
+      unsigned int deck_size          = static_cast<unsigned int>( successes_per_deck / tempest_chance );
     rng_obj.tempest_ele
-        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+        .set_param_fn( [&]( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
           // Default: 2 successful procs per deck
-          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 2U;
+            auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : successes_per_deck;
           // Default: 333 total cards
-          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 333U;
+            auto n_total = obj.opt_total() > 0 ? obj.opt_total() : deck_size;
           return std::make_tuple( n_total, n_draws, 90U );
         } )
         .build();
