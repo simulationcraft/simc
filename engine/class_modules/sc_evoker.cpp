@@ -4771,7 +4771,7 @@ struct azure_sweep_t : public azure_strike_base_t
   timespan_t mid1_es_cdr;
   azure_sweep_t( evoker_t* p, std::string_view options_str )
     : azure_strike_base_t( "azure_sweep", p, p->talent.azure_sweep_spell, options_str ),
-      mid1_es_cdr( p->sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 2 ).time_value() )
+      mid1_es_cdr( -p->sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 2 ).time_value() )
   {
     aoe = -1;
   }
@@ -9432,9 +9432,6 @@ void evoker_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Mail Specialization
-  parse_passive_effects( find_spell( 366524 ) );
 }
 
 void evoker_t::init_special_effects()

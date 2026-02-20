@@ -2263,6 +2263,11 @@ class SpellDataGenerator(DataGenerator):
           ( 1282534, 5 ),   # Blaze (pet spell)
           ( 1282748, 5 ),   # Blaze (pet spell)
           ( 1282757, 5 ),   # Shadow Nova (pet spell)
+          ( 1282501, 0 ),   # Dominion of Argus: Lady Sacrolash
+          ( 1282502, 0 ),   # Dominion of Argus: Grand Warlock Alythess
+          ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
+          ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
+          ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
         ),
 
         # Monk:
@@ -5191,6 +5196,49 @@ class ItemOffsetCurveGenerator(DataGenerator):
 
         for entry in data:
             fields = entry.field('id', 'id_curve', 'offset')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class PassiveClassSpellGenerator(DataGenerator):
+    def filter(self):
+        _data = []
+
+        for v in self.db('SkillLineAbility').values():
+            if v.id_parent not in util.class_skills(): # filter out non-class skills
+                continue
+
+            if v.acquire_method != 2: # filter out non-granted spells
+                continue
+
+            _spell = v.ref('id_spell')
+            if _spell.id == 0 or util.is_blacklisted(spell_name = _spell.name): # filter out invalid spells
+                continue
+
+            _misc = _spell.children('SpellMisc')
+            if len(_misc) == 0 or not _misc[0].flags_1 & 0x40: # filter out non-passives
+                continue
+
+            _data.append((next(c for c in constants.CLASS_INFO if c['skill'] == v.id_skill), v, _spell))
+
+        return _data
+
+    def generate(self, data = None):
+        data.sort(key = lambda e: (e[0]['id'], e[1].id_spell))
+
+        self.output_header(
+            header = 'Passive class spells',
+            type = 'passive_class_spell_t',
+            array = 'passive_spells',
+            length = len(data))
+
+        for info, skill, spell in data:
+            fields = []
+
+            fields = [f'{info['id']:2d}']
+            fields += [f'{skill.id_spell:7d}']
+            fields += spell.field('name')
+
             self.output_record(fields)
 
         self.output_footer()

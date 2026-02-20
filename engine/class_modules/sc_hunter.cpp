@@ -526,6 +526,7 @@ public:
     gain_t* invigorating_pulse;
     gain_t* serpentine_strikes;
     gain_t* lethal_barbs;
+    gain_t* disruptive_rounds;
   } gains;
 
   struct procs_t
@@ -565,18 +566,18 @@ public:
     spell_data_ptr_t hunters_avoidance; //Utility talent, won't implement
 
     spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
-    spell_data_ptr_t combat_experience; //TODO fix runtime error
+    spell_data_ptr_t combat_experience;
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
-    spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t concussive_shot; //Not implemented - probably not needed
 
     spell_data_ptr_t precision_strikes;
     spell_data_ptr_t counter_shot;
     spell_data_ptr_t muzzle;
     spell_data_ptr_t serrated_tips;
 
-    spell_data_ptr_t tranquilizing_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t tranquilizing_shot; //Not implemented - probably not needed
     spell_data_ptr_t pathfinding; //Utility talent, won't implement
-    spell_data_ptr_t disruptive_rounds; //TODO Not implemented
+    spell_data_ptr_t disruptive_rounds;
     spell_data_ptr_t improved_feign_death; //Utility talent, won't implement
     spell_data_ptr_t misdirection; //Utility talent, won't implement
 
@@ -727,7 +728,7 @@ public:
     spell_data_ptr_t obsidian_arrowhead;
     spell_data_ptr_t on_target;
     spell_data_ptr_t trueshot;
-    spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
+    spell_data_ptr_t kill_shot;
 
     spell_data_ptr_t target_acquisition;
     spell_data_ptr_t critical_precision;
@@ -961,9 +962,6 @@ public:
   // Specialization Spells
   struct specs_t
   {
-    spell_data_ptr_t critical_strikes;
-    spell_data_ptr_t mail_specialization;
-    spell_data_ptr_t control_pet; // Does nothing for sim purposes as of 2026-01-30 but adding for completeness
     spell_data_ptr_t pet_damage; // 2026-02-03: Generic "Pet Damage" buff, used as a tuning knob for Dire Beasts
     spell_data_ptr_t hunter;
     spell_data_ptr_t beast_mastery_hunter;
@@ -1924,8 +1922,6 @@ struct dark_hound_t final : public dire_critter_t
 
 struct dire_beast_t final : public dire_critter_t
 {
-  const spell_data_t* energize = find_spell( 281036 );
-
   dire_beast_t( hunter_t* owner, util::string_view n = "dire_beast" ) : dire_critter_t( owner, n )
   {
     // 11-10-22 Dire Beast - Damage increased by 400%. (15% -> 60%)
@@ -2262,6 +2258,16 @@ struct natures_ally_pet_t final : public hunter_main_pet_base_t
   natures_ally_pet_t( hunter_t* owner ) : hunter_main_pet_base_t( owner, "natures_ally_pet", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void create_buffs() override
+  {
+    hunter_main_pet_base_t::create_buffs();
+
+    // Nature's Ally pets have a unique Bestial Wrath aura
+    buffs.bestial_wrath =
+      make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -4240,6 +4246,14 @@ struct counter_shot_t : public hunter_ranged_attack_t
     is_interrupt = true;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_ranged_attack_t::impact( s );
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
@@ -5924,6 +5938,14 @@ struct muzzle_t : public hunter_melee_attack_t
     is_interrupt = true;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_melee_attack_t::impact( s );
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
@@ -6645,11 +6667,11 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
+
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
-
-      trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )
@@ -7420,8 +7442,6 @@ void hunter_t::init_spells()
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
   talents.unnatural_causes_debuff           = talents.unnatural_causes.ok() ? find_spell( 459529 ) : spell_data_t::not_found();
 
-  //TODO Remove 
-
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
@@ -7788,9 +7808,6 @@ void hunter_t::init_spells()
   mastery.spirit_bond_buff     = mastery.spirit_bond.ok() ? find_spell( 459722 ) : spell_data_t::not_found();
 
   // Spec spells
-  specs.critical_strikes     = find_spell( 157443 );
-  specs.mail_specialization  = find_spell( 86538 );
-  specs.control_pet          = find_spell( 93321 );
   specs.pet_damage           = find_spell( 1284992 );
   specs.hunter               = find_spell( 137014 );
   specs.beast_mastery_hunter = find_specialization_spell( "Beast Mastery Hunter" );
@@ -7857,10 +7874,6 @@ void hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( specs.critical_strikes );
-  parse_passive_effects( specs.mail_specialization );
-  parse_passive_effects( specs.control_pet );
 }
 
 void hunter_t::init_base_stats()

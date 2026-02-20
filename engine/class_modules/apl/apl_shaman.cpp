@@ -28,7 +28,7 @@ std::string temporary_enchant_elemental( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "crystallized" : "disabled";
+  return ( p->true_level >= 81 ) ? "void_touched" : ( p->true_level >= 71 ) ? "crystallized" : "disabled";
 }
 
 //elemental_apl_start

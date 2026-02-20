@@ -104,6 +104,14 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
     }
     else
     {
+      // if one and only one trait has no spec requirement, assume it's the correct one
+      if ( auto it = range::partition( _traits, []( const trait_data_t* t ) {
+        return range::all_of( t->id_spec, []( unsigned s ) { return s == 0; } );
+      } ); it == _traits.begin() + 1 )
+      {
+        return _traits.front();
+      }
+
       // if one and only one trait matches the spec, assume it's the correct one
       if ( auto it = range::partition( _traits, [ spec ]( const trait_data_t* t ) {
         return range::contains( t->id_spec, spec );

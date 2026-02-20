@@ -71,7 +71,7 @@ class ActiveClassSpellSet(DataSet):
         if m.flags_1 & 0x80:
             return False
 
-        if skill_line_ability and skill_line_ability.unk_13 not in [2, 4]:
+        if skill_line_ability and skill_line_ability.acquire_method not in [2, 4]:
             return False
 
         return True
@@ -105,7 +105,7 @@ class ActiveClassSpellSet(DataSet):
             if data.id_skill == 0 or data.id_skill not in util.class_skills():
                 continue
 
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             if not self.valid_spell(data, data.ref('id_spell')):
@@ -162,7 +162,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
         pet_skill_categories = [v for cls_ in constants.PET_SKILL_CATEGORIES for v in cls_]
 
         for data in self.db('SkillLineAbility').values():
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             class_id = util.class_id(pet_skill = data.id_skill)
@@ -228,7 +228,7 @@ class RankSpellSet(DataSet):
             if data.id_skill == 0 or data.id_skill not in util.class_skills():
                 continue
 
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             spell_text = self.db('Spell')[data.id_spell]

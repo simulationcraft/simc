@@ -9,7 +9,7 @@
 #include "item_database.hpp"
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
-#include "active_spells.hpp"
+#include "class_spells.hpp"
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "trait_data.hpp"

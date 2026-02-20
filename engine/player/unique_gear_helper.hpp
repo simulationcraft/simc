@@ -666,6 +666,7 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
 
 template <typename T = stat_buff_t>
 void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
+                            std::function<std::string( std::string, const spelleffect_data_t& )> name_fn,
                             std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
 {
   static_assert( std::is_base_of_v<stat_buff_t, T> );
@@ -681,7 +682,8 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
     std::vector<std::string_view> stat_strs;
     range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
 
-    auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
+    auto name =
+      fmt::format( "{}_{}", name_fn ? name_fn( buff_name, eff ) : buff_name, util::string_join( stat_strs, "_" ) );
     auto buff = create_buff<T>( effect.player, name, buff_data )
       ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
       ->set_name_reporting( util::string_join( stat_strs ) );
@@ -692,6 +694,13 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
     if ( add_to_list && !range::contains( effect.buff_list, buff ) )
       effect.buff_list.push_back( buff );
   }
+}
+
+template <typename T = stat_buff_t>
+void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
+                            std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
+{
+  return create_all_stat_buffs<T>( effect, buff_data, amount, nullptr, std::move( add_fn ), add_to_list );
 }
 
 struct unique_gear_pet_t : public pet_t

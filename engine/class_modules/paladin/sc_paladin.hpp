@@ -347,8 +347,6 @@ public:
     const spell_data_t* aegis_of_light;
     const spell_data_t* aegis_of_light_2;
 
-    const spell_data_t* boundless_conviction;
-
     const spell_data_t* art_of_war;
     const spell_data_t* art_of_war_2;
   } passives;
@@ -393,8 +391,6 @@ public:
     const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
-
-    const spell_data_t* judgment_2;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
@@ -1735,7 +1731,6 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
-  bool triggers_sanctification   = false;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );

@@ -530,10 +530,8 @@ public:
 
     // Class Passives
     const spell_data_t* all_rogue;
-    const spell_data_t* critical_strikes;
     const spell_data_t* cut_to_the_chase;
     const spell_data_t* fleet_footed;           // DFALPHA: Duplicate passive?
-    const spell_data_t* leather_specialization;
 
     // Background Spells
     const spell_data_t* leeching_poison_buff;
@@ -9332,10 +9330,8 @@ void rogue_t::init_spells()
 
   // Class Passives
   spell.all_rogue = find_spell( 137034 );
-  spell.critical_strikes = find_spell( 157442 );
   spell.cut_to_the_chase = find_specialization_spell( "Cut to the Chase");
   spell.fleet_footed = find_class_spell( "Fleet Footed" );
-  spell.leather_specialization = find_spell( 86092 );
 
   // Assassination Spells
   spec.assassination_rogue = find_specialization_spell( "Assassination Rogue" );
@@ -9811,9 +9807,6 @@ void rogue_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( spell.critical_strikes );
-  parse_passive_effects( spell.leather_specialization );
 
   // Active Spells ==========================================================
 

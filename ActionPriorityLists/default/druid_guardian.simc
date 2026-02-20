@@ -11,59 +11,34 @@
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat=snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.ursocs_endurance.enabled
-actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&!talent.rip.enabled
-actions.precombat+=/cat_form,if=talent.rip.enabled
-actions.precombat+=/prowl,if=talent.rip.enabled
-actions.precombat+=/bear_form,if=!talent.rip.enabled
+actions.precombat+=/mark_of_the_wild,if=aura.mark_of_the_wild.down
+actions.precombat+=/bear_form,if=buff.bear_form.down
 
 # Executed every time the actor is available.
 # Executed every time the actor is available.
-actions=auto_attack,if=!buff.prowl.up
-actions+=/rake,if=buff.prowl.up
-actions+=/use_item,name=bestinslots,if=buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up
-actions+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
-actions+=/use_items
-actions+=/potion,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
-actions+=/run_action_list,name=bear
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
 
-actions.bear=maul,if=buff.ravage.up&active_enemies>1
-actions.bear+=/heart_of_the_Wild,if=(talent.heart_of_the_wild.enabled&!talent.rip.enabled)|talent.heart_of_the_wild.enabled&buff.feline_potential_counter.stack=6&active_enemies<3
-actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
-actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&cooldown.rage_of_the_sleeper.remains>8
-actions.bear+=/barkskin,if=buff.bear_form.up
-actions.bear+=/lunar_beam
-actions.bear+=/convoke_the_spirits,if=(talent.wildpower_surge.enabled&buff.cat_form.up&buff.feline_potential.up)|!talent.wildpower_surge.enabled
-actions.bear+=/berserk_bear
-actions.bear+=/incarnation
-actions.bear+=/rage_of_the_sleeper,if=(((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>40&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>40&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>40)
-actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
-actions.bear+=/maul,if=buff.ravage.up&active_enemies<2
-actions.bear+=/raze,if=(buff.tooth_and_claw.stack>1|buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd|buff.vicious_cycle_maul.stack=3)
-actions.bear+=/thrash_bear,if=active_enemies>=5&talent.lunar_calling.enabled
-actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up|rage>90&variable.If_build=0|!debuff.tooth_and_claw.up&!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up
-actions.bear+=/ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1|rage>90&variable.If_build=1&!talent.fount_of_strength.enabled|rage>110&variable.If_build=1&talent.fount_of_strength.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up&talent.rage_of_the_sleeper.enabled))
-actions.bear+=/ironfur,if=!buff.ravage.up&(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
-actions.bear+=/ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&(buff.incarnation.up|buff.berserk_bear.up)&!dot.rip.refreshable)
-actions.bear+=/rip,if=(buff.cat_form.up&buff.feline_potential.up)
-actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.incarnation_guardian_of_ursoc.up&buff.feline_potential_counter.stack<6&talent.wildpower_surge.enabled
-actions.bear+=/shred,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&talent.fluid_form.enabled
-actions.bear+=/rake,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&talent.fluid_form.enabled
-actions.bear+=/mangle,if=buff.cat_form.up&talent.fluid_form.enabled
-actions.bear+=/maul,if=variable.If_build=1&(((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd)&active_enemies=1&talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled))
-actions.bear+=/maul,if=variable.If_build=0&((buff.tooth_and_claw.up&active_enemies<=5&!talent.raze.enabled)|(buff.tooth_and_claw.up&active_enemies=1&talent.raze.enabled))
-actions.bear+=/maul,if=(active_enemies<=5&!talent.raze.enabled&variable.If_build=0)|(active_enemies=1&talent.raze.enabled&variable.If_build=0)|buff.vicious_cycle_maul.stack=3&active_enemies<=5&!talent.raze.enabled
-actions.bear+=/thrash_bear,if=active_enemies>=5
-actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<88)&active_enemies<11)|((rage<83)&active_enemies<11&talent.soul_of_the_forest.enabled)
-actions.bear+=/rip,if=buff.cat_form.up&(!dot.rip.ticking|refreshable)&combo_points>=3&active_enemies<3&!talent.empowered_shapeshifting.enabled
-actions.bear+=/ferocious_bite,if=buff.cat_form.up&dot.rip.ticking&combo_points>4&active_enemies<3&!talent.empowered_shapeshifting.enabled
-actions.bear+=/rake,if=talent.fluid_form.enabled&buff.bear_form.up&!buff.incarnation_guardian_of_ursoc.up&(refreshable|!dot.rake.ticking)&active_enemies<3&!talent.lunar_insight.enabled&energy>70&!talent.empowered_shapeshifting.enabled|buff.cat_form.up&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&(refreshable|!dot.rake.ticking)&!talent.empowered_shapeshifting.enabled
-actions.bear+=/thrash_bear,if=active_enemies>1
-actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
-actions.bear+=/thrash_bear
-actions.bear+=/rake,if=talent.fluid_form.enabled&buff.bear_form.up&!buff.incarnation_guardian_of_ursoc.up&(refreshable|!dot.rake.ticking)&active_enemies>3&!talent.lunar_insight.enabled&cooldown.mangle.remains<gcd&!talent.empowered_shapeshifting.enabled
-actions.bear+=/shred,if=talent.fluid_form.enabled&buff.bear_form.up&!buff.incarnation_guardian_of_ursoc.up&dot.rake.ticking&active_enemies<3&!talent.lunar_insight.enabled&energy>70&!talent.empowered_shapeshifting.enabled|buff.cat_form.up&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&!talent.empowered_shapeshifting.enabled
-actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.bear_form.up&talent.boundless_moonlight.enabled
-actions.bear+=/starsurge,if=talent.starsurge.enabled&rage<20
-actions.bear+=/swipe_bear,if=(talent.lunar_insight.enabled&active_enemies>4)|!talent.lunar_insight.enabled
-actions.bear+=/moonfire,if=(talent.lunar_insight.enabled)&buff.bear_form.up
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=berserk
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/convoke_the_spirits
+actions.assisted_combat+=/thrash,if=target.distance<=8&active_enemies>3
+actions.assisted_combat+=/lunar_beam,if=target.distance<=8
+actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5
+actions.assisted_combat+=/moonfire,if=!dot.moonfire.ticking
+actions.assisted_combat+=/mangle
+actions.assisted_combat+=/thrash,if=target.distance<=8
+actions.assisted_combat+=/moonfire,if=buff.galactic_guardian.up
+actions.assisted_combat+=/maul,if=rage>=8
+actions.assisted_combat+=/swipe,if=target.distance<=8
+actions.assisted_combat+=/moonfire,if=target.distance>10
+actions.assisted_combat+=/swipe
+
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call

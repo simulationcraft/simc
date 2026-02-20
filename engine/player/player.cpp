@@ -17,7 +17,7 @@
 #include "action/spell.hpp"
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
-#include "dbc/active_spells.hpp"
+#include "dbc/class_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
@@ -1312,8 +1312,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   healing_received_multiplier( 1.0 ),
   armor_penetration( 1.0 ),
   movement_speed( 0 ),
-  stacking_movement_speed_modifier( 1.0 ),
-  non_stacking_movement_speed_modifier( 1.0 ),
+  stacking_movement_speed_modifier( 0.0 ),
+  non_stacking_movement_speed_modifier( 0.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -3773,7 +3773,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( base_expr != expr && show_diff )
     comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
-  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  auto action_names = action_names_from_spell_id( step.spell_id );
+  if ( action_names.empty() )
+  {
+    sim->print_debug(
+      "{} action name not found for assisted combat step {} with spell id {} and expression '{}', skipping.", *this,
+      step.order_index, step.spell_id, expr );
+  }
+
+  for ( const auto& name : action_names )
   {
     if ( name.empty() )
       continue;
@@ -12507,13 +12515,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "apex" )
     {
-      // temporary hack to allow apex.# in prepatch apls
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        _talent = player_talent_t( this );
-      }
-      else
-      {
       // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
       std::vector<const trait_data_t*> apex_traits;
 
@@ -12531,22 +12532,24 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
       _talent = create_talent_obj( this, apex_traits[ index ] );
-      }
     }
     else if ( splits[ 0 ] == "talent" )
     {
+      auto _name = splits[ 1 ];  // make a copy view
       auto _index = 0U;
+
       if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
            _split.size() >= 2 && util::is_number( _split.back() ) )
       {
+        _name = _name.substr( 0, _name.size() - _split.back().size() - 1 );
         _index = util::to_unsigned( _split.back() );
       }
 
-      _talent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true, _index );
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::HERO, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::CLASS, _name, specialization(), true, _index );
 
       if ( _talent.invalid() )
         throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
@@ -14136,7 +14139,7 @@ void player_t::check_resource_change_for_callback( resource_e resource, double p
     if ( callback.is_consumed )
       continue;
 
-      if ( callback.resource != resource )
+    if ( callback.resource != resource )
       continue;
 
     // Evaluate if callback condition is met.
@@ -15520,25 +15523,26 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto misc_type = modifying_eff.misc_value1();
     std::string id_field;
     double flat_val = 0.0;
-    double pct_val = 0.0;
+    double pct_val = 0.0;  // initially set in percent value, then multiplied by 0.01 later
 
     switch ( sub_type )
     {
       // special handling
       case A_MOD_STAT:  // 29
         // parse scaling value if necessary
-        flat_val = modifying_eff.scaling_class() < 0 ? modifying_eff.average( this ) : modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_MOD_INCREASE_RESOURCE: // 35
       case A_MOD_MAX_RESOURCE:  // 418
         misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
-        flat_val = modifying_eff.resource();  // resource divisor adjusted value
+        // resource divisor adjusted value
+        flat_val = modifying_eff.average( this ) * modifying_eff.resource_multiplier();
         break;
       case A_MOD_RESISTANCE_PCT:  // 101
       case A_MOD_BASE_RESISTANCE_PCT:  // 142
         if ( ( misc_type & SCHOOL_MASK_PHYSICAL ) == 0 )  // only parse armor
           return false;
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:  // 137
         if ( modifying_spell->equipped_class() == ITEM_CLASS_ARMOR &&
@@ -15552,15 +15556,15 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         }
 
         misc_type = modifying_eff.misc_value2();  // Stat type is in misc_value2
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_MAX_MANA_PCT:  // 178
       case A_MOD_MANA_REGEN_PCT:  // 379
         misc_type = RESOURCE_MANA;  // hardcode to mana
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
-        pct_val = -modifying_eff.percent();  // reversed value
+        pct_val = -modifying_eff.average( this );  // reversed value
         break;
 
       // percent multipliers
@@ -15585,7 +15589,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PET_DAMAGE_DONE:  // 429
       case A_MOD_AUTO_ATTACK_DAMAGE_PCT:  // 530
       case A_MOD_GUARDIAN_DAMAGE_DONE:  // 531
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
 
       // flat modifiers
@@ -15604,14 +15608,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_VERSATILITY_PCT:  // 417
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
-        flat_val = modifying_eff.percent();
+        flat_val = modifying_eff.average( this ) * 0.01;
         break;
       case A_MOD_MASTERY_PCT:  // 318
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
 
       case A_MOD_PERCENT_STAT:  // 80
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         sim->error( SEVERE,
                     "{}(id={}) effect #:{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only "
                     "modifies base attributes.",
@@ -15624,6 +15628,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     if ( !flat_val && !pct_val )
       return false;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( id_field.empty() )
       id_field = get_field_from_type( sub_type );
@@ -15791,8 +15797,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
-    double pct_val = 0.0;
-    bool is_dbc = true;  // modifies the dbc
+    double pct_val = 0.0;    // initially set in percent value, then multiplied by 0.01 later
+    bool is_dbc = true;      // modifies the dbc
     bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
     bool allow_zero = true;  // modify even if base dbc value is 0
 
@@ -15800,11 +15806,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       case A_ADD_FLAT_MODIFIER:  // 107
       case A_ADD_FLAT_LABEL_MODIFIER:  // 219
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_ADD_PCT_MODIFIER:  // 108
       case A_ADD_PCT_LABEL_MODIFIER:  // 218
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MODIFY_SCHOOL:  // 220
         field = get_field_from_type( sub_type );
@@ -15820,7 +15826,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MODIFY_CATEGORY_COOLDOWN:  // 341
         field = "category_cooldown";
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         // if a spell has category_cooldown but no cooldown, category_cooldown value will be used for cooldown field.
         // if category_cooldown == cooldown assume this happened and modify both.
         if ( spell->get_field( "category_cooldown" ) == spell->get_field( "cooldown" ) )
@@ -15831,11 +15837,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_MAX_CHARGES:  // 411
       case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
       default:
@@ -15845,6 +15851,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // filter out zero value
     if ( !flat_val && !pct_val )
       continue;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( !field.empty() && !property )
     {
@@ -16180,7 +16188,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           register_passive_effect( *eff, true );
         }
 
-        auto data_val = eff->base_value();
+        auto data_val = eff->average( this );
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
@@ -16407,17 +16415,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class aura
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
-
-  // class-wide rank spells
-  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  // class passives
+  for ( const auto& passive_spell : passive_class_spell_t::data( dbc->ptr ) )
   {
-    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( passive_spell.class_id ) == util::class_id( type ) )
     {
-      auto spell = find_spell( rank_spell.spell_id );
-      if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+      auto spell = find_spell( passive_spell.spell_id );
+      parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
     }
   }
 
@@ -16562,7 +16566,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "",
+                   eff->average( this ), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
@@ -16637,7 +16641,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
+                   eff->average( this ), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
         row_open = false;

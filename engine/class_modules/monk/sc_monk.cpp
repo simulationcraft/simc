@@ -5052,11 +5052,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 bool monk_t::validate_actor()
 {
-  if ( !is_ptr() )
-  {
-    throw sc_unsupported_specialization( "Monk sims are non-functional for Midnight prepatch." );
-    return false;
-  }
+  sim->error( error_level_e::SEVERE, "Monk sims are non-functional for Midnight prepatch." );
 
   if ( specialization() == MONK_MISTWEAVER )
   {
@@ -6747,8 +6743,7 @@ void monk_t::combat_begin()
                                                player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
         make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
     };
-    auto data = std::make_unique<events::repeating_dynamic_period_cb_event_data_t>( period_fn, callback );
-    make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, std::move( data ) );
+    make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, period_fn, callback );
 
     buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }
