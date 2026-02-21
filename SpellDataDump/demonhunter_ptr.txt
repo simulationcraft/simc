@@ -2410,7 +2410,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=308699)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 64 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Race: humanoid | Target: Self (1)
 Description      : Increases damage against Humanoids by $s1%.
 Tooltip          : Damage against Humanoids increased by $s1%.
 
