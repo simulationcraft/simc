@@ -2111,7 +2111,14 @@ void locuswalkers_ribbon( special_effect_t& e )
       stat_buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e);
       stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.trigger())
                   ->set_freeze_stacks( true )
-                  ->set_default_value( e.driver()->effectN( 2 ).percent() );
+                  ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
+                  {
+                    if ( !stack_buff->player->in_combat && stack_buff->check() )
+                    {
+                      stack_buff->decrement();
+                    }
+                  });
       stat_buff->stack_buff = stack_buff;
     }
 
