@@ -4493,7 +4493,8 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
           .set_func( [ this ] { return stealthed(); } )
           .set_eff( &eff )
           .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } );
+            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
+          .print_debug( this );
       }
     }
   };
@@ -4520,7 +4521,8 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
           .set_func( [ this ] { return stealthed(); } )
           .set_eff( &eff )
           .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } );
+            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
+          .print_debug( this );
       }
     }
 
@@ -4627,7 +4629,8 @@ struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<cp_spender_
         .set_value( eff.percent() )
         .set_eff( &eff )
         .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-          [ this, b = p->buff.feline_potential ]( action_state_t* ) { b->consume( this ); } );
+          [ this, b = p->buff.feline_potential ]( action_state_t* ) { b->consume( this ); } )
+        .print_debug( this );
     }
   }
 
@@ -4752,7 +4755,8 @@ struct shred_t final : public trigger_panthers_guile_t<
         .set_func( [ this ] { return stealthed(); } )
         .set_eff( &data().effectN( 3 ) )
         .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-          [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } );
+          [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
+        .print_debug( this );
 
       if ( const auto& eff = p->find_spell( 343232 )->effectN( 1 ); energize && !energize->modified_by( eff ) )
       {
@@ -6125,7 +6129,8 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.dream_guide )
         .set_value( eff->percent() )
-        .set_eff( eff );
+        .set_eff( eff )
+        .print_debug( this );
     }
 
     // dream of cenarius snapshots the hot
@@ -6137,7 +6142,8 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.dream_of_cenarius )
         .set_value( eff->percent() )
-        .set_eff( eff );
+        .set_eff( eff )
+        .print_debug( this );
     }
   }
 
@@ -6835,7 +6841,8 @@ public:
       add_parse_entry( BASE::da_multiplier_effects )
         .set_value( p->buff.umbral_embrace->data().effectN( 1 ).percent() )
         .set_func( [ this ] { return umbral_embrace_check(); } )
-        .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
+        .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) )
+        .print_debug( this );
     }
 
     bool umbral_embrace_check()
@@ -7673,7 +7680,8 @@ struct moonfire_t final : public druid_spell_t
         add_parse_entry( da_multiplier_effects )
           .set_buff( p->buff.galactic_guardian )
           .set_value( eff.percent() )
-          .set_eff( &eff );
+          .set_eff( &eff )
+          .print_debug( this );
       }
 
       if ( p->talent.the_light_of_elune.ok() )
@@ -8261,7 +8269,8 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
       add_parse_entry( da_multiplier_effects )
         .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
-        .set_eff( &eff );
+        .set_eff( &eff )
+        .print_debug( this );
     }
   }
 
@@ -8353,7 +8362,8 @@ struct starsurge_offspec_t final : public druid_spell_t
       add_parse_entry( da_multiplier_effects )
         .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
-        .set_eff( &eff );
+        .set_eff( &eff )
+        .print_debug( this );
     }
   }
 };
@@ -8780,7 +8790,8 @@ struct wrath_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
       add_parse_entry( da_multiplier_effects )
         .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
-        .set_eff( &eff );
+        .set_eff( &eff )
+        .print_debug( this );
     }
 
     touch_pct = p->talent.touch_the_cosmos->effectN( 1 ).percent();

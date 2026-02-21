@@ -105,6 +105,51 @@ player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, par
   return *this;
 }
 
+player_effect_t& player_effect_t::print_debug( sim_t* sim, std::string prefix )
+{
+  std::string val_str;
+
+  if ( buff && type & USE_CURRENT )
+    val_str = "current value";
+  else if ( mastery )
+    val_str = fmt::format( "{:.5f}*mastery", value * 100 );
+  else
+    val_str = fmt::format( "{}", value );
+
+  if ( buff && type & USE_DEFAULT )
+    val_str = val_str + " (default value)";
+  else if ( value_func )
+    val_str = val_str + " (value function)";
+
+  std::string mod_str;
+
+  if ( buff && use_stacks && idx )
+    mod_str = "with callback per stack of";
+  else if ( buff && use_stacks )
+    mod_str = "per stack of";
+  else if ( buff && idx )
+    mod_str = "with callback from";
+  else if ( func )
+    mod_str = "with condition from";
+  else
+    mod_str = "from";
+
+  sim->print_debug( "{} manually modified by {} {} {} ({}#{})", prefix, val_str, mod_str, eff->spell()->name_cstr(),
+                    eff->spell()->id(), eff->index() + 1 );
+
+  return *this;
+}
+
+player_effect_t& player_effect_t::print_debug( action_t* action )
+{
+  return print_debug( action->sim, fmt::format( "action-effects: {}", *action ) );
+}
+
+player_effect_t& player_effect_t::print_debug( player_t* player )
+{
+  return print_debug( player->sim, fmt::format( "player-effects: {}", *player ) );
+}
+
 std::string player_effect_t::value_type_name( uint16_t t ) const
 {
   if ( t & VALUE_OVERRIDE )
@@ -1322,11 +1367,6 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
     sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
                       data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
   }
-  else if ( mastery && !data.func )
-  {
-    sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
-                      s_data->id(), i );
-  }
   else if ( data.func )
   {
     sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", *this, tok1, tok2,
@@ -1699,11 +1739,6 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
 
     _action->sim->print_debug( "action-effects: {} {} modified by {} {} buff {} ({}#{})", *_action, tok1, tok2,
                                stack_str, data.buff->name(), data.buff->data().id(), i );
-  }
-  else if ( mastery && !data.func )
-  {
-    _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
-                               s_data->name_cstr(), s_data->id(), i );
   }
   else if ( data.func )
   {
