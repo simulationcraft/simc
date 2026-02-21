@@ -65,6 +65,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
   bool may_combo_strike;
   bool cast_during_sck;
   bool track_cd_waste;
+  std::vector<player_effect_t> persistent_multiplier_effects;
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
@@ -108,6 +109,10 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void trigger_mystic_touch( action_state_t *state );
+
+  double composite_persistent_multiplier( const action_state_t *state ) const override;
+  size_t total_effects_count() const override;
+  void print_parsed_custom_type( report::sc_html_stream &os ) const override;
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>

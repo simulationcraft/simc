@@ -1888,7 +1888,6 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os ) cons
     };
 
     using VEC = parse_action_base_t;
-    print_parsed_type( os, &VEC::persistent_multiplier_effects, "Persistent Multiplier" );
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
@@ -1917,8 +1916,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os ) cons
 
 size_t parse_action_base_t::total_effects_count() const
 {
-  return persistent_multiplier_effects.size() +
-         ta_multiplier_effects.size() +
+  return ta_multiplier_effects.size() +
          da_multiplier_effects.size() +
          execute_time_effects.size() +
          flat_execute_time_effects.size() +

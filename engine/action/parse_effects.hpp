@@ -801,7 +801,6 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
 struct parse_action_base_t : public parse_effects_t
 {
-  std::vector<player_effect_t> persistent_multiplier_effects;
   std::vector<player_effect_t> ta_multiplier_effects;
   std::vector<player_effect_t> da_multiplier_effects;
   std::vector<player_effect_t> execute_time_effects;
@@ -972,7 +971,6 @@ public:
     // the final derived constructor.
     if ( !BASE::does_direct_damage() && !BASE::does_periodic_damage() )
     {
-      remove_damage_entries( persistent_multiplier_effects, "persistent_multiplier_effects" );
       remove_damage_entries( ta_multiplier_effects, "tick damage" );
       remove_damage_entries( da_multiplier_effects, "direct damage" );
       remove_damage_entries( crit_bonus_effects, "crit bonus multiplier" );
@@ -1045,16 +1043,6 @@ public:
       da *= 1.0 + get_effect_value( i, true );
 
     return da;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    auto p = BASE::composite_persistent_multiplier( s );
-
-    for ( const auto& i : persistent_multiplier_effects )
-      p *= 1.0 + get_effect_value( i, true );
-
-    return p;
   }
 
   double composite_crit_chance() const override

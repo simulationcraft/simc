@@ -296,6 +296,10 @@ void monk_action_t<Base>::init_finished()
       base_t::base_multiplier *= 0.98;  // This value is not included in spelldata but is included in the tooltip label
     }
   }
+
+  if ( !base_t::does_direct_damage() && !base_t::does_periodic_damage() )
+    base_t::remove_damage_entries( persistent_multiplier_effects, "persistent_multiplier_effects" );
+
   base_t::init_finished();
 }
 
@@ -444,6 +448,30 @@ void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
 
   if ( s->target->debuffs.mystic_touch && p()->baseline.monk.mystic_touch->ok() )
     s->target->debuffs.mystic_touch->trigger();
+}
+
+template <class Base>
+double monk_action_t<Base>::composite_persistent_multiplier( const action_state_t *state ) const
+{
+  double cpm = base_t::composite_persistent_multiplier( state );
+
+  for ( const auto &i : persistent_multiplier_effects )
+    cpm *= 1.0 + base_t::get_effect_value( i, true );
+
+  return cpm;
+}
+
+template <class Base>
+size_t monk_action_t<Base>::total_effects_count() const
+{
+  return base_t::total_effects_count() + persistent_multiplier_effects.size();
+}
+
+template <class Base>
+void monk_action_t<Base>::print_parsed_custom_type( report::sc_html_stream &os ) const
+{
+  using this_t = monk_action_t<Base>;
+  base_t::template print_parsed_type<this_t>( os, &this_t::persistent_multiplier_effects, "Snapshots" );
 }
 
 monk_spell_t::monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
@@ -1385,14 +1413,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       ww_mastery          = true;
       ap_type             = attack_power_type::WEAPON_BOTH;
 
-      if ( const auto &effect = player->talent.brewmaster.counterstrike->effectN( 1 ); effect.ok() )
+      if ( const auto &effect = player->talent.brewmaster.counterstrike->effectN( 1 ).trigger()->effectN( 1 );
+           effect.ok() )
         add_parse_entry( persistent_multiplier_effects )
             .set_buff( player->buff.counterstrike )
             .set_value( effect.percent() )
             .set_eff( &effect )
-            .add_parse_callback(
-                this, PARSE_CALLBACK_POST_EXECUTE,
-                [ this, b = player->buff.counterstrike.get() ]( action_state_t * ) { b->consume( this ); } );
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
+                                 [ & ]( action_state_t * ) { p()->buff.counterstrike->expire(); } );
 
       if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_physical->effectN( 1 );
            effect.ok() )
@@ -1400,10 +1428,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
             .set_buff( player->buff.balanced_stratagem_physical )
             .set_value( effect.percent() )
             .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-                                 [ this, b = player->buff.balanced_stratagem_physical.get() ]( action_state_t * ) {
-                                   b->consume( this );
-                                 } );
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE, [ & ]( action_state_t * ) {
+              p()->buff.balanced_stratagem_physical->consume( this );
+            } );
     }
 
     result_amount_type report_amount_type( const action_state_t * ) const override
