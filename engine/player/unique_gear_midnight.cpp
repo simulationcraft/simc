@@ -2079,19 +2079,52 @@ void nullsight( special_effect_t& e )
 
 // Locus-Walker's Ribbon
 // 1259314 Driver
-// 1259317 Spell Effect
+// 1259317 stat buff
+// 1268058 stack buff
 void locuswalkers_ribbon( special_effect_t& e )
 {
-  auto buff = e.player->find_spell( 1259317 );
-  double buff_val = e.driver()->effectN( 1 ).average( e );
-  auto temp_name = buff->effectN( 2 ).trigger();
+  struct riftwalkers_temptation_t : public stat_buff_t
+  {
+    buff_t* stack_buff;
+    double stack_percent;
+
+    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e, buff_t* stacking_buff)
+      : stat_buff_t( e.player, n, e.player->find_spell( 1259317 )), stack_buff( stacking_buff ), stack_percent( 0 )
+    {
+      set_default_value( e.driver()->effectN( 1 ).average( e ) );
+      stack_percent = e.driver()->effectN( 2 ).average( e );
+    }   
+
+    void bump(int s, double v) override
+    {
+      for( auto& s : stats )
+      {
+        s.amount =  default_value * (stack_percent * stack_buff->check() );
+      }
+      stat_buff_t::bump( s, v );
+    }
+  };
+
+  struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    buff_t* stack_buff;
+    
+    locuswalkers_ribbon_t(const special_effect_t& e ) : dbc_proc_callback_t( e.player, e)
+    {
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.player->find_spell( 1268058 ));
+      buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e, stack_buff);
+    }
+
+    void execute( action_t*, action_state_t* )
+    {
+      buff->trigger();
+      stack_buff->trigger();
+    }
+
+  };
   
-
-  auto stacking_buff = create_buff<buff_t>( e.player, temp_name )->set_max_stack( temp_name->max_stacks() );
-
-  e.custom_buff = create_buff<stat_buff_t>( e.player, buff )->set_stat_from_effect_type( A_MOD_STAT, buff_val * ( stacking_buff->stack() * e.driver()->effectN( 2 ).average( e ) ) );
-
-  new dbc_proc_callback_t( e.player, e );
+  new locuswalkers_ribbon_t( e );
 }
 
 }  // namespace trinkets
