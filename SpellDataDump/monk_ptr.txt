@@ -1622,9 +1622,8 @@ Effects          :
 #3 (id=1166995)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #4 (id=1244426)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | Target: Self (1)
-#5 (id=1244427)  : Apply Aura (6) | Resist Dispel (235)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+Hotfixed         : Base Value (-40 -> -20)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
 Tooltip          : Taking $w1 damage every $t1 sec.
 Variables        : $dmgMult=$?s113656[${12}][${1.0}]
@@ -20433,8 +20432,9 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Haste 
 Effects          :
 #1 (id=1280545)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
-#2 (id=1280546)  : Apply Aura (6) | Resist Dispel (235)
+#2 (id=1280546)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Sub Type (235 -> 4)
 #3 (id=1280568)  : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
