@@ -119,9 +119,6 @@ namespace warlock
     // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
     if ( bugs )
       parse_passive_effects( hero.mark_of_perotharn, true );
-
-    if ( matching_gear )
-      parse_passive_effects( warlock_base.nethermancy );
   }
 
   void warlock_t::init_spells_affliction()
