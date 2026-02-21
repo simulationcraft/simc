@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66044 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3280,7 +3280,6 @@ Description      : $@spelldesc184915
 Tooltip          : Damage taken from the Priest's Mind spells increased by ${$w1}%.
 
 Name             : Shadow Mend (id=186263) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -3302,7 +3301,6 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not S
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 14.25 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (19 -> 14.25)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
@@ -16115,7 +16113,6 @@ $@spellicon186263 $@spellname186263:
 $@spelldesc186263
 
 Name             : Shadow Mend (id=1252217) [Spell Family (6)] 
-Hotfixed         : Max stacks (0 -> 2), Internal Cooldown (0 -> 300)
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -16132,7 +16129,6 @@ Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Pr
 Effects          :
 #1 (id=1257298)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Shadow Mend overrides Flash Heal | Attributes: Suppress Points Stacking (6)
                    Base Value: 186263 | Scaled Value: 186263 | Misc Value: 2061 | Trigger Spell: 186263 | Target: Self (1)
-Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1252215
 Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
