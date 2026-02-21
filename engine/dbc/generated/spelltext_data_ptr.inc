@@ -27125,7 +27125,7 @@ static constexpr std::array<spelltext_data_t, 28628> __ptr_spelltext_data { {
   { 1255200, 0, "Absorbs $1266821s2 damage.", 0 },
   { 1255226, "$@spelldesc1253110", "$?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] increased by $w1.", 0 },
   { 1255277, "Your spells and abilities have a chance to awaken the unbound essence of Aln, increasing your $pri by ${$1255460s1*$1255460u}. This power, drawn from half-formed dreams and mists, fades with each ability used or after $1255460d.", 0, 0 },
-  { 1255278, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", 0, 0 },
+  { 1255278, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", 0, 0 },
   { 1255357, 0, "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 1255367, 0, "Absorbing $w1 damage.", 0 },
   { 1255460, 0, "$pri increased by $w1.", 0 },
@@ -28631,7 +28631,8 @@ static constexpr std::array<spelltext_data_t, 28628> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66017
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  { 1255278,  0, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d." },
 } };
 
 // Spell description variables, wow build 12.0.1.66017
