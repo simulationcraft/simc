@@ -88,8 +88,9 @@ void protection( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "use_items" );
-  default_->add_action( "potion,if=avenging_wrath.up" );
-  default_->add_action( "avenging_wrath,if=cooldown.divine_toll.remains<=10", "ctuibs+=/fireblood,if=buff.avenging_wrath.u" );
+  default_->add_action( "potion,if=buff.avenging_wrath.up" );
+  default_->add_action( "avenging_wrath,if=cooldown.divine_toll.remains<=10" );
+  default_->add_action( "fireblood,if=buff.avenging_wrath.up" );
   default_->add_action( "divine_toll,if=buff.avenging_wrath.up|(!talent.righteous_protector.enabled&cooldown.avenging_wrath.remains<30)" );
   default_->add_action( "hammer_of_light,if=!buff.undisputed_ruling.up|buff.hammer_of_light_ready.remains<5" );
   default_->add_action( "shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up" );
