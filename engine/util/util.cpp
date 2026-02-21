@@ -3430,6 +3430,26 @@ bool util::is_number( util::string_view s )
   return true;
 }
 
+// Effect Index from property type ==========================================
+int util::effect_idx_from_property_type( property_type_t type )
+{
+  switch ( type )
+  {
+    case P_EFFECT_1:
+      return 1;
+    case P_EFFECT_2:
+      return 2;
+    case P_EFFECT_3:
+      return 3;
+    case P_EFFECT_4:
+      return 4;
+    case P_EFFECT_5:
+      return 5;
+    default:
+      return -1;
+  }
+}
+
 // fuzzy_stats ==============================================================
 
 void util::fuzzy_stats( std::string&      encoding,
