@@ -2089,7 +2089,7 @@ void locus_walkers_ribbon( special_effect_t& e )
 
   auto stacking_buff = create_buff<buff_t>( e.player, temp_name )->set_max_stack( temp_name->max_stacks() );
 
-  e.custom_buff = create_buff<stat_buff_t>( e.player, e.driver() )->set_stat_from_effect_type( A_MOD_STAT, buff_val * ( stacking_buff->stack() * e.driver()->effectN( 2 ).average( e ) ) );
+  e.custom_buff = create_buff<stat_buff_t>( e.player, buff )->set_stat_from_effect_type( A_MOD_STAT, buff_val * ( stacking_buff->stack() * e.driver()->effectN( 2 ).average( e ) ) );
 
   new dbc_proc_callback_t( e.player, e );
 }
