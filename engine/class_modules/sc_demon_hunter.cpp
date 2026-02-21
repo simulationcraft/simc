@@ -5867,7 +5867,10 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
       action_state_t* undying_embers_state = get_state();
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
 
-      make_event( sim, [ undying_embers_state, this ] { trigger_dot( undying_embers_state ); } );
+      make_event( sim, [ undying_embers_state, this ]() mutable {
+        trigger_dot( undying_embers_state );
+        action_state_t::release( undying_embers_state );
+      } );
     }
   }
 };
