@@ -5827,20 +5827,17 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 {
   double m = 1.0;
 
-  if ( t->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
+  for ( const auto& entry : buffs.creature_type_buffs )
   {
-    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
-    // stat buffs.
-    m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
-  }
+    // check buff if buff exists, otherwise assume passive
+    if ( auto buff = std::get<0>( entry ); buff && !buff->check() )
+      continue;
 
-  if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-    m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-
-  if ( ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL ) &&
-       racials.subterranean_predator->ok() )
-  {
-    m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
+    // check against creature type mask
+    if ( std::get<1>( entry ) & ( 1 << ( t->race - 1 ) ) )
+    {
+      m *= 1.0 + std::get<2>( entry );
+    }
   }
 
   auto td = find_target_data( t );
@@ -15023,6 +15020,34 @@ void player_t::register_init_finished_callback( std::function<void( player_t* )>
   callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
+void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_data )
+{
+  if ( !s_data->ok() )
+    s_data = &buff->data();
+
+  if ( !s_data->ok() )
+    return;
+
+  auto effect = spell_data_t::find_spelleffect( *s_data, E_APPLY_AURA, A_MOD_DAMAGE_DONE_VERSUS );
+  if ( !effect.ok() )
+    return;
+
+  std::vector<std::string> _strs;
+  auto _mask = effect.misc_value1();
+
+  for ( auto i = 1; _mask; _mask >>= 1, i++ )
+    if ( _mask & 1 )
+      _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+  assert( _strs.size() );
+
+  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
+                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+                    fmt::join( _strs, ", " ) );
+
+  buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -16449,6 +16474,10 @@ void player_t::parse_all_class_passives()
         parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
+
+  // may as well handle this here
+  if ( racials.subterranean_predator->ok() )
+    register_creature_type_buff( nullptr, racials.subterranean_predator );
 }
 
 void player_t::parse_all_passive_talents()

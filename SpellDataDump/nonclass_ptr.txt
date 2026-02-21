@@ -238177,9 +238177,11 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1232650)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 53118.46 (coefficient=415.6261) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 64806.84 (coefficient=507.082) | Target: Self (1)
+Hotfixed         : Coefficient (415.626068 -> 507.08197)
 #2 (id=1232651)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 1.321823e+07 (coefficient=70.49721) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.677096e+07 (coefficient=89.44514) | Resource: mana | Target: Self (1)
+Hotfixed         : Coefficient (70.497208 -> 89.445137)
 #3 (id=1232652)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s3} health and $s2 mana.
@@ -238222,7 +238224,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Can't Crit (93), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1232769)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 1.31355e+07 (coefficient=70.056) | Resource: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.9704e+07 (coefficient=105.088) | Resource: mana | Target: Self (1)
+Hotfixed         : Coefficient (70.056 -> 105.088013)
 Description      : Restores $s1 mana.
 
 Name             : Enlightened (id=1236652) 
@@ -238885,15 +238888,20 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1233480)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506298) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Target: Self (1)
+Hotfixed         : Coefficient (9.506298 -> 7.129723)
 #2 (id=1233912)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506299) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #3 (id=1233913)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506299) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #4 (id=1233914)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506299) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #5 (id=1233915)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1246.09 (coefficient=9.506299) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #6 (id=1234007)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -125.866 (coefficient=-0.960219) | Rating: Crit | Target: Self (1)
 #7 (id=1234008)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -239268,8 +239276,9 @@ Triggered By     : Knight-Commander's Palisade (1237608)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1234382)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1612.029 (coefficient=12.61334) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 255.6069 (coefficient=2) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Coefficient (12.613343 -> 2)
 Description      : $@spelldesc1237608
 Tooltip          : Absorbing $w1 damage.
 
@@ -239887,7 +239896,8 @@ Attributes       : Allow Item Spell In PvP (13), Not Shapeshifted (16), Cancels 
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=1237286)  : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds | Scaling Class: Restore Mana (-10)
-                   Base Value: 0 | Scaled Value: 2073433 (coefficient=11.05831) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2955600 (coefficient=15.7632) | Target: Self (1)
+Hotfixed         : Coefficient (11.058307 -> 15.763202)
 Description      : Elevate your focus to restore ${$M1*10} mana over $d, but you are defenseless until your focus is broken.
 Tooltip          : Regenerate $w1 mana every second.
 
@@ -246488,16 +246498,18 @@ Description      : stacking up to a maximum of $u times.
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Unstable Felheart Crystal (id=1254339) 
+Hotfixed         : Attributes
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
-Attributes       : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
+Attributes       : Can't Crit (93), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1260710)  : School Damage (2): shadowflame | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 48.0343 (coefficient=0.375845) | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4452.133 (coefficient=34.83578) | Value Multiplier: 1 | Target: Self (1)
+Hotfixed         : Coefficient (0.375845 -> 34.835777)
 #2 (id=1260713)  : Trigger Spell (64): Unstable Felheart Crystal
                    Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 1255200 | Target: Targeted Ally (21)
 Description      : Unleash the fel energy stored within the crystal, sacrificing $s1 of your health to infuse a target ally for $1255200d, absorbing $1266821s2 damage.
@@ -246773,6 +246785,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to awaken the unbound essence of Aln, increasing your $pri by ${$1255460s1*$1255460u}. This power, drawn from half-formed dreams and mists, fades with each ability used or after $1255460d.
 
 Name             : Tangle of Vibrant Vines (id=1255278) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -246783,10 +246796,12 @@ Effects          :
 #1 (id=1262075)  : Apply Aura (6) | Proc Trigger Spell (42): Tangle of Vibrant Vines
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 454.5455 (coefficient=3.556597) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 562.3208 (coefficient=4.399887) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (3.556597 -> 4.399887)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2272.727 (coefficient=17.78299) | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
+                   Base Value: 0 | Scaled Value: 22950.44 (coefficient=179.576) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (17.782986 -> 179.576019)
+Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
 
 Name             : Tangle of Vibrant Vines (id=1255296) 
 School           : Nature
@@ -246820,11 +246835,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 
 Name             : Tangle of Vibrant Vines (id=1255357) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1262159)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -252269,7 +252285,8 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 320.2282 (coefficient=2.50563) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 44524.21 (coefficient=348.3803) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2.50563 -> 348.38031)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -253578,4 +253595,14 @@ Effects          :
 #1 (id=1307381)  : Modify Keystone (258)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 165
 Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
+
+Name             : Velen's Lament (id=1290000) [Passive, Hidden] 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1308643)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 

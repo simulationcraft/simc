@@ -12081,7 +12081,7 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, auto ) {
         auto tmp = dynamic_cast<druid_action_data_t*>( a );
         assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
 
@@ -12094,7 +12094,7 @@ void druid_t::init_special_effects()
     auto _mul = talent.ascendant_eclipses_2->effectN( 1 ).percent();
 
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _damage, _mul ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ _damage, _mul ]( auto, auto, const action_state_t* s ) {
         if ( s->result_amount )
           residual_action::trigger( _damage, s->target, s->result_amount * _mul );
       } );
@@ -12145,7 +12145,7 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, auto, const action_state_t* s ) {
         return s->n_targets == 1;
       } );
 
@@ -12165,7 +12165,7 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, const action_state_t* s ) {
         if ( a->id <= 0 || s->result_total <= 0 || a->harmful )
           return false;
 
@@ -12256,7 +12256,7 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, auto ) {
         return dbc::has_common_school( a->get_school(), SCHOOL_ASTRAL );
       } );
 
@@ -12451,7 +12451,7 @@ void druid_t::init_special_effects()
 
     // TODO: whitelist aoe spells as necessary if they can trigger
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, const action_state_t* s ) {
         return ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 ) );
       } );
 

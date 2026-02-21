@@ -2234,6 +2234,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       tokens.emplace_back( fmt::format( "Delay: {}_ms", e->misc_value1() ) );
     }
+    else if ( e->subtype() == A_MOD_DAMAGE_DONE_VERSUS )
+    {
+      std::vector<std::string> _strs;
+      auto _mask = e->misc_value1();
+      for ( auto i = 1; _mask; _mask >>= 1, i++ )
+        if ( _mask & 1 )
+          _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+      tokens.emplace_back( fmt::format( "Race: {}", fmt::join( _strs, ", " ) ) );
+    }
     else
     {
       tokens.emplace_back( fmt::format( "Misc Value: {}", e->misc_value1() ) );

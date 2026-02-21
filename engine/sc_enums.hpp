@@ -197,15 +197,22 @@ enum class movement_direction_type : int
 enum race_e
 {
   RACE_NONE = 0,
-  // Target Races
+  // Creature Types
   RACE_BEAST,
   RACE_DRAGONKIN,
-  RACE_GIANT,
-  RACE_HUMANOID,
   RACE_DEMON,
   RACE_ELEMENTAL,
-  RACE_ABERRATION,
+  RACE_GIANT,
+  RACE_UNDEAD,          // also player race, decouple if necessary
+  RACE_HUMANOID,
+  RACE_CRITTER,         // trivial
   RACE_MECHANICAL,
+  RACE_UNKNOWN_10,
+  RACE_TOTEM,
+  RACE_NON_COMBAT_PET,  // trivial
+  RACE_GAS_CLOUD,       // trivial
+  RACE_WILD_PET,        // trivial
+  RACE_ABERRATION,
   // Player Races
   RACE_NIGHT_ELF,
   RACE_HUMAN,
@@ -215,7 +222,6 @@ enum race_e
   RACE_WORGEN,
   RACE_ORC,
   RACE_TROLL,
-  RACE_UNDEAD,
   RACE_BLOOD_ELF,
   RACE_TAUREN,
   RACE_GOBLIN,

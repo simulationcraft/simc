@@ -838,7 +838,7 @@
     "fields": [
       { "data_type": "H", "field": "required_arena_rating" },
       { "data_type": "b", "field": "arena_bracket" },
-      { "data_type": "B", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "B", "field": "id_min_faction" },
       { "data_type": "i", "field": "min_reputation" },
       { "data_type": "B", "field": "required_achievement" },
