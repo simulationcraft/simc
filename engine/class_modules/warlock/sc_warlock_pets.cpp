@@ -1644,7 +1644,7 @@ void lady_sacrolash_t::create_actions()
 /// Grand Warlock Alythess Begin
 struct blaze_t : public warlock_pet_spell_t
 {
-  blaze_t( dominion_of_argus_pet_t* p ) 
+  blaze_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Blaze", p, p->find_spell( 1282534 ) )
   {
     aoe                 = -1;
@@ -1655,7 +1655,7 @@ struct blaze_t : public warlock_pet_spell_t
 
 struct blaze_missile_t : public dominion_of_argus_spell_base_t
 {
-  blaze_missile_t( dominion_of_argus_pet_t* p ) 
+  blaze_missile_t( dominion_of_argus_pet_t* p )
     : dominion_of_argus_spell_base_t( "Blaze Missile", p, p->find_spell( 1282533 ) )
   {
     impact_action = new blaze_t( p );
@@ -1682,7 +1682,7 @@ void grand_warlock_alythess_t::create_actions()
 /// Antoran Inquisitor Begin
 struct mind_sear_t : public warlock_pet_spell_t
 {
-  mind_sear_t( dominion_of_argus_pet_t* p ) 
+  mind_sear_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Mind Sear", p, p->find_spell( 1280460 ) )
   {
     background = true;
@@ -1720,7 +1720,7 @@ void antoran_inquisitor_t::create_actions()
 /// Antoran Jailer Begin
 struct soul_barrage_t : public warlock_pet_spell_t
 {
-  soul_barrage_t( dominion_of_argus_pet_t* p ) 
+  soul_barrage_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1277099 ) )
   {
     background = true;
@@ -2195,6 +2195,23 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     warlock_pet_spell_t::execute();
   }
+};
+
+void darkglare_t::arise()
+{
+  warlock_pet_t::arise();
+
+  o()->buffs.darkglare_presence->trigger();
+};
+
+void darkglare_t::demise()
+{
+  if ( !current.sleeping )
+  {
+    o()->buffs.darkglare_presence->expire();
+  }
+
+  warlock_pet_t::demise();
 };
 
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )

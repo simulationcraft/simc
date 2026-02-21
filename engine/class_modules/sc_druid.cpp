@@ -78,7 +78,6 @@ enum moon_stage_e
 enum snapshot_e : uint8_t
 {
   TIGERS_FURY        = 0x01,
-  POUNCING_STRIKES   = 0x02,
 };
 
 enum flag_e : uint32_t
@@ -235,8 +234,8 @@ struct benefit_tracker_t
     os << "</table></div>\n";
   }
 
-  static constexpr std::array<std::string_view, 2> snapshot_list{
-    { "Tiger's Fury", "Pouncing Strikes" }
+  static constexpr std::array<std::string_view, 1> snapshot_list{
+    { "Tiger's Fury" }
   };
 
   template <tracker_e T, typename U = void>
@@ -2791,41 +2790,39 @@ struct cat_attack_data_t
   friend void sc_format_to( const cat_attack_data_t& data, fmt::format_context::iterator out )
   {
     std::vector<std::string> str;
+
     if ( data.combo_points )
       str.push_back( fmt::format( "combo_points={}", data.combo_points ) );
+
     if ( data.energy_mul )
       str.push_back( fmt::format( "energy_mul={}", data.energy_mul ) );
+
     if ( data.snapshots )
     {
       std::vector<std::string_view> snap_str;
+
       if ( data.snapshots & snapshot_e::TIGERS_FURY )
         snap_str.push_back( "tigers_fury" );
-      if ( data.snapshots & snapshot_e::POUNCING_STRIKES )
-        snap_str.push_back( "pouncing_strikes" );
+
       str.push_back( fmt::format( "snapshots={}", fmt::join( snap_str, "|" ) ) );
     }
+
     fmt::format_to( out, "{}{}", str.empty() ? "" : " ", fmt::join( str, " " ) );
   }
 };
 
 struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
-  struct
-  {
-    bool tigers_fury;
-    bool pouncing_strikes;
-  } snapshots;
-
-  benefit_tracker_t* snapshot_tracker = nullptr;
-
   std::vector<player_effect_t> persistent_periodic_effects;
   std::vector<player_effect_t> persistent_direct_effects;
+  benefit_tracker_t* snapshot_tracker = nullptr;
   gain_t* clearcasting_gain = nullptr;
   gain_t* energy_refund_gain;
   double bleed_mul = 0.0;
+  bool snapshot_tigers_fury = false;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), flag_e f = flag_e::NONE )
-    : base_t( n, p, s, f ), snapshots(), energy_refund_gain( p->get_gain( "Energy Refund" ) )
+    : base_t( n, p, s, f ), energy_refund_gain( p->get_gain( "Energy Refund" ) )
   {
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
     {
@@ -2837,15 +2834,15 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       {
         clearcasting_gain = p->get_gain( "Clearcasting" );
 
-        parse_effects(
-          p->buff.clearcasting_cat, CONSUME_BUFF, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( action_state_t* ) {
-            clearcasting_gain->add( RESOURCE_ENERGY, base_cost() * ( 1.0 + p->buff.incarnation_cat->check_value() ) );
-          } );
+        parse_effects( p->buff.clearcasting_cat, CONSUME_BUFF, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( auto ) {
+          clearcasting_gain->add( RESOURCE_ENERGY, base_cost() * ( 1.0 + p->buff.incarnation_cat->check_value() ) );
+        } );
       }
 
-      snapshots.tigers_fury = parse_persistent_effects( p->buff.tigers_fury,
-        PARSE_CALLBACK_POST_SNAPSHOT,
-        [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::TIGERS_FURY; } );
+      snapshot_tigers_fury =
+        parse_persistent_effects( p->buff.tigers_fury, PARSE_CALLBACK_POST_SNAPSHOT, [ this ]( action_state_t* s ) {
+          cast_state( s )->snapshots |= snapshot_e::TIGERS_FURY;
+        } );
     }
   }
 
@@ -2927,7 +2924,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::init_finished();
 
-    if ( snapshots.tigers_fury || snapshots.pouncing_strikes )
+    if ( snapshot_tigers_fury )
       snapshot_tracker = benefit_tracker_t::get_tracker<SNAPSHOT_TRACKER>( p(), this );
   }
 
@@ -2973,7 +2970,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   {
     // tiger's fury can have different persistent multipliers for DMG_DIRECT vs DMG_OVER_TIME
     // because the state is released after impact, there is no downstream concerns
-    if ( snapshots.tigers_fury && s->result_type != result_amount_type::DMG_OVER_TIME )
+    if ( snapshot_tigers_fury && s->result_type != result_amount_type::DMG_OVER_TIME )
     {
       s->result_type = result_amount_type::DMG_OVER_TIME;
       s->persistent_multiplier = composite_persistent_multiplier( s );
@@ -4485,15 +4482,11 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
 
       if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
       {
-        snapshots.pouncing_strikes = p->talent.pouncing_strikes.ok();
-
         const auto& eff = r->data().effectN( 4 );
         add_parse_entry( persistent_multiplier_effects )
           .set_value( eff.percent() )
           .set_func( [ this ] { return stealthed(); } )
           .set_eff( &eff )
-          .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
           .print_debug( this );
       }
     }
@@ -4513,15 +4506,11 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
 
       if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
       {
-        snapshots.pouncing_strikes = p->talent.pouncing_strikes.ok();
-
         const auto& eff = data().effectN( 4 );
         add_parse_entry( persistent_multiplier_effects )
           .set_value( eff.percent() )
           .set_func( [ this ] { return stealthed(); } )
           .set_eff( &eff )
-          .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-            [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
           .print_debug( this );
       }
     }
@@ -4747,15 +4736,12 @@ struct shred_t final : public trigger_panthers_guile_t<
 
     if ( p->talent.pouncing_strikes.ok() )
     {
-      snapshots.pouncing_strikes = true;
       stealth_mul = data().effectN( 3 ).percent();
 
       add_parse_entry( da_multiplier_effects )
         .set_value( stealth_mul )
         .set_func( [ this ] { return stealthed(); } )
         .set_eff( &data().effectN( 3 ) )
-        .add_parse_callback( this, PARSE_CALLBACK_POST_SNAPSHOT,
-          [ this ]( action_state_t* s ) { cast_state( s )->snapshots |= snapshot_e::POUNCING_STRIKES; } )
         .print_debug( this );
 
       if ( const auto& eff = p->find_spell( 343232 )->effectN( 1 ); energize && !energize->modified_by( eff ) )

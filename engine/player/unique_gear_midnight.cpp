@@ -2157,6 +2157,31 @@ void torments_duality( special_effect_t& effect )
 namespace armors
 {
 
+// Eternal Voidsong Chain
+// 1271211 Driver
+// 1271226 DoT
+void eternal_voidsong_chain( special_effect_t& effect )
+{
+  effect.player->sim->error( PLACEHOLDER,
+                             "Eternal Voidsong Chain's implementation is speculative, and has not been tested. Sim "
+                             "results may be inaccurate." );
+
+  auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td_multiplier *= role_mult( effect );
+  dot->rolling_periodic = true;
+
+  effect.execute_action = dot;
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        return dbc::has_common_school( a->get_school(), SCHOOL_SHADOW );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace armors
 
 namespace sets
@@ -2366,11 +2391,12 @@ void register_special_effects()
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
+  register_special_effect( 1271211, armors::eternal_voidsong_chain );
+  // Sets
+  register_special_effect( 1281574, sets::voidlight_bindings );
   register_special_effect( 1244005, sets::murder_row_materials );
   register_special_effect( 1244021, sets::root_wardens_regalia );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
-  // Sets
-  register_special_effect( 1281574, sets::voidlight_bindings );
 }
 
 void register_target_data_initializers( sim_t& )
