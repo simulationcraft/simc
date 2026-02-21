@@ -2799,7 +2799,7 @@ struct chi_burst_t : monk_spell_t
 
       if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_magic->effectN( 1 );
            player->talent.master_of_harmony.balanced_stratagem->ok() )
-        add_parse_entry( da_multiplier_effects )
+        add_parse_entry( TBase::da_multiplier_effects )
             .set_buff( player->buff.balanced_stratagem_magic )
             .set_value( effect.percent() )
             .set_eff( &effect );
