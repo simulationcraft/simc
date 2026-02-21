@@ -2062,42 +2062,20 @@ void magisters_alchemist_stone( special_effect_t& e )
 // Vaelgor's Final Stare
 // 1259293 Driver
 // 1260459 Nullsight 
-void vaelgors_final_stare( special_effect_t& effect )
+void nullsight( special_effect_t& e )
 {
-  struct nullsight_t final : public stat_buff_t
-  {
-    double buff_val;
-    double decrease;
+  unsigned equip_id = 1259293;
+  auto equip = find_special_effect( e.player, equip_id );
+  assert( equip && "Vaelgor's final stance missing equip effect" );
+  auto buff_spell = e.player->find_spell(1260459);
+  int stacks = buff_spell->duration() / buff_spell->effectN( 3 ).period();
+  double buff_val = equip->driver()->effectN(1).average( e );
+  double buff_stacks = buff_val/stacks;
 
-    nullsight_t( player_t* p, std::string_view n, const special_effect_t& e )
-      : stat_buff_t( p, n, e.player->find_spell( 1260459 ) ), buff_val( 0 ), decrease( 0 )
-    {
-      auto n_ticks = data().duration() / data().effectN( 3 ).period();
-      buff_val     = e.driver()->effectN( 1 ).average( e );
-      decrease     = buff_val / n_ticks;
-      set_stat_from_effect( 1, buff_val );
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
-    }
-
-    void recalculate()
-    {
-      for ( auto& buff_stat : stats )
-      {
-        player->stat_loss( buff_stat.stat, decrease, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-    }
-
-    void expire_override( int s, timespan_t d ) override
-    {
-      buff_t::expire_override( s, d );
-      for ( auto& buff_stat : stats )
-      {
-        buff_stat.current_value = 0;
-      }
-    }
-  };
-
-  effect.custom_buff = create_buff<nullsight_t>( effect.player, "nullsight", effect );
+  e.custom_buff = create_buff<stat_buff_t>(e.player, buff_spell)
+                  ->set_stat_from_effect_type(A_MOD_RATING, buff_stacks)
+                  ->set_max_stack(stacks)
+                  ->set_reverse(true);
 }
 
 }  // namespace trinkets
@@ -2384,7 +2362,8 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
-  register_special_effect( 1259293, trinkets::vaelgors_final_stare );
+  register_special_effect( 1259293, DISABLED_EFFECT );
+  register_special_effect( 1260459, trinkets::nullsight );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
