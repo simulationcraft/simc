@@ -872,8 +872,8 @@ option_db_t::option_db_t()
     auto_path.push_back( path + "DungeonSlice" );
 
     // Add profiles for each season
-    // TWW1, TWW2, TWW3, ...
-    std::string expansion = "TWW";
+    // MID1, MID2, MID3, ...
+    std::string expansion = "MID";
     for ( unsigned i = 0; i < N_SEASON; ++i )
     {
       auto_path.push_back( fmt::format( "{}generators/{}{}", path, expansion, MIN_SEASON + i ) );

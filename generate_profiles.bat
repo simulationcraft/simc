@@ -11,8 +11,8 @@ cd "PreRaids"
 echo Running PR_Generate.simc in %cd%
 "%~dp0simc.exe" PR_Generate.simc
 cd ..\
-:: TWWX profiles generation
-for %%g in (TWW1, TWW2, TWW3) do (
+:: MIDX profiles generation
+for %%g in (MID1) do (
   cd %%g
   echo Running %%g_Generate.simc in %cd%
   "%~dp0simc.exe" %%g_Generate.simc

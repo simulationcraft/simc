@@ -1,11 +1,11 @@
-priest="PR_Priest_Shadow"
+priest="MID1_Priest_Shadow_Archon"
 source=default
 spec=shadow
 level=90
 race=pandaren
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgBLmxYZmBz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stEMbMAzMeAMmZmxsNmBzMYGMA
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzAMziZ0sZAIjxCAmBYMzMjZbMz2yAMDGA
 
 # Default consumables
 potion=lights_potential_2
@@ -30,7 +30,7 @@ actions.precombat+=/variable,name=me_force_prio,default=1,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
-actions.precombat+=/vampiric_touch
+actions.precombat+=/tentacle_slam
 
 # Executed every time the actor is available.
 actions=variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15
@@ -80,7 +80,7 @@ actions.main+=/void_volley
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
 # Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions.
-actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)
 actions.main+=/shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
@@ -110,28 +110,32 @@ actions.main+=/shadow_word_pain,target_if=min:remains
 actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
-head=overseers_diadem,id=251232,ilevel=214,gem_id=240983,enchant_id=7961
-neck=pendant_of_malefic_fury,id=251142,ilevel=214,gem_id=240900
-shoulders=nysarras_mantle,id=251213,ilevel=214,enchant_id=8031
-back=bloodthorn_burnous,id=251190,ilevel=214
-chest=summoners_searing_shirt,id=251139,ilevel=214,enchant_id=7987
-wrists=nibbling_armbands,id=251127,ilevel=214,gem_id=240900
-hands=counterfeit_clutches,id=251129,ilevel=214
-waist=lightblossom_cinch,id=251185,ilevel=214,gem_id=240900
-legs=forest_dream_legguards,id=251160,ilevel=214,enchant_id=7935
-feet=tempestuous_sandals,id=251137,ilevel=214,enchant_id=7993
-finger1=occlusion_of_void,id=251217,ilevel=214,gem_id=240900,enchant_id=7997
-trinket1=darkmoon_deck_hunt,id=245829,ilevel=220
-trinket2=vessel_of_tortured_souls,id=250258,ilevel=214
-main_hand=corespark_multitool,id=251201,ilevel=214,enchant_id=8041
+head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240892
+shoulders=blind_oaths_seraphguards,id=250049,bonus_id=13574/13574/13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8793/13454,ilevel=285
+chest=blind_oaths_raiment,id=250054,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=voracious_wristwraps,id=249315,ilevel=289,gem_id=240908
+hands=vilehex_bonds,id=251172,ilevel=289
+waist=endless_march_waistwrap,id=249319,ilevel=289,gem_id=240900
+legs=blind_oaths_leggings,id=250050,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=lightbinder_treads,id=109796,ilevel=289,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240918/240900,enchant_id=7969
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8793/13453,ilevel=285,gem_id=240900,enchant_id=7997
+trinket1=shadow_of_the_empyrean_requiem,id=249810,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=8041
+off_hand=tome_of_alnscorned_regret,id=249922,ilevel=289
 
 # Gear Summary
-# gear_ilvl=214.43
-# gear_stamina=7007
-# gear_intellect=899
-# gear_crit_rating=245
-# gear_haste_rating=549
-# gear_mastery_rating=519
-# gear_versatility_rating=29
+# gear_ilvl=288.50
+# gear_stamina=17604
+# gear_intellect=1673
+# gear_crit_rating=295
+# gear_haste_rating=1451
+# gear_mastery_rating=772
+# gear_versatility_rating=12
 # gear_leech_rating=249
-# gear_armor=337
+# gear_armor=532
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

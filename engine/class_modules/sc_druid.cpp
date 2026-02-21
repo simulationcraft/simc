@@ -12336,6 +12336,7 @@ void druid_t::init_special_effects()
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.galactic_guardian->name_cstr();
     driver->spell_id = talent.galactic_guardian->id();
+    driver->proc_chance_ = talent.galactic_guardian->effectN( 1 ).percent();
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );

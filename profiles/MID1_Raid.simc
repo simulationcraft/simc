@@ -1,0 +1,74 @@
+ptr=1
+optimal_raid=1
+default_actions=1
+
+# MID1_Death_Knight_Blood.simc
+# MID1_Death_Knight_Blood_Deathbringer.simc
+# MID1_Death_Knight_Frost.simc
+# # MID1_Death_Knight_Frost_Rider.simc
+# MID1_Death_Knight_Frost_Deathbringer.simc
+# MID1_Death_Knight_Unholy.simc
+# MID1_Death_Knight_Unholy_San'layn.simc
+
+# MID1_Demon_Hunter_Havoc.simc
+# MID1_Demon_Hunter_Havoc_Fel-Scarred.simc
+# MID1_Demon_Hunter_Vengeance.simc
+# MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
+
+# MID1_Druid_Balance.simc
+# MID1_Druid_Feral.simc
+# MID1_Druid_Feral_Wildstalker.simc
+# MID1_Druid_Guardian.simc
+
+# MID1_Evoker_Devastation.simc
+# MID1_Evoker_Devastation_SC.simc
+# # MID1_Evoker_Devastation_FS.simc
+
+# MID1_Hunter_Beast_Mastery_Pack_Leader.simc
+# # MID1_Hunter_Beast_Mastery_Dark_Ranger.simc
+# MID1_Hunter_Beast_Mastery.simc
+# MID1_Hunter_Marksmanship.simc
+# MID1_Hunter_Survival.simc
+
+# MID1_Mage_Arcane.simc
+# MID1_Mage_Arcane_Spellslinger.simc
+# MID1_Mage_Fire.simc
+# MID1_Mage_Fire_Frostfire.simc
+# MID1_Mage_Frost.simc
+# MID1_Mage_Frost_Spellslinger.simc
+
+# MID1_Monk_Brewmaster.simc
+# MID1_Monk_Windwalker.simc
+# MID1_Monk_Windwalker_Shadopan.simc
+
+# MID1_Paladin_Protection.simc
+# MID1_Paladin_Protection_Templar.simc
+# MID1_Paladin_Retribution.simc
+# # MID1_Paladin_Retribution_Templar_BIS.simc
+# MID1_Paladin_Retribution_Herald.simc
+
+MID1_Priest_Shadow.simc
+MID1_Priest_Shadow_Archon.simc
+
+# MID1_Rogue_Assassination.simc
+# MID1_Rogue_Assassination_Deathstalker.simc
+# MID1_Rogue_Outlaw.simc
+# MID1_Rogue_Subtlety.simc
+
+# # MID1_Shaman_Elemental_Stormbringer.simc
+# MID1_Shaman_Elemental.simc
+# MID1_Shaman_Enhancement.simc
+# MID1_Shaman_Enhancement_DRE.simc
+# MID1_Shaman_Enhancement_Totemic.simc
+
+# # MID1_Warlock_Affliction_Soul_Harvester.simc
+# MID1_Warlock_Affliction.simc
+# # MID1_Warlock_Demonology_Soul_Harvester.simc
+# MID1_Warlock_Demonology.simc
+# MID1_Warlock_Destruction.simc
+# # MID1_Warlock_Destruction_Hellcaller.simc
+
+# MID1_Warrior_Arms.simc
+# MID1_Warrior_Fury.simc
+# MID1_Warrior_Protection.simc
+# MID1_Warrior_Protection_Colossus.simc
