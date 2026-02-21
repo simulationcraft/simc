@@ -567,6 +567,10 @@ void devouring_banding( special_effect_t& effect )
   damage->base_dd_max += proc_damage;
 
   effect.spell_id = effect.trigger()->id();
+  // TODO: Can this proc off of self damage?
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->is_enemy(); } );
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
     assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
@@ -1529,18 +1533,13 @@ void light_company_guidon( special_effect_t& effect )
 // 1262753 Buff
 void heart_of_ancient_hunger( special_effect_t& effect )
 {
-  struct heart_of_ancient_hunger_buff_t : public stat_buff_t
-  {
-    heart_of_ancient_hunger_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
-      : stat_buff_t( p, n, s )
-    {
-      set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) / data().duration().total_seconds() );
-      set_reverse( true );
-      set_max_stack( as<int>( data().duration().total_seconds() ) );
-    }
-  };
-
-  effect.custom_buff = create_buff<heart_of_ancient_hunger_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger(), effect );
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger() )
+          ->set_stat_from_effect_type( A_MOD_RATING,
+                                       effect.driver()->effectN( 1 ).average( effect ) /
+                                           effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() )
+          ->set_reverse( true )
+          ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2061,21 +2060,21 @@ void magisters_alchemist_stone( special_effect_t& e )
 
 // Vaelgor's Final Stare
 // 1259293 Driver
-// 1260459 Nullsight 
+// 1260459 Nullsight
 void nullsight( special_effect_t& e )
 {
   unsigned equip_id = 1259293;
-  auto equip = find_special_effect( e.player, equip_id );
+  auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Vaelgor's final stance missing equip effect" );
-  auto buff_spell = e.driver();
-  int stacks = buff_spell->duration() / buff_spell->effectN( 3 ).period();
-  double buff_val = equip->driver()->effectN(1).average( e );
-  double buff_stacks = buff_val/stacks;
+  auto buff_spell    = e.driver();
+  int stacks         = buff_spell->duration() / buff_spell->effectN( 3 ).period();
+  double buff_val    = equip->driver()->effectN( 1 ).average( e );
+  double buff_stacks = buff_val / stacks;
 
-  e.custom_buff = create_buff<stat_buff_t>(e.player, buff_spell)
-                  ->set_stat_from_effect_type(A_MOD_RATING, buff_stacks)
-                  ->set_max_stack(stacks)
-                  ->set_reverse(true);
+  e.custom_buff = create_buff<stat_buff_t>( e.player, buff_spell )
+                      ->set_stat_from_effect_type( A_MOD_RATING, buff_stacks )
+                      ->set_max_stack( stacks )
+                      ->set_reverse( true );
 }
 
 }  // namespace trinkets
@@ -2157,6 +2156,31 @@ void torments_duality( special_effect_t& effect )
 
 namespace armors
 {
+
+// Eternal Voidsong Chain
+// 1271211 Driver
+// 1271226 DoT
+void eternal_voidsong_chain( special_effect_t& effect )
+{
+  effect.player->sim->error( PLACEHOLDER,
+                             "Eternal Voidsong Chain's implementation is speculative, and has not been tested. Sim "
+                             "results may be inaccurate." );
+
+  auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td_multiplier *= role_mult( effect );
+  dot->rolling_periodic = true;
+
+  effect.execute_action = dot;
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        return dbc::has_common_school( a->get_school(), SCHOOL_SHADOW );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace armors
 
@@ -2367,11 +2391,12 @@ void register_special_effects()
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
+  register_special_effect( 1271211, armors::eternal_voidsong_chain );
+  // Sets
+  register_special_effect( 1281574, sets::voidlight_bindings );
   register_special_effect( 1244005, sets::murder_row_materials );
   register_special_effect( 1244021, sets::root_wardens_regalia );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
-  // Sets
-  register_special_effect( 1281574, sets::voidlight_bindings );
 }
 
 void register_target_data_initializers( sim_t& )

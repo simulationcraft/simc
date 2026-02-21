@@ -264,6 +264,7 @@ public:
     player_talent_t practiced_pestilence;
     player_talent_t summon_darkglare;
     const spell_data_t* eye_beam; // Darkglare pet ability
+    const spell_data_t* darkglare_presence_buff; // DoT +% dmg buff
     // Summoner's Embrace (shared with Destruction)
     // Grimoire of Sacrifice (shared with Destruction)
     player_talent_t cull_the_weak;
@@ -274,6 +275,10 @@ public:
     player_talent_t malefic_grasp;
     const spell_data_t* malefic_grasp_2;
     const spell_data_t* malefic_grasp_3;
+    const spell_data_t* agony_mg;
+    const spell_data_t* unstable_affliction_mg;
+    const spell_data_t* corruption_mg;
+    const spell_data_t* wither_mg;
     player_talent_t nether_plating;
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
     player_talent_t contagion;
@@ -295,9 +300,13 @@ public:
     player_talent_t patient_zero;
     player_talent_t sow_the_seeds;
 
+    // Affliction Apex
     player_talent_t shadow_of_nathreza_1;
     player_talent_t shadow_of_nathreza_2;
     player_talent_t shadow_of_nathreza_3;
+    const spell_data_t* shadow_of_nathreza_dot;
+    const spell_data_t* wrath_of_nathreza; // Trigger missile spell
+    const spell_data_t* wrath_of_nathreza_impact;
 
     // Demonology
     player_talent_t hand_of_guldan;
@@ -610,6 +619,8 @@ public:
     action_t* echo_of_sargeras_cb;
     action_t* echo_of_sargeras_sb;
     action_t* echo_of_sargeras_rof;
+    action_t* shadow_of_nathreza;
+    action_t* wrath_of_nathreza;
   } proc_actions;
 
   struct pet_summons_t
@@ -653,6 +664,7 @@ public:
 
     // Affliction Buffs
     propagate_const<buff_t*> nightfall;
+    propagate_const<buff_t*> darkglare_presence;
     propagate_const<buff_t*> shard_instability;
     propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> seed_of_corruption_is_out_dnt;
@@ -751,6 +763,7 @@ public:
     proc_t* ravenous_afflictions;
     proc_t* shard_instability;
     proc_t* fatal_echoes;
+    proc_t* wrath_of_nathreza;
 
     // Demonology
     proc_t* demonic_core_dogs;
@@ -785,10 +798,12 @@ public:
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
     proc_t* mark_of_perotharn;
+    proc_t* devil_fruit;
 
     // Soul Harvester
     proc_t* succulent_soul;
     proc_t* feast_of_souls;
+    proc_t* manifested_avarice;
   } procs;
 
   // TODO: Need to check that these RNG values ​​are still correct in Midnight
@@ -811,7 +826,7 @@ public:
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
 
     // Destruction
-    rng_setting_t avatar_of_destruction_dr = { 0.60, 0.60, "avatar_of_destruction_dr" }; // TODO:  Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t avatar_of_destruction_dr = { 0.30, 0.30, "avatar_of_destruction_dr" }; // TODO: PLACEHOLDER VALUE! Need to calculate ingame the type of RNG and the average RNG
     rng_setting_t echo_of_sargeras = { 0.25, 0.25, "echo_of_sargeras" }; // TOCHECK: Proc rate not in spell data
 
     // Diabolist
@@ -827,7 +842,7 @@ public:
     rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
     rng_setting_t feast_of_souls_aff = { 0.15, 0.15, "feast_of_souls" };
     rng_setting_t feast_of_souls_demo = { 0.0975, 0.0975, "feast_of_souls" };
-    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" }; // TODO: Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" }; // TODO: PLACEHOLDER VALUE! Need to calculate ingame the type of RNG and the average RNG
   } rng_settings;
 
   int initial_soul_shards;
@@ -836,6 +851,7 @@ public:
   bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
+  real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -990,9 +1006,9 @@ namespace helpers
     timespan_t expected_time();
   };
 
-  struct ua_stack_event_t : public player_event_t
+  struct ua_stack_drop_event_t : public player_event_t
   {
-    ua_stack_event_t( warlock_t*, dot_t*, timespan_t );
+    ua_stack_drop_event_t( warlock_t*, dot_t*, timespan_t );
     dot_t* dot;
     virtual const char* name() const override;
     virtual void execute() override;
@@ -1003,5 +1019,7 @@ namespace helpers
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
   void trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc );
+
+  void trigger_wrath_of_nathreza( warlock_t* p, player_t* target );
 }
 }  // namespace warlock

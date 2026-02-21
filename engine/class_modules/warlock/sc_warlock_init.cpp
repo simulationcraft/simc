@@ -75,13 +75,42 @@ namespace warlock
       deregister_passive_effect( hero.gloom_of_nathreza->effectN( 2 ) );
 
     register_passive_effect_mask( hero.mark_of_xavius,
-      affliction() ? effect_mask_t( false ).enable( 1 ) : effect_mask_t( true ).disable( 1 ) );
+      affliction() ? effect_mask_t( false ).enable( 1, 3 ) : effect_mask_t( true ).disable( 1 ) );
 
     // Shadowbolt Volley affected by Improved Shadow Bolt but not in the spell data whitelist
     register_passive_affect_list( talents.improved_shadow_bolt, affect_list_t( 2 ).add_spell( 453176 ) );
 
     // Soul Swipe affected by Wicked Reaping but not in the spell data whitelist
     register_passive_affect_list( hero.wicked_reaping, affect_list_t( 1 ).add_spell( 1269049 ) );
+
+    // NOTE: 2026-02-20 Agony (Malefic Grasp extra tick) is not affected by Shared Agony, Sudden Onset or Mark of Xavius
+    // because these do not have an effect that affects direct damage (they only affect periodic damage) (bug?)
+    // However, it seems to do almost twice dmg in compensation (bug?) (implemented in agony_mg_t)
+
+    // NOTE: 2026-02-20 Agony (Malefic Grasp extra tick) not included in Mastery: Potent Afflictions (#2) whitelist (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( warlock_base.potent_afflictions, affect_list_t( 2 ).add_spell( 1261166 ) );
+
+    // NOTE: 2026-02-20 Agony (Malefic Grasp extra tick) not included in Niskaran Methods (#1) whitelist (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( talents.niskaran_methods, affect_list_t( 1 ).add_spell( 1261166 ) );
+
+    // NOTE: 2026-02-20 Agony (MG extra tick) and Wither (MG extra tick) not included in Summoner's Embrace (#1, #3) whitelist (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( talents.summoners_embrace, affect_list_t( 1, 3 ).add_spell( 1261166, 1279686 ) );
+
+    // NOTE: 2026-02-20 Wither (Malefic Grasp extra tick) not included in Affliction Warlock (#9, #10) whitelist (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( warlock_base.affliction_warlock, affect_list_t( 9, 10 ).add_spell( 1279686 ) );
+
+    // NOTE: 2026-02-20 Wither (Malefic Grasp extra tick) not included in Xalan's Ferocity (#1, #2, #4) whitelist (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( hero.xalans_ferocity, affect_list_t( 1, 2, 4 ).add_spell( 1279686 ) );
+
+    // NOTE: 2026-02-20 Wither (Hatefury Rituals extra tick) not included in Xalan's Ferocity (#1) whitelist (bug?)
+    // Furthermore, Hatefury Rituals does not have an effect that affects direct damage (it only affects periodic damage) (bug?)
+    if ( affliction() && !bugs )
+      register_passive_affect_list( hero.hatefury_rituals, affect_list_t( 1 ).add_spell( 1279686 ) );
 
     parse_all_class_passives();
     parse_all_passive_talents();
@@ -137,6 +166,7 @@ namespace warlock
 
     talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
     talents.eye_beam = conditional_spell_lookup( talents.summon_darkglare.ok(), 205231 );
+    talents.darkglare_presence_buff = conditional_spell_lookup( talents.summon_darkglare.ok(), 1280663 );
 
     talents.cull_the_weak = find_talent_spell( talent_tree::SPECIALIZATION, "Cull the Weak" ); // Should be ID 1259886
 
@@ -149,6 +179,10 @@ namespace warlock
     talents.malefic_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Grasp" ); // Should be ID 1261149
     talents.malefic_grasp_2 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261153 );
     talents.malefic_grasp_3 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279659 );
+    talents.agony_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.agony->ok(), 1261166 );
+    talents.unstable_affliction_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.unstable_affliction.ok(), 1261176 );
+    talents.corruption_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261158 );
+    talents.wither_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279686 );
 
     talents.nether_plating = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Plating" ); // Should be ID 1280733
 
@@ -182,10 +216,13 @@ namespace warlock
 
     talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
-    // TODO: Not Yet Implemented
+    // Affliction Apex
     talents.shadow_of_nathreza_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 1 ); // Should be ID 1261984 (I)
     talents.shadow_of_nathreza_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 2 ); // Should be ID 1261990 (II)
     talents.shadow_of_nathreza_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 3 ); // Should be ID 1261992 (III)
+    talents.shadow_of_nathreza_dot = conditional_spell_lookup( talents.shadow_of_nathreza_1.ok(), 1262710 );
+    talents.wrath_of_nathreza = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1262028 );
+    talents.wrath_of_nathreza_impact = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1278047 );
 
     // Additional Tier Set spell data
     tier.wl_affliction_12_0_class_set_2pc = sets->set( WARLOCK_AFFLICTION, MID1, B2 ); // Should be ID 1264869
@@ -675,6 +712,8 @@ namespace warlock
   {
     buffs.nightfall = make_buff( this, "nightfall", talents.nocturnal_yield.ok() ? talents.nightfall_buff_2 : talents.nightfall_buff );
 
+    buffs.darkglare_presence = make_buff( this, "darkglare_presence", talents.darkglare_presence_buff );
+
     buffs.shard_instability = make_buff( this, "shard_instability", talents.shard_instability_buff )
                                   ->set_chance( talents.drain_soul.ok() ? talents.shard_instability->effectN( 1 ).percent() : talents.shard_instability->effectN( 2 ).percent() ); // TODO: Check RNG type
 
@@ -1019,6 +1058,7 @@ namespace warlock
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
     procs.shard_instability = get_proc( "shard_instability" );
     procs.fatal_echoes = get_proc( "fatal_echoes" );
+    procs.wrath_of_nathreza = get_proc( "wrath_of_nathreza" );
   }
 
   void warlock_t::init_procs_demonology()
@@ -1061,12 +1101,14 @@ namespace warlock
     procs.bleakheart_tactics = get_proc( "bleakheart_tactics" );
     procs.seeds_of_their_demise = get_proc( "seeds_of_their_demise" );
     procs.mark_of_perotharn = get_proc( "mark_of_perotharn" );
+    procs.devil_fruit = get_proc( "devil_fruit" );
   }
 
   void warlock_t::init_procs_soul_harvester()
   {
     procs.succulent_soul = get_proc( "succulent_soul" );
     procs.feast_of_souls = get_proc( "feast_of_souls" );
+    procs.manifested_avarice = get_proc( "manifested_avarice" );
   }
 
   void warlock_t::init_rng()
@@ -1088,6 +1130,7 @@ namespace warlock
   void warlock_t::init_rng_affliction()
   {
     ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
+    wrath_of_nathreza_rng = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
   }
 
   void warlock_t::init_rng_demonology()

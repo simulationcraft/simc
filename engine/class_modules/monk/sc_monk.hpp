@@ -23,6 +23,7 @@
 #include <queue>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "simulationcraft.hpp"
@@ -64,6 +65,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
   bool may_combo_strike;
   bool cast_during_sck;
   bool track_cd_waste;
+  std::vector<player_effect_t> persistent_multiplier_effects;
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
@@ -107,6 +109,10 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void trigger_mystic_touch( action_state_t *state );
+
+  double composite_persistent_multiplier( const action_state_t *state ) const override;
+  size_t total_effects_count() const override;
+  void print_parsed_custom_type( report::sc_html_stream &os ) const override;
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -289,8 +295,10 @@ private:
   struct accumulator_t : monk_buff_t<>
   {
     aspect_of_harmony_t *aspect_of_harmony;
+    sc_timeline_t pool_size_percent;  // pool as a fraction of current maximum hp
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
+    void adjust( double amount );
   };
 
   struct spender_t : monk_buff_t<>
@@ -332,6 +340,22 @@ public:
   void trigger_path_of_resurgence();
 
   bool heal_ticking();
+
+  const sc_timeline_t &pool_size_percent() const
+  {
+    return accumulator->pool_size_percent;
+  }
+};
+
+struct balanced_stratagem_t : monk_buff_t<>
+{
+  std::unordered_set<unsigned> allowlist;
+
+  balanced_stratagem_t( monk_t *player, std::string_view name, const spell_data_t *spell_data,
+                        std::unordered_set<unsigned> allowlist );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( const action_state_t * );
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
@@ -561,8 +585,8 @@ public:
 
     // Master of Harmony
     buffs::aspect_of_harmony_t aspect_of_harmony;
-    propagate_const<buff_t *> balanced_stratagem_physical;
-    propagate_const<buff_t *> balanced_stratagem_magic;
+    propagate_const<buffs::balanced_stratagem_t *> balanced_stratagem_physical;
+    propagate_const<buffs::balanced_stratagem_t *> balanced_stratagem_magic;
     propagate_const<buff_t *> harmonic_surge;
 
     // Shado-Pan
@@ -674,12 +698,6 @@ public:
 
   struct
   {
-    struct
-    {
-      const spell_data_t *rushing_jade_wind_buff;
-      const spell_data_t *rushing_jade_wind_tick;
-    } shared_spell;
-
     struct
     {
       // Row 1

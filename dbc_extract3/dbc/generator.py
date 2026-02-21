@@ -5235,8 +5235,8 @@ class PassiveClassSpellGenerator(DataGenerator):
         for info, skill, spell in data:
             fields = []
 
-            fields = [f'{info['id']:2d}']
-            fields += [f'{skill.id_spell:7d}']
+            fields = [f"{info['id']:2d}"]
+            fields += [f"{skill.id_spell:7d}"]
             fields += spell.field('name')
 
             self.output_record(fields)

@@ -17,7 +17,7 @@ actions.assisted_combat+=/zenith,if=buff.zenith.down
 actions.assisted_combat+=/flying_serpent_kick,if=talent.slicing_winds
 # Spell id 1249754 is a helper buff to avoid breaking Combo Strikes for Spinning Crane Kick.
 actions.assisted_combat+=/spinning_crane_kick,if=buff.dance_of_chiji.stack>=2&combo_strike,cooldown_allow_casting_success=1
-actions.assisted_combat+=/rushing_wind_kick,if=buff.rushing_wind_kick.up
+actions.assisted_combat+=/rising_sun_kick,if=buff.rushing_wind_kick.up
 # Spell id 1249756 is a helper buff to avoid breaking Combo Strikes for Tiger Palm.
 actions.assisted_combat+=/tiger_palm,if=chi<=4&energy>=101&buff.heart_of_the_jade_serpent.down&combo_strike
 # Spell id 1249764 is a helper buff to avoid breaking Combo Strikes for Crackling Jade Lightning.

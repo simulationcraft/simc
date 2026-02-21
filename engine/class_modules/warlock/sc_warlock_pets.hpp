@@ -612,6 +612,8 @@ namespace affliction
 struct darkglare_t : public warlock_pet_t
 {
   darkglare_t( warlock_t*, util::string_view = "darkglare" );
+  void arise() override;
+  void demise() override;
   action_t* create_action( util::string_view , util::string_view ) override;
 };
 }  // namespace affliction

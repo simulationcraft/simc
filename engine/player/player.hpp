@@ -486,6 +486,7 @@ struct player_t : public actor_t
   struct buffs_t
   {
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
+    std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
     buff_t* angelic_feather;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
@@ -522,8 +523,6 @@ struct player_t : public actor_t
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
 
-    buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
-
     // Darkmoon Faire versatility food
     buff_t* dmf_well_fed;
 
@@ -540,7 +539,6 @@ struct player_t : public actor_t
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
 
     // 8.2 misc
-    buff_t* damage_to_aberrations; // Benthic belt special effect
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
@@ -1583,6 +1581,9 @@ public:
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
   void register_movement_callback( std::function<void( bool )> fn );
   void register_init_finished_callback( std::function<void( player_t* )> fn );
+
+  // buffs that grant increased damage based on target creature type
+  void register_creature_type_buff( buff_t*, const spell_data_t* = spell_data_t::nil() );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

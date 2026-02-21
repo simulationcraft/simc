@@ -116,6 +116,10 @@ struct player_effect_t
   player_effect_t& set_note( std::string_view n )
   { note = n; return *this; }
 
+  player_effect_t& print_debug( sim_t*, std::string );
+  player_effect_t& print_debug( action_t* );
+  player_effect_t& print_debug( player_t* );
+
   bool operator==( const player_effect_t& other )
   {
     return simple == other.simple && buff == other.buff && value == other.value && use_stacks == other.use_stacks &&

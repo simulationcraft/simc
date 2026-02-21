@@ -5729,92 +5729,23 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     if ( ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER ) &&
          ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      switch ( eff.misc_value1() )
+      int idx = util::effect_idx_from_property_type( static_cast<property_type_t>( eff.misc_value1() ) );
+      if ( idx > 0 && is_rp_energize( idx ) )
       {
-        case P_EFFECT_1:
-          if ( is_rp_energize( 1 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_2:
-          if ( is_rp_energize( 2 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_3:
-          if ( is_rp_energize( 3 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_4:
-          if ( is_rp_energize( 4 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_5:
-          if ( is_rp_energize( 5 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        default:
-          break;
+        str = "runic power multiplier";
+        return &runic_power_multiplier_effects;
       }
     }
 
     else if ( ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER ) &&
               ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      flat = true;
-
-      switch ( eff.misc_value1() )
+      flat    = true;
+      int idx = util::effect_idx_from_property_type( static_cast<property_type_t>( eff.misc_value1() ) );
+      if ( idx > 0 && is_rp_energize( idx ) )
       {
-        case P_EFFECT_1:
-          if ( is_rp_energize( 1 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_2:
-          if ( is_rp_energize( 2 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_3:
-          if ( is_rp_energize( 3 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_4:
-          if ( is_rp_energize( 4 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_5:
-          if ( is_rp_energize( 5 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        default:
-          break;
+        str = "runic power mod flat";
+        return &runic_power_flat_effects;
       }
     }
 

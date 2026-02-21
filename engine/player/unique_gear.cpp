@@ -1517,34 +1517,38 @@ void item::spellbound_solium_band( special_effect_t& effect )
 
 void item::gronntooth_war_horn( special_effect_t& effect )
 {
-  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "demonbane", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff =
+    make_buff<stat_buff_t>( effect.player, "demonbane", effect.driver()->effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
-  effect.player -> buffs.demon_damage_buff = buff;
+  effect.player->register_creature_type_buff( buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
 
 void item::infallible_tracking_charm( special_effect_t& effect )
 {
-  effect.custom_buff = make_buff( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
-  effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
+  effect.custom_buff =
+    make_buff( effect.player, "cleansing_flame", effect.driver()->effectN( 1 ).trigger(), effect.item );
+  effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver()->effectN( 1 ).trigger() );
 
-  effect.execute_action -> background = true;
-  effect.execute_action -> item = effect.item;
-  effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
+  effect.execute_action->background = true;
+  effect.execute_action->item = effect.item;
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
+    effect.execute_action->data().effectN( 1 ).average( effect.item );
 
   effect.rppm_scale_ = RPPM_HASTE;
 
-  effect.player -> buffs.demon_damage_buff = effect.custom_buff;
+  effect.player->register_creature_type_buff( effect.custom_buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
 
 void item::orb_of_voidsight( special_effect_t& effect )
 {
-  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff =
+    make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver()->effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
-  effect.player -> buffs.demon_damage_buff = buff;
+  effect.player->register_creature_type_buff( buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
