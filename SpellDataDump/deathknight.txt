@@ -1940,9 +1940,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Explosive Shot (269850), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 12, 36, 73, 78, 86, 91
-#7 (id=1257982)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
+#7 (id=1257982)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
+Hotfixed         : Sub Type (219 -> 218)
 Description      : Increases the damage done by your pets by ${$s1}.1% and the damage of your shots and traps by ${$s5}.1%.
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -16543,10 +16544,12 @@ Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), 
 Family Flags     : 43, 73, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1163908)  : School Damage (2): shadow
+#1 (id=1163908)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.75 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#2 (id=1245144)  : Trigger Spell (64): Festering Scythe
+Hotfixed         : Attribute (0 -> 131072)
+#2 (id=1245144)  : Trigger Spell (64): Festering Scythe | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1241077 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : Attribute (0 -> 131072)
 Description      : Slashes through all enemies within $a1 yds in front of you, dealing $s1 Shadow damage and hastening all of your Plagues on targets hit to deal damage $1241077s1% faster for $1241077d.
 
 Name             : Hyperpyrexia (id=458169) [Spell Family (15)] 
