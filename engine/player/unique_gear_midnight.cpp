@@ -2088,7 +2088,6 @@ void locuswalkers_ribbon( special_effect_t& e )
   {
     buff_t* stack_buff;
     double stack_percent;
-    double stacks;
 
     riftwalkers_temptation_t( std::string_view n, const special_effect_t& e, buff_t* stacking_buff)
       : stat_buff_t( e.player, n, e.player->find_spell( 1259317 )), stack_buff( stacking_buff )
