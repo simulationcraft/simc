@@ -82,6 +82,8 @@ void protection( player_t* p )
   precombat->add_action( "rite_of_sanctification" );
   precombat->add_action( "rite_of_adjuration" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "devotion_aura" );
+  precombat->add_action( "lights_judgment" );
   precombat->add_action( "consecration" );
 
   default_->add_action( "auto_attack" );
@@ -105,6 +107,7 @@ void protection( player_t* p )
   default_->add_action( "consecration,if=!consecration.up" );
   default_->add_action( "blessed_hammer" );
   default_->add_action( "hammer_of_the_righteous" );
+  default_->add_action( "arcane_torrent" );
   default_->add_action( "consecration" );
 }
 //protection_apl_end
