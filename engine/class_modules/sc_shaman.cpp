@@ -8425,6 +8425,15 @@ struct stormkeeper_t : public shaman_spell_t
 
   void execute() override
   {
+    // If Stormkeeper buff is already active, casting Stormkeeper does not generate Maelstrom.
+    auto original_maelstrom_gain = maelstrom_gain;
+    bool reset_maelstrom_gain = false;
+    if ( p()->bugs && p()->talent.stormwell.ok() && p()->buff.stormkeeper->up() )
+    {
+      maelstrom_gain = 0.0;
+      reset_maelstrom_gain = true;
+    }
+
     shaman_spell_t::execute();
 
     if ( p()->talent.fury_of_the_storms.ok() )
@@ -8437,6 +8446,11 @@ struct stormkeeper_t : public shaman_spell_t
     p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
 
     p()->buff.mid1_ele_2pc->trigger();
+
+    if ( reset_maelstrom_gain )
+    {
+      maelstrom_gain = original_maelstrom_gain;
+    }
 
   }
 
@@ -9552,10 +9566,6 @@ struct tempest_t : public shaman_spell_t
     {
       storms_eye = new storms_eye_t( player );
     }
-    if ( p()->bugs && p()->talent.stormwell->ok() )
-    {
-      maelstrom_gain = p()->talent.stormwell->effectN(2).base_value();
-    }
 
     switch ( exec_type )
     {
@@ -9615,6 +9625,15 @@ struct tempest_t : public shaman_spell_t
       p()->buff.wind_gust->trigger();
     }
 
+    // Bug: If Tempest would apply a new Stormkeeper buff (so none was present beforehand), it'll generate Maelstrom
+    auto original_maelstrom_gain = maelstrom_gain;
+    bool buggy_maelstrom_gain = false;
+    if ( p()->bugs && p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.stormwell.ok() && p()->talent.arc_discharge.ok() && !p()->buff.stormkeeper->up() )
+    {
+      maelstrom_gain = p()->talent.stormwell->effectN(2).base_value();
+      buggy_maelstrom_gain = true;
+    }
+
     p()->buff.tempest->decrement();
 
     shaman_spell_t::execute();
@@ -9625,6 +9644,12 @@ struct tempest_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( execute_state->action,
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
+    }
+
+    // resetting maelstrom gain
+    if ( p()->bugs && buggy_maelstrom_gain )
+    {
+      maelstrom_gain = original_maelstrom_gain;
     }
 
     if ( p()->talent.storm_swell.ok() )

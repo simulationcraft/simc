@@ -2077,6 +2077,57 @@ void nullsight( special_effect_t& e )
                       ->set_reverse( true );
 }
 
+// Locus-Walker's Ribbon
+// 1259314 Driver
+// 1259317 stat buff
+// 1268058 stack buff
+void locuswalkers_ribbon( special_effect_t& e )
+{
+  
+  struct riftwalkers_temptation_t : public stat_buff_t
+  {
+    buff_t* stack_buff;
+    double stack_percent;
+    double stacks;
+
+    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e, buff_t* stacking_buff)
+      : stat_buff_t( e.player, n, e.player->find_spell( 1259317 )), stack_buff( stacking_buff )
+    {
+      set_default_value( e.driver()->effectN( 1 ).average( e ) );
+      stack_percent = e.driver()->effectN( 2 ).percent();
+    }   
+    
+    void bump( int s, double v ) override
+    {
+      for( auto& s : stats )
+      {
+        s.amount =  default_value * ( 1.0 + stack_percent * stack_buff->check());
+      }
+      stat_buff_t::bump( s, v );
+    }
+  };
+
+  struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    buff_t* stack_buff;
+    
+    locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.player->find_spell( 1268058 ))->disable_ticking(true);
+      buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e, stack_buff);
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buff->trigger();
+      stack_buff->trigger();
+    }
+  };
+  
+  new locuswalkers_ribbon_t( e );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2388,6 +2439,7 @@ void register_special_effects()
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
   register_special_effect( 1259293, DISABLED_EFFECT );
   register_special_effect( 1260459, trinkets::nullsight );
+  register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
