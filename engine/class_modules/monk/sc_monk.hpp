@@ -578,8 +578,8 @@ public:
 
     // Master of Harmony
     buffs::aspect_of_harmony_t aspect_of_harmony;
-    propagate_const<buff_t *> balanced_stratagem_physical;
-    propagate_const<buff_t *> balanced_stratagem_magic;
+    propagate_const<buffs::balanced_stratagem_t *> balanced_stratagem_physical;
+    propagate_const<buffs::balanced_stratagem_t *> balanced_stratagem_magic;
     propagate_const<buff_t *> harmonic_surge;
 
     // Shado-Pan
@@ -802,8 +802,6 @@ public:
       player_talent_t special_delivery;
       const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
-      const spell_data_t *rushing_jade_wind_buff;
-      const spell_data_t *rushing_jade_wind_tick;
       player_talent_t spirit_of_the_ox;
       // row 5
       player_talent_t jade_flash;
