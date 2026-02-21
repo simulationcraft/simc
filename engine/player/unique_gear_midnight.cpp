@@ -2067,7 +2067,7 @@ void nullsight( special_effect_t& e )
   unsigned equip_id = 1259293;
   auto equip = find_special_effect( e.player, equip_id );
   assert( equip && "Vaelgor's final stance missing equip effect" );
-  auto buff_spell = e.player->find_spell(1260459);
+  auto buff_spell = e.driver();
   int stacks = buff_spell->duration() / buff_spell->effectN( 3 ).period();
   double buff_val = equip->driver()->effectN(1).average( e );
   double buff_stacks = buff_val/stacks;
