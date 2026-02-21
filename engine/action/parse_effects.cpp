@@ -80,7 +80,7 @@ std::string pet_type( uint32_t opt )
 
 std::string cooldown_type( uint32_t opt )
 {
-  return opt ? "Category" : "";
+  return opt == 1 ? "Category" : "";
 }
 
 std::string parse_cb_str( parse_callback_e type )

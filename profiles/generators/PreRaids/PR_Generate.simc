@@ -1,14 +1,14 @@
 # PreRaids
-# TWW Pre-Raids
-# * Heroic dungeon gear should be the default choice, item level cap is 593. ["bonus_id=?"]
-#   * Gear can come from: [Ara-Kara, City of Echoes, Cinderbrew Meadery, City of Threads, Darkflame Cleft, Priory of the Sacred Flame, The Dawnbreaker, The Rookery, and The Stonevault]
+# MID Pre-Raids
+# * Heroic dungeon gear should be the default choice, item level cap is 214. ["bonus_id=?"]
+#   * Gear can come from: []
 # * Honor PvP gear is not permitted since its item level is too low compared to M0 gear due to renown cap.
 # * Crafted gear: TBD.
 # * No items from World Bosses / World Quests / World Drop.
 # * No Sockets/Gems (natural / buyable).
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
-# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Only use Rank 2 enchants.
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
 
 # Death Knight
 # PR_Generate_Death_Knight.simc
@@ -47,4 +47,4 @@ PR_Generate_Priest.simc
 # PR_Generate_Warlock.simc
 
 # Warrior
-PR_Generate_Warrior.simc
+# PR_Generate_Warrior.simc

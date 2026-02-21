@@ -1156,7 +1156,7 @@ public:
     auto rm = BASE::recharge_multiplier( cd );
 
     for ( const auto& i : recharge_multiplier_effects )
-      if ( static_cast<bool>( i.opt_enum ) == cd.is_category() )
+      if ( i.opt_enum == static_cast<uint32_t>( cd.is_category() ) )
         rm *= 1.0 + get_effect_value( i );
 
     return rm;

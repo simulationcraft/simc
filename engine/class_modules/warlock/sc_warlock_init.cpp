@@ -913,7 +913,7 @@ namespace warlock
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
-    buffs.abyssal_dominion = make_buff( this, "Abyssal Dominion", hero.abyssal_dominion_buff );
+    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
