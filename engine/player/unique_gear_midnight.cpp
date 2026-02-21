@@ -2077,10 +2077,10 @@ void nullsight( special_effect_t& e )
                       ->set_reverse( true );
 }
 
-// Locus WAlker's Ribbon
+// Locus-Walker's Ribbon
 // 1259314 Driver
 // 1259317 Spell Effect
-void locus_walkers_ribbon( special_effect_t& e )
+void locuswalkers_ribbon( special_effect_t& e )
 {
   auto buff = e.player->find_spell( 1259317 );
   double buff_val = e.driver()->effectN( 1 ).average( e );
@@ -2405,6 +2405,7 @@ void register_special_effects()
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
   register_special_effect( 1259293, DISABLED_EFFECT );
   register_special_effect( 1260459, trinkets::nullsight );
+  register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
