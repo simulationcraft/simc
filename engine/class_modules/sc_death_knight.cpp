@@ -9428,7 +9428,7 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     background = true;
-    aoe        = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    aoe        = -1;
   }
 };
 
