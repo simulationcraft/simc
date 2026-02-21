@@ -2088,8 +2088,8 @@ void locuswalkers_ribbon( special_effect_t& e )
   {
     buff_t* stack_buff;
 
-    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e, buff_t* stacking_buff)
-      : stat_buff_t( e.player, n, e.player->find_spell( 1259317 )), stack_buff( stacking_buff )
+    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e)
+      : stat_buff_t( e.player, n, e.player->find_spell( 1259317 ))
     {
       set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
     }   
@@ -2103,20 +2103,21 @@ void locuswalkers_ribbon( special_effect_t& e )
 
   struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
   {
-    buff_t* buff;
+    riftwalkers_temptation_t* stat_buff;
     buff_t* stack_buff;
     
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
-      buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e, stack_buff);
-      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.player->find_spell( 1268058 ))
+      stat_buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e);
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.trigger())
                   ->set_freeze_stacks( true )
                   ->set_default_value( e.driver()->effectN( 2 ).percent() );
+      stat_buff->stack_buff = stack_buff;
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      buff->trigger();
+      stat_buff->trigger();
       stack_buff->trigger();
     }
   };
