@@ -1159,7 +1159,6 @@ public:
     // Havoc
     spell_t* burning_wound                                         = nullptr;
     attack_t* demon_blades                                         = nullptr;
-    spell_t* fel_barrage                                           = nullptr;
     spell_t* inner_demon                                           = nullptr;
     spell_t* ragefire                                              = nullptr;
     actions::attacks::relentless_onslaught_t* relentless_onslaught = nullptr;
@@ -3427,21 +3426,6 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     }
   }
 
-  void trigger_cycle_of_binding_event()
-  {
-    p()->sim->print_debug( "triggering cycle of binding event" );
-    // this is an event so that cooldown tracking occurs correctly
-    make_event( *p()->sim, 0_ms, [ this ]() {
-      std::vector<cooldown_t*> sigils_on_cooldown;
-      range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                      []( cooldown_t* c ) { return c->down(); } );
-      for ( auto sigil_cooldown : sigils_on_cooldown )
-      {
-        sigil_cooldown->adjust( this->sigil_cooldown_adjust );
-      }
-    } );
-  }
-
   std::unique_ptr<expr_t> create_sigil_expression( util::string_view name );
 };
 
@@ -4196,13 +4180,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !data().ok() )
-        return nullptr;
-
       if ( !t )
         t = target;
-      if ( !t )
-        return nullptr;
 
       return td( t )->dots.fiery_brand;
     }
@@ -4251,11 +4230,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    if ( data().ok() )
-    {
-      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-      add_child( dot_action );
-    }
+    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    add_child( dot_action );
   }
 
   void impact( action_state_t* s ) override
@@ -4276,8 +4252,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( !data().ok() )
-      return nullptr;
     return dot_action->get_dot( t );
   }
 };
@@ -4347,16 +4321,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       dot_behavior        = dot_behavior_e::DOT_REFRESH_DURATION;
     }
 
-    void execute() override
-    {
-      demon_hunter_sigil_t::execute();
-
-      if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
-      {
-        trigger_cycle_of_binding_event();
-      }
-    }
-
     void impact( action_state_t* s ) override
     {
       demon_hunter_sigil_t::impact( s );
@@ -4383,8 +4347,11 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_flame", p, p->spec.sigil_of_flame, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
-    add_child( sigil );
+    if ( p->spec.sigil_of_flame_damage->ok() )
+    {
+      sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
+      add_child( sigil );
+    }
 
     may_miss = false;
     cooldown = p->cooldown.sigil_of_flame;
@@ -5821,6 +5788,8 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_base_t : public demon_hunter_spell_t
 {
+  std::vector<action_state_t*> undying_embers_states;
+
   soul_immolation_base_t( util::string_view n, demon_hunter_t* p, util::string_view o )
     : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
   {
@@ -5865,10 +5834,25 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
 
       // retriggers the DoT but doesn't count as a cast/execute
       action_state_t* undying_embers_state = get_state();
+      undying_embers_state->target         = d->state->target;
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
+      undying_embers_states.push_back( undying_embers_state );
 
-      make_event( sim, [ undying_embers_state, this ] { trigger_dot( undying_embers_state ); } );
+      make_event( sim, [ &, undying_embers_state, this ]() mutable {
+        trigger_dot( undying_embers_state );
+        range::erase_remove( undying_embers_states, undying_embers_state );
+        action_state_t::release( undying_embers_state );
+      } );
     }
+  }
+
+  void reset() override
+  {
+    for ( auto& state : undying_embers_states )
+      if ( state )
+        action_state_t::release( state );
+
+    demon_hunter_spell_t::reset();
   }
 };
 
@@ -6877,7 +6861,7 @@ struct blade_dance_base_t
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_attack_t::impact( s );
+      base_t::impact( s );
 
       if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
       {
@@ -8810,9 +8794,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, [ this ] {
-              trigger();
-            } );
+            make_event( sim, [ this ] { trigger(); } );
           }
         } );
       }
@@ -11313,7 +11295,9 @@ bool demon_hunter_t::validate_actor()
 #ifdef NDEBUG
   if ( !is_ptr() && specialization() == DEMON_HUNTER_HAVOC )
   {
-    throw sc_invalid_player_argument( "Havoc sims are only supported on PTR" );
+    sim->error(
+        "Warning: The Havoc specialisation implementation is still a work in progress and sim results may not "
+        "necessarily be perfectly accurate. There will be no additional support offered for prepatch simulations." );
   }
 #endif
   return player_t::validate_actor();

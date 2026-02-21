@@ -3355,6 +3355,13 @@ using namespace helpers;
 
         if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+
+        if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
+        {
+          p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
+          p()->procs.echo_of_sargeras->occur();
+          p()->buffs.vision_of_nihilam->trigger();
+        }
       }
     };
 
@@ -3414,13 +3421,6 @@ using namespace helpers;
         p()->procs.demonfire_infusion_inc->occur();
       }
 
-      if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
-      {
-        p()->proc_actions.echo_of_sargeras->execute_on_target( target );
-        p()->procs.echo_of_sargeras->occur();
-        p()->buffs.vision_of_nihilam->trigger();
-      }
-
       p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
@@ -3439,6 +3439,13 @@ using namespace helpers;
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
         else if ( p()->talents.diabolic_embers.ok() )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+      }
+
+      if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
+      {
+        p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
+        p()->procs.echo_of_sargeras->occur();
+        p()->buffs.vision_of_nihilam->trigger();
       }
     }
   };

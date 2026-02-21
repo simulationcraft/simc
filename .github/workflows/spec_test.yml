@@ -15,6 +15,7 @@ jobs:
     name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ubuntu-22.04
     continue-on-error: ${{ inputs.is-ptr }}
+    timeout-minutes: 5
 
     strategy:
       fail-fast: false

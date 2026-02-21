@@ -1,0 +1,78 @@
+# monk="MID1_Monk_Brewmaster"
+# source=default
+# spec=brewmaster
+# level=80
+# race=tauren
+# role=tank
+# position=front
+# talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgxCmxMmlZegtxMzAAAAAAAw2CGxMDMDDMYbmZGzsMMjtZZmY2mtZMMbAAwysNtMbzsMAAgAYGWA
+
+# head=halfmask_of_fallen_storms,id=237673,bonus_id=7981/12052/5877/12361/12053/1808,gem_id=213743
+# neck=bloodstained_memento,id=252009,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213467/213497
+# shoulders=glyphs_of_fallen_storms,id=237671,bonus_id=7981/12052/5877/12361/12053
+# back=reshii_wraps,id=235499,bonus_id=9893/12401,enchant=chant_of_leeching_fangs_3,gem_id=238042
+# chest=gi_of_fallen_storms,id=237676,bonus_id=7981/12052/5877/12361/12053,enchant=crystalline_radiance_3
+# wrists=runebranded_armbands,id=219334,bonus_id=12050/12053/9627/11307/8795/11109,gem_id=213479,enchant=chant_of_armored_leech_3
+# hands=grasp_of_fallen_storms,id=237674,bonus_id=7981/12052/5877/12361/12053
+# waist=adrenal_surge_clasp,id=219502,bonus_id=12050/9627/12053/11307,gem_id=213461
+# legs=anomalous_starlit_breeches,id=185801,bonus_id=657/12052/5877/10390/12361/12053,enchant=stormbound_armor_kit_3
+# feet=interlopers_reinforced_sandals,id=243306,bonus_id=7981/12052/5877/12361/12053/13504,enchant=defenders_march_3
+# finger1=logic_gate_alpha,id=237567,bonus_id=7981/12052/5877/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+# finger2=high_nerubian_signet,id=221141,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+# trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12052/5877/10390/12361/12053
+# trinket2=brand_of_ceaseless_ire,id=242401,bonus_id=7981/12052/5877/12361/12053
+# main_hand=harvesters_interdiction,id=221159,bonus_id=657/12052/5877/10390/12361/12053,enchant=stonebound_artistry_3
+
+# save=MID1_Monk_Brewmaster.simc
+
+# monk="MID1_Monk_Windwalker"
+# spec=windwalker
+# level=80
+# race=void_elf
+# role=attack
+# position=back
+# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBzYGzyMDGAAAAAAAAAAAYZZYmYmBzMMsNzw2MGMbYGmlZCAAmZGzMzMbzAAYZZWWmlZmJIAYA
+
+# head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
+# neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213470
+# shoulders=glyphs_of_fallen_storms,id=237671,ilevel=723
+# back=reshii_wraps,id=235499,bonus_id=9893,gem_id=238046,enchant_id=7403
+# chest=gi_of_fallen_storms,id=237676,ilevel=723,enchant=crystalline_radiance_3
+# wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=720,gem_id=213485,enchant=chant_of_armored_leech_3,crafted_stats=40/49
+# hands=grasp_of_fallen_storms,id=237674,ilevel=723
+# waist=runebranded_waistband,id=219331,bonus_id=3524/10520/8960/11307,ilevel=720,gem_id=213461,crafted_stats=40/49
+# legs=spittlestained_trousers,id=242473,bonus_id=4786/3215/12361,enchant=stormbound_armor_kit_3
+# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant=defenders_march_3
+# finger1=signet_of_the_false_accuser,id=178824,bonus_id=4786/10032/12361/8781,gem_id=213455/213494,enchant=radiant_haste_3
+# finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213494/213494,enchant=radiant_haste_3
+# trinket1=unyielding_netherprism,id=242396,bonus_id=4800/4786/1533/12361
+# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
+# main_hand=harvesters_interdiction,id=221159,bonus_id=4786/3215/12361,enchant=stonebound_artistry_3
+
+# save=MID1_Monk_Windwalker.simc
+
+# monk="MID1_Monk_Windwalker_Shadopan"
+# spec=windwalker
+# level=80
+# race=void_elf
+# role=attack
+# position=back
+# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmZMLzMmZGAAAAAAAAAAAssMMTMzgZGGWmZYbGDmNMDzyMBAwyMzgZG2mBAwGA0sMLNzMzCgZA
+
+# head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
+# neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213497
+# shoulders=glyphs_of_fallen_storms,id=237671,ilevel=723
+# back=reshii_wraps,id=235499,bonus_id=9893,gem_id=238046,enchant_id=7403
+# chest=gi_of_fallen_storms,id=237676,ilevel=723,enchant=crystalline_radiance_3
+# wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307/8795,ilevel=720,gem_id=213485,enchant=chant_of_armored_leech_3,crafted_stats=40/49
+# hands=grasp_of_fallen_storms,id=237674,ilevel=723
+# waist=runebranded_waistband,id=219331,bonus_id=3524/10520/8960/11307/8795,ilevel=720,gem_id=213461,crafted_stats=40/49
+# legs=elite_shadowguard_legwraps,id=237531,bonus_id=4800/4786/1533/12361,enchant=stormbound_armor_kit_3
+# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant=defenders_march_3
+# finger1=seal_of_the_panoply,id=185840,bonus_id=4786/10035/12361/8781,gem_id=213461/213461,enchant=radiant_versatility_3
+# finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213461/213461,enchant=radiant_critical_strike_3
+# trinket1=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
+# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
+# main_hand=harvesters_interdiction,id=221159,bonus_id=4786/3215/12361,enchant=stonebound_artistry_3
+
+# save=MID1_Monk_Windwalker_Shadopan.simc

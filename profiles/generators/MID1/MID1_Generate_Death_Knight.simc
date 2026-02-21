@@ -1,0 +1,156 @@
+# deathknight="MID1_Death_Knight_Blood_San'layn"
+# level=80
+# race=human
+# spec=blood
+# role=tank
+# position=front
+# talents=CoPAAAAAAAAAAAAAAAAAAAAAAwwgZwMzMzYZGzMz0MMMzYGzAAAAgZmZmZYmZzMzYGAAgZmZmBAAAMwAzY0YZDklBsBwMGbA
+
+# head=hollow_sentinels_stonemask,id=237628,bonus_id=6935,gem_id=213491,ilevel=723
+# neck=chrysalis_of_sundered_souls,id=237568,bonus_id=8781,gem_id=213491/213491,ilevel=723
+# shoulder=hollow_sentinels_perches,id=237626,ilevel=723
+# back=reshii_wraps,id=235499,bonus_id=12259,gem_id=238044,ilevel=730
+# chest=dark_priests_carapace,id=221139,enchant=crystalline_radiance_3,ilevel=723
+# wrist=everforged_vambraces,id=222435,bonus_id=6935,gem_id=213482,ilevel=720,crafted_stats=32/40,embellishment=elemental_focusing_lens
+# hands=hollow_sentinels_gauntlets,id=237629,ilevel=723
+# waist=everforged_greatbelt,id=222431,bonus_id=6935,gem_id=213482,ilevel=720,crafted_stats=32/36,embellishment=elemental_focusing_lens
+# legs=hollow_sentinels_stonekilt,id=237627,enchant=stormbound_armor_kit_3,ilevel=723
+# feet=hollow_sentinels_greatboots,id=237630,ilevel=723
+# finger1=signet_of_collapsing_stars,id=185813,bonus_id=8781,enchant_id=7340,enchant=radiant_mastery_3,gem_id=213491/213491,ilevel=723
+# finger2=ring_of_the_panoply,id=246281,bonus_id=8781,enchant_id=7340,enchant=radiant_mastery_3,gem_id=213491/213479,ilevel=723
+# trinket1=tome_of_lights_devotion,id=219309,ilevel=723
+# trinket2=unyielding_netherprism,id=242396,ilevel=723
+# main_hand=maw_of_the_void,id=243365,enchant=rune_of_sanguination,ilevel=723
+
+# save=MID1_Death_Knight_Blood.simc
+
+# deathknight="MID1_Death_Knight_Blood_Deathbringer"
+# level=80
+# race=mechagnome
+# spec=blood
+# role=tank
+# position=front
+# talents=CoPAAAAAAAAAAAAAAAAAAAAAAwwgZwMzMzYZGzMz0MMMzYGzAAAAgZmZmBzMbmZGzAAAjZmZmBAAAGbbDMglgthJwwCAzYsBA
+
+# head=hollow_sentinels_stonemask,,id=237628,bonus_id=6935,gem_id=213743,ilevel=723
+# neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=8781,gem_id=213485/213467,ilevel=723,crafted_stats=32/40,embellishment=elemental_focusing_lens
+# shoulder=hollow_sentinels_perches,id=237626,ilevel=723
+# back=reshii_wraps,id=235499,bonus_id=12257,gem_id=238046,ilevel=730
+# chest=hollow_sentinels_breastplate,id=237631,enchant=crystalline_radiance_3,ilevel=723
+# wrist=everforged_vambraces,id=222435,bonus_id=6935,gem_id=213467,ilevel=720,crafted_stats=49/32,embellishment=elemental_focusing_lens
+# hands=hollow_sentinels_gauntlets,id=237629,ilevel=723
+# waist=ultradense_fission_girdle,id=237563,bonus_id=6935,gem_id=213467,ilevel=723
+# legs=halkiass_towering_pillars,id=178818,enchant=stormbound_armor_kit_3,ilevel=723
+# feet=devoted_plate_walkers,id=221123,ilevel=723
+# finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7352,enchant=cursed_critical_strike_3,gem_id=213497/213467,ilevel=723
+# finger2=high_nerubian_signet,id=221141,bonus_id=8781,enchant_id=7346,enchant=radiant_versatility_3,gem_id=213485/213461,ilevel=723
+# trinket1=tome_of_lights_devotion,id=219309,ilevel=723
+# trinket2=brand_of_ceaseless_ire,id=242401,ilevel=723
+# main_hand=skyreaver_greataxe_of_the_keepers,id=185810,enchant=rune_of_the_fallen_crusader,ilevel=723
+
+# save=MID1_Death_Knight_Blood_Deathbringer.simc
+
+# deathknight="MID1_Death_Knight_Frost_Deathbringer"
+# spec=frost
+# level=80
+# race=maghar_orc
+# role=attack
+# position=back
+# talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMzYGjZGGmZmZmhxMyMmZmhZM8AMDmZmZmBAAAAAAAAAAAjltBGwCYZYCZsYMzMjZGYGD
+
+# head=hollow_sentinels_stonemask,id=237628,bonus_id=12361/10356/12231/6652/12921/12676/1533/10255/1808,gem_id=213743
+# neck=salhadaars_folly,id=242406,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213458/213458
+# shoulders=hollow_sentinels_perches,id=237626,bonus_id=12361/10356/6652/1533/10255
+# back=reshii_wraps,id=235499,bonus_id=12399/9893,gem_id=238046
+# chest=hollow_sentinels_breastplate,id=237631,bonus_id=12361/10356/12229/6652/12676/1533/10255,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11109/8960/10878,gem_id=213470,crafted_stats=49/32
+# hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
+# waist=girdle_of_absolute_faith,id=242479,bonus_id=4786/3215/12361/1808,gem_id=213458
+# legs=hollow_sentinels_stonekilt,id=237627,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant=stormbound_armor_kit_3
+# feet=interlopers_plated_sabatons,id=243307,bonus_id=4800/4786/1533/12361/13504
+# finger1=logic_gate_alpha,id=237567,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213482/213482,enchant=radiant_mastery_3
+# finger2=radiant_necromancers_band,id=221200,bonus_id=4786/3215/12361/1808,gem_id=213458,enchant=radiant_mastery_3
+# trinket1=astral_antenna,id=242395,bonus_id=10356/12361/1533/10255
+# trinket2=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
+# main_hand=charged_claymore,id=222447,bonus_id=12053/12050/9627/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
+
+# save="MID1_Death_Knight_Frost_Deathbringer.simc"
+
+# deathknight="MID1_Death_Knight_Frost_Rider"
+# spec=frost
+# level=80
+# race=maghar_orc
+# role=attack
+# position=back
+# talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMzYGjZGGmZmZmhxMyMmZmhZgHwMDmZmZmBAAAAAAAAAAAgNzihBGY20QDbGzMzYmBmxA
+
+# head=hollow_sentinels_stonemask,id=237628,bonus_id=12361/10356/12231/6652/12921/12676/1533/10255/1808,gem_id=213743
+# neck=salhadaars_folly,id=242406,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213458/213458
+# shoulders=hollow_sentinels_perches,id=237626,bonus_id=12361/10356/6652/1533/10255
+# back=reshii_wraps,id=235499,bonus_id=12399/9893,gem_id=238046
+# chest=hollow_sentinels_breastplate,id=237631,bonus_id=12361/10356/12229/6652/12676/1533/10255,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11109/8960/10878,gem_id=213470,crafted_stats=49/32
+# hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
+# waist=girdle_of_somber_ploys,id=221133,bonus_id=4786/3215/12361/1808,gem_id=213494
+# legs=hollow_sentinels_stonekilt,id=237627,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant=stormbound_armor_kit_3
+# feet=interlopers_plated_sabatons,id=243307,bonus_id=4800/4786/1533/12361/13504
+# finger1=logic_gate_alpha,id=237567,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213482/213482,enchant=radiant_mastery_3
+# finger2=band_of_the_shattered_soul,id=242405,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213458/213458,enchant=radiant_mastery_3
+# trinket1=astral_antenna,id=242395,bonus_id=10356/12361/1533/10255
+# trinket2=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
+# main_hand=charged_claymore,id=222447,bonus_id=12053/12050/9627/11300/8960,enchant=rune_of_the_fallen_crusader,enchant_id=3368,crafted_stats=49/32
+
+# save="MID1_Death_Knight_Frost.simc"
+
+# deathknight="MID1_Death_Knight_Unholy_Rider"
+# spec=unholy
+# level=80
+# race=troll
+# role=attack
+# position=back
+# talents=CwPAAAAAAAAAAAAAAAAAAAAAAAgZGzYMzwMmZmZaGDzMzMGAAAAAAAAmZmZhZGzAAmtZMzY2mZmBzAsZWMMkBmFGasAAzAYA
+
+# head=,id=237628,bonus_id=6935,gem_id=213743,ilevel=723
+# neck=,id=242406,bonus_id=7187/1520/8781,gem_id=213491/213491,ilevel=723
+# shoulder=,id=237626,ilevel=723
+# back=,id=235499,bonus_id=12399/12262/9893,gem_id=238045
+# chest=,id=237631,enchant_id=7364,enchant=crystalline_radiance_3,ilevel=723
+# wrist=,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+# hands=,id=237526,bonus_id=7187/1520,ilevel=723
+# waist=,id=222431,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+# legs=,id=237627,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
+# feet=interlopers_plated_sabatons,id=243307,bonus_id=13504,ilevel=723,enchant=defenders_march_3
+# finger1=,id=246281,bonus_id=1611/8781,enchant_id=7334,gem_id=213491/213491,ilevel=723
+# finger2=,id=242491,bonus_id=1611/8781,enchant_id=7334,gem_id=213491/213491,ilevel=723
+# trinket1=cursed_stone_idol,id=246344,ilevel=723
+# trinket2=astral_antenna,id=242395,bonus_id=7187/1520,ilevel=723
+# main_hand=,id=242487,bonus_id=1611,enchant_id=3368,enchant=rune_of_the_fallen_crusader,ilevel=723
+
+# save=MID1_Death_Knight_Unholy.simc
+
+# deathknight="MID1_Death_Knight_Unholy_San'layn"
+# spec=unholy
+# level=80
+# race=troll
+# role=attack
+# position=back
+# talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMDz4BGGmZmZmZaGzMzMmxAAAAAAAAwMzMLMzYGAwsNjZGz2MzMMzwADMjRjlFALTsBAzAA
+
+# head=hollow_sentinels_stonemask,id=237628,bonus_id=6935,ilevel=723,gem_id=213743
+# neck=salhadaars_folly,id=242406,bonus_id=7187/1520/8781,ilevel=723,gem_id=213491/213491
+# shoulders=hollow_sentinels_perches,id=237626,ilevel=723
+# back=reshii_wraps,id=235499,bonus_id=12399/9893,gem_id=238045
+# chest=hollow_sentinels_breastplate,id=237631,ilevel=723,enchant=crystalline_radiance_3,enchant_id=7364
+# wrist=,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+# hands=breached_containment_guards,id=237526,bonus_id=7187/1520,ilevel=723
+# waist=,id=222431,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+# legs=hollow_sentinels_stonekilt,id=237627,ilevel=723,enchant=stormbound_armor_kit_3,enchant_id=7601
+# feet=interlopers_plated_sabatons,id=243307,bonus_id=13504,ilevel=723,enchant=defenders_march_3
+# finger1=ring_of_the_panoply,id=246281,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
+# finger2=whispers_of_karesh,id=242491,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
+# trinket1=cursed_stone_idol,id=246344,ilevel=723
+# trinket2=astral_antenna,id=242395,bonus_id=7187/1520,ilevel=723
+# main_hand=fatebound_crusader,id=242487,bonus_id=1611,ilevel=723,enchant=rune_of_the_fallen_crusader,enchant_id=3368
+
+
+# save=MID1_Death_Knight_Unholy_San'layn.simc

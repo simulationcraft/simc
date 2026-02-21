@@ -4372,8 +4372,7 @@ struct magus_pet_t : public death_knight_pet_t
     resource_regeneration               = regen_type::DISABLED;
     affected_by.commander_of_the_dead   = true;
     affected_by.grave_mastery           = true;
-    if ( dk()->bugs )
-      affected_by.mastery_dreadblade_crit = false;
+    affected_by.mastery_dreadblade_crit = true;
     is_magus                            = true;
     npc_id                              = 163366;
   }
@@ -9429,7 +9428,7 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     background = true;
-    aoe        = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    aoe        = -1;
   }
 };
 

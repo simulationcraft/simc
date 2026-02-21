@@ -827,7 +827,7 @@ public:
 
     // Destruction
     rng_setting_t avatar_of_destruction_dr = { 0.30, 0.30, "avatar_of_destruction_dr" }; // TODO: PLACEHOLDER VALUE! Need to calculate ingame the type of RNG and the average RNG
-    rng_setting_t echo_of_sargeras = { 0.25, 0.25, "echo_of_sargeras" }; // TOCHECK: Proc rate not in spell data
+    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras" };
 
     // Diabolist
 

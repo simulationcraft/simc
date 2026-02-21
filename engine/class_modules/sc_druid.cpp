@@ -5608,8 +5608,9 @@ struct maul_ravage_base_t : public BASE
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
         repeat_action->name_str_reporting = "Celestial";
+        add_child( repeat_action );
       }
     }
   };
@@ -5667,8 +5668,9 @@ struct maul_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 
@@ -5697,8 +5699,9 @@ struct raze_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( "raze_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 };
@@ -7244,6 +7247,7 @@ struct fury_of_elune_t final : public druid_spell_t
       if ( p->talent.the_eternal_moon.ok() )
       {
         auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+        energize_resource = util::power_type_to_resource( power );
         energize_amount = find_effect( this, E_ENERGIZE, A_MAX, power ).resource();
       }
       else
@@ -10443,6 +10447,7 @@ void druid_t::init_spells()
   spec.cat_form_passive_2       = find_spell( 106840 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.improved_prowl           = find_specialization_spell( "Improved Prowl" );
+  // hardcoded since red moon replaces
   spec.moonfire                 = talent.red_moon.ok() ? find_spell( 8921 ) : find_class_spell( "Moonfire" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.sunfire_dmg              = check( talent.sunfire, 164815 );
@@ -10496,6 +10501,9 @@ void druid_t::init_spells()
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
 
+  // Effect is cosmetic for tooltip purposes
+  register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
+
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION
     ? effect_mask_t( false ).enable( 3, 4 ) : effect_mask_t( false ).enable( 1, 2 );
@@ -10516,12 +10524,7 @@ void druid_t::init_spells()
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
 
-  if ( bugs )
-  {
-    // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
-    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
-  }
-  else
+  if ( !bugs )
   {
     // Bask in Moonlight is bugged and doesn't disable other spec's effects
     register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
@@ -11209,14 +11212,16 @@ void druid_t::create_buffs()
   buff.sundering_roar = make_fallback( talent.sundering_roar.ok(), this, "sundering_roar", talent.sundering_roar )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_MAX_STACKS )
-    ->set_expire_callback( [ this, orig_max_stack = spec.thrash_bleed->max_stacks() ]( buff_t*, int, timespan_t ) {
+    ->set_expire_callback( [ this, orig_max_stack = as<int>( spec.thrash_bleed->max_stacks() ) ]( auto, auto, auto ) {
       for ( auto dot : dot_lists.thrash )
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
         {
-          auto num_tick = dot->remains() / dot->current_action->tick_time( dot->state );
-          auto per_tick = dot->state->result_raw;
-          auto damage = num_tick * per_tick * excess;
+          auto _state = dot->current_action->get_state( dot->state );
+          auto num_tick = dot->ticks_left_fractional();
+          auto per_tick = dot->current_action->calculate_tick_amount( _state, excess );
+          auto damage = num_tick * per_tick;
+          action_state_t::release( _state );
 
           if ( sim->debug )
           {
@@ -11585,12 +11590,10 @@ void druid_t::create_actions()
     active.thrash_flashing = flash;
   }
 
-  if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
+  if ( talent.galactic_guardian.ok() )
   {
-    // hardcode moonfire ID since red moon replaces normal moonfire
     auto gg = get_secondary_action<moonfire_t>( "galactic_guardian", flag_e::GALACTIC );
-    gg->s_data_reporting =
-      talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : sets->set( DRUID_GUARDIAN, MID1, B4 );
+    gg->s_data_reporting = talent.galactic_guardian;
     gg->proc = true;
     active.galactic_guardian = gg;
 
@@ -11637,6 +11640,7 @@ void druid_t::create_actions()
     active.echo_of_ravage =
       get_secondary_action<echo_of_maul_t<ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>>>(
         "echo_of_ravage", find_spell( 1269973 ) );
+    active.echo_of_ravage->name_str_reporting.clear();
   }
 
   if ( talent.wild_guardian_2.ok() )
@@ -11771,10 +11775,10 @@ std::string druid_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "magisters_2";
+    case DRUID_FERAL:       return "magisters_2";
+    case DRUID_GUARDIAN:    return "blood_knights_2";
+    case DRUID_RESTORATION: return "blood_knights_2";
     default:                return "disabled";
   }
 }
@@ -11783,10 +11787,10 @@ std::string druid_t::default_potion() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "lights_potential_2";
+    case DRUID_FERAL:       return "lights_potential_2";
+    case DRUID_GUARDIAN:    return "lights_potential_2";
+    case DRUID_RESTORATION: return "lights_potential_2";
     default:                return "disabled";
   }
 }
@@ -11814,10 +11818,10 @@ std::string druid_t::default_temporary_enchant() const
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return str + "thalassian_phoenix_oil_2";
+    case DRUID_FERAL:       return str + "thalassian_phoenix_oil_2";
+    case DRUID_GUARDIAN:    return str + "thalassian_phoenix_oil_2";
+    case DRUID_RESTORATION: return str + "thalassian_phoenix_oil_2";
     default:                return "disabled";
   }
 }
@@ -12200,7 +12204,7 @@ void druid_t::init_special_effects()
     callbacks.register_callback_execute_function(
       driver->spell_id, [ this, _gain, _action ]( auto, auto, const action_state_t* s ) {
         // 1 rage per 1% of maximum health taken
-        auto pct = s->result_amount / resources.max[ RESOURCE_HEALTH ];
+        auto pct = std::min( 1.0, s->result_amount / resources.max[ RESOURCE_HEALTH ] );
 
         resource_gain( RESOURCE_RAGE, pct * 100, _gain, _action );
       } );
@@ -12267,7 +12271,7 @@ void druid_t::init_special_effects()
     cb->activate_with_buff( buff.bear_form );
   }
 
-  if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
+  if ( talent.galactic_guardian.ok() )
   {
     // derived class needed as registered trigger_fn passes const dbc_proc_callback_t* and we need to adjust proc_chance
     struct galactic_guardian_cb_t final : public druid_cb_t
@@ -12302,9 +12306,6 @@ void druid_t::init_special_effects()
           default: break;
         }
 
-        if ( !proc_chance )
-          return;
-
         druid_cb_t::trigger( a, s );
 
         proc_chance = orig_proc_chance;
@@ -12319,12 +12320,10 @@ void druid_t::init_special_effects()
       }
     };
 
-    auto driver_data = talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : find_spell( 203964 );
-
     const auto driver = new special_effect_t( this );
-    driver->name_str = driver_data->name_cstr();
-    driver->spell_id = driver_data->id();
-    driver->proc_chance_ = driver_data->effectN( 1 ).percent();
+    driver->name_str = talent.galactic_guardian->name_cstr();
+    driver->spell_id = talent.galactic_guardian->id();
+    driver->proc_chance_ = talent.galactic_guardian->effectN( 1 ).percent();
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );

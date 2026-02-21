@@ -1,0 +1,58 @@
+ptr=1
+# MID1
+# MID Season 1
+# * Set pieces are permitted up to the item level cap (?). ["bonus_id=?/?"]
+# * Raid gear is permitted up to the Mythic item level cap (?). ["bonus_id=?/?"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (?).
+# * Delve gear is permitted up to the Vault cap (?)
+# * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
+# * Conquest PvP gear is permitted up to the item level cap (Hero Track, ?). ["bonus_id=?"]
+# * Crafted gear is permitted up to the item level cap (?), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?/?"]
+#   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
+# * World Bosses gear is permitted.
+# * World Drop gear is permitted.
+# * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
+# * Use sockets on the slots head, neck (x1), wrist, waist, finger1 (x1), finger2 (x1).
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
+# * Must use enchant name (ex: ",enchant=devotion_of_haste_2") instead of ids/hardcoded stats if possible. Rank 2 enchants are permitted.
+
+# Death Knight
+# MID1_Generate_Death_Knight.simc
+
+# Demon Hunter
+# MID1_Generate_Demon_Hunter.simc
+
+# Druid
+# MID1_Generate_Druid.simc
+
+# Evoker
+# MID1_Generate_Evoker.simc
+
+# Hunter
+# MID1_Generate_Hunter.simc
+
+# Mage
+# MID1_Generate_Mage.simc
+
+# Monk
+# MID1_Generate_Monk.simc
+
+# Paladin
+# MID1_Generate_Paladin.simc
+
+# Priest
+MID1_Generate_Priest.simc
+
+# Rogue
+# MID1_Generate_Rogue.simc
+
+# Shaman
+# MID1_Generate_Shaman.simc
+
+# Warlock
+# MID1_Generate_Warlock.simc
+
+# Warrior
+# MID1_Generate_Warrior.simc
