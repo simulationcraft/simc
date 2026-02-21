@@ -2097,7 +2097,7 @@ void locuswalkers_ribbon( special_effect_t& e )
       stack_percent = e.driver()->effectN( 2 ).percent();
     }   
     
-    void bump(int s, double v) override
+    void bump( int s, double v ) override
     {
       for( auto& s : stats )
       {
@@ -2112,7 +2112,7 @@ void locuswalkers_ribbon( special_effect_t& e )
     buff_t* buff;
     buff_t* stack_buff;
     
-    locuswalkers_ribbon_t(const special_effect_t& e ) : dbc_proc_callback_t( e.player, e)
+    locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
       stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.player->find_spell( 1268058 ))->disable_ticking(true);
       buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e, stack_buff);
