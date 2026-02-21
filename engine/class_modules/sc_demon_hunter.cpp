@@ -4180,13 +4180,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !data().ok() )
-        return nullptr;
-
       if ( !t )
         t = target;
-      if ( !t )
-        return nullptr;
 
       return td( t )->dots.fiery_brand;
     }
@@ -4235,11 +4230,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    if ( data().ok() )
-    {
-      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-      add_child( dot_action );
-    }
+    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    add_child( dot_action );
   }
 
   void impact( action_state_t* s ) override
@@ -4260,8 +4252,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( !data().ok() )
-      return nullptr;
     return dot_action->get_dot( t );
   }
 };
