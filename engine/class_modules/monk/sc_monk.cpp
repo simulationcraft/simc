@@ -2849,7 +2849,8 @@ struct chi_burst_t : monk_spell_t
     damage->execute();
     heal->execute();
 
-    // Defer consumption of buffs until after the damage and heal are executed
+    // Defer consumption of buffs in `base_t::execute` until after the damage
+    // and heal are executed
     monk_spell_t::execute();
   }
 };
