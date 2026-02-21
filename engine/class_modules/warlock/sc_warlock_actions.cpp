@@ -1522,7 +1522,7 @@ using namespace helpers;
       {
         action_state_t::debug_str( s );
         s << " effectiveness=" << effectiveness;
-        s << " main_seed_target=" << main_seed_target;
+        s << " main_seed_target=" << ( main_seed_target ? main_seed_target->name() : "<none>" );
         return s;
       }
 
