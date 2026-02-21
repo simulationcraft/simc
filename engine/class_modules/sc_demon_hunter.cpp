@@ -5788,6 +5788,8 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_base_t : public demon_hunter_spell_t
 {
+  std::vector<action_state_t*> undying_embers_states;
+
   soul_immolation_base_t( util::string_view n, demon_hunter_t* p, util::string_view o )
     : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
   {
@@ -5832,14 +5834,25 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
 
       // retriggers the DoT but doesn't count as a cast/execute
       action_state_t* undying_embers_state = get_state();
-      undying_embers_state->target = d->state->target;
+      undying_embers_state->target         = d->state->target;
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
+      undying_embers_states.push_back( undying_embers_state );
 
-      make_event( sim, [ undying_embers_state, this ]() mutable {
+      make_event( sim, [ &, undying_embers_state, this ]() mutable {
         trigger_dot( undying_embers_state );
+        range::erase_remove( undying_embers_states, undying_embers_state );
         action_state_t::release( undying_embers_state );
       } );
     }
+  }
+
+  void reset() override
+  {
+    for ( auto& state : undying_embers_states )
+      if ( state )
+        action_state_t::release( state );
+
+    demon_hunter_spell_t::reset();
   }
 };
 

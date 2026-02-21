@@ -4973,13 +4973,6 @@ public:
     : BASE( n, p, s, f ), p_( p )
   {}
 
-  void init() override
-  {
-    BASE::add_child( repeat_action );
-
-    BASE::init();
-  }
-
   void execute() override
   {
     BASE::execute();
@@ -5615,8 +5608,9 @@ struct maul_ravage_base_t : public BASE
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
         repeat_action->name_str_reporting = "Celestial";
+        add_child( repeat_action );
       }
     }
   };
@@ -5674,8 +5668,9 @@ struct maul_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 
@@ -5704,8 +5699,9 @@ struct raze_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( "raze_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 };
@@ -10505,6 +10501,9 @@ void druid_t::init_spells()
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
 
+  // Effect is cosmetic for tooltip purposes
+  register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
+
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION
     ? effect_mask_t( false ).enable( 3, 4 ) : effect_mask_t( false ).enable( 1, 2 );
@@ -10525,12 +10524,7 @@ void druid_t::init_spells()
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
 
-  if ( bugs )
-  {
-    // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
-    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
-  }
-  else
+  if ( !bugs )
   {
     // Bask in Moonlight is bugged and doesn't disable other spec's effects
     register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
@@ -11781,10 +11775,10 @@ std::string druid_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "magisters_2";
+    case DRUID_FERAL:       return "magisters_2";
+    case DRUID_GUARDIAN:    return "blood_knights_2";
+    case DRUID_RESTORATION: return "blood_knights_2";
     default:                return "disabled";
   }
 }
@@ -11793,10 +11787,10 @@ std::string druid_t::default_potion() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "lights_potential_2";
+    case DRUID_FERAL:       return "lights_potential_2";
+    case DRUID_GUARDIAN:    return "lights_potential_2";
+    case DRUID_RESTORATION: return "lights_potential_2";
     default:                return "disabled";
   }
 }
@@ -11824,10 +11818,10 @@ std::string druid_t::default_temporary_enchant() const
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return str + "thalassian_phoenix_oil_2";
+    case DRUID_FERAL:       return str + "thalassian_phoenix_oil_2";
+    case DRUID_GUARDIAN:    return str + "thalassian_phoenix_oil_2";
+    case DRUID_RESTORATION: return str + "thalassian_phoenix_oil_2";
     default:                return "disabled";
   }
 }
