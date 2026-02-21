@@ -567,6 +567,10 @@ void devouring_banding( special_effect_t& effect )
   damage->base_dd_max += proc_damage;
 
   effect.spell_id = effect.trigger()->id();
+  // TODO: Can this proc off of self damage?
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->is_enemy(); } );
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
     assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
@@ -1529,18 +1533,13 @@ void light_company_guidon( special_effect_t& effect )
 // 1262753 Buff
 void heart_of_ancient_hunger( special_effect_t& effect )
 {
-  struct heart_of_ancient_hunger_buff_t : public stat_buff_t
-  {
-    heart_of_ancient_hunger_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
-      : stat_buff_t( p, n, s )
-    {
-      set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) / data().duration().total_seconds() );
-      set_reverse( true );
-      set_max_stack( as<int>( data().duration().total_seconds() ) );
-    }
-  };
-
-  effect.custom_buff = create_buff<heart_of_ancient_hunger_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger(), effect );
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger() )
+          ->set_stat_from_effect_type( A_MOD_RATING,
+                                       effect.driver()->effectN( 1 ).average( effect ) /
+                                           effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() )
+          ->set_reverse( true )
+          ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }

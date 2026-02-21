@@ -1702,12 +1702,9 @@ void hammer_of_wrath_t::execute()
     p()->buffs.templar.shake_the_heavens->extend_duration(
         p(), timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() ) );
   }
-  if (crit_any_target)
+  if ( crit_any_target )
   {
-    if (!(p()->bugs && p()->talents.sweeping_verdict->ok()))
-    {
-      trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
-    }
+    trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
 }
 
@@ -4822,6 +4819,7 @@ void paladin_t::create_options()
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
   add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
+  add_option( opt_string( "starting_armament", options.starting_armament ) );
 
   player_t::create_options();
 }
@@ -4848,8 +4846,13 @@ void paladin_t::combat_begin()
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
 
-  // evidently it resets to summer on combat start
-  next_armament = SACRED_WEAPON;
+  if ( options.starting_armament == "sacred_weapon" )
+    next_armament = SACRED_WEAPON;
+  // If option is set to gibberish, just roll
+  else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
+    next_armament = HOLY_BULWARK;
+  else
+    next_armament = SACRED_WEAPON;
 
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {

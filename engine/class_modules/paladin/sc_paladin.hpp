@@ -746,6 +746,7 @@ public:
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
+    std::string starting_armament             = "sacred_weapon";
   } options;
   player_t* beacon_target;
 
