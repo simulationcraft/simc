@@ -149,7 +149,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=473)      : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby beasts on the minimap.
 Tooltip          : Tracking Beasts.
 
@@ -686,7 +686,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11068)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby demons on the minimap.
 Tooltip          : Tracking Demons.
 
@@ -704,7 +704,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11070)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby dragonkin on the minimap.
 Tooltip          : Tracking Dragonkin.
 
@@ -722,7 +722,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11072)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby elementals on the minimap.
 Tooltip          : Tracking Elementals.
 
@@ -740,7 +740,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11075)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby giants on the minimap.
 Tooltip          : Tracking Giants.
 
@@ -758,7 +758,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11077)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby humanoids on the minimap.
 Tooltip          : Tracking Humanoids.
 
@@ -776,7 +776,7 @@ Family Flags     : 65
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #2 (id=11079)    : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Race: beast, dragonkin, demon, elemental, giant, undead, humanoid | Target: Self (1)
 Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 

@@ -61784,7 +61784,7 @@ Range            : 100 yards
 Attributes       : Passive (6), Do Not Log (8), Ignore Line of Sight (66), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=279452)   : Apply Party Aura (35) | Modify Damage Done% vs Race (168)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Radius: 45 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Race: beast | Radius: 45 yards | Target: Self (1)
 Tooltip          : Increases damage dealt to all Beasts by $s1%.
 
 Name             : Battle Standard (id=190638) [Passive] 
@@ -65647,7 +65647,7 @@ Effects          :
 #1 (id=296722)   : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 170.1064 (coefficient=1.297725) | Stat: Str | Target: Self (1)
 #2 (id=296723)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Race: demon | Target: Self (1)
 #3 (id=297010)   : Apply Aura (6) | Proc Trigger Spell (42): War Cry
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 201597 | Target: Self (1)
 Description      : Increases Strength by $s1. Increases damage to Demons by $s2%.
@@ -65679,7 +65679,7 @@ Effects          :
 #1 (id=296726)   : School Damage (2): holy | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4525.557 (coefficient=35.41028) | Target: Current Target (25)
 #2 (id=296727)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Race: demon | Target: Self (1)
 Description      : Deals $s1 damage. Increases damage against Demons by $s2%.
 Tooltip          : Damage against Demons increased by $s2%.
 
@@ -65709,7 +65709,7 @@ Effects          :
 #1 (id=296729)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 88.31089 (coefficient=0.673715) | Rating: Crit, Haste, Mastery | Target: Self (1)
 #2 (id=296730)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Race: demon | Target: Self (1)
 Description      : Increases Critical Strike, Haste and Mastery by $s1. Damage against Demons increased by $s2%.
 Tooltip          : Critical Strike, Haste and Mastery increased by $s1. Damage against Demons increased by $s2%.
 
@@ -71366,7 +71366,7 @@ Triggered By     : Purified Ghost Ascend (219857)
 Attributes       : Allow Cast While Dead (23), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Aura While Dead (116), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=327629)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Race: undead | Target: Self (1)
 Description      : The Light empowers you, increasing your damage to Undead by $s1%.
 Tooltip          : The Light empowers you, increasing your damage to Undead by $s1%.
 
@@ -82750,7 +82750,7 @@ Duration         : 900 seconds
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=369460)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Race: demon | Target: Self (1)
 Description      : Increases attack power by $s1 against demons. Only usable outdoors on the Broken Isles, and lasts $d.   Battle Elixir.
 Tooltip          : Damage dealt to demons increased by $s1%.
 Battle Elixir.
@@ -120781,7 +120781,7 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=777185)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 16384 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Race: aberration | Target: Self (1)
 Description      : You do $s1% more damage to Aberrations in Nazjatar and the Eternal Palace.
 Tooltip          : You do $s1% more damage to Aberrations in Nazjatar and the Eternal Palace.
 
@@ -239695,7 +239695,7 @@ Effects          :
 #1 (id=1235905)  : Apply Aura (6) | Unknown(447)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 16393 | Target: Self (1)
 #2 (id=1235906)  : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16393 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Race: beast, elemental, aberration | Target: Self (1)
 Description      : Experience gains from killing Aberrations, Beasts, and Elementals increased by $s1%. 
 
 Damage dealt to Aberrations, Beasts, and Elementals increased by $s2%.
