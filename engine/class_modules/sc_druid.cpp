@@ -5058,13 +5058,6 @@ public:
       repeat_delay = p->talent.wild_guardian_3->effectN( 4 ).time_value() / num_repeat;
   }
 
-  void init() override
-  {
-    BASE::add_child( echo_action );
-
-    BASE::init();
-  }
-
   void execute() override
   {
     BASE::execute();

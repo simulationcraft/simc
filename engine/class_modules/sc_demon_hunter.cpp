@@ -4180,13 +4180,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !data().ok() )
-        return nullptr;
-
       if ( !t )
         t = target;
-      if ( !t )
-        return nullptr;
 
       return td( t )->dots.fiery_brand;
     }
@@ -4235,11 +4230,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    if ( data().ok() )
-    {
-      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-      add_child( dot_action );
-    }
+    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    add_child( dot_action );
   }
 
   void impact( action_state_t* s ) override
@@ -4260,8 +4252,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( !data().ok() )
-      return nullptr;
     return dot_action->get_dot( t );
   }
 };
@@ -5842,6 +5832,7 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
 
       // retriggers the DoT but doesn't count as a cast/execute
       action_state_t* undying_embers_state = get_state();
+      undying_embers_state->target = d->state->target;
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
 
       make_event( sim, [ undying_embers_state, this ]() mutable {
@@ -11291,7 +11282,9 @@ bool demon_hunter_t::validate_actor()
 #ifdef NDEBUG
   if ( !is_ptr() && specialization() == DEMON_HUNTER_HAVOC )
   {
-    throw sc_invalid_player_argument( "Havoc sims are only supported on PTR" );
+    sim->error(
+        "Warning: The Havoc specialisation implementation is still a work in progress and sim results may not "
+        "necessarily be perfectly accurate. There will be no additional support offered for prepatch simulations." );
   }
 #endif
   return player_t::validate_actor();
