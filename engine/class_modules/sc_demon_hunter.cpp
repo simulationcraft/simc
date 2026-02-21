@@ -8809,10 +8809,9 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           if ( rng().roll( undying_embers_proc_chance ) && p->cooldown.immolation_aura->up() )
           {
             p->proc.undying_embers->occur();
-            // retriggers the buff and consumes a cooldown charge but does not count as a cast
-            make_event( sim, [ this, p ] {
+            // retriggers the buff but is not a cast
+            make_event( sim, [ this ] {
               trigger();
-              p->cooldown.immolation_aura->start( p->cooldown.immolation_aura->action );
             } );
           }
         } );

@@ -2123,6 +2123,10 @@ using namespace helpers;
           td( p()->haunt_target )->debuffs.haunt->expire();
 
         td( s->target )->debuffs.haunt->trigger();
+
+        // TOCHECK: Does Wrath of Nathreza also proc from the initial Haunt hit?
+        if ( p()->talents.shadow_of_nathreza_3.ok() )
+          helpers::trigger_wrath_of_nathreza( p(), s->target );
       }
     }
   };
@@ -2219,6 +2223,26 @@ using namespace helpers;
     {
       target_cache.is_valid = false;
       warlock_spell_t::execute();
+    }
+  };
+
+  struct shadow_of_nathreza_dmg_t : public warlock_spell_t
+  {
+    shadow_of_nathreza_dmg_t( warlock_t* p )
+      : warlock_spell_t( "shadow_of_nathreza", p, p->talents.shadow_of_nathreza_dot )
+    {
+      background = dual = true;
+    }
+  };
+
+  struct wrath_of_nathreza_t : public warlock_spell_t
+  {
+    wrath_of_nathreza_t( warlock_t* p )
+      : warlock_spell_t( "wrath_of_nathreza", p, p->talents.wrath_of_nathreza_impact )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = as<int>( p->talents.wrath_of_nathreza->effectN( 2 ).base_value() );
     }
   };
 
@@ -4635,6 +4659,19 @@ using namespace helpers;
     p->cooldowns.echo_of_sargeras->start();
   }
 
+  void helpers::trigger_wrath_of_nathreza( warlock_t* p, player_t* target )
+  {
+    if ( !p->talents.shadow_of_nathreza_3.ok() )
+      return;
+
+    // TOCHECK: Spell data suggests ~2 RPPM (hasted) - verify in-game
+    if ( !p->wrath_of_nathreza_rng->trigger() )
+      return;
+
+    p->proc_actions.wrath_of_nathreza->execute_on_target( target );
+    p->procs.wrath_of_nathreza->occur();
+  }
+
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp, int _index ) : player_event_t( *p, timespan_t::from_millis( delay ) )
   {
@@ -4916,6 +4953,11 @@ using namespace helpers;
 
   void warlock_t::create_affliction_proc_actions()
   {
+    if ( talents.shadow_of_nathreza_1.ok() )
+      proc_actions.shadow_of_nathreza = new shadow_of_nathreza_dmg_t( this );
+
+    if ( talents.shadow_of_nathreza_3.ok() )
+      proc_actions.wrath_of_nathreza = new wrath_of_nathreza_t( this );
   }
 
   void warlock_t::create_demonology_proc_actions()

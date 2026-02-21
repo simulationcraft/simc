@@ -33,6 +33,17 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                         p.haunt_target = ( cur == 0 ) ? nullptr : b->player;
                       } );
 
+  if ( p.talents.shadow_of_nathreza_1.ok() )
+  {
+    debuffs.haunt->set_tick_zero( false )
+        ->set_period( p.talents.haunt->effectN( 5 ).period() )
+        ->set_tick_callback( [ target, &p ]( buff_t*, int, timespan_t ) {
+          p.proc_actions.shadow_of_nathreza->execute_on_target( target );
+          if ( p.talents.shadow_of_nathreza_3.ok() )
+            helpers::trigger_wrath_of_nathreza( &p, target );
+        } );
+  }
+
   // Demonology
   debuffs.doom = make_buff( *this, "doom", p.talents.doom_debuff )
                      ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
@@ -780,7 +791,7 @@ void warlock_t::parse_player_effects()
     // Affliction Mastery
     parse_effects( warlock_base.potent_afflictions ); // 77215
     // Affliction Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt, talents.shadow_of_nathreza_2 );
   }
 
   // Demonology

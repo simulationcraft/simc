@@ -295,9 +295,13 @@ public:
     player_talent_t patient_zero;
     player_talent_t sow_the_seeds;
 
+    // Affliction Apex
     player_talent_t shadow_of_nathreza_1;
     player_talent_t shadow_of_nathreza_2;
     player_talent_t shadow_of_nathreza_3;
+    const spell_data_t* shadow_of_nathreza_dot;
+    const spell_data_t* wrath_of_nathreza; // Trigger missile spell
+    const spell_data_t* wrath_of_nathreza_impact;
 
     // Demonology
     player_talent_t hand_of_guldan;
@@ -610,6 +614,8 @@ public:
     action_t* echo_of_sargeras_cb;
     action_t* echo_of_sargeras_sb;
     action_t* echo_of_sargeras_rof;
+    action_t* shadow_of_nathreza;
+    action_t* wrath_of_nathreza;
   } proc_actions;
 
   struct pet_summons_t
@@ -751,6 +757,7 @@ public:
     proc_t* ravenous_afflictions;
     proc_t* shard_instability;
     proc_t* fatal_echoes;
+    proc_t* wrath_of_nathreza;
 
     // Demonology
     proc_t* demonic_core_dogs;
@@ -836,6 +843,7 @@ public:
   bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
+  real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -1003,5 +1011,7 @@ namespace helpers
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
   void trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc );
+
+  void trigger_wrath_of_nathreza( warlock_t* p, player_t* target );
 }
 }  // namespace warlock
