@@ -588,7 +588,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> relatives;
 
   // Init mutex
-  mutex_t init_mutex;
+  std::shared_mutex init_mutex;
 
   // Spell database access
   std::unique_ptr<spell_data_expr_t> spell_query;
@@ -684,9 +684,9 @@ struct sim_t : private sc_thread_t
 
   bool is_initialized()
   {
-    init_mutex.lock();
+    init_mutex.lock_shared();
     auto i = initialized;
-    init_mutex.unlock();
+    init_mutex.unlock_shared();
 
     return i;
   }
