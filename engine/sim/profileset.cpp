@@ -499,7 +499,7 @@ void profilesets_t::finalize_work()
 
 void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>& ptr_set )
 {
-  fmt::print( "Generating work for profileset '{}'...\n", ptr_set->name() );
+  fmt::print( stderr, "Generating work for profileset '{}'...\n", ptr_set->name() );
   if ( m_mode == SEQUENTIAL )
   {
     auto original_opts = parent->control;
@@ -507,7 +507,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     try
     {
-      fmt::print( "Try sequential simulation for profileset '{}'.\n", ptr_set->name() );
+      fmt::print( stderr, "Try sequential simulation for profileset '{}'.\n", ptr_set->name() );
       sim_t* profile_sim = new sim_t( parent );
 
       parent->control = original_opts;
@@ -523,7 +523,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
   // Parallel processing
   else
   {
-    fmt::print( "Lock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
+    fmt::print( stderr, "Lock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
     m_work_lock.lock();
 
     while ( ! is_done() && m_max_workers - n_workers() == 0 )
@@ -533,17 +533,17 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     if ( ! is_done() )
     {
-      fmt::print( "Clean up work for profileset '{}'.\n", ptr_set->name() );
+      fmt::print( stderr, "Clean up work for profileset '{}'.\n", ptr_set->name() );
       cleanup_work();
-      fmt::print( "Finished clean up work for profileset '{}'.\n", ptr_set->name() );
+      fmt::print( stderr, "Finished clean up work for profileset '{}'.\n", ptr_set->name() );
       // Output profileset progressbar whenever we finish anything
       output_progressbar( parent );
 
-      fmt::print( "Spawning worker for profileset '{}'.\n", ptr_set->name() );
+      fmt::print( stderr, "Spawning worker for profileset '{}'.\n", ptr_set->name() );
       m_current_work.push_back( std::make_unique<worker_t>( this, parent, ptr_set.get() ) );
     }
 
-    fmt::print( "Unlock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
+    fmt::print( stderr, "Unlock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
     m_work_lock.unlock();
   }
 }
@@ -843,20 +843,17 @@ int profilesets_t::max_name_length() const
 void profilesets_t::output_progressbar( const sim_t* parent ) const
 {
   assert( parent && "No parent" );
-  fmt::print( "Start progressbar output.\n" );
+  fmt::print( stderr, "Start progressbar output.\n" );
   if ( m_max_workers == 0 )
   {
-    fmt::print( "No max workers.\n" );
     return;
   }
 
   std::stringstream s;
-  fmt::print( "Break 1\n" );
   s << "Profilesets (" << m_max_workers << "*" << parent -> profileset_work_threads << "): ";
 
   auto done = done_profilesets();
   auto pct = done / as<double>( m_profilesets.size() );
-  fmt::print( "Break 2\n" );
   s << done << "/" << m_profilesets.size() << " ";
 
   std::string status = "[";
@@ -873,20 +870,16 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   {
     status[ length ] = '>';
   }
-  fmt::print( "Break 3\n" );
   s << status;
 
   auto average_per_sim = chrono::to_fp_seconds(m_total_elapsed) / as<double>( done );
   auto elapsed = chrono::elapsed_fp_seconds( m_start_time );
   auto work_left = m_profilesets.size() - done;
   auto time_left = work_left * ( average_per_sim / m_max_workers );
-  fmt::print( "Break 4\n" );
   // Average time per done simulation
   s << " avg=" << format_time( average_per_sim / as<double>( m_max_workers ) );
-  fmt::print( "Break 5\n" );
   // Elapsed time
   s << " done=" << format_time( elapsed, false );
-  fmt::print( "Break 6\n" );
   // Estimated time left, based on average time per done simulation, elapsed time, and the number of
   // workers
   s << " left=" << format_time( time_left, false );
@@ -895,10 +888,10 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   s << "     ";
 
   s << '\r';
-  fmt::print( "Break 7\n" );
   std::cout << s.str();
-  fmt::print( "Flush stdout.\n" );
+  fmt::print( stderr, "Flush stdout.\n" );
   std::fflush( stdout );
+  fmt::print( stderr, "Flush successful.\n" );
 }
 
 std::vector<const profile_set_t*> profilesets_t::generate_sorted_profilesets( bool mean ) const

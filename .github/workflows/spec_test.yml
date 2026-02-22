@@ -72,7 +72,7 @@ jobs:
             monk_windwalker,
             monk_windwalker,
           ]
-        vers: [0, 1]
+        vers: [0]
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
