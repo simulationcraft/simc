@@ -3292,7 +3292,7 @@ void sim_t::partition()
 
   thread::set_main_thread_priority();
 
-  fmt::print( "Lock merge mutext for sim partitioning.\n" );
+  fmt::print( "Lock merge mutex for sim partitioning.\n" );
   merge_mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;

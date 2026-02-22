@@ -204,17 +204,17 @@ jobs:
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            profileset.base=load_default_talents=1 \
-            profileset.one=load_default_talents=1 profileset.one+=hero_talents=1 \
-            profileset.two=load_default_talents=1 profileset.two+=hero_talents=2 \
-            profileset.one_2pc=load_default_talents=1 profileset.one_2pc+=hero_talents=1 \
-            profileset.one_2pc+=set_bonus=latest_2pc=1 \
-            profileset.two_2pc=load_default_talents=1 profileset.two_2pc+=hero_talents=2 \
-            profileset.two_2pc+=set_bonus=latest_2pc=1 \
-            profileset.one_4pc=load_default_talents=1 profileset.one_4pc+=hero_talents=1 \
-            profileset.one_4pc+=set_bonus=latest_2pc=1 profileset.one_4pc+=set_bonus+=/latest_4pc=1 \
             profileset.two_4pc=load_default_talents=1 profileset.two_4pc+=hero_talents=2 \
             profileset.two_4pc+=set_bonus=latest_2pc=1 profileset.two_4pc+=set_bonus+=/latest_4pc=1
+            profileset.one_4pc=load_default_talents=1 profileset.one_4pc+=hero_talents=1 \
+            profileset.one_4pc+=set_bonus=latest_2pc=1 profileset.one_4pc+=set_bonus+=/latest_4pc=1 \
+            profileset.two_2pc=load_default_talents=1 profileset.two_2pc+=hero_talents=2 \
+            profileset.two_2pc+=set_bonus=latest_2pc=1 \
+            profileset.one_2pc=load_default_talents=1 profileset.one_2pc+=hero_talents=1 \
+            profileset.one_2pc+=set_bonus=latest_2pc=1 \
+            profileset.two=load_default_talents=1 profileset.two+=hero_talents=2 \
+            profileset.one=load_default_talents=1 profileset.one+=hero_talents=1 \
+            profileset.base=load_default_talents=1 \
 
       - name: Dump APL Default
         id: dump_apl_default

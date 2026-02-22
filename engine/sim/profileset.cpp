@@ -532,11 +532,13 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     if ( ! is_done() )
     {
+      fmt::print( "Clean up work for profileset '{}'.\n", ptr_set->name() );
       cleanup_work();
 
       // Output profileset progressbar whenever we finish anything
       output_progressbar( parent );
 
+      fmt::print( "Spawning worker for profileset '{}'.\n", ptr_set->name() );
       m_current_work.push_back( std::make_unique<worker_t>( this, parent, ptr_set.get() ) );
     }
 
