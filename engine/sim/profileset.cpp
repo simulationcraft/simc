@@ -448,11 +448,13 @@ void profilesets_t::cleanup_work()
 
   auto it = m_current_work.begin();
   fmt::print( stderr, "Cleaning up: check workers.\n" );
+  std::fflush( stderr );
   while ( it != m_current_work.end() )
   {
     if ( ( *it ) -> is_done() )
     {
       fmt::print( stderr, "Cleaning up: worker thread joining.\n" );
+      std::fflush( stderr );
       ( *it ) -> thread().join();
 
       auto sim = ( *it ) -> sim();
@@ -473,6 +475,7 @@ void profilesets_t::cleanup_work()
 void profilesets_t::finalize_work()
 {
   fmt::print( stderr, "Finalizing profileset work...\n" );
+  std::fflush( stderr );
   // Nothing to finalize for sequential profileset model
   if ( m_mode == SEQUENTIAL )
   {
@@ -483,6 +486,7 @@ void profilesets_t::finalize_work()
   {
     assert( ! m_work_lock.owns_lock() );
     fmt::print( stderr, "Finalize: lock work mutex.\n" );
+    std::fflush( stderr );
     m_work_lock.lock();
 
     // If we still have active workers around, wait for them to signal their finish
@@ -490,6 +494,7 @@ void profilesets_t::finalize_work()
     if ( n_workers() > 0 )
     {
       fmt::print( stderr, "Finalize: wait on work mutex.\n" );
+      std::fflush( stderr );
       m_work.wait( m_work_lock );
     }
 
@@ -503,6 +508,7 @@ void profilesets_t::finalize_work()
 void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>& ptr_set )
 {
   fmt::print( stderr, "Generating work for profileset '{}'...\n", ptr_set->name() );
+  std::fflush( stderr );
   if ( m_mode == SEQUENTIAL )
   {
     auto original_opts = parent->control;
@@ -511,6 +517,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
     try
     {
       fmt::print( stderr, "Try sequential simulation for profileset '{}'.\n", ptr_set->name() );
+      std::fflush( stderr );
       sim_t* profile_sim = new sim_t( parent );
 
       parent->control = original_opts;
