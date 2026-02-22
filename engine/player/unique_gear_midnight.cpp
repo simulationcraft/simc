@@ -2133,33 +2133,134 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1263475 missile trigger
 // 1263393 cosmic barrage
 // radius = 0-6 yards
-void wraps_of_cosmic_madness( special_effect_t& e )
-{
-  unsigned equip_id = 1259103;
-  auto equip        = find_special_effect( e.player, equip_id );
-  assert( equip && " missing equip effect" );
+// void wraps_of_cosmic_madness( special_effect_t& e )
+// {
+//   unsigned equip_id = 1259103;
+//   auto equip        = find_special_effect( e.player, equip_id );
+//   assert( equip && " missing equip effect" );
 
-  auto missile_damage = equip->driver()->effectN( 1 ).average(e);
-  auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
-  cosmic_barrage->base_dd_min = missile_damage;
+//   auto missile_damage = equip->driver()->effectN( 1 ).average(e);
+//   auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
+//   cosmic_barrage->base_dd_min = missile_damage;
+//   cosmic_barrage->hasted_ticks = true;
 
 
-
-  // struct wraps_of_cosmic_madness_t : public buff_t
-  // {
-  //   wraps_of_cosmic_madness_t( std::string_view n, const special_effect_t& e)
-  //     : buff_t( e.player, n, e.driver())
-  //     {
+//   // struct wraps_of_cosmic_madness_t : public buff_t
+//   // {
+//   //   wraps_of_cosmic_madness_t( std::string_view n, const special_effect_t& e)
+//   //     : buff_t( e.player, n, e.driver())
+//   //     {
         
-  //     }
+//   //     }
 
-  //     void execute( action_t*, action_state_t* ) override
-  //     {
+//   //     void execute( action_t*, action_state_t* ) override
+//   //     {
 
-  //     }
-  // }
+//   //     }
+//   // }
 
-  e.execute_action = cosmic_barrage;
+//   e.execute_action = cosmic_barrage;
+// }
+
+// Wraps of Cosmic Madness
+// 1259153 Channel Driver
+// 1263475 Missile Driver
+// 1263393 Damage Spell (Cosmic Barrage)
+// 1259103 Scaling / coefficient driver
+// 1240903 Scaling token (30% per additional target, cap 150%)
+
+void wraps_of_cosmic_madness( special_effect_t& effect )
+{
+  struct cosmic_madness_damage_t : public proc_spell_t
+  {
+    cosmic_madness_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness", e.player, e.player->find_spell( 1263393 ), e.item )
+    {
+      background = true;
+
+      base_dd_min = base_dd_max =
+        e.player->find_spell( 1259103 )->effectN( 1 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( s );
+
+      int enemies = s->n_targets;
+      if ( enemies > 1 )
+      {
+        double bonus = std::min( 1.5, 0.3 * ( enemies - 1 ) );
+        m *= 1.0 + bonus;
+      }
+
+      return m;
+    }
+  };
+
+  struct cosmic_madness_missile_t : public proc_spell_t
+  {
+    cosmic_madness_missile_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness_missile",
+                    e.player,
+                    e.player->find_spell( 1263393 ),
+                    e.item )
+    {
+      background = true;
+
+      //aoe = -1;
+      //radius = 6.0;                 // From Cosmic Barrage radius (0–6 yards)
+      split_aoe_damage = true;
+
+      impact_action =
+        create_proc_action<cosmic_madness_damage_t>(
+          "wraps_of_cosmic_madness", e );
+    }
+  };
+
+  struct cosmic_madness_channel_t : public proc_spell_t
+  {
+    cosmic_madness_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness_channel",
+                    e.player,
+                    e.player->find_spell( 1259153 ),
+                    e.item )
+    {
+      background = true;
+      channeled = tick_zero = true;
+      hasted_ticks = true;
+
+      target_cache.is_valid = false;
+
+      base_tick_time =
+        e.player->find_spell( 1259153 )->effectN( 1 ).period(); // 0.2s
+
+      tick_action =
+        create_proc_action<cosmic_madness_missile_t>(
+          "wraps_of_cosmic_madness_missile", e );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      event_t::cancel( player->readying );
+      player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action =
+    create_proc_action<cosmic_madness_channel_t>(
+      "wraps_of_cosmic_madness_channel", effect );
 }
 
 }  // namespace trinkets
