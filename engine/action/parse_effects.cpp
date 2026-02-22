@@ -1634,16 +1634,16 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   {
     switch ( eff.misc_value1() )
     {
-      case P_GENERIC:         str = "direct damage";          return &da_multiplier_effects;
-      case P_DURATION:        str = "duration";               return &dot_duration_effects;
-      case P_TICK_DAMAGE:     str = "tick damage";            return &ta_multiplier_effects;
-      case P_CAST_TIME:       str = "cast time";              return &execute_time_effects;
-      case P_GCD:             str = "gcd";                    return &gcd_effects;
-      case P_TICK_TIME:       str = "tick time";              return &tick_time_effects;
-      case P_RESOURCE_COST_1: str = "cost percent";           return &cost_effects;
-      case P_CRIT:            str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
-      case P_CRIT_BONUS:      str = "crit bonus multiplier";  return &crit_bonus_effects;
-      case P_COOLDOWN:        str = "cooldown";               return &recharge_multiplier_effects;
+      case P_GENERIC:         str = "direct damage";              return &da_multiplier_effects;
+      case P_DURATION:        str = "duration";                   return &dot_duration_effects;
+      case P_TICK_DAMAGE:     str = "tick damage";                return &ta_multiplier_effects;
+      case P_CAST_TIME:       str = "cast time";                  return &execute_time_effects;
+      case P_GCD:             str = "gcd";                        return &gcd_effects;
+      case P_TICK_TIME:       str = "tick time";                  return &tick_time_effects;
+      case P_RESOURCE_COST_1: str = "cost percent";               return &cost_effects;
+      case P_CRIT:            str = "crit chance multiplier";     return &crit_chance_multiplier_effects;
+      case P_CRIT_BONUS:      str = "crit bonus multiplier";      return &crit_bonus_effects;
+      case P_COOLDOWN:        str = "cooldown"; tmp.opt_enum = 0; return &recharge_multiplier_effects;
       default:                return nullptr;
     }
   }

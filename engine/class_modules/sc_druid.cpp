@@ -32,8 +32,8 @@ static constexpr timespan_t HAIL_OF_STARS_FREE_DURATION = 1000_ms;
 static constexpr double WILD_MUSHROOM_AP_PER_HIT = 5.0;
 // lunar bolt reduced_aoe_targets
 static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
-// summon+jump+fixate delay in seconds for fake summon spells like frantic frenzy & apex talent
-static constexpr double FERAL_FLICKER_DELAY = 0.5;
+// summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
+static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
 static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 // unseen swipe reduced_aoe_targets
@@ -1461,7 +1461,8 @@ struct dread_shade_t : public pet_t
   {
     druid_t* o;
 
-    dire_echo_t( pet_t* p ) : parse_action_effects_t( "dire_echo", p, p->find_spell( 1253489 ) )
+    dire_echo_t( pet_t* p )
+      : parse_action_effects_t( "dire_echo", p, p->find_spell( 1253489 ) ), o( static_cast<druid_t*>( p->owner ) )
     {
       aoe = -1;
 
@@ -1470,6 +1471,13 @@ struct dread_shade_t : public pet_t
       o->parse_action_effects( this );
       o->parse_action_target_effects( this );
     }
+
+    void init() override
+    {
+      parse_action_effects_t<spell_t>::init();
+
+      snapshot_flags &= ~STATE_MUL_PET;  // doesn't get pet multiplier
+    }
   };
 
   action_t* dire_echo;
@@ -1477,13 +1485,14 @@ struct dread_shade_t : public pet_t
 
   dread_shade_t( druid_t* p ) : pet_t( p->sim, p, "Dread Shade", true, true )
   {
-    dire_echo = new dire_echo_t( this );
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
   void arise() override;
   void create_buffs() override;
+  void create_actions() override;
 };
 
 // Sylvan Beckoning =========================================================
@@ -2939,9 +2948,17 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     p()->active.unseen_swipe->set_target( _tar );
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
-      p()->active.unseen_swipe->execute();
+    {
+      make_event( *sim, FERAL_FLICKER_DELAY, [ this ] {
+        p()->active.unseen_swipe->execute();
+      } );
+    }
     else
-      p()->active.unseen_slash->execute_on_target( _tar );
+    {
+      make_event( *sim, FERAL_FLICKER_DELAY, [ this, _tar ] {
+        p()->active.unseen_slash->execute_on_target( _tar );
+      } );
+    }
   }
 
   void execute() override
@@ -4111,16 +4128,27 @@ struct frantic_frenzy_t final : public cat_attack_t
         track_cd_waste = true;
 
       // scripted so must be manually configured
-      base_tick_time = 200_ms;                          // wild ass guess
-      dot_duration = 1000_ms;                           // ticks 6 times despite tooltip saying 5
-      tick_zero = true;                                 // this zero tick may be a bug?
-      tick_action->travel_delay = FERAL_FLICKER_DELAY;  // more wild ass guess
+      base_tick_time = 200_ms;  // wild ass guess
+      dot_duration = 1000_ms;   // ticks 6 times despite tooltip saying 5
+      tick_zero = true;         // this zero tick may be a bug?
 
       const auto& energize_eff = find_effect( p->find_spell( 1278969 ), E_ENERGIZE );
       energize_type = action_energize::PER_TICK;
       energize_resource = energize_eff.resource_gain_type();
       energize_amount = energize_eff.resource( energize_resource );
     }
+  }
+
+  void trigger_dot( action_state_t* s )
+  {
+    // make a copy as the state will be released after impact()
+    auto _state = get_state( s );
+
+    // wild ass guess on delay before the 'pet' spawns
+    make_event( *sim, FERAL_FLICKER_DELAY, [ this, _state ]() mutable {
+      cat_attack_t::trigger_dot( _state );
+      action_state_t::release( _state );
+    } );
   }
 };
 
@@ -4825,7 +4853,6 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
-    travel_delay = FERAL_FLICKER_DELAY;  // wild ass guess
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
@@ -5800,7 +5827,7 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_flashing->execute_on_target( target ); } );
 
-    if ( p()->talent.waking_nightmare.ok() )
+    if ( p()->talent.waking_nightmare.ok() && p()->pets.dread_shade.n_active_pets() )
     {
       if ( p()->bugs )  // only the latest summon casts dire echo
       {
@@ -8926,19 +8953,19 @@ struct heart_of_the_wild_t final : public druid_spell_t
     {
       case BEAR_FORM:
         if ( p()->specialization() == DRUID_GUARDIAN )
-          return;
+          break;
         p()->buff.heart_of_the_wild_bear->trigger();
         break;
 
       case CAT_FORM:
-        if ( p()->specialization() == DRUID_FERAL )
-          return;
+        if ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_BALANCE )
+          break;
         hotw_cat->execute_on_target( target );
         break;
 
       case MOONKIN_FORM:
         if ( p()->specialization() == DRUID_BALANCE )
-          return;
+          break;
         hotw_owl->stats->add_execute( 0_ms, target );
         p()->buff.heart_of_the_wild_owl->trigger();
         break;
@@ -9461,6 +9488,13 @@ void dread_shade_t::create_buffs()
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       o()->active.waking_nightmare_pulse->execute();
     } );
+}
+
+void dread_shade_t::create_actions()
+{
+  pet_t::create_actions();
+
+  dire_echo = new dire_echo_t( this );
 }
 
 void sylvan_beckoning_t::arise()
@@ -10296,7 +10330,7 @@ void druid_t::init_spells()
   talent.ursocs_guidance                = ST( "Ursoc's Guidance" );
   talent.ursols_warding                 = ST( "Ursol's Warding" );  // TODO: NYI
   talent.vulnerable_flesh               = ST( "Vulnerable Flesh" );
-  talent.waking_dream                   = ST( "Waking Nightmare" );
+  talent.waking_nightmare               = ST( "Waking Nightmare" );
   talent.ward_of_the_forest             = ST( "Ward of the Forest" );
   talent.wild_guardian_1                = ST( "Wild Guardian", 1 );
   talent.wild_guardian_2                = ST( "Wild Guardian", 2 );

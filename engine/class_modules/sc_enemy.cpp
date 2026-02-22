@@ -1470,7 +1470,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
   // values were a bit lower, so this one was also lowered.
   constexpr std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 6.5, 4.0, 2.5, 1.6, 1 };
-  constexpr double aa_damage_base        = 30'000'000;
+  constexpr double aa_damage_base        = 800'000;
   constexpr double dummy_strike_base     = aa_damage_base * 2.5;
   constexpr double background_spell_base = aa_damage_base * 0.1;
 
@@ -1496,7 +1496,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
   constexpr std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 6.5, 4.0, 2.5, 1.6, 1 };
-  constexpr int heal_value_base = 1'500'000;
+  constexpr int heal_value_base = 300'000;
   size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},cooldown=5.0,duration=0,player_if=role.tank",
                                              heal_value_base / tank_dummy_index_scalar[ tank_dummy_index ] );
