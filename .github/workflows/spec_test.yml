@@ -12,7 +12,7 @@ on:
 
 jobs:
   spec-test:
-    name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
+    name: spec-test-apex-${{ matrix.apex }}
     runs-on: ubuntu-22.04
     continue-on-error: ${{ inputs.is-ptr }}
 
@@ -71,58 +71,8 @@ jobs:
             monk_windwalker,
             monk_windwalker,
             monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
-            monk_windwalker,
           ]
-        apex: [0, 1]
+        vers: [0, 1]
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
@@ -157,14 +107,14 @@ jobs:
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            profileset.two_4pc=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.two_4pc+=hero_talents=2 \
+            profileset.two_4pc=use_blizzard_action_list=${{ matrix.vers }} profileset.two_4pc+=hero_talents=2 \
             profileset.two_4pc+=set_bonus=latest_2pc=1 profileset.two_4pc+=set_bonus+=/latest_4pc=1 \
-            profileset.one_4pc=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.one_4pc+=hero_talents=1 \
+            profileset.one_4pc=use_blizzard_action_list=${{ matrix.vers }} profileset.one_4pc+=hero_talents=1 \
             profileset.one_4pc+=set_bonus=latest_2pc=1 profileset.one_4pc+=set_bonus+=/latest_4pc=1 \
-            profileset.two_2pc=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.two_2pc+=hero_talents=2 \
+            profileset.two_2pc=use_blizzard_action_list=${{ matrix.vers }} profileset.two_2pc+=hero_talents=2 \
             profileset.two_2pc+=set_bonus=latest_2pc=1 \
-            profileset.one_2pc=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.one_2pc+=hero_talents=1 \
+            profileset.one_2pc=use_blizzard_action_list=${{ matrix.vers }} profileset.one_2pc+=hero_talents=1 \
             profileset.one_2pc+=set_bonus=latest_2pc=1 \
-            profileset.two=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.two+=hero_talents=2 \
-            profileset.one=spec_talents=tigereye_brew:${{ matrix.apex }} profileset.one+=hero_talents=1 \
-            profileset.base=spec_talents=tigereye_brew:${{ matrix.apex }}
+            profileset.two=use_blizzard_action_list=${{ matrix.vers }} profileset.two+=hero_talents=2 \
+            profileset.one=use_blizzard_action_list=${{ matrix.vers }} profileset.one+=hero_talents=1 \
+            profileset.base=use_blizzard_action_list=${{ matrix.vers }}
