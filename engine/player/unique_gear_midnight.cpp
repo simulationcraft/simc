@@ -2474,6 +2474,8 @@ void register_special_effects()
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
   register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
+  register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
+  register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
