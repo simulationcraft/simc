@@ -122,6 +122,7 @@ jobs:
             monk_windwalker,
             monk_windwalker,
           ]
+        apex: [0, 1]
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
@@ -156,14 +157,14 @@ jobs:
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            profileset.two_4pc=load_default_talents=1 profileset.two_4pc+=hero_talents=2 \
+            profileset.two_4pc=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.two_4pc+=hero_talents=2 \
             profileset.two_4pc+=set_bonus=latest_2pc=1 profileset.two_4pc+=set_bonus+=/latest_4pc=1 \
-            profileset.one_4pc=load_default_talents=1 profileset.one_4pc+=hero_talents=1 \
+            profileset.one_4pc=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.one_4pc+=hero_talents=1 \
             profileset.one_4pc+=set_bonus=latest_2pc=1 profileset.one_4pc+=set_bonus+=/latest_4pc=1 \
-            profileset.two_2pc=load_default_talents=1 profileset.two_2pc+=hero_talents=2 \
+            profileset.two_2pc=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.two_2pc+=hero_talents=2 \
             profileset.two_2pc+=set_bonus=latest_2pc=1 \
-            profileset.one_2pc=load_default_talents=1 profileset.one_2pc+=hero_talents=1 \
+            profileset.one_2pc=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.one_2pc+=hero_talents=1 \
             profileset.one_2pc+=set_bonus=latest_2pc=1 \
-            profileset.two=load_default_talents=1 profileset.two+=hero_talents=2 \
-            profileset.one=load_default_talents=1 profileset.one+=hero_talents=1 \
-            profileset.base=load_default_talents=1
+            profileset.two=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.two+=hero_talents=2 \
+            profileset.one=spec_talents=tigereye_brew_1:${{ matrix.apex }} profileset.one+=hero_talents=1 \
+            profileset.base=spec_talents=tigereye_brew_1:${{ matrix.apex }}
