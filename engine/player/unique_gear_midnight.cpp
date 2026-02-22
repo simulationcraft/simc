@@ -2137,11 +2137,10 @@ void wraps_of_cosmic_madness( special_effect_t& e )
   struct cosmic_barrage_t : public proc_spell_t
   {
     cosmic_barrage_t( const special_effect_t& e, double missile_damage ) :
-      proc_spell_t( "cosmic_barrage", e.player, e.driver())
+      proc_spell_t( "cosmic_barrage", e.player, e.driver() )
     {
       split_aoe_damage = true;
       base_dd_min = base_dd_max = missile_damage;
-
       aoe = -1;
     }
 
@@ -2150,10 +2149,18 @@ void wraps_of_cosmic_madness( special_effect_t& e )
       double m = proc_spell_t::action_multiplier();
 
       int targets = sim->active_enemies;
-      if ( targets > 6 ) targets = 6;
-
+      
+      if ( targets > 6 ) 
+      {
+        targets = 6;
+      }
+      
       double bonus = 0.3 * ( targets - 1 );
-      if ( bonus > 1.5 ) bonus = 1.5;
+      
+      if ( bonus > 1.5 ) 
+      {
+        bonus = 1.5;
+      }
 
       return m * ( 1.0 + bonus );
     }
@@ -2162,13 +2169,11 @@ void wraps_of_cosmic_madness( special_effect_t& e )
   struct cosmic_madness_channel_t : public proc_spell_t
   {
     cosmic_madness_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness_channel",
-                    e.player,
-                    e.driver() )
+      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
-      assert( equip && " missing equip effect" );
+      assert( equip && "missing equip effect" );
 
       auto missile_damage = equip->driver()->effectN( 1 ).average(e);
       auto cosmic_barrage = create_proc_action<cosmic_barrage_t>( "cosmic_barrage", e, missile_damage );
@@ -2177,7 +2182,7 @@ void wraps_of_cosmic_madness( special_effect_t& e )
     }
   };
 
-  e.execute_action = create_proc_action<cosmic_madness_channel_t>("wraps_of_cosmic_madness_channel", e );
+  e.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", e );
 }
 
 }  // namespace trinkets
