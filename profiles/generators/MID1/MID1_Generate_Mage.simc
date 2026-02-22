@@ -1,68 +1,68 @@
-# mage="MID1_Mage_Arcane_Spellslinger"
-# spec=arcane
-# level=80
-# race=void_elf
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzgZMjZxDwYmhx0MjZAAAAAAYAAQAzMbLLLzMxCAAAAAAAYhhZmlZZGzMmZGjZmZGzw2YA
+mage="MID1_Mage_Arcane_Spellslinger"
+spec=arcane
+level=80
+race=troll
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAgBYmZmllZmhFAA2mxMzY2MLzMzYmxYMzMGbMzMjZAAGAAAzsAAmBADD
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=beledars_bounty
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=lights_potential_2
+flask=flask_of_thalassian_resistance_2
+food=silvermoon_parade
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=augurs_ephemeral_widebrim,id=237718,bonus_id=1808,gem_id=213743,ilevel=723
-# neck=chrysalis_of_sundered_souls,id=237568,gem_id=213494/213455,ilevel=723
-# shoulder=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=12399/12257,gem_id=238042,ilevel=730
-# chest=augurs_ephemeral_habiliments,id=237721,enchant_id=7364,ilevel=723
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109/8960/1808,enchant_id=7397,gem_id=213473,ilevel=720,crafted_stats=32/36
-# hands=codebreakers_cunning_handwraps,id=246275,ilevel=723
-# waist=singularity_cincture,id=237559,bonus_id=1808,gem_id=213494,ilevel=723
-# legs=augurs_ephemeral_trousers,id=237717,enchant_id=7531,ilevel=723
-# feet=interlopers_silken_striders,id=243305,bonus_id=13504,enchant_id=7424,ilevel=723
-# finger1=high_nerubian_signet,id=221141,enchant_id=7352,gem_id=213485/213485,ilevel=723
-# finger2=band_of_the_shattered_soul,id=242405,enchant_id=7352,gem_id=213485/213485,ilevel=723
-# trinket1=astral_antenna,id=242395,ilevel=723
-# trinket2=diamantine_voidcore,id=242392,ilevel=723
-# main_hand=voidglass_sovereigns_blade,id=237735,enchant_id=7448,ilevel=723
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960,ilevel=720,crafted_stats=36/40
+head=voidbreakers_veil,id=250060,ilevel=289,enchant_id=8017,gem_id=240983,bonus_id=13534
+neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240902/240902,bonus_id=13534
+shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=12214/13454/8960/8791,ilevel=285,crafted_stats=36/32
+chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
+wrist=bracers_of_blazing_light,id=258580,ilevel=289,gem_id=240908,bonus_id=13534
+hands=voidbreakers_gloves,id=250061,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240918,bonus_id=13534
+legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
+feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
+finger1=masterwork_sindorei_band,id=240949,bonus_id=12214/13453/8960/8791,enchant_id=7997,gem_id=240892,ilevel=285,crafted_stats=36/32
+finger2=eye_of_midnight,id=249920,ilevel=289,enchant_id=7969,gem_id=240902/240902,bonus_id=13534
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,ilevel=289
+main_hand=,id=258218,ilevel=289,enchant_id=8039
+off_hand=,id=251094,ilevel=289
 
-# save=MID1_Mage_Arcane_Spellslinger.simc
+save=MID1_Mage_Arcane_Spellslinger.simc
 
-# mage="MID1_Mage_Arcane_Sunfury"
-# spec=arcane
-# level=80
-# race=void_elf
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzgZ8AjZxwYmhx0MjZAAAAAAYAAzMTLz2yMAQsBAAAAAAAwgZWmlZmZGjZMzMzMjZYZM
+mage="MID1_Mage_Arcane_Sunfury"
+spec=arcane
+level=80
+race=void_elf
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAmZmmlltZAgYDAgNmZmxYzyMzMLzMGjZmxYhZmZMDAwAAAMAzMgZAwwA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=beledars_bounty
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=lights_potential_2
+flask=flask_of_thalassian_resistance_2
+food=silvermoon_parade
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=augurs_ephemeral_widebrim,id=237718,bonus_id=1808,gem_id=213743,ilevel=723
-# neck=chrysalis_of_sundered_souls,id=237568,gem_id=213494/213455,ilevel=723
-# shoulder=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=12399/12257,gem_id=238042,ilevel=730
-# chest=augurs_ephemeral_habiliments,id=237721,enchant_id=7364,ilevel=723
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109/8960/1808,enchant_id=7397,gem_id=213473,ilevel=720,crafted_stats=32/36
-# hands=codebreakers_cunning_handwraps,id=246275,ilevel=723
-# waist=singularity_cincture,id=237559,bonus_id=1808,gem_id=213494,ilevel=723
-# legs=augurs_ephemeral_trousers,id=237717,enchant_id=7531,ilevel=723
-# feet=interlopers_silken_striders,id=243305,bonus_id=13504,enchant_id=7424,ilevel=723
-# finger1=high_nerubian_signet,id=221141,enchant_id=7352,gem_id=213485/213485,ilevel=723
-# finger2=band_of_the_shattered_soul,id=242405,enchant_id=7352,gem_id=213485/213485,ilevel=723
-# trinket1=astral_antenna,id=242395,ilevel=723
-# trinket2=diamantine_voidcore,id=242392,ilevel=723
-# main_hand=voidglass_sovereigns_blade,id=237735,enchant_id=7448,ilevel=723
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960,ilevel=720,crafted_stats=36/40
+head=voidbreakers_veil,id=250060,ilevel=289,enchant_id=8017,gem_id=240983,bonus_id=13534
+neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240902/240902,bonus_id=13534
+shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=12214/13454/8960/8791,ilevel=285,crafted_stats=36/32
+chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
+wrist=bracers_of_blazing_light,id=258580,ilevel=289,gem_id=240908,bonus_id=13534
+hands=voidbreakers_gloves,id=250061,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240918,bonus_id=13534
+legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
+feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
+finger1=masterwork_sindorei_band,id=240949,bonus_id=12214/13453/8960/8791,enchant_id=7997,gem_id=240892,ilevel=285,crafted_stats=36/32
+finger2=eye_of_midnight,id=249920,ilevel=289,enchant_id=7969,gem_id=240902/240902,bonus_id=13534
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,ilevel=289
+main_hand=,id=258218,ilevel=289,enchant_id=8039
+off_hand=,id=251094,ilevel=289
 
-# save=MID1_Mage_Arcane.simc
+save=MID1_Mage_Arcane.simc
 
 # mage="MID1_Mage_Fire_Sunfury"
 # spec=fire
