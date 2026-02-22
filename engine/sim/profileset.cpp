@@ -506,6 +506,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     try
     {
+      fmt::print( "Try sequential simulation for profileset '{}'.\n", ptr_set->name() );
       sim_t* profile_sim = new sim_t( parent );
 
       parent->control = original_opts;
@@ -521,6 +522,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
   // Parallel processing
   else
   {
+    fmt::print( "Lock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
     m_work_lock.lock();
 
     while ( ! is_done() && m_max_workers - n_workers() == 0 )
@@ -538,6 +540,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
       m_current_work.push_back( std::make_unique<worker_t>( this, parent, ptr_set.get() ) );
     }
 
+    fmt::print( "Unlock work mutex for parallel simulation of profileset '{}'.\n", ptr_set->name() );
     m_work_lock.unlock();
   }
 }
