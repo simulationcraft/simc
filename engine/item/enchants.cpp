@@ -496,6 +496,7 @@ const item_enchantment_data_t& enchant::find_item_enchant(
 {
   util::string_view enchant_str = name;
   unsigned rank = 0;
+  unsigned alt_rank = 0;
   int item_class = -1;
   int inventory_type = -1;
   int item_subclass = -1;
@@ -524,14 +525,25 @@ const item_enchantment_data_t& enchant::find_item_enchant(
   inventory_type = item.dbc_inventory_type();
   item_subclass = item.dbc_item_subclass();
 
-  const auto& entry = permanent_enchant_entry_t::find( enchant_str, rank, item_class,
-      inventory_type, item_subclass, item.player->dbc->ptr );
-  if ( entry.enchant_id == 0 )
+  // Some midnight enchants use rank 13/14
+  if ( rank == 1 || rank == 2 )
+    alt_rank = rank + 12;
+
+  const auto& entry = permanent_enchant_entry_t::find( enchant_str, rank, item_class, inventory_type, item_subclass,
+                                                       item.player->dbc->ptr );
+
+  if ( entry.enchant_id != 0 )
+    return item_enchantment_data_t::find( entry.enchant_id, item.player->dbc->ptr );
+
+  if ( alt_rank )
   {
-    return item_enchantment_data_t::nil();
+    const auto& alt_entry = permanent_enchant_entry_t::find( enchant_str, alt_rank, item_class, inventory_type,
+                                                             item_subclass, item.player->dbc->ptr );
+    if ( alt_entry.enchant_id != 0 )
+      return item_enchantment_data_t::find( alt_entry.enchant_id, item.player->dbc->ptr );
   }
 
-  return item_enchantment_data_t::find( entry.enchant_id, item.player->dbc->ptr );
+  return item_enchantment_data_t::nil();
 }
 
 std::string enchant::encoded_enchant_name(
