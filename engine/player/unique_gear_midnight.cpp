@@ -2169,53 +2169,13 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1259103 Scaling / coefficient driver
 // 1240903 Scaling token (30% per additional target, cap 150%)
 
-void wraps_of_cosmic_madness( special_effect_t& effect )
+void wraps_of_cosmic_madness( special_effect_t& e )
 {
-  struct cosmic_madness_damage_t : public proc_spell_t
-  {
-    cosmic_madness_damage_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness", e.player, e.player->find_spell( 1263393 ), e.item )
-    {
-      background = true;
-
-      base_dd_min = base_dd_max =
-        e.player->find_spell( 1259103 )->effectN( 1 ).average( e.item );
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = proc_spell_t::composite_da_multiplier( s );
-
-      int enemies = s->n_targets;
-      if ( enemies > 1 )
-      {
-        double bonus = std::min( 1.5, 0.3 * ( enemies - 1 ) );
-        m *= 1.0 + bonus;
-      }
-
-      return m;
-    }
-  };
-
-  struct cosmic_madness_missile_t : public proc_spell_t
-  {
-    cosmic_madness_missile_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness_missile",
-                    e.player,
-                    e.player->find_spell( 1263393 ),
-                    e.item )
-    {
-      background = true;
-
-      //aoe = -1;
-      //radius = 6.0;                 // From Cosmic Barrage radius (0–6 yards)
-      split_aoe_damage = true;
-
-      impact_action =
-        create_proc_action<cosmic_madness_damage_t>(
-          "wraps_of_cosmic_madness", e );
-    }
-  };
+{
+  unsigned equip_id = 1259103;
+  auto equip        = find_special_effect( e.player, equip_id );
+  assert( equip && " missing equip effect" );
+  
 
   struct cosmic_madness_channel_t : public proc_spell_t
   {
@@ -2228,15 +2188,15 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
       background = true;
       channeled = tick_zero = true;
       hasted_ticks = true;
-
       target_cache.is_valid = false;
-
       base_tick_time =
         e.player->find_spell( 1259153 )->effectN( 1 ).period(); // 0.2s
 
-      tick_action =
-        create_proc_action<cosmic_madness_missile_t>(
-          "wraps_of_cosmic_madness_missile", e );
+      auto missile_damage = e.driver()->effectN( 1 ).average(e);
+      auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
+      cosmic_barrage->base_dd_min = missile_damage;
+
+      tick_action = cosmic_barrage;
     }
 
     void execute() override
