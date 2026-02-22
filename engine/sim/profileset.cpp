@@ -842,18 +842,21 @@ int profilesets_t::max_name_length() const
 
 void profilesets_t::output_progressbar( const sim_t* parent ) const
 {
+  assert( parent && "No parent" );
+  fmt::print( "Start progressbar output.\n" );
   if ( m_max_workers == 0 )
   {
+    fmt::print( "No max workers.\n" );
     return;
   }
 
   std::stringstream s;
-
+  fmt::print( "Break 1\n" );
   s << "Profilesets (" << m_max_workers << "*" << parent -> profileset_work_threads << "): ";
 
   auto done = done_profilesets();
   auto pct = done / as<double>( m_profilesets.size() );
-
+  fmt::print( "Break 2\n" );
   s << done << "/" << m_profilesets.size() << " ";
 
   std::string status = "[";
@@ -870,20 +873,20 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   {
     status[ length ] = '>';
   }
-
+  fmt::print( "Break 3\n" );
   s << status;
 
   auto average_per_sim = chrono::to_fp_seconds(m_total_elapsed) / as<double>( done );
   auto elapsed = chrono::elapsed_fp_seconds( m_start_time );
   auto work_left = m_profilesets.size() - done;
   auto time_left = work_left * ( average_per_sim / m_max_workers );
-
+  fmt::print( "Break 4\n" );
   // Average time per done simulation
   s << " avg=" << format_time( average_per_sim / as<double>( m_max_workers ) );
-
+  fmt::print( "Break 5\n" );
   // Elapsed time
   s << " done=" << format_time( elapsed, false );
-
+  fmt::print( "Break 6\n" );
   // Estimated time left, based on average time per done simulation, elapsed time, and the number of
   // workers
   s << " left=" << format_time( time_left, false );
@@ -892,8 +895,9 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   s << "     ";
 
   s << '\r';
-
+  fmt::print( "Break 7\n" );
   std::cout << s.str();
+  fmt::print( "Flush stdout.\n" );
   std::fflush( stdout );
 }
 
