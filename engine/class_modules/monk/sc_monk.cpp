@@ -4002,23 +4002,28 @@ void gift_of_the_ox_t::spawn_orb( int count )
   if ( is_fallback )
     return;
 
-  int overflow = std::max( count + as<int>( queue.size() ) - max_stack(), 0 );
+  int available = as<int>( queue.size() );
+  int overflow  = std::max( count + available - max_stack(), 0 );
   player->sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={}", player->name(),
-                            count, queue.size(), count, overflow,
-                            std::min( count + as<int>( queue.size() ), max_stack() ) );
+                            count, available, count, overflow, std::min( count + available, max_stack() ) );
+
+  count -= overflow;
+
+  int remains = consume( overflow );
+  overflow -= available - remains;
+
+  for ( ; overflow > 0; --overflow )
+    heal_trigger->execute();
 
   for ( ; count > 0; --count )
   {
     monk_buff_t::trigger();
-    if ( as<int>( queue.size() ) == max_stack() )
-      heal_trigger->execute();
-    else
-      queue.emplace( make_event<orb_event_t>( *sim, player, data().duration(), &queue, [ this ]() {
-        player->sim->print_debug( "{} expiring 1 out of {} Gift of the Ox Orbs. current={} expire={}", player->name(),
-                                  queue.size(), queue.size(), 1 );
-        decrement();
-        heal_expire->execute();
-      } ) );
+    queue.emplace( make_event<orb_event_t>( *sim, player, data().duration(), &queue, [ this ]() {
+      player->sim->print_debug( "{} expiring 1 out of {} Gift of the Ox Orbs. current={} expire={}", player->name(),
+                                queue.size(), queue.size(), 1 );
+      decrement();
+      heal_expire->execute();
+    } ) );
   }
 }
 
@@ -4040,6 +4045,9 @@ int gift_of_the_ox_t::consume( int count )
 {
   if ( is_fallback )
     return 0;
+
+  if ( !count )
+    return as<int>( queue.size() );
 
   int available = std::min( count, as<int>( queue.size() ) );
   player->sim->print_debug( "{} consuming {} out of {} Gift of the Ox Orbs. start={} quantity={} available={} end={}",
