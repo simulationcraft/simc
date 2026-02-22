@@ -106,7 +106,7 @@ std::string format_time( double seconds, bool milliseconds = true )
 // worker_t)
 void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*& profile_sim )
 {
-  fmt::print( "Simulating profileset '{}'...\n", set.name() );
+  fmt::print( stderr,"Simulating profileset '{}'...\n", set.name() );
   // Reset random seed for the profileset sims
   profile_sim -> seed = 0;
   profile_sim -> profileset_enabled = true;
@@ -124,7 +124,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     profile_sim -> progress_bar.set_phase( set.name() );
   }
 
-  fmt::print( "Execute profile sim '{}'.\n", set.name() );
+  fmt::print( stderr, "Execute profile sim '{}'.\n", set.name() );
   auto ret = profile_sim -> execute();
   if ( ret )
   {
@@ -138,14 +138,14 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
   if ( !ret || profile_sim -> is_canceled() )
   {
-    fmt::print( "Profile sim '{}' failed execution.\n", set.name() );
+    fmt::print( stderr, "Profile sim '{}' failed execution.\n", set.name() );
     return;
   }
 
   const auto player = profile_sim -> player_no_pet_list[ parent->profileset_report_player_index ];
   auto progress = profile_sim -> progress( nullptr, 0 );
 
-  fmt::print( "Set results for profileset '{}'.\n", set.name() );
+  fmt::print( stderr, "Set results for profileset '{}'.\n", set.name() );
   range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
     auto data = profileset::metric_data( player, metric );
 
@@ -161,7 +161,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
       .iterations( progress.current_iterations );
   } );
 
-  fmt::print( "Save data for profileset '{}'.\n", set.name() );
+  fmt::print( stderr, "Save data for profileset '{}'.\n", set.name() );
   if ( ! parent -> profileset_output_data.empty() )
   {
     const auto parent_player = parent -> player_no_pet_list[ parent->profileset_report_player_index ];
@@ -178,7 +178,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   parent -> event_mgr.total_events_processed += profile_sim -> event_mgr.total_events_processed;
 
   set.cleanup_options();
-  fmt::print( "Finished simulating profileset '{}'.\n", set.name() );
+  fmt::print( stderr, "Finished simulating profileset '{}'.\n", set.name() );
 }
 
 // Figure out if the option defines new actor(s) with their own scope
@@ -445,12 +445,12 @@ void profilesets_t::cleanup_work()
   assert( m_work_lock.owns_lock() );
   
   auto it = m_current_work.begin();
-  fmt::print( "Cleaning up: check workers.\n" );
+  fmt::print( stderr, "Cleaning up: check workers.\n" );
   while ( it != m_current_work.end() )
   {
     if ( ( *it ) -> is_done() )
     {
-      fmt::print( "Cleaning up: worker thread joining.\n" );
+      fmt::print( stderr, "Cleaning up: worker thread joining.\n" );
       ( *it ) -> thread().join();
 
       auto sim = ( *it ) -> sim();
@@ -470,7 +470,7 @@ void profilesets_t::cleanup_work()
 // Wait until we have all the work done
 void profilesets_t::finalize_work()
 {
-  fmt::print( "Finalizing profileset work...\n" );
+  fmt::print( stderr, "Finalizing profileset work...\n" );
   // Nothing to finalize for sequential profileset model
   if ( m_mode == SEQUENTIAL )
   {
@@ -480,13 +480,14 @@ void profilesets_t::finalize_work()
   while ( !m_current_work.empty() )
   {
     assert( ! m_work_lock.owns_lock() );
-
+    fmt::print( stderr, "Finalize: lock work mutex.\n" );
     m_work_lock.lock();
 
     // If we still have active workers around, wait for them to signal their finish
     // TODO: Potential race? (wait vs notify_worker() called from thread)
     if ( n_workers() > 0 )
     {
+      fmt::print( stderr, "Finalize: wait on work mutex.\n" );
       m_work.wait( m_work_lock );
     }
 
@@ -528,6 +529,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     while ( ! is_done() && m_max_workers - n_workers() == 0 )
     {
+      fmt::print( stderr, "{} max workers, {} current workers, wait on work mutex for profileset '{}'.\n", m_max_workers, n_workers(), ptr_set->name() );
       m_work.wait( m_work_lock );
     }
 
@@ -761,10 +763,10 @@ std::string profilesets_t::current_profileset_name()
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  fmt::print( "Iterating through profilesets...\n" );
+  fmt::print( stderr, "Iterating through profilesets...\n" );
   if ( parent -> profileset_map.empty() )
   {
-    fmt::print( "No profilesets found.\n" );
+    fmt::print( stderr, "No profilesets found.\n" );
     return true;
   }
 
@@ -817,7 +819,7 @@ bool profilesets_t::iterate( sim_t* parent )
   if ( parent->rethrow_exception_queue() )
     return false;
 
-  fmt::print( "Finished profileset iteration.\n" );
+  fmt::print( stderr, "Finished profileset iteration.\n" );
   return true;
 }
 

@@ -3235,7 +3235,7 @@ void sim_t::merge()
   if ( children.empty() )
     return;
 
-  fmt::print( "Unlock merge mutex for sim merge.\n" );
+  fmt::print( stderr, "Unlock merge mutex for sim merge.\n" );
   merge_mutex.unlock();
 
   for ( auto& child : children )
@@ -3292,7 +3292,7 @@ void sim_t::partition()
 
   thread::set_main_thread_priority();
 
-  fmt::print( "Lock merge mutex for sim partitioning.\n" );
+  fmt::print( stderr, "Lock merge mutex for sim partitioning.\n" );
   merge_mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;
@@ -3364,7 +3364,7 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
-  fmt::print( "Start sim execute.\n" );
+  fmt::print( stderr, "Start sim execute.\n" );
   const auto start_cpu_time  = chrono::cpu_clock::now();
   const auto start_wall_time = chrono::wall_clock::now();
 
@@ -3383,7 +3383,7 @@ bool sim_t::execute()
     success = iterate();
   }
 
-  fmt::print( "Analyze sim.\n" );
+  fmt::print( stderr, "Analyze sim.\n" );
   if ( success )
     analyze();
 
