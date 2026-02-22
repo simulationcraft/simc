@@ -2149,6 +2149,7 @@ void wraps_of_cosmic_madness( special_effect_t& e )
 
       auto missile_damage = equip->driver()->effectN( 1 ).average(e);
       auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
+      cosmic_barrage->split_aoe_damage = true;
       cosmic_barrage->base_dd_min = missile_damage;
 
       tick_action = cosmic_barrage;
