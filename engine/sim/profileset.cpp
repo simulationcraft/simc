@@ -653,6 +653,7 @@ bool profilesets_t::parse( sim_t* sim )
     m_mutex.lock();
     m_profilesets.push_back( std::make_unique<profile_set_t>( profileset_name, control, has_output_opts ) );
     m_control.notify_one();
+    fmt::print( stderr, "Signaled for work ...\n" );
     m_mutex.unlock();
   }
 
