@@ -2148,21 +2148,9 @@ void wraps_of_cosmic_madness( special_effect_t& e )
     {
       double m = proc_spell_t::action_multiplier();
 
-      int targets = sim->active_enemies;
-      
-      if ( targets > 6 ) 
-      {
-        targets = 6;
-      }
-      
-      double bonus = 0.3 * ( targets - 1 );
-      
-      if ( bonus > 1.5 ) 
-      {
-        bonus = 1.5;
-      }
-
-      return m * ( 1.0 + bonus );
+      int extra_targets = sim->active_enemies - 1;
+      m *= 1.0 + std::min( 0.3 * extra_targets, 1.5 ); // 30% per additional target, cap 150%
+      return m;
     }
   };
 
