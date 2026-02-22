@@ -2088,10 +2088,9 @@ void locuswalkers_ribbon( special_effect_t& e )
   {
     buff_t* stack_buff;
 
-    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e)
-      : stat_buff_t( e.player, n, e.trigger())
+    riftwalkers_temptation_t( player_t* p, std::string_view n, const spell_data_t* s)
+      : stat_buff_t( p, n, s)
     {
-      set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
     }   
     
     double buff_stat_stack_amount(const buff_stat_t& stat, int s ) const override{
@@ -2108,8 +2107,9 @@ void locuswalkers_ribbon( special_effect_t& e )
     
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
-      stat_buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e);
-      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.trigger()->effectN( 2 ).trigger())
+      stat_buff = create_buff<riftwalkers_temptation_t>(e.player,"riftwalkers_temptation", e.trigger())
+                      ->set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ));
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", stat_buff->data().effectN( 2 ).trigger())
                   ->set_freeze_stacks( true )
                   ->set_default_value( e.driver()->effectN( 2 ).percent() )
                   ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
