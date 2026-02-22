@@ -8926,19 +8926,19 @@ struct heart_of_the_wild_t final : public druid_spell_t
     {
       case BEAR_FORM:
         if ( p()->specialization() == DRUID_GUARDIAN )
-          return;
+          break;
         p()->buff.heart_of_the_wild_bear->trigger();
         break;
 
       case CAT_FORM:
-        if ( p()->specialization() == DRUID_FERAL )
-          return;
+        if ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_BALANCE )
+          break;
         hotw_cat->execute_on_target( target );
         break;
 
       case MOONKIN_FORM:
         if ( p()->specialization() == DRUID_BALANCE )
-          return;
+          break;
         hotw_owl->stats->add_execute( 0_ms, target );
         p()->buff.heart_of_the_wild_owl->trigger();
         break;
