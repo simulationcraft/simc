@@ -292,10 +292,10 @@ profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_original( nullptr ), m_actor_indices(),
     m_work_index( 0 ),
     m_control_lock( m_mutex, std::defer_lock ),
-    m_max_workers( 0 ), 
+    m_max_workers( 0 ),
     m_work_lock( m_work_mutex, std::defer_lock ),
     m_total_elapsed()
-{ 
+{
 
 }
 
@@ -426,7 +426,9 @@ void worker_t::execute()
     }
   }
 
+  m_mutex.lock();
   m_done = true;
+  m_mutex.unlock();
 
   m_master->notify_worker();
 }
@@ -443,7 +445,7 @@ size_t profilesets_t::n_workers() const
 void profilesets_t::cleanup_work()
 {
   assert( m_work_lock.owns_lock() );
-  
+
   auto it = m_current_work.begin();
   fmt::print( stderr, "Cleaning up: check workers.\n" );
   while ( it != m_current_work.end() )
