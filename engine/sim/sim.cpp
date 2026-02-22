@@ -2483,7 +2483,7 @@ void sim_t::init_actors()
   {
     out_debug.printf( "Initializing actors." );
   }
-  
+
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
     player_no_pet_list[ i ]->create_permanent_actors();
@@ -2958,7 +2958,9 @@ void sim_t::init()
     plot->initialize();
   }
 
+  init_mutex.lock();
   initialized = true;
+  init_mutex.unlock();
 
   init_time = chrono::elapsed(start_time);
 

@@ -6502,9 +6502,9 @@ void player_t::combat_end()
   // phase, while a child thread is already done (their init). Note that this may mean that with
   // target_error option, some data to estimate the target error can be missed (in the main thread).
   // In turn, lazily finding the parent actor here ensures that the performance hit on the init
-  // process is minimal (no need for locks).
+  // process is minimal.
   if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr &&
-      sim->parent->initialized && sim->thread_index > 0 )
+      sim->parent->is_initialized() && sim->thread_index > 0 )
   {
     // NOTE NOTE NOTE: This search can no longer be run based on find_player() because it uses
     // actor_list. Ever since pet_spawner support, the actor_list of the parent sim can (and will)
