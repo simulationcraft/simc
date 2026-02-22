@@ -2154,6 +2154,21 @@ void wraps_of_cosmic_madness( special_effect_t& e )
 
       tick_action = cosmic_barrage;
     }
+
+    double composite_target_multiplier( player_t* t ) const override 
+    {
+      double m = proc_spell_t::composite_target_multiplier( t );
+
+      int targets = sim->active_enemies;
+      
+      if ( targets > 6) targets = 6;
+
+      double bonus = 0.3 * ( targets - 1);
+      
+      if ( bonus > 1.5 ) bonus = 1.5;
+
+      return m * ( 1.0 + bonus );
+    }
   };
 
   e.execute_action = create_proc_action<cosmic_madness_channel_t>("wraps_of_cosmic_madness_channel", e );
