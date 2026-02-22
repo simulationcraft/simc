@@ -787,6 +787,7 @@ bool profilesets_t::iterate( sim_t* parent )
   {
     m_control_lock.lock();
 
+    fmt::print( stderr, "Waiting for something to do...\n" );
     // Wait until we have at least something to sim
     while ( is_initializing() && m_profilesets.size() - m_work_index == 0 )
     {
@@ -796,6 +797,7 @@ bool profilesets_t::iterate( sim_t* parent )
     // Break out of iteration loop if all work has been done
     if ( is_running() )
     {
+      fmt::print( stderr, "All done (inside) ...\n" );
       if ( m_work_index == m_profilesets.size() )
       {
         m_control_lock.unlock();
@@ -805,10 +807,14 @@ bool profilesets_t::iterate( sim_t* parent )
 
     auto& set = m_profilesets[ m_work_index++ ];
 
+    fmt::print( stderr, "Working with profileset {}...\n", set->name() );
+
     m_control_lock.unlock();
 
     generate_work( parent, set );
   }
+
+  fmt::print( stderr, "All done (outside) ...\n" );
 
   // Wait until the tail-end of the parallel work has been done. Non-parallel processing mode will
   // not need to finalize any work (all work has been done by the loop above)
