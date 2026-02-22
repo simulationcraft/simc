@@ -2131,10 +2131,34 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1259153 Driver
 // 1263475 Missile
 // 1263393 Damage Spell (Cosmic Barrage)
-// 1259103 Scaling / coefficient
-// 1240903 Scaling token (30% per additional target, cap 150%)
+// 1259103 Equip Driver
 void wraps_of_cosmic_madness( special_effect_t& e )
 {
+  struct cosmic_barrage_t : public proc_spell_t
+  {
+    cosmic_barrage_t( const special_effect_t& e, double missile_damage ) :
+      proc_spell_t( "cosmic_barrage", e.player, e.driver(), e.item )
+    {
+      split_aoe_damage = true;
+      base_dd_min = base_dd_max = missile_damage;
+
+      aoe = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      int targets = sim->active_enemies;
+      if ( targets > 6 ) targets = 6;
+
+      double bonus = 0.3 * ( targets - 1 );
+      if ( bonus > 1.5 ) bonus = 1.5;
+
+      return m * ( 1.0 + bonus );
+    }
+  };
+
   struct cosmic_madness_channel_t : public proc_spell_t
   {
     cosmic_madness_channel_t( const special_effect_t& e ) :
@@ -2148,26 +2172,9 @@ void wraps_of_cosmic_madness( special_effect_t& e )
       assert( equip && " missing equip effect" );
 
       auto missile_damage = equip->driver()->effectN( 1 ).average(e);
-      auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
-      cosmic_barrage->split_aoe_damage = true;
-      cosmic_barrage->base_dd_min = missile_damage;
+      auto cosmic_barrage = create_proc_action<cosmic_barrage_t>( "cosmic_barrage", e, missile_damage );
 
       tick_action = cosmic_barrage;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override 
-    {
-      double m = proc_spell_t::composite_target_multiplier( t );
-
-      int targets = sim->active_enemies;
-      
-      if ( targets > 6) targets = 6;
-
-      double bonus = 0.3 * ( targets - 1);
-      
-      if ( bonus > 1.5 ) bonus = 1.5;
-
-      return m * ( 1.0 + bonus );
     }
   };
 
