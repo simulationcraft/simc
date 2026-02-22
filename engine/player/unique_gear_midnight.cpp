@@ -2109,7 +2109,7 @@ void locuswalkers_ribbon( special_effect_t& e )
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
 
-      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", stat_buff->data().effectN( 2 ).trigger())
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.trigger()->effectN( 2 ).trigger())
                   ->set_freeze_stacks( true )
                   ->set_default_value( e.driver()->effectN( 2 ).percent() )
                   ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
@@ -2119,8 +2119,8 @@ void locuswalkers_ribbon( special_effect_t& e )
                       stack_buff->decrement();
                     }
                   });
-                  
-      stat_buff = create_buff<riftwalkers_temptation_t>(e.player,"riftwalkers_temptation", e.trigger(), stat_buff)
+
+      stat_buff = create_buff<riftwalkers_temptation_t>(e.player,"riftwalkers_temptation", e.trigger(), stack_buff)
                   ->set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ));
     }
 
