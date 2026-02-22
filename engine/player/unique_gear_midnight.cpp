@@ -2087,40 +2087,44 @@ void locuswalkers_ribbon( special_effect_t& e )
   struct riftwalkers_temptation_t : public stat_buff_t
   {
     buff_t* stack_buff;
-    double stack_percent;
-    double stacks;
 
-    riftwalkers_temptation_t( std::string_view n, const special_effect_t& e, buff_t* stacking_buff)
-      : stat_buff_t( e.player, n, e.player->find_spell( 1259317 )), stack_buff( stacking_buff )
+    riftwalkers_temptation_t( player_t* p, std::string_view n, const spell_data_t* s)
+      : stat_buff_t( p, n, s)
     {
-      set_default_value( e.driver()->effectN( 1 ).average( e ) );
-      stack_percent = e.driver()->effectN( 2 ).percent();
     }   
     
-    void bump( int s, double v ) override
-    {
-      for( auto& s : stats )
-      {
-        s.amount =  default_value * ( 1.0 + stack_percent * stack_buff->check());
-      }
-      stat_buff_t::bump( s, v );
+    double buff_stat_stack_amount(const buff_stat_t& stat, int s ) const override{
+
+      return stat.stack_amount( s ) * (1.0 + stack_buff->check_stack_value());
+
     }
   };
 
   struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
   {
-    buff_t* buff;
+    riftwalkers_temptation_t* stat_buff;
     buff_t* stack_buff;
     
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
-      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", e.player->find_spell( 1268058 ))->disable_ticking(true);
-      buff = make_buff<riftwalkers_temptation_t>("riftwalkers_temptation", e, stack_buff);
+      stat_buff = create_buff<riftwalkers_temptation_t>(e.player,"riftwalkers_temptation", e.trigger())
+                      ->set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ));
+      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", stat_buff->data().effectN( 2 ).trigger())
+                  ->set_freeze_stacks( true )
+                  ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
+                  {
+                    if ( !stack_buff->player->in_combat && stack_buff->check() )
+                    {
+                      stack_buff->decrement();
+                    }
+                  });
+      stat_buff->stack_buff = stack_buff;
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      buff->trigger();
+      stat_buff->trigger();
       stack_buff->trigger();
     }
   };
