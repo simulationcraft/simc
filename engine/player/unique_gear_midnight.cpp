@@ -2443,7 +2443,7 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
-  register_special_effect( 1259293, DISABLED_EFFECT );
+  register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
   register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   // Weapons
