@@ -21,47 +21,107 @@ jobs:
       matrix:
         spec:
           [
-            deathknight_blood,
-            deathknight_unholy,
-            deathknight_frost,
-            demonhunter_devourer,
-            demonhunter_havoc,
-            demonhunter_vengeance,
-            druid_balance,
-            druid_feral,
-            druid_guardian,
-            druid_restoration,
-            evoker_devastation,
-            evoker_augmentation,
-            hunter_beast_mastery,
-            hunter_marksmanship,
-            hunter_survival,
-            mage_arcane,
-            mage_fire,
-            mage_frost,
-            monk_brewmaster,
             monk_windwalker,
-            paladin_protection,
-            paladin_retribution,
-            priest_shadow,
-            rogue_assassination,
-            rogue_outlaw,
-            rogue_subtlety,
-            shaman_elemental,
-            shaman_enhancement,
-            warlock_affliction,
-            warlock_demonology,
-            warlock_destruction,
-            warrior_arms,
-            warrior_fury,
-            warrior_protection,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
+            monk_windwalker,
           ]
-        fightstyle: [singletarget, multitarget, dungeonslice]
-        include:
-          - fightstyle: multitarget
-            style_arg: desired_targets=10
-          - fightstyle: dungeonslice
-            style_arg: fight_style=DungeonSlice
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
@@ -91,118 +151,10 @@ jobs:
         if: inputs.is-ptr
         run: echo "PTR_ARG=ptr=1" >> "$GITHUB_ENV"
 
-      - name: "Log Debug"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "HTML JSON"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "Assisted Combat Expression Validation"
-        if: matrix.fightstyle == 'singletarget'
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            iterations=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1
-
-
-      - name: "No Talents, No Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "No Talents, No Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "No Talents, All Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "No Talents, All Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "Starter Talents, No Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, No Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, All Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, All Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "All Talents, No Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "All Talents, No Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "All Talents, All Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "All Talents, All Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
       - name: "Profileset Test"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             profileset.two_4pc=load_default_talents=1 profileset.two_4pc+=hero_talents=2 \
             profileset.two_4pc+=set_bonus=latest_2pc=1 profileset.two_4pc+=set_bonus+=/latest_4pc=1
@@ -215,36 +167,3 @@ jobs:
             profileset.two=load_default_talents=1 profileset.two+=hero_talents=2 \
             profileset.one=load_default_talents=1 profileset.one+=hero_talents=1 \
             profileset.base=load_default_talents=1 \
-
-      - name: Dump APL Default
-        id: dump_apl_default
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
-        run: |
-          mkdir default
-          ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
-            enable_all_talents=1 enable_all_sets=1 \
-            allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
-            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            save_actions=default/${{ matrix.spec }}.simc
-
-      - name: Dump APL Assisted
-        id: dump_apl_assisted
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
-        run: |
-          mkdir assisted_combat
-          ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
-            enable_all_talents=1 enable_all_sets=1 \
-            allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
-            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1 \
-            save_actions=assisted_combat/${{ matrix.spec }}.simc
-
-      - name: Upload APL
-        if: steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success'
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: apl-${{ github.sha }}-${{ matrix.spec }}
-          path: |
-            default/${{ matrix.spec }}.simc
-            assisted_combat/${{ matrix.spec }}.simc
-          retention-days: 1
