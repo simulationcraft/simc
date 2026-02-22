@@ -18,6 +18,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <chrono>
 
 namespace
 {
@@ -798,7 +799,7 @@ bool profilesets_t::iterate( sim_t* parent )
     while ( is_initializing() && m_profilesets.size() - m_work_index == 0 )
     {
       fmt::print( stderr, "Waiting for something to do...\n" );
-      m_control.wait( m_control_lock );
+      m_control.wait_for( m_control_lock, std::chrono::seconds( 1 ) );
     }
 
     // Break out of iteration loop if all work has been done
