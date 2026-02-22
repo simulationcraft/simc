@@ -2134,20 +2134,28 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1259103 Scaling / coefficient
 // 1240903 Scaling token (30% per additional target, cap 150%)
 void wraps_of_cosmic_madness( special_effect_t& e )
+{
+  struct cosmic_madness_channel_t : public proc_spell_t
   {
-  unsigned equip_id = 1259103;
-  auto equip        = find_special_effect( e.player, equip_id );
-  assert( equip && " missing equip effect" );
+    cosmic_madness_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness_channel",
+                    e.player,
+                    e.driver(),
+                    e.item )
+    {
+      unsigned equip_id = 1259103;
+      auto equip        = find_special_effect( e.player, equip_id );
+      assert( equip && " missing equip effect" );
 
-  auto missile_damage = equip->driver()->effectN( 1 ).average(e);
-  auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic_barrage", e);
-  cosmic_barrage->base_dd_min = missile_damage;
+      auto missile_damage = equip->driver()->effectN( 1 ).average(e);
+      auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
+      cosmic_barrage->base_dd_min = missile_damage;
 
-  auto cosmic_madness_channel = create_proc_action<proc_spell_t>("cosmic_madness_channel", e.player, e.driver(), e.item);
+      tick_action = cosmic_barrage;
+    }
+  };
 
-  cosmic_madness_channel->tick_action = cosmic_barrage;
-
-  e.execute_action = cosmic_madness_channel;
+  e.execute_action = create_proc_action<cosmic_madness_channel_t>("wraps_of_cosmic_madness_channel", e );
 }
 
 }  // namespace trinkets
