@@ -656,6 +656,8 @@ bool profilesets_t::parse( sim_t* sim )
 
   set_state( RUNNING );
 
+  m_control.notify_one();
+
   return true;
 }
 
@@ -787,10 +789,10 @@ bool profilesets_t::iterate( sim_t* parent )
   {
     m_control_lock.lock();
 
-    fmt::print( stderr, "Waiting for something to do...\n" );
     // Wait until we have at least something to sim
     while ( is_initializing() && m_profilesets.size() - m_work_index == 0 )
     {
+      fmt::print( stderr, "Waiting for something to do...\n" );
       m_control.wait( m_control_lock );
     }
 
