@@ -659,7 +659,7 @@ bool profilesets_t::parse( sim_t* sim )
 
   set_state( RUNNING );
 
-  m_control.notify_one();
+  //m_control.notify_one();
 
   return true;
 }
