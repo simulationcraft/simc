@@ -2137,7 +2137,7 @@ void wraps_of_cosmic_madness( special_effect_t& e )
   struct cosmic_barrage_t : public proc_spell_t
   {
     cosmic_barrage_t( const special_effect_t& e, double missile_damage ) :
-      proc_spell_t( "cosmic_barrage", e.player, e.driver(), e.item )
+      proc_spell_t( "cosmic_barrage", e.player, e.driver())
     {
       split_aoe_damage = true;
       base_dd_min = base_dd_max = missile_damage;
@@ -2164,8 +2164,7 @@ void wraps_of_cosmic_madness( special_effect_t& e )
     cosmic_madness_channel_t( const special_effect_t& e ) :
       proc_spell_t( "wraps_of_cosmic_madness_channel",
                     e.player,
-                    e.driver(),
-                    e.item )
+                    e.driver() )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
