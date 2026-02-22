@@ -712,7 +712,7 @@ class PermanentEnchantItemSet(DataSet):
                     if _enchant_sei.id == 0:
                         continue
 
-                    _key = (tokenized_name, _entry.rank, _enchant.id, _enchant_sei.item_class,
+                    _key = (tokenized_name, _entry.ref('id_crafting_quality').tier, _enchant.id, _enchant_sei.item_class,
                             _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
 
                     if _key not in enchants:
@@ -745,7 +745,7 @@ class PermanentEnchantItemSet(DataSet):
                         if _enchant_sei.id == 0:
                             continue
 
-                        _key = (tokenized_name, _item2.id_crafting_quality, _enchant.id, _enchant_sei.item_class,
+                        _key = (tokenized_name, _item2.ref('id_crafting_quality').tier, _enchant.id, _enchant_sei.item_class,
                                 _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
 
                         if _key not in enchants:

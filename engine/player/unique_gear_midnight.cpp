@@ -2083,43 +2083,38 @@ void nullsight( special_effect_t& e )
 // 1268058 stack buff
 void locuswalkers_ribbon( special_effect_t& e )
 {
-  
   struct riftwalkers_temptation_t : public stat_buff_t
   {
     buff_t* stack_buff;
 
-    riftwalkers_temptation_t( player_t* p, std::string_view n, const spell_data_t* s)
-      : stat_buff_t( p, n, s)
+    riftwalkers_temptation_t( player_t* p, std::string_view n, const spell_data_t* s, buff_t* stack_buff )
+      : stat_buff_t( p, n, s ), stack_buff( stack_buff )
     {
-    }   
-    
-    double buff_stat_stack_amount(const buff_stat_t& stat, int s ) const override{
+    }
 
-      return stat.stack_amount( s ) * (1.0 + stack_buff->check_stack_value());
-
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+    {
+      return stat.stack_amount( s ) * ( 1.0 + stack_buff->check_stack_value() );
     }
   };
 
   struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
   {
-    riftwalkers_temptation_t* stat_buff;
+    stat_buff_t* stat_buff;
     buff_t* stack_buff;
-    
+
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
-      stat_buff = create_buff<riftwalkers_temptation_t>(e.player,"riftwalkers_temptation", e.trigger())
-                      ->set_stat_from_effect_type(A_MOD_STAT, e.driver()->effectN( 1 ).average( e ));
-      stack_buff = create_buff<buff_t>(e.player, "deepening temptation", stat_buff->data().effectN( 2 ).trigger())
-                  ->set_freeze_stacks( true )
-                  ->set_default_value( e.driver()->effectN( 2 ).percent() )
-                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
-                  {
-                    if ( !stack_buff->player->in_combat && stack_buff->check() )
-                    {
-                      stack_buff->decrement();
-                    }
-                  });
-      stat_buff->stack_buff = stack_buff;
+      stack_buff = create_buff<buff_t>( e.player, "deepening temptation", e.trigger()->effectN( 2 ).trigger() )
+                       ->set_freeze_stacks( true )
+                       ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                         if ( !stack_buff->player->in_combat && stack_buff->check() )
+                           stack_buff->decrement();
+                       } );
+
+      stat_buff = create_buff<riftwalkers_temptation_t>( e.player, "riftwalkers_temptation", e.trigger(), stack_buff )
+                      ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -2128,7 +2123,7 @@ void locuswalkers_ribbon( special_effect_t& e )
       stack_buff->trigger();
     }
   };
-  
+
   new locuswalkers_ribbon_t( e );
 }
 
@@ -2441,7 +2436,7 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
-  register_special_effect( 1259293, DISABLED_EFFECT );
+  register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
   register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   // Weapons

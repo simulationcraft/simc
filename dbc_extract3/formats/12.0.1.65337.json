@@ -326,7 +326,7 @@
   "CraftingDataEnchantQuality": {
     "parent": "CraftingData",
     "fields": [
-      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "id_crafting_quality", "ref": "CraftingQuality" },
       { "data_type": "i", "field": "id_spell_item_enchantment", "ref": "SpellItemEnchantment" },
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
     ]
