@@ -12,7 +12,7 @@ on:
 
 jobs:
   spec-test:
-    name: spec-test-apex-${{ matrix.vers }}
+    name: spec-test-${{ matrix.vers }}
     runs-on: ubuntu-22.04
     continue-on-error: ${{ inputs.is-ptr }}
 

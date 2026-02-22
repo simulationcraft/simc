@@ -443,13 +443,14 @@ size_t profilesets_t::n_workers() const
 void profilesets_t::cleanup_work()
 {
   assert( m_work_lock.owns_lock() );
-
+  
   auto it = m_current_work.begin();
-
+  fmt::print( "Cleaning up: check workers.\n" );
   while ( it != m_current_work.end() )
   {
     if ( ( *it ) -> is_done() )
     {
+      fmt::print( "Cleaning up: worker thread {} joining.\n", ( *it )->thread().get_id() );
       ( *it ) -> thread().join();
 
       auto sim = ( *it ) -> sim();
@@ -534,7 +535,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
     {
       fmt::print( "Clean up work for profileset '{}'.\n", ptr_set->name() );
       cleanup_work();
-
+      fmt::print( "Finished clean up work for profileset '{}'.\n", ptr_set->name() );
       // Output profileset progressbar whenever we finish anything
       output_progressbar( parent );
 
