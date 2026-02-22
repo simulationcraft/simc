@@ -2133,14 +2133,6 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1263475 missile trigger
 // 1263393 cosmic barrage
 // radius = 0-6 yards
-
-// Wraps of Cosmic Madness
-// 1259153 Channel Driver
-// 1263475 Missile Driver
-// 1263393 Damage Spell (Cosmic Barrage)
-// 1259103 Scaling / coefficient driver
-// 1240903 Scaling token (30% per additional target, cap 150%)
-
 void wraps_of_cosmic_madness( special_effect_t& e )
 {
   unsigned equip_id = 1259103;
@@ -2149,6 +2141,8 @@ void wraps_of_cosmic_madness( special_effect_t& e )
 
   auto missile_damage = equip->driver()->effectN( 1 ).average(e);
   auto cosmic_barrage = create_proc_action<proc_spell_t>("cosmic barrage", e);
+  cosmic_barrage->base_dd_min = missile_damage;
+
 
 
   // struct wraps_of_cosmic_madness_t : public buff_t
