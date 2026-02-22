@@ -729,6 +729,8 @@ void profilesets_t::initialize( sim_t* sim )
       {
         sim -> cancel();
       }
+
+      fmt::print( stderr, "Profileset parse thread exited ...\n" );
     } );
   }
 }
@@ -799,9 +801,9 @@ bool profilesets_t::iterate( sim_t* parent )
     // Break out of iteration loop if all work has been done
     if ( is_running() )
     {
-      fmt::print( stderr, "All done (inside) ...\n" );
       if ( m_work_index == m_profilesets.size() )
       {
+        fmt::print( stderr, "All done (inside) ...\n" );
         m_control_lock.unlock();
         break;
       }
