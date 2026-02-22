@@ -450,7 +450,7 @@ void profilesets_t::cleanup_work()
   {
     if ( ( *it ) -> is_done() )
     {
-      fmt::print( "Cleaning up: worker thread {} joining.\n", ( *it )->thread().get_id() );
+      fmt::print( "Cleaning up: worker thread joining.\n" );
       ( *it ) -> thread().join();
 
       auto sim = ( *it ) -> sim();
