@@ -568,6 +568,7 @@ bool profilesets_t::parse( sim_t* sim )
     if ( sim->canceled )
     {
       set_state( DONE );
+
       m_control.notify_one();
       return false;
     }
@@ -576,6 +577,7 @@ bool profilesets_t::parse( sim_t* sim )
 
     if ( m_init_index == sim->profileset_map.cend() )
     {
+      fmt::print( stderr, "Profilesets parsed\n" );
       m_mutex.unlock();
       break;
     }
