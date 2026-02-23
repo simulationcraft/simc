@@ -434,6 +434,17 @@ void strength_of_halazzi( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Eyes of the Eagle
+// 1236059 Driver
+void eyes_of_the_eagle( special_effect_t& e ) 
+{
+  auto pct = e.driver()->effectN( 1 ).percent();
+
+  for ( auto& m : e.player->base.crit_damage_multiplier )
+    m *= 1.0 + pct;
+}
+
 }  // namespace enchants
 
 namespace embellishments
