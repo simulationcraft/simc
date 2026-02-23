@@ -66,8 +66,8 @@ void arcane( player_t* p )
 
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=opener,op=set,value=1" );
-  precombat->add_action( "variable,name=funnel,op=set,value=0" );
-  precombat->add_action( "variable,name=sf_touch_surge,op=set,value=0" );
+  precombat->add_action( "variable,name=funnel,op=reset,default=0" );
+  precombat->add_action( "variable,name=sf_touch_surge,op=reset,default=0" );
   precombat->add_action( "variable,name=20ssteroid_trinket_equipped,op=set,value=equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn" );
   precombat->add_action( "variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity" );
   precombat->add_action( "variable,name=12ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure" );
