@@ -436,13 +436,16 @@ void strength_of_halazzi( special_effect_t& effect )
 }
 
 // Eyes of the Eagle
-// 1236059 Driver
+// 1236700 Driver rank 1
+// 1236701 Driver rank 2
 void eyes_of_the_eagle( special_effect_t& e ) 
-{
+{  
   auto pct = e.driver()->effectN( 1 ).percent();
 
-  for ( auto& m : e.player->base.crit_damage_multiplier )
-    m *= 1.0 + pct;
+  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    e.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
+
+  e.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
 
 }  // namespace enchants
@@ -2404,7 +2407,7 @@ void register_special_effects()
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
-  register_special_effect( 1236059, enchants::eyes_of_the_eagle );
+  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
