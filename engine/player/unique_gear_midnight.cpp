@@ -2404,6 +2404,7 @@ void register_special_effects()
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
+  register_special_effect( 1236059, enchants::eyes_of_the_eagle );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
