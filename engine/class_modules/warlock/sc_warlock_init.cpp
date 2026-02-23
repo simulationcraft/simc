@@ -63,7 +63,7 @@ namespace warlock
 
     talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
     talents.grimoire_of_sacrifice_buff = conditional_spell_lookup( talents.grimoire_of_sacrifice.ok(), 196099 ); // Buff data and RPPM
-    talents.grimoire_of_sacrifice_proc = conditional_spell_lookup( talents.grimoire_of_sacrifice.ok(),196100 ); // Damage data
+    talents.grimoire_of_sacrifice_proc = conditional_spell_lookup( talents.grimoire_of_sacrifice.ok(), 196100 ); // Damage data
 
     warlock_t::init_spells_diabolist();
     warlock_t::init_spells_hellcaller();
@@ -1154,6 +1154,10 @@ namespace warlock
 
   void warlock_t::init_rng_soul_harvester()
   {
+    // Modeling Manifested Avarice as a pseudo-random distribution (PRD) with a nominal
+    // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
+    double c = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
+    manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c );
   }
 
   void warlock_t::init_resources( bool force )

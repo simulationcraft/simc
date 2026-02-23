@@ -66,7 +66,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs.havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
-                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )
+                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() + p.talents.improved_havoc->effectN( 1 ).time_value() : p.talents.havoc->duration() )
                       ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
                       ->set_chance( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 1 ).percent() : p.talents.havoc->proc_chance() )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
@@ -189,7 +189,6 @@ int warlock_td_t::count_affliction_dots() const
 
   return count;
 }
-
 
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : parse_player_effects_t( sim, WARLOCK, name, r ),
@@ -334,6 +333,52 @@ double warlock_t::composite_mastery() const
   }
 
   return m;
+}
+
+double warlock_t::pseudo_random_p_from_c( double c )
+{
+  if ( c <= 0 )
+    return 0.0;
+
+  double p_proc_by_n       = 0;
+  double sum_n_p_proc_on_n = 0;
+
+  int max_fails = as<int>( std::ceil( 1 / c ) );
+  for ( int n = 1; n <= max_fails; ++n )
+  {
+    double p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
+    p_proc_by_n += p_proc_on_n;
+    sum_n_p_proc_on_n += n * p_proc_on_n;
+  }
+
+  return ( 1 / sum_n_p_proc_on_n );
+}
+
+double warlock_t::pseudo_random_c_from_p( double p )
+{
+  if ( p <= 0 )
+    return 0.0;
+
+  double c_upper = p;
+  double c_lower = 0;
+  double c_mid;
+  double p2 = 1;
+  while ( true )
+  {
+    c_mid = ( c_upper + c_lower ) * 0.5;
+    double p1 = pseudo_random_p_from_c( c_mid );
+    if ( std::abs( p1 - p2 ) <= 1e-12 )
+      break;
+
+    if ( p1 > p )
+      c_upper = c_mid;
+    else
+      c_lower = c_mid;
+
+    p2 = p1;
+  }
+
+  return c_mid;
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -880,7 +925,7 @@ void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
   // Odds for each pet currently seem to be
   // Jailer: 30%, Sacrolash: 20%, Grand Warlock Alythess: 20%, Inquisitor: 30% (last tested 2026-02-19)
   // More testing required for more accurate rates.
-  // Probably better to do a better weighted random selection than this. 
+  // Probably better to do a better weighted random selection than this.
   if ( pet == DOA_PET_RANDOM )
   {
     const std::array<dominion_of_argus_pet_e, 10> pets = {
