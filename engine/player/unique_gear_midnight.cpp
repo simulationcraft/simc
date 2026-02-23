@@ -662,7 +662,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   effect.player->sim->error( PLACEHOLDER,
                              "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
-  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
+  // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
+  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect ) / 5;
 
   if ( auto proc = effect.player->find_action( "prismatic_focusing_iris" ) )
   {
@@ -677,7 +678,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
   dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
-  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
+  // Feb 23 2026 - tank mod is not being applied in game
+  //dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
   effect.spell_id       = effect.trigger()->id();
