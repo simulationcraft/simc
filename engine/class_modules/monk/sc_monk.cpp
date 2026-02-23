@@ -766,23 +766,7 @@ struct overwhelming_force_t : base_action_t
     if ( !base_action_t::p()->talent.master_of_harmony.overwhelming_force->ok() || state->chain_target > 0 )
       return;
 
-    /*
-     * If the triggering hit is a crit, the damage is divided by the crit bonus
-     * multiplier, and then multiplied by 2.0 (or the context base crit bonus?)
-     *
-     * E.g.
-     * Base Damage (Crit) 64286, Crit Bonus Multiplier 2.02
-     * Base Damage (Pre-Crit) 64286 / 2.02 ~ 31825
-     * Overwhelming Force Damage 31825 * 0.15 * 2 = ~9547
-     */
-    double amount = state->result_amount;
-    if ( state->result == RESULT_CRIT && base_action_t::p()->bugs )
-    {
-      amount /= 1.0 + state->result_crit_bonus;
-      amount *= 2.0;
-    }
-    overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = amount;
-    overwhelming_force_damage->execute();
+    overwhelming_force_damage->execute_on_target( state->target, state->result_amount );
   }
 };
 
