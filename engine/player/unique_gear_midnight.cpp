@@ -2146,10 +2146,10 @@ void wraps_of_cosmic_madness( special_effect_t& e )
       channeled = true;
 
       auto missile_spell = e.player->find_spell( 1263614 );
-      assert( missile_spell && "missing missile spell 1263614");
+      assert( missile_spell && "missing missile spell 1263614" );
 
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
-      auto cosmic_barrage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage" , e, "cosmic_barrage", missile_spell, true );
+      auto cosmic_barrage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, "cosmic_barrage", missile_spell, true );
       cosmic_barrage->school = SCHOOL_COSMIC;
       cosmic_barrage->base_dd_min = cosmic_barrage->base_dd_max = missile_damage;
 
