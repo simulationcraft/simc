@@ -86756,15 +86756,17 @@ Effects          :
 Description      : $@spelldesc253793
 
 Name             : Void Hunter (id=253802) [Passive, Hidden] 
+Hotfixed         : Max Scaling Level (45 -> 0), Attributes
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=474456)   : Apply Aura (6) | Modify Melee Attack Power vs Race (102) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3.575138 (coefficient=0.588582) | Misc Value: 1064960 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.029191 (coefficient=0.055) | Misc Value: 1064960 | Target: Self (1)
+Hotfixed         : Coefficient (0.588582 -> 0.055)
 #2 (id=474457)   : Apply Aura (6) | Modify Ranged Attack Power vs Race (131) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3.575138 (coefficient=0.588582) | Misc Value: 1064960 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.029191 (coefficient=0.055) | Misc Value: 1064960 | Target: Self (1)
+Hotfixed         : Coefficient (0.588582 -> 0.055)
 Description      : Increases your Agility against Aberrations by $s1.
 
 Name             : Void's Embrace (id=253807) [Passive, Hidden] 
