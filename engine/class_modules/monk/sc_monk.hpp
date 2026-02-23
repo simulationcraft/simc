@@ -216,17 +216,6 @@ struct monk_buff_t : public Base
   const monk_t &p() const;
 };
 
-struct shuffle_t : monk_buff_t<>
-{
-  timespan_t accumulator;
-  const timespan_t max_duration;
-
-  shuffle_t( monk_t *monk );
-  void reset() override;
-  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
-                timespan_t duration = timespan_t::min() ) override;
-};
-
 struct gift_of_the_ox_t : monk_buff_t<>
 {
   /*
