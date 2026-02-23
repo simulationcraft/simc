@@ -651,17 +651,14 @@ void stagger_effect_t<derived_actor_t>::damage_changed( bool last_tick )
   }
 
   level_t<derived_actor_t> *level = find_current_level();
-  // player->sim->print_debug( "{} level changing current={} ({}) new={} ({}) pool_size_percent={}",
-  //                           player->name(),
-  //                           current->name,
-  //                           static_cast<int>( current->level ),
-  //                           stagger_levels[ level ]->name,
-  //                           static_cast<int>( stagger_levels[ level ]->level ),
-  //                           pool_size_percent() );
   // This comparison is a little sketchy, but if we assume no one fiddles with
   // our pointers, we're good to go.
   if ( level == current )
     return;
+
+  player->sim->print_debug( "{} level changing current={} ({}) new={} ({}) pool_size_percent={}", player->name(),
+                            current->name(), current->min_threshold(), level->name(), level->min_threshold(),
+                            pool_size_percent() );
 
   current->debuff->expire();
   current = level;
