@@ -4440,6 +4440,8 @@ using namespace helpers;
       aoe = -1;
       reduced_aoe_targets = as<int>( p->talents.echo_of_sargeras->effectN( 3 ).base_value() );
 
+      affected_by.chaotic_energies = true;
+
       spell_power_mod.direct = p->talents.echo_of_sargeras->effectN( 1 ).sp_coeff();
 
       base_dd_multiplier *= effectiveness;
