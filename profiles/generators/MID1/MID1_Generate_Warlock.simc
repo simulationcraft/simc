@@ -1,60 +1,58 @@
-# # warlock="MID1_Warlock_Affliction_Soul_Harvester"
-# # spec=affliction
-# # level=80
-# # race=orc
-# # role=spell
-# # position=back
-# # professions=alchemy=100/jewelcrafting=100
-# # talents=CkQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAwMjZWmZM2MzMLMzMDAYmxyyADYCmhtADbzAAAAAAAAAzMzmB
-# # default_pet=sayaad
+warlock="MID1_Warlock_Affliction_Soul_Harvester"
+spec=affliction
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjttBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZmxgZmZGAwMwA
+default_pet=sayaad
 
-# # head=hexflame_covens_allseeing_eye,id=212074,bonus_id=1540/10299/1808,gem_id=213743
-# # neck=silken_advisors_favor,id=225575,bonus_id=1540/10299/10376/8781,gem_id=213482/213482
-# # shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# # back=hexflame_covens_shawl,id=212069,bonus_id=1540/10299
-# # chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-# # wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/1808/8795/10520/8960,gem_id=213461,enchant_id=7397,crafted_stats=32/36
-# # hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# # waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213461
-# # legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
-# # feet=consecrated_slippers,id=222814,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=32/40
-# # finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213461/213461,enchant_id=7340
-# # finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213467/213491,enchant_id=7340
-# # trinket1=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
-# # trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-# # main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
-# # off_hand=broodtwisters_grim_catalyst,id=212387,bonus_id=1540/10299/10376
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890
+shoulder=abyssal_immolators_fury,id=250040,bonus_id=13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/13454/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+wrist=voracious_wristwraps,id=249315,ilevel=289,gem_id=240890
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240890
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575,ilevel=289,enchant_id=7935
+feet=slippers_of_the_midnight_flame,id=249305,bonus_id=4786/4800/12803/12806/1532,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240898/240898,enchant_id=7997
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/12214/13453/13622/13667/9627,gem_id=240898,enchant_id=7997,crafted_stats=32/36
+trinket1=emberwing_feather,id=250144,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=7981
+off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 
-# # save=MID1_Warlock_Affliction_Soul_Harvester.simc
+save=MID1_Warlock_Affliction_Soul_Harvester.simc
 
-# warlock=MID1_Warlock_Affliction_Hellcaller
-# level=80
-# race=maghar_orc
-# role=spell
-# position=back
-# professions=alchemy=100/jewelcrafting=100
-# spec=affliction
-# talents=CkQAAAAAAAAAAAAAAAAAAAAAAAzMzMzMjYWMwsNzMDzyAAAAmZmZWMzMWmZmZDmZAAzYBGYWMaMDIzGYZGAAAAAAAAMjZD
-# default_pet=sayaad
+warlock=MID1_Warlock_Affliction_Hellcaller
+spec=affliction
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxwwMjZmZGMzMzAAmBG
+default_pet=sayaad
 
-# head=elysian_flame_crown,id=221131,bonus_id=3215/12361/12239/1808,gem_id=213743
-# neck=salhadaars_folly,id=242406,bonus_id=1533/12361/12239/8781,gem_id=213470/213491
-# shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
-# back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
-# chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213491,crafted_stats=36/49
-# hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
-# waist=durable_information_securing_container,id=242664,bonus_id=1489/12352/12239,gem_id=213491,titan_disc_id=1236275
-# legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
-# feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
-# finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7334,gem_id=213491/213491
-# finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7346,gem_id=213479/213455
-# trinket1=arazs_ritual_forge,id=242402,bonus_id=1533/12361/12239
-# trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
-# main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7445
-# off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8795,crafted_stats=36/49
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890
+shoulder=abyssal_immolators_fury,id=250040,bonus_id=13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/13454/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+wrist=voracious_wristwraps,id=249315,ilevel=289,gem_id=240890
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240890
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575,ilevel=289,enchant_id=7935
+feet=slippers_of_the_midnight_flame,id=249305,bonus_id=4786/4800/12803/12806/1532,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240898/240898,enchant_id=7997
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/12214/13453/13622/13667/9627,gem_id=240898,enchant_id=7997,crafted_stats=32/36
+trinket1=emberwing_feather,id=250144,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=7981
+off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 
-# save=MID1_Warlock_Affliction.simc
+save=MID1_Warlock_Affliction_Hellcaller.simc
 
 
 # # warlock="MID1_Warlock_Demonology_Soul_Harvester"
