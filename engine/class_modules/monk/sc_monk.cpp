@@ -4139,27 +4139,35 @@ shuffle_t::shuffle_t( monk_t *player )
   set_trigger_spell( player->talent.brewmaster.shuffle );
 }
 
-void shuffle_t::trigger( timespan_t duration )
+void shuffle_t::reset()
+{
+  monk_buff_t::reset();
+
+  accumulator = 0_s;
+}
+
+bool shuffle_t::trigger( int, double, double, timespan_t duration )
 {
   if ( !p().talent.brewmaster.shuffle->ok() )
-    return;
+    return false;
 
   accumulator += duration;
-
   duration = std::min( duration + remains(), max_duration );
-  monk_buff_t::extend_duration_or_trigger( duration );
 
-  if ( !p().talent.brewmaster.quick_sip->ok() )
-    return;
+  if ( p().talent.brewmaster.quick_sip->ok() )
+  {
+    // when you apply a shuffle refresh/application, quick sip's value is multiplied
+    // by threshold // accumulator, where // refers to integer division
+    timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
+    int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
+    if ( count > 0 )
+      p().find_stagger( "Stagger" )
+          ->purify_percent( as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(),
+                            "quick_sip" );
+    accumulator -= threshold * count;
+  }
 
-  // when you apply a shuffle refresh/application, quick sip's value is multiplied
-  // by threshold // accumulator, where // refers to integer division
-  timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
-  int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
-  if ( count > 0 )
-    p().find_stagger( "Stagger" )
-        ->purify_percent( as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
-  accumulator -= threshold * count;
+  return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0, duration );
 }
 
 struct fortifying_brew_t : public monk_buff_t<>

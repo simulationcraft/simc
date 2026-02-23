@@ -221,9 +221,10 @@ struct shuffle_t : monk_buff_t<>
   timespan_t accumulator;
   const timespan_t max_duration;
 
-  using monk_buff_t::trigger;
   shuffle_t( monk_t *monk );
-  void trigger( timespan_t duration );
+  void reset() override;
+  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+                timespan_t duration = timespan_t::min() ) override;
 };
 
 struct gift_of_the_ox_t : monk_buff_t<>
