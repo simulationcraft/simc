@@ -2128,6 +2128,54 @@ void locuswalkers_ribbon( special_effect_t& e )
   new locuswalkers_ribbon_t( e );
 }
 
+// Wraps of Cosmic Madness
+// 1259153 Driver
+// 1263614 Missile
+// 1263393 Damage Spell (Cosmic Barrage)
+// 1259103 Equip Driver
+void wraps_of_cosmic_madness( special_effect_t& e )
+{
+  struct cosmic_madness_channel_t : public proc_spell_t
+  {
+    cosmic_madness_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
+    {
+      unsigned equip_id = 1259103;
+      auto equip        = find_special_effect( e.player, equip_id );
+      assert( equip && "missing equip effect" );
+
+      channeled = true;
+
+      auto missile_spell = e.player->find_spell( 1263614 );
+      assert( missile_spell && "missing missile spell 1263614" );
+
+      auto missile_damage = equip->driver()->effectN( 1 ).average( e );
+      auto cosmic_barrage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, "cosmic_barrage", missile_spell, true );
+      cosmic_barrage->school = SCHOOL_COSMIC;
+      cosmic_barrage->base_dd_min = cosmic_barrage->base_dd_max = missile_damage;
+
+      tick_action = cosmic_barrage;
+    }
+
+    void last_tick( dot_t* d ) override 
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+
+    void reset() override 
+    {
+      proc_spell_t::reset();
+    }
+  };
+
+  e.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", e );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2440,6 +2488,8 @@ void register_special_effects()
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
   register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
+  register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
+  register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
