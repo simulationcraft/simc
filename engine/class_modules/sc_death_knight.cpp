@@ -3371,7 +3371,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     double haste = base_ghoul_pet_t::composite_melee_haste();
 
-    if ( unholy_devotion->check() )
+    if ( unholy_devotion->check() && bugs )
       haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
@@ -3383,6 +3383,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( ghoulish_frenzy->check() )
       haste /= 1.0 + ghoulish_frenzy->data().effectN( 1 ).percent();
+
+    if ( unholy_devotion->check() && !bugs )
+      haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
   }
@@ -4372,8 +4375,7 @@ struct magus_pet_t : public death_knight_pet_t
     resource_regeneration               = regen_type::DISABLED;
     affected_by.commander_of_the_dead   = true;
     affected_by.grave_mastery           = true;
-    if ( dk()->bugs )
-      affected_by.mastery_dreadblade_crit = false;
+    affected_by.mastery_dreadblade_crit = true;
     is_magus                            = true;
     npc_id                              = 163366;
   }
@@ -5729,92 +5731,23 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     if ( ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER ) &&
          ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      switch ( eff.misc_value1() )
+      int idx = util::effect_idx_from_property_type( static_cast<property_type_t>( eff.misc_value1() ) );
+      if ( idx > 0 && is_rp_energize( idx ) )
       {
-        case P_EFFECT_1:
-          if ( is_rp_energize( 1 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_2:
-          if ( is_rp_energize( 2 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_3:
-          if ( is_rp_energize( 3 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_4:
-          if ( is_rp_energize( 4 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        case P_EFFECT_5:
-          if ( is_rp_energize( 5 ) )
-          {
-            str = "runic power multiplier";
-            return &runic_power_multiplier_effects;
-          }
-          break;
-        default:
-          break;
+        str = "runic power multiplier";
+        return &runic_power_multiplier_effects;
       }
     }
 
     else if ( ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER ) &&
               ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      flat = true;
-
-      switch ( eff.misc_value1() )
+      flat    = true;
+      int idx = util::effect_idx_from_property_type( static_cast<property_type_t>( eff.misc_value1() ) );
+      if ( idx > 0 && is_rp_energize( idx ) )
       {
-        case P_EFFECT_1:
-          if ( is_rp_energize( 1 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_2:
-          if ( is_rp_energize( 2 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_3:
-          if ( is_rp_energize( 3 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_4:
-          if ( is_rp_energize( 4 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        case P_EFFECT_5:
-          if ( is_rp_energize( 5 ) )
-          {
-            str = "runic power mod flat";
-            return &runic_power_flat_effects;
-          }
-          break;
-        default:
-          break;
+        str = "runic power mod flat";
+        return &runic_power_flat_effects;
       }
     }
 
@@ -9498,7 +9431,7 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     background = true;
-    aoe        = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    aoe        = -1;
   }
 };
 
@@ -14921,6 +14854,7 @@ void death_knight_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     parse_passive_effects( spell.vampiric_strike_range );

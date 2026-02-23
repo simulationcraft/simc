@@ -269,6 +269,7 @@ struct sim_t : private sc_thread_t
     // Buff overrides
     int arcane_intellect;
     int battle_shout;
+    int blessing_of_the_bronze;
     int mark_of_the_wild;
     int power_word_fortitude;
     int skyfury;
@@ -647,6 +648,9 @@ struct sim_t : private sc_thread_t
   mutex_t relatives_mutex;
   std::vector<sim_t*> relatives;
 
+  // Init mutex
+  std::shared_mutex init_mutex;
+
   // Spell database access
   std::unique_ptr<spell_data_expr_t> spell_query;
   unsigned spell_query_level;
@@ -739,6 +743,15 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( util::string_view name );
+
+  bool is_initialized()
+  {
+    init_mutex.lock_shared();
+    auto i = initialized;
+    init_mutex.unlock_shared();
+
+    return i;
+  }
 
   /**
    * Create error with printf formatting.

@@ -5635,7 +5635,7 @@ struct disintegrate_t : public essence_spell_t
       int max_targets_ = max_targets();
       max_targets_     = max_targets_ ? max_targets_ : 1;
 
-      auto buff_size = ( std::min( 3, max_targets_ ) - targets_ ) * mass_disint_mult;
+      auto buff_size = ( max_targets_ - targets_ ) * mass_disint_mult;
       buff_size      = buff_size > 0 ? buff_size : 0;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
@@ -8561,6 +8561,11 @@ parsed_assisted_combat_rule_t evoker_t::parse_assisted_combat_rule( const assist
   {
     return { "!dot.fire_breath_damage.ticking" };
   }
+  // recall buff check for deep breath
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 371807 )
+  {
+    return { "" };
+  }
 
   // if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
   //{
@@ -8633,6 +8638,11 @@ void evoker_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
 std::vector<std::string> evoker_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
+  if ( spell_id == 364342 )  // Blessing of the Bronze
+  {
+    return {};
+  }
+
   if ( spell_id == 356995 && talent.eruption.enabled() )  // Eruption Replacement
   {
     return { "eruption" };
@@ -9432,9 +9442,7 @@ void evoker_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Mail Specialization
-  parse_passive_effects( find_spell( 366524 ) );
+  parse_raid_buffs();
 }
 
 void evoker_t::init_special_effects()

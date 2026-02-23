@@ -2567,7 +2567,7 @@ void sim_t::init_actors()
   {
     out_debug.printf( "Initializing actors." );
   }
-  
+
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
     player_no_pet_list[ i ]->create_permanent_actors();
@@ -2860,13 +2860,11 @@ void sim_t::init()
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                           ->set_cooldown( 0_ms )
                            ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
   auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->add_invalidate( CACHE_VERSATILITY );
+                               ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -3042,7 +3040,9 @@ void sim_t::init()
     plot->initialize();
   }
 
+  init_mutex.lock();
   initialized = true;
+  init_mutex.unlock();
 
   init_time = chrono::elapsed(start_time);
 
@@ -3680,6 +3680,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
+  overrides.blessing_of_the_bronze  = optimal_raid;
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
   overrides.skyfury                 = optimal_raid;
@@ -3967,6 +3968,7 @@ void sim_t::create_options()
   add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
+  add_option( opt_int( "override.blessing_of_the_bronze", overrides.blessing_of_the_bronze ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
   add_option( opt_int( "override.skyfury", overrides.skyfury ) );

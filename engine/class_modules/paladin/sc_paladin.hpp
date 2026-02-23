@@ -347,8 +347,6 @@ public:
     const spell_data_t* aegis_of_light;
     const spell_data_t* aegis_of_light_2;
 
-    const spell_data_t* boundless_conviction;
-
     const spell_data_t* art_of_war;
     const spell_data_t* art_of_war_2;
   } passives;
@@ -393,8 +391,6 @@ public:
     const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
-
-    const spell_data_t* judgment_2;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
@@ -750,6 +746,7 @@ public:
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
+    std::string starting_armament             = "sacred_weapon";
   } options;
   player_t* beacon_target;
 

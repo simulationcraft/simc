@@ -8,6 +8,7 @@ namespace warlock
 {
 warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian )
   : pet_t( owner->sim, owner, pet_name, pt, guardian ),
+    affected_by(),
     special_action( nullptr ),
     melee_attack( nullptr ),
     summon_stats( nullptr ),
@@ -16,6 +17,8 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
+
+  affected_by.demonic_brutality = owner->talents.demonic_brutality.ok();
 
   register_on_arise_callback( this, [ owner ]() { owner->n_active_pets++; } );
   register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->n_active_pets--; } );
@@ -172,6 +175,23 @@ double warlock_pet_t::composite_spell_crit_chance() const
   return m;
 }
 
+double warlock_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
+{
+  double m = pet_t::composite_player_critical_damage_multiplier( s, school );
+
+  if ( affected_by.demonic_brutality )
+  {
+    // Currently bugged and giving 260% crit damage instead of 230%. Preserving the
+    // option to use the intended value for now in case of future issues.
+    if ( !o()->bugs )
+      m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
+    else
+      m += o()->talents.demonic_brutality->effectN( 2 ).percent();
+  }
+
+  return m;
+}
+
 void warlock_pet_t::arise()
 {
   if ( melee_attack && melee_on_summon )
@@ -271,19 +291,6 @@ void felhunter_pet_t::init_base_stats()
   special_action = new spell_lock_t( this, "" );
 }
 
-double felhunter_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 action_t* felhunter_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "shadow_bite" )
@@ -308,19 +315,6 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
-}
-
-double imp_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
 }
 
 action_t* imp_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -393,19 +387,6 @@ double sayaad_pet_t::composite_player_target_multiplier( player_t* target, schoo
   return m;
 }
 
-double sayaad_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 action_t* sayaad_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "lash_of_pain" )
@@ -447,19 +428,6 @@ void voidwalker_pet_t::init_base_stats()
   owner_coeff.health = 0.7;
 
   melee_attack = new warlock_pet_melee_t( this );
-}
-
-double voidwalker_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
 }
 
 action_t* voidwalker_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -625,19 +593,6 @@ void felguard_pet_t::init_base_stats()
   melee_attack->base_dd_multiplier *= 1.44;
 
   special_action = new axe_toss_t( this, "" );
-}
-
-double felguard_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
 }
 
 action_t* felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -853,19 +808,6 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buffs.imp_gang_boss->check_value();
 
   m *= 1.0 + buffs.unstable_soul->check_value();
-
-  return m;
-}
-
-double wild_imp_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
 
   return m;
 }
@@ -1137,19 +1079,6 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
   return warlock_pet_t::create_action( name, options_str );
 }
 
-double dreadstalker_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 /// Dreadstalker End
 
 /// Vilefiend Begin
@@ -1160,6 +1089,9 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str = "bile_spit";
   action_list_str += "/travel";
   action_list_str += "/headbutt";
+
+  // Currently bugged and not being affected by the crit bonus
+  affected_by.demonic_brutality = false;
 
   // 2026-02-17: Validated coefficients
   owner_coeff.ap_from_sp = 0.45;
@@ -1308,17 +1240,6 @@ void vilefiend_t::demise()
   warlock_simple_pet_t::demise();
 }
 
-double vilefiend_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_simple_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is not applying to Vilefiend (bug?)
-  if ( !bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
   {
   if ( name == "bile_spit" )
@@ -1427,19 +1348,6 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double demonic_tyrant_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 /// Demonic Tyrant End
 
 /// Doomguard Begin
@@ -1491,19 +1399,6 @@ void doomguard_t::demise()
     o()->buffs.doomguard->decrement();
 
   warlock_simple_pet_t::demise();
-}
-
-double doomguard_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_simple_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
 }
 
 /// Doomguard End
@@ -1571,19 +1466,6 @@ double grimoire_imp_lord_t::composite_player_multiplier( school_e school ) const
   double m = warlock_pet_t::composite_player_multiplier( school );
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
-
-  return m;
-}
-
-double grimoire_imp_lord_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
 
   return m;
 }
@@ -1663,19 +1545,6 @@ double grimoire_fel_ravager_t::composite_player_multiplier( school_e school ) co
   return m;
 }
 
-double grimoire_fel_ravager_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
-}
-
 /// Grimoire: Fel Ravager End
 
 /// Dominion of Argus Pet Base begin
@@ -1689,9 +1558,10 @@ struct dominion_of_argus_spell_base_t : public warlock_pet_spell_t
 };
 
   dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_view n, pet_e type )
-  : warlock_pet_t( owner, n, type, true )
+  : warlock_pet_t( owner, n, type, true ), main_action( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
+  affected_by.demonic_brutality = false;
 }
 
 void dominion_of_argus_pet_t::set_main_action( action_t* a )
@@ -1774,7 +1644,7 @@ void lady_sacrolash_t::create_actions()
 /// Grand Warlock Alythess Begin
 struct blaze_t : public warlock_pet_spell_t
 {
-  blaze_t( dominion_of_argus_pet_t* p ) 
+  blaze_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Blaze", p, p->find_spell( 1282534 ) )
   {
     aoe                 = -1;
@@ -1785,7 +1655,7 @@ struct blaze_t : public warlock_pet_spell_t
 
 struct blaze_missile_t : public dominion_of_argus_spell_base_t
 {
-  blaze_missile_t( dominion_of_argus_pet_t* p ) 
+  blaze_missile_t( dominion_of_argus_pet_t* p )
     : dominion_of_argus_spell_base_t( "Blaze Missile", p, p->find_spell( 1282533 ) )
   {
     impact_action = new blaze_t( p );
@@ -1812,7 +1682,7 @@ void grand_warlock_alythess_t::create_actions()
 /// Antoran Inquisitor Begin
 struct mind_sear_t : public warlock_pet_spell_t
 {
-  mind_sear_t( dominion_of_argus_pet_t* p ) 
+  mind_sear_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Mind Sear", p, p->find_spell( 1280460 ) )
   {
     background = true;
@@ -1850,7 +1720,7 @@ void antoran_inquisitor_t::create_actions()
 /// Antoran Jailer Begin
 struct soul_barrage_t : public warlock_pet_spell_t
 {
-  soul_barrage_t( dominion_of_argus_pet_t* p ) 
+  soul_barrage_t( dominion_of_argus_pet_t* p )
     : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1277099 ) )
   {
     background = true;
@@ -2327,6 +2197,23 @@ struct eye_beam_t : public warlock_pet_spell_t
   }
 };
 
+void darkglare_t::arise()
+{
+  warlock_pet_t::arise();
+
+  o()->buffs.darkglare_presence->trigger();
+};
+
+void darkglare_t::demise()
+{
+  if ( !current.sleeping )
+  {
+    o()->buffs.darkglare_presence->expire();
+  }
+
+  warlock_pet_t::demise();
+};
+
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "eye_beam" )
@@ -2430,6 +2317,7 @@ namespace diabolist
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
     is_diabolist_guardian = true;
+    affected_by.demonic_brutality = false;
 
     action_list_str = "chaos_salvo";
   }
@@ -2509,6 +2397,7 @@ namespace diabolist
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
     is_diabolist_guardian = true;
+    affected_by.demonic_brutality = false;
     resource_regeneration = regen_type::DISABLED;
 
     action_list_str = "felseeker";
@@ -2706,10 +2595,11 @@ struct soul_swipe_t : public soul_swipe_base_t
 rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::string_view name )
   : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true ), summon_spell( nullptr )
 {
-  resource_regeneration  = regen_type::DISABLED;
-  action_list_str        = "soul_swipe";
-  owner_coeff.sp_from_sp = 1.0;
-  summon_spell           = owner->find_spell( 1269042 ); // Rampaging Demonic Soul
+  resource_regeneration         = regen_type::DISABLED;
+  affected_by.demonic_brutality = false;
+  action_list_str               = "soul_swipe";
+  owner_coeff.sp_from_sp        = 1.0;
+  summon_spell                  = owner->find_spell( 1269042 );  // Rampaging Demonic Soul
 }
 
 void rampaging_demonic_soul_t::arise()

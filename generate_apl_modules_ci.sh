@@ -11,7 +11,7 @@ if [ "$(pwd)" != "${ROOT}" ]; then
   exit 1
 fi
 
-classes_to_generate=( shaman )
+classes_to_generate=( demon_hunter shaman )
 
 for class in "${classes_to_generate[@]}"
 do

@@ -754,7 +754,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   set_can_cancel( !s_data->flags( spell_attribute::SX_NO_CANCEL ) );
 
   if ( s_data->flags( spell_attribute::SX_ASYNCRONOUS_STACKING_BUFF ) && _max_stack > 1 )
+  {
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_activated( false );
+  }
 
   update_trigger_calculations();
 }
@@ -1866,8 +1869,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   // In-game, procs that happen "close to eachother" are usually delayed into the same time slot. We roughly model this
   // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the
   // first delayed proc will happen.
-  if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
-       sim->default_aura_delay.mean > 0_ms )
+  if ( !activated && player && player->in_combat && sim->default_aura_delay.mean > 0_ms )
   {
     // Since we're storing stacks as value in buff_delay_t, _resolve default values first
     if ( reverse && current_stack > 0 )

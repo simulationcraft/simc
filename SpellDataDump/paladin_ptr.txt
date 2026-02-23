@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66013 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -8389,7 +8389,7 @@ Effects          :
 #1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 16 (Label) | Target: Targeted Ally (21)
                    Affected Spells (Label): Class Spells (16)
-#2 (id=821268)   : Apply Aura (6) | Modify Charge Cooldown Type Recharge Rate% (173)
+#2 (id=821268)   : Apply Aura (6) | Modify Recharge Time% (Category Type Mask) (173)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Targeted Ally (21)
                    Modified By: Equinox (355567 effect#2)
 #3 (id=823063)   : Apply Aura (6) | Modify Rating (189)
@@ -10514,7 +10514,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1015003)  : Apply Aura (6) | Modify Cooldown Recharge Rate (CategoryTypes) (205) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
+#1 (id=1015003)  : Apply Aura (6) | Modify Recharge Time (Category Type Mask) (205) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 32 | Target: Self (1)
 #2 (id=1049616)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1627 (Category) | Target: Self (1)

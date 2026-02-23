@@ -1,9 +1,6 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
 action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat" );
 action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
-
-precombat->add_action( "mark_of_the_wild,if=aura.mark_of_the_wild.down","Executed before combat begins. Accepts non-harmful actions only." );
 
 def->add_action( "call_action_list,name=cooldowns","Executed every time the actor is available." );
 def->add_action( "call_action_list,name=assisted_combat" );
@@ -21,7 +18,7 @@ assisted_combat->add_action( "starfire,if=active_enemies>3&buff.cat_form.down,co
 assisted_combat->add_action( "wrath,if=buff.cat_form.down,cooldown_allow_casting_success=1" );
 assisted_combat->add_action( "moonfire" );
 
-cooldowns->add_action( "use_items" );
+cooldowns->add_action( "use_items","Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc." );
 cooldowns->add_action( "potion" );
 cooldowns->add_action( "blood_fury" );
 cooldowns->add_action( "berserking" );

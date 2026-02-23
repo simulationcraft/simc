@@ -577,17 +577,22 @@ void progress_bar_t::add_simulation_time( double t )
   }
   else
   {
+    lock.lock();
     elapsed_time += t;
     time_count++;
+    lock.unlock();
   }
 }
 
-double progress_bar_t::average_simulation_time() const
+double progress_bar_t::average_simulation_time()
 {
   if ( sim.parent )
   {
     return sim.parent -> progress_bar.average_simulation_time();
   }
 
-  return time_count > 0 ? elapsed_time / time_count : 0;
+  lock.lock_shared();
+  auto ret = time_count > 0 ? elapsed_time / time_count : 0;
+  lock.unlock_shared();
+  return ret;
 }

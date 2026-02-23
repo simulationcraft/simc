@@ -310,6 +310,7 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
+    base_multiplier += 1.0;
   }
 };
 

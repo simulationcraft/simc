@@ -494,6 +494,7 @@ public:
     // Protection Spells
     const spell_data_t* protection_warrior;
     const spell_data_t* protection_warrior_2;
+    const spell_data_t* protection_warrior_3;
     const spell_data_t* devastate;
     const spell_data_t* riposte;
     const spell_data_t* vanguard;
@@ -1901,7 +1902,7 @@ struct melee_t : public warrior_attack_t
       base_rage_generation( 1.75 ),
       arms_rage_multiplier( 1.0 + p->spec.arms_warrior->effectN( 7 ).percent() ),
       fury_rage_multiplier( 1.0 + p->spec.fury_warrior->effectN( 6 ).percent() ),
-      prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
+      prot_rage_multiplier( 1.0 + p->spec.protection_warrior_3->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       war_machine_rage_multiplier( 1.0 ),
       devastator( nullptr )
@@ -3099,8 +3100,7 @@ struct mortal_strike_t : public warrior_attack_t
     auto target_data = td( s->target );
 
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID1, B4 ) &&
-            target_data && target_data->debuffs_colossus_smash->up() &&
-            s->n_targets >= p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 2 ).base_value() )
+            target_data && target_data->debuffs_colossus_smash->up() )
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
     }
@@ -7100,8 +7100,9 @@ void warrior_t::init_spells()
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
-  spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );
+  spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );  // Main spec effects
   spec.protection_warrior_2     = find_spell( 462119 );  // Trinket aura
+  spec.protection_warrior_3     = find_spell( 1258163 );  // More spec effects
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.vanguard                 = find_specialization_spell( "Vanguard" );
@@ -7503,6 +7504,7 @@ void warrior_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
 

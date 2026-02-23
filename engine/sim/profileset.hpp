@@ -467,6 +467,7 @@ class worker_t
   sim_t*         m_sim;
   profile_set_t* m_profileset;
   std::thread*   m_thread;
+  std::mutex     m_mutex;
 
 public:
   worker_t( profilesets_t*, sim_t*, profile_set_t* );
@@ -476,8 +477,13 @@ public:
   std::thread& thread();
   void execute();
 
-  bool is_done() const
-  { return m_done == true; }
+  bool is_done()
+  {
+    m_mutex.lock();
+    auto a = m_done;
+    m_mutex.unlock();
+    return a;
+  }
 
   sim_t* sim() const;
 };
@@ -486,7 +492,7 @@ public:
 class profilesets_t
 {
 public:
-  
+
   using profileset_entry_t = std::unique_ptr<profile_set_t>;
   using profileset_vector_t = std::vector<profileset_entry_t>;
 private:

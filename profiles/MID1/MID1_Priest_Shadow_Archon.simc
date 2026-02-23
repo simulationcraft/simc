@@ -1,0 +1,141 @@
+priest="MID1_Priest_Shadow_Archon"
+source=default
+spec=shadow
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzAMziZ0sZAIjxCAmBYMzMjZbMz2yAMDGA
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/shadowform,if=!buff.shadowform.up
+actions.precombat+=/variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)
+actions.precombat+=/variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)
+actions.precombat+=/variable,name=dr_force_prio,default=1,op=reset
+actions.precombat+=/variable,name=me_force_prio,default=1,op=reset
+actions.precombat+=/variable,name=max_vts,default=12,op=reset
+actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
+actions.precombat+=/arcane_torrent
+actions.precombat+=/tentacle_slam
+
+# Executed every time the actor is available.
+actions=variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15
+actions+=/call_action_list,name=aoe,if=active_enemies>2
+actions+=/run_action_list,name=main
+
+actions.aoe=call_action_list,name=aoe_variables
+
+actions.aoe_variables=variable,name=max_vts,op=set,default=12,value=spell_targets.vampiric_touch>?12
+actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=0,default=1
+actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
+# TODO: Revamp to fix undesired behavior with unstacked fights
+actions.aoe_variables+=/variable,name=dots_up,op=set,value=(active_dot.vampiric_touch>=variable.max_vts|!variable.is_vt_possible)&(active_dot.shadow_word_pain>=active_dot.vampiric_touch)
+actions.aoe_variables+=/variable,name=holding_tentacle_slam,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4&raid_event.adds.in>15|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_tentacle_slam&action.tentacle_slam.enabled&raid_event.adds.exists
+actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+6*!variable.holding_tentacle_slam)>=variable.max_vts|!variable.is_vt_possible
+
+# TODO: Add holding condition for weird fight times to potion with execute
+actions.cds=potion,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30
+actions.cds+=/fireblood,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=8
+actions.cds+=/berserking,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=12
+actions.cds+=/blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
+actions.cds+=/ancestral_call,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
+actions.cds+=/cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2
+actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|set_bonus.tww2_4pc|!talent.voidform)&!buff.power_infusion.up
+actions.cds+=/invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40
+# Use Flash Heal to proc Nexus-King's Command trinket
+actions.cds+=/flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)
+# Sync Power Infusion with Voidform or Dark Ascension
+actions.cds+=/power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
+actions.cds+=/halo
+actions.cds+=/voidform,if=active_dot.shadow_word_pain>=active_dot.vampiric_touch
+actions.cds+=/call_action_list,name=trinkets
+# Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%
+actions.cds+=/desperate_prayer,if=health.pct<=75
+
+# Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up.
+actions.heal_for_tof=holy_nova,if=talent.lightburst
+
+actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies&active_dot.shadow_word_pain>=active_dot.vampiric_touch,if=active_enemies<3
+actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
+# High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter
+actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter
+# Do not overcap on insanity
+actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0
+actions.main+=/void_volley
+# Blast more burst :wicked:
+actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
+# Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions.
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)
+actions.main+=/shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking
+# Use Void Torrent if it will get near full Mastery Value
+actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
+# Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
+actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking
+# Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption
+actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
+# MFI is a good button
+actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
+# Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon
+actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)
+# Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used.
+actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo
+# Put out Vampiric Touch on enemies that will live at least 12s as a filler action.
+actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12
+actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj
+actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1
+# Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds.
+actions.main+=/tentacle_slam,if=raid_event.adds.in>20
+# Use Shadow Word: Death while moving as a low-priority action in execute
+actions.main+=/shadow_word_death,target_if=target.health.pct<20
+# Use Shadow Word: Death while moving as a low-priority action
+actions.main+=/shadow_word_death,target_if=max:dot.shadow_word_madness.remains
+# Use Shadow Word: Pain while moving as a low-priority action
+actions.main+=/shadow_word_pain,target_if=min:remains
+
+actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
+actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
+
+head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240892
+shoulders=blind_oaths_seraphguards,id=250049,bonus_id=13574/13574/13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8793/13454,ilevel=285
+chest=blind_oaths_raiment,id=250054,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=voracious_wristwraps,id=249315,ilevel=289,gem_id=240908
+hands=vilehex_bonds,id=251172,ilevel=289
+waist=endless_march_waistwrap,id=249319,ilevel=289,gem_id=240900
+legs=blind_oaths_leggings,id=250050,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=lightbinder_treads,id=109796,ilevel=289,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240918/240900,enchant_id=7969
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8793/13453,ilevel=285,gem_id=240900,enchant_id=7997
+trinket1=shadow_of_the_empyrean_requiem,id=249810,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=8041
+off_hand=tome_of_alnscorned_regret,id=249922,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_stamina=17604
+# gear_intellect=1673
+# gear_crit_rating=295
+# gear_haste_rating=1451
+# gear_mastery_rating=772
+# gear_versatility_rating=12
+# gear_leech_rating=249
+# gear_armor=532
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

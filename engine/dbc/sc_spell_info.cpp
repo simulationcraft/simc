@@ -1503,7 +1503,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_DAMAGE_DONE_VERSUS,                "Modify Damage Done% vs Race"                       },
   { A_MOD_SPEED_NOT_STACK,                   "Increase Movement Speed%"                          },
   { A_MOD_MOUNTED_SPEED_NOT_STACK,           "Increase Mounted Speed%"                           },
-  { A_MOD_CHARGE_TYPE_RECHARGE_RATE,         "Modify Charge Cooldown Type Recharge Rate%"        },
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,   "Modify Recharge Time% (Category Type Mask)"         },
   { A_AOE_CHARM,                             "Charmed"                                           },
   { A_MOD_MAX_MANA_PCT,                      "Modify Max Mana%"                                  },
   { A_MOD_ATTACKER_SPELL_CRIT_CHANCE,        "Modify Attacker Spell Crit Chance"                 },
@@ -1524,7 +1524,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_FLY,                                   "Fly"                                               },
   { A_MOD_ATTACKER_MELEE_CRIT_DAMAGE,        "Modify Melee Crit Damage Taken from Attacker"      },
   { A_PREVENT_RELEASE_SPIRIT,                "Prevent Releasing Spirit"                          },
-  { A_MOD_RECHARGE_RATE_CATEGORY_MASK,       "Modify Cooldown Recharge Rate (CategoryTypes)"     },
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,       "Modify Recharge Time (Category Type Mask)"         },
   { A_MOD_RAGE_FROM_DAMAGE_DEALT,            "Modify Rage Generated From Auto Attacks"           },
   { A_HASTE_SPELLS,                          "Modify Casting Speed"                              },
   { A_MOD_MELEE_HASTE_2,                     "Modify Melee Haste"                                },
@@ -1671,6 +1671,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_MULTISTRIKE_CHANCE,                "Modify Multistrike%"                               },
   { A_MOD_LEECH_PERCENT,                     "Modify Leech%"                                     },
   { A_ADVANCED_FLYING,                       "Dragonriding"                                      },
+  { A_MOD_EXP_FROM_CREATURE_TYPE,            "Modify Experience Gained% vs Race"                 },
   { A_MOD_RECHARGE_TIME_CATEGORY,            "Modify Recharge Time (Category)"                   },
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY,        "Modify Recharge Time% (Category)"                  },
   { A_MOD_ROOT_2,                            "Root (Respects Threat Table)"                      },
@@ -2233,6 +2234,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     else if ( e->type() == E_TRIGGER_SPELL )
     {
       tokens.emplace_back( fmt::format( "Delay: {}_ms", e->misc_value1() ) );
+    }
+    else if ( e->subtype() == A_MOD_DAMAGE_DONE_VERSUS || e->subtype() == A_MOD_EXP_FROM_CREATURE_TYPE )
+    {
+      std::vector<std::string> _strs;
+      auto _mask = e->misc_value1();
+      for ( auto i = 1; _mask; _mask >>= 1, i++ )
+        if ( _mask & 1 )
+          _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+      tokens.emplace_back( fmt::format( "Race: {}", fmt::join( _strs, ", " ) ) );
     }
     else
     {

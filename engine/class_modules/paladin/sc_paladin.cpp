@@ -1557,7 +1557,8 @@ struct divine_toll_judgment_ret_t :judgment_ret_t
   divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_toll", p->spells.judgment_ret_dt )
   {
     background = true;
-    aoe        = 1; // Divine Toll's Judgments don't cleave further
+    aoe        = 1;  // Divine Toll's Judgments don't cleave further
+    base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
     cooldown->duration = 0_ms;
   }
 };
@@ -1576,7 +1577,13 @@ struct divine_exaction_judgment_t : public judgment_ret_t
   {
     background = true;
     aoe        = 1;  // DE's Hammer of Wrath's don't cleave further
-    base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    // 22.02.26 Fluttershy - We are thinking Divine Toll Judgment/HoW are 150% increased effectiveness from base damage, instead of 50% increased effectiveness from buffed damage (which should be 300%, instead of 250%)
+    if (!p->bugs)
+      base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
+    double de_mult = p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    if ( p->bugs )
+      de_mult += 1.0;
+    base_multiplier *= de_mult;
     cooldown->duration = 0_ms;
   }
 };
@@ -1587,6 +1594,7 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
   {
     background = true;
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
+    base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
     triggers_second_sunrise   = false;
     triggers_divine_resonance = false;
     cooldown->duration        = 0_ms;
@@ -1611,7 +1619,13 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   {
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
-    base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    // 22.02.26 Fluttershy - We are thinking Divine Toll Judgment/HoW are 150% increased effectiveness from base damage, instead of 50% increased effectiveness from buffed damage (which should be 300%, instead of 250%)
+    if ( !p->bugs )
+      base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
+    double de_mult = p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    if ( p->bugs )
+      de_mult += 1.0;
+    base_multiplier *= de_mult;
     triggers_second_sunrise   = false;
     triggers_divine_resonance = false;
     cooldown->duration = 0_ms;
@@ -1695,19 +1709,9 @@ void hammer_of_wrath_t::execute()
   {
     p()->buffs.templar.sanctification->trigger();
   }
-  // 24.01.26 Fluttershy - Hammer of Wrath extends Shake by an additional second
-  if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.higher_calling->ok() &&
-       p()->buffs.templar.shake_the_heavens->up() )
+  if ( crit_any_target )
   {
-    p()->buffs.templar.shake_the_heavens->extend_duration(
-        p(), timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() ) );
-  }
-  if (crit_any_target)
-  {
-    if (!(p()->bugs && p()->talents.sweeping_verdict->ok()))
-    {
-      trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
-    }
+    trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
 }
 
@@ -1741,12 +1745,10 @@ double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
 {
   double ctm = judgment_base_t::composite_target_multiplier( target );
 
-  // 30.01.26 Fluttershy - Talent currently does not work for Ret
-  if ( p()->talents.vengeful_wrath->ok() && p()->specialization() == PALADIN_PROTECTION )
-  {
-    ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
-  }
-
+  // Damage is fully effective at 20% HP, according to Vael
+  double min = 20.0;
+  ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() *
+                   ( 1.0 - ( std::max( target->health_percentage() - min, 0.0 ) / ( 100.0 - min ) ) );
   return ctm;
 }
 
@@ -4277,7 +4279,6 @@ void paladin_t::init_spells()
   else
     spells.avenging_wrath = find_spell( 31884 );
 
-  spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
@@ -4296,9 +4297,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
 
-  passives.boundless_conviction = find_spell( 115675 );
-  // Manually add judgment spells to swift justice
-  register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
   // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
   register_passive_affect_list( talents.blessed_champion,
                                 affect_list_t( 1 ).add_spell( 20271, 275773 ) );
@@ -4306,8 +4304,7 @@ void paladin_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( passives.boundless_conviction );
+  parse_raid_buffs();
 }
 
 // paladin_t::primary_role ==================================================
@@ -4826,6 +4823,7 @@ void paladin_t::create_options()
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
   add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
+  add_option( opt_string( "starting_armament", options.starting_armament ) );
 
   player_t::create_options();
 }
@@ -4852,8 +4850,13 @@ void paladin_t::combat_begin()
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
 
-  // evidently it resets to summer on combat start
-  next_armament = SACRED_WEAPON;
+  if ( options.starting_armament == "sacred_weapon" )
+    next_armament = SACRED_WEAPON;
+  // If option is set to gibberish, just roll
+  else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
+    next_armament = HOLY_BULWARK;
+  else
+    next_armament = SACRED_WEAPON;
 
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {

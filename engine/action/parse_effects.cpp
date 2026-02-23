@@ -80,7 +80,7 @@ std::string pet_type( uint32_t opt )
 
 std::string cooldown_type( uint32_t opt )
 {
-  return opt ? "Category" : "";
+  return opt == 1 ? "Category" : "";
 }
 
 std::string parse_cb_str( parse_callback_e type )
@@ -103,6 +103,51 @@ player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, par
   base->callback_list[ type ].push_back( std::move( fn ) );
   simple = false;
   return *this;
+}
+
+player_effect_t& player_effect_t::print_debug( sim_t* sim, std::string prefix )
+{
+  std::string val_str;
+
+  if ( buff && type & USE_CURRENT )
+    val_str = "current value";
+  else if ( mastery )
+    val_str = fmt::format( "{:.5f}*mastery", value * 100 );
+  else
+    val_str = fmt::format( "{}", value );
+
+  if ( buff && type & USE_DEFAULT )
+    val_str = val_str + " (default value)";
+  else if ( value_func )
+    val_str = val_str + " (value function)";
+
+  std::string mod_str;
+
+  if ( buff && use_stacks && idx )
+    mod_str = "with callback per stack of";
+  else if ( buff && use_stacks )
+    mod_str = "per stack of";
+  else if ( buff && idx )
+    mod_str = "with callback from";
+  else if ( func )
+    mod_str = "with condition from";
+  else
+    mod_str = "from";
+
+  sim->print_debug( "{} manually modified by {} {} {} ({}#{})", prefix, val_str, mod_str, eff->spell()->name_cstr(),
+                    eff->spell()->id(), eff->index() + 1 );
+
+  return *this;
+}
+
+player_effect_t& player_effect_t::print_debug( action_t* action )
+{
+  return print_debug( action->sim, fmt::format( "action-effects: {}", *action ) );
+}
+
+player_effect_t& player_effect_t::print_debug( player_t* player )
+{
+  return print_debug( player->sim, fmt::format( "player-effects: {}", *player ) );
 }
 
 std::string player_effect_t::value_type_name( uint16_t t ) const
@@ -692,7 +737,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       val_str += " (value function)";
   }
 
-  debug_message( tmp, type_str, val_str, mastery, pack.spell, i );
+  debug_message( tmp, type_str, val_str, pack.spell, i );
 
   tmp.value = val;
   tmp.mastery = mastery;
@@ -1307,8 +1352,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                            std::string_view val_str, bool mastery, const spell_data_t* s_data,
-                                            size_t i )
+                                            std::string_view val_str, const spell_data_t* s_data, size_t i )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1321,11 +1365,6 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
   {
     sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
                       data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
-  }
-  else if ( mastery && !data.func )
-  {
-    sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
-                      s_data->id(), i );
   }
   else if ( data.func )
   {
@@ -1397,7 +1436,7 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                            bool, const spell_data_t* s_data, size_t i )
+                                            const spell_data_t* s_data, size_t i )
 {
   sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
                     s_data->name_cstr(), s_data->id(), i );
@@ -1635,14 +1674,18 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
   {
     tmp.opt_enum = 1;
-    str = "cooldown";
+    str = "category cooldown";
     return &recharge_multiplier_effects;
   }
-  else if ( ( eff.subtype() == A_MOD_CHARGE_RECHARGE_RATE && _action->data().charges() ) ||
-            ( ( eff.subtype() == A_MOD_RECHARGE_RATE || eff.subtype() == A_MOD_RECHARGE_RATE_LABEL ) &&
-              !_action->data().charges() ) )
+  else if ( eff.subtype() == A_MOD_CHARGE_RECHARGE_RATE )
   {
-    str = "recharge rate";
+    tmp.opt_enum = 1;
+    str = "category recharge_rate";
+    return &recharge_rate_effects;
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE || eff.subtype() == A_MOD_RECHARGE_RATE_LABEL )
+  {
+    str = "recharge_rate";
     return &recharge_rate_effects;
   }
   else if ( eff.subtype() == A_MODIFY_SCHOOL )
@@ -1670,7 +1713,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                         std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
+                                         std::string_view val_str, const spell_data_t* s_data, size_t i )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1699,11 +1742,6 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
 
     _action->sim->print_debug( "action-effects: {} {} modified by {} {} buff {} ({}#{})", *_action, tok1, tok2,
                                stack_str, data.buff->name(), data.buff->data().id(), i );
-  }
-  else if ( mastery && !data.func )
-  {
-    _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
-                               s_data->name_cstr(), s_data->id(), i );
   }
   else if ( data.func )
   {
@@ -1781,7 +1819,7 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                         bool, const spell_data_t* s_data, size_t i )
+                                         const spell_data_t* s_data, size_t i )
 {
   _action->sim->print_debug( "target-effects: {} {} modified by {} on targets with debuff {} ({}#{})", *_action,
                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );
@@ -1936,4 +1974,54 @@ size_t parse_action_base_t::total_effects_count() const
          target_multiplier_effects.size() +
          target_crit_chance_effects.size() +
          target_crit_bonus_effects.size();
+}
+
+void parse_action_base_t::process_cooldown_buffs( bool dynamic, std::vector<player_effect_t>& vec )
+{
+  // remove category effects for non-category cooldowns and vice versa. we need to process this here in init_finished
+  // as actions may get assigned different cooldowns during construction.
+  range::erase_remove( vec, [ is_category = _action->cooldown->is_category() ]( const auto& i ) {
+    return is_category ? i.opt_enum != 1 : i.opt_enum == 1;
+  } );
+
+  for ( const auto& i : vec )
+  {
+    if ( i.buff && ( i.buff->gcd_type == gcd_haste_type::NONE || !dynamic ) && !range::contains( _cd_buffs, i.buff ) )
+    {
+      _player->sim->print_debug( "action-effects: cooldown {} recharge multiplier adjusted by buff {} ({})",
+                                 _action->cooldown->name(), i.buff->name(), i.buff->data().id() );
+
+      if ( _action->internal_cooldown->charges )
+      {
+        i.buff->add_stack_change_callback( [ this ]( auto, auto, auto ) {
+          _action->cooldown->adjust_recharge_multiplier();
+          _action->internal_cooldown->adjust_recharge_multiplier();
+        } );
+      }
+      else
+      {
+        i.buff->add_stack_change_callback( [ this ]( auto, auto, auto ) {
+          _action->cooldown->adjust_recharge_multiplier();
+        } );
+      }
+
+      // actions do not necessarily have unique cooldowns, so we need to go through every action and check to see if the
+      // cooldown matches, then add the buff to _cd_buffs so that we don't add duplicate stack_change_callbacks.
+      for ( auto a : _player->action_list )
+        if ( a->cooldown == _action->cooldown )
+          if ( auto tmp = dynamic_cast<parse_action_base_t*>( a ) )
+            tmp->_cd_buffs.push_back( i.buff );
+    }
+  }
+}
+
+void parse_action_base_t::initialize_cooldown_buffs()
+{
+  if ( !_action->cooldown )
+    return;
+
+  auto dynamic = range::contains( _player->dynamic_cooldown_list, _action->cooldown );
+
+  process_cooldown_buffs( dynamic, recharge_multiplier_effects );
+  process_cooldown_buffs( dynamic, recharge_rate_effects );
 }

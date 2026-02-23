@@ -450,6 +450,7 @@ public:
     bool trigger_overpowered_missiles;
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
@@ -903,7 +904,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
+  bool trigger_clearcasting( double chance = 1.0, bool allow_predict = true, bool has_double_proc_delay = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_fired_up();
@@ -1884,8 +1885,11 @@ public:
 
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, !background ) )
+        if ( p()->trigger_clearcasting( proc_chance, !background ) )
+        {
+          p()->state.last_random_clearcasting = sim->current_time();
           p()->state.clearcasting_blp_count = 0;
+        }
       }
     }
 
@@ -2436,6 +2440,12 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
   void execute() override
   {
+    if ( last_hot_streak )
+    {
+      p()->trigger_fired_up();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
+    }
+
     custom_state_spell_t::execute();
 
     // TODO: When exactly in execute does this trigger the first cinder?
@@ -2451,20 +2461,16 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
-      p()->trigger_fired_up();
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
-    // TODO: Check if Pyromaniac can trigger Fired Up and Cinderstorm.
     if ( ( last_hot_streak || p()->bugs ) && p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      // TODO: Pyromaniac increments Sphere's BLP (and thus can proc Spheres w/ the cap), 
-      // but it hasn't been tested whether it can roll the random chance.
+      p()->trigger_fired_up();
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
@@ -2808,7 +2814,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     int salvo = p()->buffs.arcane_salvo->check();
     if ( p()->buffs.arcane_soul->check() )
     {
-      p()->trigger_clearcasting();
+      p()->trigger_clearcasting( 1.0, true, true );
       p()->trigger_arcane_charge( arcane_soul_charges );
       p()->trigger_arcane_salvo( arcane_soul_salvo, as<int>( p()->buffs.arcane_soul->data().effectN( 2 ).base_value() ) );
     }
@@ -3422,16 +3428,8 @@ struct cinderstorm_t final : public fire_mage_spell_t
   {
     background = proc = true;
     triggers.ignite = true;
+    base_ignite_multiplier *= p->talents.cinderstorm->effectN( 5 ).percent();
   };
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
-
-    m *= p()->talents.cinderstorm->effectN( 5 ).percent();
-
-    return m;
-  }
 
   void impact( action_state_t* s ) override
   {
@@ -3824,11 +3822,12 @@ struct flamestrike_t final : public hot_streak_spell_t
     triggers.ignite = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
+    base_ignite_multiplier *= 1.0 + p->talents.ignition->effectN( 2 ).percent();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
   }
-
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -3836,16 +3835,6 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     unsigned scaling_targets = std::min( s->n_targets, as<unsigned>( p()->talents.fuel_the_fire->effectN( 3 ).base_value() ) );
     m *= 1.0 + p()->talents.fuel_the_fire->effectN( 2 ).percent() * scaling_targets;
-
-    return m;
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
-
-    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
-    m *= 1.0 + p()->talents.ignition->effectN( 2 ).percent();
 
     return m;
   }
@@ -6264,11 +6253,7 @@ void mage_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Wizardry
-  parse_passive_effects( find_spell( 89744 ) );
-  // Mana Attunement
-  parse_passive_effects( find_spell( 121039 ) );
+  parse_raid_buffs();
 }
 
 void mage_t::init_base_stats()
@@ -6360,6 +6345,7 @@ void mage_t::create_buffs()
   buffs.fired_up                 = make_buff( this, "fired_up", find_spell( 1257350 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                     ->set_activated( true )
                                      ->set_chance( talents.fired_up_1.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
                                      ->set_default_value_from_effect( 3 )
@@ -7256,7 +7242,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_predict )
+bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_double_proc_delay )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -7270,6 +7256,11 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
       state.gained_initial_clearcasting = true;
       make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
     }
+
+    timespan_t delay = 0_ms;
+    if ( has_double_proc_delay && state.last_random_clearcasting == sim->current_time() )
+      delay = 100_ms;
+    // TODO: had_clearcasting may be inaccurate; unlike previously, there's no methods to delay a CC trigger w/o CC. Revisit later.
     if ( delay > 0_ms && had_clearcasting )
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
@@ -7277,8 +7268,20 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
     if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
-    // TODO: double check timing
-    buffs.brainstorm->trigger();
+    // Due to Brainstorm being async in sims, its trigger will be scheduled w/ make_event ~30ms later, whereas CC is instantaneous.
+    // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
+    // However, in sims, CC will be active prior to the Barrage.
+    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.  
+    if ( talents.brainstorm.ok() )
+    {
+      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
+      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
+      if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
+        buffs.brainstorm->trigger();
+      else
+        sim->print_debug("Gaining Clearcasting in {}_s; Brainstorm won't be triggered due to double proc delay.", delay );
+    }
+
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
 
     if ( rng().roll( talents.overpowered_missiles->effectN( 1 ).percent() ) )

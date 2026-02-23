@@ -17,7 +17,7 @@
 #include "action/spell.hpp"
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
-#include "dbc/active_spells.hpp"
+#include "dbc/class_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
@@ -5701,11 +5701,6 @@ double player_t::composite_damage_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cdv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
@@ -5722,11 +5717,6 @@ double player_t::composite_heal_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    chv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
@@ -5742,11 +5732,6 @@ double player_t::composite_mitigation_versatility() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-  }
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
@@ -5827,20 +5812,17 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 {
   double m = 1.0;
 
-  if ( t->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
+  for ( const auto& entry : buffs.creature_type_buffs )
   {
-    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
-    // stat buffs.
-    m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
-  }
+    // check buff if buff exists, otherwise assume passive
+    if ( auto buff = std::get<0>( entry ); buff && !buff->check() )
+      continue;
 
-  if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-    m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-
-  if ( ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL ) &&
-       racials.subterranean_predator->ok() )
-  {
-    m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
+    // check against creature type mask
+    if ( std::get<1>( entry ) & ( 1 << ( t->race - 1 ) ) )
+    {
+      m *= 1.0 + std::get<2>( entry );
+    }
   }
 
   auto td = find_target_data( t );
@@ -6505,9 +6487,9 @@ void player_t::combat_end()
   // phase, while a child thread is already done (their init). Note that this may mean that with
   // target_error option, some data to estimate the target error can be missed (in the main thread).
   // In turn, lazily finding the parent actor here ensures that the performance hit on the init
-  // process is minimal (no need for locks).
+  // process is minimal.
   if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr &&
-      sim->parent->initialized && sim->thread_index > 0 )
+      sim->parent->is_initialized() && sim->thread_index > 0 )
   {
     // NOTE NOTE NOTE: This search can no longer be run based on find_player() because it uses
     // actor_list. Ever since pet_spawner support, the actor_list of the parent sim can (and will)
@@ -12515,13 +12497,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "apex" )
     {
-      // temporary hack to allow apex.# in prepatch apls
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        _talent = player_talent_t( this );
-      }
-      else
-      {
       // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
       std::vector<const trait_data_t*> apex_traits;
 
@@ -12539,22 +12514,24 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
       _talent = create_talent_obj( this, apex_traits[ index ] );
-      }
     }
     else if ( splits[ 0 ] == "talent" )
     {
+      auto _name = splits[ 1 ];  // make a copy view
       auto _index = 0U;
+
       if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
            _split.size() >= 2 && util::is_number( _split.back() ) )
       {
+        _name = _name.substr( 0, _name.size() - _split.back().size() - 1 );
         _index = util::to_unsigned( _split.back() );
       }
 
-      _talent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true, _index );
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::HERO, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::CLASS, _name, specialization(), true, _index );
 
       if ( _talent.invalid() )
         throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
@@ -15028,6 +15005,34 @@ void player_t::register_init_finished_callback( std::function<void( player_t* )>
   callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
+void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_data )
+{
+  if ( !s_data->ok() )
+    s_data = &buff->data();
+
+  if ( !s_data->ok() )
+    return;
+
+  auto effect = spell_data_t::find_spelleffect( *s_data, E_APPLY_AURA, A_MOD_DAMAGE_DONE_VERSUS );
+  if ( !effect.ok() )
+    return;
+
+  std::vector<std::string> _strs;
+  auto _mask = effect.misc_value1();
+
+  for ( auto i = 1; _mask; _mask >>= 1, i++ )
+    if ( _mask & 1 )
+      _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+  assert( _strs.size() );
+
+  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
+                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+                    fmt::join( _strs, ", " ) );
+
+  buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -15248,9 +15253,11 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
   { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
   { A_HASTE_ALL,                              "all_haste"                        },  // 193
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
@@ -15448,6 +15455,20 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     case A_HASTED_COOLDOWN:  // 416
     case A_HASTED_GCD:  // 417
       affected_spells = dbc->effect_affects_spells( eff.spell()->class_family(), &eff );
+      break;
+    case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
+    case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
+      if ( auto _mask = as<unsigned>( eff.misc_value1() ) )
+      {
+        for ( unsigned i = 1; _mask; _mask >>= 1, i++ )
+        {
+          if ( _mask & 1 )
+          {
+            auto span_ = dbc->spells_by_category_mask_bit( i );
+            affected_spells.insert( affected_spells.end(), span_.begin(), span_.end() );
+          }
+        }
+      }
       break;
     case A_ADD_PCT_LABEL_MODIFIER:  // 218
     case A_ADD_FLAT_LABEL_MODIFIER:  // 219
@@ -15840,11 +15861,13 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field_type2 = P_COOLDOWN;
         }
         break;
+      case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
       case A_MOD_MAX_CHARGES:  // 411
       case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
         flat_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
         pct_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
@@ -16420,17 +16443,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class aura
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
-
-  // class-wide rank spells
-  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  // class passives
+  for ( const auto& passive_spell : passive_class_spell_t::data( dbc->ptr ) )
   {
-    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( passive_spell.class_id ) == util::class_id( type ) )
     {
-      auto spell = find_spell( rank_spell.spell_id );
-      if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+      auto spell = find_spell( passive_spell.spell_id );
+      parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
     }
   }
 
@@ -16458,6 +16477,10 @@ void player_t::parse_all_class_passives()
         parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
+
+  // may as well handle this here
+  if ( racials.subterranean_predator->ok() )
+    register_creature_type_buff( nullptr, racials.subterranean_predator );
 }
 
 void player_t::parse_all_passive_talents()
@@ -16482,6 +16505,29 @@ void player_t::parse_all_passive_sets()
       for ( const auto& data : bonus )
         if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
+}
+
+void player_t::parse_raid_buffs()
+{
+  // blessing of the bronze
+  if ( sim->overrides.blessing_of_the_bronze )
+  {
+    // classes are assigned alphabetically starting from eff#1
+    auto spell = find_spell( 364342 )->effectN( static_cast<unsigned>( type ) ).trigger();
+    parse_passive_effects( spell, true );
+
+    auto buff = make_buff( this, "blessing_of_the_bronze", spell );
+    register_precombat_begin( [ buff ]( auto ) { buff->override_buff(); } );
+  }
+
+  // mark of the wild
+  if ( sim->overrides.mark_of_the_wild )
+  {
+    // if overrides are registered for the 'self-buff' talents, use the cloned spell_data_t
+    auto spell = dbc_override->find_spell( sim->auras.mark_of_the_wild->data().id(), is_ptr() );
+
+    parse_passive_effects( spell ? spell : &sim->auras.mark_of_the_wild->data(), true );
+  }
 }
 
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )

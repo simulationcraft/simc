@@ -326,7 +326,7 @@
   "CraftingDataEnchantQuality": {
     "parent": "CraftingData",
     "fields": [
-      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "id_crafting_quality", "ref": "CraftingQuality" },
       { "data_type": "i", "field": "id_spell_item_enchantment", "ref": "SpellItemEnchantment" },
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
     ]
@@ -838,7 +838,7 @@
     "fields": [
       { "data_type": "H", "field": "required_arena_rating" },
       { "data_type": "b", "field": "arena_bracket" },
-      { "data_type": "B", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "B", "field": "id_min_faction" },
       { "data_type": "i", "field": "min_reputation" },
       { "data_type": "B", "field": "required_achievement" },
@@ -1473,22 +1473,22 @@
     "parent": "SkillLine",
     "fields": [
       { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
-      { "data_type": "S", "field": "unk_2" },
-      { "data_type": "S", "field": "unk_3" },
+      { "data_type": "S", "field": "verb" },
+      { "data_type": "S", "field": "verb_all" },
       { "data_type": "i", "field": "id" },
       { "data_type": "h", "field": "id_skill", "ref": "SkillLine", "formats": { "cpp": "%4u" } },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "h", "field": "req_skill_level" },
       { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
-      { "data_type": "I", "field": "id_replace", "ref": "SpellName" },
-      { "data_type": "B", "field": "unk_13" },
-      { "data_type": "H", "field": "max_learn_skill" },
-      { "data_type": "H", "field": "unk_7" },
-      { "data_type": "i", "field": "unk_14" },
-      { "data_type": "B", "field": "reward_skill_points" },
-      { "data_type": "H", "field": "index" },
-      { "data_type": "H", "field": "id_filter", "ref": "TradeSkillCategory" },
-      { "data_type": "H", "field": "unk_15" }
+      { "data_type": "i", "field": "id_replace", "ref": "SpellName" },
+      { "data_type": "i", "field": "acquire_method" },
+      { "data_type": "h", "field": "max_learn_skill" },
+      { "data_type": "h", "field": "min_learn_skill" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "b", "field": "reward_skill_points" },
+      { "data_type": "h", "field": "index" },
+      { "data_type": "h", "field": "id_filter", "ref": "TradeSkillCategory" },
+      { "data_type": "h", "field": "id_skill_up" }
     ]
   },
   "SkillLineXTraitTree": {

@@ -6,7 +6,7 @@
 #include "dbc.hpp"
 #include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
-#include "active_spells.hpp"
+#include "class_spells.hpp"
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/expressions.hpp"
@@ -399,45 +399,44 @@ struct spell_list_expr_t : public spell_data_expr_t
           }
         }
 
-        result_spell_list.insert( result_spell_list.begin(),
-            talent_spells.begin(), talent_spells.end() );
+        result_spell_list.insert( result_spell_list.begin(), talent_spells.begin(), talent_spells.end() );
         break;
       }
       case DATA_CLASS_SPELL:
       {
-        range::for_each( active_class_spell_t::data( dbc.ptr ),
-            [this]( const active_class_spell_t& e ) {
-              result_spell_list.push_back( e.spell_id );
+        range::for_each( active_class_spell_t::data( dbc.ptr ), [ this ]( const active_class_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
         } );
 
-        range::for_each( active_pet_spell_t::data( dbc.ptr ),
-            [this]( const active_pet_spell_t& e ) {
-              result_spell_list.push_back( e.spell_id );
+        range::for_each( active_pet_spell_t::data( dbc.ptr ), [ this ]( const active_pet_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
+        } );
+
+        range::for_each( passive_class_spell_t::data( dbc.ptr ), [ this ]( const passive_class_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
         } );
         break;
       }
       case DATA_RACIAL_SPELL:
       {
-        range::for_each( racial_spell_entry_t::data( dbc.ptr ),
-            [this]( const racial_spell_entry_t& entry ) {
-              result_spell_list.push_back( entry.spell_id );
+        range::for_each( racial_spell_entry_t::data( dbc.ptr ), [ this ]( const racial_spell_entry_t& entry ) {
+          result_spell_list.push_back( entry.spell_id );
         } );
         break;
       }
       case DATA_MASTERY_SPELL:
       {
-        range::for_each( mastery_spell_entry_t::data( dbc.ptr ),
-            [this]( const mastery_spell_entry_t& entry ) {
-              result_spell_list.push_back( entry.spell_id );
+        range::for_each( mastery_spell_entry_t::data( dbc.ptr ), [ this ]( const mastery_spell_entry_t& entry ) {
+          result_spell_list.push_back( entry.spell_id );
         } );
         break;
       }
       case DATA_SPECIALIZATION_SPELL:
       {
         range::for_each( specialization_spell_entry_t::data( dbc.ptr ),
-            [this]( const specialization_spell_entry_t& e ) {
-              result_spell_list.push_back( e.spell_id );
-        } );
+          [ this ]( const specialization_spell_entry_t& e ) {
+            result_spell_list.push_back( e.spell_id );
+          } );
         break;
       }
       case DATA_AZERITE_SPELL:

@@ -532,6 +532,7 @@ public:
   util::span<const spell_data_t* const> spells_by_label( size_t label ) const;
   // Categorized spells
   util::span<const spell_data_t* const> spells_by_category( unsigned category ) const;
+  util::span<const spell_data_t* const> spells_by_category_mask_bit( unsigned bit ) const;
 };
 
 class dbc_override_t

@@ -3,8 +3,7 @@ action_priority_list_t* def = get_action_priority_list( "default" );
 action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat" );
 action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
 
-precombat->add_action( "mark_of_the_wild,if=aura.mark_of_the_wild.down","Executed before combat begins. Accepts non-harmful actions only." );
-precombat->add_action( "bear_form,if=buff.bear_form.down" );
+precombat->add_action( "bear_form,if=buff.bear_form.down","Executed before combat begins. Accepts non-harmful actions only." );
 
 def->add_action( "auto_attack","Executed every time the actor is available." );
 def->add_action( "call_action_list,name=cooldowns" );
@@ -24,7 +23,7 @@ assisted_combat->add_action( "swipe,if=target.distance<=8" );
 assisted_combat->add_action( "moonfire,if=target.distance>10" );
 assisted_combat->add_action( "swipe" );
 
-cooldowns->add_action( "use_items" );
+cooldowns->add_action( "use_items","Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc." );
 cooldowns->add_action( "potion" );
 cooldowns->add_action( "blood_fury" );
 cooldowns->add_action( "berserking" );

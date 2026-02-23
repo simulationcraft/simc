@@ -567,6 +567,10 @@ void devouring_banding( special_effect_t& effect )
   damage->base_dd_max += proc_damage;
 
   effect.spell_id = effect.trigger()->id();
+  // TODO: Can this proc off of self damage?
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->is_enemy(); } );
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
     assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
@@ -658,7 +662,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   effect.player->sim->error( PLACEHOLDER,
                              "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
-  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
+  // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
+  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect ) / 5;
 
   if ( auto proc = effect.player->find_action( "prismatic_focusing_iris" ) )
   {
@@ -673,7 +678,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
   dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
-  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
+  // Feb 23 2026 - tank mod is not being applied in game
+  //dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
   effect.spell_id       = effect.trigger()->id();
@@ -955,13 +961,14 @@ void rot( special_effect_t& effect )
     buff_t* create_debuff( player_t* target ) override
     {
       return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+        ->set_activated( true )
         ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      get_debuff( execute_state->target )->execute();
+      get_debuff( execute_state->target )->trigger();
     }
   };
 
@@ -1026,13 +1033,15 @@ void hunt( special_effect_t& effect )
 
   // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
   // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
-                                                        RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
-                                                        RACE_ABERRATION, RACE_ELEMENTAL,  RACE_UNDEAD };
+  static constexpr std::array<race_e, 9> raid_races = {
+    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
+    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
+  };
 
-  static constexpr std::array<race_e, 9> valid_races = { RACE_BEAST,     RACE_ELEMENTAL, RACE_MECHANICAL,
-                                                         RACE_UNDEAD,    RACE_HUMANOID,  RACE_ABERRATION,
-                                                         RACE_DRAGONKIN, RACE_GIANT,     RACE_DEMON };
+  static constexpr std::array<race_e, 10> valid_races = {
+    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
+  };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1061,13 +1070,7 @@ void hunt( special_effect_t& effect )
       else
       {
         mode = MODE_SPECIFIED;
-
-        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to
-        // get the proper buff.
-        if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
-          race = RACE_UNDEAD;
-        else
-          race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
 
         if ( !range::contains( valid_races, race ) )
         {
@@ -1127,6 +1130,7 @@ void hunt( special_effect_t& effect )
           break;
         case RACE_GIANT:
         case RACE_UNDEAD:
+        case RACE_NOT_SPECIFIED:
           buffs[ STAT_VERSATILITY_RATING ]->trigger();
           break;
         default:
@@ -1529,18 +1533,13 @@ void light_company_guidon( special_effect_t& effect )
 // 1262753 Buff
 void heart_of_ancient_hunger( special_effect_t& effect )
 {
-  struct heart_of_ancient_hunger_buff_t : public stat_buff_t
-  {
-    heart_of_ancient_hunger_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
-      : stat_buff_t( p, n, s )
-    {
-      set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) / data().duration().total_seconds() );
-      set_reverse( true );
-      set_max_stack( as<int>( data().duration().total_seconds() ) );
-    }
-  };
-
-  effect.custom_buff = create_buff<heart_of_ancient_hunger_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger(), effect );
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, effect.driver()->effectN( 1 ).trigger() )
+          ->set_stat_from_effect_type( A_MOD_RATING,
+                                       effect.driver()->effectN( 1 ).average( effect ) /
+                                           effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() )
+          ->set_reverse( true )
+          ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).trigger()->duration().total_seconds() ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2061,64 +2060,72 @@ void magisters_alchemist_stone( special_effect_t& e )
 
 // Vaelgor's Final Stare
 // 1259293 Driver
-// 1260459 Nullsight 
-void vaelgors_final_stare( special_effect_t& effect )
+// 1260459 Nullsight
+void nullsight( special_effect_t& e )
 {
-  struct nullsight_t final : public stat_buff_t
+  unsigned equip_id = 1259293;
+  auto equip        = find_special_effect( e.player, equip_id );
+  assert( equip && "Vaelgor's final stance missing equip effect" );
+
+  auto buff_spell    = e.driver();
+  int stacks         = static_cast<int>( buff_spell->duration() / buff_spell->effectN( 3 ).period() );
+  double buff_val    = equip->driver()->effectN( 1 ).average( e );
+  double buff_stacks = buff_val / stacks;
+
+  e.custom_buff = create_buff<stat_buff_t>( e.player, buff_spell )
+                      ->set_stat_from_effect_type( A_MOD_RATING, buff_stacks )
+                      ->set_max_stack( stacks )
+                      ->set_reverse( true );
+}
+
+// Locus-Walker's Ribbon
+// 1259314 Driver
+// 1259317 stat buff
+// 1268058 stack buff
+void locuswalkers_ribbon( special_effect_t& e )
+{
+  struct riftwalkers_temptation_t : public stat_buff_t
   {
-    double buff_val;
-    double decrease;
+    buff_t* stack_buff;
 
-    nullsight_t( player_t* p, std::string_view n, const special_effect_t& e )
-      : stat_buff_t( p, n, e.player->find_spell( 1260459 ) ), buff_val( 0 ), decrease( 0 )
+    riftwalkers_temptation_t( player_t* p, std::string_view n, const spell_data_t* s, buff_t* stack_buff )
+      : stat_buff_t( p, n, s ), stack_buff( stack_buff )
     {
-      auto n_ticks = data().duration() / data().effectN( 3 ).period();
-      buff_val     = e.driver()->effectN( 1 ).average( e );
-      decrease     = buff_val / n_ticks;
-      set_stat_from_effect( 1, buff_val );
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
     }
 
-    double current_value()
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      double value = buff_val - ( decrease * current_tick );
-      return value;
-    }
-
-    void recalculate()
-    {
-      for ( auto& buff_stat : stats )
-      {
-        player->stat_loss( buff_stat.stat, decrease, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-    }
-
-    void recalculate_expiry()
-    {
-      for ( auto& buff_stat : stats )
-      {
-        double delta = current_value();
-        if ( delta > 0 )
-        {
-          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-        }
-        else if ( delta < 0 )
-        {
-          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-        }
-        buff_stat.current_value = 0;
-      }
-    }
-
-    void expire_override( int s, timespan_t d ) override
-    {
-      // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
-      buff_t::expire_override( s, d );
-      recalculate_expiry();
+      return stat.stack_amount( s ) * ( 1.0 + stack_buff->check_stack_value() );
     }
   };
 
-  effect.custom_buff = create_buff<nullsight_t>( effect.player, "nullsight", effect );
+  struct locuswalkers_ribbon_t final : public dbc_proc_callback_t
+  {
+    stat_buff_t* stat_buff;
+    buff_t* stack_buff;
+
+    locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      stack_buff = create_buff<buff_t>( e.player, "deepening temptation", e.trigger()->effectN( 2 ).trigger() )
+                       ->set_freeze_stacks( true )
+                       ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                         if ( !stack_buff->player->in_combat && stack_buff->check() )
+                           stack_buff->decrement();
+                       } );
+
+      stat_buff = create_buff<riftwalkers_temptation_t>( e.player, "riftwalkers_temptation", e.trigger(), stack_buff )
+                      ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      stat_buff->trigger();
+      stack_buff->trigger();
+    }
+  };
+
+  new locuswalkers_ribbon_t( e );
 }
 
 }  // namespace trinkets
@@ -2200,6 +2207,31 @@ void torments_duality( special_effect_t& effect )
 
 namespace armors
 {
+
+// Eternal Voidsong Chain
+// 1271211 Driver
+// 1271226 DoT
+void eternal_voidsong_chain( special_effect_t& effect )
+{
+  effect.player->sim->error( PLACEHOLDER,
+                             "Eternal Voidsong Chain's implementation is speculative, and has not been tested. Sim "
+                             "results may be inaccurate." );
+
+  auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td_multiplier *= role_mult( effect );
+  dot->rolling_periodic = true;
+
+  effect.execute_action = dot;
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        return dbc::has_common_school( a->get_school(), SCHOOL_SHADOW );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace armors
 
@@ -2301,7 +2333,10 @@ void voidlight_bindings( special_effect_t& effect )
   assert( value_spell && "Voidlight Bindings missing value spell" );
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
-  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect.player );
+
+  effect.player->sim->error( PLACEHOLDER,
+                             "voidlight bindings damage scaling off player level as item level scaling is unknown" );
   // No Role multiplier currently
   //damage->base_multiplier *= role_mult( effect );
 
@@ -2405,15 +2440,19 @@ void register_special_effects()
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
-  register_special_effect( 1259293, trinkets::vaelgors_final_stare );
+  register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
+  register_special_effect( 1260459, trinkets::nullsight );
+  register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
-  register_special_effect( 1244005, sets::murder_row_materials );
-  register_special_effect( 1244021, sets::root_wardens_regalia );
-  register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
+  register_special_effect( 1271211, armors::eternal_voidsong_chain );
   // Sets
-  register_special_effect( 1281574, sets::voidlight_bindings );
+  // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
+  unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
+  unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
+  unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
+  unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
 void register_target_data_initializers( sim_t& )

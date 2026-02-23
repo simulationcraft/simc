@@ -972,6 +972,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span>min_gcd:</span>{:.4f}</li>"
                  "<li><span>cooldown:</span>{:.3f}</li>"
                  "<li><span>cooldown hasted:</span>{}</li>"
+                 "<li><span>category cooldown:</span>{}</li>"
                  "<li><span>charges:</span>{}</li>"
                  "<li><span>base_recharge_multiplier:</span>{:.3f}</li>"
                  "<li><span>base_execute_time:</span>{:.2f}</li>"
@@ -989,6 +990,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->min_gcd.total_seconds(),
                  a->cooldown->duration.total_seconds(),
                  a->cooldown->hasted ? "true" : "false",
+                 a->cooldown->category ? "true" : "false",
                  a->cooldown->charges,
                  a->base_recharge_multiplier,
                  a->base_execute_time.total_seconds(),
@@ -1892,7 +1894,7 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
 
   short offset = hero_tree && max_col % 2 == 1 ? ( max_col - 1 ) / 2 : 0;
 
-  for ( short row = 0; row < traits.size(); row++ )
+  for ( short row = 0; row < as<short>( traits.size() ); row++ )
   {
     os.format( "<tr><th class=\"right\">{}</th>\n", row + 1 );
 
@@ -3666,7 +3668,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
     for ( const auto* b : ri.constant_buffs )
     {
-       os << "<tbody>\n";
+      os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }

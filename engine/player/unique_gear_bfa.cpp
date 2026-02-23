@@ -3014,22 +3014,7 @@ void items::damage_to_aberrations( special_effect_t& effect )
   if ( !effect.player->sim->bfa_opts.nazjatar )
     return;
 
-  auto buff = buff_t::find( effect.player, "damage_to_aberrations" );
-  // TODO: Multiple items stack or not?
-  if ( buff )
-  {
-    buff->default_value += effect.driver()->effectN( 1 ).percent();
-  }
-  else
-  {
-    buff = make_buff( effect.player, "damage_to_aberrations", effect.driver() );
-    buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
-    buff->set_quiet( true );
-
-    effect.player->buffs.damage_to_aberrations = buff;
-    effect.player->register_combat_begin( buff );
-  }
-
+  effect.player->register_creature_type_buff( nullptr, effect.driver() );
   effect.type = SPECIAL_EFFECT_NONE;
 }
 

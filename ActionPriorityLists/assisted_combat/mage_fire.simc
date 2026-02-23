@@ -7,34 +7,23 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=flamestrike,if=buff.hyperthermia.up&active_enemies>3
+actions.assisted_combat=arcane_intellect,if=aura.arcane_intellect.down
+actions.assisted_combat+=/flamestrike,if=buff.hyperthermia.up&active_enemies>3
 actions.assisted_combat+=/pyroblast,if=buff.hyperthermia.up
-actions.assisted_combat+=/shifting_power,if=!cooldown.combustion.ready&!cooldown.fire_blast.ready&buff.combustion.down
 actions.assisted_combat+=/meteor
-actions.assisted_combat+=/pyroblast,if=buff.fury_of_the_sun_king.up&active_enemies<=2&buff.hot_streak.up,cooldown_allow_casting_success=1
-actions.assisted_combat+=/pyroblast,if=buff.fury_of_the_sun_king.up
-actions.assisted_combat+=/fire_blast,if=charges>=3&cooldown.combustion.remains>=15
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/combustion
 actions.assisted_combat+=/fire_blast,if=buff.heating_up.up&buff.hyperthermia.down
-actions.assisted_combat+=/fire_blast,if=buff.glorious_incandescence.up&buff.glorious_incandescence.remains<=3
-actions.assisted_combat+=/fire_blast,if=buff.lit_fuse.up&buff.lit_fuse.remains<=3
-actions.assisted_combat+=/phoenix_flames,if=buff.heating_up.up
 actions.assisted_combat+=/flamestrike,if=buff.hot_streak.up&active_enemies>3
 actions.assisted_combat+=/pyroblast,if=buff.hot_streak.up
-# This checks for charges>=108853 instead of the intended action.fire_blast.charges>=1.
-actions.assisted_combat+=/phoenix_flames,if=charges>=108853
-# This checks for charges>=0 instead of the intended charges>=2.
-actions.assisted_combat+=/phoenix_flames,if=charges>=0
-actions.assisted_combat+=/scorch,if=target.health.pct<=30,cooldown_allow_casting_success=1
-actions.assisted_combat+=/scorch,if=buff.combustion.up,cooldown_allow_casting_success=1
 actions.assisted_combat+=/frostfire_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/combustion

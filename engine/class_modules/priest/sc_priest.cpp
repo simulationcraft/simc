@@ -3021,9 +3021,7 @@ void priest_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Mysticism
-  parse_passive_effects( find_spell( 89745 ) );
+  parse_raid_buffs();
 }
 
 void priest_t::create_buffs()
@@ -3433,7 +3431,7 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   // guard against buff.power_word_fortitude_highlight, base sim handles this
   if ( step.spell_id == 21562 && rule.condition_value_1 == 1271911 )
   {
-    return { "0" };
+    return { "aura.power_word_fortitude.down" };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
