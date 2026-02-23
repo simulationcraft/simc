@@ -1894,7 +1894,7 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
 
   short offset = hero_tree && max_col % 2 == 1 ? ( max_col - 1 ) / 2 : 0;
 
-  for ( short row = 0; row < traits.size(); row++ )
+  for ( short row = 0; row < as<short>( traits.size() ); row++ )
   {
     os.format( "<tr><th class=\"right\">{}</th>\n", row + 1 );
 
@@ -3668,7 +3668,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
     for ( const auto* b : ri.constant_buffs )
     {
-       os << "<tbody>\n";
+      os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }

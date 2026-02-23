@@ -160,8 +160,6 @@ static void generate_indices( bool ptr )
       }
     }
   }
-
-  auto a = &spell_category_mask_index;
 }
 
 /* Initialize database

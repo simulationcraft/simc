@@ -17,20 +17,23 @@ actions.precombat+=/incinerate
 actions=call_action_list,name=variables
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
-actions+=/soul_fire,if=(active_enemies=1)
-actions+=/cataclysm
-actions+=/wither,if=dot.wither.refreshable
-actions+=/immolate,if=dot.immolate.refreshable
-actions+=/malevolence
+actions+=/soul_fire,if=soul_shard<=4
+actions+=/conflagrate,if=(variable.ritual_length<(action.chaos_bolt.execute_time*0.7+gcd.max))&!buff.backdraft.up
+actions+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))
 actions+=/summon_infernal
+actions+=/malevolence
+actions+=/incinerate,if=buff.chaotic_inferno_buff.up&soul_shard<=4.6
+actions+=/shadowburn,if=(!demonic_art|target.health.pct<=20)&(buff.fiendish_cruelty.up|talent.conflagration_of_chaos)
+actions+=/wither,if=!talent.internal_combustion&(((dot.wither.remains-5*(action.chaos_bolt.in_flight))<dot.wither.duration*0.3)|dot.wither.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.wither.remains))&target.time_to_die>8
+actions+=/immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|refreshable|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>8
 actions+=/ruination
+actions+=/conflagrate,if=soul_shard<=4.4&buff.backdraft.stack<2
+actions+=/cataclysm,if=talent.lake_of_fire
+actions+=/chaos_bolt,if=talent.wither
+actions+=/chaos_bolt,if=((variable.ritual_length>(action.chaos_bolt.execute_time+gcd.max))&variable.ritual_length<(2+2*action.chaos_bolt.execute_time))&soul_shard>=4
+actions+=/chaos_bolt,if=variable.ritual_length>(2*action.chaos_bolt.execute_time+2)
 actions+=/infernal_bolt,if=soul_shard<=3
-actions+=/rain_of_fire,if=(active_enemies>=3)
-actions+=/shadowburn,if=(active_enemies=1)
-actions+=/chaos_bolt,if=(active_enemies=1)
-actions+=/conflagrate,if=full_recharge_time<=gcd.max*2|recharge_time<=8
 actions+=/channel_demonfire
-actions+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
 actions+=/incinerate
 
 actions.items=use_item,slot=trinket1
@@ -43,3 +46,4 @@ actions.ogcd+=/fireblood
 actions.ogcd+=/ancestral_call
 
 actions.variables=variable,name=infernal_active,op=set,value=pet.infernal.active|(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains)<20
+actions.variables+=/variable,name=ritual_length,value=buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains,default=0,op=set

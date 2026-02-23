@@ -662,7 +662,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   effect.player->sim->error( PLACEHOLDER,
                              "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
-  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
+  // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
+  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect ) / 5;
 
   if ( auto proc = effect.player->find_action( "prismatic_focusing_iris" ) )
   {
@@ -677,7 +678,8 @@ void prismatic_focusing_iris( special_effect_t& effect )
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
   dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
-  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
+  // Feb 23 2026 - tank mod is not being applied in game
+  //dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
   effect.spell_id       = effect.trigger()->id();
@@ -1031,13 +1033,15 @@ void hunt( special_effect_t& effect )
 
   // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
   // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
-                                                        RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
-                                                        RACE_ABERRATION, RACE_ELEMENTAL,  RACE_UNDEAD };
+  static constexpr std::array<race_e, 9> raid_races = {
+    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
+    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
+  };
 
-  static constexpr std::array<race_e, 9> valid_races = { RACE_BEAST,     RACE_ELEMENTAL, RACE_MECHANICAL,
-                                                         RACE_UNDEAD,    RACE_HUMANOID,  RACE_ABERRATION,
-                                                         RACE_DRAGONKIN, RACE_GIANT,     RACE_DEMON };
+  static constexpr std::array<race_e, 10> valid_races = {
+    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
+  };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1066,13 +1070,7 @@ void hunt( special_effect_t& effect )
       else
       {
         mode = MODE_SPECIFIED;
-
-        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to
-        // get the proper buff.
-        if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
-          race = RACE_UNDEAD;
-        else
-          race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
 
         if ( !range::contains( valid_races, race ) )
         {
@@ -1132,6 +1130,7 @@ void hunt( special_effect_t& effect )
           break;
         case RACE_GIANT:
         case RACE_UNDEAD:
+        case RACE_NOT_SPECIFIED:
           buffs[ STAT_VERSATILITY_RATING ]->trigger();
           break;
         default:
@@ -2067,8 +2066,9 @@ void nullsight( special_effect_t& e )
   unsigned equip_id = 1259293;
   auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Vaelgor's final stance missing equip effect" );
+
   auto buff_spell    = e.driver();
-  int stacks         = buff_spell->duration() / buff_spell->effectN( 3 ).period();
+  int stacks         = static_cast<int>( buff_spell->duration() / buff_spell->effectN( 3 ).period() );
   double buff_val    = equip->driver()->effectN( 1 ).average( e );
   double buff_stacks = buff_val / stacks;
 

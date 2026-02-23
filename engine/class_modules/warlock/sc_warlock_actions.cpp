@@ -1403,9 +1403,8 @@ using namespace helpers;
       {
         p()->buffs.succulent_soul->decrement();
 
-        if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
+        if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
         {
-          // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
           p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
           p()->procs.manifested_avarice->occur();
@@ -1733,9 +1732,8 @@ using namespace helpers;
       {
         p()->buffs.succulent_soul->decrement();
 
-        if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
+        if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
         {
-          // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
           p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
           p()->procs.manifested_avarice->occur();
@@ -2538,9 +2536,8 @@ using namespace helpers;
           {
             p()->buffs.succulent_soul->decrement();
 
-            if ( p()->hero.manifested_avarice.ok() && rng().roll( p()->rng_settings.manifested_avarice.setting_value ) )
+            if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
             {
-              // TODO: Needed some ingame checks. Is it possible to proc a new Demonic Soul spawn while another Demonic Soul is active? What happens in that case? What happens to the buff and the mastery effect in that case? ​​(Does it stack? Does the duration change?)
               p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
               p()->buffs.manifested_demonic_soul->trigger();
               p()->procs.manifested_avarice->occur();
@@ -3421,7 +3418,10 @@ using namespace helpers;
         p()->procs.demonfire_infusion_inc->occur();
       }
 
-      p()->buffs.backdraft->decrement();
+      // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
+      // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
+      if ( p()->bugs ? p()->buffs.chaotic_inferno->check() : ( time_to_execute == 0_ms ) )
+        p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
       if ( time_to_execute == 0_ms )

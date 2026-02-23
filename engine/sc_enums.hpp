@@ -207,7 +207,7 @@ enum race_e
   RACE_HUMANOID,
   RACE_CRITTER,         // trivial
   RACE_MECHANICAL,
-  RACE_UNKNOWN_10,
+  RACE_NOT_SPECIFIED,
   RACE_TOTEM,
   RACE_NON_COMBAT_PET,  // trivial
   RACE_GAS_CLOUD,       // trivial

@@ -680,9 +680,9 @@ public:
                                                            const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
+                              const spell_data_t* s_data, size_t i ) = 0;
   virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
-                              bool /* mastery */, const spell_data_t* s_data, size_t i ) = 0;
+                              const spell_data_t* s_data, size_t i ) = 0;
 
   virtual void throw_passive_error( const spell_data_t* s ) = 0;
 
@@ -771,9 +771,9 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
@@ -852,9 +852,9 @@ public:
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;

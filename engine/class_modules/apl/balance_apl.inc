@@ -25,8 +25,8 @@ def->add_action( "use_item,slot=trinket1,if=buff.ca_inc.up&cooldown.convoke_the_
 def->add_action( "use_item,slot=trinket2,if=buff.ca_inc.up&cooldown.convoke_the_spirits.ready" );
 def->add_action( "use_items","ITEMS" );
 def->add_action( "potion,if=fight_remains<=30" );
-def->add_action( "run_action_list,name=kotg_st,if=hero_tree.keeper_of_the_grove&spell_targets=1","RUN APL" );
-def->add_action( "run_action_list,name=ec_st,if=hero_tree.elunes_chosen&spell_targets=1" );
+def->add_action( "run_action_list,name=ec_st,if=hero_tree.elunes_chosen&spell_targets=1","RUN APL" );
+def->add_action( "run_action_list,name=kotg_st,if=spell_targets=1" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets>1" );
 
 kotg_st->add_action( "moonfire,target_if=remains<3|refreshable|(variable.eclipse_condition&dot.moonfire.duration<buff.eclipse_solar.duration)","KOTG ST" );

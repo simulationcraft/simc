@@ -11068,6 +11068,7 @@ void shaman_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Constants
   constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent();

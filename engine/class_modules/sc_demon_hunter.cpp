@@ -2134,8 +2134,8 @@ public:
                                .set_buff( buff )
                                .set_value( effect.percent() )
                                .set_eff( &effect );
-        ab::debug_message( added_entry, "direct damage", fmt::format( "{:.1f}%", effect.base_value() ), false,
-                           &buff->data(), idx );
+        ab::debug_message( added_entry, "direct damage", fmt::format( "{:.1f}%", effect.base_value() ), &buff->data(),
+                           idx );
       }
     };
     std::vector<int> art_of_the_glaive_glaive_flurry_affected_list  = { 199552, 200685, 391374, 391378, 210153,
@@ -11048,6 +11048,7 @@ void demon_hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Spell Initialization ===================================================
 

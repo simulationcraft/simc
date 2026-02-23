@@ -5784,6 +5784,7 @@ void monk_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 }
 
 void monk_t::init_background_actions()

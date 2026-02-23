@@ -36,8 +36,8 @@ actions+=/use_item,slot=trinket2,if=buff.ca_inc.up&cooldown.convoke_the_spirits.
 actions+=/use_items
 actions+=/potion,if=fight_remains<=30
 # RUN APL
-actions+=/run_action_list,name=kotg_st,if=hero_tree.keeper_of_the_grove&spell_targets=1
 actions+=/run_action_list,name=ec_st,if=hero_tree.elunes_chosen&spell_targets=1
+actions+=/run_action_list,name=kotg_st,if=spell_targets=1
 actions+=/run_action_list,name=aoe,if=spell_targets>1
 
 actions.aoe=starfall,if=astral_power.deficit<=variable.passive_asp+6

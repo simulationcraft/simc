@@ -842,7 +842,7 @@ public:
     rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
     rng_setting_t feast_of_souls_aff = { 0.15, 0.15, "feast_of_souls" };
     rng_setting_t feast_of_souls_demo = { 0.0975, 0.0975, "feast_of_souls" };
-    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" }; // TODO: PLACEHOLDER VALUE! Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };
   } rng_settings;
 
   int initial_soul_shards;
@@ -853,6 +853,7 @@ public:
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
+  accumulated_rng_t* manifested_avarice_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -875,6 +876,8 @@ public:
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
+  double pseudo_random_p_from_c( double c );
+  double pseudo_random_c_from_p( double p );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count( bool include_diabolist = true ) const;

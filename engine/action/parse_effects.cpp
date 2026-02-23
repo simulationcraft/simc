@@ -737,7 +737,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       val_str += " (value function)";
   }
 
-  debug_message( tmp, type_str, val_str, mastery, pack.spell, i );
+  debug_message( tmp, type_str, val_str, pack.spell, i );
 
   tmp.value = val;
   tmp.mastery = mastery;
@@ -1352,8 +1352,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                            std::string_view val_str, bool mastery, const spell_data_t* s_data,
-                                            size_t i )
+                                            std::string_view val_str, const spell_data_t* s_data, size_t i )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1437,7 +1436,7 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                            bool, const spell_data_t* s_data, size_t i )
+                                            const spell_data_t* s_data, size_t i )
 {
   sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
                     s_data->name_cstr(), s_data->id(), i );
@@ -1714,7 +1713,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                         std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
+                                         std::string_view val_str, const spell_data_t* s_data, size_t i )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1820,7 +1819,7 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                         bool, const spell_data_t* s_data, size_t i )
+                                         const spell_data_t* s_data, size_t i )
 {
   _action->sim->print_debug( "target-effects: {} {} modified by {} on targets with debuff {} ({}#{})", *_action,
                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );

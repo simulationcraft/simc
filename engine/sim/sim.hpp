@@ -209,6 +209,7 @@ struct sim_t : private sc_thread_t
     // Buff overrides
     int arcane_intellect;
     int battle_shout;
+    int blessing_of_the_bronze;
     int mark_of_the_wild;
     int power_word_fortitude;
     int skyfury;

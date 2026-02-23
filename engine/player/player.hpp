@@ -970,6 +970,7 @@ protected:
   void parse_all_class_passives();
   void parse_all_passive_talents();
   void parse_all_passive_sets();
+  void parse_raid_buffs();
   // directly override the values
   void register_passive_spell_override( const spell_data_t&, double value, std::string_view field );
   void register_passive_power_override( const spellpower_data_t&, double value, std::string_view field = "cost" );

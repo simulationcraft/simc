@@ -473,6 +473,7 @@ const char* util::race_type_string( race_e type )
     case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_NIGHT_ELF:           return "night_elf";
     case RACE_NIGHTBORNE:          return "nightborne";
+    case RACE_NOT_SPECIFIED:       return "not_specified";
     case RACE_ORC:                 return "orc";
     case RACE_PANDAREN:            return "pandaren";
     case RACE_PANDAREN_ALLIANCE:   return "pandaren_alliance";
@@ -487,6 +488,11 @@ const char* util::race_type_string( race_e type )
     case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_UNKNOWN:             return "unknown";
     case RACE_MAX:                 return "unknown";
+    // trivial npcs
+    case RACE_CRITTER:             return "critter";
+    case RACE_NON_COMBAT_PET:      return "non_combat_pet";
+    case RACE_GAS_CLOUD:           return "gas_cloud";
+    case RACE_WILD_PET:            return "wild_pet";
     // no default statement so we get warnings if something is missing.
   }
   return "unknown";
