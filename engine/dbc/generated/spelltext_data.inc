@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66044
-static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28628> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19735,6 +19735,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  406907, "Blistering Scales no longer loses charges and deals $s2% more damage.", 0, 0 },
   {  406921, "$@spelldesc406219", "Adapted to the situation, gaining $w1 Versatility and Critical Strike.", 0 },
   {  406927, "$@spelldesc406219", "Adapted to the situation, gaining $w1 Mastery and Haste.", 0 },
+  {  406957, "Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][]$?s315867[\r\n\r\n|cFFFFFFFFGenerates $220637s1 Holy Power.][]", 0, 0 },
   {  406963, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M1 uses and each provides $371513M1 potions. The cauldron lasts for $d.", 0, 0 },
   {  406964, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M1 uses and each provides $371518M1 potions. The cauldron lasts for $d.", 0, 0 },
   {  406965, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M2 uses and each provides $371520M1 potions. The cauldron lasts for $d.", 0, 0 },
