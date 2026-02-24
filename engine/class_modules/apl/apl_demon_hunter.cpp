@@ -23,7 +23,7 @@ std::string flask_havoc( const player_t* p )
 
 std::string flask_vengeance( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
 }
 
 std::string food_devourer( const player_t* p )
@@ -38,7 +38,7 @@ std::string food_havoc( const player_t* p )
 
 std::string food_vengeance( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
@@ -58,7 +58,7 @@ std::string temporary_enchant_havoc( const player_t* p )
 
 std::string temporary_enchant_vengeance( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level > 80 ) ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2" : "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
 }
 
 // clang-format off
