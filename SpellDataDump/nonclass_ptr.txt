@@ -86744,34 +86744,38 @@ Effects          :
 Description      : Your autoattacks have a chance to deal $253797s1 additional Shadow damage.
 
 Name             : Voidclaw (id=253797) 
+Hotfixed         : Max Scaling Level (34 -> 0)
 School           : Shadow
 Spell Type       : Melee
-Max Scaling Level: 34
 Range            : 15 yards
 Triggered By     : Voidclaw (253793)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=474443)   : School Damage (2): shadow | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 53.03401 - 58.61653 (coefficient=12.36048, delta=0.1) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 492.6819 - 544.5432 (coefficient=4.057891, delta=0.1) | Target: Targeted Enemy (6)
+Hotfixed         : Coefficient (12.360477 -> 4.057891)
 Description      : $@spelldesc253793
 
 Name             : Void Hunter (id=253802) [Passive, Hidden] 
+Hotfixed         : Max Scaling Level (45 -> 0), Attributes
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=474456)   : Apply Aura (6) | Modify Melee Attack Power vs Race (102) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3.575138 (coefficient=0.588582) | Misc Value: 1064960 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.029191 (coefficient=0.055) | Misc Value: 1064960 | Target: Self (1)
+Hotfixed         : Coefficient (0.588582 -> 0.055)
 #2 (id=474457)   : Apply Aura (6) | Modify Ranged Attack Power vs Race (131) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3.575138 (coefficient=0.588582) | Misc Value: 1064960 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.029191 (coefficient=0.055) | Misc Value: 1064960 | Target: Self (1)
+Hotfixed         : Coefficient (0.588582 -> 0.055)
 Description      : Increases your Agility against Aberrations by $s1.
 
 Name             : Void's Embrace (id=253807) [Passive, Hidden] 
+Hotfixed         : Proc Chance (20 -> 100), Internal Cooldown (20000 -> 0)
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 20 seconds
-Proc Chance      : 20%
+Proc Chance      : 100%
+Real PPM         : 1
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382)
 Effects          :
@@ -86780,15 +86784,16 @@ Effects          :
 Description      : Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.
 
 Name             : Void's Embrace (id=253808) 
+Hotfixed         : Max Scaling Level (45 -> 0), Attributes
 School           : Shadow
 Spell Type       : None
-Max Scaling Level: 45
 Duration         : 12 seconds
 Triggered By     : Void's Embrace (253807)
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
-#1 (id=474464)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 15.47271 (coefficient=0.882872) | Rating: Leech | Target: Self (1)
+#1 (id=474464)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 65.54024 (coefficient=0.5) | Rating: Leech | Target: Self (1)
+Hotfixed         : Coefficient (0.882872 -> 0.5), Scaling Class (-1 -> -7)
 Description      : $@spelldesc253807
 Tooltip          : Leech increased by $w1.
 
@@ -250789,7 +250794,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Wraps of Cosmic Madness (1259153)
+Triggered By     : Wraps of Cosmic Madness (1259153), Cosmic Barrage (1263614)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1274038)  : School Damage (2): cosmic
@@ -250833,6 +250838,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250596
 Description      : $@spelldesc1250596
 Tooltip          : Your resolve is bolstered by $@auracaster's Duskwraith, granting you $w1 Versatility.
+
+Name             : Cosmic Barrage (id=1263614) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Travel Time      : 0.5 seconds
+Labels           : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Missile Speed is Delay (in sec) (292)
+Effects          :
+#1 (id=1274393)  : Trigger Missiles (32): Cosmic Barrage
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1263393 | Target: Targeted Enemy (6)
 
 Name             : Cosmic Barrage (id=1263632) [Hidden] 
 School           : Cosmic

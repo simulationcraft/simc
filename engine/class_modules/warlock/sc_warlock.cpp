@@ -884,15 +884,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     for ( int i = 0; i < as<int>( actual_amount ); i++ )
     {
-      double chance = 0.0;
-
-      if ( affliction() )
-        chance = rng_settings.succulent_soul_aff.setting_value;
-
-      if ( demonology() )
-        chance = rng_settings.succulent_soul_demo.setting_value;
-
-      if ( rng().roll( chance ) )
+      if ( succulent_soul_rng->trigger() )
       {
         buffs.succulent_soul->trigger();
         procs.succulent_soul->occur();

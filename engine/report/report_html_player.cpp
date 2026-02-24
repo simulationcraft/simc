@@ -1898,7 +1898,7 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
   {
     os.format( "<tr><th class=\"right\">{}</th>\n", row + 1 );
 
-    if ( offset && ( row == 0 || row == traits.size() - 1 ) )
+    if ( offset && ( row == 0 || row == as<short>( traits.size() ) - 1 ) )
     {
       const auto& entry = traits[ row ][ offset ];
       if ( !entry.first )

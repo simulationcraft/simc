@@ -332,7 +332,7 @@ GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Legacy of the Lifebinder (1264269 effect#2)
+Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Temporal Burst (431698 effect#16), Legacy of the Lifebinder (1264269 effect#2)
 Category Flags   : Unknown (7)
 Labels           : 16: Class Spells
                  : 292
@@ -682,7 +682,7 @@ Resource         : 1.8% Base Mana (0) (id=232525) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Temporal Burst (431698 effect#17), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
@@ -1352,7 +1352,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (24 seconds cooldown)
-Category         : 2471 (Type 0x0): Preservation Evoker (356810 effect#8), Preservation Evoker (356810 effect#21), Flow State (390148 effect#12), Wings of Liberty (1241704 effect#1), Evoker Preservation 12.0 Class Set 2pc (1264823 effect#2)
+Category         : 2471 (Type 0x0): Preservation Evoker (356810 effect#8), Preservation Evoker (356810 effect#21), Flow State (390148 effect#12), Temporal Burst (431698 effect#18), Wings of Liberty (1241704 effect#1), Evoker Preservation 12.0 Class Set 2pc (1264823 effect#2)
 Labels           : 16: Class Spells
                  : 219
                  : 292
@@ -5467,7 +5467,7 @@ Resource         : 1.8% Base Mana (0) (id=265448) w/ Preservation Evoker (id=356
 GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
+Category         : 2456 (Type 0x0): Flow State (390148 effect#10), Ebon Might (395296 effect#5), Time Skip (404977 effect#8), Interwoven Threads (412713 effect#8), Temporal Burst (431698 effect#17), Legacy of the Lifebinder (1264269 effect#1), Ashes in Motion (1264365 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 292
@@ -5575,7 +5575,7 @@ GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Legacy of the Lifebinder (1264269 effect#2)
+Category         : 2054 (Type 0x1): Spiritual Clarity (376150 effect#1), Flow State (390148 effect#11), Temporal Burst (431698 effect#16), Legacy of the Lifebinder (1264269 effect#2)
 Category Flags   : Unknown (7)
 Labels           : 16: Class Spells
                  : 292
@@ -9852,6 +9852,18 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Echo (364343), Eruption (395160), Eruption (438653), Eruption (1259172)
                    Family Flags: 11, 49, 54
+#16 (id=1308692) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2054 (Category) | Target: Self (1)
+                   Affected Spells (Category): Dream Breath (355936), Dream Breath (382614)
+Hotfixed         : NEW EFFECT
+#17 (id=1308693) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2456 (Category) | Target: Self (1)
+                   Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
+Hotfixed         : NEW EFFECT
+#18 (id=1308694) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2471 (Category) | Target: Self (1)
+                   Affected Spells (Category): Verdant Embrace (360995)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc431695
 Tooltip          : Haste, movement speed, and cooldown recovery rate increased by $s1%.
 

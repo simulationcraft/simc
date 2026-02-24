@@ -14673,7 +14673,7 @@ Paladin
 406919  *Execution Sentence
 406937  *Executioner's Will
 406940  *Executioner's Will
-406957  *Judgment
+406957   Judgment
 406975  *Divine Arbiter
 406983  *Divine Arbiter
 406984   Final Stand

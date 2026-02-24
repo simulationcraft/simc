@@ -434,6 +434,20 @@ void strength_of_halazzi( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Eyes of the Eagle
+// 1236700 Driver rank 1
+// 1236701 Driver rank 2
+void eyes_of_the_eagle( special_effect_t& e ) 
+{  
+  auto pct = e.driver()->effectN( 1 ).percent();
+
+  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    e.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
+
+  e.player->base.crit_healing_multiplier *= 1.0 + pct;
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -2128,6 +2142,60 @@ void locuswalkers_ribbon( special_effect_t& e )
   new locuswalkers_ribbon_t( e );
 }
 
+// Wraps of Cosmic Madness
+// 1259153 Driver
+// 1263614 Missile
+// 1263393 Damage Spell (Cosmic Barrage)
+// 1259103 Equip Driver
+void wraps_of_cosmic_madness( special_effect_t& e )
+{
+  struct cosmic_madness_channel_t : public proc_spell_t
+  {
+    cosmic_madness_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
+    {
+      unsigned equip_id = 1259103;
+      auto equip        = find_special_effect( e.player, equip_id );
+      assert( equip && "missing equip effect" );
+
+      channeled = true;
+
+      auto missile_spell = e.player->find_spell( 1263614 );
+      assert( missile_spell && "missing missile spell 1263614" );
+
+      auto damage_spell = e.player->find_spell( 1263393 );
+      assert( damage_spell && "missing damage spell 1263393" );
+
+      auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, "cosmic_barrage_missile", missile_spell );
+
+      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, "cosmic_barrage", damage_spell, true );
+      
+      auto missile_damage = equip->driver()->effectN( 1 ).average( e );
+
+      cosmic_barrage->impact_action->base_dd_min = cosmic_barrage->impact_action->base_dd_max = missile_damage;
+
+      tick_action = cosmic_barrage;
+    }
+
+    void last_tick( dot_t* d ) override 
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+
+    void reset() override 
+    {
+      proc_spell_t::reset();
+    }
+  };
+
+  e.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", e );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2396,6 +2464,7 @@ void register_special_effects()
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
+  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -2443,6 +2512,8 @@ void register_special_effects()
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
   register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
+  register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
+  register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor

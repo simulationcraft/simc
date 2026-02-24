@@ -243,6 +243,7 @@ struct expiration_t : public buff_event_t
   void execute() override
   {
     assert( !buff->expiration.empty() );
+    assert( *buff->expiration.begin() == this );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
@@ -2194,7 +2195,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
     if ( expiration.size() > 1 )
     {
-      range::sort( expiration, []( const event_t* a, const event_t* b ) {
+      std::stable_sort( expiration.begin(), expiration.end(), []( const event_t* a, const event_t* b ) {
         return a->remains() < b->remains();
       } );
     }

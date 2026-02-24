@@ -34,19 +34,7 @@ actions.plst+=/kill_command,if=cooldown.takedown.remains
 actions.plst+=/wildfire_bomb
 actions.plst+=/takedown
 
-#ST - SENT
-#actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0
-#actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains
-#actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
-#actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
-#actions.sentst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack<2&talent.twin_fangs
-#actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
-#actions.sentst+=/moonlight_chakram,if=buff.tip_of_the_spear.up
-#actions.sentst+=/flamefang_pitch,if=talent.flamefang_pitch
-#actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
-#actions.sentst+=/kill_command
-
-actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0&cooldown.takedown.remains
+actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)
 actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains
 actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
 actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs

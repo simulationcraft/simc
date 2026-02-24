@@ -3093,29 +3093,10 @@ static void enable_default_talents( player_t* player )
       auto tree = static_cast<talent_tree>( trait->tree_index );
       auto ranks = traits[ i ].rank;
 
-      if ( trait->node_type == NODE_TIERED )
-      {
-        auto _entries = trait_data_t::data( trait->id_node, util::class_id( player->type ), tree, player->is_ptr() );
-        for ( const auto& entry : _entries )
-        {
-          auto allocated = std::min( ranks, entry.max_ranks );
-          player->player_traits.emplace_back( tree, entry.id_trait_node_entry, allocated );
-          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                    util::talent_tree_string( tree ), entry.name, entry.id_node,
-                                    entry.id_trait_node_entry, allocated, entry.max_ranks );
-
-          ranks -= allocated;
-          if ( !ranks )
-            break;
-        }
-      }
-      else
-      {
-        player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
-        player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                  util::talent_tree_string( tree ), trait->name, trait->id_node,
-                                  trait->id_trait_node_entry, ranks, trait->max_ranks );
-      }
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, ranks, trait->max_ranks );
     }
   }
 }

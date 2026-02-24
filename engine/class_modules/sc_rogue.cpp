@@ -6320,6 +6320,17 @@ struct nimble_flurry_t : public rogue_attack_t
 
 struct coup_de_grace_t : public rogue_attack_t
 {
+  struct coup_de_grace_shadow_clone_t : public shadow_clone_t
+  {
+    coup_de_grace_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      shadow_clone_t( name, p, s )
+    {
+    }
+
+    bool procs_nimble_flurry() const override
+    { return true; }
+  };
+
   struct coup_de_grace_bonus_t : public rogue_attack_t
   {
     int last_cp;
@@ -8217,7 +8228,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
     {
       trigger_deathstalkers_mark_debuff( state, true );
-      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
+      p()->buffs.darkest_night->expire( 201_ms ); // Expire with delay for Shadowy Finishers and Shadow Clones
     }
 
     return;
@@ -9930,7 +9941,7 @@ void rogue_t::init_spells()
       secondary_trigger::SHADOW_CLONE, "shadow_clone_backstab", spec.shadow_clone_backstab_attack );
     active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::black_powder_t::black_powder_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_black_powder", spec.shadow_clone_black_powder_attack );
-    active.shadow_clone_attack.coup_de_grace = get_secondary_trigger_action<actions::shadow_clone_t>(
+    active.shadow_clone_attack.coup_de_grace = get_secondary_trigger_action<actions::coup_de_grace_t::coup_de_grace_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_coup_de_grace", spec.shadow_clone_eviscerate_attack ); // MIDNIGHT TOCHECK
     active.shadow_clone_attack.eviscerate = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_eviscerate", spec.shadow_clone_eviscerate_attack );
