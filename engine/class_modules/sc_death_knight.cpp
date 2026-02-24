@@ -2673,30 +2673,6 @@ struct death_knight_pet_t : public pet_t
     buffs.movement->set_quiet( true );
   }
 
-  void update_stats() override
-  {
-    if ( owner_coeff.ap_from_ap > 0 )
-    {
-      current_pet_stats.attack_power_from_ap =
-          owner->composite_total_attack_power_by_type( dk()->default_ap_type() ) * owner_coeff.ap_from_ap;
-      sim->print_debug( "{} refreshed AP from owner (ap={})", name(), composite_melee_attack_power() );
-    }
-
-    current_pet_stats.composite_melee_crit = dk()->cache.attack_crit_chance();
-    current_pet_stats.composite_spell_crit = dk()->cache.spell_crit_chance();
-    sim->print_debug( "{} refreshed Critical Strike from owner (crit={})", name(),
-                      current_pet_stats.composite_melee_crit, dk()->cache.attack_crit_chance() );
-
-    current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
-    current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
-    sim->print_debug( "{} refreshed Haste from owner (haste={})", name(), current_pet_stats.composite_melee_haste,
-                      owner->cache.attack_haste() );
-
-    current_pet_stats.composite_melee_auto_attack_speed = current_pet_stats.composite_melee_haste;
-    current_pet_stats.composite_spell_cast_speed        = dk()->cache.spell_cast_speed();
-    this->adjust_dynamic_cooldowns();
-  }
-
   // DK pets dont care about armor, return 0 for speed
   double composite_bonus_armor() const override
   {
@@ -3199,6 +3175,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
     resources.base[ RESOURCE_ENERGY ]                  = 100;
     resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+    resources.hasted[ RESOURCE_ENERGY ]                = true;
   }
 
   void arise() override
@@ -3384,7 +3361,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     if ( ghoulish_frenzy->check() )
       haste /= 1.0 + ghoulish_frenzy->data().effectN( 1 ).percent();
 
-    if ( unholy_devotion->check() && !bugs )
+    // Unholy Devotion appears to give auto attack speed AND haste per stack, causing its auto attack speed increase to
+    // be multiplicative with its haste increase.
+    if ( unholy_devotion->check() && bugs )
       haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
@@ -3395,7 +3374,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     double reg = base_ghoul_pet_t::resource_regen_per_second( r );
 
     if ( unholy_devotion->check() )
-      reg *= 1.0 + unholy_devotion->check_stack_value();
+      reg *= 1.0 + unholy_devotion->data().effectN( 3 ).percent() * unholy_devotion->check();
 
     return reg;
   }
@@ -3424,13 +3403,13 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       def->add_action( "gnaw" );
       def->add_action( "monstrous_blow" );
-      def->add_action( "sweeping_claws" );
-      def->add_action( "claw" );
+      def->add_action( "sweeping_claws,if=energy>45" );
+      def->add_action( "claw,if=energy>70" );
     }
     else
     {
       def->add_action( "gnaw" );
-      def->add_action( "claw" );
+      def->add_action( "claw,if=energy>70" );
     }
   }
 

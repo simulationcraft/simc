@@ -6405,6 +6405,7 @@ void mage_t::create_buffs()
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_disable_async_expire_events_removal( bugs )
+                                   ->set_activated( true )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
