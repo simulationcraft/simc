@@ -808,12 +808,10 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_sb_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
         if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
@@ -1167,7 +1165,7 @@ using namespace helpers;
 
       if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
-        p()->buffs.shard_instability->trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->buffs.shard_instability->trigger();
         p()->procs.seeds_of_their_demise->occur();
         seeds_triggered = true;
       }
@@ -2008,12 +2006,10 @@ using namespace helpers;
       if ( result_is_hit( d->state->result ) )
       {
         // NOTE: 2026-02-20 Malefic Grasp can proc Shard Instability
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
         // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty
@@ -2148,12 +2144,10 @@ using namespace helpers;
 
       if ( result_is_hit( d->state->result ) )
       {
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
         if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
@@ -2254,7 +2248,8 @@ using namespace helpers;
       : warlock_spell_t( "Dark Harvest", p, p->talents.dark_harvest, options_str ),
       dark_harvest_dmg( new dark_harvest_dmg_t( p ) )
     {
-      aoe = -1;
+      channeled = true;
+
       add_child( dark_harvest_dmg );
     }
 
@@ -2288,12 +2283,11 @@ using namespace helpers;
     {
       warlock_spell_t::tick( d );
 
-      auto t = d->state->target;
-      if ( td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking() || td( t )->dots.agony->is_ticking() || td( t )->dots.unstable_affliction->is_ticking() )
+      const auto& tl = target_list();
+      for ( auto t : tl )
         dark_harvest_dmg->execute_on_target( t );
 
-      // Shadow of Death gain effect is processed only once
-      if ( soul_harvester() && p()->hero.shadow_of_death.ok() && d->state->chain_target == 0 )
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
       {
         double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         // NOTE: 2026-02-20 The shards gained by Shadow of Death can also proc another Succulent Soul each (bug?)
@@ -2380,13 +2374,11 @@ using namespace helpers;
         int shards_used;
         bool rancora_empowered;
         int last_hit_random_target;
-        bool allow_succulent_soul;
 
         hogi_state_t()
           : shards_used( 0 ),
           rancora_empowered( false ),
-          last_hit_random_target( 0 ),
-          allow_succulent_soul( true )
+          last_hit_random_target( 0 )
         { }
       };
 
@@ -2405,7 +2397,6 @@ using namespace helpers;
           state.shards_used = 0;
           state.rancora_empowered = false;
           state.last_hit_random_target = 0;
-          state.allow_succulent_soul = true;
         }
 
         std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -2414,7 +2405,6 @@ using namespace helpers;
           s << " shards_used=" << state.shards_used;
           s << " rancora_empowered=" << state.rancora_empowered;
           s << " last_hit_random_target=" << state.last_hit_random_target;
-          s << " allow_succulent_soul=" << state.allow_succulent_soul;
           return s;
         }
 
@@ -2430,7 +2420,7 @@ using namespace helpers;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->talents.hog_impact ),
-        meteor_time( 400_ms )
+        meteor_time( 20_ms )
       {
         aoe = -1;
         dual = true;
@@ -2517,33 +2507,17 @@ using namespace helpers;
         {
           // NOTE: Old Behavior (pre Midnight):
           //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
-          //   Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+          //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
           //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
           //   Imps then spawn roughly every 0.18 seconds seconds after the damage event.
-          // NOTE: New Behavior:
+          // NOTE: New Behavior (from Midnight onwards):
           //   Wild Imps spawn on HoG impact almost instantly, with a 1ms delay between them
+          //   The HoG damage event no longer takes 0.4 seconds after cast (only a few milliseconds)
           //   Last tested: 2026-02-20
           for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
           {
             auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i - 1 );
             p()->wild_imp_spawns.push_back( ev );
-          }
-        }
-
-        if ( soul_harvester() && debug_cast<hog_impact_state_t*>( s )->state.allow_succulent_soul && p()->buffs.succulent_soul->check() )
-        {
-          if ( s->chain_target == 0 )
-          {
-            p()->buffs.succulent_soul->decrement();
-
-            if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
-            {
-              p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
-              p()->buffs.manifested_demonic_soul->trigger();
-              p()->procs.manifested_avarice->occur();
-            }
-
-            p()->proc_actions.demonic_soul->execute_on_target( s->target );
           }
         }
       }
@@ -2611,7 +2585,6 @@ using namespace helpers;
         impact_spell->state.rancora_empowered = false;
         triggers.demonic_art_buff = false;
       }
-      impact_spell->state.allow_succulent_soul = true;
 
       if ( p()->hero.diabolic_oculi.ok() )
         p()->buffs.demonic_oculi->trigger();
@@ -2631,6 +2604,20 @@ using namespace helpers;
       {
         p()->buffs.demonic_core->trigger();
         p()->procs.demonic_knowledge->occur();
+      }
+
+      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+      {
+          p()->buffs.succulent_soul->decrement();
+
+          if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
+          {
+            p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
+            p()->buffs.manifested_demonic_soul->trigger();
+            p()->procs.manifested_avarice->occur();
+          }
+
+          p()->proc_actions.demonic_soul->execute_on_target( target );
       }
 
       // TODO: Are these execute, or impact? Check ingame timings to see when these effects are applied
@@ -4534,7 +4521,6 @@ using namespace helpers;
           hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
           hog_impact_spell->state.shards_used = as<int>( p->hero.ruination_buff->effectN( 2 ).base_value() );
           hog_impact_spell->state.rancora_empowered = false;    // Ruination HoG impact is never rancora empowered
-          hog_impact_spell->state.allow_succulent_soul = false; // Ruination HoG impact can't benefit from succulent soul
         }
       }
 
@@ -4654,6 +4640,20 @@ using namespace helpers;
       // Excluded (not whitelisted) from many warlock talents/spells (bug?)
 
       background = true;
+    }
+  };
+
+  struct diabolic_oculi_t : public warlock_spell_t
+  {
+    diabolic_oculi_t( warlock_t* p )
+      : warlock_spell_t( "Diabolic Oculi", p, p->hero.diabolic_oculi )
+    {
+      background = dual = true;
+
+      add_child( p->proc_actions.eye_explosion );
+      add_child( p->proc_actions.diabolic_gaze_3 );
+      add_child( p->proc_actions.diabolic_gaze_2 );
+      add_child( p->proc_actions.diabolic_gaze_1 );
     }
   };
 
@@ -5118,6 +5118,7 @@ using namespace helpers;
     proc_actions.diabolic_gaze_1 = new diabolic_gaze_1_t( this );
     proc_actions.diabolic_gaze_2 = new diabolic_gaze_2_t( this );
     proc_actions.diabolic_gaze_3 = new diabolic_gaze_3_t( this );
+    proc_actions.diabolic_oculi = new diabolic_oculi_t( this );
   }
 
   void warlock_t::create_hellcaller_proc_actions()

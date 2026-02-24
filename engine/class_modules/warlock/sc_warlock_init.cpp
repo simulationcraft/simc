@@ -192,7 +192,7 @@ namespace warlock
     talents.contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Contagion" ); // Should be ID 453096
 
     talents.shard_instability = find_talent_spell( talent_tree::SPECIALIZATION, "Shard Instability" ); // Should be ID 1260264
-    talents.shard_instability_buff = conditional_spell_lookup( talents.shard_instability.ok(), 1260269 );
+    talents.shard_instability_buff = conditional_spell_lookup( warlock_base.affliction_warlock->ok(), 1260269 );
 
     talents.niskaran_methods = find_talent_spell( talent_tree::SPECIALIZATION, "Niskaran Methods" ); // Should be ID 1279510
 
@@ -715,8 +715,7 @@ namespace warlock
 
     buffs.darkglare_presence = make_buff( this, "darkglare_presence", talents.darkglare_presence_buff );
 
-    buffs.shard_instability = make_buff( this, "shard_instability", talents.shard_instability_buff )
-                                  ->set_chance( talents.drain_soul.ok() ? talents.shard_instability->effectN( 1 ).percent() : talents.shard_instability->effectN( 2 ).percent() ); // TODO: Check RNG type
+    buffs.shard_instability = make_buff( this, "shard_instability", talents.shard_instability_buff );
 
     buffs.cascading_calamity = make_buff( this, "cascading_calamity", talents.cascading_calamity_buff )
                                    ->set_default_value_from_effect( 1 )
@@ -919,7 +918,9 @@ namespace warlock
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
     buffs.demonic_oculi = make_buff( this, "demonic_oculi", hero.demonic_oculi_buff )
-                              ->set_period( 1_s )
+                              ->set_period( hero.demonic_oculi_buff->effectN( 2 ).period() )
+                              ->set_freeze_stacks( true )
+                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                 if ( hero.looks_that_kill.ok() )
                                 {
@@ -1132,6 +1133,15 @@ namespace warlock
   {
     ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
     wrath_of_nathreza_rng = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
+    // Modeling Shard Instability as a pseudo-random distribution (PRD) with a nominal rate of 10% (DS/MG) / 20% (SB),
+    // which corresponds to PRD constant C = 0.014745844781072676 (DS/MG) / C = 0.055704042949781852 (SB)
+    if ( talents.shard_instability.ok() )
+    {
+      double c_ds = pseudo_random_c_from_p( talents.shard_instability->effectN( 1 ).percent() );
+      shard_instability_ds_rng = get_accumulated_rng( "shard_instability_ds", c_ds );
+      double c_sb = pseudo_random_c_from_p( talents.shard_instability->effectN( 2 ).percent() );
+      shard_instability_sb_rng = get_accumulated_rng( "shard_instability_sb", c_sb );
+    }
   }
 
   void warlock_t::init_rng_demonology()

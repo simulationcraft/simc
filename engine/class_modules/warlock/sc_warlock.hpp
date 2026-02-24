@@ -614,6 +614,7 @@ public:
     action_t* diabolic_gaze_1;
     action_t* diabolic_gaze_2;
     action_t* diabolic_gaze_3;
+    action_t* diabolic_oculi;
     action_t* blighted_maw;
     action_t* echo_of_sargeras;
     action_t* echo_of_sargeras_cb;
@@ -853,6 +854,8 @@ public:
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
+  accumulated_rng_t* shard_instability_ds_rng;
+  accumulated_rng_t* shard_instability_sb_rng;
   accumulated_rng_t* manifested_avarice_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
