@@ -20915,8 +20915,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Helpful Periodic
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143)
 Effects          :
 #1 (id=1293198)  : Apply Aura (6) | Dummy (4)
