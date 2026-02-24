@@ -856,6 +856,7 @@ public:
   real_ppm_t* devil_fruit_rng;
   accumulated_rng_t* shard_instability_ds_rng;
   accumulated_rng_t* shard_instability_sb_rng;
+  accumulated_rng_t* succulent_soul_rng;
   accumulated_rng_t* manifested_avarice_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

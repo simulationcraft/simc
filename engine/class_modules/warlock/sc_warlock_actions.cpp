@@ -2287,10 +2287,11 @@ using namespace helpers;
       for ( auto t : tl )
         dark_harvest_dmg->execute_on_target( t );
 
-      if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
+      // Shadow of Death gain starts on the second tick
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() && d->current_tick > 0 )
       {
-        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         // NOTE: 2026-02-20 The shards gained by Shadow of Death can also proc another Succulent Soul each (bug?)
+        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         if ( p()->bugs )
           p()->resource_gain( RESOURCE_SOUL_SHARD, gain, p()->gains.shadow_of_death );
         else

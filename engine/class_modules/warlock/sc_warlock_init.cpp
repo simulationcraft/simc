@@ -1165,10 +1165,20 @@ namespace warlock
 
   void warlock_t::init_rng_soul_harvester()
   {
+    // Modeling Succulent Soul as a pseudo-random distribution (PRD) with a nominal rate of 22% (aff) / 15% (demo),
+    // which corresponds to PRD constant C = 0.066676403621508090 (aff) / C = 0.032220914373087675 (demo)
+    double c_ss = 0.0;
+    if ( affliction() )
+      c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_aff.setting_value );
+    else if ( demonology() )
+      c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_demo.setting_value );
+
+    succulent_soul_rng = get_accumulated_rng( "succulent_soul", c_ss );
+
     // Modeling Manifested Avarice as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
-    double c = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
-    manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c );
+    double c_ma = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
+    manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c_ma );
   }
 
   void warlock_t::init_resources( bool force )
