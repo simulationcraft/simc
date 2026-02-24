@@ -2274,16 +2274,22 @@ void torments_duality( special_effect_t& effect )
 
 // Lightless Lament
 // 1266257 driver (RPPM equip proc)
-// 1266591 missile (intermediate)
-// 1266592 AoE damage (Cosmic, 8yd radius)
+// 1266591 missile (intermediate, triggered by driver)
+// 1266592 AoE damage (Cosmic, 8yd radius, triggered by missile)
 void lightless_lament( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "heavens_glaive", effect,
-                                                        effect.player->find_spell( 1266592 ) );
+  auto missile = create_proc_action<generic_proc_t>( "heavens_glaive_missile", effect,
+                                                     effect.trigger() );
+  auto damage  = create_proc_action<generic_aoe_proc_t>( "heavens_glaive", effect,
+                                                          effect.trigger()->effectN( 1 ).trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
-  effect.execute_action = damage;
+  missile->dual          = true;
+  missile->stats         = damage->stats;
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
