@@ -2271,6 +2271,22 @@ void torments_duality( special_effect_t& effect )
 
   new torments_duality_cb_t( effect );
 }
+
+// Lightless Lament
+// 1266257 driver (RPPM equip proc)
+// 1266591 missile (intermediate)
+// 1266592 AoE damage (Cosmic, 8yd radius)
+void lightless_lament( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "heavens_glaive", effect,
+                                                        effect.player->find_spell( 1266592 ) );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -2516,6 +2532,7 @@ void register_special_effects()
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
+  register_special_effect( 1266257, weapons::lightless_lament );
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   // Sets
