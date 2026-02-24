@@ -107,68 +107,68 @@
 
 # save=MID1_Demon_Hunter_Havoc.simc
 
-# demonhunter="MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver"
-# level=90
-# race=night_elf
-# spec=vengeance
-# role=tank
-# position=front
-# talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmZGDjZbmhhtZMjhZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgF
+demonhunter="MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver"
+level=90
+race=night_elf
+spec=vengeance
+role=tank
+position=front
+talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmZGDjZbmhhtZMjhZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgF
 
-# flask=flask_of_the_magisters_2
-# potion=lights_potential_2
-# food=silvermoon_parade
-# augmentation=void_touched
-# temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+flask=flask_of_the_magisters_2
+potion=lights_potential_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
 
-# head=devouring_reavers_intake,id=250033,ilevel=289,gem_id=240983,enchant_id=7961
-# neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240858/240858
-# shoulder=devouring_reavers_exhaustplates,id=250031,ilevel=289,enchant_id=7971
-# back=potionstained_cloak,id=193712,ilevel=289
-# chest=vest_of_the_voids_embrace,id=151313,ilevel=289,enchant_id=7987
-# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,gem_id=240858,embellishment=prismatic_focusing_iris
-# hands=devouring_reavers_essence_grips,id=250034,ilevel=289
-# waist=cinch_of_the_umbral_lasher,id=151316,ilevel=289,gem_id=240858
-# legs=devouring_reavers_pistons,id=250032,ilevel=289,enchant_id=8161
-# feet=voidclaimed_shinkickers,id=249334,ilevel=289,enchant_id=8019
-# finger1=purloined_wedding_ring,id=49812,ilevel=289,gem_id=240858/240858,enchant_id=8025
-# finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240858/240858,enchant_id=8025
-# trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-# trinket2=umbral_plume,id=260235,ilevel=289
-# main_hand=dawncrazed_beast_cleaver,id=250451,ilevel=289,enchant_id=8039
-# off_hand=spellbreakers_warglaive,id=237840,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,enchant_id=8039,embellishment=darkmoon_sigil_hunt
+head=devouring_reavers_intake,id=250033,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240858/240858
+shoulder=devouring_reavers_exhaustplates,id=250031,ilevel=289,enchant_id=7971
+back=potionstained_cloak,id=193712,ilevel=289
+chest=vest_of_the_voids_embrace,id=151313,ilevel=289,enchant_id=7987
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,gem_id=240858,embellishment=prismatic_focusing_iris
+hands=devouring_reavers_essence_grips,id=250034,ilevel=289
+waist=cinch_of_the_umbral_lasher,id=151316,ilevel=289,gem_id=240858
+legs=devouring_reavers_pistons,id=250032,ilevel=289,enchant_id=8161
+feet=voidclaimed_shinkickers,id=249334,ilevel=289,enchant_id=8019
+finger1=purloined_wedding_ring,id=49812,ilevel=289,gem_id=240858/240858,enchant_id=8025
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240858/240858,enchant_id=8025
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=umbral_plume,id=260235,ilevel=289
+main_hand=dawncrazed_beast_cleaver,id=250451,ilevel=289,enchant_id=8039
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,enchant_id=8039,embellishment=darkmoon_sigil_hunt
 
-# save=MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
+save=MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
 
-# demonhunter="MID1_Demon_Hunter_Vengeance_Annihilator"
-# level=90
-# race=night_elf
-# spec=vengeance
-# role=tank
-# position=front
-# talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmxYYMbzMYsNjZMjZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgN
+demonhunter="MID1_Demon_Hunter_Vengeance_Annihilator"
+level=90
+race=night_elf
+spec=vengeance
+role=tank
+position=front
+talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmxYYMbzMYsNjZMjZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgN
 
-# flask=flask_of_the_magisters_2
-# potion=lights_potential_2
-# food=silvermoon_parade
-# augmentation=void_touched
-# temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+flask=flask_of_the_magisters_2
+potion=lights_potential_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
 
-# head=devouring_reavers_intake,id=250033,ilevel=289,gem_id=240983,enchant_id=7961
-# neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240858/240858
-# shoulder=devouring_reavers_exhaustplates,id=250031,ilevel=289,enchant_id=7971
-# back=potionstained_cloak,id=193712,ilevel=289
-# chest=vest_of_the_voids_embrace,id=151313,ilevel=289,enchant_id=7987
-# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,gem_id=240858,embellishment=prismatic_focusing_iris
-# hands=devouring_reavers_essence_grips,id=250034,ilevel=289
-# waist=cinch_of_the_umbral_lasher,id=151316,ilevel=289,gem_id=240858
-# legs=devouring_reavers_pistons,id=250032,ilevel=289,enchant_id=8161
-# feet=voidclaimed_shinkickers,id=249334,ilevel=289,enchant_id=8019
-# finger1=purloined_wedding_ring,id=49812,ilevel=289,gem_id=240858/240858,enchant_id=8025
-# finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240858/240858,enchant_id=8025
-# trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-# trinket2=umbral_plume,id=260235,ilevel=289
-# main_hand=dawncrazed_beast_cleaver,id=250451,ilevel=289,enchant_id=8039
-# off_hand=spellbreakers_warglaive,id=237840,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,enchant_id=8039,embellishment=darkmoon_sigil_hunt
+head=devouring_reavers_intake,id=250033,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240858/240858
+shoulder=devouring_reavers_exhaustplates,id=250031,ilevel=289,enchant_id=7971
+back=potionstained_cloak,id=193712,ilevel=289
+chest=vest_of_the_voids_embrace,id=151313,ilevel=289,enchant_id=7987
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,gem_id=240858,embellishment=prismatic_focusing_iris
+hands=devouring_reavers_essence_grips,id=250034,ilevel=289
+waist=cinch_of_the_umbral_lasher,id=151316,ilevel=289,gem_id=240858
+legs=devouring_reavers_pistons,id=250032,ilevel=289,enchant_id=8161
+feet=voidclaimed_shinkickers,id=249334,ilevel=289,enchant_id=8019
+finger1=purloined_wedding_ring,id=49812,ilevel=289,gem_id=240858/240858,enchant_id=8025
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240858/240858,enchant_id=8025
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=umbral_plume,id=260235,ilevel=289
+main_hand=dawncrazed_beast_cleaver,id=250451,ilevel=289,enchant_id=8039
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8793/13454,ilevel=285,crafted_stats=32/36,enchant_id=8039,embellishment=darkmoon_sigil_hunt
 
-# save=MID1_Demon_Hunter_Vengeance.simc
+save=MID1_Demon_Hunter_Vengeance.simc
