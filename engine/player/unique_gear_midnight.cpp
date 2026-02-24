@@ -2284,8 +2284,7 @@ void lightless_lament( special_effect_t& effect )
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
-  missile->dual = true;
-  missile->stats = damage->stats;
+  missile->add_child( damage );
   missile->impact_action = damage;
 
   effect.execute_action = missile;
