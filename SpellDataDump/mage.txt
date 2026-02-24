@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66044 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -451,7 +451,8 @@ Effects          :
                    Affected School(s): All
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=343726)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.6 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
                    Modified By: Improved Ice Barrier (1244069 effect#2)
 #3 (id=355654)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
@@ -5362,7 +5363,8 @@ Effects          :
                    Affected School(s): All
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.75 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -5424,7 +5426,8 @@ Effects          :
                    Affected School(s): All
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355845)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.75 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 #3 (id=355846)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | PvP Coefficient: 0.67 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9431,7 +9434,7 @@ Description      : Increases Critical Strike chance by $s1%.
 
 Name             : Arcane Warding (id=383092) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(-2, -4)]
+                 : Effect#1 [op=set, values=(-4, -8)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -9441,8 +9444,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1014783)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -2 | Scaled Value: -2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : Base Value (-2 -> -4)
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Mass Polymorph (id=383121) [Spell Family (3)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66044 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2071,7 +2071,8 @@ Effects          :
 #1 (id=120191)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Target: Self (1)
 #2 (id=127395)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 25)
                    Modified By: Desperate Measures (458718 effect#2)
 #3 (id=127396)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Target: Self (1)
@@ -10165,7 +10166,7 @@ Description      : Purify additionally removes all Disease effects.
 
 Name             : Spell Warding (id=390667) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=23]
-                 : Effect#1 [op=set, values=(-2, -4)]
+                 : Effect#1 [op=set, values=(-3, -6)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -10175,8 +10176,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1027657)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.667 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : Reduces all magic damage taken by $s1%.
 
 Name             : Improved Fade (id=390670) [Spell Family (6), Passive, Hidden] 
@@ -16012,7 +16014,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1255075)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 4 | Scaled Value: 4 | Stat: Sta | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.667 | Stat: Sta | Target: Self (1)
+Hotfixed         : Base Value (4 -> 6), PvP Coefficient (1 -> 0.667)
 Description      : Increases your Stamina by $s1%.
 
 Name             : Dark Enlightenment (id=1250835) [Spell Family (6), Passive, Hidden] 
