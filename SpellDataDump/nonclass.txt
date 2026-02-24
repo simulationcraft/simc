@@ -250788,7 +250788,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Wraps of Cosmic Madness (1259153)
+Triggered By     : Wraps of Cosmic Madness (1259153), Cosmic Barrage (1263614)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1274038)  : School Damage (2): cosmic
@@ -250832,6 +250832,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250596
 Description      : $@spelldesc1250596
 Tooltip          : Your resolve is bolstered by $@auracaster's Duskwraith, granting you $w1 Versatility.
+
+Name             : Cosmic Barrage (id=1263614) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Travel Time      : 0.5 seconds
+Labels           : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Missile Speed is Delay (in sec) (292)
+Effects          :
+#1 (id=1274393)  : Trigger Missiles (32): Cosmic Barrage
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1263393 | Target: Targeted Enemy (6)
 
 Name             : Cosmic Barrage (id=1263632) [Hidden] 
 School           : Cosmic
