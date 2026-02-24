@@ -2154,7 +2154,7 @@ void wraps_of_cosmic_madness( special_effect_t& e )
 
       auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, "cosmic_barrage_missile", missile_spell );
 
-      cosmic_barrage->impact_action = create_proc_action<generic_proc_t>( "cosmic_barrage", e, "cosmic_barrage", damage_spell );
+      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, "cosmic_barrage", damage_spell, true );
       
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
 
