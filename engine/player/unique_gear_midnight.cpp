@@ -2278,15 +2278,14 @@ void torments_duality( special_effect_t& effect )
 // 1266592 AoE damage (Cosmic, 8yd radius, triggered by missile)
 void lightless_lament( special_effect_t& effect )
 {
-  auto missile = create_proc_action<generic_proc_t>( "heavens_glaive_missile", effect,
-                                                     effect.trigger() );
-  auto damage  = create_proc_action<generic_aoe_proc_t>( "heavens_glaive", effect,
-                                                          effect.trigger()->effectN( 1 ).trigger() );
+  auto missile = create_proc_action<generic_proc_t>( "heavens_glaive_missile", effect, effect.trigger() );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "heavens_glaive", effect,
+      missile->data().effectN( 1 ).trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
-  missile->dual          = true;
-  missile->stats         = damage->stats;
+  missile->dual = true;
+  missile->stats = damage->stats;
   missile->impact_action = damage;
 
   effect.execute_action = missile;
