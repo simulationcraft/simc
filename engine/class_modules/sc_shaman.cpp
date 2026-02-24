@@ -13046,6 +13046,35 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( step.spell_id == 462854 )
     return;
 
+  auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
+  if ( step.spell_id == source_spell_id )
+  {
+    assisted_combat_step_data_t custom_step = step;
+    custom_step.spell_id                    = target_spell_id;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+    return true;
+  }
+
+    return false;
+  };
+
+  auto conditionally_replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id,
+                                          assisted_combat_rule_e rule_type, unsigned rule_value ) {
+    if ( step.spell_id == source_spell_id )
+    {
+      for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, true ) )
+      {
+        if ( rule.condition_type == rule_type && rule.condition_value_1 == rule_value )
+          return replace_spell( source_spell_id, target_spell_id );
+      }
+    }
+
+    return false;
+  };
+
+  if ( conditionally_replace_spell( 188196, 454009, AC_AURA_ON_PLAYER, 454015 ) )
+    return;
+
   player_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
