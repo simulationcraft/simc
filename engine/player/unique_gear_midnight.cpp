@@ -281,6 +281,79 @@ void potion_of_zealotry( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// 1262056 r1 driver
+// 1262108 r1 dot
+// 1262111 r2 driver
+// 1262109 r2 dot
+void laced_zoomshots( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Laced Zoomshots: Implemented using spell data which indicates it procs from all damage, not just auto-attacks. "
+    "This has not be verified in-game." );
+
+  effect.execute_action = create_proc_action<generic_proc_t>( "laced_zoomshots", effect, effect.trigger() );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1237009 r1 driver
+// 1237010 r1 damage
+// 1237012 r2 driver
+// 1237013 r2 damage
+void smugglers_enchanted_edge( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Smuggler's Enchanted Edge: Implemented assuming that coating both weapons will results in two indepedent procs. "
+    "This has not be verified in-game." );
+
+  auto dam = create_proc_action<generic_proc_t>( "smugglers_enchanted_edge", effect, effect.trigger() );
+  dam->base_dd_min = dam->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = dam;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1262295 r1 driver
+// 1262294 r1 buff
+// 1262298 r2 driver
+// 1262299 r2 buff
+void smugglers_lynxeye( special_effect_t& effect )
+{
+  // Smuggler's Lynxeye rank 2 looks bugged and grants the rank 1 buff instead of the rank 1 buff. Manually set the
+  // trigger_spell_id to the rank 2 buff.
+  if ( effect.spell_id == 12622298 )
+  {
+    assert( effect.trigger()->id() == 1262294 && "Smuggler's Lynxeye Rank 2 fix no longer necessary." );
+    effect.trigger_spell_id = 1262299;
+  }
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1262120 r1 driver
+// 1262140 r1 missile
+// 1262142 r1 aoe
+// 1262141 r2 driver
+// 1262147 r2 missile
+// 1262146 r2 aoe
+void weighted_boomshots( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "weighted_boomshots_missile", effect, effect.trigger() );
+
+  // assumed to not split so use generic_proc_t and just set aoe = -1;
+  auto aoe = create_proc_action<generic_proc_t>( "weighted_boomshots", effect, missile->data().effectN( 1 ).trigger() );
+  aoe->aoe = -1;
+  missile->stats = aoe->stats;  // just report the damage
+  missile->impact_action = aoe;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -303,6 +376,9 @@ void powerful_eversong_diamond( special_effect_t& effect )
 // 1241784 Damage
 void strength_of_halazzi( special_effect_t& effect )
 {
+  effect.player->sim->error( IMPLEMENTATION_NOTES,
+    "Strength of the Halazzi: Currently not penalized by tank role multiplier in-game, and implemented to match." );
+
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_value = effect.driver()->effectN( 1 ).average( effect );
 
@@ -324,6 +400,56 @@ void strength_of_halazzi( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1236739 r1 driver
+// 1236740 r2 driver
+// 1241728 rppm
+// 1242127 dot
+// 1277263 unknonw (vfx?)
+// 1242129 aoe
+void flames_of_the_sindorei( special_effect_t& effect )
+{
+  struct phoenix_fire_t : public generic_proc_t
+  {
+    action_t* aoe;
+
+    phoenix_fire_t( const special_effect_t& e, action_t* aoe )
+      : generic_proc_t( e, "phoenix_fire", e.trigger()->effectN( 1 ).trigger() ), aoe( aoe )
+    {
+      assert( data().effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      aoe->execute_on_target( d->target );
+    }
+  };
+
+  auto dot_value = effect.driver()->effectN( 1 ).average( effect );
+  auto aoe_value = effect.driver()->effectN( 2 ).average( effect );
+
+  auto aoe = create_proc_action<generic_aoe_proc_t>( "phoenix_fire_aoe", effect, 1242129 );
+  aoe->name_str_reporting = "AoE";
+  aoe->base_dd_min = aoe->base_dd_min += aoe_value;
+
+  auto dot = create_proc_action<phoenix_fire_t>( "phoenix_fire", effect, aoe );
+  dot->base_td += dot_value;
+
+  // skip setup if callback has been created by already having another copy of the enchant
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  dot->base_multiplier *= role_mult( effect );
+  dot->add_child( aoe );
+  aoe->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void stat_weapon_enchant( special_effect_t& effect )
 {
   auto proc_value = effect.driver()->effectN( 1 ).average( effect );
@@ -332,7 +458,10 @@ void stat_weapon_enchant( special_effect_t& effect )
   // manually set the effect spell_id to the rank 2 spell, which has correct data. It's currently unknown if this data
   // bug has any detrimental effect on the enchant in-game.
   if ( effect.spell_id == 1236712 )
+  {
+    assert( effect.trigger()->id() == 1236721 && "Arcane Mastery Rank 1 fix no longer necessary." );
     effect.spell_id = 1236721;
+  }
 
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_subtype = proc_data->effectN( 1 ).subtype();
@@ -1798,11 +1927,15 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
   // set up the equip
   equip->proc_flags2_ = PF2_CRIT;
 
+  // set up the cooldown reduction, note both action and item cooldowns must be adjusted
   auto cdr = -timespan_t::from_seconds( equip->driver()->effectN( 2 ).base_value() );
+  auto action_cd = damage->cooldown;
+  auto item_cd = effect.player->get_cooldown( effect.cooldown_name() );
 
   effect.player->callbacks.register_callback_execute_function(
-    equip->spell_id, [ cdr, cooldown = damage->cooldown ]( auto, auto, auto ) {
-        cooldown->adjust( cdr );
+    equip->spell_id, [ cdr, item_cd, action_cd ]( auto, auto, auto ) {
+        action_cd->adjust( cdr );
+        item_cd->adjust( cdr );
     } );
 
   new dbc_proc_callback_t( effect.player, *equip );
@@ -2539,13 +2672,18 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232484, consumables::secondary_food( 1233405, STAT_VERSATILITY_RATING, STAT_HASTE_RATING ) ); // sunwell delight
   // Flasks
   // Potions
-  unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
-  unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
-  unique_gear::register_special_effect( 1238443, consumables::potion_of_zealotry );
+  register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
+  register_special_effect( 1236994, consumables::potion_of_recklessness );
+  register_special_effect( 1238443, consumables::potion_of_zealotry );
   // Oils
+  register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
+  register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
+  register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
+  register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
+  register_special_effect( { 1236739, 1236740 }, enchants::flames_of_the_sindorei );
   register_special_effect( { 1236741, 1236742,    // Acuity of the Ren'dorei (Primary)
                              1236727, 1236728,    // Berserker's Rage (Haste)
                              1236712, 1236721,    // Arcane Mastery (Mastery)
