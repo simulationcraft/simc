@@ -251612,6 +251612,9 @@ Effects          :
                    Affected School(s): All
 #4 (id=1278249)  : Apply Aura (6) | Threat (10)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self (1)
+#5 (id=1308952)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421373
 
 Name             : Nether Entropic Kris (id=1266072) 
