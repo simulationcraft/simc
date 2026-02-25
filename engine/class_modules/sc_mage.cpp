@@ -2974,6 +2974,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
+  player_t* background_target;
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
     arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
@@ -3016,11 +3017,22 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    p()->trigger_splinter( p()->target ); // Also triggers from echo
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
+    // In-game, Arcane Pulse internally sets a target it hits as a "Background Target", 
+    // resulting in all of Pulse's background effects to be directed towards them.
+    // TODO: If we're implementing the radius, revise this to use the spell's target list instead.
+    if ( !background)
+      background_target = rng().range( target_list() );
+
+    p()->trigger_splinter( background_target );
+
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-      make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
+      make_event( *sim, 500_ms, [ this, t = background_target ] 
+      { 
+        static_cast<arcane_pulse_t*>( arcane_pulse_echo )->background_target = t;
+        arcane_pulse_echo->execute_on_target( background_target ); 
+      } );
   }
 
   double action_multiplier() const override
