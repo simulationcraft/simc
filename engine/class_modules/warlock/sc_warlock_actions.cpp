@@ -380,7 +380,6 @@ using namespace helpers;
 
       if ( destruction() && triggers.fiendish_cruelty )
       {
-        // TODO: Check if havoc hits and FnB Incinerate hits are affected by fiendish cruelty
         if ( s->result == RESULT_CRIT )
         {
           bool success = p()->buffs.fiendish_cruelty->trigger();
@@ -3304,7 +3303,7 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // TODO: Check if Fiendish Cruelty actually affects FnB's Incinerate and how it affects it
+        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok();
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
       }
@@ -4501,8 +4500,8 @@ using namespace helpers;
 
       p()->buffs.backdraft->decrement();
 
-      // NOTE: 2026-02-18 Infernal Bolt benefits from Chaotic Inferno but does not consume the effect (bug?)
-      if ( !p()->bugs )
+      // Chaotic Inferno buff is only consumed by an Infernal Bolt cast that benefits from the effect
+      if ( time_to_execute == 0_ms )
         p()->buffs.chaotic_inferno->decrement();
     }
   };
