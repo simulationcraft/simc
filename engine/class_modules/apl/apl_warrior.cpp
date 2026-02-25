@@ -328,8 +328,8 @@ void protection( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_->add_action( "call_action_list,name=generic" );
 
-  aoe->add_action( "thunder_blast,if=dot.rend.remains<=1" );
-  aoe->add_action( "thunder_clap,if=dot.rend.remains<=1" );
+  aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
+  aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
   aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
   aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
   aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up" );
@@ -343,8 +343,8 @@ void protection( player_t* p )
   generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
   generic->add_action( "thunder_blast" );
   generic->add_action( "shield_slam" );
-  generic->add_action( "thunder_blast,if=dot.rend.remains<=2" );
-  generic->add_action( "thunder_clap,if=dot.rend.remains<=2" );
+  generic->add_action( "thunder_blast,if=dot.rend_dot.remains<=2" );
+  generic->add_action( "thunder_clap,if=dot.rend_dot.remains<=2" );
   generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)" );
   generic->add_action( "execute,if=hero_tree.mountain_thane&(rage>=70|(rage>=40&cooldown.shield_slam.remains)|(buff.sudden_death.up&talent.sudden_death.enabled))" );
   generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
