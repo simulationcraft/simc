@@ -3186,7 +3186,8 @@ struct exploding_keg_t : public monk_spell_t
   {
     // The initial EK hit is not affected by Balanced Stratagem, so we consume the stacks here.
     // The stacks are captured as the value on the buff for exploding_keg_proc_t to use later.
-    p()->buff.exploding_keg->trigger( 1, p()->buff.balanced_stratagem_magic->consume( this ) );
+    p()->buff.exploding_keg->trigger(
+        1, p()->buff.balanced_stratagem_magic ? p()->buff.balanced_stratagem_magic->consume( this ) : 0 );
 
     p()->buff.empty_the_cellar->trigger();
 
