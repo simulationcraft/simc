@@ -3022,7 +3022,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target", 
     // resulting in all of Pulse's background effects to be directed towards them.
     // TODO: If we're implementing the radius, revise this to use the spell's target list instead.
-    if ( !background)
+    if ( !background )
       background_target = rng().range( target_list() );
 
     p()->trigger_splinter( background_target );
