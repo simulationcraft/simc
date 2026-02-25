@@ -150,7 +150,7 @@ void monk_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
   if ( step.spell_id == 388193 )
     return;
 
-  base_t::parse_assisted_combat_step( step_temp, assisted_combat );
+  base_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
