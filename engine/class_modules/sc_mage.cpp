@@ -448,7 +448,6 @@ public:
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
-    bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
@@ -2345,7 +2344,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
+    if ( p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
@@ -2590,7 +2589,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
-    p->buffs.heat_shimmer->trigger();
+    if ( !p->executing || p->executing->id != 2948 ) // Heat Shimmer cannot trigger while Scorch is casting
+      p->buffs.heat_shimmer->trigger();
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -4975,24 +4975,12 @@ struct scorch_t final : public fire_mage_spell_t
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    fire_mage_spell_t::schedule_execute( s );
-
-    // Heat Shimmer cannot be consumed or apply its benefit unless
-    // it was already active at the beginning of the Scorch cast.
-    p()->state.heat_shimmer = p()->buffs.heat_shimmer->check();
-  }
-
   void execute() override
   {
     fire_mage_spell_t::execute();
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
-    {
+    if ( p()->buffs.heat_shimmer->up() )
       p()->buffs.heat_shimmer->decrement();
-      p()->state.heat_shimmer = false;
-    }
   }
 
   timespan_t execute_time() const override

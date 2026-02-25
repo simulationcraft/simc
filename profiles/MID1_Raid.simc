@@ -14,8 +14,8 @@ default_actions=1
 # MID1_Demon_Hunter_Devourer_Void-Scarred.simc
 # MID1_Demon_Hunter_Havoc.simc
 # MID1_Demon_Hunter_Havoc_Aldrachi_Reaver.simc
-# MID1_Demon_Hunter_Vengeance.simc
-# MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
+MID1_Demon_Hunter_Vengeance.simc
+MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
 
 # MID1_Druid_Balance.simc
 # MID1_Druid_Feral.simc

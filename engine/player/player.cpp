@@ -16545,6 +16545,7 @@ std::string_view player_t::get_parsed_source( unsigned spell_id ) const
         case PARSE_SOURCE_RACIAL: return "Racial";
         case PARSE_SOURCE_TALENT: return "Talent";
         case PARSE_SOURCE_SET:    return "Set Bonus";
+        case PARSE_SOURCE_ITEM:   return "Item";
         default:                  return "BAD_SOURCE";
       }
     }
@@ -16600,7 +16601,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.2f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
                    eff->average( this ), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
@@ -16690,4 +16691,14 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
   print_custom_parsed_effects( os );
 
   os << "</div></div>\n";
+}
+
+void player_t::parse_passive_item_effect( const spell_data_t* spell )
+{
+  parse_passive_effects( spell, true, PARSE_SOURCE_ITEM );
+}
+
+void player_t::register_passive_item_effect_override( const spelleffect_data_t& effect, double value )
+{
+  register_passive_effect_override( effect, value );
 }

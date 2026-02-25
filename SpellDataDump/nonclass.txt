@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66044 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -238183,10 +238183,8 @@ Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow
 Effects          :
 #1 (id=1232650)  : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 64806.84 (coefficient=507.082) | Target: Self (1)
-Hotfixed         : Coefficient (415.626068 -> 507.08197)
 #2 (id=1232651)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 1.677096e+07 (coefficient=89.44514) | Resource: mana | Target: Self (1)
-Hotfixed         : Coefficient (70.497208 -> 89.445137)
 #3 (id=1232652)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Restores ${$s1-$s1%$s3} health and $s2 mana.
@@ -238230,7 +238228,6 @@ Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow
 Effects          :
 #1 (id=1232769)  : Energize Power (30) | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 1.9704e+07 (coefficient=105.088) | Resource: mana | Target: Self (1)
-Hotfixed         : Coefficient (70.056 -> 105.088013)
 Description      : Restores $s1 mana.
 
 Name             : Enlightened (id=1236652) 
@@ -238894,19 +238891,14 @@ Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Ste
 Effects          :
 #1 (id=1233480)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Target: Self (1)
-Hotfixed         : Coefficient (9.506298 -> 7.129723)
 #2 (id=1233912)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Crit | Target: Self (1)
-Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #3 (id=1233913)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Haste | Target: Self (1)
-Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #4 (id=1233914)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Vers | Target: Self (1)
-Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #5 (id=1233915)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 934.5676 (coefficient=7.129723) | Rating: Mastery | Target: Self (1)
-Hotfixed         : Coefficient (9.506299 -> 7.129723)
 #6 (id=1234007)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -125.866 (coefficient=-0.960219) | Rating: Crit | Target: Self (1)
 #7 (id=1234008)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -239281,7 +239273,6 @@ Effects          :
 #1 (id=1234382)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 255.6069 (coefficient=2) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Coefficient (12.613343 -> 2)
 Description      : $@spelldesc1237608
 Tooltip          : Absorbing $w1 damage.
 
@@ -239898,7 +239889,6 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=1237286)  : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds | Scaling Class: Restore Mana (-10)
                    Base Value: 0 | Scaled Value: 2955600 (coefficient=15.7632) | Target: Self (1)
-Hotfixed         : Coefficient (11.058307 -> 15.763202)
 Description      : Elevate your focus to restore ${$M1*10} mana over $d, but you are defenseless until your focus is broken.
 Tooltip          : Regenerate $w1 mana every second.
 
@@ -246497,7 +246487,6 @@ Description      : stacking up to a maximum of $u times.
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Unstable Felheart Crystal (id=1254339) 
-Hotfixed         : Attributes
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 40 yards
@@ -246508,7 +246497,6 @@ Attributes       : Can't Crit (93), Aura Points On Client (268), Reset cooldown 
 Effects          :
 #1 (id=1260710)  : School Damage (2): shadowflame | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4452.133 (coefficient=34.83578) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (0.375845 -> 34.835777)
 #2 (id=1260713)  : Trigger Spell (64): Unstable Felheart Crystal
                    Base Value: 0 | Scaled Value: 0 | Delay: 1_ms | Trigger Spell: 1255200 | Target: Targeted Ally (21)
 Description      : Unleash the fel energy stored within the crystal, sacrificing $s1 of your health to infuse a target ally for $1255200d, absorbing $1266821s2 damage.
@@ -246784,7 +246772,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to awaken the unbound essence of Aln, increasing your $pri by ${$1255460s1*$1255460u}. This power, drawn from half-formed dreams and mists, fades with each ability used or after $1255460d.
 
 Name             : Tangle of Vibrant Vines (id=1255278) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -246796,10 +246783,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 562.3208 (coefficient=4.399887) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (3.556597 -> 4.399887)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 22950.44 (coefficient=179.576) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (17.782986 -> 179.576019)
 Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
 
 Name             : Tangle of Vibrant Vines (id=1255296) 
@@ -246834,7 +246819,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 
 Name             : Tangle of Vibrant Vines (id=1255357) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
@@ -252296,7 +252280,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 44524.21 (coefficient=348.3803) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (2.50563 -> 348.38031)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -252441,17 +252424,6 @@ Effects          :
 #2 (id=1281294)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.
-
-Name             : Weak Bloomline (id=1269454) 
-School           : Physical
-Spell Type       : None
-Attributes       : Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1281297)  : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
-#2 (id=1281298)  : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical

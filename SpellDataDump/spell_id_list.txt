@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.66044
+Class Spell ID List, wow build 12.0.1.66066
 
 Death Knight
 3714     Path of Frost
@@ -12301,6 +12301,7 @@ Monk
 388615   Restoral
 388661  *Invoker's Delight
 388663  *Invoker's Delight
+388664   Calming Presence
 388668   Zen Pulse
 388671  *Heavy Air
 388674   Ferocity of Xuen

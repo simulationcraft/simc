@@ -2848,11 +2848,14 @@ const char* util::error_level_string( error_level_e level )
 {
   switch ( level )
   {
-    case error_level_e::TRIVIAL:     return "Trivial";
-    case error_level_e::MODERATE:    return "Moderate";
-    case error_level_e::SEVERE:      return "Severe";
-    case error_level_e::PLACEHOLDER: return "!!!PLACEHOLDER!!!";
-    default:                         return "Unknown";
+    case error_level_e::TRIVIAL:                   return "Trivial";
+    case error_level_e::MODERATE:                  return "Moderate";
+    case error_level_e::SEVERE:                    return "Severe";
+    case error_level_e::UNIMPLEMENTED:             return "Not Yet Implemented";
+    case error_level_e::UNVERIFIED_VALUE:          return "Using Unverified Values";
+    case error_level_e::UNVERIFIED_IMPLEMENTATION: return "Implementation Not Yet Verified";
+    case error_level_e::IMPLEMENTATION_NOTES:      return "Implementation Notes";
+    default:                                       return "Unknown";
   }
 }
 

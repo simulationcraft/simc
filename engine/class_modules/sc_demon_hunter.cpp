@@ -1303,7 +1303,7 @@ public:
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
-  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool heal = true,
+  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool instant = true,
                                    unsigned max = MAX_SOUL_FRAGMENTS );
   unsigned consume_nearby_soul_fragments( soul_fragment = soul_fragment::ANY );
   unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
@@ -3628,7 +3628,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
 
   void execute() override
   {
-    souls_consumed = p()->consume_soul_fragments();
+    souls_consumed = p()->consume_soul_fragments( soul_fragment::ANY, false );
     demon_hunter_action_t<absorb_t>::execute();
   }
 
@@ -5727,6 +5727,16 @@ struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<de
     execute_action = p->get_background_action<voidblade_damage_t>( fmt::format( "{}_damage", n ) );
     add_child( execute_action );
   }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.hungering_slash->check() )
+    {
+      return false;
+    }
+
+    return base_t::action_ready();
+  }
 };
 
 struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::PIERCE_THE_VEIL, voidblade_base_t>
@@ -5756,8 +5766,7 @@ struct voidblade_t : public voidblade_base_t
 
   bool action_ready() override
   {
-    if ( ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() ) ||
-         p()->buff.hungering_slash->up() )
+    if ( p()->talent.scarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -5942,9 +5951,9 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   void execute() override
   {
     p()->buff.reap->trigger();
-    base_t::execute();
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+    base_t::execute();
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
@@ -6027,10 +6036,10 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   void execute() override
   {
     p()->buff.reap->trigger();
+
     base_t::execute();
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
-
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
     auto damage = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
     damage->set_target( target );
@@ -6596,7 +6605,7 @@ struct hungering_slash_t : public hungering_slash_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
+    if ( p()->talent.scarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -7623,8 +7632,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
   struct felblade_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
-    felblade_damage_t( util::string_view name, demon_hunter_t* p )
-      : base_t( name, p, p->spell.felblade_damage )
+    felblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spell.felblade_damage )
     {
       background = dual               = true;
       gain                            = p->get_gain( "felblade" );
@@ -9627,6 +9635,7 @@ void demon_hunter_t::create_buffs()
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true )
+                            ->set_activated( true )
                             ->set_disable_async_expire_events_removal( true );
 
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
@@ -12010,7 +12019,7 @@ void demon_hunter_t::adjust_movement()
 
 // demon_hunter_t::consume_soul_fragments ===================================
 
-unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, unsigned max )
+unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool instant, unsigned max )
 {
   unsigned souls_consumed = 0;
   std::vector<soul_fragment_t*> candidates;
@@ -12028,7 +12037,7 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
 
   for ( auto& it : candidates )
   {
-    it->consume( heal );
+    it->consume( instant );
     souls_consumed++;
     if ( souls_consumed >= max )
       break;

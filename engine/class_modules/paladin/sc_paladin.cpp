@@ -558,7 +558,7 @@ struct consecration_t : public paladin_spell_t
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
     int totalTargets = 0;
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && dg_heal && p()->buffs.lightsmith.divine_guidance->up() )
     {
       for (auto friendly : sim->player_non_sleeping_list)
       {
@@ -599,7 +599,7 @@ struct consecration_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     // Damage events come after Consecration cast
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && p()->buffs.lightsmith.divine_guidance->up() )
     {
       // Only create damage events when we're dealing damage, so not to proc stuff accidentally
       if ( dg_damage->base_dd_multiplier > 0 )
@@ -2231,7 +2231,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
        // 21.12.25 Fluttershy - Currently, the main target just never gets a Judgment stack
        if ( !p()->bugs )
          p()->trigger_greater_judgment( td( s->target ), removeStack );
-
+     }
+     // 25.02.26 Fluttershy - Same bug which affects Ret now also affects Prot. We will lose a Judgment stack for free.
+     else if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.greater_judgment->ok() )
+     {
+       make_event( *sim, 600_ms, [ this, s ]() { td( s->target )->debuff.judgment->decrement(); } );
      }
    }
 };

@@ -8481,6 +8481,13 @@ parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assis
     rule_copy.condition_value_1 = 6;
     return { player_t::parse_assisted_combat_rule( rule_copy, step ), true };
   }
+
+  // New rule added to slam in midnight, refers to old legion-era Rampage! (209694), so ignoring for now
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 209694 )
+  {
+    return { "", true };
+  }
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 

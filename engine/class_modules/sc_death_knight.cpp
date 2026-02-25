@@ -7588,8 +7588,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() *
-                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
       forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
@@ -11510,14 +11509,20 @@ struct pestilence_t final : public death_knight_spell_t
     if ( vp->is_ticking() )
     {
       p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
-      damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
+      if ( duration_mult == 1.0 )
+        damage = vp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
       p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
-      damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
+      if ( duration_mult == 1.0 )
+        damage = dp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
       dp->cancel();
     }
@@ -13255,7 +13260,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
   }
 
   for ( auto& disease : disease_td )
-    disease_remaining_damage += disease->tick_damage_over_time( disease->remains() );
+    disease_remaining_damage += disease->tick_damage_over_remaining_time();
 
   if ( disease_remaining_damage == 0 || disease_td.empty() )
     return;

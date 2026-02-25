@@ -2199,14 +2199,15 @@ public:
 
   void execute() override
   {
-    BASE::execute();
-
+    // extends even if you hit nothing
     if ( dot_ext > 0_ms )
     {
       range::for_each( BASE::p()->dot_lists.dreadful_wound, [ this ]( dot_t* d ) {
         d->adjust_duration( dot_ext, max_ext );
       } );
     }
+
+    BASE::execute();
   }
 };
 
@@ -3491,7 +3492,7 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     trigger_boat_buff();
 
-    if ( bolt_cd->up() )
+    if ( bolt_cd && bolt_cd->up() )
     {
       execute_bolt_action();
       bolt_cd->start();
@@ -8205,6 +8206,8 @@ struct starfall_t final : public ap_spender_t
   {
     meteorites_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1240913 ), f )
     {
+      proc = true;
+
       name_str_reporting = "meteorites";
     }
 
@@ -8302,6 +8305,8 @@ struct starfall_t final : public ap_spender_t
       assert( driver->damage );
       replace_stats( this, driver, false );
       replace_stats( this, driver->damage );
+      if ( driver->meteorites )
+        add_child( driver->meteorites );
     }
 
     weaver_buff = p->buff.starweaver_starfall;
@@ -10935,7 +10940,7 @@ void druid_t::create_buffs()
 
   buff.ascendant_stars =
     make_fallback( talent.ascendant_eclipses_1.ok(), this, "ascendant_stars", find_spell( 1263382 ) )
-      ->set_reverse( true )
+      ->set_initial_stack_to_max_stack()
       ->set_consume_all_stacks( false );
 
   buff.ascendant_stars_starfall =
@@ -11345,18 +11350,7 @@ void druid_t::create_buffs()
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
         {
-          auto _state = dot->current_action->get_state( dot->state );
-          auto num_tick = dot->ticks_left_fractional();
-          auto per_tick = dot->current_action->calculate_tick_amount( _state, excess );
-          auto damage = num_tick * per_tick;
-          action_state_t::release( _state );
-
-          if ( sim->debug )
-          {
-            sim->print_debug( "{} Sundering Roar excess thrash on {}: excess={}, num_tick={}, per_tick={}, damage={}",
-                              *this, *dot->target, excess, num_tick, per_tick, damage );
-          }
-
+          auto damage = dot->tick_damage_over_remaining_time( excess );
           active.sundering_roar_thrash->execute_on_target( dot->target, damage );
           dot->decrement( excess );
           dot->max_stack = orig_max_stack;
@@ -12150,7 +12144,7 @@ bool druid_t::validate_actor()
   };
 
   for ( auto ph : placeholders )
-    sim->error( error_level_e::PLACEHOLDER, "{}", ph );
+    sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
 
   return true;
 }

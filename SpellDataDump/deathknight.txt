@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66044 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -8905,8 +8905,9 @@ Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818428)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+Hotfixed         : Base Value (-5 -> -1)
                    Modified By: Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : Reduces damage dealt by $m1%.
 Tooltip          : Reduces damage dealt to $@auracaster by $m1%.
