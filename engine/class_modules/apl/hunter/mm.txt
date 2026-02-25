@@ -1,7 +1,8 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
 actions.precombat+=/summon_pet,if=talent.unbreakable_bond
-actions.precombat+=/aimed_shot,if=active_enemies<3
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot
 actions.precombat+=/steady_shot
 
 # Executed every time the actor is available.
@@ -23,37 +24,43 @@ actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
 
 actions.draoe=black_arrow
-actions.draoe+=/multishot,if=buff.precise_shots.up
+actions.draoe+=/multishot,if=buff.precise_shots.up|buff.trick_shots.down
 actions.draoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.draoe+=/trueshot
-actions.draoe+=/aimed_shot,if=buff.bulletstorm.remains>cast_time|full_recharge_time<cast_time
-actions.draoe+=/rapid_fire
+actions.draoe+=/trueshot,if=!buff.double_tap.up
+actions.draoe+=/volley,if=!buff.double_tap.up
+actions.draoe+=/aimed_shot
 actions.draoe+=/wailing_arrow
+actions.draoe+=/rapid_fire
 actions.draoe+=/steady_shot
 
 actions.drst=black_arrow
+actions.drst+=/rapid_fire,if=talent.unload&buff.withering_fire.up
 actions.drst+=/arcane_shot,if=buff.precise_shots.up
 actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.drst+=/trueshot
-actions.drst+=/aimed_shot,if=buff.bulletstorm.remains>cast_time|full_recharge_time<cast_time
-actions.drst+=/rapid_fire
+actions.drst+=/trueshot,if=!buff.double_tap.up
+actions.drst+=/volley,if=!buff.double_tap.up
+actions.drst+=/aimed_shot
 actions.drst+=/wailing_arrow
+actions.drst+=/rapid_fire
 actions.drst+=/steady_shot
 
-actions.sentaoe=multishot,if=buff.precise_shots.up
+actions.sentaoe=multishot,if=buff.precise_shots.up|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentaoe+=/trueshot
-actions.sentaoe+=/aimed_shot,if=buff.bulletstorm.remains>cast_time|full_recharge_time<cast_time
-actions.sentaoe+=/moonlight_chakram
+actions.sentaoe+=/trueshot,if=!buff.double_tap.up
+actions.sentaoe+=/volley,if=!buff.double_tap.up
+actions.sentaoe+=/aimed_shot
 actions.sentaoe+=/rapid_fire
+actions.sentaoe+=/moonlight_chakram,if=buff.trueshot.up
 actions.sentaoe+=/steady_shot
 
 actions.sentst=arcane_shot,if=buff.precise_shots.up
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentst+=/trueshot
-actions.sentst+=/aimed_shot,if=buff.bulletstorm.remains>cast_time|full_recharge_time<cast_time
-actions.sentst+=/moonlight_chakram
+actions.sentst+=/trueshot,if=!buff.double_tap.up
+actions.sentst+=/volley,if=!buff.double_tap.up
+actions.sentst+=/aimed_shot
+actions.sentst+=/moonlight_chakram,if=buff.trueshot.up
 actions.sentst+=/rapid_fire
 actions.sentst+=/steady_shot
 
-actions.trinkets=use_items,slots=trinket1:trinket2,if=!this_trinket.has_use_buff|buff.trueshot.remains>13|cooldown.trueshot.remains>45
+actions.trinkets=use_items,slots=trinket1:trinket2,if=cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.remains>17|cooldown.trueshot.remains>45
+actions.trinkets+=/use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<23

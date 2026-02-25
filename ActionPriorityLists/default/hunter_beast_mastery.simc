@@ -36,22 +36,22 @@ actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd
 
 actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd
 actions.drcleave+=/bestial_wrath
+actions.drcleave+=/wailing_arrow,if=buff.bestial_wrath.remains<execute_time+gcd|fight_remains<execute_time+gcd
 actions.drcleave+=/wild_thrash
-actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up&(buff.bestial_wrath.up|full_recharge_time<3+gcd)|!apex.3
+actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
 actions.drcleave+=/black_arrow,if=buff.withering_fire.up
-actions.drcleave+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
-actions.drcleave+=/black_arrow,if=cooldown.wild_thrash.remains>gcd
-actions.drcleave+=/barbed_shot,if=cooldown.wild_thrash.remains>gcd
-actions.drcleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd
+actions.drcleave+=/barbed_shot
+actions.drcleave+=/wailing_arrow
+actions.drcleave+=/black_arrow
+actions.drcleave+=/cobra_shot
 
 actions.drst=bestial_wrath
-actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up&(buff.bestial_wrath.up|full_recharge_time<3+gcd)|!apex.3
+actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
 actions.drst+=/black_arrow,if=buff.withering_fire.up
 actions.drst+=/cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4
 actions.drst+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
-actions.drst+=/barbed_shot,if=buff.bestial_wrath.up
-actions.drst+=/black_arrow
 actions.drst+=/barbed_shot
+actions.drst+=/black_arrow
 actions.drst+=/cobra_shot
 
 actions.st=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
@@ -65,6 +65,8 @@ actions.trinkets+=/use_item,name=void_execution_mandate,if=buff.bestial_wrath.up
 actions.trinkets+=/use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23
 actions.trinkets+=/use_item,name=emberwing_feather,if=buff.bestial_wrath.up|fight_remains<16
 actions.trinkets+=/use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16
-actions.trinkets+=/use_item,name=ranger_captains_iridescent_insignia
+actions.trinkets+=/use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21
+actions.trinkets+=/use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11
+actions.trinkets+=/use_item,name=rangercaptains_iridescent_insignia
 actions.trinkets+=/use_item,name=void_stalkers_contract
-actions.trinkets+=/use_item,name=latchs_croooked_hook
+actions.trinkets+=/use_item,name=latchs_crooked_hook
