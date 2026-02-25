@@ -3408,7 +3408,8 @@ using namespace helpers;
 
       // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
       // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
-      if ( p()->bugs ? p()->buffs.chaotic_inferno->check() : ( time_to_execute == 0_ms ) )
+      bool consume_backdraft = p()->bugs ? !p()->buffs.chaotic_inferno->check() : ( time_to_execute != 0_ms );
+      if ( consume_backdraft )
         p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
@@ -3687,6 +3688,8 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
+
+      p()->buffs.backdraft->decrement();
 
       p()->buffs.crashing_chaos->decrement();
 
