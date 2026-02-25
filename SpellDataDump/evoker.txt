@@ -7997,7 +7997,7 @@ Name             : Verdant Embrace (id=409895) [Spell Family (224)]
 Class            : Evoker
 School           : Nature
 Spell Type       : None
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 292
