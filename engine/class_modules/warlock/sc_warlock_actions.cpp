@@ -4499,6 +4499,8 @@ using namespace helpers;
 
       p()->buffs.infernal_bolt->decrement();
 
+      p()->buffs.backdraft->decrement();
+
       // NOTE: 2026-02-18 Infernal Bolt benefits from Chaotic Inferno but does not consume the effect (bug?)
       if ( !p()->bugs )
         p()->buffs.chaotic_inferno->decrement();
