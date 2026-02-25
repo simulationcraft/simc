@@ -260,7 +260,8 @@ struct avengers_shield_base_t : public paladin_spell_t
         p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
                             p()->gains.hp_glory_of_the_vanguard_2 );
       }
-      p()->buffs.valor->trigger();
+      if ( p()->talents.glory_of_the_vanguard_3->ok() )
+        p()->buffs.valor->trigger();
     }
   }
 };

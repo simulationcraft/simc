@@ -11159,6 +11159,8 @@ struct invoke_external_buff_t : public action_t
 
   void init() override
   {
+    action_t::init();
+
     buff = buff_t::find( player, buff_str );
     if ( !buff )
     {
