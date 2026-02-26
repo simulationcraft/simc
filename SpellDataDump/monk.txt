@@ -755,6 +755,7 @@ Effects          :
 Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
@@ -772,7 +773,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Elusive Mists (388681 effect#3), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Peer Into Peace (440008 effect#3), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Way of the Serpent (1243155 effect#3), Soothing Mist (1268958 effect#3), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 24, 48
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Include In Advanced Combat Log (72), Active Threat (94), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Include In Advanced Combat Log (72), Active Threat (94), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14), Standing (19), Invulnerability (22)
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
@@ -1780,6 +1781,7 @@ Effects          :
 Description      : $@spelldesc115151
 
 Name             : Renewing Mist (id=119611) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -1791,7 +1793,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Affecting Spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Monk Mistweaver 11.0 Class Set 2pc (453628 effects: #1, #2), Chi Harmony (457013 effect#1), Lotus Infusion (458431 effects: #1, #2), Rushing Winds (467341 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Way of the Serpent (1243155 effects: #1, #2), Monk Mistweaver 12.0 Class Set 2pc (1264840 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 23, 48
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436), Unknown (456)
+Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.96 | Target: Targeted Ally (21)
@@ -2545,6 +2547,7 @@ Effects          :
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
+Hotfixed         : Attributes
 Talent Entry     : Mistweaver [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
@@ -2561,7 +2564,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Soothing Mist (115175 effect#3), Thunder Focus Tea (116680 effect#6), Renewing Mist (119611 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Dome of Mist (205655 effect#2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Invoke Yu'lon, the Jade Serpent (322118 effects: #5, #6, #7, #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #3, #4, #5, #7, #8), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effects: #1, #3), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Monk Mistweaver 11.0 Class Set 2pc (453628 effects: #1, #2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Celestial Harmony (1242405 effect#1), Spiritfont (1260677 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 48, 67, 79
-Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
+Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.248 | Target: Targeted Ally (21)
@@ -15005,6 +15008,7 @@ Description      : $@spelldesc450508
 Tooltip          : Dealing $w1 damage per second.
 
 Name             : Aspect of Harmony (id=450769) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -15018,7 +15022,7 @@ Labels           : 16: Class Spells
                  : 3570
 Proc Chance      : 101%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
-Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1150888)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
