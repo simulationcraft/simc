@@ -1469,7 +1469,7 @@ struct combustion_t final : public buff_t
       }
     } );
 
-    set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
+    set_tick_callback( [ this, p ] ( buff_t*, timespan_t )
     {
       if ( p->talents.slow_burn.ok() )
       {
@@ -5579,7 +5579,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
   debuffs.touch_of_the_archmage  = make_buff( *this, "touch_of_the_archmage", mage->find_spell( 1258134 ) )
-                                     ->set_tick_callback( [ mage ] ( buff_t* b, int, timespan_t )
+                                     ->set_tick_callback( [ mage ] ( buff_t* b, timespan_t )
                                        { mage->action.touch_of_the_archmage->execute_on_target( b->player, b->check_value() ); } )
                                      ->set_chance( mage->talents.touch_of_the_archmage_3.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
@@ -6280,7 +6280,7 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->set_period( 3.0_s )
                                       ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                                      ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                                      ->set_tick_callback( [ this ] ( buff_t*, timespan_t )
                                         {
                                           action.arcane_assault->execute_on_target( target );
                                           if ( talents.energized_familiar.ok() && buffs.arcane_surge->check() )
@@ -6307,7 +6307,7 @@ void mage_t::create_buffs()
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                       ->set_affects_regen( true )
                                       ->set_freeze_stacks( true ) // We want to bump the buff manually
-                                      ->set_tick_callback( [ this ] ( buff_t* b, int, timespan_t )
+                                      ->set_tick_callback( [ this ] ( buff_t* b, timespan_t )
                                         { b->bump( 0, resources.pct( RESOURCE_MANA ) ); } )
                                       ->set_chance( talents.enlightened.ok() );
   buffs.evocation                 = make_buff( this, "evocation", find_spell( 12051 ) )

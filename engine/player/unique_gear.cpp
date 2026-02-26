@@ -2887,7 +2887,7 @@ void item::tyrants_decree( special_effect_t& effect )
     ->set_period( effect.driver()->effectN( 1 ).period() )
     ->set_tick_behavior( buff_tick_behavior::REFRESH )
     ->set_quiet( true )
-    ->set_tick_callback( [ trigger ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ trigger ]( buff_t* b, timespan_t ) {
       if ( b->player->resources.pct( RESOURCE_HEALTH ) > b->data().effectN( 2 ).percent() )
         trigger->trigger();
     } );

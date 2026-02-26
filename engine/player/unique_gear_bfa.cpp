@@ -455,7 +455,7 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
     }
   } );
 
-  buff->set_tick_callback( [cb]( buff_t*, int, timespan_t ) { cb->add_stack(); } );
+  buff->set_tick_callback( [cb]( buff_t*, timespan_t ) { cb->add_stack(); } );
 }
 
 // Potion of Empowered Proximity ============================================
@@ -1775,14 +1775,14 @@ void items::balefire_branch( special_effect_t& effect )
       {
         auto _rppm = p->get_rppm( "balefire_branch_loss", p->dragonflight_opts.balefire_branch_loss_rppm );
 
-        set_tick_callback( [ _rppm ]( buff_t* b, int, timespan_t ) {
+        set_tick_callback( [ _rppm ]( buff_t* b, timespan_t ) {
           if ( _rppm->trigger() )
             make_event( b->sim, [ b ] { b->decrement( b->player->dragonflight_opts.balefire_branch_loss_stacks ); } );
         } );
       }
       else if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "percent" )
       {
-        set_tick_callback( []( buff_t* b, int, timespan_t ) {
+        set_tick_callback( []( buff_t* b, timespan_t ) {
           if ( b->rng().roll( b->player->dragonflight_opts.balefire_branch_loss_percent ) )
             make_event( b->sim, [ b ] { b->decrement( b->player->dragonflight_opts.balefire_branch_loss_stacks ); } );
         } );
@@ -3800,7 +3800,7 @@ void items::arcane_tempest( special_effect_t& effect )
 
   auto action = create_proc_action<arcane_tempest_t>( "arcane_tempest", effect, buff );
 
-  buff->set_tick_callback( [action]( buff_t* buff, int /* current_tick */, timespan_t /* tick_time */ ) {
+  buff->set_tick_callback( [action]( buff_t* buff, timespan_t /* tick_time */ ) {
     action->set_target( buff->source->target );
     action->execute();
   } );
@@ -4520,7 +4520,7 @@ void items::ingenious_mana_battery( special_effect_t& effect )
         percent_increase( data().effectN( 3 ).percent() ),
         max_stored( effect.player->find_spell( 300968 )->effectN( 2 ).average( effect ) )
     {
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { _tick_callback(); } );
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) { _tick_callback(); } );
       set_default_value( effect.player->find_spell( 300969 )->effectN( 3 ).average( effect ) );
     }
 
@@ -4636,7 +4636,7 @@ void items::ingenious_mana_battery( special_effect_t& effect )
         drain_amount( data().effectN( 2 ).average( effect ) ),
         mana_threshold( effect.player->find_spell( 300969 )->effectN( 1 ).percent() )
     {
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { _tick_callback(); } );
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) { _tick_callback(); } );
     }
 
     void wait_for_resource()

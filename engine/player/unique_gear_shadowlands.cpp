@@ -84,7 +84,7 @@ void smothered_shank( special_effect_t& effect )
     {
       belch = create_proc_action<SL_proc_spell_t>( "pungent_belch", e );
 
-      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [this]( buff_t*, timespan_t ) {
         belch->set_target( player->target );
         belch->schedule_execute();
       } );
@@ -400,7 +400,7 @@ void macabre_sheet_music( special_effect_t& effect )
   effect.custom_buff = make_buff( effect.player, "blood_waltz_driver", effect.driver() )
     ->set_quiet( true )
     ->set_cooldown( 0_ms )
-    ->set_tick_callback( [ stat_buff ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ stat_buff ]( buff_t*, timespan_t ) {
       // TODO: handle potential delay/movement required to hit the 'dance partners'
       stat_buff->trigger();
     } );
@@ -732,7 +732,7 @@ void gluttonous_spike( special_effect_t& effect )
       set_chance( player->sim->shadowlands_opts.gluttonous_spike_overheal_chance );
 
       // Triggers the given action for each tick
-      set_tick_callback( [action]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+      set_tick_callback( [action]( buff_t* /* buff */, timespan_t /* tick_time */ ) {
         action->execute();
       } );
     }
@@ -1603,7 +1603,7 @@ void shadowgrasp_totem( special_effect_t& effect )
 
       // Periodic trigger in spell 331532 itself is hasted, which appears to control the tick rate
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) {
         auto pet = spawner.pet();
         if ( !pet )
           return;

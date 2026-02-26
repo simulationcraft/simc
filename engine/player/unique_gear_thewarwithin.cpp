@@ -272,7 +272,7 @@ void flask_of_alchemical_chaos( special_effect_t& effect )
           initial_penalty_2 = STAT_NONE;  // don't allow the bonus stat to be a penalty
       }
         
-      set_tick_callback( [ this, initial_stat, initial_penalty_1, initial_penalty_2 ]( buff_t* b, int, timespan_t ) {
+      set_tick_callback( [ this, initial_stat, initial_penalty_1, initial_penalty_2 ]( buff_t* b, timespan_t ) {
         rng().shuffle( buff_list.begin(), buff_list.end() );
         if ( b->current_tick == 0 && initial_stat != STAT_NONE )
         {
@@ -641,7 +641,7 @@ void echoing_void( special_effect_t& effect )
     }
   } );
 
-  ticking_buff->set_tick_callback( [ stacking_buff, damage ]( buff_t* b, int, timespan_t ) {
+  ticking_buff->set_tick_callback( [ stacking_buff, damage ]( buff_t* b, timespan_t ) {
     stacking_buff->decrement();
     if ( b->source->base.distance <= 15 )
       damage->execute();
@@ -1632,7 +1632,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       } );
 
       auto b_stance = create_buff<buff_t>( e.player, e.player->find_spell( 448036 ) )
-        ->set_tick_callback( [ b_stack ]( buff_t*, int, timespan_t ) {
+        ->set_tick_callback( [ b_stack ]( buff_t*, timespan_t ) {
           b_stack->trigger();
         } );
 
@@ -1756,7 +1756,7 @@ void swarmlords_authority( special_effect_t& effect )
 
   // setup on-use
   effect.custom_buff = create_buff<buff_t>( effect.player, effect.driver() )
-    ->set_tick_callback( [ scarab ]( buff_t*, int, timespan_t ) { scarab->execute(); } );
+    ->set_tick_callback( [ scarab ]( buff_t*, timespan_t ) { scarab->execute(); } );
 }
 
 // 444264 on-use
@@ -1912,7 +1912,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   auto ticks = create_buff<buff_t>( effect.player, equip->driver() )
     ->set_quiet( true )
     ->set_tick_zero( true )
-    ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, timespan_t ) {
       if ( halt->check() )
         return;
 
@@ -2779,7 +2779,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
   auto earthen_ire_buff_spell = e.player->find_spell( 452514 );
   e.player->buffs.earthen_ire =
       create_buff<buff_t>( e.player, earthen_ire_buff_spell )
-          ->set_tick_callback( [ earthen_ire_damage ]( buff_t*, int, timespan_t ) { earthen_ire_damage->execute(); } );
+          ->set_tick_callback( [ earthen_ire_damage ]( buff_t*, timespan_t ) { earthen_ire_damage->execute(); } );
 
   e.execute_action =
       create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_damage );
@@ -2992,7 +2992,7 @@ void remnant_of_darkness( special_effect_t& e )
   damage->base_multiplier *= role_mult( e );
 
   auto transform_buff = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
-                            ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+                            ->set_tick_callback( [ damage ]( buff_t*, timespan_t ) { damage->execute(); } );
 
   auto stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451369 ) )
                        ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) )
@@ -4017,7 +4017,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       add_stats( e, embellish );
       last_buff = buff_list[ 0 ];
       // refreshes if in combat on tick, otherwise buff expires naturally
-      set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ & ]( buff_t*, timespan_t ) {
         if ( in_combat )
           trigger_ascension();
         // Ticking stops if out of combat
@@ -4410,7 +4410,7 @@ void shadowed_essence( special_effect_t& effect )
 
       set_quiet( true );
       set_tick_on_application( true );
-      set_tick_callback( [ &, dark_embrace, shadowed_essence, missile ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ &, dark_embrace, shadowed_essence, missile ]( buff_t*, timespan_t ) {
         if ( tick_n == 0 )
         {
           dark_embrace->trigger();
@@ -5424,7 +5424,7 @@ void cursed_pirate_skull( special_effect_t& effect )
   // damage->base_multiplier *= role_mult( effect );
 
   auto buff = create_buff<buff_t>( effect.player, effect.trigger(), effect.item )
-                  ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+                  ->set_tick_callback( [ damage ]( buff_t*, timespan_t ) { damage->execute(); } );
 
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
@@ -5445,7 +5445,7 @@ void runecasters_stormbound_rune( special_effect_t& effect )
   auto buff_spell = effect.player->find_spell( 472636 );
   auto buff       = create_buff<buff_t>( effect.player, buff_spell )
                   ->set_tick_on_application( true )
-                  ->set_tick_callback( [ &, damage ]( buff_t*, int, timespan_t ) {
+                  ->set_tick_callback( [ &, damage ]( buff_t*, timespan_t ) {
                     if ( effect.player->sim->target_non_sleeping_list.size() > 0 )
                     {
                       auto target = effect.player->rng().range( effect.player->sim->target_non_sleeping_list );
@@ -7067,7 +7067,7 @@ void amorphous_relic( special_effect_t& effect )
   buff_t* periodic = create_buff<buff_t>( effect.player, effect.player->find_spell( 472195 ) )
                          ->set_tick_on_application( true )
                          ->set_cooldown( 60_s ) // Not in data, but the ticking aura doesnt reapply if re-entering combat before 60s has passed.
-                         ->set_tick_callback( [ haste_buff, crit_buff ]( buff_t* b, int, timespan_t ) {
+                         ->set_tick_callback( [ haste_buff, crit_buff ]( buff_t* b, timespan_t ) {
                            if ( b->source->in_combat )
                            {
                              if ( b->source->rng().roll( 0.5 ) )
@@ -8057,7 +8057,7 @@ void ringing_ritual_mud( special_effect_t& effect )
 
       tick->base_dd_min = tick->base_dd_max = equip->effectN( 1 ).average( effect.item );
       damage_buff = unique_gear::create_buff<buff_t>( effect.player, effect.driver()->effectN( 2 ).trigger() )
-                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, int, timespan_t ) {
+                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, timespan_t ) {
                           tick->execute();
                           if ( !absorb_buff->check() && self->check() && self->current_tick < tick_count )
                             // Let events clear before expiring
@@ -8308,7 +8308,7 @@ void arazs_ritual_forge( special_effect_t& effect )
       decrease     = buff_val / n_ticks;
 
       set_stat_from_effect( 1, value_spell->effectN( 1 ).average( e ) );
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) { recalculate(); } );
     }
 
     double current_value()
@@ -9076,7 +9076,7 @@ void brand_of_ceaseless_ire( special_effect_t& effect )
       shield = create_buff<absorb_buff_t>( e.player, e.player->find_spell( 1235973 ) );
       counter = create_buff<buff_t>( e.player, e.trigger() )
         ->set_freeze_stacks( true )
-        ->set_tick_callback( [ p = e.player ]( buff_t* b, int, timespan_t ) {
+        ->set_tick_callback( [ p = e.player ]( buff_t* b, timespan_t ) {
           if ( !p->in_combat )
             make_event( *p->sim, [ b ] { b->decrement(); } );
         } );
@@ -12091,7 +12091,7 @@ void critical_chain( special_effect_t& effect )
                           ->add_stat_from_effect_type( A_MOD_RATING, value_spell_data->effectN( 3 ).average( effect ) );
 
       quiet           = true;
-      tick_callback   = [ & ]( buff_t*, int, timespan_t ) { stacking_crit->increment(); };
+      tick_callback   = [ & ]( buff_t*, timespan_t ) { stacking_crit->increment(); };
       expire_callback = [ & ]( buff_t*, int, timespan_t ) { stacking_crit->expire(); };
     }
   };
@@ -12200,7 +12200,7 @@ void electric_current( special_effect_t& effect )
       set_duration( 8_s );
       tick_on_application = true;
 
-      tick_callback = [ & ]( buff_t* self, int, timespan_t ) {
+      tick_callback = [ & ]( buff_t* self, timespan_t ) {
         self->refresh();
 
         int current_stack = child->check();

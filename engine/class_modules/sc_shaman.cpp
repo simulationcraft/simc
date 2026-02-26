@@ -12336,7 +12336,7 @@ void shaman_t::create_buffs()
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_trigger_spell( talent.static_accumulation )
     ->set_duration( 0_ms ) // Buff state controlled by Ascendance and Doom winds buffs
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
     } );
   buff.doom_winds = make_buff( this, "doom_winds", find_spell( 466772 ) )
@@ -12353,7 +12353,7 @@ void shaman_t::create_buffs()
         buff.static_accumulation->expire();
       }
     } )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
       if ( target->is_sleeping() )
       {
         return;

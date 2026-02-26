@@ -1012,7 +1012,7 @@ struct holy_bulwark_buff_t : public buff_t
       caster( debug_cast<paladin_t*>( td->source ) ),
       buff_owner( td->target )
   {
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
+    set_tick_callback( [ this ]( buff_t*, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
   }
   holy_bulwark_buff_t( paladin_t* p )
     : buff_t( p, "holy_bulwark", p->spells.lightsmith.holy_bulwark ),
@@ -1020,7 +1020,7 @@ struct holy_bulwark_buff_t : public buff_t
       caster( p ),
       buff_owner( p )
   {
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
+    set_tick_callback( [ this ]( buff_t*, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
   }
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {

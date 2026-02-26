@@ -3654,7 +3654,7 @@ void paladin_t::create_buffs()
   if ( specialization() == PALADIN_PROTECTION )
     buffs.divine_resonance =
         make_buff( this, "divine_resonance", find_spell( 355455 ) )
-            ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
+            ->set_tick_callback( [ this ]( buff_t* /* b */, timespan_t /* tick_time */ ) {
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
             } );
@@ -3731,7 +3731,7 @@ void paladin_t::create_buffs()
                                         ->add_invalidate( CACHE_HASTE );
   // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
-                                ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
                                         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
@@ -3757,14 +3757,14 @@ void paladin_t::create_buffs()
                                     ->set_default_value( 1.0 )
                                     ->set_period( timespan_t::from_millis( 2000 ) )
                                     ->set_freeze_stacks( true )
-                                    ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                    ->set_tick_callback( [ this ]( buff_t*, const timespan_t& ) {
                                       active.divine_hammer_tick->schedule_execute();
                                     } );
 
   buffs.herald_of_the_sun.morning_star_driver = make_buff( this, "morning_star_driver", find_spell( 431568 ) )
     ->set_period( timespan_t::from_seconds( 5.0 ) ) // TODO(mserrano) grab from spell data
     ->set_quiet( true )
-    ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.herald_of_the_sun.morning_star->trigger(); })
+    ->set_tick_callback([this](buff_t*, const timespan_t&) { buffs.herald_of_the_sun.morning_star->trigger(); })
     ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) )
     ->set_default_value_from_effect( 1 );

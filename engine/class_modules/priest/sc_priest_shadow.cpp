@@ -1838,7 +1838,7 @@ struct dispersion_t final : public priest_buff_t<buff_t>
     int num_ticks = as<int>( p.specs.dispersion->duration().total_seconds() / tick_time().total_seconds() ) + 1;
     set_default_value( player->max_health() * health_percent / num_ticks );
 
-    set_tick_callback( [ health_percent, num_ticks, this ]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ health_percent, num_ticks, this ]( buff_t*, timespan_t ) {
       heal->trigger( player->max_health() * health_percent / num_ticks );
     } );
   }
@@ -1859,7 +1859,7 @@ struct void_torrent_t : public priest_buff_t<buff_t>
     auto insanity = eff->resource( RESOURCE_INSANITY );
     auto gain     = p.get_gain( "void_torrent" );
 
-    set_tick_callback( [ insanity, gain, this ]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ insanity, gain, this ]( buff_t*, timespan_t ) {
       player->resource_gain( RESOURCE_INSANITY, insanity, gain );
     } );
   }
@@ -1953,7 +1953,7 @@ void priest_t::create_buffs_shadow()
                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.horrific_vision_buff->effectN( 1 ).period() )
-                              ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
+                              ->set_tick_callback( [ this ]( buff_t* buff, timespan_t ) {
                                 double insanity =
                                     talents.shadow.horrific_vision_buff->effectN( 1 ).resource( RESOURCE_INSANITY );
                                 generate_insanity( insanity * buff->check(), gains.insanity_horrific_vision, nullptr );
@@ -1963,7 +1963,7 @@ void priest_t::create_buffs_shadow()
                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.vision_of_nzoth_buff->effectN( 1 ).period() )
-                              ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
+                              ->set_tick_callback( [ this ]( buff_t* buff, timespan_t ) {
                                 double insanity =
                                     talents.shadow.vision_of_nzoth_buff->effectN( 1 ).resource( RESOURCE_INSANITY );
                                 generate_insanity( insanity * buff->check(), gains.insanity_vision_of_nzoth, nullptr );

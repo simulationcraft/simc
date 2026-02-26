@@ -834,7 +834,7 @@ void loa_worshipers_band( special_effect_t& effect )
           ->set_name_reporting( "Crit" );
 
         nalorakk = create_buff<buff_t>( e.player, periodic_spell )
-          ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) {
+          ->set_tick_callback( [ nalorakk_stat ]( buff_t*, timespan_t ) {
             nalorakk_stat->trigger();
           } );
       }
@@ -2197,7 +2197,7 @@ void locuswalkers_ribbon( special_effect_t& effect )
       stack_buff = create_buff<buff_t>( e.player, e.trigger()->effectN( 2 ).trigger() )
                      ->set_freeze_stacks( true )
                      ->set_default_value( e.driver()->effectN( 2 ).percent() )
-                     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                     ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
                        if ( !stack_buff->player->in_combat && stack_buff->check() )
                          stack_buff->decrement();
                      } );
@@ -2615,7 +2615,7 @@ void necrotic_hexweave( special_effect_t& effect )
     {
       return dbc_proc_callback_t::create_debuff( t )
         ->set_initial_stack_to_max_stack()
-        ->set_tick_callback( [ this ]( buff_t* b, auto, auto ) {
+        ->set_tick_callback( [ this ]( buff_t* b, auto ) {
           if ( b->check() )  // last stack must remain
           {
             auto tl = dot->target_list();  // make a copy

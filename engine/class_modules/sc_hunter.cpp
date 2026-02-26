@@ -7989,7 +7989,7 @@ void hunter_t::create_buffs()
       ->set_default_value( talents.barbed_shot_buff->effectN( 1 ).resource( RESOURCE_FOCUS ) )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
       ->set_freeze_stacks( true )
-      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
             resource_gain( RESOURCE_FOCUS, b->check_stack_value(), gains.barbed_shot, actions.barbed_shot );
           } );
 

@@ -177,7 +177,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
             ->set_duration( duration ) );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
-      ->set_tick_callback( [ buff_list ]( buff_t* b, int, timespan_t ) {
+      ->set_tick_callback( [ buff_list ]( buff_t* b, timespan_t ) {
         b->rng().range( buff_list )->trigger();
       } );
   }
@@ -404,7 +404,7 @@ void shocking_disclosure( special_effect_t& effect )
 
     buff = make_buff( effect.player, "shocking_disclosure", effect.driver() )
       ->set_duration_multiplier( inhibitor_mul( effect.player ) )
-      ->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
+      ->set_tick_callback( [ damage ]( buff_t* b, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );
   }
@@ -1343,7 +1343,7 @@ void bottle_of_spiraling_winds( special_effect_t& effect )
   /*
   auto decrement = create_buff<buff_t>( effect.player, effect.player->find_spell( 383758 ) )
     ->set_quiet( true )
-    ->set_tick_callback( [ buff ]( buff_t*, int, timespan_t ) { buff->decrement(); } );
+    ->set_tick_callback( [ buff ]( buff_t*, timespan_t ) { buff->decrement(); } );
 
   buff->set_stack_change_callback( [ decrement ]( buff_t* b, int, int new_ ) {
     if ( b->at_max_stacks() )
@@ -1733,8 +1733,7 @@ void rashoks_molten_heart( special_effect_t& effect )
 
   auto molten_radiance =
       create_buff<buff_t>( effect.player, "molten_radiance", effect.driver()->effectN( 4 ).trigger() )
-          ->set_tick_callback( [ radiance_mana, radiance_mana_gained, effect ]( buff_t* buff, int /* current_tick */,
-                                                                                timespan_t /* tick_time */ ) {
+          ->set_tick_callback( [ radiance_mana, radiance_mana_gained, effect ]( buff_t* buff, timespan_t /* tick_time */ ) {
             buff->player->resource_gain( RESOURCE_MANA, radiance_mana_gained, radiance_mana );
           } );
 
@@ -2694,7 +2693,7 @@ void storm_eaters_boon( special_effect_t& effect )
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   main_buff->set_tick_callback(
-      [ boon_action, effect ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+      [ boon_action, effect ]( buff_t* /* buff */, timespan_t /* tick_time */ ) {
         boon_action->execute();
         effect.player->get_cooldown( effect.cooldown_group_name() )->start( effect.cooldown_group_duration() );
       } );
@@ -2970,7 +2969,7 @@ void alltotem_of_the_master( special_effect_t& effect )
           fire_damage->execute();
         }
       } );
-      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
+      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, timespan_t /* tick_time */ )
       {
         fire_dot->execute();
       } );
@@ -3359,7 +3358,7 @@ void dragon_games_equipment(special_effect_t& effect)
   buff->tick_on_application = false;
   // Override Duration to trigger the correct number of missiles. Testing as of 11-14-2022 shows it only spawning 3, rather than the 4 expected by spell data.
   buff->set_duration( ( buff_spell->duration() / 4 ) * effect.player->sim->dragonflight_opts.dragon_games_kicks * effect.player->rng().range( effect.player->sim->dragonflight_opts.dragon_games_rng, 1.25) );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
+  buff->set_tick_callback( [ damage ]( buff_t* b, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );
 
@@ -3376,7 +3375,7 @@ void bonemaws_big_toe(special_effect_t& effect)
   auto value = effect.driver()->effectN(1).average(effect.item);
   buff->add_stat( STAT_CRIT_RATING, value );
   auto damage = create_proc_action<generic_aoe_proc_t>( "fetid_breath", effect, "fetid_breath", 397401 );
-  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t )
+  buff->set_tick_callback( [ damage ]( buff_t*, timespan_t )
     {
       damage->execute();
     } );
@@ -3394,7 +3393,7 @@ void mutated_magmammoth_scale(special_effect_t& effect)
   auto buff_spell = effect.player->find_spell( 381727 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
   auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760, true );
-  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t )
+  buff->set_tick_callback( [ damage ]( buff_t*, timespan_t )
     {
       damage->execute();
     } );
@@ -3415,7 +3414,7 @@ void homeland_raid_horn(special_effect_t& effect)
 
   auto buff_spell = effect.player->find_spell( 382139 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) {
+  buff->set_tick_callback( [ damage ]( buff_t*, timespan_t ) {
     damage->execute();
   } );
 
@@ -5888,7 +5887,7 @@ void paracausal_fragment_of_azzinoth( special_effect_t& e )
   auto buff       = create_buff<stat_buff_t>( e.player, "rage_of_azzinoth", buff_spell );
   buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
   buff->set_tick_callback(
-      [ missile ]( buff_t* b, int, timespan_t ) { missile->execute_on_target( b->player->target ); } );
+      [ missile ]( buff_t* b, timespan_t ) { missile->execute_on_target( b->player->target ); } );
 
   e.custom_buff = buff;
   new dbc_proc_callback_t( e.player, e );
@@ -5917,7 +5916,7 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
 
   auto lich_buff_spell = e.player->find_spell( 415033 );
   auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+  buff->set_tick_callback( [ damage ]( buff_t*, timespan_t ) { damage->execute(); } );
   buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -6069,7 +6068,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
       set_stat_from_effect( 1, base_buff_value );
       set_default_value( base_buff_value );
 
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) { recalculate(); } );
     }
 
     double current_value()
@@ -7102,7 +7101,7 @@ void infernal_signet_brand( special_effect_t& e )
 
   buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff->set_freeze_stacks( true ); // Prevents incrementing on tick
-  buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
+  buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, timespan_t /* tick_time */ ) {
     if ( out_of_combat_buff->check() )
     {
       b->decrement();
@@ -7203,7 +7202,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
       fury_of_urctos_buff->set_period( 1_s );
       fury_of_urctos_buff->set_tick_callback(
-          [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
+          [ this, fury_of_urctos_heal ]( buff_t* /* buff */, timespan_t /* tick_time */ ) {
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
@@ -10628,7 +10627,7 @@ struct brilliance_regen_buff_t : buff_t
 
     gain = player->get_gain( "brilliance" );
 
-    set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       for ( auto [ resource, percent ] : resources )
       {
         player->resource_gain( resource, player->resources.max[ resource ] * percent * b->current_stack, gain );

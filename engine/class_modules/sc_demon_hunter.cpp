@@ -8693,7 +8693,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       if ( p->talent.havoc.growing_inferno->ok() )
         growing_inferno_max_ticks = static_cast<int>( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
 
-      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this, p ]( buff_t*, timespan_t ) {
         ragefire_crit_accumulator = 0;
 
         state_t* s = static_cast<state_t*>( p->active.immolation_aura_tick->get_state() );
@@ -9165,7 +9165,7 @@ struct student_of_suffering_t : public demon_hunter_buff_t<buff_t>
     set_tick_on_application( false );
     set_period( 2_s );
 
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { energize->execute(); } );
+    set_tick_callback( [ this ]( buff_t*, timespan_t ) { energize->execute(); } );
   }
 };
 
@@ -9699,7 +9699,7 @@ void demon_hunter_t::create_buffs()
                         ->set_cooldown( timespan_t::zero() )
                         ->set_period( timespan_t::from_millis( 100 ) )  // Fake natural regeneration rate
                         ->set_tick_on_application( false )
-                        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                        ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
                           resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
                         } );
 
@@ -9734,7 +9734,7 @@ void demon_hunter_t::create_buffs()
 
   buff.tactical_retreat = make_buff( this, "tactical_retreat", spec.tactical_retreat_buff )
                               ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-                              ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                              ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
                                 resource_gain( RESOURCE_FURY, b->check_value(), gain.tactical_retreat );
                               } );
 
@@ -9894,7 +9894,7 @@ void demon_hunter_t::create_buffs()
           ->add_invalidate( CACHE_RUN_SPEED )
           ->set_tick_callback(
               [ this, speed_per_fury = talent.scarred.pursuit_of_angriness->effectN( 1 ).percent() /
-                                       talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ]( buff_t* b, int,
+                                       talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ]( buff_t* b,
                                                                                                          timespan_t ) {
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;

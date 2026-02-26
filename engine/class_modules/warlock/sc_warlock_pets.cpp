@@ -51,7 +51,7 @@ void warlock_pet_t::create_buffs()
 
   // Destruction
   buffs.embers = make_buff( this, "embers", o()->talents.embers )
-                     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                     ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
                        o()->resource_gain( RESOURCE_SOUL_SHARD, o()->talents.burning_ember->effectN( 1 ).base_value() / 10.0, o()->gains.infernal );
                      } );
 
@@ -1206,7 +1206,7 @@ void vilefiend_t::create_buffs()
   auto damage = new infernal_presence_t( this );
 
   infernal_presence = make_buff<buff_t>( this, "infernal_presence", o()->talents.infernal_presence )
-                               ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
+                               ->set_tick_callback( [ damage, this ]( buff_t*, timespan_t ) {
                                  if ( target )
                                    damage->execute_on_target( target );
                                } );
@@ -1822,7 +1822,7 @@ void infernal_t::create_buffs()
   auto damage = new immolation_tick_t( this );
 
   immolation = make_buff<buff_t>( this, "immolation", o()->talents.immolation_buff )
-                   ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
+                   ->set_tick_callback( [ damage, this ]( buff_t*, timespan_t ) {
                      damage->execute_on_target( target );
                    } );
 }

@@ -3585,13 +3585,13 @@ struct fury_of_elune_buff_t final : public druid_buff_t
       set_tick_callback(
         [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ),
           mul = 1.0 + find_effect( p->find_spell( 1264618 ), this ).percent() ]
-        ( buff_t*, int, timespan_t ) {
+        ( buff_t*, timespan_t ) {
           player->resource_gain( r, amt * mul, g );
         } );
     }
     else
     {
-      set_tick_callback( [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ) ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ) ]( buff_t*, timespan_t ) {
         player->resource_gain( r, amt, g );
       } );
     }
@@ -3629,7 +3629,7 @@ struct shooting_stars_buff_t final : public druid_buff_t
   {
     set_quiet( true );
     set_tick_zero( true );
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_shooting_stars(); } );
+    set_tick_callback( [ this ]( buff_t*, timespan_t ) { trigger_shooting_stars(); } );
   }
 
   void trigger_shooting_stars()
@@ -7064,7 +7064,7 @@ struct barkskin_t final : public druid_spell_t
       name_str += "+brambles";
       replace_stats( this, brambles );
 
-      p->buff.barkskin->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      p->buff.barkskin->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
         brambles->execute();
       } );
     }
@@ -8327,7 +8327,7 @@ struct starfall_t final : public ap_spender_t
 
     base_t::execute();
 
-    buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { driver->execute(); } );
+    buff->set_tick_callback( [ this ]( buff_t*, timespan_t ) { driver->execute(); } );
     buff->trigger();
 
     p()->buff.starweaver_starsurge->trigger( this );
@@ -9012,7 +9012,7 @@ struct heart_of_the_wild_t final : public druid_spell_t
     replace_stats( hotw_owl, hotw_owl_driver, false );
     replace_stats( hotw_owl, hotw_owl_driver->damage );
 
-    p->buff.heart_of_the_wild_owl->set_tick_callback( [ hotw_owl_driver ]( buff_t*, int, timespan_t ) {
+    p->buff.heart_of_the_wild_owl->set_tick_callback( [ hotw_owl_driver ]( buff_t*, timespan_t ) {
       hotw_owl_driver->execute();
     } );
 
@@ -9569,7 +9569,7 @@ void dread_shade_t::create_buffs()
   pet_t::create_buffs();
 
   waking_nightmare = make_buff( actor_pair_t( this, owner ), "waking_nightmare", find_spell( 1253462 ) )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
       o()->active.waking_nightmare_pulse->execute();
     } );
 }
@@ -9595,7 +9595,7 @@ void sylvan_beckoning_t::create_buffs()
 
   starfall_buff = make_buff( actor_pair_t( this, owner ), "starfall", o()->spec.sylvan_beckoning_sf )
     ->set_freeze_stacks( true )
-    ->set_tick_callback( [ this ]( auto, auto, auto ) {
+    ->set_tick_callback( [ this ]( auto, auto ) {
       o()->active.sylvan_beckoning_starfall_driver->execute();
     } );
 }
@@ -10910,7 +10910,7 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_freeze_stacks( true )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( []( buff_t* b, timespan_t ) {
       b->current_value -= b->data().effectN( 2 ).percent();
     } );
 
@@ -11019,7 +11019,7 @@ void druid_t::create_buffs()
           cap = talent.natures_balance->effectN( 2 ).base_value(),
           g = get_gain( "Natures Balance" ),
           this ]
-        ( buff_t*, int, timespan_t ) mutable {
+        ( buff_t*, timespan_t ) mutable {
           if ( !in_combat )
           {
             if ( resources.current[ RESOURCE_ASTRAL_POWER ] < cap )
@@ -11113,7 +11113,7 @@ void druid_t::create_buffs()
       [ this,
         cp = find_effect( find_trigger( buff.b_inc_cat ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ),
         gain = get_gain( buff.b_inc_cat->name() ) ]
-      ( buff_t*, int, timespan_t ) {
+      ( buff_t*, timespan_t ) {
         resource_gain( RESOURCE_COMBO_POINT, cp, gain );
       } );
 
@@ -11156,7 +11156,7 @@ void druid_t::create_buffs()
     ->set_tick_zero( true )
     ->set_freeze_stacks( true )  // prevent buff_t::bump it buff_t::tick_t overwriting current value
     ->set_chance( 1.0 )  // avoid assert
-    ->set_tick_callback( [ this, mul = predator_buff->effectN( 2 ).percent() ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this, mul = predator_buff->effectN( 2 ).percent() ]( buff_t* b, timespan_t ) {
       b->current_value = ( 1.0 / composite_melee_haste() - 1.0 ) * mul;
     } );
 
@@ -11236,7 +11236,7 @@ void druid_t::create_buffs()
           g = get_gain( "Blood Frenzy" ),
           cap = talent.blood_frenzy->effectN( 1 ).base_value(),
           rage = find_effect( find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ]
-        ( buff_t*, int, timespan_t ) {
+        ( buff_t*, timespan_t ) {
           if ( auto n = as<double>( dot_lists.thrash.size() ) )
             resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, g );
         } );
@@ -11268,7 +11268,7 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_freeze_stacks( true )
     ->set_default_value( 0 )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       if ( b->check_value() )
       {
         active.elunes_favored_heal->execute_on_target( this, b->check_value() );
@@ -11395,7 +11395,7 @@ void druid_t::create_buffs()
   buff.yseras_gift = make_fallback( talent.yseras_gift.ok(), this, "yseras_gift_driver", talent.yseras_gift )
     ->set_quiet( true )
     ->set_tick_zero( true )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [this]( buff_t*, timespan_t ) {
         active.yseras_gift->schedule_execute();
       } );
 
@@ -11432,7 +11432,7 @@ void druid_t::create_buffs()
       ->set_quiet( true )
       ->set_freeze_stacks( true )
       ->set_default_value( 0 )
-      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
         if ( b->check_value() )
         {
           active.boundless_moonlight_heal->execute_on_target( this, b->check_value() );
@@ -11505,7 +11505,7 @@ void druid_t::create_buffs()
         ->set_quiet( true )
         ->set_period( 1.5_s )
         ->set_freeze_stacks( true )
-        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
           for ( auto pet : static_cast<treants_of_the_moon_buff_t*>( b )->data )
           {
             if ( pet->mf_cd->up() )

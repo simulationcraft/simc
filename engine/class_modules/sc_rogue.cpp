@@ -7137,7 +7137,7 @@ struct slice_and_dice_t : public rogue_buff_t
       recuperator = p->get_background_action<recuperator_t>( "recuperator" );
     }
 
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ this ]( buff_t*, timespan_t ) {
       if ( recuperator )
       {
         recuperator->set_target( rogue );
@@ -10218,7 +10218,7 @@ void rogue_t::create_buffs()
 
   buffs.blade_rush = make_buff( this, "blade_rush", spec.blade_rush_energize )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       resource_gain( RESOURCE_ENERGY, b->check_value(), gains.blade_rush );
     } );
 
@@ -10495,7 +10495,7 @@ void rogue_t::create_buffs()
     ->set_default_value( 1.0 )
     ->set_tick_zero( true )
     ->set_freeze_stacks( true )
-    ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [this]( buff_t* b, timespan_t ) {
       // This is wonky and set up with a rolling partial stack reduction so it alternates per tick
       // Otherwise we could just use the normal set_reverse_stack_count() functionality
       double stack_reduction = b->max_stack() / talent.subtlety.lingering_shadow->effectN( 3 ).base_value();
@@ -10508,7 +10508,7 @@ void rogue_t::create_buffs()
   buffs.master_of_shadows = make_buff( this, "master_of_shadows", spec.master_of_shadows_buff )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       resource_gain( RESOURCE_ENERGY, b->check_value(), gains.master_of_shadows );
     } )
     ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {

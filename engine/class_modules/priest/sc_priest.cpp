@@ -3070,7 +3070,7 @@ void priest_t::create_buffs()
         ->set_tick_on_application( false )
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
         ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
           // Based on initial testing the first tick cannot hit any targets reliably due to the spawn distance/travel
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
@@ -3126,7 +3126,7 @@ void priest_t::create_buffs()
   // Archon
   buffs.power_surge =
       make_buff_fallback( talents.archon.power_surge.enabled(), this, "power_surge", talents.archon.power_surge_buff )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { background_actions.halo->execute(); } );
+          ->set_tick_callback( [ this ]( buff_t*, timespan_t ) { background_actions.halo->execute(); } );
 
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );

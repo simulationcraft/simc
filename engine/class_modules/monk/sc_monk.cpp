@@ -4342,7 +4342,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
     // defer etl action lookup until callback invocation, as (background) actions
     // are not yet constructed (see: sim_t::init_actor())
 
-    set_tick_callback( [ & ]( buff_t *, int, timespan_t ) {
+    set_tick_callback( [ & ]( buff_t *, timespan_t ) {
       if ( !etl )
         etl = p().find_action( "empowered_tiger_lightning" );
 
@@ -4547,7 +4547,7 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
 
   freeze_stacks = true;
 
-  set_tick_callback( [ = ]( buff_t *buff, int, timespan_t ) {
+  set_tick_callback( [ = ]( buff_t *buff, timespan_t ) {
     if ( buff->sim->current_iteration == 0 )  // only collect data from the first iteration
       pool_size_percent.add_max( buff->sim->current_time(), buff->check_value() / buff->player->max_health() );
   } );
@@ -4864,7 +4864,7 @@ struct niuzaos_resolve_t : buffs::monk_buff_t<>
 
     freeze_stacks = true;
 
-    set_tick_callback( [ & ]( buff_t *buff, int, timespan_t tick_time ) {
+    set_tick_callback( [ & ]( buff_t *buff, timespan_t tick_time ) {
       // Handle partial ticks
       double m = tick_time / buff->buff_period;
 
@@ -6089,7 +6089,7 @@ void monk_t::create_buffs()
   buff.flurry_of_xuen =
       make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
                           talent.windwalker.flurry_of_xuen_driver )
-          ->set_tick_callback( [ this ]( buff_t * /* b */, int, timespan_t ) { action.flurry_of_xuen->execute(); } )
+          ->set_tick_callback( [ this ]( buff_t * /* b */, timespan_t ) { action.flurry_of_xuen->execute(); } )
           ->set_tick_behavior( buff_tick_behavior::CLIP )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_freeze_stacks( true );

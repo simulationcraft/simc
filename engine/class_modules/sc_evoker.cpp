@@ -3224,7 +3224,7 @@ struct dracthyr_commando_t : evoker_pet_t
     evoker_pet_t::create_buffs();
 
     flying_buff = make_buff( this, "deep_breath", evoker()->talent.scalecommander.commando_deep_breath_buff )
-                      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                      ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
                         if ( b->current_tick <= 3 )
                           commando_pyre->execute();
                       } )
@@ -7947,7 +7947,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       cb->deactivate();
 
       set_tick_time_callback( [ this ]( const buff_t*, unsigned ) { return rng().gauss( gauss ); } );
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { fake_execute(); } );
+      set_tick_callback( [ this ]( buff_t*, timespan_t ) { fake_execute(); } );
     }
   }
 
@@ -8082,7 +8082,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       if ( auto* _target = dynamic_cast<evoker_t*>( target ) )
       {
         buffs.unbound_surge->set_tick_callback(
-            [ _target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
+            [ _target, evoker ]( buff_t* b, timespan_t /*tick_time*/ ) {
               {
                 if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
                      _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
@@ -8097,7 +8097,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       else
       {
         buffs.unbound_surge->set_tick_callback(
-            [ target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
+            [ target, evoker ]( buff_t* b, timespan_t /*tick_time*/ ) {
               {
                 if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
                   make_event( target->sim, [ target, evoker, b ] {
@@ -8138,7 +8138,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   {
     buffs.shifting_sands->set_default_value( 0.0 )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_tick_callback( [ evoker ]( buff_t* b, int, timespan_t ) {
+        ->set_tick_callback( [ evoker ]( buff_t* b, timespan_t ) {
           if ( b->current_value != evoker->cache.mastery_value() )
           {
             b->current_value = evoker->cache.mastery_value();
@@ -9641,7 +9641,7 @@ void evoker_t::create_buffs()
 
   buff.risen_fury = MBF( talent.rising_fury_3.ok(), this, "risen_fury", talent.risen_fury_buff )
                         ->set_freeze_stacks( false )
-                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.essence_burst->trigger(); } )
+                        ->set_tick_callback( [ this ]( buff_t*, timespan_t ) { buff.essence_burst->trigger(); } )
                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                         ->set_default_value_from_effect( 1 );
 
@@ -9733,7 +9733,7 @@ void evoker_t::create_buffs()
 
   buff.emerald_trance =
       MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF3, B4 ), this, "emerald_trance", find_spell( 424402 ) )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+          ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
             buff.essence_burst->trigger();
             proc.emerald_trance->occur();
           } )
@@ -9748,7 +9748,7 @@ void evoker_t::create_buffs()
   buff.ebon_might_self_buff =
       MBF( talent.ebon_might.ok(), this, "ebon_might_self", talent.ebon_might_self_buff )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+          ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
             static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
           } )
           ->set_stack_change_callback( [ this ]( buff_t*, int _old, int ) {
@@ -9825,7 +9825,7 @@ void evoker_t::create_buffs()
 
   if ( talent.chronowarden.energy_cycles.ok() )
   {
-    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
       if ( ( b->current_tick % as<int>( talent.chronowarden.energy_cycles->effectN( 1 ).base_value() ) ) == 0 )
       {
         buff.essence_burst->trigger();

@@ -735,7 +735,7 @@ namespace warlock
                              ->set_period( talents.inner_demons->effectN( 1 ).period() )
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_zero( true )
-                             ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                             ->set_tick_callback( [ this ]( buff_t*, timespan_t ) {
                                warlock_pet_list.wild_imps.spawn();
                              } );
 
@@ -826,7 +826,7 @@ namespace warlock
     buffs.summon_overfiend = make_buff( this, "summon_overfiend", talents.overfiend_buff )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                  ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
-                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
+                                 ->set_tick_callback( [ this ]( buff_t*, timespan_t )
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
   }
 
@@ -921,7 +921,7 @@ namespace warlock
                               ->set_period( hero.demonic_oculi_buff->effectN( 2 ).period() )
                               ->set_freeze_stacks( true )
                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                              ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                              ->set_tick_callback( [ this ]( buff_t* b, timespan_t ) {
                                 if ( hero.looks_that_kill.ok() )
                                 {
                                   switch ( b->check() )

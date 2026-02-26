@@ -806,7 +806,7 @@ void item::impact_tremor( special_effect_t& effect )
 
   effect.custom_buff = make_buff( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
     ->set_tick_zero( true )
-    ->set_tick_callback( [ stampede ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ stampede ]( buff_t*, timespan_t ) {
       stampede -> schedule_execute();
     } );
 
@@ -2238,7 +2238,7 @@ void item::riftworld_codex( special_effect_t& effect )
     make_buff<absorb_buff_t>( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
     make_buff( effect.player, "winds_of_kareth", effect.player -> find_spell( 251938 ), effect.item ),
     make_buff( effect.player, "flames_of_ruvaraad", effect.player -> find_spell( 256415 ), effect.item )
-      ->set_tick_callback( [ damage ] ( buff_t*, int, timespan_t ) {
+      ->set_tick_callback( [ damage ] ( buff_t*, timespan_t ) {
         damage -> schedule_execute();
       } )
   };
@@ -2890,7 +2890,7 @@ void item::windscar_whetstone( special_effect_t& effect )
 
   effect.custom_buff = create_buff<buff_t>( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     ->set_tick_zero( true )
-    ->set_tick_callback( [ maelstrom ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ maelstrom ]( buff_t*, timespan_t ) {
       maelstrom -> schedule_execute();
     } );
 
@@ -3892,7 +3892,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
 
       set_activated( false );
       set_tick_zero( true );
-      set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this ] ( buff_t*, timespan_t ) {
         damage -> schedule_execute();
       } );
 
@@ -4650,7 +4650,7 @@ void item::leyspark( special_effect_t& effect )
       buff_t( effect.player, "sparking_driver", effect.driver() -> effectN( 1 ).trigger() ),
       sparking_( sparking )
     {
-      set_tick_callback( [sparking]( buff_t*, int, timespan_t ) { sparking -> trigger( 1 ); } );
+      set_tick_callback( [sparking]( buff_t*, timespan_t ) { sparking -> trigger( 1 ); } );
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -4700,7 +4700,7 @@ void item::spontaneous_appendages( special_effect_t& effect )
 
 
   effect.custom_buff = make_buff( effect.player, "horrific_appendages", effect.trigger(), effect.item )
-    ->set_tick_callback( [ slam ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ slam ]( buff_t*, timespan_t ) {
       slam -> schedule_execute();
     } );
 
@@ -5545,7 +5545,7 @@ void item::sixfeather_fan( special_effect_t& effect )
   }
 
   effect.custom_buff = make_buff( effect.player, "sixfeather_fan", effect.trigger(), effect.item )
-    ->set_tick_callback( [ = ]( buff_t*, int, timespan_t ) {
+    ->set_tick_callback( [ = ]( buff_t*, timespan_t ) {
       bolt -> schedule_execute();
     } )
     ->set_tick_zero( true )

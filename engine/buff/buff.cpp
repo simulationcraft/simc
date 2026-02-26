@@ -192,11 +192,10 @@ struct tick_t : public buff_event_t
       buff->sim->print_debug( "{} {} ticks ({} of {}).", *buff->player, *buff, buff->current_tick, total_ticks );
 
       // Tick callback is called before the aura stack count is altered to ensure
-      // that the buff is always up during the "tick". Last tick detection can be
-      // made through the int arguments passed to the function call.
+      // that the buff is always up during the "tick".
       if ( buff->tick_callback )
       {
-        buff->tick_callback( buff, total_ticks, tick_time );
+        buff->tick_callback( buff, tick_time );
       }
 
       if ( !buff->freeze_stacks )
@@ -268,7 +267,7 @@ struct expiration_t : public buff_event_t
 
       if ( buff->tick_callback )
       {
-        buff->tick_callback( buff, buff->current_tick, actual_tick_time );
+        buff->tick_callback( buff, actual_tick_time );
       }
     }
 
@@ -2223,7 +2222,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
     if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback && !disable_tick_effects )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), 0_ms );
+      tick_callback( this, 0_ms );
     }
   }
 }
@@ -2295,7 +2294,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
 
     if ( tick_zero && tick_callback && !disable_tick_effects )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / tick_time() ), timespan_t::zero() );
+      tick_callback( this, timespan_t::zero() );
     }
   }
 

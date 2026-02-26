@@ -4697,7 +4697,7 @@ struct mograine_pet_t final : public horseman_pet_t
         dnd_damage( get_action<dnd_damage_mograine_t>( "death_and_decay", p ) )
     {
       set_tick_zero( true );
-      set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      set_tick_callback( [ this ]( buff_t* /* buff */, timespan_t /* tick_time */ ) {
         dnd_damage->execute();
       } );
     }
@@ -6746,7 +6746,7 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
     set_tick_on_application( false );
     set_tick_zero( false );
 
-    set_tick_callback( [ &, p ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+    set_tick_callback( [ &, p ]( buff_t* /* buff */, timespan_t /* tick_time */ ) {
       // Default player target to begin with, if theres a valid last target, switch to that.
       player_t* bos_target = p->target;
       if ( !p->last_target->is_sleeping() && p->last_target != nullptr && p->last_target != source )
@@ -7145,7 +7145,7 @@ struct ams_parent_buff_t : public death_knight_buff_base_t<absorb_buff_t>
     {
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ &, p ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ &, p ]( buff_t*, timespan_t ) {
         if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
           consume( damage );
@@ -15610,7 +15610,7 @@ void death_knight_t::create_buffs()
 
     buffs.blood_mist = make_fallback( talent.blood.blood_mist->ok(), this, "blood_mist", spell.blood_mist_buff )
           ->set_tick_callback(
-              [ this ]( buff_t*, int, timespan_t ) { background_actions.blood_mist_tick->execute(); } )
+              [ this ]( buff_t*, timespan_t ) { background_actions.blood_mist_tick->execute(); } )
           ->set_expire_callback(
               [ this ]( buff_t*, int, timespan_t) { if ( talent.blood.sanguinary_burst.ok() ) background_actions.sanguinary_burst->execute(); } );
 
@@ -15737,7 +15737,7 @@ void death_knight_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_partial_tick( true )
           ->set_tick_callback(
-              [ this ]( buff_t*, int, timespan_t ) { background_actions.remorseless_winter_tick->execute(); } )
+              [ this ]( buff_t*, timespan_t ) { background_actions.remorseless_winter_tick->execute(); } )
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             if ( !new_ )
             {
@@ -15756,7 +15756,7 @@ void death_knight_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_partial_tick( true )
           ->set_tick_callback(
-              [ this ]( buff_t*, int, timespan_t ) { background_actions.remorseless_winter_tick->execute(); } )
+              [ this ]( buff_t*, timespan_t ) { background_actions.remorseless_winter_tick->execute(); } )
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             if ( !new_ )
             {

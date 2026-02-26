@@ -37,7 +37,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   {
     debuffs.haunt->set_tick_zero( false )
         ->set_period( p.talents.haunt->effectN( 5 ).period() )
-        ->set_tick_callback( [ target, &p ]( buff_t*, int, timespan_t ) {
+        ->set_tick_callback( [ target, &p ]( buff_t*, timespan_t ) {
           p.proc_actions.shadow_of_nathreza->execute_on_target( target );
           if ( p.talents.shadow_of_nathreza_3.ok() )
             helpers::trigger_wrath_of_nathreza( &p, target );
@@ -94,7 +94,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_duration( 0_ms )
                                ->set_tick_zero( false )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
-                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t ) {
+                               ->set_tick_callback( [ this, target ]( buff_t*, timespan_t ) {
                                  warlock.proc_actions.blackened_soul->execute_on_target( target );
                                } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
