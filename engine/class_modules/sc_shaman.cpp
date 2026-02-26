@@ -12299,7 +12299,9 @@ void shaman_t::create_buffs()
   buff.purging_flames = make_buff( this, "purging_flames", find_spell( 1259491 ) );
 
   buff.mid1_ele_2pc = make_buff( this, "thunderous_velocity", find_spell( 1272101 ) )
-                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) );
+                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                          ->set_default_value_from_effect_type( A_HASTE_ALL );
 
   //
   // Enhancement
