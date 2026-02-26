@@ -1599,16 +1599,7 @@ using namespace helpers;
 
         if ( p()->talents.sow_the_seeds.ok() )
         {
-          // NOTE: 2026-02-20 The reduced effectiveness of additional seeds only affects the host (bug?)
-          if ( p()->bugs )
-          {
-            if ( t == target )
-              m *= effectiveness;
-          }
-          else
-          {
-            m *= effectiveness;
-          }
+          m *= effectiveness;
         }
 
         return m;
@@ -1719,6 +1710,8 @@ using namespace helpers;
           p()->feast_of_souls_gain();
       }
 
+      // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
+      // benefits from the cost reduction but does not consume the effect. (bug?)
       if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
@@ -3920,13 +3913,14 @@ using namespace helpers;
 
       warlock_spell_t::execute();
 
+      // Rain of Fire has no expiration pulse (none, neither partial nor full) (NO_EXPIRATION_PULSE is already the default for ground_aoe_params_t)
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
                                         .target( execute_state->target )
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
                                         .pulse_time( base_tick_time * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
-                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
+                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
