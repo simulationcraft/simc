@@ -1051,6 +1051,7 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::EARTHSURGE: return fmt::format( "{}_es", name );
     case spell_variant::PRIMORDIAL_STORM: return fmt::format( "{}_ps", name );
     case spell_variant::RIDE_THE_LIGHTNING: return fmt::format( "{}_rtl", name );
+    case spell_variant::PURGING_FLAMES: return fmt::format( "{}_pf", name );
     default: return std::string( name );
   }
 }
@@ -1067,6 +1068,7 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::EARTHSURGE: return "earthsurge";
     case spell_variant::PRIMORDIAL_STORM: return "primordial_storm";
     case spell_variant::RIDE_THE_LIGHTNING: return "ride_the_lightning";
+    case spell_variant::PURGING_FLAMES: return "purging_flames";
     default: return "normal";
   }
 }
