@@ -303,6 +303,7 @@ void protection( player_t* p )
   precombat->add_action( "battle_stance,toggle=on" );
 
   default_->add_action( "auto_attack" );
+  default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "charge,if=time=0" );
   default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   default_->add_action( "use_items" );
