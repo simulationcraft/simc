@@ -457,6 +457,7 @@ public:
     int sphere_blp_count;
     int icicles;
     int fired_up_count; // number of Fired Up procs in this Combustion
+    int augury_blp_count;
   } state;
 
   // Talents
@@ -912,6 +913,7 @@ public:
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
   void trigger_splinter( player_t* target, int count = -1 );
+  void trigger_augury();
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
   void trigger_icicle( int count = 1, bool grant_buff = true );
@@ -7253,6 +7255,26 @@ void mage_t::trigger_splinter( player_t* target, int count )
       total_delay += splinter_delay;
     }
   }
+
+  trigger_augury();
+}
+
+void mage_t::trigger_augury()
+{
+  if ( !talents.augury_abounds.ok() || !cooldowns.augury_abounds->up() )
+    return;
+
+  // https://www.desmos.com/calculator/qu5trhaztq;
+  // see trigger_spellfire_sphere()
+  double chance = talents.augury_abounds->effectN( 1 ).percent();
+  chance = 0.952381 * chance * chance + 0.114048 * chance - 0.00638571;
+  chance *= ++state.augury_blp_count;
+
+  // ME: NOT DONE. WAIT.
+  cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
+  if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
+        make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+
 }
 
 bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_double_proc_delay )
