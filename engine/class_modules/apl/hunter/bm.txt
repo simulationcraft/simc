@@ -1,60 +1,40 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
-
 actions.precombat+=/use_item,name=algethar_puzzle_box
 
- 
-
 # Executed every time the actor is available.
-
- 
-
 actions=auto_shot
-
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
-
 actions+=/call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
 actions+=/call_action_list,name=drcleave,if=talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)
 actions+=/call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
 actions+=/call_action_list,name=cleave,if=!talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)
 
- 
-
 actions.cds=invoke_external_buff,name=power_infusion,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30|fight_remains<16
-
 actions.cds+=/berserking,if=buff.bestial_wrath.up|fight_remains<13
 actions.cds+=/blood_fury,if=buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/fireblood,if=buff.bestial_wrath.up|fight_remains<9
 actions.cds+=/potion,if=buff.bestial_wrath.up|fight_remains<31
 
- 
-
 actions.trinkets=use_item,name=light_company_guidon,if=buff.bestial_wrath.up|fight_remains<21
 actions.trinkets+=/use_item,name=void_execution_mandate,if=buff.bestial_wrath.up|fight_remains<21
 actions.trinkets+=/use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23
 actions.trinkets+=/use_item,name=emberwing_feather,if=buff.bestial_wrath.up|fight_remains<16
 actions.trinkets+=/use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16
-
 actions.trinkets+=/use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21
-
 actions.trinkets+=/use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11
 actions.trinkets+=/use_item,name=rangercaptains_iridescent_insignia
-
 actions.trinkets+=/use_item,name=void_stalkers_contract
 actions.trinkets+=/use_item,name=latchs_crooked_hook
-
- 
 
 actions.st=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
 actions.st+=/bestial_wrath
 actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3
 actions.st+=/barbed_shot
 actions.st+=/cobra_shot
-
- 
 
 actions.cleave=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
 actions.cleave+=/wild_thrash
@@ -63,8 +43,6 @@ actions.cleave+=/kill_command
 actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4
 actions.cleave+=/barbed_shot
 actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd
-
- 
 
 actions.drst=bestial_wrath
 actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
@@ -75,11 +53,8 @@ actions.drst+=/barbed_shot
 actions.drst+=/black_arrow
 actions.drst+=/cobra_shot
 
- 
-
 actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd
 actions.drcleave+=/bestial_wrath
-
 actions.drcleave+=/wailing_arrow,if=buff.bestial_wrath.remains<execute_time+gcd|fight_remains<execute_time+gcd
 actions.drcleave+=/wild_thrash
 actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3

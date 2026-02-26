@@ -181,9 +181,11 @@ void beast_mastery_ptr( player_t* p )
   trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
   trinkets->add_action( "use_item,name=emberwing_feather,if=buff.bestial_wrath.up|fight_remains<16" );
   trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=ranger_captains_iridescent_insignia" );
+  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
+  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
   trinkets->add_action( "use_item,name=void_stalkers_contract" );
-  trinkets->add_action( "use_item,name=latchs_croooked_hook" );
+  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
 
   st->add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<gcd" );
   st->add_action( "bestial_wrath" );
@@ -200,24 +202,24 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd" );
 
   drst->add_action( "bestial_wrath" );
-  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up&(buff.bestial_wrath.up|full_recharge_time<3+gcd)|!apex.3" );
+  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
   drst->add_action( "black_arrow,if=buff.withering_fire.up" );
   drst->add_action( "cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4" );
   drst->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
-  drst->add_action( "barbed_shot,if=buff.bestial_wrath.up" );
-  drst->add_action( "black_arrow" );
   drst->add_action( "barbed_shot" );
+  drst->add_action( "black_arrow" );
   drst->add_action( "cobra_shot" );
 
   drcleave->add_action( "black_arrow,if=buff.beast_cleave.remains<gcd" );
   drcleave->add_action( "bestial_wrath" );
+  drcleave->add_action( "wailing_arrow,if=buff.bestial_wrath.remains<execute_time+gcd|fight_remains<execute_time+gcd" );
   drcleave->add_action( "wild_thrash" );
-  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up&(buff.bestial_wrath.up|full_recharge_time<3+gcd)|!apex.3" );
+  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
   drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
-  drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
-  drcleave->add_action( "black_arrow,if=cooldown.wild_thrash.remains>gcd" );
-  drcleave->add_action( "barbed_shot,if=cooldown.wild_thrash.remains>gcd" );
-  drcleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd" );
+  drcleave->add_action( "barbed_shot" );
+  drcleave->add_action( "wailing_arrow" );
+  drcleave->add_action( "black_arrow" );
+  drcleave->add_action( "cobra_shot" );
 }
 //beast_mastery_ptr_apl_end
 
@@ -391,7 +393,7 @@ void survival( player_t* p )
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins." );
+  precombat->add_action( "snapshot_stats" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
@@ -402,7 +404,7 @@ void survival( player_t* p )
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
   cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16" );
   cds->add_action( "harpoon,if=prev.kill_command" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "fireblood,if=buff.takedown.up|cooldown.takedown.ready" );
@@ -422,7 +424,7 @@ void survival( player_t* p )
   plst->add_action( "wildfire_bomb" );
   plst->add_action( "takedown" );
 
-  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)" );
+  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
   sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
@@ -465,8 +467,8 @@ void survival_ptr( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* plst = p->get_action_priority_list( "plst" );
-  action_priority_list_t* plcleave = p->get_action_priority_list( "plcleave" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
+  action_priority_list_t* plcleave = p->get_action_priority_list( "plcleave" );
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
   precombat->add_action( "summon_pet" );
@@ -479,55 +481,59 @@ void survival_ptr( player_t* p )
   default_->add_action( "call_action_list,name=sentst,if=active_enemies<3&!talent.howl_of_the_pack_leader" );
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
-  cds->add_action( "use_item,use_off_gcd=1,slot=trinket1", "Cooldowns" );
-  cds->add_action( "use_item,use_off_gcd=1,slot=trinket2" );
-  cds->add_action( "potion" );
-  cds->add_action( "ancestral_call" );
-  cds->add_action( "blood_fury" );
-  cds->add_action( "berserking" );
-  cds->add_action( "fireblood" );
-  cds->add_action( "arcane_torrent" );
-  cds->add_action( "bag_of_tricks" );
-  cds->add_action( "lights_judgment" );
+  cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
+  cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16" );
+  cds->add_action( "harpoon,if=prev.kill_command" );
+  cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
+  cds->add_action( "fireblood,if=buff.takedown.up|cooldown.takedown.ready" );
+  cds->add_action( "berserking,if=buff.takedown.up|cooldown.takedown.ready" );
+  cds->add_action( "muzzle" );
+  cds->add_action( "potion,if=target.time_to_die<25|cooldown.takedown.ready" );
+  cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0|(buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains))", "Single Target - Pack Leader" );
+  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "ST - PL" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plst->add_action( "takedown,if=buff.tip_of_the_spear.up" );
+  plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "flamefang_pitch" );
   plst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  plst->add_action( "wildfire_bomb,if=buff.wyverns_cry.remains&buff.tip_of_the_spear.up" );
-  plst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
-  plst->add_action( "kill_command" );
+  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up" );
+  plst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  plst->add_action( "kill_command,if=cooldown.takedown.remains" );
+  plst->add_action( "wildfire_bomb" );
+  plst->add_action( "takedown" );
 
-  plcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0|(buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains))", "AoE - Pack Leader" );
-  plcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.up" );
-  plcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&charges_fractional>1.5" );
-  plcleave->add_action( "wildfire_bomb,if=buff.wyverns_cry.remains&buff.tip_of_the_spear.up" );
-  plcleave->add_action( "flamefang_pitch" );
-  plcleave->add_action( "raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
-  plcleave->add_action( "kill_command" );
-
-  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "Single Target - Sentinel" );
-  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
+  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
+  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  sentst->add_action( "takedown,if=buff.tip_of_the_spear.up" );
+  sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentst->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
   sentst->add_action( "flamefang_pitch,if=talent.flamefang_pitch" );
-  sentst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
-  sentst->add_action( "kill_command" );
+  sentst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  sentst->add_action( "takedown" );
 
-  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AoE - Sentinel" );
+  plcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "AOE - PL" );
+  plcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
+  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack=0" );
+  plcleave->add_action( "flamefang_pitch" );
+  plcleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
+  plcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
+  plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
+  plcleave->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  plcleave->add_action( "kill_command,if=cooldown.takedown.remains" );
+  plcleave->add_action( "wildfire_bomb" );
+  plcleave->add_action( "takedown" );
+
+  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AOE - Sent" );
+  sentcleave->add_action( "wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentcleave->add_action( "takedown,if=buff.tip_of_the_spear.up" );
-  sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
-  sentcleave->add_action( "flamefang_pitch,if=talent.flamefang_pitch" );
+  sentcleave->add_action( "flamefang_pitch,if=talent.flamefang_pitch&buff.tip_of_the_spear.up" );
   sentcleave->add_action( "raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
   sentcleave->add_action( "kill_command" );
 }

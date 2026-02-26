@@ -440,9 +440,7 @@ void flames_of_the_sindorei( special_effect_t& effect )
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
-  dot->base_multiplier *= role_mult( effect );
   dot->add_child( aoe );
-  aoe->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
   effect.spell_id = effect.trigger()->id();
@@ -906,6 +904,87 @@ void loa_worshipers_band( special_effect_t& effect )
   new loa_worshipers_band_cb_t( effect );
 }
 
+// 1261968 driver
+// 1262512 rppm
+// 1262515 damage
+// 1262513 heal
+void b0p_curator_of_booms( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "B0P Curator of Booms: Implemented assuming procs on enemies will only fire damaging bombs, "
+    "and procs on allies will only fire healing bombs. Each proc will randomly do 20%-100% of maximum amount. "
+    "This has not be verified in-game." );
+
+  auto damage_eff = effect.driver()->effectN( 2 );
+  auto heal_eff = effect.driver()->effectN( 3 );
+
+  auto max_bombs = as<int>( effect.driver()->effectN( 1 ).base_value() );
+
+  auto damage = create_proc_action<generic_proc_t>( "big_boom", effect, damage_eff.trigger() );
+  damage->base_dd_min += damage_eff.average( effect );
+  damage->base_dd_max += damage_eff.average( effect );
+
+  auto heal = create_proc_action<generic_heal_t>( "big_boom_heal", effect, heal_eff.trigger() );
+  heal->name_str_reporting = "Heal";
+  heal->base_dd_min += heal_eff.average( effect );
+  heal->base_dd_max += heal_eff.average( effect );
+
+  // skip setup if callback has been created by already having another copy of the embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.spell_id = effect.trigger()->id();
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal, max_bombs ]( auto, auto, const action_state_t* s ) {
+      auto _bombs = s->action->rng().range( max_bombs ) + 1;
+      auto _mul = as<double>( _bombs ) / max_bombs;
+
+      s->action->sim->print_debug( "{} launching {} BIG BOMBS", *s->action->player, _bombs );
+
+      if ( s->target->is_enemy() )
+      {
+        auto orig_mul = damage->base_multiplier;
+        damage->base_multiplier *= _mul;
+        damage->execute_on_target( s->target );
+        damage->base_multiplier = orig_mul;
+      }
+      else
+      {
+        auto orig_mul = heal->base_multiplier;
+        heal->base_multiplier *= _mul;
+        heal->execute_on_target( s->target );
+        heal->base_multiplier = orig_mul;
+      }
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1246309 on-use
+// 1279407 damage
+void b1p_scorcher_of_souls( special_effect_t& effect )
+{
+  struct b1p_scorcher_of_souls_t : public generic_proc_t
+  {
+    b1p_scorcher_of_souls_t( const special_effect_t& e ) : generic_proc_t( e, "b1p_scorcher_of_souls", e.driver() )
+    {
+      // no split or increase # target so use generic_proc_t with aoe = -1
+      tick_action = create_proc_action<generic_proc_t>( "b1p_scorcher_of_souls_tick", e, e.trigger() );
+      tick_action->aoe = -1;
+    }
+
+    void execute() override
+    {
+      // this might blow up, in which case we'll need to figure out another workaround
+      start_gcd();
+
+      generic_proc_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<b1p_scorcher_of_souls_t>( "b1p_scorcher_of_souls", effect );
+}
 }  // namespace embellishments
 
 namespace darkmoon
@@ -2071,11 +2150,11 @@ void magisters_alchemist_stone( special_effect_t& effect )
 // Vaelgor's Final Stare
 // 1259293 Driver
 // 1260459 Nullsight
-void nullsight( special_effect_t& e )
+void vaelgors_final_stare( special_effect_t& e )
 {
   unsigned equip_id = 1259293;
   auto equip        = find_special_effect( e.player, equip_id );
-  assert( equip && "Vaelgor's final stance missing equip effect" );
+  assert( equip && "Vaelgor's final stare missing equip effect" );
 
   auto buff_spell    = e.driver();
   int stacks         = static_cast<int>( buff_spell->duration() / buff_spell->effectN( 3 ).period() );
@@ -2509,6 +2588,61 @@ void eternal_voidsong_chain( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1243883 driver
+// 1258590 spread counter debuff
+// 1258604 dot
+// 1258845 direct damage (unknown?)
+void necrotic_hexweave( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Necrotic Hexweave: Implementation assumes hex can only be spread to non-hexed targets, "
+    "and each spread applies a full duration hex that cannot spread further." );
+
+  struct necrotic_hexweave_cb_t : public dbc_proc_callback_t
+  {
+    action_t* dot;
+
+    necrotic_hexweave_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      dot = create_proc_action<generic_proc_t>( "necrotic_hex", e, 1258604 );
+      dot->base_td = e.driver()->effectN( 1 ).average( e );
+
+      target_debuff = e.trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_initial_stack_to_max_stack()
+        ->set_tick_callback( [ this ]( buff_t* b, auto, auto ) {
+          if ( b->check() )  // last stack must remain
+          {
+            auto tl = dot->target_list();  // make a copy
+            rng().shuffle( tl.begin(), tl.end() );
+            for ( auto t : tl )
+            {
+              auto target_dot = dot->find_dot( t );
+              if ( !target_dot || !target_dot->is_ticking() )
+              {
+                b->decrement();
+                dot->execute_on_target( t );
+                break;
+              }
+            }
+          }
+        } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      dot->execute_on_target( s->target );
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  new necrotic_hexweave_cb_t( effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -2702,6 +2836,8 @@ void register_special_effects()
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
+  register_special_effect( 1261968, embellishments::b0p_curator_of_booms );
+  register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
@@ -2738,8 +2874,8 @@ void register_special_effects()
   register_special_effect( 1255379, DISABLED_EFFECT );  // latch's crooked hook equip driver
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
+  register_special_effect( 1260459, trinkets::vaelgors_final_stare );
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
-  register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
@@ -2756,6 +2892,7 @@ void register_special_effects()
   register_special_effect( 1266257, weapons::lightless_lament );
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
+  register_special_effect( 1243883, armors::necrotic_hexweave );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );

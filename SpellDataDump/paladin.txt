@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -12806,7 +12806,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Judgment (406957), Hammer of Wrath (1241413), Hammer of Wrath (1279408)
                    Family Flags: 23, 39
-Hotfixed         : Affects Spells
 Description      : Judgment deals $s2% increased damage and increases your movement speed by $20271s2% for $20271d.
 
 If you have Greater Judgment, Judgment slows enemies by $408383s1% for $408383d.

@@ -12,8 +12,11 @@ actions+=/call_action_list,name=assisted_combat
 actions.assisted_combat=touch_of_death
 # Spell id 1249766 is a helper buff to avoid breaking Combo Strikes for Strike of the Windlord.
 actions.assisted_combat+=/strike_of_the_windlord,if=buff.heart_of_the_jade_serpent.down&buff.heart_of_the_jade_serpent_unity_within.down&combo_strike
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/celestial_conduit
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/zenith,if=buff.zenith.down
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/flying_serpent_kick,if=talent.slicing_winds
 # Spell id 1249754 is a helper buff to avoid breaking Combo Strikes for Spinning Crane Kick.
 actions.assisted_combat+=/spinning_crane_kick,if=buff.dance_of_chiji.stack>=2&combo_strike,cooldown_allow_casting_success=1

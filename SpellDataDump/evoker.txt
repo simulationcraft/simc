@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66066 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -7997,7 +7997,7 @@ Name             : Verdant Embrace (id=409895) [Spell Family (224)]
 Class            : Evoker
 School           : Nature
 Spell Type       : None
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 292
@@ -9855,15 +9855,12 @@ Effects          :
 #16 (id=1308692) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2054 (Category) | Target: Self (1)
                    Affected Spells (Category): Dream Breath (355936), Dream Breath (382614)
-Hotfixed         : NEW EFFECT
 #17 (id=1308693) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2456 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
-Hotfixed         : NEW EFFECT
 #18 (id=1308694) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2471 (Category) | Target: Self (1)
                    Affected Spells (Category): Verdant Embrace (360995)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc431695
 Tooltip          : Haste, movement speed, and cooldown recovery rate increased by $s1%.
 

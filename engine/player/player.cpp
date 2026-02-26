@@ -16484,7 +16484,7 @@ void player_t::parse_all_passive_sets()
   for ( const auto& type : sets->set_bonus_spec_data )
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
-        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+        if ( data.enabled )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
 }
 

@@ -1645,7 +1645,6 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
                                         const spell_data_t* s )
     : judgment_base_t( p, name, options_str, s ), echo( nullptr )
   {
-    parse_options( options_str );
     if ( p->talents.adjudication->ok() )
     {
       add_child( p->active.background_blessed_hammer );

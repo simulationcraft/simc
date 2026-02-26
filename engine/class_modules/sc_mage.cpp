@@ -5320,6 +5320,18 @@ struct splinter_t final : public mage_spell_t
     cd->adjust( -cdr, false );
   }
 
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
+    {
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
+        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+    }
+  }
+
   timespan_t travel_time() const override
   {
     timespan_t t = mage_spell_t::travel_time();
@@ -7221,13 +7233,6 @@ void mage_t::trigger_splinter( player_t* target, int count )
       make_event( *sim, total_delay, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
       total_delay += splinter_delay;
     }
-  }
-
-  if ( talents.augury_abounds.ok() && cooldowns.augury_abounds->up() )
-  {
-    cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
-    if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
-      make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
   }
 }
 

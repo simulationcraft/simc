@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66066
-static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
+// Spell text, wow build 12.0.1.66102
+static constexpr std::array<spelltext_data_t, 28628> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9201,7 +9201,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  253748, "Open the container.", 0, 0 },
   {  253793, "Your autoattacks have a chance to deal $253797s1 additional Shadow damage.", 0, 0 },
   {  253797, "$@spelldesc253793", 0, 0 },
-  {  253802, "Increases your Agility against Aberrations by $s1.", 0, 0 },
+  {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
@@ -28132,6 +28132,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28629,11 +28630,12 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66066
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 12.0.1.66102
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  253802,  0, "Increases your Agility against Aberrations by $s1.", "Increases your $pri against Aberrations by $s1." },
 } };
 
-// Spell description variables, wow build 12.0.1.66066
+// Spell description variables, wow build 12.0.1.66102
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29330,7 +29332,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66066
+// spelldesc_vars hotfix entries, wow build 12.0.1.66102
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
