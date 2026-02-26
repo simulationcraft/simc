@@ -192,6 +192,7 @@ Description      : Causes an explosion of magic around the caster, dealing $s2 A
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -204,7 +205,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 5980
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -4154,6 +4155,7 @@ Effects          :
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Icicles (id=205473) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -4163,7 +4165,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=303431)   : Apply Aura (6) | Dummy (4)

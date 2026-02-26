@@ -671,6 +671,7 @@ Your successful dodges and parries have a chance to make your next Revenge cost 
 Variables        : $cap=${5}
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -683,7 +684,7 @@ Labels           : 16: Class Spells
                  : 5980
 Affecting Spells : Warrior (137047 effect#2), Resonant Voice (1243660 effect#1)
 Family Flags     : 8, 16, 70
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=2384)     : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: Raid in Area (56)
