@@ -3604,13 +3604,11 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Internal Cooldown: 0.2 seconds
-Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=274045)   : Apply Aura (6) | Proc Trigger Spell (42): Crash Lightning | Attributes: Suppress Points Stacking (6)
+#1 (id=274045)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 Description      : $@spelldesc187874
 Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
