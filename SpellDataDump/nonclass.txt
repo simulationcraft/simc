@@ -204683,9 +204683,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 133.4076 (coefficient=5.289) | Trigger Spell: 451911 | Target: Self (1)
 
 Name             : Well Fed (id=451916) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204694,14 +204695,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152709)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Haste by $s1.
 Tooltip          : Haste increased by $w1.
 
 Name             : Well Fed (id=451917) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204710,14 +204713,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152710)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Versatility by $s1.
 Tooltip          : Versatility increased by $w1.
 
 Name             : Well Fed (id=451918) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204726,14 +204731,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152711)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Critical Strike by $s1.
 Tooltip          : Critical strike increased by $w1.
 
 Name             : Well Fed (id=451920) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204742,14 +204749,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152713)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Mastery by $s1.
 Tooltip          : Mastery increased by $w1.
 
 Name             : Well Fed (id=451921) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
 Proc Chance      : 101%
@@ -204757,7 +204766,8 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152714)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 9.416809 (coefficient=0.28) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Stat: Sta | Target: Self (1)
+Hotfixed         : Coefficient (0.28 -> 0.65)
 Description      : Increases Stamina by $s1.
 Tooltip          : Stamina increased by $w1.
 
@@ -214768,20 +214778,24 @@ Effects          :
 Description      : $@spelldesc421373
 
 Name             : Food & Drink (id=460938) [Hidden] 
+Hotfixed         : Max Scaling Level (70 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 70
+Max Scaling Level: 90
 Duration         : 20 seconds
 Labels           : 2395
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1168994)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 168750 (coefficient=7.5) | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 150000 (coefficient=0.8) | Value Multiplier: 1 | Target: Self (1)
+Hotfixed         : Coefficient (7.5 -> 0.8)
 #2 (id=1168995)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
+Hotfixed         : Coefficient (6.3004 -> 0.6)
 #3 (id=1168996)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
+Hotfixed         : Coefficient (6.3004 -> 0.6)
 Description      : $?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]
 
 Name             : Elemental Focusing Lens (id=461177) [Passive] 
@@ -230553,10 +230567,11 @@ Description      : $@spelldesc1241711
 
 
 Name             : Radiant Acumen (id=1230366) 
+Hotfixed         : Max stacks (10 -> 5)
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
-Stacks           : 10 maximum
+Duration         : 15 seconds
+Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Sunfire Silk Lining (1230364)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -240264,6 +240279,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc1233384
 
+Name             : Arcanoweave Trappings (id=1241227) [Passive] 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 90
+Labels           : 4386
+Triggered By     : Arcanoweave Trappings (1241262)
+Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
+Effects          :
+#1 (id=1240102)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcanoweave Trappings | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 651.9363 (coefficient=4.973557) | Trigger Spell: 1241262 | Target: Self (1)
+Description      : Gain $s1 Critical Strike while above $1241262s1% health.
+
 Name             : Charged Crystal (id=1241240) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -240347,6 +240374,48 @@ Effects          :
                    Base Value: 0 | Scaled Value: 521.9329 (coefficient=3.981774) | Target: Self (1)
 Description      : Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. 
 
+Name             : Arcanoweave Trappings (id=1241262) [Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 4386
+Triggered By     : Arcanoweave Trappings (1241227)
+Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1240155)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 80 | Scaled Value: 80 | Trigger Spell: 1241289 | Target: Self (1)
+#2 (id=1240189)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1241227
+#3 (id=1301054)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Arcanoweave Audacity
+                   Base Value: 80 | Scaled Value: 80 | Trigger Spell: 1241289
+Description      : Gain $1241289s1 Critical Strike while above $s1% health.
+Tooltip          : Increased Critical Strike.
+
+Name             : Arcanoweave Audacity (id=1241289) 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
+Labels           : 4386
+Triggered By     : Arcanoweave Trappings (1241262)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1240198)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 103.3989 (coefficient=0.78882) | Rating: Crit | Target: Self (1)
+#2 (id=1240476)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Arcanoweave Audacity
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Trigger Spell: 1241467
+Description      : $@spelldesc1241262
+Tooltip          : Critical Strike increased by $w1.
+
+Name             : Arcanoweave Audacity (id=1241467) [Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 4386
+Triggered By     : Arcanoweave Audacity (1241289)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1240474)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Radiant Conflagration (id=1241502) 
 School           : Holyfire
 Spell Type       : Magic
@@ -240365,8 +240434,9 @@ Spell Type       : None
 Labels           : 4386
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
 Effects          :
-#1 (id=1240514)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Sash | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1828.792 (coefficient=14.3094) | Trigger Spell: 1241522 | Target: Self (1)
+#1 (id=1240514)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Sash | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 2475.685 (coefficient=19.37103) | Trigger Spell: 1241522 | Target: Self (1)
+Hotfixed         : Coefficient (12.91402 -> 19.371029)
 Description      : Your spells and abilities have a chance to deal $s0 Radiant damage to your current target.
 
 Name             : Sunfire Sash (id=1241522) [Passive] 
@@ -240441,7 +240511,8 @@ Labels           : 4386
 Attributes       : Passive (6), No Threat (42), Not an Action (92), Not a Proc (105), Not an Attack (194), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1240856)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Silk Lining | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 11.00001 (coefficient=0.083918) | Trigger Spell: 1230364 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18.70833 (coefficient=0.142724) | Trigger Spell: 1230364 | Target: Self (1)
+Hotfixed         : Coefficient (0.083918 -> 0.142724)
 Description      : Healing and damage from periodic effects can increase $pri by $s1 for $1230366d, stacking up to $1230366u times.
 
 Name             : Might of the Void (id=1241715) 

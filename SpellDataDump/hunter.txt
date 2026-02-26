@@ -6374,6 +6374,7 @@ Effects          :
 Description      : Kill Command increases the direct damage of your other abilities by $s1%, stacking up to $260286u times.
 
 Name             : Tip of the Spear (id=260286) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6387,7 +6388,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Affecting Spells : Tip of the Spear (260285 effect#1), Relentless Primal Ferocity (459962 effects: #2, #3), Can't Miss, Won't Miss (1253830 effect#2), Primal Surge (1272154 effect#2)
 Family Flags     : 61
-Attributes       : Do Not Sheath (18), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Do Not Sheath (18), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
 Effects          :
 #1 (id=485367)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
