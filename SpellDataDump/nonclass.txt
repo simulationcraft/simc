@@ -204683,9 +204683,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 133.4076 (coefficient=5.289) | Trigger Spell: 451911 | Target: Self (1)
 
 Name             : Well Fed (id=451916) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204694,14 +204695,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152709)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Haste by $s1.
 Tooltip          : Haste increased by $w1.
 
 Name             : Well Fed (id=451917) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204710,14 +204713,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152710)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Vers | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Versatility by $s1.
 Tooltip          : Versatility increased by $w1.
 
 Name             : Well Fed (id=451918) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204726,14 +204731,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152711)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Critical Strike by $s1.
 Tooltip          : Critical strike increased by $w1.
 
 Name             : Well Fed (id=451920) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
                  : 1481
@@ -204742,14 +204749,16 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152713)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 4.936291 (coefficient=0.146776) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Mastery by $s1.
 Tooltip          : Mastery increased by $w1.
 
 Name             : Well Fed (id=451921) 
+Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : Aura (infinite)
 Labels           : 959
 Proc Chance      : 101%
@@ -204757,7 +204766,8 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152714)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 9.416809 (coefficient=0.28) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Stat: Sta | Target: Self (1)
+Hotfixed         : Coefficient (0.28 -> 0.65)
 Description      : Increases Stamina by $s1.
 Tooltip          : Stamina increased by $w1.
 
@@ -214768,20 +214778,24 @@ Effects          :
 Description      : $@spelldesc421373
 
 Name             : Food & Drink (id=460938) [Hidden] 
+Hotfixed         : Max Scaling Level (70 -> 90)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 70
+Max Scaling Level: 90
 Duration         : 20 seconds
 Labels           : 2395
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1168994)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 168750 (coefficient=7.5) | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 150000 (coefficient=0.8) | Value Multiplier: 1 | Target: Self (1)
+Hotfixed         : Coefficient (7.5 -> 0.8)
 #2 (id=1168995)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
+Hotfixed         : Coefficient (6.3004 -> 0.6)
 #3 (id=1168996)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 141759 (coefficient=6.3004) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
+Hotfixed         : Coefficient (6.3004 -> 0.6)
 Description      : $?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]
 
 Name             : Elemental Focusing Lens (id=461177) [Passive] 
