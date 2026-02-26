@@ -6639,7 +6639,7 @@ void monk_t::init_special_effects()
                                                 auto id = state->action->id;
                                                 return id == talent.brewmaster.celestial_brew->id() ||
                                                        id == talent.brewmaster.celestial_infusion->id() ||
-                                                       id == talent.monk.fortifying_brew->id();
+                                                       id == talent.monk.fortifying_brew.find_override_spell()->id();
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.refreshing_drink->trigger();
