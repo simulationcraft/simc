@@ -854,8 +854,10 @@ public:
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
+  accumulated_rng_t* cunning_cruelty_rng;
   accumulated_rng_t* shard_instability_ds_rng;
   accumulated_rng_t* shard_instability_sb_rng;
+  accumulated_rng_t* fatal_echoes_rng;
   accumulated_rng_t* succulent_soul_rng;
   accumulated_rng_t* manifested_avarice_rng;
 
@@ -880,8 +882,8 @@ public:
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
+  double pseudo_random_p_from_c( double c ) const;
+  double pseudo_random_c_from_p( double p ) const;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count( bool include_diabolist = true ) const;

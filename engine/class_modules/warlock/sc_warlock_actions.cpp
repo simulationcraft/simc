@@ -813,7 +813,7 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -1448,7 +1448,7 @@ using namespace helpers;
       {
         for ( int i = 0; i < stacks; i++ )
         {
-          if ( rng().roll( p()->talents.fatal_echoes->effectN( 1 ).percent() ) )
+          if ( p()->fatal_echoes_rng->trigger() )
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
@@ -2011,8 +2011,8 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty (PRD: 50% nominal rate if SB is used, 25% nominal rate if DS is used)
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2149,7 +2149,7 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -4859,8 +4859,8 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
+      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->fatal_echoes_rng->trigger() )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->fatal_echoes_rng->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
