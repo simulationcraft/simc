@@ -1215,7 +1215,7 @@ void paladin_t::init_spells_retribution()
   spells.light_within   = find_spell( 1261160 );
   spells.expurgation               = find_spell( 383346 );
   spells.judgment_ret              = find_spell( 20271 );
-  spells.judgment_ret_dt           = find_spell( 20271 ); // Should be 406957, but that's not in spell data
+  spells.judgment_ret_dt           = find_spell( 406957 );
   spells.hammer_of_wrath_ret       = find_spell( 24275 );
   spells.hammer_of_wrath_ret_dt    = find_spell( 1279408 );
   spells.crusading_strikes_data    = find_spell( 406834 );

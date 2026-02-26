@@ -297,11 +297,13 @@ void protection( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* generic = p->get_action_priority_list( "generic" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "battle_stance,toggle=on" );
 
   default_->add_action( "auto_attack" );
+  default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "charge,if=time=0" );
   default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   default_->add_action( "use_items" );
@@ -315,7 +317,7 @@ void protection( player_t* p )
   default_->add_action( "ancestral_call" );
   default_->add_action( "bag_of_tricks" );
   default_->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
-  default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4,use_off_gcd=1" );
+  default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=15|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.practiced_strikes.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.practiced_strikes.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains,use_off_gcd=1" );
   default_->add_action( "ravager" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_->add_action( "champions_leap" );
@@ -329,32 +331,31 @@ void protection( player_t* p )
 
   aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
   aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
-  aoe->add_action( "thunder_blast,if=buff.violent_outburst.up&spell_targets.thunderclap>=2&buff.avatar.up" );
+  aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
   aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
-  aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>=4&buff.avatar.up&talent.crashing_thunder.enabled|buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up" );
+  aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up" );
   aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
-  aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4&talent.crashing_thunder.enabled" );
+  aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
   aoe->add_action( "thunder_blast" );
   aoe->add_action( "thunder_clap" );
   aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
   generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up)" );
   generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
-  generic->add_action( "execute,if=rage>=70|(rage>=40&cooldown.shield_slam.remains&talent.demolish.enabled|rage>=50&cooldown.shield_slam.remains)|buff.sudden_death.up&talent.sudden_death.enabled" );
-  generic->add_action( "shield_slam" );
-  generic->add_action( "wrecking_throw" );
-  generic->add_action( "shattering_throw" );
-  generic->add_action( "thunder_blast,if=dot.rend_dot.remains<=2&buff.violent_outburst.down" );
   generic->add_action( "thunder_blast" );
-  generic->add_action( "thunder_clap,if=dot.rend_dot.remains<=2&buff.violent_outburst.down" );
-  generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
-  generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
-  generic->add_action( "revenge,if=(rage>=80&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=80&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
-  generic->add_action( "execute" );
+  generic->add_action( "shield_slam" );
+  generic->add_action( "thunder_blast,if=dot.rend_dot.remains<=2" );
+  generic->add_action( "thunder_clap,if=dot.rend_dot.remains<=2" );
+  generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)" );
+  generic->add_action( "execute,if=hero_tree.mountain_thane&(rage>=70|(rage>=40&cooldown.shield_slam.remains)|(buff.sudden_death.up&talent.sudden_death.enabled))" );
+  generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
+  generic->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
+  generic->add_action( "execute,if=hero_tree.mountain_thane&talent.deep_wounds.enabled" );
   generic->add_action( "revenge" );
-  generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
-  generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
+  generic->add_action( "thunder_clap" );
   generic->add_action( "devastate" );
+
+  variables->add_action( "variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
 }
 //protection_apl_end
 }  // namespace warrior_apl

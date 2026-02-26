@@ -3162,11 +3162,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
   }
 
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new auto_attack_melee_t<base_ghoul_pet_t>( this, "auto_attack_mh" );
-  }
-
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
@@ -3178,6 +3173,24 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     resources.hasted[ RESOURCE_ENERGY ]                = true;
   }
 
+  struct ghoul_auto_t final : public auto_attack_melee_t<base_ghoul_pet_t>
+  {
+    ghoul_auto_t( base_ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t<base_ghoul_pet_t>::impact( state );
+      pet()->trigger_infected_claws( state->target );
+    }
+  };
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new ghoul_auto_t( this, "auto_attack_mh" );
+  }
+
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3185,6 +3198,12 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     double dist    = precombat_spawn ? 0 : rng().range( -spawn_radius, spawn_radius );
     spawn_distance = std::max( 0.0, dk()->base.distance + dist );
     trigger_pet_movement( spawn_distance );
+  }
+
+  void trigger_infected_claws( player_t* target )
+  {
+    if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
+      dk()->background_actions.infected_claws->execute_on_target( target );
   }
 
   resource_e primary_resource() const override
@@ -3206,7 +3225,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                         bool usable_in_dt = true )
       : pet_melee_attack_t( p, name, spell ),
         usable_in_dt( usable_in_dt ),
-        triggers_infected_claws( false ),
         triggers_apocalypse( false )
     {
     }
@@ -3215,9 +3233,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_melee_attack_t<ghoul_pet_t>::impact( state );
 
-      if ( triggers_infected_claws && dk()->talent.unholy.infected_claws.ok() &&
-           rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( state->target );
+      pet()->trigger_infected_claws( state->target );
 
       if ( triggers_apocalypse  )
         dk()->trigger_rune_of_the_apocalypse( state->target );
@@ -3245,7 +3261,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                  bool dt = false )
       : dt_melee_ability_t( p, name, spell, dt )
     {
-      triggers_infected_claws = triggers_apocalypse = true;
+      triggers_apocalypse = true;
       base_multiplier *= 0.85;
     }
   };
@@ -3304,13 +3320,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct dt_auto_t final : public auto_attack_melee_t<ghoul_pet_t>
-  {
-    dt_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
-    {
-    }
-  };
-
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
@@ -3321,11 +3330,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       dynamic = false;
     }
-  }
-
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new dt_auto_t( this, "auto_attack_mh" );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3474,8 +3478,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     void impact( action_state_t* s ) override
     {
       pet_melee_attack_t<lesser_ghoul_pet_t>::impact( s );
-      if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( s->target );
+      pet()->trigger_infected_claws( s->target );
 
       dk()->trigger_rune_of_the_apocalypse( s->target );
     }
@@ -3508,6 +3511,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "sweeping_claws", p->dk()->pet_spell.lesser_sweeping_claws )
     {
       parse_options( options_str );
+      trigger_gcd                   = 2.5_s;
+      gcd_type                      = gcd_haste_type::HASTE;
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
@@ -3528,6 +3533,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
+      trigger_gcd = 2.5_s;
+      gcd_type    = gcd_haste_type::HASTE;
     }
 
     bool ready() override
@@ -3552,28 +3559,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_spell_t<lesser_ghoul_pet_t>::impact( s );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
   };
 
@@ -7588,8 +7574,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() *
-                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
       forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
@@ -11510,14 +11495,20 @@ struct pestilence_t final : public death_knight_spell_t
     if ( vp->is_ticking() )
     {
       p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
-      damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
+      if ( duration_mult == 1.0 )
+        damage = vp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
       p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
-      damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
+      if ( duration_mult == 1.0 )
+        damage = dp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
       dp->cancel();
     }
@@ -13255,7 +13246,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
   }
 
   for ( auto& disease : disease_td )
-    disease_remaining_damage += disease->tick_damage_over_time( disease->remains() );
+    disease_remaining_damage += disease->tick_damage_over_remaining_time();
 
   if ( disease_remaining_damage == 0 || disease_td.empty() )
     return;

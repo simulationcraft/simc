@@ -448,7 +448,6 @@ public:
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
-    bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
@@ -2345,7 +2344,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
+    if ( p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
@@ -2590,7 +2589,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
-    p->buffs.heat_shimmer->trigger();
+    if ( !p->executing || p->executing->id != 2948 ) // Heat Shimmer cannot trigger while Scorch is casting
+      p->buffs.heat_shimmer->trigger();
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -4987,24 +4987,12 @@ struct scorch_t final : public fire_mage_spell_t
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    fire_mage_spell_t::schedule_execute( s );
-
-    // Heat Shimmer cannot be consumed or apply its benefit unless
-    // it was already active at the beginning of the Scorch cast.
-    p()->state.heat_shimmer = p()->buffs.heat_shimmer->check();
-  }
-
   void execute() override
   {
     fire_mage_spell_t::execute();
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
-    {
+    if ( p()->buffs.heat_shimmer->up() )
       p()->buffs.heat_shimmer->decrement();
-      p()->state.heat_shimmer = false;
-    }
   }
 
   timespan_t execute_time() const override
@@ -5020,7 +5008,14 @@ struct scorch_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
-      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+    {
+      double scald = p()->talents.scald->effectN( 2 ).percent();
+      // TODO: Scald only seems to provide +150% damage (rather than +250%) when
+      // Heat Shimmer isn't active.
+      if ( p()->bugs && p()->talents.scald.ok() && !p()->buffs.heat_shimmer->check() )
+        scald -= 1.0;
+      m *= 1.0 + scald;
+    }
 
     m *= 1.0 + p()->buffs.heat_shimmer->check_value();
 
@@ -5342,6 +5337,18 @@ struct splinter_t final : public mage_spell_t
       // Best guess: some rounding issue; adjust as needed
       cdr = 100_ms * std::round( 0.01 * cdr.total_millis() );
     cd->adjust( -cdr, false );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
+    {
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
+        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+    }
   }
 
   timespan_t travel_time() const override
@@ -7245,13 +7252,6 @@ void mage_t::trigger_splinter( player_t* target, int count )
       make_event( *sim, total_delay, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
       total_delay += splinter_delay;
     }
-  }
-
-  if ( talents.augury_abounds.ok() && cooldowns.augury_abounds->up() )
-  {
-    cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
-    if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
-      make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
   }
 }
 

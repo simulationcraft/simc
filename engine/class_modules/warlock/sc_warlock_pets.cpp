@@ -1743,8 +1743,11 @@ struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
   void execute() override
   {
     dominion_of_argus_spell_base_t::execute();
-    for ( int i = 0; i < data().effectN( 1 ).base_value(); i++ )
-      soul_barrage->execute_on_target( execute_state->target );
+    // Has an odd behavior where cast times below 1.5s start reducing the number of bolts sent out.
+    auto executes     = std::min( execute_time() / 150_ms, data().effectN( 1 ).base_value() );
+    auto execute_time = 80_ms;  // 80 ms between each bolt
+    for ( int i = 0; i < executes; i++ )
+      make_event( *sim, execute_time * i, [ this ] { soul_barrage->execute_on_target( execute_state->target ); } );
 
     for ( auto& target : target_list() )
     {

@@ -948,6 +948,7 @@ private:
     PARSE_SOURCE_RACIAL,
     PARSE_SOURCE_TALENT,
     PARSE_SOURCE_SET,
+    PARSE_SOURCE_ITEM,
   };
   std::vector<std::pair<unsigned, parse_source_e>> registered_passive_spells_;
 
@@ -1001,6 +1002,8 @@ public:
   
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
+  void parse_passive_item_effect( const spell_data_t* );
+  void register_passive_item_effect_override( const spelleffect_data_t&, double );
 
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;

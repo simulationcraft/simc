@@ -2199,14 +2199,15 @@ public:
 
   void execute() override
   {
-    BASE::execute();
-
+    // extends even if you hit nothing
     if ( dot_ext > 0_ms )
     {
       range::for_each( BASE::p()->dot_lists.dreadful_wound, [ this ]( dot_t* d ) {
         d->adjust_duration( dot_ext, max_ext );
       } );
     }
+
+    BASE::execute();
   }
 };
 
@@ -3491,7 +3492,7 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     trigger_boat_buff();
 
-    if ( bolt_cd->up() )
+    if ( bolt_cd && bolt_cd->up() )
     {
       execute_bolt_action();
       bolt_cd->start();
@@ -5465,7 +5466,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 /*
 maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
 |
-|->maul_ravage_base_t:trigger_maul_echo_t
+|->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t
 |  |
 |  |->maul_t "maul"
 |
@@ -5475,7 +5476,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |
 |->raze_base_t
 |  |
-|  |->maul_ravage_base_t:trigger_maul_echo_t
+|  |->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t
 |  |  |
 |  |  |->raze_t "raze"
 |  |
@@ -5485,7 +5486,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |
 |->ravage_base_t
    |
-   |->ravage_maul_t:trigger_maul_echo_t "ravage_maul"
+   |->ravage_maul_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t "ravage_maul"
    |
    |->celestial_might_maul_t:trigger_wild_guardian_echo_t "ravage_repeat"
    |
@@ -5503,18 +5504,20 @@ struct maul_data_t
 };
 
 template <typename BASE>
-struct trigger_maul_echo_t : public trigger_wild_guardian_echo_t<BASE>
+struct trigger_celestial_might_repeat_t : public trigger_wild_guardian_echo_t<BASE>
 {
 private:
   using ab = trigger_wild_guardian_echo_t<BASE>;
   druid_t* p_;
 
 protected:
-  using base_t = trigger_maul_echo_t<BASE>;
+  using base_t = trigger_celestial_might_repeat_t<BASE>;
   action_t* repeat_action = nullptr;
 
 public:
-  trigger_maul_echo_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f ), p_( p ) {}
+  trigger_celestial_might_repeat_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : ab( n, p, s, f ), p_( p )
+  {}
 
   void execute() override
   {
@@ -5715,16 +5718,16 @@ struct raze_base_t : public maul_base_t
 using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
 
 template <typename BASE>
-struct maul_ravage_base_t : public trigger_maul_echo_t<BASE>
+struct maul_ravage_base_t : public trigger_celestial_might_repeat_t<BASE>
 {
 private:
-  using ab = trigger_maul_echo_t<BASE>;
+  using ab = trigger_celestial_might_repeat_t<BASE>;
 
 protected:
   using base_t = maul_ravage_base_t<BASE>;
 
 public:
-  struct ravage_maul_t final : public trigger_maul_echo_t<ravage_t>
+  struct ravage_maul_t final : public trigger_celestial_might_repeat_t<ravage_t>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {
@@ -8205,6 +8208,8 @@ struct starfall_t final : public ap_spender_t
   {
     meteorites_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1240913 ), f )
     {
+      proc = true;
+
       name_str_reporting = "meteorites";
     }
 
@@ -8302,6 +8307,8 @@ struct starfall_t final : public ap_spender_t
       assert( driver->damage );
       replace_stats( this, driver, false );
       replace_stats( this, driver->damage );
+      if ( driver->meteorites )
+        add_child( driver->meteorites );
     }
 
     weaver_buff = p->buff.starweaver_starfall;
@@ -10935,7 +10942,7 @@ void druid_t::create_buffs()
 
   buff.ascendant_stars =
     make_fallback( talent.ascendant_eclipses_1.ok(), this, "ascendant_stars", find_spell( 1263382 ) )
-      ->set_reverse( true )
+      ->set_initial_stack_to_max_stack()
       ->set_consume_all_stacks( false );
 
   buff.ascendant_stars_starfall =
@@ -11345,18 +11352,7 @@ void druid_t::create_buffs()
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
         {
-          auto _state = dot->current_action->get_state( dot->state );
-          auto num_tick = dot->ticks_left_fractional();
-          auto per_tick = dot->current_action->calculate_tick_amount( _state, excess );
-          auto damage = num_tick * per_tick;
-          action_state_t::release( _state );
-
-          if ( sim->debug )
-          {
-            sim->print_debug( "{} Sundering Roar excess thrash on {}: excess={}, num_tick={}, per_tick={}, damage={}",
-                              *this, *dot->target, excess, num_tick, per_tick, damage );
-          }
-
+          auto damage = dot->tick_damage_over_remaining_time( excess );
           active.sundering_roar_thrash->execute_on_target( dot->target, damage );
           dot->decrement( excess );
           dot->max_stack = orig_max_stack;
@@ -12150,7 +12146,7 @@ bool druid_t::validate_actor()
   };
 
   for ( auto ph : placeholders )
-    sim->error( error_level_e::PLACEHOLDER, "{}", ph );
+    sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
 
   return true;
 }

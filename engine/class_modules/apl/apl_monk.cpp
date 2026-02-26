@@ -150,15 +150,7 @@ void monk_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
   if ( step.spell_id == 388193 )
     return;
 
-  assisted_combat_step_data_t step_temp = step;
-
-  // Since we separated the Rushing Wind Kick override action from the Rising Sun Kick action
-  // and assisted combat APL uses Rising Sun Kick for this step,
-  // override the step to use the Rushing Wind Kick spell id
-  if ( step.id == 20345 )
-    step_temp.spell_id = 467307;
-
-  base_t::parse_assisted_combat_step( step_temp, assisted_combat );
+  base_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
@@ -216,6 +208,9 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
 
 std::vector<std::string> monk_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
+  if ( spell_id == 107428 && specialization() == MONK_WINDWALKER )
+    return { "rising_sun_kick", "rushing_wind_kick" };
+
   return base_t::action_names_from_spell_id( spell_id );
 }
 

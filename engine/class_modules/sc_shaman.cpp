@@ -1051,6 +1051,7 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::EARTHSURGE: return fmt::format( "{}_es", name );
     case spell_variant::PRIMORDIAL_STORM: return fmt::format( "{}_ps", name );
     case spell_variant::RIDE_THE_LIGHTNING: return fmt::format( "{}_rtl", name );
+    case spell_variant::PURGING_FLAMES: return fmt::format( "{}_pf", name );
     default: return std::string( name );
   }
 }
@@ -1067,6 +1068,7 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::EARTHSURGE: return "earthsurge";
     case spell_variant::PRIMORDIAL_STORM: return "primordial_storm";
     case spell_variant::RIDE_THE_LIGHTNING: return "ride_the_lightning";
+    case spell_variant::PURGING_FLAMES: return "purging_flames";
     default: return "normal";
   }
 }
@@ -1204,6 +1206,7 @@ public:
     action_t* flame_shock_vb;
     action_t* flame_shock;
     action_t* elemental_blast;
+    action_t* lava_burst_pf;
 
     action_t* lightning_rod;
 
@@ -1211,6 +1214,7 @@ public:
     action_t* stormflurry_ws;
 
     action_t* stormblast;
+    action_t* ascendance_damage;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -1261,6 +1265,7 @@ public:
     action_t* stormblast;
     action_t* thorims_invocation;
     action_t* ride_the_lightning;
+    action_t* deeply_rooted_elements;
   } dummy;
 
   // Pets
@@ -2015,7 +2020,7 @@ public:
 
   void trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const;
   void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const;
-  void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
+  void regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target = false ) const;
 
   void generate_maelstrom_weapon( const action_t* action, int stacks = 1 );
   void generate_maelstrom_weapon( const action_state_t* state, int stacks = 1 );
@@ -6838,12 +6843,13 @@ struct lava_burst_t : public shaman_spell_t
             }
           }
           break;
-        case spell_variant::DEEPLY_ROOTED_ELEMENTS:
+        case spell_variant::PURGING_FLAMES:
           {
-            auto dre_asc_action = p()->find_action( "dre_ascendance" );
-            if ( dre_asc_action )
+            aoe     = 5;
+            auto vb = p()->find_action( "voltaic_blaze" );
+            if ( vb )
             {
-              dre_asc_action->add_child( this );
+              vb->add_child( this );
             }
           }
           break;
@@ -6983,6 +6989,14 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() && exec_type == spell_variant::NORMAL )
     {
       p()->summon_ancestor();
+    }
+
+    if (p()->buff.purging_flames->check() && !background)
+    {
+      p()->regenerate_flame_shock_dependent_target_list( this, true );
+      assert( p()->action.lava_burst_pf );
+      p()->action.lava_burst_pf->execute();
+      p()->buff.purging_flames->decrement();
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
@@ -8378,6 +8392,7 @@ struct ascendance_t : public shaman_spell_t
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
+      p()->action.ascendance_damage->execute_on_target( target );
       p()->action.doom_winds_asc->execute_on_target( target );
     }
   }
@@ -10420,11 +10435,28 @@ void shaman_t::create_actions()
     action.chain_lightning_ws_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ws" );
   }
 
+  if ( talent.purging_flames.ok() )
+    action.lava_burst_pf = new lava_burst_t( this, spell_variant::PURGING_FLAMES );
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this, spell_variant::NORMAL );
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    dummy.deeply_rooted_elements = new dummy_action_t( this, talent.deeply_rooted_elements,
+      "deeply_rooted_elements" );
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+
+    dummy.deeply_rooted_elements->add_child( action.ascendance_damage );
+  }
+  else if ( talent.ascendance.ok() )
+  {
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+    action.ascendance->add_child( action.ascendance_damage );
+  }
 }
 
 // shaman_t::create_options =================================================
@@ -11340,17 +11372,20 @@ void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell
   trigger_secondary_flame_shock( state->target, variant );
 }
 
-void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
+void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target ) const
 {
   auto& tl = action->target_cache.list;
 
-  auto it = std::remove_if( tl.begin(), tl.end(),
-    [ this ]( player_t* target ) {
-      return !get_target_data( target )->dot.flame_shock->is_ticking();
-    }
-  );
+  auto it = std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) {
+    return !get_target_data( target )->dot.flame_shock->is_ticking();
+  } );
 
   tl.erase( it, tl.end() );
+
+  if ( ignore_target )
+  {
+    tl.erase( std::remove( tl.begin(), tl.end(), action->target ), tl.end() );
+  }
 
   if ( sim->debug )
   {
@@ -12283,7 +12318,9 @@ void shaman_t::create_buffs()
   buff.purging_flames = make_buff( this, "purging_flames", find_spell( 1259491 ) );
 
   buff.mid1_ele_2pc = make_buff( this, "thunderous_velocity", find_spell( 1272101 ) )
-                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) );
+                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                          ->set_default_value_from_effect_type( A_HASTE_ALL );
 
   //
   // Enhancement
@@ -13044,6 +13081,35 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
                                          action_priority_list_t* assisted_combat )
 {
   if ( step.spell_id == 462854 )
+    return;
+
+  auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
+  if ( step.spell_id == source_spell_id )
+  {
+    assisted_combat_step_data_t custom_step = step;
+    custom_step.spell_id                    = target_spell_id;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+    return true;
+  }
+
+    return false;
+  };
+
+  auto conditionally_replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id,
+                                          assisted_combat_rule_e rule_type, unsigned rule_value ) {
+    if ( step.spell_id == source_spell_id )
+    {
+      for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, true ) )
+      {
+        if ( rule.condition_type == rule_type && rule.condition_value_1 == rule_value )
+          return replace_spell( source_spell_id, target_spell_id );
+      }
+    }
+
+    return false;
+  };
+
+  if ( conditionally_replace_spell( 188196, 454009, AC_AURA_ON_PLAYER, 454015 ) )
     return;
 
   player_t::parse_assisted_combat_step( step, assisted_combat );

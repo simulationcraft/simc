@@ -1,0 +1,110 @@
+warlock="MID1_Warlock_Affliction_Hellcaller"
+source=default
+spec=affliction
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxwwMjZmZGMzMzAAmBG
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/haunt
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=end_of_fight
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/call_action_list,name=soul_harvester,if=talent.demonic_soul.enabled
+actions+=/call_action_list,name=hellcaller,if=talent.wither.enabled
+actions+=/malefic_grasp,if=pet.darkglare.active&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/drain_soul,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/shadow_bolt,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/malefic_grasp,chain=1,early_chain_if=buff.nightfall.react,if=pet.darkglare.active
+actions+=/drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5
+actions+=/shadow_bolt
+
+actions.end_of_fight=unstable_affliction,if=soul_shard&fight_remains<8
+actions.end_of_fight+=/drain_soul,if=buff.nightfall.react&fight_remains<5
+actions.end_of_fight+=/shadow_bolt,if=buff.nightfall.react&fight_remains<5
+
+actions.hellcaller=haunt,if=cooldown.haunt.ready
+actions.hellcaller+=/agony,if=!ticking|refreshable
+actions.hellcaller+=/wither,if=!ticking|refreshable
+actions.hellcaller+=/agony,if=dot.agony.remains<20&cooldown.summon_darkglare.remains<gcd
+actions.hellcaller+=/drain_soul,if=buff.nightfall.react>1
+actions.hellcaller+=/shadow_bolt,if=buff.nightfall.react>1
+actions.hellcaller+=/summon_darkglare
+actions.hellcaller+=/dark_harvest,if=execute_time<((dot.agony.remains<?dot.corruption.remains)<?dot.unstable_affliction.remains)
+actions.hellcaller+=/malevolence
+actions.hellcaller+=/malefic_grasp,if=pet.darkglare.active&pet.darkglare.remains<gcd
+actions.hellcaller+=/unstable_affliction,if=pet.darkglare.active|buff.malevolence.remains|soul_shard>4|(talent.shard_instability&buff.shard_instability.react)|buff.cascading_calamity.remains<gcd.max
+
+actions.items=use_item,use_off_gcd=1,slot=trinket1,if=variable.cds_active
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.cds_active
+
+actions.ogcd=potion,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<32
+actions.ogcd+=/berserking,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<14
+actions.ogcd+=/blood_fury,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17
+actions.ogcd+=/fireblood,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<10
+actions.ogcd+=/ancestral_call,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17
+
+actions.soul_harvester=haunt,if=buff.nightfall.react<2-prev_gcd.1.drain_soul
+actions.soul_harvester+=/agony,if=!ticking|refreshable
+actions.soul_harvester+=/corruption,if=!ticking|refreshable
+actions.soul_harvester+=/drain_soul,if=buff.nightfall.react>1
+actions.soul_harvester+=/shadow_bolt,if=buff.nightfall.react>1
+actions.soul_harvester+=/summon_darkglare,if=soul_shard<3
+actions.soul_harvester+=/dark_harvest,if=soul_shard<3&execute_time<((dot.agony.remains<?dot.corruption.remains)<?dot.unstable_affliction.remains)&buff.cascading_calamity.remains
+actions.soul_harvester+=/malefic_grasp,if=pet.darkglare.active&pet.darkglare.remains<gcd
+actions.soul_harvester+=/unstable_affliction,if=pet.darkglare.active|soul_shard>1|(talent.shard_instability&buff.shard_instability.react)
+
+actions.variables=variable,name=cds_active,op=set,value=!talent.summon_darkglare|cooldown.summon_darkglare.remains>20|pet.darkglare.remains
+
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890
+shoulders=abyssal_immolators_fury,id=250040,bonus_id=13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/13454/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+wrists=voracious_wristwraps,id=249315,ilevel=289,gem_id=240890
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240890
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575,ilevel=289,enchant_id=7935
+feet=slippers_of_the_midnight_flame,id=249305,bonus_id=4786/4800/12803/12806/1532,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240898/240898,enchant_id=7997
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/12214/13453/13622/13667/9627,gem_id=240898,enchant_id=7997,crafted_stats=32/36
+trinket1=emberwing_feather,id=250144,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=7981
+off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_stamina=17604
+# gear_intellect=1673
+# gear_crit_rating=619
+# gear_haste_rating=1286
+# gear_mastery_rating=566
+# gear_versatility_rating=42
+# gear_leech_rating=249
+# gear_armor=532
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
+soul_shards=0
+default_pet=sayaad

@@ -380,7 +380,6 @@ using namespace helpers;
 
       if ( destruction() && triggers.fiendish_cruelty )
       {
-        // TODO: Check if havoc hits and FnB Incinerate hits are affected by fiendish cruelty
         if ( s->result == RESULT_CRIT )
         {
           bool success = p()->buffs.fiendish_cruelty->trigger();
@@ -814,7 +813,7 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -1449,7 +1448,7 @@ using namespace helpers;
       {
         for ( int i = 0; i < stacks; i++ )
         {
-          if ( rng().roll( p()->talents.fatal_echoes->effectN( 1 ).percent() ) )
+          if ( p()->fatal_echoes_rng->trigger() )
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
@@ -1600,16 +1599,7 @@ using namespace helpers;
 
         if ( p()->talents.sow_the_seeds.ok() )
         {
-          // NOTE: 2026-02-20 The reduced effectiveness of additional seeds only affects the host (bug?)
-          if ( p()->bugs )
-          {
-            if ( t == target )
-              m *= effectiveness;
-          }
-          else
-          {
-            m *= effectiveness;
-          }
+          m *= effectiveness;
         }
 
         return m;
@@ -1720,6 +1710,8 @@ using namespace helpers;
           p()->feast_of_souls_gain();
       }
 
+      // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
+      // benefits from the cost reduction but does not consume the effect. (bug?)
       if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
@@ -2012,8 +2004,8 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty (PRD: 50% nominal rate if SB is used, 25% nominal rate if DS is used)
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2150,7 +2142,7 @@ using namespace helpers;
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2287,10 +2279,11 @@ using namespace helpers;
       for ( auto t : tl )
         dark_harvest_dmg->execute_on_target( t );
 
-      if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
+      // Shadow of Death gain starts on the second tick
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() && d->current_tick > 0 )
       {
-        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         // NOTE: 2026-02-20 The shards gained by Shadow of Death can also proc another Succulent Soul each (bug?)
+        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         if ( p()->bugs )
           p()->resource_gain( RESOURCE_SOUL_SHARD, gain, p()->gains.shadow_of_death );
         else
@@ -3303,7 +3296,7 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // TODO: Check if Fiendish Cruelty actually affects FnB's Incinerate and how it affects it
+        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok();
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
       }
@@ -3407,7 +3400,8 @@ using namespace helpers;
 
       // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
       // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
-      if ( p()->bugs ? p()->buffs.chaotic_inferno->check() : ( time_to_execute == 0_ms ) )
+      bool consume_backdraft = p()->bugs ? !p()->buffs.chaotic_inferno->check() : ( time_to_execute != 0_ms );
+      if ( consume_backdraft )
         p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
@@ -3687,6 +3681,8 @@ using namespace helpers;
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
+      p()->buffs.backdraft->decrement();
+
       p()->buffs.crashing_chaos->decrement();
 
       if ( p()->talents.chaotic_inferno.ok() )
@@ -3917,13 +3913,14 @@ using namespace helpers;
 
       warlock_spell_t::execute();
 
+      // Rain of Fire has no expiration pulse (none, neither partial nor full) (NO_EXPIRATION_PULSE is already the default for ground_aoe_params_t)
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
                                         .target( execute_state->target )
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
                                         .pulse_time( base_tick_time * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
-                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
+                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
@@ -4495,8 +4492,10 @@ using namespace helpers;
 
       p()->buffs.infernal_bolt->decrement();
 
-      // NOTE: 2026-02-18 Infernal Bolt benefits from Chaotic Inferno but does not consume the effect (bug?)
-      if ( !p()->bugs )
+      p()->buffs.backdraft->decrement();
+
+      // Chaotic Inferno buff is only consumed by an Infernal Bolt cast that benefits from the effect
+      if ( time_to_execute == 0_ms )
         p()->buffs.chaotic_inferno->decrement();
     }
   };
@@ -4854,8 +4853,8 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
+      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->fatal_echoes_rng->trigger() )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->fatal_echoes_rng->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );

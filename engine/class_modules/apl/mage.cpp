@@ -244,14 +244,14 @@ void frost( player_t* p )
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* ff_aoe = p->get_action_priority_list( "ff_aoe" );
   action_priority_list_t* ff_st = p->get_action_priority_list( "ff_st" );
+  action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* ss_aoe = p->get_action_priority_list( "ss_aoe" );
   action_priority_list_t* ss_st = p->get_action_priority_list( "ss_st" );
 
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=3" );
+  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=3", "Frostfire can open with a precast Blizzard even in ST. This is at least neutral, and a gain for builds that use Glacial Shatter." );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
@@ -261,7 +261,7 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=3" );
   default_->add_action( "run_action_list,name=ss_st" );
 
-  cds->add_action( "potion" );
+  cds->add_action( "potion,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|fight_remains<35" );
   cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
@@ -272,61 +272,70 @@ void frost( player_t* p )
   cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
-  cds->add_action( "glacial_spike,if=talent.splinterstorm&active_enemies>=3,line_cd=9999", "Spellslinger Opener" );
-  cds->add_action( "flurry,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "flurry,if=talent.splinterstorm,line_cd=9999", "Spellslinger Opener" );
   cds->add_action( "frozen_orb,if=talent.splinterstorm,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=fight_remains<12", "End-Of-Fight Actions" );
+  cds->add_action( "ice_lance,if=fight_remains<gcd.max*1.5" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
 
-  ff_aoe->add_action( "comet_storm" );
-  ff_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
-  ff_aoe->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
+  ff_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ff_aoe->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
   ff_aoe->add_action( "frozen_orb" );
   ff_aoe->add_action( "glacial_spike" );
-  ff_aoe->add_action( "blizzard" );
+  ff_aoe->add_action( "comet_storm" );
+  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)", "Only hardcast Blizzard at 4 (with one Blizzard talent) or 5 (without any Blizzard talents) targets. Holding it when Frozen Orb is about to come up is mostly QOL with a minimal impact on sim-dps." );
   ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ff_aoe->add_action( "ice_lance,if=debuff.freezing.react>=10" );
-  ff_aoe->add_action( "frostbolt,if=buff.frostfire_empowerment.react|prev_gcd.1.glacial_spike" );
-  ff_aoe->add_action( "ray_of_frost" );
+  ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
+  ff_aoe->add_action( "flurry,if=cooldown_react" );
+  ff_aoe->add_action( "ray_of_frost,if=!buff.frostfire_empowerment.react", "Spend Frostfire Empowerment to build up Freezing on all targets before casting Ray, so the following Comet Storm shatters the stacks." );
   ff_aoe->add_action( "frostbolt" );
+  ff_aoe->add_action( "call_action_list,name=movement" );
 
-  ff_st->add_action( "comet_storm" );
-  ff_st->add_action( "ray_of_frost,if=fight_remains<12" );
-  ff_st->add_action( "flurry,if=cooldown_react&buff.thermal_void.down" );
+  ff_st->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
   ff_st->add_action( "frozen_orb" );
   ff_st->add_action( "glacial_spike" );
-  ff_st->add_action( "blizzard,if=buff.freezing_rain.up" );
+  ff_st->add_action( "comet_storm" );
   ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ff_st->add_action( "ice_lance,if=debuff.freezing.react>=10" );
-  ff_st->add_action( "ray_of_frost" );
+  ff_st->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
+  ff_st->add_action( "flurry,if=cooldown_react" );
+  ff_st->add_action( "ray_of_frost,if=active_enemies=1|!buff.frostfire_empowerment.react", "Spend Frostfire Empowerment to build up Freezing on two targets before casting Ray, so the following Comet Storm shatters the stacks." );
   ff_st->add_action( "frostbolt" );
+  ff_st->add_action( "call_action_list,name=movement" );
+
+  movement->add_action( "any_blink,if=movement.distance>5" );
+  movement->add_action( "blizzard,if=buff.freezing_rain.up" );
+  movement->add_action( "ice_nova,if=talent.cone_of_frost" );
+  movement->add_action( "cone_of_cold,if=talent.cone_of_frost" );
+  movement->add_action( "ice_lance" );
 
   ss_aoe->add_action( "comet_storm" );
-  ss_aoe->add_action( "ray_of_frost,if=fight_remains<12" );
   ss_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
-  ss_aoe->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
-  ss_aoe->add_action( "frozen_orb,if=cooldown_react" );
+  ss_aoe->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react=2" );
+  ss_aoe->add_action( "frozen_orb" );
   ss_aoe->add_action( "glacial_spike" );
-  ss_aoe->add_action( "blizzard,if=buff.splinterstorm.down&(talent.freezing_rain|talent.freezing_winds|active_enemies>=7)" );
   ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ss_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=6" );
+  ss_aoe->add_action( "ice_lance,if=debuff.freezing.react>=6" );
   ss_aoe->add_action( "ice_nova,if=talent.cone_of_frost&active_enemies>=4" );
   ss_aoe->add_action( "cone_of_cold,if=talent.cone_of_frost&active_enemies>=4" );
   ss_aoe->add_action( "flurry,if=cooldown_react" );
   ss_aoe->add_action( "ray_of_frost" );
+  ss_aoe->add_action( "blizzard,if=active_enemies>=7&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)", "Only hardcast Blizzard at 7 or more targets. Holding it when Frozen Orb is about to come up is mostly QOL with a minimal impact on sim-dps." );
   ss_aoe->add_action( "frostbolt" );
+  ss_aoe->add_action( "call_action_list,name=movement" );
 
   ss_st->add_action( "comet_storm" );
-  ss_st->add_action( "ray_of_frost,if=fight_remains<12" );
-  ss_st->add_action( "flurry,if=cooldown_react&buff.brain_freeze.react&buff.thermal_void.down" );
-  ss_st->add_action( "frozen_orb,if=cooldown_react" );
+  ss_st->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react=2" );
+  ss_st->add_action( "frozen_orb" );
   ss_st->add_action( "glacial_spike" );
-  ss_st->add_action( "blizzard,if=active_enemies=2&talent.freezing_winds&buff.freezing_rain.up" );
   ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_st->add_action( "ice_lance,if=debuff.freezing.react>=6" );
   ss_st->add_action( "flurry,if=cooldown_react" );
   ss_st->add_action( "ray_of_frost" );
   ss_st->add_action( "frostbolt" );
+  ss_st->add_action( "call_action_list,name=movement" );
 }
 //frost_apl_end
 

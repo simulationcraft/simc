@@ -1133,6 +1133,15 @@ namespace warlock
   {
     ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
     wrath_of_nathreza_rng = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
+
+    // Modeling Cunning Cruelty as a pseudo-random distribution (PRD) with a nominal rate of 50% (SB) / 25% (DS) (MG uses DS rate if
+    // selected, SB rate otherwise) which corresponds to PRD constant C = 0.302103025348741965 (SB) / C = 0.084744091852316990 (DS)
+    if ( talents.cunning_cruelty.ok() )
+    {
+      double c_cc = pseudo_random_c_from_p( talents.drain_soul.ok() ? rng_settings.cunning_cruelty_ds.setting_value : rng_settings.cunning_cruelty_sb.setting_value );
+      cunning_cruelty_rng = get_accumulated_rng( "cunning_cruelty", c_cc );
+    }
+
     // Modeling Shard Instability as a pseudo-random distribution (PRD) with a nominal rate of 10% (DS/MG) / 20% (SB),
     // which corresponds to PRD constant C = 0.014745844781072676 (DS/MG) / C = 0.055704042949781852 (SB)
     if ( talents.shard_instability.ok() )
@@ -1141,6 +1150,14 @@ namespace warlock
       shard_instability_ds_rng = get_accumulated_rng( "shard_instability_ds", c_ds );
       double c_sb = pseudo_random_c_from_p( talents.shard_instability->effectN( 2 ).percent() );
       shard_instability_sb_rng = get_accumulated_rng( "shard_instability_sb", c_sb );
+    }
+
+    // Modeling Fatal Echoes as a pseudo-random distribution (PRD) with a nominal
+    // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
+    if ( talents.fatal_echoes.ok() )
+    {
+      double c_fe = pseudo_random_c_from_p( talents.fatal_echoes->effectN( 1 ).percent() );
+      fatal_echoes_rng = get_accumulated_rng( "fatal_echoes", c_fe );
     }
   }
 
@@ -1165,10 +1182,20 @@ namespace warlock
 
   void warlock_t::init_rng_soul_harvester()
   {
+    // Modeling Succulent Soul as a pseudo-random distribution (PRD) with a nominal rate of 22% (aff) / 15% (demo),
+    // which corresponds to PRD constant C = 0.066676403621508090 (aff) / C = 0.032220914373087675 (demo)
+    double c_ss = 0.0;
+    if ( affliction() )
+      c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_aff.setting_value );
+    else if ( demonology() )
+      c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_demo.setting_value );
+
+    succulent_soul_rng = get_accumulated_rng( "succulent_soul", c_ss );
+
     // Modeling Manifested Avarice as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
-    double c = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
-    manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c );
+    double c_ma = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
+    manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c_ma );
   }
 
   void warlock_t::init_resources( bool force )

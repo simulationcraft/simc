@@ -2589,6 +2589,11 @@ void sim_t::init_actor( player_t* p )
     // Main spell looksup. Populate class/spec/hero talents & spells.
     p->init_spells();
 
+    // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
+    // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may
+    // be flagged to have their custom initialization run on creation.
+    p->create_special_effects();
+
     // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
     p->init_base_stats();
 
@@ -2599,10 +2604,6 @@ void sim_t::init_actor( player_t* p )
 
     // Currently this only holds leech_t.
     p->init_background_actions();
-
-    // First-phase creation of special effects from various sources. Needed to be able to create
-    // actions (APLs, really) based on the presence of special effects on items.
-    p->create_special_effects();
 
     // First, create all the action objects and set up action lists properly
     p->create_actions();
