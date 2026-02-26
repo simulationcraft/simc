@@ -3860,6 +3860,9 @@ Aura Interrupt   : Mount (17)
 Effects          :
 #1 (id=127491)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 36 | Misc Value 2: 2 | Target: Self (1)
+#2 (id=1309860)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Hotfixed         : NEW EFFECT
 Description      : Shapeshift into Treant Form.
 Tooltip          : Shapeshifted into Treant Form.  All spells may be cast while in this form.
 
