@@ -253588,3 +253588,16 @@ Effects          :
 #1 (id=1308643)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Target: Self (1)
 
+Name             : Umbral Shift (id=1290152) [Passive, Hidden] 
+Hotfixed         : NEW SPELL
+School           : Shadow
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1308891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: -621.3425 (coefficient=-4.861703) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1308904)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 14.62806 (coefficient=0.111596) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+
