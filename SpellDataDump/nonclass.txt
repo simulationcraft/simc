@@ -246128,7 +246128,8 @@ Triggered By     : Dive-Bomb (1266366)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1258640)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1888.818 (coefficient=14.77908) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3195.277 (coefficient=25.00148) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (14.779084 -> 25.001484)
 Description      : Your harmful spells and ranged abilities have a chance to call forth Loa aspects to bombard your target three times, each time dealing ${$<rolemult>*$s1} Physical damage split between all nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -246144,9 +246145,11 @@ Triggered By     : Sacred Text (1266394), Sacred Duty (1266403)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1258641)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 126.8104 (coefficient=0.99223) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 228.0256 (coefficient=1.784189) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.99223 -> 1.784189)
 #2 (id=1278808)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 109.981 (coefficient=0.839034) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.97516 (coefficient=0.4194) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.839034 -> 0.4194)
 Description      : Your harmful spells and abilities have a chance to brand your target with sacred text dealing ${$s1*$1266394d/$1266394t} Holy damage over $1266394d.
 
 Rebranding an enemy ignites the text, granting you $s2 Critical Strike for $1266403d and immediately dealing all remaining damage.
@@ -246223,7 +246226,8 @@ Triggered By     : Consecrated Chalice (1259988)
 Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1258645)  : Apply Aura (6) | Proc Trigger Spell (42): Hope | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2855.476 (coefficient=22.34271) | PvP Coefficient: 0.5 | Trigger Spell: 1259994 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4827.761 (coefficient=37.77488) | PvP Coefficient: 0.5 | Trigger Spell: 1259994 | Target: Self (1)
+Hotfixed         : Coefficient (22.342707 -> 37.774883)
 Description      : Your healing spells and abilities have a high chance to fill the chalice with Hope, drop by drop, up to $1259994u times.
 
 
@@ -246241,9 +246245,11 @@ Effects          :
 #1 (id=1258646)  : Apply Aura (6) | Proc Trigger Spell (42): Despair | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 290.2283 (coefficient=2.214123) | PvP Coefficient: 0.5 | Trigger Spell: 1265323 | Target: Self (1)
 #2 (id=1277029)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1163.828 (coefficient=9.106385) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1968.763 (coefficient=15.40461) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (9.106385 -> 15.404615)
 #3 (id=1277096)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1396.593 (coefficient=10.92766) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2362.589 (coefficient=18.48611) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (10.927662 -> 18.486111)
 #4 (id=1277100)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 348.274 (coefficient=2.656948) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Taking damage has a high chance to fill the chalice with Despair, drop by drop, up to $1265323u times. Once full, the chalice spills, blanketing the ground beneath you in a dark mire dealing $s2 Void damage each second split between enemies inside for $1265325d while granting you $s1 versatility.
@@ -246260,9 +246266,11 @@ Triggered By     : Holy Retributor's Order (1260076), Holy Retributor's Order (1
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1258647)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Retributor's Order | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3163.901 (coefficient=24.75599) | PvP Coefficient: 0.5 | Trigger Spell: 1260076 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1701.006 (coefficient=13.30954) | PvP Coefficient: 0.5 | Trigger Spell: 1260076 | Target: Self (1)
+Hotfixed         : Coefficient (24.755987 -> 13.309542)
 #2 (id=1269468)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Retributor's Order | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1389.109 (coefficient=10.8691) | PvP Coefficient: 0.5 | Trigger Spell: 1260079 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15647.28 (coefficient=122.4323) | PvP Coefficient: 0.5 | Trigger Spell: 1260079 | Target: Self (1)
+Hotfixed         : Coefficient (10.869105 -> 122.432343)
 #3 (id=1269481)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : The light blesses your weapon granting your attacks a chance to deal $s1 additional Holy damage and heal you for $s2 health.
@@ -252894,8 +252902,9 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1285703)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 169834.9 (coefficient=1328.876) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 275032.9 (coefficient=2151.999) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Coefficient (1328.875732 -> 2151.998535)
 #2 (id=1285704)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Don Ultradon scales granting you an $s1 absorb shield for $d.
@@ -252923,7 +252932,8 @@ Triggered By     : Cosmic Toll (1272479)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1285729)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 58724.42 (coefficient=459.49) | Radius: 50 yards | Target: Party in Area (20)
+                   Base Value: 0 | Scaled Value: 99280.37 (coefficient=776.8206) | Radius: 50 yards | Target: Party in Area (20)
+Hotfixed         : Coefficient (459.48999 -> 776.820618)
 #2 (id=1285730)  : Trigger Spell (64): Cosmic Toll
                    Base Value: 0 | Scaled Value: 0 | Delay: 900_ms | Trigger Spell: 1272479
 Description      : Manifest void breaches above nearby party members to heal them and yourself for $s1 split between all targets.
@@ -252937,7 +252947,8 @@ Triggered By     : Agitated Anguish (1272698), Astalor's Anguish Agitator (12727
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1285940)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 24764.85 (coefficient=193.7729) | Trigger Spell: 1272720 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41852.55 (coefficient=327.4759) | Trigger Spell: 1272720 | Target: Self (1)
+Hotfixed         : Coefficient (193.772919 -> 327.475861)
 #2 (id=1285941)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 196.6207 (coefficient=1.5) | Trigger Spell: 1272698 | Target: Self (1)
 
