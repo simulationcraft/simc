@@ -3720,7 +3720,7 @@ struct between_the_eyes_t : public rogue_attack_t
         // 2026-02-26 -- Gravedigger_1 causes the second Supercharger stack to mistakenly be consumed
         if ( p()->bugs )
         {
-          trigger_supercharger_cp( rs );
+          trigger_supercharger_cp( execute_state );
         }
       }
 
