@@ -4013,6 +4013,16 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'TWW3'
         },
         {
+            'name'   : 'sunfire_silk_trappings',
+            'bonuses': [ 1957 ],
+            'tier'   : 'MID_ST'
+        },
+        {
+            'name'   : 'arcanoweave_trappings',
+            'bonuses': [ 1958 ],
+            'tier'   : 'MID_AT'
+        },
+        {
             'name'   : 'shards_of_the_void',
             'bonuses': [ 1960 ],
             'tier'   : 'TWW_SOTV'

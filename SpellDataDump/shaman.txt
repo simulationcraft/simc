@@ -53,6 +53,7 @@ Effects          :
 Description      : $@spelldesc974
 
 Name             : Earth Shield (id=974) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Nature
@@ -75,7 +76,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Affecting Spells : Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
 Effects          :
 #1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
@@ -494,6 +495,7 @@ Description      : Energizes both your weapons with lightning and delivers a mas
 Stormstrike has a $s4% chance to generate $210853m2 $Lstack:stacks; of Maelstrom Weapon.][]
 
 Name             : Reincarnation (desc=Passive) (id=20608) [Spell Family (11), Passive] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -506,7 +508,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 1800 seconds
 Affecting Spells : Ancient Ankh Talisman (287777 effect#1), Brimming with Life (381684 effect#1)
 Family Flags     : 9
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Not In Arena (297), Ignore Default Rated Battleground Restrictions (302), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Allow Cast While Dead (23), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Not In Arena (297), Ignore Default Rated Battleground Restrictions (302), Allow Class Ability Procs (416), Non-secret Spell (511)
 Effects          :
 #1 (id=11607)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -1427,6 +1429,7 @@ Effects          :
 Description      : Your spell critical strikes have a chance to restore $60538s1 mana.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Nature
@@ -1444,7 +1447,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effects: #1, #2), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470077 effect#1), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 41, 68
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80288 | PvP Coefficient: 1.15 | Target: Targeted Ally (21)
@@ -3604,13 +3607,11 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Internal Cooldown: 0.2 seconds
-Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=274045)   : Apply Aura (6) | Proc Trigger Spell (42): Crash Lightning | Attributes: Suppress Points Stacking (6)
+#1 (id=274045)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 Description      : $@spelldesc187874
 Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
@@ -8134,6 +8135,7 @@ Tooltip          : Cast time of your next Earthquake reduced by $w1%.
 Damage of your next earthquake increased by $w2%.
 
 Name             : Windfury Weapon (id=319773) [Spell Family (11), Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -8145,7 +8147,7 @@ Proc Chance      : 15%
 Proc Flags       : White Melee, Yellow Melee
 Affecting Spells : Mastery: Enhanced Elements (77223 effect#4), Forceful Winds (262647 effect#2), Thunderaan's Fury (287802 effect#2), Doom Winds (335903 effect#1), Imbuement Mastery (445028 effect#1), Doom Winds (466772 effect#1)
 Family Flags     : 72
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Extra Initial Period (169), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Extra Initial Period (169), Allow Class Ability Procs (416), Allow Aura On Level Scale (444), Non-secret Aura (506)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=806482)   : Apply Aura (6) | Dummy (4)
@@ -8155,6 +8157,7 @@ Effects          :
 Description      : $@spelldesc33757
 
 Name             : Flametongue Weapon (id=319778) [Spell Family (11), Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -8167,7 +8170,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee
 Affecting Spells : Elemental Fury (60188 effect#1), Fire and Ice (382886 effect#1), Supportive Imbuements (445033 effects: #1, #2), Enhanced Imbues (462796 effects: #2, #3, #10), Storm Unleashed (1262761 effect#2)
 Family Flags     : 21
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=806487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10894,6 +10897,7 @@ Effects          :
 Description      : Earth Shield reduces damage taken by $s3% and its healing is increased by up to $s1% as its target's health decreases. Maximum benefit is reached below $s2% health.
 
 Name             : Earthliving Weapon (id=382021) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Nature
@@ -10904,7 +10908,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416), Non-secret Aura (506)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1013211)  : Apply Aura (6) | Dummy (4)
@@ -10912,6 +10916,7 @@ Effects          :
 Description      : Imbue your weapon with the element of Earth for $382022d. Your Riptide, Healing Wave, and Chain Heal healing has a $382022s2% chance to trigger Earthliving on the target, healing for $382024o1 over $382024d.
 
 Name             : Earthliving Weapon (id=382022) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -10922,7 +10927,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
-Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
+Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416), Non-secret Aura (506)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1013212)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -11600,6 +11605,7 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
 
 Name             : Earth Shield (id=383648) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -11618,7 +11624,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Affecting Spells : Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
 Effects          :
 #1 (id=1015698)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
@@ -14788,6 +14794,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | Target: Self (1)
 
 Name             : Tidecaller's Guard (id=457481) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : None
@@ -14798,7 +14805,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416), Non-secret Aura (506)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1162702)  : Apply Aura (6) | Dummy (4)
@@ -14825,6 +14832,7 @@ Tooltip          : Your healing done is increased by $w1%.
 Healing Stream Totem lasts an additional ${$w2/1000} sec.
 
 Name             : Tidecaller's Guard (id=457496) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : None
@@ -14836,7 +14844,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3932: Enhanced Imbues (462796 effect#6), Enhanced Imbues (462796 effect#7), Enhanced Imbues (462796 effect#8)
-Attributes       : No Aura Icon (60), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Aura Icon (60), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1162726)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
@@ -15518,6 +15526,7 @@ Effects          :
 Description      : Reduces the cast time of Lightning Bolt$?s454009[, Tempest,][] and Chain Lightning by $s1%.
 
 Name             : Thunderstrike Ward (id=462742) [Spell Family (11), Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -15528,13 +15537,14 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1172852)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc462757
 
 Name             : Thunderstrike Ward (desc=Shield Imbue) (id=462757) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Elemental [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Shaman
 School           : Nature
@@ -15545,7 +15555,7 @@ Requires armor   : Shield
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1172875)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15760,6 +15770,7 @@ Effects          :
 Description      : Consuming Power of the Maelstrom additionally fires an Elemental Blast at your target at $s1% effectiveness.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -15775,7 +15786,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 20%
 Proc Flags       : White Melee
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1173055)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Radius: 100 yards | Target: Targeted Ally or Raid (118)

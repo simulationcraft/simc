@@ -84,29 +84,29 @@
 
 # save=MID1_Rogue_Outlaw.simc
 
-# rogue="MID1_Rogue_Subtlety"
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# spec=subtlety
-# talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAALjZWmGzsMGzYMMMzMzwY2mlZMjtZmxMzMGwysNAAAAmZwAYMbGGYgZRL0iNYA
+ rogue="MID1_Rogue_Subtlety"
+ level=80
+ race=pandaren
+ role=attack
+ position=back
+ spec=subtlety
+ talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwDMzMzYMbjZmZbbMzMzMjBjZWGAAAAGMGwY2MMwAziWoFbwAmZwMzA
+ 
+ head=masquerade_of_the_grim_jest,id=250006,bonus_id=12676/13338/13534/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+ neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900
+ shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+ back=rigid_scale_greatcloak,id=258575,ilevel=289
+ chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+ wrist=voidskinned_bracers,id=249327,bonus_id=13534,ilevel=289,gem_id=240900
+ hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+ waist=silvermoon_agents_utility_belt,id=244573,bonus_id=8791/8960/12214/12214/12214/12214/12384/13534,ilevel=285,gem_id=240900
+ legs=shaggy_wyrmleather_leggings,id=133499,ilevel=289,enchant_id=8163
+ feet=balancing_boots_of_the_grim_jest,id=250008,ilevel=289
+ finger1=platinum_star_band,id=193708,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7967
+ finger2=bifurcation_band,id=251115,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7967
+ trinket1=light_company_guidon,id=249344,ilevel=289
+ trinket2=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335,ilevel=289
+ main_hand=hungering_victory,id=249925,ilevel=289,enchant_id=8039
+ off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12214/12214/12214/12214/12693,ilevel=285,enchant_id=8041
 
-# head=,id=237664,bonus_id=12676/1533/12361/1808,gem_id=213743
-# neck=,id=215136,bonus_id=10421/9633/8902/12053/12050/1485/10520/8960/8781,gem_id=213497/213497,crafted_stats=49/40
-# shoulder=,id=237552,bonus_id=1533/12361/12239
-# back=,id=235499,bonus_id=9893/12239,gem_id=238046
-# chest=,id=237667,bonus_id=12676/1533/12361,enchant_id=7364
-# wrist=,id=219334,bonus_id=10421/9633/8902/12053/12050/1485/1808/10520/8960,gem_id=213497,crafted_stats=49/40
-# hands=,id=237665,bonus_id=12675/1533/12361
-# waist=,id=237557,bonus_id=1533/12361/12239/1808,gem_id=213497
-# legs=,id=237663,bonus_id=12676/1533/12361,enchant=stormbound_armor_kit_3
-# feet=,id=243306,bonus_id=1533/12361/12239/13504
-# finger1=,id=221141,bonus_id=3215/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
-# finger2=,id=237567,bonus_id=1533/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
-# trinket1=,id=242395,bonus_id=1533/12361/12239
-# trinket2=,id=242396,bonus_id=1533/12361/12239
-# main_hand=,id=237740,bonus_id=1533/12361/12239,enchant=stonebound_artistry_3
-# off_hand=,id=237729,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
-
-# save=MID1_Rogue_Subtlety.simc
+ save=MID1_Rogue_Subtlety.simc

@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66017
-static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28632> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9201,7 +9201,7 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   {  253748, "Open the container.", 0, 0 },
   {  253793, "Your autoattacks have a chance to deal $253797s1 additional Shadow damage.", 0, 0 },
   {  253797, "$@spelldesc253793", 0, 0 },
-  {  253802, "Increases your Agility against Aberrations by $s1.", 0, 0 },
+  {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
@@ -26247,6 +26247,7 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1241136, "The effectiveness of your Stagger is increased by up to $s1%, based on your missing health.", 0, 0 },
   { 1241167, "$@spelldesc191587", 0, 0 },
   { 1241171, "$@spelldesc1240996", 0, 0 },
+  { 1241227, "Gain $s1 Critical Strike while above $1241262s1% health.", 0, 0 },
   { 1241240, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals ${$<rolemult>*$1236137s13} Nature damage split between targets within $1237033A1 yds.", 0, 0 },
   { 1241241, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137s11 damage for $1236993d. When the shield expires it deals $1236137s12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1241242, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137s10.", 0, 0 },
@@ -26256,9 +26257,11 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1241246, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
   { 1241251, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. ", 0, 0 },
+  { 1241262, "Gain $1241289s1 Critical Strike while above $s1% health.", "Increased Critical Strike.", 0 },
   { 1241275, "Activating Avenging Wrath releases the Light within yourself, healing $200652s2 injured allies instantly and an injured ally every $200652t1 sec within $200653A1 yds for $200654s1.\r\n\r\nAllies healed also receive $200654s2% increased healing from your Holy Light, Flash of Light, and Holy Shock spells for $200654d. ", 0, 0 },
   { 1241285, "$@spelldesc232893", 0, 0 },
   { 1241288, "During Avenging Wrath, Judgment is empowered into Hammer of Wrath.$?c3[\r\n\r\n$@spellicon24275$@spellname24275\r\n$@spelldesc24275][\r\n\r\n$@spellicon1241413 $@spellname1241413\r\n$@spelldesc1241413]", 0, 0 },
+  { 1241289, "$@spelldesc1241262", "Critical Strike increased by $w1.", 0 },
   { 1241358, "Judgment critical strikes empower your next Word of Glory to automatically activate Light of Dawn at $s2% effectiveness.", 0, 0 },
   { 1241410, "$@spelldesc1241288", "Hammer of Wrath can be cast.", 0 },
   { 1241413, "Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
@@ -28632,7 +28635,8 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66017
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  253802,  0, "Increases your Agility against Aberrations by $s1.", "Increases your $pri against Aberrations by $s1." },
   { 1255278,  0, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d." },
 } };
 

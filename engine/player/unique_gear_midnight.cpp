@@ -58,17 +58,17 @@ static constexpr unsigned __gem_colors[] = { GEM_PERIDOT, GEM_GARNET, GEM_LAPIS,
 static constexpr util::span<const unsigned> gem_colors = util::make_span( __gem_colors );
 
 // can be called via unqualified lookup
-void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
+void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false, bool passive = false )
 {
-  unique_gear::register_special_effect( spell_id, init_callback, fallback, version_min, version_max );
+  unique_gear::register_special_effect( spell_id, init_callback, fallback, passive, version_min, version_max );
   __mid_special_effect_ids.push_back( spell_id );
 }
 
 void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                              bool fallback = false )
+                              bool fallback = false, bool passive = false )
 {
   for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback );
+    register_special_effect( id, init_callback, fallback, passive );
 }
 
 namespace consumables
@@ -362,10 +362,10 @@ namespace enchants
 // 1258209 driver
 void powerful_eversong_diamond( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
-  const auto& crit_eff = effect.driver()->effectN( 2 );
+  auto pct = effect.driver()->effectN( 1 ).base_value() * unique_gem_list( effect.player, gem_colors ).size();
 
-  effect.player->register_passive_item_effect_override( crit_eff, pct );
+  effect.player->register_passive_item_effect_override( effect.driver()->effectN( 2 ), pct );
+  effect.player->register_passive_item_effect_override( effect.driver()->effectN( 3 ), pct );
   effect.player->parse_passive_item_effect( effect.driver() );
 }
 
@@ -431,7 +431,8 @@ void flames_of_the_sindorei( special_effect_t& effect )
 
   auto aoe = create_proc_action<generic_aoe_proc_t>( "phoenix_fire_aoe", effect, 1242129 );
   aoe->name_str_reporting = "AoE";
-  aoe->base_dd_min = aoe->base_dd_min += aoe_value;
+  aoe->base_dd_min += aoe_value;
+  aoe->base_dd_max += aoe_value;
 
   auto dot = create_proc_action<phoenix_fire_t>( "phoenix_fire", effect, aoe );
   dot->base_td += dot_value;
@@ -1977,7 +1978,7 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
     silverstrike_trick_shot_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
     {}
 
-    result_e calculate_result( action_state_t* s ) const override
+    result_e calculate_result( action_state_t* ) const override
     {
       return RESULT_CRIT;
     }
@@ -2561,6 +2562,19 @@ void lightless_lament( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1250529 driver
+// 1250528 damage
+void murder_row_fishhook( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "murder_row_fishhook", effect, effect.trigger() );
+  dot->base_dd_min = dot->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -2607,6 +2621,7 @@ void necrotic_hexweave( special_effect_t& effect )
     {
       dot = create_proc_action<generic_proc_t>( "necrotic_hex", e, 1258604 );
       dot->base_td = e.driver()->effectN( 1 ).average( e );
+      dot->base_multiplier *= role_mult( e );
 
       target_debuff = e.trigger();
     }
@@ -2643,6 +2658,103 @@ void necrotic_hexweave( special_effect_t& effect )
 
   new necrotic_hexweave_cb_t( effect );
 }
+
+// 1243876 driver
+// 1258545 delay
+// 1258556 damage
+void rangergenerals_call( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "surprise_attack", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  auto delay = timespan_t::from_millis( effect.trigger()->effectN( 1 ).misc_value1() );
+
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+    [ damage, delay ]( auto, auto, const action_state_t* s ) {
+      make_event( *s->action->sim, delay, [ damage, s ] {
+        damage->execute_on_target( s->target );
+      } );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1243903 driver
+// 1246714 orb duration
+// 1246739 buffs
+void azerothian_power( special_effect_t& effect )
+{
+  // create all the stat buffs
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1246739 ), 0.0, [ &buffs ]( stat_e s, buff_t* b ) {
+    buffs[ s ] = b;
+  } );
+
+  // create the fake tracker buff to track orb spawns
+  auto orb = create_buff<buff_t>( effect.player, "azerothian_power_orb", effect.trigger() )
+    ->set_quiet( true )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_max_stack( 10 );  // sufficiently high
+
+  effect.custom_buff = orb;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // create a fake callback to proc on next ability that can be cast while moving
+  auto pickup = new special_effect_t( effect.player );
+  pickup->name_str = "azerothian_power_pickup";
+  pickup->spell_id = orb->data().id();
+  pickup->proc_flags_ = PF_CAST_SUCCESSFUL;
+  pickup->proc_chance_ = 1.0;
+  pickup->set_can_only_proc_from_class_abilites( true );
+  pickup->set_can_proc_from_procs( false );
+  effect.player->special_effects.push_back( pickup );
+
+  struct azerothian_power_pickup_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    buff_t* orb;
+
+    azerothian_power_pickup_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), buffs( std::move( map ) ), orb( b )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      // trigger only if the action is usable while moving
+      // we can't just use usable_moving() since it returns false for melee abilities
+      if ( ( a->trigger_gcd > 0_ms && a->execute_time() == 0_ms ) || ( a->channeled && a->usable_moving() ) )
+        dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      if ( auto move_delay = a->gcd() - 10_ms; orb->remains_gt( move_delay ) )
+      {
+        make_event( *a->sim, move_delay, [ this ] {
+          buffs.at( util::highest_stat( orb->player, secondary_ratings ) )->trigger();
+          orb->decrement();
+        } );
+      }
+    }
+  };
+
+  auto cb = new azerothian_power_pickup_cb_t( *pickup, buffs, orb );
+  cb->activate_with_buff( orb );
+};
+
+// 1241529 driver
+// 1241530 buff
+void arcanoweave_cord( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+};
 }  // namespace armors
 
 namespace sets
@@ -2766,6 +2878,79 @@ void voidlight_bindings( special_effect_t& effect )
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1241262 driver
+// 1241227 coeff (unused?)
+// 1241289 buff
+void arcanoweave_trappings( special_effect_t& effect )
+{
+  effect.player->sim->error(
+    UNVERIFIED_VALUE,
+    "Arcanoweave Trappings: How the buff value scales with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
+
+  struct arcanoweave_trappings_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    arcanoweave_trappings_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->midnight_opts.arcanoweave_trappings_update_interval,
+                  p->midnight_opts.arcanoweave_trappings_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<arcanoweave_trappings_t>( effect.player, effect.trigger() );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* p ) {
+    buff->trigger();
+
+    make_repeating_event( *p->sim,
+      [ p, buff ] { return p->rng().gauss( buff->interval ); },
+      [ p, buff ] {
+        if ( p->rng().roll( p->midnight_opts.arcanoweave_trappings_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+  } );
+}
+
+// 1270977 driver
+// 1270985 buff
+void sunfire_silk_trappings( special_effect_t& effect )
+{
+  effect.player->sim->error(
+    UNVERIFIED_VALUE,
+    "Sunfire Silk Trappings: How the buff value scales with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
+
+  struct sunfire_silk_trappings_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    sunfire_silk_trappings_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->midnight_opts.sunfire_silk_trappings_update_interval,
+                  p->midnight_opts.sunfire_silk_trappings_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<sunfire_silk_trappings_t>( effect.player, effect.trigger() );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* p ) {
+    buff->trigger();
+
+    make_repeating_event( *p->sim,
+      [ p, buff ] { return p->rng().gauss( buff->interval ); },
+      [ p, buff ] {
+        if ( p->rng().roll( p->midnight_opts.sunfire_silk_trappings_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+  } );
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -2815,7 +3000,7 @@ void register_special_effects()
   register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
-  register_special_effect( 1258209, enchants::powerful_eversong_diamond );
+  register_special_effect( 1258209, enchants::powerful_eversong_diamond, false, true );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
   register_special_effect( { 1236739, 1236740 }, enchants::flames_of_the_sindorei );
   register_special_effect( { 1236741, 1236742,    // Acuity of the Ren'dorei (Primary)
@@ -2824,7 +3009,7 @@ void register_special_effects()
                              1236724, 1236725,    // Janalai's Precision (Crit)
                              1236729, 1236730 },  // Worldsoul Tenacity (Vers)
                            enchants::stat_weapon_enchant );
-  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle );
+  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -2890,14 +3075,20 @@ void register_special_effects()
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
+  register_special_effect( 1250529, weapons::murder_row_fishhook );
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
+  register_special_effect( 1243876, armors::rangergenerals_call );
+  register_special_effect( 1243903, armors::azerothian_power );
+  register_special_effect( 1241529, armors::arcanoweave_cord );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
   unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
   unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
+  unique_gear::register_special_effect( 1241262, sets::arcanoweave_trappings );
+  //unique_gear::register_special_effect( 1270977, sets::sunfiresilk_trappings );
   unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 

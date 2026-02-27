@@ -1051,6 +1051,7 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::EARTHSURGE: return fmt::format( "{}_es", name );
     case spell_variant::PRIMORDIAL_STORM: return fmt::format( "{}_ps", name );
     case spell_variant::RIDE_THE_LIGHTNING: return fmt::format( "{}_rtl", name );
+    case spell_variant::PURGING_FLAMES: return fmt::format( "{}_pf", name );
     default: return std::string( name );
   }
 }
@@ -1067,6 +1068,7 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::EARTHSURGE: return "earthsurge";
     case spell_variant::PRIMORDIAL_STORM: return "primordial_storm";
     case spell_variant::RIDE_THE_LIGHTNING: return "ride_the_lightning";
+    case spell_variant::PURGING_FLAMES: return "purging_flames";
     default: return "normal";
   }
 }
@@ -1212,6 +1214,7 @@ public:
     action_t* stormflurry_ws;
 
     action_t* stormblast;
+    action_t* ascendance_damage;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -1262,6 +1265,7 @@ public:
     action_t* stormblast;
     action_t* thorims_invocation;
     action_t* ride_the_lightning;
+    action_t* deeply_rooted_elements;
   } dummy;
 
   // Pets
@@ -8388,6 +8392,7 @@ struct ascendance_t : public shaman_spell_t
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
+      p()->action.ascendance_damage->execute_on_target( target );
       p()->action.doom_winds_asc->execute_on_target( target );
     }
   }
@@ -10438,6 +10443,20 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    dummy.deeply_rooted_elements = new dummy_action_t( this, talent.deeply_rooted_elements,
+      "deeply_rooted_elements" );
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+
+    dummy.deeply_rooted_elements->add_child( action.ascendance_damage );
+  }
+  else if ( talent.ascendance.ok() )
+  {
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+    action.ascendance->add_child( action.ascendance_damage );
+  }
 }
 
 // shaman_t::create_options =================================================
@@ -12299,7 +12318,9 @@ void shaman_t::create_buffs()
   buff.purging_flames = make_buff( this, "purging_flames", find_spell( 1259491 ) );
 
   buff.mid1_ele_2pc = make_buff( this, "thunderous_velocity", find_spell( 1272101 ) )
-                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) );
+                          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, MID1, B2 ) )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                          ->set_default_value_from_effect_type( A_HASTE_ALL );
 
   //
   // Enhancement

@@ -212,22 +212,21 @@ void subtlety( player_t* p )
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "stealth" );
 
-  default_->add_action( "stealth" );
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20" );
-  default_->add_action( "variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&(combo_points<=1|combo_points>=6)" );
+  default_->add_action( "variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&combo_points>=6" );
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
+  default_->add_action( "shadowstrike,if=talent.unseen_blade&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=4)" );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up", "Cooldowns" );
-  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready" );
-  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&(buff.shadow_blades.up|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)" );
-  cds->add_action( "thistle_tea" );
+  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&(cooldown.secret_technique.ready|talent.deathstalkers_mark)|fight_remains<=20" );
+  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)|fight_remains<=10" );
   cds->add_action( "vanish,if=!variable.stealth&energy>=40&!buff.subterfuge.up&combo_points<=1" );
   cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>=3" );
 
@@ -237,21 +236,23 @@ void subtlety( player_t* p )
   race->add_action( "ancestral_call,if=variable.racial_sync" );
   race->add_action( "invoke_external_buff,name=power_infusion,if=variable.racial_sync" );
 
-  item->add_action( "use_item,name=unyielding_netherprism,use_off_gcd=1,if=buff.shadow_blades.up&(buff.latent_energy.stack>=8+8*(trinket.arazs_ritual_forge.cooldown.ready|!equipped.arazs_ritual_forge)|!equipped.arazs_ritual_forge&fight_remains<=90)|fight_remains<=20", "Trinket and Items" );
-  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
-  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up", "Trinket and Items" );
+  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2" );
+  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
   finish->add_action( "secret_technique,if=buff.shadow_dance.up" );
-  finish->add_action( "eviscerate,if=buff.darkest_night.up&!debuff.deathstalkers_mark.up" );
+  finish->add_action( "eviscerate,if=buff.darkest_night.up" );
   finish->add_action( "coup_de_grace" );
   finish->add_action( "black_powder,if=variable.targets>=2" );
   finish->add_action( "eviscerate" );
 
-  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up|variable.targets<=2" );
+  build->add_action( "shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre" );
+  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2|variable.priority_rotation" );
   build->add_action( "shuriken_storm,if=variable.targets>1" );
   build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
-  build->add_action( "gloomblade" );
-  build->add_action( "backstab" );
+  build->add_action( "gloomblade,if=variable.targets<2" );
+  build->add_action( "backstab,if=variable.targets<2" );
 
   fill->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "This list usually contains Cooldowns with negligible impact that causes global cooldowns" );
   fill->add_action( "arcane_pulse" );

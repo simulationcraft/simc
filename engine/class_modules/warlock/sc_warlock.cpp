@@ -113,6 +113,7 @@ void warlock_td_t::target_demise()
   if ( !( target->is_enemy() ) )
     return;
 
+  // Warlock gains only one shard at most per enemy that dies with UA, regardless of UA stacks
   if ( dots.unstable_affliction->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
@@ -335,7 +336,7 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
-double warlock_t::pseudo_random_p_from_c( double c )
+double warlock_t::pseudo_random_p_from_c( double c ) const
 {
   if ( c <= 0 )
     return 0.0;
@@ -354,7 +355,7 @@ double warlock_t::pseudo_random_p_from_c( double c )
   return ( 1 / sum_n_p_proc_on_n );
 }
 
-double warlock_t::pseudo_random_c_from_p( double p )
+double warlock_t::pseudo_random_c_from_p( double p ) const
 {
   if ( p <= 0 )
     return 0.0;

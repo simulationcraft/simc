@@ -904,6 +904,15 @@ struct player_t : public actor_t
     timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
     // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.
     bool sealed_chaos_urn_dispell = false;
+    // Arcanoweave trappings
+    double arcanoweave_trappings_uptime = 0.7;
+    // Interval between checking arcanoweave trappings uptime
+    timespan_t arcanoweave_trappings_update_interval = 10_s;
+    timespan_t arcanoweave_trappings_update_interval_stddev = 2.5_s;
+    double sunfire_silk_trappings_uptime = 0.7;
+    // Interval between checking sunfire silk trappings uptime
+    timespan_t sunfire_silk_trappings_update_interval = 10_s;
+    timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
   } midnight_opts;
 
 private:

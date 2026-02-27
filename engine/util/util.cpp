@@ -1538,10 +1538,11 @@ const char* util::special_effect_string( special_effect_e type )
 {
   switch ( type )
   {
-    case SPECIAL_EFFECT_EQUIP: return "equip";
-    case SPECIAL_EFFECT_USE: return "use";
+    case SPECIAL_EFFECT_EQUIP:
+    case SPECIAL_EFFECT_PASSIVE:  return "equip";
+    case SPECIAL_EFFECT_USE:      return "use";
     case SPECIAL_EFFECT_FALLBACK: return "fallback";
-    default: return "unknown";
+    default:                      return "unknown";
   }
 }
 

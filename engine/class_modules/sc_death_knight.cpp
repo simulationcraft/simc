@@ -1090,6 +1090,7 @@ public:
     // Unholy
     propagate_const<gain_t*> forbidden_knowledge;
     propagate_const<gain_t*> superstrain;
+    propagate_const<gain_t*> lesser_ghoul_energy;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
@@ -1890,6 +1891,7 @@ public:
 
   // Runes
   runes_t _runes;
+  // Other
   rider_of_the_apocalypse_e last_summoned_rider;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
@@ -1897,6 +1899,7 @@ public:
   runeforges_e oh_runeforge;
   player_t* last_target;
   int lesser_ghouls_summoned;
+  uptime_t* lesser_ghoul_uptimes;
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
@@ -1929,7 +1932,8 @@ public:
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
       last_target( this ),
-      lesser_ghouls_summoned( 0 )
+      lesser_ghouls_summoned( 0 ),
+      lesser_ghoul_uptimes( nullptr )
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -3162,11 +3166,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
   }
 
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new auto_attack_melee_t<base_ghoul_pet_t>( this, "auto_attack_mh" );
-  }
-
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
@@ -3178,6 +3177,24 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     resources.hasted[ RESOURCE_ENERGY ]                = true;
   }
 
+  struct ghoul_auto_t final : public auto_attack_melee_t<base_ghoul_pet_t>
+  {
+    ghoul_auto_t( base_ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t<base_ghoul_pet_t>::impact( state );
+      pet()->trigger_infected_claws( state->target );
+    }
+  };
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new ghoul_auto_t( this, "auto_attack_mh" );
+  }
+
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3185,6 +3202,12 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     double dist    = precombat_spawn ? 0 : rng().range( -spawn_radius, spawn_radius );
     spawn_distance = std::max( 0.0, dk()->base.distance + dist );
     trigger_pet_movement( spawn_distance );
+  }
+
+  void trigger_infected_claws( player_t* target )
+  {
+    if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
+      dk()->background_actions.infected_claws->execute_on_target( target );
   }
 
   resource_e primary_resource() const override
@@ -3206,7 +3229,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                         bool usable_in_dt = true )
       : pet_melee_attack_t( p, name, spell ),
         usable_in_dt( usable_in_dt ),
-        triggers_infected_claws( false ),
         triggers_apocalypse( false )
     {
     }
@@ -3215,9 +3237,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_melee_attack_t<ghoul_pet_t>::impact( state );
 
-      if ( triggers_infected_claws && dk()->talent.unholy.infected_claws.ok() &&
-           rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( state->target );
+      pet()->trigger_infected_claws( state->target );
 
       if ( triggers_apocalypse  )
         dk()->trigger_rune_of_the_apocalypse( state->target );
@@ -3245,7 +3265,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                  bool dt = false )
       : dt_melee_ability_t( p, name, spell, dt )
     {
-      triggers_infected_claws = triggers_apocalypse = true;
+      triggers_apocalypse = true;
       base_multiplier *= 0.85;
     }
   };
@@ -3304,13 +3324,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct dt_auto_t final : public auto_attack_melee_t<ghoul_pet_t>
-  {
-    dt_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
-    {
-    }
-  };
-
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
@@ -3321,11 +3334,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       dynamic = false;
     }
-  }
-
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new dt_auto_t( this, "auto_attack_mh" );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3469,13 +3477,16 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     lesser_ghoul_claw_base_t( lesser_ghoul_pet_t* p, std::string_view name, const spell_data_t* spell )
       : pet_melee_attack_t( p, name, spell )
     {
+      // Data has these as 0 cost. They cost 40 in game. 
+      base_costs[ RESOURCE_ENERGY ] = 40;
+      // Data has no gcd on these. They have a 1.5s gcd in game.
+      trigger_gcd                   = 1.5_s;
     }
 
     void impact( action_state_t* s ) override
     {
       pet_melee_attack_t<lesser_ghoul_pet_t>::impact( s );
-      if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( s->target );
+      pet()->trigger_infected_claws( s->target );
 
       dk()->trigger_rune_of_the_apocalypse( s->target );
     }
@@ -3499,6 +3510,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
       base_costs[ RESOURCE_ENERGY ] = 0;
+      trigger_gcd                   = 0_ms;
     }
   };
 
@@ -3552,51 +3564,45 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_spell_t<lesser_ghoul_pet_t>::impact( s );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
-    resource_regeneration             = regen_type::DISABLED;
     affected_by.commander_of_the_dead = true;
     affected_by.grave_mastery         = true;
   }
 
-  resource_e primary_resource() const override
-  {
-    return RESOURCE_NONE;
-  }
-
   void init_base_stats() override
   {
-    // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
-    death_knight_pet_t::init_base_stats();
+    base_ghoul_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = 0.2325;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 1.75;
+  }
+
+  void init_gains() override
+  {
+    base_ghoul_pet_t::init_gains();
+
+    // Merge gains for all lesser ghouls to cleanup reporting
+    if( !dk()->gains.lesser_ghoul_energy )
+      dk()->gains.lesser_ghoul_energy = gains.resource_regen[ RESOURCE_ENERGY ];
+    else
+      gains.resource_regen[ RESOURCE_ENERGY ] = dk()->gains.lesser_ghoul_energy;
+  }
+
+  void init_uptimes() override
+  {
+    base_ghoul_pet_t::init_uptimes();
+
+    // Merge Uptimes for all lesser ghouls to cleanup reporting.
+    if ( !dk()->lesser_ghoul_uptimes )
+      dk()->lesser_ghoul_uptimes = uptimes.primary_resource_cap;
+    else
+      uptimes.primary_resource_cap = dk()->lesser_ghoul_uptimes;
   }
 
   void arise() override

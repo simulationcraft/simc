@@ -4996,7 +4996,14 @@ struct scorch_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
-      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+    {
+      double scald = p()->talents.scald->effectN( 2 ).percent();
+      // TODO: Scald only seems to provide +150% damage (rather than +250%) when
+      // Heat Shimmer isn't active.
+      if ( p()->bugs && p()->talents.scald.ok() && !p()->buffs.heat_shimmer->check() )
+        scald -= 1.0;
+      m *= 1.0 + scald;
+    }
 
     m *= 1.0 + p()->buffs.heat_shimmer->check_value();
 
@@ -5326,7 +5333,8 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
     {
-      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      // Add a millisecond so that it the ICD doesn't perfectly align with delayed splinters.
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
       if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
         make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
     }

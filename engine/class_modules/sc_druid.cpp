@@ -5466,7 +5466,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 /*
 maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
 |
-|->maul_ravage_base_t:trigger_maul_echo_t
+|->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t
 |  |
 |  |->maul_t "maul"
 |
@@ -5476,7 +5476,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |
 |->raze_base_t
 |  |
-|  |->maul_ravage_base_t:trigger_maul_echo_t
+|  |->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t
 |  |  |
 |  |  |->raze_t "raze"
 |  |
@@ -5486,7 +5486,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |
 |->ravage_base_t
    |
-   |->ravage_maul_t:trigger_maul_echo_t "ravage_maul"
+   |->ravage_maul_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_t "ravage_maul"
    |
    |->celestial_might_maul_t:trigger_wild_guardian_echo_t "ravage_repeat"
    |
@@ -5504,18 +5504,20 @@ struct maul_data_t
 };
 
 template <typename BASE>
-struct trigger_maul_echo_t : public trigger_wild_guardian_echo_t<BASE>
+struct trigger_celestial_might_repeat_t : public trigger_wild_guardian_echo_t<BASE>
 {
 private:
   using ab = trigger_wild_guardian_echo_t<BASE>;
   druid_t* p_;
 
 protected:
-  using base_t = trigger_maul_echo_t<BASE>;
+  using base_t = trigger_celestial_might_repeat_t<BASE>;
   action_t* repeat_action = nullptr;
 
 public:
-  trigger_maul_echo_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f ), p_( p ) {}
+  trigger_celestial_might_repeat_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : ab( n, p, s, f ), p_( p )
+  {}
 
   void execute() override
   {
@@ -5716,16 +5718,16 @@ struct raze_base_t : public maul_base_t
 using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
 
 template <typename BASE>
-struct maul_ravage_base_t : public trigger_maul_echo_t<BASE>
+struct maul_ravage_base_t : public trigger_celestial_might_repeat_t<BASE>
 {
 private:
-  using ab = trigger_maul_echo_t<BASE>;
+  using ab = trigger_celestial_might_repeat_t<BASE>;
 
 protected:
   using base_t = maul_ravage_base_t<BASE>;
 
 public:
-  struct ravage_maul_t final : public trigger_maul_echo_t<ravage_t>
+  struct ravage_maul_t final : public trigger_celestial_might_repeat_t<ravage_t>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {

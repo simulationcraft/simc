@@ -465,7 +465,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   {
     return make_buff_expr( "buff_value",
       []( buff_t* buff ) {
-        return buff->current_value;
+        return buff->check_value();
       } );
   }
   else if ( type == "default_value" )

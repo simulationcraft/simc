@@ -57,7 +57,7 @@ void shadow( player_t* p )
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
-  precombat->add_action( "vampiric_touch" );
+  precombat->add_action( "tentacle_slam" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
@@ -77,8 +77,7 @@ void shadow( player_t* p )
   cds->add_action( "berserking,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=12" );
   cds->add_action( "blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15" );
-  cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|set_bonus.tww2_4pc|!talent.voidform)&!buff.power_infusion.up" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up", "Sync Power Infusion with Voidform or Dark Ascension" );
@@ -95,7 +94,7 @@ void shadow( player_t* p )
   main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0", "Do not overcap on insanity" );
   main->add_action( "void_volley" );
   main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
-  main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions." );
+  main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions." );
   main->add_action( "shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking" );
   main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up", "Use Void Torrent if it will get near full Mastery Value" );
   main->add_action( "shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
@@ -156,8 +155,7 @@ void shadow_ptr( player_t* p )
   cds->add_action( "berserking,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=12" );
   cds->add_action( "blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15" );
-  cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|set_bonus.tww2_4pc|!talent.voidform)&!buff.power_infusion.up" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up", "Sync Power Infusion with Voidform or Dark Ascension" );
