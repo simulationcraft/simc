@@ -246855,9 +246855,11 @@ Effects          :
 #1 (id=1262075)  : Apply Aura (6) | Proc Trigger Spell (42): Tangle of Vibrant Vines
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 562.3208 (coefficient=4.399887) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 950.1172 (coefficient=7.434205) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (4.399887 -> 7.434205)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 22950.44 (coefficient=179.576) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 38786.05 (coefficient=303.482) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (179.576019 -> 303.481964)
 Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
 
 Name             : Tangle of Vibrant Vines (id=1255296) 
@@ -248499,8 +248501,9 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1269616)  : Apply Aura (6) | Proc Trigger Spell (42): Fetid Dartfrog Idol
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1260522 | Target: Self (1)
-#2 (id=1270628)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2468 (coefficient=19.3109) | Target: Self (1)
+#2 (id=1270628)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 1321.262 (coefficient=10.33823) | Target: Self (1)
+Hotfixed         : Coefficient (19.3109 -> 10.338231), Scaling Class (-8 -> -9)
 Description      : Your damaging spells and abilities have a chance to summon a Poison Frog that spits a volley of poison darts at the target, each strike sinking deeper as the venom compounds, doubling in potency with every hit. Deals a total of ${$s2*7} damage over $1260522d.
 
 Name             : Griftah's Fool-Proof Embellishing Powder (id=1260254) [Hidden] 
@@ -251346,10 +251349,12 @@ Category Cooldown: 20 seconds
 Attributes       : Can't Crit (93), Aura Is Buff (140), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1277044)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 90426.96 (coefficient=707.5469) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 152822 (coefficient=1195.757) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Coefficient (707.546936 -> 1195.757446)
 #2 (id=1277045)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 41835.7 (coefficient=327.344) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 70702.52 (coefficient=553.2128) | Target: Self (1)
+Hotfixed         : Coefficient (327.343994 -> 553.21283)
 Description      : Call upon the bark to grant you a shield which absorbs the next ${$<rolemult>*$s1} damage taken for $d. When the shield expires, it bursts outward with potent natural magic, dealing ${$<rolemult>*$s2} Nature damage split among all nearby foes.
 Tooltip          : Protecting you from the next $w1 damage.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -253028,7 +253033,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1286506)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 8781.674 (coefficient=68.71233) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14840.76 (coefficient=116.1217) | Target: Self (1)
+Hotfixed         : Coefficient (68.712326 -> 116.121696)
 Description      : Your abilities have a chance to summon a Silverpaw Lynx to strike at your foes, dealing $s1 physical damage split between all nearby enemies. Damage is increased per target hit.
 
 Name             : Combine the Pieces (id=1276160) 
@@ -253618,7 +253624,8 @@ Triggered By     : Relic Overload (1283381)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1297657)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4537.635 (coefficient=35.50478) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7668.506 (coefficient=60.00233) | Target: Self (1)
+Hotfixed         : Coefficient (35.504784 -> 60.002331)
 Description      : Your harmful spells and abilities have a chance to awaken the relic, its energy overloading and erupting at your target, inflicting ${$s1*$<rolemult>} Physical damage split among nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
