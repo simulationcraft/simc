@@ -3369,7 +3369,7 @@ struct shattered_souls_trigger_t : public BASE
     return BASE::name_str;
   }
 
-  virtual double shattered_souls_chance( action_state_t* s )
+  virtual double shattered_souls_chance( action_state_t* )
   {
     return shattered_souls_base_chance;
   }
@@ -6299,7 +6299,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
       reduced_aoe_targets = p->spec.collapsing_star_spell->effectN( 1 ).base_value();
     }
 
-    double composite_crit_damage_bonus_multiplier() const
+    double composite_crit_damage_bonus_multiplier() const override
     {
       auto cm = base_t::composite_crit_damage_bonus_multiplier();
 
@@ -9111,7 +9111,7 @@ struct collapsing_star_stacking_t : public demon_hunter_buff_t<buff_t>
   {
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-    add_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+    add_stack_change_callback( [ this ]( buff_t*, int old, int new_ ) {
       if ( new_ >= trigger_threshold && old < trigger_threshold )
       {
         this->p()->buff.collapsing_star->trigger();
@@ -12148,8 +12148,8 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   double drain = base_fury_drain_per_second( stacks );
 
   bool has_reduced_drain = !p()->in_combat || p()->buff.voidrush->check() ||
-                           p()->executing && p()->executing->id == p()->spec.collapsing_star_spell->id() ||
-                           p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id();
+                           ( p()->executing && p()->executing->id == p()->spec.collapsing_star_spell->id() ) ||
+                           ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() );
 
   if ( has_reduced_drain )
   {
@@ -12218,8 +12218,8 @@ void demon_hunter_t::fury_state_t::drain()
 
   if ( p()->resources.current[ RESOURCE_FURY ] <= 0.0 )
   {
-    bool cannot_end_meta = ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() ||
-                             p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() );
+    bool cannot_end_meta = ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() ) ||
+                           ( p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() );
 
     if ( !cannot_end_meta )
     {
