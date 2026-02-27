@@ -2149,6 +2149,7 @@ public:
   void trigger_energy_refund();
   void trigger_poisons( const action_state_t* );
 
+  void consume_supercharger( const action_state_t* state );
   void trigger_ancient_arts( const action_state_t* state );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_blindside( const action_state_t* );
@@ -2187,8 +2188,7 @@ public:
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_shadow_techniques_buff( const action_state_t*, bool ignore_shadowcraft = false );
   void trigger_shadow_techniques_cp( const action_state_t* );
-  void trigger_supercharger_buff();
-  void trigger_supercharger_cp( const action_state_t* state );
+  void trigger_supercharger();
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
@@ -3438,7 +3438,7 @@ struct adrenaline_rush_t : public rogue_spell_t
     }
 
     trigger_fatebound_edge_case( execute_state );
-    trigger_supercharger_buff();
+    trigger_supercharger();
   }
 };
 
@@ -3720,7 +3720,7 @@ struct between_the_eyes_t : public rogue_attack_t
         // 2026-02-26 -- Gravedigger_1 causes the second Supercharger stack to mistakenly be consumed
         if ( p()->bugs )
         {
-          trigger_supercharger_cp( execute_state );
+          consume_supercharger( execute_state );
         }
       }
 
@@ -4646,7 +4646,7 @@ struct kingsbane_t : public rogue_attack_t
         implacable_strikes->execute_on_target( state->target );
       }
 
-      trigger_supercharger_buff();
+      trigger_supercharger();
       trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
       p()->buffs.symbolic_victory->trigger();
     }
@@ -5269,7 +5269,7 @@ struct shadow_dance_t : public rogue_spell_t
     p()->buffs.symbolic_victory->trigger();
     p()->buffs.the_rotten->trigger();
     trigger_master_of_shadows();
-    trigger_supercharger_buff();
+    trigger_supercharger();
   }
 
   bool ready() override
@@ -7367,7 +7367,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
   // Remove Supercharger Buffs
-  trigger_supercharger_cp( state );
+  consume_supercharger( state );
 
   // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
   if ( p()->talent.assassination.deadly_momentum->ok() &&
@@ -8348,7 +8348,7 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_supercharger_buff()
+void actions::rogue_action_t<Base>::trigger_supercharger()
 {
   if ( !p()->talent.rogue.supercharger->ok() )
     return;
@@ -8373,7 +8373,7 @@ void actions::rogue_action_t<Base>::trigger_supercharger_buff()
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_supercharger_cp( const action_state_t* state )
+void actions::rogue_action_t<Base>::consume_supercharger( const action_state_t* state )
 {
   if ( !p()->talent.rogue.supercharger->ok() || !consumes_supercharger() )
     return;
