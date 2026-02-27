@@ -246640,14 +246640,14 @@ Description      : Taking damage has a chance to form a jelly shield for $d, abs
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Refueling Orb (id=1254534) [Hidden] 
+Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Min Travel Time  : 0.1 seconds
 Duration         : 0.001 seconds
-Triggered By     : Refueling Orb (1254752)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Bouncy Chain Missiles (146), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Bouncy Chain Missiles (146), Not On Trivial (182), Aura Points On Client (268), Always Require PvP Target Match (430)
 Effects          :
 #1 (id=1260994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Nearby Ally (3)
@@ -246657,6 +246657,8 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1261062)  : Apply Aura (6) | Modify Rating (189)
@@ -246762,18 +246764,21 @@ School           : Arcane
 Spell Type       : None
 Labels           : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1261317)  : Apply Aura (6) | Proc Trigger Spell (42): Refueling Orb
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1254534 | Target: Self (1)
-#2 (id=1274922)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 104.0742 (coefficient=0.81433) | Target: Self (1)
+#1 (id=1261317)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (1254534 -> 0)
+#2 (id=1274922)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 35.21556 (coefficient=0.268656) | Target: Self (1)
+Hotfixed         : Coefficient (0.81433 -> 0.268656), Scaling Class (-9 -> -7)
 #3 (id=1274923)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #4 (id=1274925)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 8209.052 (coefficient=64.23183) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2776.059 (coefficient=21.72131) | Target: Self (1)
+Hotfixed         : Coefficient (64.231834 -> 21.72131)
 Description      : Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.
 
 Name             : Reshii Grace (id=1254904) [Passive] 
