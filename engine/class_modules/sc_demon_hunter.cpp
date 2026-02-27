@@ -1584,6 +1584,36 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   return buff_t::trigger( s, v, c, d );
 }
 
+// Undying Embers Event definition ==========================================
+
+struct undying_embers_event_t : public event_t
+{
+  action_t* action;
+  action_state_t* state;
+
+  undying_embers_event_t( demon_hunter_t* player, action_t* action, action_state_t* state )
+    : event_t( *player ), action( action ), state( state )
+  {
+  }
+
+  ~undying_embers_event_t()
+  {
+    if ( state )
+      action_state_t::release( state );
+  }
+
+  const char* name() const override
+  {
+    return "undying_embers_event";
+  }
+
+  void execute() override
+  {
+    action->trigger_dot( state );
+    action_state_t::release( state );
+  }
+};
+
 // Soul Fragment definition =================================================
 
 struct soul_fragment_t
@@ -5797,8 +5827,6 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_base_t : public demon_hunter_spell_t
 {
-  std::vector<action_state_t*> undying_embers_states;
-
   soul_immolation_base_t( util::string_view n, demon_hunter_t* p, util::string_view o )
     : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
   {
@@ -5845,23 +5873,9 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
       action_state_t* undying_embers_state = get_state();
       undying_embers_state->target         = d->state->target;
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
-      undying_embers_states.push_back( undying_embers_state );
 
-      make_event( sim, [ &, undying_embers_state, this ]() mutable {
-        trigger_dot( undying_embers_state );
-        range::erase_remove( undying_embers_states, undying_embers_state );
-        action_state_t::release( undying_embers_state );
-      } );
+      make_event<undying_embers_event_t>( *sim, p(), this, undying_embers_state );
     }
-  }
-
-  void reset() override
-  {
-    for ( auto& state : undying_embers_states )
-      if ( state )
-        action_state_t::release( state );
-
-    demon_hunter_spell_t::reset();
   }
 };
 
