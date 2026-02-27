@@ -228798,7 +228798,8 @@ Labels           : 971
 Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1215861)  : Craft Item (288)
-                   Base Value: 2.5 | Scaled Value: 2.5 (delta=1.2) | Misc Value: 3451 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3451 | Target: Self (1)
+Hotfixed         : Delta (1.2 -> 0), Base Value (2.5 -> 2)
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
 Name             : Majestic Eversong Lure (id=1226226) [Hidden] 
@@ -252880,6 +252881,36 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 137897 | Misc Value 2: 556 | Target: Self (1)
 Description      : Collect 10 Veteran Dawncrests.
 
+Name             : Sunfire Trappings (id=1270977) [Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 4386
+Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1283436)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 80 | Scaled Value: 80 | Trigger Spell: 1270985 | Target: Self (1)
+#2 (id=1283437)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1301052)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Sunfire Temerity
+                   Base Value: 80 | Scaled Value: 80 | Trigger Spell: 1270985 | Target: Self (1)
+Description      : Gain $1270985s1 Haste while above $1270977s1% health.
+Tooltip          : Increased Haste.
+
+Name             : Sunfire Temerity (id=1270985) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 4386
+Triggered By     : Sunfire Trappings (1270977)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1283451)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 103.3989 (coefficient=0.78882) | Rating: Haste | Target: Self (1)
+#2 (id=1283452)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Sunfire Temerity
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Trigger Spell: 1285051
+Description      : $@spelldesc1270976
+Tooltip          : Haste increased by $w1.
+
 Name             : Eternal Voidsong Chain (id=1271211) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -253752,6 +253783,16 @@ Effects          :
 #1 (id=1300693)  : Enchant Item Temporary (54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8675
 Description      : When applied to your fishing pole, increases Midnight Fishing by $450401s1 for 10 min.
+
+Name             : Sunfire Temerity (id=1285051) [Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 4386
+Triggered By     : Sunfire Temerity (1270985)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
+Effects          :
+#1 (id=1300828)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Vampiric Reaping (id=1285825) [Hidden] 
 School           : Nature
