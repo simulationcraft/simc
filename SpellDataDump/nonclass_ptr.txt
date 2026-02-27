@@ -231234,8 +231234,9 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1224381)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 7 | Scaled Value: 7 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=1224382)  : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+#2 (id=1224382)  : Trigger Spell (64): Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269918 | Target: Self (1)
+Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (7 -> 0), Trigger Spell (0 -> 1269918)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -239299,7 +239300,8 @@ Triggered By     : Palisade's Penance (1237736)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1234377)  : Apply Aura (6) | Proc Trigger Spell (42): Palisade's Protection | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 713.1484 (coefficient=5.580039) | Trigger Spell: 1237611 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 796.0875 (coefficient=6.228997) | Trigger Spell: 1237611 | Target: Self (1)
+Hotfixed         : Coefficient (5.580039 -> 6.228997)
 Description      : The light protects. There is a chance when you are attacked to gain $@spellname1237611, granting an absorption shield for$s1 damage lasting $1237611d. 
 
 Should the shield be breached before it expires, the magic of the shield will erupt with $@spellname1237736, dealing ${$<rolemult>*$s1} Holy damage to nearby enemies.
@@ -242058,7 +242060,7 @@ Spell Type       : Magic
 Range            : 30 yards
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Real PPM         : 30 (Unknown: 30)
+Real PPM         : 30 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Rot (1245051), Rot (1245055)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
@@ -242332,7 +242334,8 @@ Triggered By     : Root Rot (1247411)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245922)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 158.8333 (coefficient=1.242793) | Trigger Spell: 1244332 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 143.1421 (coefficient=1.120017) | Trigger Spell: 1244332 | Target: Self (1)
+Hotfixed         : Coefficient (1.242793 -> 1.120017)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 This effect is augmented by Darkmoon Sigil: Rot.
@@ -242381,7 +242384,8 @@ Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 74.29293 (coefficient=0.581306) | Trigger Spell: 1244332 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 66.92774 (coefficient=0.523677) | Trigger Spell: 1244332 | Target: Self (1)
+Hotfixed         : Coefficient (0.581306 -> 0.523677)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -244918,13 +244922,14 @@ Name             : Murder Row Fishhook (id=1250529) [Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3
+Real PPM         : 3 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Murder Row Fishhook (1250528)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254625)  : Apply Aura (6) | Proc Trigger Spell (42): Murder Row Fishhook | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 455.6848 (coefficient=3.565512) | Trigger Spell: 1250528 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 565.2028 (coefficient=4.422437) | Trigger Spell: 1250528 | Target: Self (1)
+Hotfixed         : Coefficient (3.565512 -> 4.422437)
 Description      : Your harmful spells and abilities have a chance to bleed your target for ${$<rolemult>*$s1} Physical damage over $1250528d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -245912,7 +245917,7 @@ Spell Type       : None
 Max Targets      : 1
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Hunt (1245050), Hunt (1245054)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
@@ -246658,14 +246663,14 @@ Description      : Taking damage has a chance to form a jelly shield for $d, abs
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Refueling Orb (id=1254534) [Hidden] 
+Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Min Travel Time  : 0.1 seconds
 Duration         : 0.001 seconds
-Triggered By     : Refueling Orb (1254752)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Bouncy Chain Missiles (146), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Bouncy Chain Missiles (146), Not On Trivial (182), Aura Points On Client (268), Always Require PvP Target Match (430)
 Effects          :
 #1 (id=1260994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Nearby Ally (3)
@@ -246675,6 +246680,8 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1261062)  : Apply Aura (6) | Modify Rating (189)
@@ -246780,18 +246787,21 @@ School           : Arcane
 Spell Type       : None
 Labels           : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1261317)  : Apply Aura (6) | Proc Trigger Spell (42): Refueling Orb
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1254534 | Target: Self (1)
-#2 (id=1274922)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 104.0742 (coefficient=0.81433) | Target: Self (1)
+#1 (id=1261317)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (1254534 -> 0)
+#2 (id=1274922)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 35.21556 (coefficient=0.268656) | Target: Self (1)
+Hotfixed         : Coefficient (0.81433 -> 0.268656), Scaling Class (-9 -> -7)
 #3 (id=1274923)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #4 (id=1274925)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 8209.052 (coefficient=64.23183) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2776.059 (coefficient=21.72131) | Target: Self (1)
+Hotfixed         : Coefficient (64.231834 -> 21.72131)
 Description      : Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.
 
 Name             : Reshii Grace (id=1254904) [Passive] 
@@ -249374,19 +249384,20 @@ Effects          :
 Description      : Synthesize a soulbound set chest item appropriate for your class.
 
 Name             : B0P, Curator of Booms (id=1261968) [Passive] 
+Hotfixed         : Max Scaling Level (90 -> 0), Min Scaling Level (90 -> 0)
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 90
-Min Scaling Level: 90
 Triggered By     : B0P, Curator of Booms (1262512)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1271927)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): B0P, Curator of Booms
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1262512 | Target: Self (1)
 #2 (id=1271928)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1354.011 (coefficient=10.32961) | Trigger Spell: 1262515
+                   Base Value: 0 | Scaled Value: 563.9912 (coefficient=4.302633) | Trigger Spell: 1262515
+Hotfixed         : Coefficient (10.329614 -> 4.302633)
 #3 (id=1271929)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 2032.185 (coefficient=15.50334) | Trigger Spell: 1262513
+                   Base Value: 0 | Scaled Value: 848.9668 (coefficient=6.476683) | Trigger Spell: 1262513
+Hotfixed         : Coefficient (15.503341 -> 6.476683)
 Description      : Your damaging or healing spells and abilities have a chance to fire up to $s1 Big Booms, dealing up to $s2 Fire damage or $s3  healing based on the amount of Big Booms delivered.
 
 Name             : M0LL1, Atomic Anomaly (id=1261971) [Passive] 
@@ -252636,8 +252647,9 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1281795)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=1281796)  : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+#2 (id=1281796)  : Trigger Spell (64): Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269919 | Target: Self (1)
+Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (6 -> 0), Trigger Spell (0 -> 1269919)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -252645,6 +252657,7 @@ Name             : Drink (id=1269918)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Triggered By     : Food & Drink (1232065)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -252659,6 +252672,7 @@ Name             : Drink (id=1269919)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Triggered By     : Food & Drink (1269917)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -253306,7 +253320,8 @@ Triggered By     : B1P, Scorcher of Souls (1246309)
 Attributes       : No Active Defense (21), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1291896)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 475.9091 (coefficient=3.723757) | Trigger Spell: 1246309 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 846 (coefficient=6.619538) | Trigger Spell: 1246309 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : Coefficient (3.723757 -> 6.619538)
 
 Name             : Battle Trance (id=1279777) 
 School           : Physical
