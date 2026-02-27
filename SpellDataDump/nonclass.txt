@@ -170073,6 +170073,7 @@ Name             : Aerated Phial of Quick Hands (id=395802) [Hidden]
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
+Labels           : 1396
 Triggered By     : Aerated Phial of Quick Hands (393665)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
@@ -231228,8 +231229,9 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1224381)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 7 | Scaled Value: 7 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=1224382)  : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+#2 (id=1224382)  : Trigger Spell (64): Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269918 | Target: Self (1)
+Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (7 -> 0), Trigger Spell (0 -> 1269918)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -252596,8 +252598,9 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1281795)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=1281796)  : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+#2 (id=1281796)  : Trigger Spell (64): Drink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269919 | Target: Self (1)
+Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (6 -> 0), Trigger Spell (0 -> 1269919)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -252605,6 +252608,7 @@ Name             : Drink (id=1269918)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Triggered By     : Food & Drink (1232065)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -252619,6 +252623,7 @@ Name             : Drink (id=1269919)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Triggered By     : Food & Drink (1269917)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
