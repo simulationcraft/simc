@@ -2187,7 +2187,8 @@ public:
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_shadow_techniques_buff( const action_state_t*, bool ignore_shadowcraft = false );
   void trigger_shadow_techniques_cp( const action_state_t* );
-  void trigger_supercharger();
+  void trigger_supercharger_buff();
+  void trigger_supercharger_cp( const action_state_t* state );
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
@@ -3437,7 +3438,7 @@ struct adrenaline_rush_t : public rogue_spell_t
     }
 
     trigger_fatebound_edge_case( execute_state );
-    trigger_supercharger();
+    trigger_supercharger_buff();
   }
 };
 
@@ -3715,6 +3716,12 @@ struct between_the_eyes_t : public rogue_attack_t
       if ( p()->talent.outlaw.gravedigger_1->ok() && rng().roll( p()->talent.outlaw.gravedigger_1->effectN( 1 ).percent() ) )
       {
         p()->buffs.between_the_eyes->trigger( data().duration() * ( cp_spend + 1 ) );
+        
+        // 2026-02-26 -- Gravedigger_1 causes the second Supercharger stack to mistakenly be consumed
+        if ( p()->bugs )
+        {
+          trigger_supercharger_cp( rs );
+        }
       }
 
       if ( p()->talent.outlaw.ace_up_your_sleeve->ok() )
@@ -4639,7 +4646,7 @@ struct kingsbane_t : public rogue_attack_t
         implacable_strikes->execute_on_target( state->target );
       }
 
-      trigger_supercharger();
+      trigger_supercharger_buff();
       trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
       p()->buffs.symbolic_victory->trigger();
     }
@@ -5262,7 +5269,7 @@ struct shadow_dance_t : public rogue_spell_t
     p()->buffs.symbolic_victory->trigger();
     p()->buffs.the_rotten->trigger();
     trigger_master_of_shadows();
-    trigger_supercharger();
+    trigger_supercharger_buff();
   }
 
   bool ready() override
@@ -7359,25 +7366,8 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
-
   // Remove Supercharger Buffs
-  if ( p()->talent.rogue.supercharger->ok() && consumes_supercharger() )
-  {
-    if ( rs->get_combo_points() > rs->get_combo_points( true ) )
-    {
-      // Consume from the end of the list
-      for ( auto it = p()->buffs.supercharger.rbegin(); it != p()->buffs.supercharger.rend(); ++it )
-      {
-        if ( ( *it )->check() )
-        {
-          ( *it )->expire();
-          supercharged_cp_proc->occur();
-          p()->buffs.echoing_reprimand->trigger();
-          break;
-        }
-      }
-    }
-  }
+  trigger_supercharger_cp( state );
 
   // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
   if ( p()->talent.assassination.deadly_momentum->ok() &&
@@ -8358,7 +8348,7 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_supercharger()
+void actions::rogue_action_t<Base>::trigger_supercharger_buff()
 {
   if ( !p()->talent.rogue.supercharger->ok() )
     return;
@@ -8379,6 +8369,30 @@ void actions::rogue_action_t<Base>::trigger_supercharger()
   if ( trigger_buffs > 0 )
   {
     p()->procs.supercharger_wasted->occur();
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_supercharger_cp( const action_state_t* state )
+{
+  if ( !p()->talent.rogue.supercharger->ok() || !consumes_supercharger() )
+    return;
+
+  const auto rs = cast_state( state );
+
+  if ( rs->get_combo_points() > rs->get_combo_points( true ) )
+  {
+    // Consume from the end of the list
+    for ( auto it = p()->buffs.supercharger.rbegin(); it != p()->buffs.supercharger.rend(); ++it )
+    {
+      if ( ( *it )->check() )
+      {
+        ( *it )->expire();
+        supercharged_cp_proc->occur();
+        p()->buffs.echoing_reprimand->trigger();
+        break;
+      }
+    }
   }
 }
 
