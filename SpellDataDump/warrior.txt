@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -671,7 +671,6 @@ Your successful dodges and parries have a chance to make your next Revenge cost 
 Variables        : $cap=${5}
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic

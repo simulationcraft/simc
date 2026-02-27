@@ -1,6 +1,5 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -36,7 +35,6 @@ Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Renew (id=139) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -744,7 +742,6 @@ Effects          :
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Power Word: Fortitude (id=21562) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1185,7 +1182,6 @@ Effects          :
 Description      : Each time your Shadow Word: Pain deals damage, it has a $h% chance to grant you $40441s1 spell power for $40441d and each time your Renew heals, it has a $h% chance to grant you $40440s1 spell power for $40440d.
 
 Name             : Prayer of Mending (id=41635) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1807,7 +1803,6 @@ Effects          :
 Description      : Increases the damage of your Shadow Word: Pain, Vampiric Touch, $?s205351[Shadow Word: Void][Mind Blast], Mind Flay, Mind Sear, Void Eruption, Void Bolt, and Devouring Plague by ${$m1}.1%.
 
 Name             : Echo of Light (id=77489) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -2077,7 +2072,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Target: Self (1)
 #2 (id=127395)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 25)
                    Modified By: Desperate Measures (458718 effect#2)
 #3 (id=127396)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Target: Self (1)
@@ -3571,7 +3565,6 @@ Description      : $@spelldesc228264
 Tooltip          : Spell damage dealt increased by $w1%.
 
 Name             : Atonement (id=194384) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -10184,7 +10177,6 @@ Effects          :
 #1 (id=1027657)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.667 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : Reduces all magic damage taken by $s1%.
 
 Name             : Improved Fade (id=390670) [Spell Family (6), Passive, Hidden] 
@@ -16021,7 +16013,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1255075)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.667 | Stat: Sta | Target: Self (1)
-Hotfixed         : Base Value (4 -> 6), PvP Coefficient (1 -> 0.667)
 Description      : Increases your Stamina by $s1%.
 
 Name             : Dark Enlightenment (id=1250835) [Spell Family (6), Passive, Hidden] 
@@ -16194,7 +16185,6 @@ $penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<har
 $penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}
 
 Name             : Void Shield (id=1253593) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic

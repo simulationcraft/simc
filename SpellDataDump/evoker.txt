@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -375,7 +375,6 @@ $sFourDur=${4+$<deepExDur>}
 
 
 Name             : Dream Breath (id=355941) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -1286,7 +1285,6 @@ Effects          :
 Description      : Cleanses harmful effects from the target, removing all Magic and Poison effects.
 
 Name             : Blistering Scales (desc=Black) (id=360827) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Firestorm
@@ -1812,7 +1810,6 @@ Tooltip          : $w1 damage is being dilated every $361029t1 sec.
 Damage Remaining: $w2
 
 Name             : Dream Flight (desc=Green) (id=363502) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : Magic
@@ -1983,7 +1980,6 @@ Effects          :
 Description      : Weave the threads of time, reducing the cooldown of a major movement ability for all party and raid members by $381732s1% for $381732d.
 
 Name             : Echo (desc=Bronze) (id=364343) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -2113,7 +2109,6 @@ Effects          :
 Description      : Living Flame deals $361500o2 damage over $361500d to enemies, or restores $361509o2 health to allies over $361509d. Stacks $361509u times.
 
 Name             : Reversion (desc=Bronze) (id=366155) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -2298,7 +2293,6 @@ Description      : $@spelldesc367226
 Variables        : $dmg=${$359077s2}
 
 Name             : Reversion (desc=Bronze) (id=367364) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -2615,7 +2609,6 @@ Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.
 
 Name             : Source of Magic (desc=Blue) (id=369459) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=23]
 Class            : Evoker
 School           : Spellfrost
@@ -3629,7 +3622,6 @@ Description      : $@spelldesc372954
 Tooltip          : Damage taken increased by $w1%.
 
 Name             : Lifebind (id=373267) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -4916,7 +4908,6 @@ Effects          :
 Description      : Reversion, Time Dilation, Echo, and Temporal Anomaly last $s1% longer and cost $s2% less mana.
 
 Name             : Dream Breath (id=376788) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : Magic
@@ -5140,7 +5131,6 @@ Effects          :
 Description      : $@spelldesc378196
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381732) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5161,7 +5151,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Death's Advance reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381741) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5185,7 +5174,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381746) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5206,7 +5194,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381748) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5227,7 +5214,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Hover reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381749) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5248,7 +5234,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Aspect of the Cheetah reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381750) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5272,7 +5257,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of $?s212653[Shimmer][Blink] reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381751) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5293,7 +5277,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of $?s115008[Chi Torpedo][Roll] reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381752) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5314,7 +5297,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Divine Steed reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381753) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5335,7 +5317,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381754) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5356,7 +5337,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Sprint reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381756) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5377,7 +5357,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Spiritwalker's Grace, Spirit Walk, and Gust of Wind reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381757) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5398,7 +5377,6 @@ Description      : $@spelldesc364342
 Tooltip          : Cooldown of Demonic Circle: Teleport reduced by $s1%.
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=381758) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -6336,7 +6314,6 @@ Effects          :
 Description      : $@spelldesc358267
 
 Name             : Ebon Might (desc=Black) (id=395152) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -8145,7 +8122,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Prescience (desc=Bronze) (id=410089) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8242,7 +8218,6 @@ Variables        : $coeff=${3.5}
 $dmg=${$INT*$<coeff>*(1+$@versadmg)*$pctD}
 
 Name             : Inferno's Blessing (id=410263) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -8498,7 +8473,6 @@ Effects          :
 Description      : Emerald Blossom increases targets' healing received by $s1% for $410686d.
 
 Name             : Symbiotic Bloom (id=410686) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -8880,7 +8854,6 @@ Description      : $@spelldesc410352
 Tooltip          : $w1 damage is being stretched every $t1 sec.
 
 Name             : Shifting Sands (id=413984) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : None

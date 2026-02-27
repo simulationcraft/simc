@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -86761,20 +86761,16 @@ Effects          :
 Description      : $@spelldesc253793
 
 Name             : Void Hunter (id=253802) [Passive, Hidden] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=474456)   : Apply Aura (6) | Modify Melee Attack Power vs Race (102) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 11.5668 (coefficient=0.088242) | Misc Value: 1064960 | Target: Self (1)
-Hotfixed         : Coefficient (0.055 -> 0.088242), Scaling Class (-9 -> -1)
 #2 (id=474457)   : Apply Aura (6) | Modify Ranged Attack Power vs Race (131) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 11.5668 (coefficient=0.088242) | Misc Value: 1064960 | Target: Self (1)
-Hotfixed         : Coefficient (0.055 -> 0.088242), Scaling Class (-9 -> -1)
 #3 (id=1309265)  : Apply Aura (6) | Modify Spell Damage vs Race (180) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 11.5668 (coefficient=0.088242) | Misc Value: 1064960 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Increases your $pri against Aberrations by $s1.
 
 Name             : Void's Embrace (id=253807) [Passive, Hidden] 
@@ -204691,7 +204687,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 133.4076 (coefficient=5.289) | Trigger Spell: 451911 | Target: Self (1)
 
 Name             : Well Fed (id=451916) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -204704,12 +204699,10 @@ Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While St
 Effects          :
 #1 (id=1152709)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Haste | Target: Self (1)
-Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Haste by $s1.
 Tooltip          : Haste increased by $w1.
 
 Name             : Well Fed (id=451917) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -204722,12 +204715,10 @@ Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While St
 Effects          :
 #1 (id=1152710)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Vers | Target: Self (1)
-Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Versatility by $s1.
 Tooltip          : Versatility increased by $w1.
 
 Name             : Well Fed (id=451918) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -204740,12 +204731,10 @@ Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While St
 Effects          :
 #1 (id=1152711)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Crit | Target: Self (1)
-Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Critical Strike by $s1.
 Tooltip          : Critical strike increased by $w1.
 
 Name             : Well Fed (id=451920) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -204758,12 +204747,10 @@ Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While St
 Effects          :
 #1 (id=1152713)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Mastery | Target: Self (1)
-Hotfixed         : Coefficient (0.146776 -> 0.65)
 Description      : Increases Mastery by $s1.
 Tooltip          : Mastery increased by $w1.
 
 Name             : Well Fed (id=451921) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -204775,7 +204762,6 @@ Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While St
 Effects          :
 #1 (id=1152714)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Stat: Sta | Target: Self (1)
-Hotfixed         : Coefficient (0.28 -> 0.65)
 Description      : Increases Stamina by $s1.
 Tooltip          : Stamina increased by $w1.
 
@@ -214786,7 +214772,6 @@ Effects          :
 Description      : $@spelldesc421373
 
 Name             : Food & Drink (id=460938) [Hidden] 
-Hotfixed         : Max Scaling Level (70 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -214797,13 +214782,10 @@ Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=1168994)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 150000 (coefficient=0.8) | Value Multiplier: 1 | Target: Self (1)
-Hotfixed         : Coefficient (7.5 -> 0.8)
 #2 (id=1168995)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
-Hotfixed         : Coefficient (6.3004 -> 0.6)
 #3 (id=1168996)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 112500 (coefficient=0.6) | Target: Self (1)
-Hotfixed         : Coefficient (6.3004 -> 0.6)
 Description      : $?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]
 
 Name             : Elemental Focusing Lens (id=461177) [Passive] 
@@ -228793,7 +228775,8 @@ Labels           : 971
 Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1215861)  : Craft Item (288)
-                   Base Value: 2.5 | Scaled Value: 2.5 (delta=1.2) | Misc Value: 3451 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3451 | Target: Self (1)
+Hotfixed         : Delta (1.2 -> 0), Base Value (2.5 -> 2)
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
 Name             : Majestic Eversong Lure (id=1226226) [Hidden] 
@@ -230575,7 +230558,6 @@ Description      : $@spelldesc1241711
 
 
 Name             : Radiant Acumen (id=1230366) 
-Hotfixed         : Max stacks (10 -> 5)
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -231238,7 +231220,6 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1224382)  : Trigger Spell (64): Drink
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269918 | Target: Self (1)
-Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (7 -> 0), Trigger Spell (0 -> 1269918)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -238509,7 +238490,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232929)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Halazzi | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1532.618 (coefficient=11.99199) | Trigger Spell: 1241721 | Target: Self (1)
-Hotfixed         : Coefficient (4.887572 -> 11.99199)
 Description      : $@spelldesc1236065
 
 Name             : Strength of Halazzi (id=1236734) [Passive] 
@@ -238523,7 +238503,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232930)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Halazzi | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 1261.862 (coefficient=9.626622) | Trigger Spell: 1241721 | Target: Self (1)
-Hotfixed         : Coefficient (8.630717 -> 9.626622)
 Description      : $@spelldesc1236065
 
 Name             : Worldsoul Cradle (id=1236735) [Passive] 
@@ -238537,7 +238516,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Cradle | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 10019.84 (coefficient=78.4004) | Trigger Spell: 1241724 | Target: Self (1)
-Hotfixed         : Coefficient (31.981514 -> 78.400398)
 Description      : $@spelldesc1236079
 
 Name             : Worldsoul Cradle (id=1236736) [Passive] 
@@ -238551,7 +238529,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232932)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Cradle | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 12525 (coefficient=98.00202) | Trigger Spell: 1241724 | Target: Self (1)
-Hotfixed         : Coefficient (39.976894 -> 98.002022)
 Description      : $@spelldesc1236079
 
 Name             : Worldsoul Aegis (id=1236737) [Passive] 
@@ -238565,10 +238542,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232933)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Aegis | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 14038.79 (coefficient=109.8467) | Trigger Spell: 1241725 | Target: Self (1)
-Hotfixed         : Coefficient (29.84071 -> 109.846687)
 #2 (id=1271218)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Aegis | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 2220.515 (coefficient=17.37445) | Trigger Spell: 1261443 | Target: Self (1)
-Hotfixed         : Coefficient (5.928546 -> 17.374447)
 Description      : $@spelldesc1236080
 
 Name             : Worldsoul Aegis (id=1236738) [Passive] 
@@ -238582,10 +238557,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232934)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Aegis | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 14038.79 (coefficient=109.8467) | Trigger Spell: 1241725 | Target: Self (1)
-Hotfixed         : Coefficient (37.300884 -> 109.846687)
 #2 (id=1271221)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Worldsoul Aegis | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 2775.644 (coefficient=21.71806) | Trigger Spell: 1261443 | Target: Self (1)
-Hotfixed         : Coefficient (7.410682 -> 21.71806)
 Description      : $@spelldesc1236080
 
 Name             : Flames of the Sin'dorei (id=1236739) [Passive] 
@@ -238599,10 +238572,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232935)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 982.0534 (coefficient=7.68409) | Trigger Spell: 1241728 | Target: Self (1)
-Hotfixed         : Coefficient (3.131802 -> 7.68409)
 #2 (id=1289524)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Trigger Spell: 1277263 | Target: Self (1)
-Hotfixed         : Coefficient (13.316519 -> 32.672981)
 Description      : $@spelldesc1236094
 
 Name             : Flames of the Sin'dorei (id=1236740) [Passive] 
@@ -238616,10 +238587,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232936)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1228 (coefficient=9.608502) | Trigger Spell: 1241728 | Target: Self (1)
-Hotfixed         : Coefficient (3.914753 -> 9.608502)
 #2 (id=1289525)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Trigger Spell: 1277263 | Target: Self (1)
-Hotfixed         : Coefficient (16.645647 -> 40.84396)
 Description      : $@spelldesc1236094
 
 Name             : Acuity of the Ren'dorei (id=1236741) [Passive] 
@@ -239075,7 +239044,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1233516)  : Apply Aura (6) | Proc Trigger Spell (42): Smuggler's Enchanted Edge | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1002.173 (coefficient=7.841516) | Trigger Spell: 1237010 | Target: Self (1)
-Hotfixed         : Coefficient (2.959226 -> 7.841516)
 
 Name             : Smuggler's Enchanted Edge (id=1237010) 
 School           : Arcane
@@ -239112,7 +239080,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1233519)  : Apply Aura (6) | Proc Trigger Spell (42): Smuggler's Enchanted Edge | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1252.716 (coefficient=9.801895) | Trigger Spell: 1237013 | Target: Self (1)
-Hotfixed         : Coefficient (3.699033 -> 9.801895)
 
 Name             : Smuggler's Enchanted Edge (id=1237013) 
 School           : Arcane
@@ -239139,7 +239106,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1233521)  : Apply Aura (6) | Proc Trigger Spell (42): Dawn's Protection | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1502.977 (coefficient=11.76006) | Trigger Spell: 1237015 | Target: Self (1)
-Hotfixed         : Coefficient (4.441877 -> 11.76006)
 
 Name             : Dawn's Protection (id=1237015) 
 School           : Holy
@@ -239169,7 +239135,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1233523)  : Apply Aura (6) | Proc Trigger Spell (42): Dawn's Protection | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1878.72 (coefficient=14.70007) | Trigger Spell: 1237017 | Target: Self (1)
-Hotfixed         : Coefficient (5.552346 -> 14.700072)
 
 Name             : Dawn's Protection (id=1237017) 
 School           : Holy
@@ -239293,7 +239258,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1234377)  : Apply Aura (6) | Proc Trigger Spell (42): Palisade's Protection | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 796.0875 (coefficient=6.228997) | Trigger Spell: 1237611 | Target: Self (1)
-Hotfixed         : Coefficient (5.580039 -> 6.228997)
 Description      : The light protects. There is a chance when you are attacked to gain $@spellname1237611, granting an absorption shield for$s1 damage lasting $1237611d. 
 
 Should the shield be breached before it expires, the magic of the shield will erupt with $@spellname1237736, dealing ${$<rolemult>*$s1} Holy damage to nearby enemies.
@@ -240462,7 +240426,6 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1240514)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Sash | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2475.685 (coefficient=19.37103) | Trigger Spell: 1241522 | Target: Self (1)
-Hotfixed         : Coefficient (12.91402 -> 19.371029)
 Description      : Your spells and abilities have a chance to deal $s0 Radiant damage to your current target.
 
 Name             : Sunfire Sash (id=1241522) [Passive] 
@@ -240538,7 +240501,6 @@ Attributes       : Passive (6), No Threat (42), Not an Action (92), Not a Proc (
 Effects          :
 #1 (id=1240856)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Silk Lining | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 18.70833 (coefficient=0.142724) | Trigger Spell: 1230364 | Target: Self (1)
-Hotfixed         : Coefficient (0.083918 -> 0.142724)
 Description      : Healing and damage from periodic effects can increase $pri by $s1 for $1230366d, stacking up to $1230366u times.
 
 Name             : Might of the Void (id=1241715) 
@@ -241750,7 +241712,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1244347)  : Apply Aura (6) | Proc Trigger Spell (42): Ranger-General's Call | Scaling Class: Replace Primary (-8)
                    Base Value: 300 | Scaled Value: 5328.839 (coefficient=41.69557) | Trigger Spell: 1258545 | Target: Self (1)
-Hotfixed         : Coefficient (24.924314 -> 41.695572)
 #2 (id=1244348)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage to a target has a chance to mark them, causing an Elven Ranger to launch a Surprise Attack from afar! This surprise attack deals ${$<rolemult>*$s1} Physical damage to the target.
@@ -241767,7 +241728,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1244358)  : Apply Aura (6) | Proc Trigger Spell (42): Necrotic Hex | Scaling Class: Replace Primary (-8)
                    Base Value: 300 | Scaled Value: 131.5908 (coefficient=1.029634) | Trigger Spell: 1258590 | Target: Self (1)
-Hotfixed         : Coefficient (0.436176 -> 1.029634)
 #2 (id=1267316)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
 Description      : Your damaging spells and abilities have a chance to afflict your target with a Necrotic Hex, inflicting ${$<rolemult>*$s1*$1258590d} Nature damage over $1258590d.
@@ -241975,7 +241935,6 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1244879)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Devouring Banding | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 996.4694 (coefficient=7.796888) | Trigger Spell: 1259213 | Target: Self (1)
-Hotfixed         : Coefficient (3.883727 -> 7.796888)
 Description      : Your damaging spells and abilities can cause you to heed the whispers and fire a Devouring Bolt at your target, dealing ${$<rolemult>*$s1} Cosmic damage. This bolt devours their strength, seizing $1259230s1 of your highest secondary stat for you for $1259230d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -242032,10 +241991,8 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1244943)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1761.979 (coefficient=13.78663) | Trigger Spell: 1259124 | Target: Self (1)
-Hotfixed         : Coefficient (29.140787 -> 13.786629)
 #2 (id=1268068)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2642.471 (coefficient=20.67605) | Trigger Spell: 1259127 | Target: Self (1)
-Hotfixed         : Coefficient (43.701218 -> 20.676048)
 Description      : Your spells and abilities have a chance to detonate hidden Explosive Spores near your target. If your target is an ally, the spore heals them and nearby allies for ${$<rolemult>*$s2} health. If your target is hostile, the spore instead detonates on nearby foes for ${$<rolemult>*$s1} Nature damage.
 
 These explosions are split among all targets hit, and their effectiveness increases for every target hit, up to $1259124s2.
@@ -242322,7 +242279,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245922)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 143.1421 (coefficient=1.120017) | Trigger Spell: 1244332 | Target: Self (1)
-Hotfixed         : Coefficient (1.242793 -> 1.120017)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 This effect is augmented by Darkmoon Sigil: Rot.
@@ -242372,7 +242328,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 66.92774 (coefficient=0.523677) | Trigger Spell: 1244332 | Target: Self (1)
-Hotfixed         : Coefficient (0.581306 -> 0.523677)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -244915,7 +244870,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1254625)  : Apply Aura (6) | Proc Trigger Spell (42): Murder Row Fishhook | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 565.2028 (coefficient=4.422437) | Trigger Spell: 1250528 | Target: Self (1)
-Hotfixed         : Coefficient (3.565512 -> 4.422437)
 Description      : Your harmful spells and abilities have a chance to bleed your target for ${$<rolemult>*$s1} Physical damage over $1250528d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -245620,10 +245574,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #3 (id=1260592)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 1 | Scaled Value: 319.1078 (coefficient=2.496863) | Target: Self (1)
-Hotfixed         : Coefficient (1.492547 -> 2.496863)
 #4 (id=1260596)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 478.5715 (coefficient=3.744589) | Target: Self (1)
-Hotfixed         : Coefficient (1.86696 -> 3.744589)
 Description      : Your spells and abilities have a chance to call upon the Phoenix Flames to envelop your target.
 
 If your target is friendly, they are healed for ${$<rolemult>*$s4*($1251908d/$1251908t)} over $1251908d. If your target is an enemy, they instead suffer ${$<rolemult>*$s3*($1251907d/$1251907t)} Fire damage over $1251907d.
@@ -245694,7 +245646,6 @@ Effects          :
 #2 (id=1260644)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
                    Base Value: 1 | Scaled Value: 58417.95 (coefficient=457.0921) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Coefficient (409.769592 -> 457.092072)
 #3 (id=1260668)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : On Use: Activate the array and generate a Voidstone Barrier, absorbing ${$<rolemult>*$s2} damage for the next $d.
@@ -245718,10 +245669,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 31.60888 (coefficient=0.241141) | Target: Self (1)
 #3 (id=1265009)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 5753.424 (coefficient=45.01775) | Target: Self (1)
-Hotfixed         : Coefficient (27.742481 -> 45.017746)
 #4 (id=1265022)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 3356.164 (coefficient=26.26035) | Target: Self (1)
-Hotfixed         : Coefficient (10.788743 -> 26.260353)
 #5 (id=1265023)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1265024)  : Apply Aura (6) | Dummy (4)
@@ -245752,7 +245701,6 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1256802)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Prismatic Focusing Iris | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1556.482 (coefficient=12.17872) | Trigger Spell: 1252383 | Target: Self (1)
-Hotfixed         : Coefficient (10.920084 -> 12.178715)
 #2 (id=1257591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1266101)  : Apply Aura (6) | Dummy (4)
@@ -246151,7 +246099,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1258640)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 3195.277 (coefficient=25.00148) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (14.779084 -> 25.001484)
 Description      : Your harmful spells and ranged abilities have a chance to call forth Loa aspects to bombard your target three times, each time dealing ${$<rolemult>*$s1} Physical damage split between all nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -246168,10 +246115,8 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1258641)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 228.0256 (coefficient=1.784189) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.99223 -> 1.784189)
 #2 (id=1278808)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 54.97516 (coefficient=0.4194) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.839034 -> 0.4194)
 Description      : Your harmful spells and abilities have a chance to brand your target with sacred text dealing ${$s1*$1266394d/$1266394t} Holy damage over $1266394d.
 
 Rebranding an enemy ignites the text, granting you $s2 Critical Strike for $1266403d and immediately dealing all remaining damage.
@@ -246249,7 +246194,6 @@ Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), 
 Effects          :
 #1 (id=1258645)  : Apply Aura (6) | Proc Trigger Spell (42): Hope | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4827.761 (coefficient=37.77488) | PvP Coefficient: 0.5 | Trigger Spell: 1259994 | Target: Self (1)
-Hotfixed         : Coefficient (22.342707 -> 37.774883)
 Description      : Your healing spells and abilities have a high chance to fill the chalice with Hope, drop by drop, up to $1259994u times.
 
 
@@ -246268,10 +246212,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 290.2283 (coefficient=2.214123) | PvP Coefficient: 0.5 | Trigger Spell: 1265323 | Target: Self (1)
 #2 (id=1277029)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1968.763 (coefficient=15.40461) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (9.106385 -> 15.404615)
 #3 (id=1277096)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2362.589 (coefficient=18.48611) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (10.927662 -> 18.486111)
 #4 (id=1277100)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 348.274 (coefficient=2.656948) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Taking damage has a high chance to fill the chalice with Despair, drop by drop, up to $1265323u times. Once full, the chalice spills, blanketing the ground beneath you in a dark mire dealing $s2 Void damage each second split between enemies inside for $1265325d while granting you $s1 versatility.
@@ -246289,10 +246231,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1258647)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Retributor's Order | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1701.006 (coefficient=13.30954) | PvP Coefficient: 0.5 | Trigger Spell: 1260076 | Target: Self (1)
-Hotfixed         : Coefficient (24.755987 -> 13.309542)
 #2 (id=1269468)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Retributor's Order | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 15647.28 (coefficient=122.4323) | PvP Coefficient: 0.5 | Trigger Spell: 1260079 | Target: Self (1)
-Hotfixed         : Coefficient (10.869105 -> 122.432343)
 #3 (id=1269481)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : The light blesses your weapon granting your attacks a chance to deal $s1 additional Holy damage and heal you for $s2 health.
@@ -246670,7 +246610,6 @@ Description      : Taking damage has a chance to form a jelly shield for $d, abs
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Refueling Orb (id=1254534) [Hidden] 
-Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : None
 Range            : 40 yards
@@ -246800,15 +246739,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1261317)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Trigger Spell (1254534 -> 0)
 #2 (id=1274922)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 35.21556 (coefficient=0.268656) | Target: Self (1)
-Hotfixed         : Coefficient (0.81433 -> 0.268656), Scaling Class (-9 -> -7)
 #3 (id=1274923)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #4 (id=1274925)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2776.059 (coefficient=21.72131) | Target: Self (1)
-Hotfixed         : Coefficient (64.231834 -> 21.72131)
 Description      : Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.
 
 Name             : Reshii Grace (id=1254904) [Passive] 
@@ -247883,7 +247819,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 3008.664 (coefficient=23.54133) | Target: Self (1)
-Hotfixed         : Coefficient (14.072274 -> 23.541328)
 #2 (id=1268069)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc1244276
@@ -247897,7 +247832,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1268070)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4512.146 (coefficient=35.30534) | Target: Self (1)
-Hotfixed         : Coefficient (21.122856 -> 35.305344)
 Description      : $@spelldesc1244276
 
 Name             : Primal Spore Explosion (id=1259128) 
@@ -247965,7 +247899,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1268197)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 996.4694 (coefficient=7.796888) | Target: Targeted Enemy (6)
-Hotfixed         : Coefficient (3.883727 -> 7.796888)
 Description      : $@spelldesc1244238
 
 Name             : Devouring Banding (id=1259216) [Hidden] 
@@ -248106,13 +248039,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1268346)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 6434.574 (coefficient=50.34741) | Target: Self (1)
-Hotfixed         : Coefficient (30.096111 -> 50.347408)
 #2 (id=1268347)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 5362.145 (coefficient=41.95617) | Target: Self (1)
-Hotfixed         : Coefficient (25.080093 -> 41.956173)
 #3 (id=1268350)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 9650.043 (coefficient=75.50689) | Target: Self (1)
-Hotfixed         : Coefficient (45.17506 -> 75.506889)
 Tooltip          : $?a1244005[$@spellaura1244005][Every $proccooldown seconds during combat, you capitalize on your next critical strike to gain the Upper Hand. Every situation is different, as is your Upper Hand at the time. Healing tonics, poisoned daggers, and other magical contraband are all on the table.]
 
 Name             : Locus-Walker's Ribbon (id=1259314) [Passive] 
@@ -249407,7 +249337,6 @@ Effects          :
 Description      : Synthesize a soulbound set chest item appropriate for your class.
 
 Name             : B0P, Curator of Booms (id=1261968) [Passive] 
-Hotfixed         : Max Scaling Level (90 -> 0), Min Scaling Level (90 -> 0)
 School           : Physical
 Spell Type       : None
 Triggered By     : B0P, Curator of Booms (1262512)
@@ -249417,10 +249346,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1262512 | Target: Self (1)
 #2 (id=1271928)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 563.9912 (coefficient=4.302633) | Trigger Spell: 1262515
-Hotfixed         : Coefficient (10.329614 -> 4.302633)
 #3 (id=1271929)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 848.9668 (coefficient=6.476683) | Trigger Spell: 1262513
-Hotfixed         : Coefficient (15.503341 -> 6.476683)
 Description      : Your damaging or healing spells and abilities have a chance to fire up to $s1 Big Booms, dealing up to $s2 Fire damage or $s3  healing based on the amount of Big Booms delivered.
 
 Name             : M0LL1, Atomic Anomaly (id=1261971) [Passive] 
@@ -251781,7 +251708,6 @@ Effects          :
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self (1)
 #5 (id=1308952)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421373
 
 Name             : Nether Entropic Kris (id=1266072) 
@@ -252605,6 +252531,17 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
+Name             : Weak Glimmerline (id=1269459) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281305)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281306)  : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.
+
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical
 Spell Type       : None
@@ -252662,7 +252599,6 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1281796)  : Trigger Spell (64): Drink
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1269919 | Target: Self (1)
-Hotfixed         : Type (6 -> 64), Sub Type (21 -> 0), Period (1000 -> 0), Base Value (6 -> 0), Trigger Spell (0 -> 1269919)
 Description      : Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health and mana every sec.
 
@@ -252948,7 +252884,6 @@ Effects          :
 #1 (id=1285703)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 275032.9 (coefficient=2151.999) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Coefficient (1328.875732 -> 2151.998535)
 #2 (id=1285704)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Don Ultradon scales granting you an $s1 absorb shield for $d.
@@ -252977,7 +252912,6 @@ Attributes       : Aura Points On Client (268), Scales with Casting Item's Level
 Effects          :
 #1 (id=1285729)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 99280.37 (coefficient=776.8206) | Radius: 50 yards | Target: Party in Area (20)
-Hotfixed         : Coefficient (459.48999 -> 776.820618)
 #2 (id=1285730)  : Trigger Spell (64): Cosmic Toll
                    Base Value: 0 | Scaled Value: 0 | Delay: 900_ms | Trigger Spell: 1272479
 Description      : Manifest void breaches above nearby party members to heal them and yourself for $s1 split between all targets.
@@ -252992,7 +252926,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1285940)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 41852.55 (coefficient=327.4759) | Trigger Spell: 1272720 | Target: Self (1)
-Hotfixed         : Coefficient (193.772919 -> 327.475861)
 #2 (id=1285941)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 196.6207 (coefficient=1.5) | Trigger Spell: 1272698 | Target: Self (1)
 
@@ -253367,7 +253300,6 @@ Attributes       : No Active Defense (21), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1291896)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 846 (coefficient=6.619538) | Trigger Spell: 1246309 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : Coefficient (3.723757 -> 6.619538)
 
 Name             : Battle Trance (id=1279777) 
 School           : Physical
@@ -253543,7 +253475,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1294784)  : School Damage (2): shadowlight | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : Attribute (133120 -> 133152)
 Description      : $@spelldesc1281574
 
 Name             : Voidlight Bindings (id=1281580) [Hidden] 
@@ -253807,15 +253738,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 32.77012 (coefficient=0.25) | Target: Self (1)
 
 Name             : Umbral Shift (id=1290152) [Passive, Hidden] 
-Hotfixed         : NEW SPELL
 School           : Shadow
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1308891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: -621.3425 (coefficient=-4.861703) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1308904)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 14.62806 (coefficient=0.111596) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 

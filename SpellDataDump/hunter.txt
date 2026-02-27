@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -6374,7 +6374,6 @@ Effects          :
 Description      : Kill Command increases the direct damage of your other abilities by $s1%, stacking up to $260286u times.
 
 Name             : Tip of the Spear (id=260286) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1119,7 +1119,6 @@ Description      : Unleashes a whirl of divine energy, dealing $?s405289[${$s1*1
 Deals reduced damage beyond $s2 targets.
 
 Name             : Beacon of Light (id=53563) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : None
@@ -3513,7 +3512,6 @@ Effects          :
 Description      : $@spelldesc85673
 
 Name             : Eternal Flame (id=156322) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1, replace="Word of Glory" (id=85673)]
 Class            : Paladin
 School           : Holyfire
@@ -3546,7 +3544,6 @@ Healing increased by $s3% when cast on self.
 Tooltip          : Healing $w1 health every $t1 sec.
 
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Holy
@@ -4371,7 +4368,6 @@ Description      : $@spelldesc199542
 Tooltip          : Immune to movement impairing effects. Nearby enemies are knocked back.
 
 Name             : Beacon of Virtue (id=200025) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Beacon of Light" (id=53563)]
 Class            : Paladin
 School           : Holy
@@ -16616,7 +16612,6 @@ Description      : $@spelldesc433568
 Tooltip          : Primary stat increased by $w1%. Armor increased by $w2%.
 
 Name             : Rite of Sanctification (desc=Weapon Imbue) (id=433568) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
@@ -16635,7 +16630,6 @@ Description      : Imbue your weapon with the power of the Light, increasing you
 Lasts $433550d.
 
 Name             : Rite of Adjuration (desc=Weapon Imbue) (id=433583) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=1, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
@@ -19948,7 +19942,6 @@ Description      : While in combat, apply a Beacon of the Savior to the lowest h
 Beacon of the Savior transfers to the lowest health ally within $s1 yds if it heals a target past maximum health or if an ally drops below $1270083s4% health.
 
 Name             : Beacon of the Savior (id=1244893) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None

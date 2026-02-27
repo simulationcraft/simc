@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -192,7 +192,6 @@ Description      : Causes an explosion of magic around the caster, dealing $s2 A
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -453,7 +452,6 @@ Effects          :
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=343726)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.6 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
                    Modified By: Improved Ice Barrier (1244069 effect#2)
 #3 (id=355654)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
@@ -4156,7 +4154,6 @@ Effects          :
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Icicles (id=205473) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -5366,7 +5363,6 @@ Effects          :
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.75 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -5429,7 +5425,6 @@ Effects          :
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355845)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.75 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #3 (id=355846)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | PvP Coefficient: 0.67 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9448,7 +9443,6 @@ Effects          :
 #1 (id=1014783)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : Base Value (-2 -> -4)
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Mass Polymorph (id=383121) [Spell Family (3)] 

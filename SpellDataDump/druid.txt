@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -152,7 +152,6 @@ Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=6, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -263,7 +262,6 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $rip=${$s1}
 
 Name             : Mark of the Wild (id=1126) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -853,7 +851,6 @@ Hits a second target within $279620s1 yds of the first.][]$?s197911[
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][] 
 
 Name             : Regrowth (id=8936) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1430,7 +1427,6 @@ If cast on somebody else, you gain the effect at $326228s1% effectiveness.][]
 Tooltip          : Mana costs reduced $w1%.
 
 Name             : Lifebloom (id=33763) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -1822,7 +1818,6 @@ Description      : Charge to an enemy, immobilizing them for $45334d.
 Tooltip          : Immobilized.
 
 Name             : Wild Growth (id=48438) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Restoration), tree=class, row=2, col=7, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
@@ -3862,7 +3857,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 36 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=1309860)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Hotfixed         : NEW EFFECT
 Description      : Shapeshift into Treant Form.
 Tooltip          : Shapeshifted into Treant Form.  All spells may be cast while in this form.
 
@@ -4706,7 +4700,6 @@ Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
 Name             : Rejuvenation (Germination) (id=155777) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -19550,7 +19543,6 @@ Description      : Form a bond with an ally. Your self-healing also heals your b
 Tooltip          : Bonded with $@auracaster. Their self-healing also heals you for $474754s1% of the amount healed. Their healing to you also heals them for $474754s2% of the amount healed.
 
 Name             : Symbiotic Relationship (id=474754) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Holy
 Spell Type       : None
@@ -22087,7 +22079,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Stellar Flare (202347)
                    Family Flags: 105
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1264614
 Tooltip          : A dryad is assisting you!
 
