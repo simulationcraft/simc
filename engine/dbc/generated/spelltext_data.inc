@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66102
-static constexpr std::array<spelltext_data_t, 28631> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28243,6 +28243,8 @@ static constexpr std::array<spelltext_data_t, 28631> __spelltext_data { {
   { 1270910, "Collect 10 Veteran Dawncrests.", 0, 0 },
   { 1270916, "The mana cost of Holy Light is reduced by $s1% and its cast time is reduced by $s2%.", 0, 0 },
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] guarantees that your next $?c1[$s5][$s6] $Lcast:casts; of Tiger Palm or Vivify will trigger a Harmonic Surge, dealing $?c1[${$s1*$1239442s1/100}][${$s2*$1239442s1/100}] Nature damage split between your target and other nearby enemies, and $?c1[${$s3*$1239443s1/100}][${$s4*$1239443s1/100}] healing to up to $1239443s2 injured allies.", 0, 0 },
+  { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
+  { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
   { 1270990, "$@spelldesc1270958", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "$@spelldesc1270958", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
