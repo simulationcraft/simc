@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1943,7 +1943,6 @@ Effects          :
 #7 (id=1257982)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
-Hotfixed         : Sub Type (219 -> 218)
 Description      : Increases the damage done by your pets by ${$s1}.1% and the damage of your shots and traps by ${$s5}.1%.
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -8905,7 +8904,7 @@ Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818428)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
                    Modified By: Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : Reduces damage dealt by $m1%.
@@ -16546,10 +16545,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1163908)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.75 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : Attribute (0 -> 131072)
 #2 (id=1245144)  : Trigger Spell (64): Festering Scythe | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1241077 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : Attribute (0 -> 131072)
 Description      : Slashes through all enemies within $a1 yds in front of you, dealing $s1 Shadow damage and hastening all of your Plagues on targets hit to deal damage $1241077s1% faster for $1241077d.
 
 Name             : Hyperpyrexia (id=458169) [Spell Family (15)] 
@@ -18439,7 +18436,6 @@ Effects          :
 Description      : Causes each of your Virulent Plagues to flare up, dealing $s1 Shadow damage to the infected enemy, and an additional $s2 Shadow damage to all other enemies near them.
 
 Name             : Frostscythe (id=1237388) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
@@ -18459,7 +18455,6 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1234132)  : School Damage (2): frost | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : Attribute (133120 -> 133152)
 #3 (id=1234133)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #4 (id=1234134)  : Energize Power (30)

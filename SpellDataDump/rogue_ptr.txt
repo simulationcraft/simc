@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66017 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -558,7 +558,6 @@ Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
 Name             : Deadly Poison (id=2823) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Assassination [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -634,7 +633,6 @@ Tooltip          : Movement speed increased by $w1%.$?s245751[
 Allows you to run over water.][]
 
 Name             : Crippling Poison (id=3408) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -762,7 +760,6 @@ Description      : $@spelldesc5761
 Tooltip          : Attack and casting speed slowed by $s1%.
 
 Name             : Numbing Poison (id=5761) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -884,7 +881,6 @@ Has a ${$279876s1*$383281s1/100}% chance to grant Opportunity.][]
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Wound Poison (id=8679) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6054,7 +6050,6 @@ Description      : Finishing move that consumes combo points to increase attack 
 Tooltip          : Attack speed increased by $w1%.
 
 Name             : Instant Poison (id=315584) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -8714,7 +8709,6 @@ Effects          :
 Description      : Ambush and Mutilate cost $s2 more Energy and deal $s1% additional damage as Nature.
 
 Name             : Atrophic Poison (id=381637) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Rogue
 School           : Physical
@@ -8768,7 +8762,6 @@ Effects          :
 Description      : Garrote increases the damage of Ambush and Mutilate on the target by $s1%.
 
 Name             : Amplifying Poison (id=381664) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Assassination [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
