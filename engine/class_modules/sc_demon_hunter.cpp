@@ -1008,6 +1008,7 @@ public:
     cooldown_t* relentless_onslaught_icd;
     cooldown_t* fel_rush_vengeful_retreat_movement_shared;
     cooldown_t* felblade_vengeful_retreat_movement_shared;
+    target_specific_cooldown_t* essence_break_proc_icd;
 
     // Vengeance
     cooldown_t* demon_spikes;
@@ -6836,7 +6837,6 @@ struct blade_dance_base_t
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
-    bool first_attack;
     bool last_attack;
     unsigned glaive_tempest_targets;
 
@@ -6845,7 +6845,6 @@ struct blade_dance_base_t
       : base_t( n, p, s ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
-        first_attack( false ),
         last_attack( false )
     {
       background = dual      = true;
@@ -6864,9 +6863,14 @@ struct blade_dance_base_t
     {
       base_t::impact( s );
 
-      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
-        p()->active.essence_break_proc->execute_on_target( target );
+        cooldown_t* tcd = p()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
+        if ( tcd->up() )
+        {
+          p()->active.essence_break_proc->execute_on_target( s->target );
+          tcd->start();
+        }
       }
 
       if ( last_attack )
@@ -6889,7 +6893,6 @@ struct blade_dance_base_t
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
-    bool first_attack;
     bool last_attack;
     unsigned glaive_tempest_targets;
 
@@ -6898,7 +6901,6 @@ struct blade_dance_base_t
       : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
-        first_attack( false ),
         last_attack( false )
     {
       background = dual      = true;
@@ -6913,9 +6915,14 @@ struct blade_dance_base_t
     {
       demon_hunter_attack_t::impact( s );
 
-      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
-        p()->active.essence_break_proc->execute_on_target( target );
+        cooldown_t* tcd = p()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
+        if ( tcd->up() )
+        {
+          p()->active.essence_break_proc->execute_on_target( s->target );
+          tcd->start();
+        }
       }
 
       if ( last_attack )
@@ -6975,11 +6982,6 @@ struct blade_dance_base_t
       add_child( attack );
     }
 
-    if ( attacks.front() )
-    {
-      attacks.front()->first_attack = true;
-    }
-
     if ( attacks.back() )
     {
       attacks.back()->last_attack = true;
@@ -6996,11 +6998,6 @@ struct blade_dance_base_t
       for ( auto& attack : first_blood_attacks )
       {
         add_child( attack );
-      }
-
-      if ( first_blood_attacks.front() )
-      {
-        first_blood_attacks.front()->first_attack = true;
       }
 
       if ( first_blood_attacks.back() )
@@ -7340,9 +7337,14 @@ struct chaos_strike_base_t
         p()->buff.warblades_hunger->expire();
       }
 
-      if ( !may_refund && result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
-        p()->active.essence_break_proc->execute_on_target( target );
+        cooldown_t* tcd = p()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
+        if ( tcd->up() )
+        {
+          p()->active.essence_break_proc->execute_on_target( s->target );
+          tcd->start();
+        }
       }
     }
   };
@@ -10829,6 +10831,7 @@ void demon_hunter_t::init_spells()
   spec.demon_blades                     = find_spell( 203555, DEMON_HUNTER_HAVOC );
   spec.demon_blades_damage              = spec.demon_blades->effectN( 1 ).trigger();
   spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
+  cooldown.essence_break_proc_icd->base_duration = spec.essence_break_debuff->internal_cooldown();
   spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
   spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
   spec.first_blood_blade_dance_damage   = talent_spell_lookup( talent.havoc.first_blood, 391374 );
@@ -11461,6 +11464,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.relentless_onslaught_icd                  = get_cooldown( "relentless_onslaught_icd" );
   cooldown.fel_rush_vengeful_retreat_movement_shared = get_cooldown( "fel_rush_vengeful_retreat_movement_shared" );
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
+  cooldown.essence_break_proc_icd = get_target_specific_cooldown( "essence_break_proc_icd" );
 
   // Vengeance
   cooldown.demon_spikes              = get_cooldown( "demon_spikes" );
