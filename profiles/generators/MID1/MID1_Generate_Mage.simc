@@ -1,6 +1,6 @@
 mage="MID1_Mage_Arcane_Spellslinger"
 spec=arcane
-level=80
+level=90
 race=troll
 role=spell
 position=back
@@ -29,11 +29,11 @@ trinket2=vaelgors_final_stare,id=249346,ilevel=289
 main_hand=,id=258218,ilevel=289,enchant_id=8039
 off_hand=,id=251094,ilevel=289
 
-save=MID1_Mage_Arcane_Spellslinger.simc
+save=MID1_Mage_Arcane.simc
 
 mage="MID1_Mage_Arcane_Sunfury"
 spec=arcane
-level=80
+level=90
 race=void_elf
 role=spell
 position=back
@@ -62,7 +62,7 @@ trinket2=vaelgors_final_stare,id=249346,ilevel=289
 main_hand=,id=258218,ilevel=289,enchant_id=8039
 off_hand=,id=251094,ilevel=289
 
-save=MID1_Mage_Arcane.simc
+save=MID1_Mage_Arcane_Sunfury.simc
 
 # mage="MID1_Mage_Fire_Sunfury"
 # spec=fire
@@ -130,68 +130,66 @@ save=MID1_Mage_Arcane.simc
 
 # save=MID1_Mage_Fire_Frostfire.simc
 
-# mage="MID1_Mage_Frost_Spellslinger"
-# spec=frost
-# level=80
-# race=tauren
-# role=spell
-# position=ranged_back
-# talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZwMMmFDmZGNGzMmhhZmZYmZmZmxMzMzMmZwMQAAgZmtlllZm2AAAAAAwAAAAAAAAA
+mage="MID1_Mage_Frost_Spellslinger"
+spec=frost
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZmZMjZWMzMzMjZAAAgZmZWWmZaDAAAAAAsBw2yYmZGMLzDYMDLAAAMzCwMhBMDGA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=beledars_bounty
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=augurs_ephemeral_widebrim,id=237718,ilevel=723,gem_id=213743
-# neck=sin_stained_pendant,id=178827,ilevel=723,gem_id=213494/213455
-# shoulder=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238045,enchant_id=7409
-# chest=augurs_ephemeral_habiliments,id=237721,ilevel=723,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109/8960/8794,ilevel=720,gem_id=213470,enchant_id=7397,crafted_stats=36/40
-# hands=augurs_ephemeral_mitts,id=237719,bonus_id=4786/1533/12361
-# waist=forgeweavers_journal_holster,id=237538,bonus_id=4800/4786/523/1533/12361,gem_id=213485
-# legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
-# feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7418
-# finger1=logic_gate_alpha,id=237567,bonus_id=4800/4786/1533/12361/8781,gem_id=213497/213497,enchant_id=7346
-# finger2=radiant_necromancers_band,id=221200,bonus_id=8781,ilevel=723,gem_id=213497/213497,enchant_id=7346
-# trinket1=diamantine_voidcore,id=242392,ilevel=723
-# trinket2=azhiccaran_parapodia,id=242497,ilevel=723
-# main_hand=voidglass_kris,id=237728,bonus_id=4800/4786/1533/12361,enchant_id=7448
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8794,ilevel=720
+head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
+shoulder=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/12384,ilevel=285,crafted_stats=32/49
+chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
+wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
+hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
+waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
+legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
+feet=icesteeped_sandals,id=49805,bonus_id=4786/12806
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
+main_hand=umbral_spire_of_zuraal,id=258514,ilevel=289,enchant_id=7981
 
-# save=MID1_Mage_Frost_Spellslinger.simc
+save=MID1_Mage_Frost.simc
 
-# mage="MID1_Mage_Frost_Frostfire"
-# spec=frost
-# level=80
-# race=tauren
-# role=spell
-# position=ranged_back
-# talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZwMMmFDmZGNGzMmhhZmZYmZmZmxMzMzMzMDMzyMNzsNLAAAoFAAAAAAMAAAAAAAAA
+mage="MID1_Mage_Frost_Frostfire"
+spec=frost
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZmZMjZWMzMzMmZmlZamZZWAAAQLAAAAAAgNA2WGzMzALzYMjtFAAAwMDmJMgBGA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=beledars_bounty
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=augurs_ephemeral_widebrim,id=237718,ilevel=723,gem_id=213743
-# neck=chrysalis_of_sundered_souls,id=237568,ilevel=723,gem_id=213494/213455
-# shoulder=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238045
-# chest=zealous_wardens_raiment,id=221126,ilevel=723,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109/8960/8795,ilevel=720,gem_id=213470,enchant_id=7397,crafted_stats=36/40
-# hands=augurs_ephemeral_mitts,id=237719,ilevel=723
-# waist=forgeweavers_journal_holster,id=237538,ilevel=723,gem_id=213485
-# legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
-# feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7418
-# finger1=signet_of_collapsing_stars,id=185813,ilevel=723,gem_id=213512/213470,enchant_id=7352
-# finger2=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,gem_id=213485/213485,enchant_id=7352
-# trinket1=diamantine_voidcore,id=242392,ilevel=723
-# trinket2=screams_of_a_forgotten_sky,id=242399,bonus_id=4800/4786/1533/12361
-# main_hand=voidglass_sovereigns_blade,id=237735,bonus_id=4800/4786/1533/12361,enchant_id=7448
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8795,ilevel=720
+head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
+shoulder=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/12384,ilevel=285,crafted_stats=32/49
+chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
+wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
+hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
+waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
+legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
+feet=icesteeped_sandals,id=49805,bonus_id=4786/12806
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
+main_hand=umbral_spire_of_zuraal,id=258514,ilevel=289,enchant_id=7981
 
-# save=MID1_Mage_Frost.simc
+save=MID1_Mage_Frost_Frostfire.simc
