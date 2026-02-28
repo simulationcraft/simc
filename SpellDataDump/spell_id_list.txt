@@ -19554,7 +19554,7 @@ Shaman
 211010  *Hex
 211015  *Hex
 211062  *Static Cling
-211094  *Chain Lightning
+211094   Chain Lightning
 211400  *Static Cling
 211951  *Item - Shaman T19 Elemental 2P Bonus
 211963  *Item - Shaman T19 Elemental 4P Bonus
