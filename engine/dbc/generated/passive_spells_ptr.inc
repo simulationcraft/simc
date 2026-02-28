@@ -1,4 +1,4 @@
-// Passive class spells, wow build 12.0.1.66017
+// Passive class spells, wow build 12.0.1.66198
 static constexpr std::array<passive_class_spell_t, 63> __ptr_passive_spells_data { {
   {  1,    3127, "Parry"                              },
   {  1,  123829, "Block"                              },

@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66017
-static constexpr std::array<spelltext_data_t, 28632> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.1.66198
+static constexpr std::array<spelltext_data_t, 28634> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28244,6 +28244,8 @@ static constexpr std::array<spelltext_data_t, 28632> __ptr_spelltext_data { {
   { 1270910, "Collect 10 Veteran Dawncrests.", 0, 0 },
   { 1270916, "The mana cost of Holy Light is reduced by $s1% and its cast time is reduced by $s2%.", 0, 0 },
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] guarantees that your next $?c1[$s5][$s6] $Lcast:casts; of Tiger Palm or Vivify will trigger a Harmonic Surge, dealing $?c1[${$s1*$1239442s1/100}][${$s2*$1239442s1/100}] Nature damage split between your target and other nearby enemies, and $?c1[${$s3*$1239443s1/100}][${$s4*$1239443s1/100}] healing to up to $1239443s2 injured allies.", 0, 0 },
+  { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
+  { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
   { 1270990, "$@spelldesc1270958", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "$@spelldesc1270958", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
@@ -28634,13 +28636,11 @@ static constexpr std::array<spelltext_data_t, 28632> __ptr_spelltext_data { {
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66017
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
-  {  253802,  0, "Increases your Agility against Aberrations by $s1.", "Increases your $pri against Aberrations by $s1." },
-  { 1255278,  0, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d." },
+// spelltext hotfix entries, wow build 12.0.1.66198
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.1.66017
+// Spell description variables, wow build 12.0.1.66198
 static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29337,7 +29337,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_dat
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66017
+// spelldesc_vars hotfix entries, wow build 12.0.1.66198
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
