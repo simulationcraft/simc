@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66192
-static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7170,6 +7170,7 @@ static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
   {  211056, "Reduces movement speed by $s1%.", "Reduces movement speed by $s1%.", 0 },
   {  211076, "Deals $s1 Arcane damage to all targets within $A1 yds.", "Deals $s1 Arcane damage to all targets within $A1 yds.", 0 },
   {  211088, "Deals $s1 Arcane damage to enemies within $A1 yds.", 0, 0 },
+  {  211094, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.", 0, 0 },
   {  211117, "$@spelldesc197344", "The bond between Hati and the Titanstrike has been weakened temporarily.", 0 },
   {  211141, "$@spelldesc106830", 0, 0 },
   {  211145, "$@spelldesc197344", 0, 0 },
