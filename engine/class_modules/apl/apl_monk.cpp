@@ -90,6 +90,7 @@ std::string default_temporary_enchant( const monk_t* player )
 
 void live_apl( monk_t* player )
 {
+  action_priority_list_t* def      = player->get_action_priority_list( "default" );
   action_priority_list_t* pre      = player->get_action_priority_list( "precombat" );
   action_priority_list_t* opener   = player->get_action_priority_list( "opener" );
   action_priority_list_t* trinket  = player->get_action_priority_list( "trinket" );
