@@ -120,7 +120,7 @@ void live_apl( monk_t* player )
   def->add_action( "call_action_list,name=zenith" );
   def->add_action( "call_action_list,name=racials" );
   def->add_action( "call_action_list,name=default_st,if=active_enemies=1" );
-  def->add_action( "call_action_list,name=multitarget,if=active.enemies>1" );
+  def->add_action( "call_action_list,name=multitarget,if=active_enemies>1" );
   def->add_action( "call_action_list,name=fallback" );
   def->add_action( "arcane_torrent,if=chi<chi.max&energy<55" );
   def->add_action( "thorn_bloom" );
