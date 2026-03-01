@@ -10204,7 +10204,7 @@ struct fwf_action_base_t : public death_knight_spell_t
 
     if ( p()->talent.deathbringer.echoing_fury.ok() ) {
       p()->buffs.exterminate->trigger( exterm_stacks );
-      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = exterm_stacks;
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
       debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
     }      
 
@@ -13805,11 +13805,11 @@ void death_knight_t::create_actions()
   {
     background_actions.soul_rupture = get_action<soul_rupture_t>( "reapers_mark_soul_rupture", this );
   }
-  if ( talent.deathbringer.exterminate.ok() )
+  if ( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok() )
   {
     background_actions.exterminate = get_action<exterminate_t>( "exterminate", this );
   }
-  if ( talent.deathbringer.exterminate.ok() )
+  if ( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok() )
   {
     background_actions.exterminate_aoe = get_action<exterminate_aoe_t>( "exterminate_second_hit", this );
   }
