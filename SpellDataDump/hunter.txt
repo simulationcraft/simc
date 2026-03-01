@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66192 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2121,6 +2121,7 @@ Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
 Name             : Beast Cleave (id=118459) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -2131,7 +2132,7 @@ Labels           : 16: Class Spells
                  : 885
 Affecting Spells : Beast Cleave (115939 effect#2), Blighted Quiver (1264291 effect#5)
 Family Flags     : 111
-Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failure (71), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failure (71), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Always Line of Sight (185), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=134941)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -4033,6 +4034,7 @@ Effects          :
 Description      : $@spelldesc201430
 
 Name             : Stomp (id=201754) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -4041,7 +4043,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Thundering Hooves (459693 effect#2)
 Family Flags     : 6
-Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always AOE Line of Sight (186), No Pushback (207), Always Cast Log (255), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297313)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.44 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -10177,6 +10179,7 @@ Effects          :
 Description      : The moth vibrates its wings, releasing tranquil dust all over itself, removing $s1 Disease, Magic, and Poison effect.
 
 Name             : Bestial Wrath (id=344572) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -10188,7 +10191,7 @@ Labels           : 16: Class Spells
                  : 6239: Nature's Ally (1273065 effect#2)
 Affecting Spells : Beastlord (184900 effect#1), Scent of Blood (193532 effect#1), The Beast Within (231548 effect#1), Hunter Beast Mastery 12.0 Class Set 2pc (1264825 effects: #1, #2)
 Family Flags     : 57
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869057)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -18472,6 +18475,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 255153 | Misc Value 2: 6550 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
 
 Name             : Wild Thrash (id=1264355) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -18481,7 +18485,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 885
 Family Flags     : 125
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275665)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.91 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -18547,6 +18551,7 @@ Effects          :
 Description      : $@spelldesc1264690
 
 Name             : Shadow Thrash (id=1264485) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Melee
@@ -18561,7 +18566,7 @@ Labels           : 16: Class Spells
                  : 5825
 Affecting Spells : Beast Cleave (115939 effect#2), Blighted Quiver (1264291 effect#5)
 Family Flags     : 111
-Attributes       : Is Ability (4), Do Not Sheath (18), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275877)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
