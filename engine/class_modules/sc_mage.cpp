@@ -7252,8 +7252,6 @@ void mage_t::trigger_splinter( player_t* target, int count )
       total_delay += splinter_delay;
     }
   }
-
-  trigger_augury();
 }
 
 void mage_t::trigger_augury()
