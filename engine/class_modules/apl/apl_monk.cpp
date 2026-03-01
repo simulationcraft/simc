@@ -128,7 +128,7 @@ void live_apl( monk_t* player )
   def->add_action( "bag_of_tricks" );
   def->add_action( "arcane_pulse" );
   def->add_action( "rocket_barrage" );
-  def->add_action( "lights_judgement" );
+  def->add_action( "lights_judgment" );
 
   // Opener
   opener->add_action( "tiger_palm,if=combo_strike&chi<4", "Opener" );
