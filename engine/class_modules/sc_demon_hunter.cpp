@@ -1592,7 +1592,7 @@ struct undying_embers_event_t : public event_t
   action_state_t* state;
 
   undying_embers_event_t( demon_hunter_t* player, action_t* action, action_state_t* state )
-    : event_t( *player, 0_s ), action( action ), state( state )
+    : event_t( *player, timespan_t::min() ), action( action ), state( state )
   {
   }
 
