@@ -369,6 +369,7 @@ public:
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     int clearcasting_blp_threshold = -1;
     int sphere_blp_threshold = 11;
+    int augury_blp_threshold = 21;
     bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -5345,12 +5346,7 @@ struct splinter_t final : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
-    {
-      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
-      if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
-        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
-    }
+    p()->trigger_augury();
   }
 
   timespan_t travel_time() const override
@@ -5804,6 +5800,7 @@ void mage_t::create_options()
               } ) );
   add_option( opt_int( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
   add_option( opt_int( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
+  add_option( opt_int( "mage.augury_blp_threshold", options.augury_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -7265,15 +7262,19 @@ void mage_t::trigger_augury()
     return;
 
   // https://www.desmos.com/calculator/qu5trhaztq;
-  // see trigger_spellfire_sphere()
+  // see trigger_spellfire_sphere().
   double chance = talents.augury_abounds->effectN( 1 ).percent();
   chance = 0.952381 * chance * chance + 0.114048 * chance - 0.00638571;
   chance *= ++state.augury_blp_count;
 
-  // ME: NOT DONE. WAIT.
+  if ( rng().roll( chance ) || state.augury_blp_count >= options.augury_blp_threshold )
+  {
+    // me: do we need this to be an event?
+    state.augury_blp_count = 0;
+    make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+  }
+  // Regardless of the roll's success, the ICD still applies.
   cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
-  if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
-        make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
 
 }
 
