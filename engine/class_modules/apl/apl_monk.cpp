@@ -136,9 +136,9 @@ void live_apl( monk_t* player )
   // Trinkets and Weapons
   trinket->add_action( "use_item,slot=main_hand", "Use Weapon" );
   trinket->add_action( "use_item,name=algethar_puzzle_box,if=!talent.flurry_strikes&(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25)&(cooldown.potion.remains>30|fight_remains<45|fight_remains>80)&(cooldown.invoke_xuen_the_white_tiger.remains<2|talent.flurry_strikes&cooldown.zenith.up)|fight_remains<25|talent.flurry_strikes&(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25)", "Use Algethar" );
-  trinket->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&(pet.invoke_xuen_the_white_tiger.active.remains<2|talent.flurry_strikes&buff.zenith.remains>14)", "Stat on use with passive or DMG on use" );
-  trinket->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&!trinket.1.has_use_buff&(pet.invoke_xuen_the_white_tiger.active.remains<2|talent.flurry_strikes&buff.zenith.remains>14)" );
-  trinket->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&trinket.2.has_use_buff&(pet.invoke_xuen_the_white_tiger.active|talent.flurry_strikes&buff.zenith.remains>14)", "Stat on use with Stat on use" );
+  trinket->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&(pet.xuen_the_white_tiger.active&talent.invoke_xuen_the_white_tiger|talent.flurry_strikes&buff.zenith.remains>14)", "Stat on use with passive or DMG on use" );
+  trinket->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&!trinket.1.has_use_buff&(pet.xuen_the_white_tiger.active&talent.invoke_xuen_the_white_tiger|talent.flurry_strikes&buff.zenith.remains>14)" );
+  trinket->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&trinket.2.has_use_buff&(pet.xuen_the_white_tiger.active&talent.invoke_xuen_the_white_tiger|talent.flurry_strikes&buff.zenith.remains>14)", "Stat on use with Stat on use" );
   trinket->add_action( "use_item,slot=trinket2,if=trinket.1.has_use_buff&trinket.2.has_use_buff&(cooldown.invoke_xuen_the_white_tiger.remains>30&(buff.zenith.up|(cooldown.strike_of_the_windlord.remains<2&talent.strike_of_the_windlord|cooldown.whirling_dragon_punch.remains<2&talent.whirling_dragon_punch))|talent.flurry_strikes&buff.zenith.remains>10)" );
   trinket->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&trinket.2.has_use_buff&trinket.2.cooldown.remains>30", "DMG on use with stat on use" );
   trinket->add_action( "use_item,slot=trinket2,if=!trinket.2.has_use_buff&trinket.1.has_use_buff&trinket.1.cooldown.remains>30" );
@@ -169,6 +169,8 @@ void live_apl( monk_t* player )
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=talent.flurry_strikes&fight_style.dungeonroute&cooldown.zenith.full_recharge_time<30&target.time_to_die>25" );
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=(target.time_to_die>30&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&(cooldown.zenith.full_recharge_time<20&talent.flurry_strikes&(cooldown.rising_sun_kick.remains|active_enemies>2)|cooldown.zenith.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains)&!fight_style.patchwerk&(cooldown.rising_sun_kick.remains|active_enemies>2)" );
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=fight_remains<=25&(cooldown.rising_sun_kick.remains|active_enemies>2)" );
+  zen->add_action( "zenith,target_if=max:target.time_to_die,if=fight_style.patchwerk&!trinket.1.is.algethar_puzzle_box&!trinket.2.is.algethar_puzzle_box&trinket.1.has_use_buff&(trinket.1.cooldown.ready|cooldown.zenith.full_recharge_time<5)" );
+  zen->add_action( "zenith,target_if=max:target.time_to_die,if=fight_style.patchwerk&!trinket.1.is.algethar_puzzle_box&!trinket.2.is.algethar_puzzle_box&trinket.2.has_use_buff&(trinket.2.cooldown.ready|cooldown.zenith.full_recharge_time<5)" );
 
   // Racials (Good)
   racials->add_action( "berserking,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&buff.zenith.remains>14|fight_remains<20", "Racials (Good)" );
@@ -177,12 +179,12 @@ void live_apl( monk_t* player )
   racials->add_action( "fireblood,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&buff.zenith.remains>14|fight_remains<20" );
 
   // Single Target
-  st->add_action( "fists_of_fury,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up|buff.flurry_charge.stack=30&!buff.zenith.up","Single Target" );
-  st->add_action( "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_unity_within.up&buff.whirling_dragon_punch.remains<1&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|talent.flurry_strikes|!fight_style.patchwerk)" );
+  st->add_action( "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_unity_within.up&buff.whirling_dragon_punch.remains<1&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|talent.flurry_strikes|!fight_style.patchwerk)","Single Target" );
   st->add_action( "whirling_dragon_punch,if=buff.power_infusion.up&(!buff.heart_of_the_jade_serpent_unity_within.up|buff.heart_of_the_jade_serpent_unity_within.remains<2)" );
   st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.remains<1&buff.combo_breaker.stack<2&talent.sequenced_strikes&buff.dance_of_chiji.up&talent.celestial_conduit" );
+  st->add_action( "fists_of_fury,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up|buff.flurry_charge.stack=30&!buff.zenith.up" );
   st->add_action( "whirling_dragon_punch,if=talent.celestial_conduit&buff.heart_of_the_jade_serpent_unity_within.remains<2&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|!fight_style.patchwerk)|talent.flurry_strikes" );
-  st->add_action( "tiger_palm,if=chi<4&combo_strike&energy.time_to_max<=gcd.max*3&!buff.zenith.up&!buff.bloodlust.up&buff.combo_breaker.stack<2&(talent.flurry_strikes|!buff.heart_of_the_jade_serpent.up|chi<2|chi<3&!buff.combo_breaker.up)" );
+  st->add_action( "tiger_palm,if=chi<4&combo_strike&energy.time_to_max<=gcd.max*3&!buff.zenith.up&!buff.bloodlust.up&buff.combo_breaker.stack<2" );
   st->add_action( "strike_of_the_windlord,if=talent.celestial_conduit&buff.heart_of_the_jade_serpent_unity_within.remains<2&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|!fight_style.patchwerk)|talent.flurry_strikes" );
   st->add_action( "fists_of_fury,if=combo_strike&(buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_yulons_avatar.up|buff.heart_of_the_jade_serpent_unity_within.up)&buff.bloodlust.up|buff.bloodlust.up&talent.flurry_strikes|!buff.zenith.up&(talent.flurry_strikes|cooldown.invoke_xuen_the_white_tiger.remains>3|!fight_style.patchwerk)|buff.zenith.up&(talent.flurry_strikes|!buff.bloodlust.up)&(fight_style.patchwerk|target.time_to_die>5)" );
   st->add_action( "rushing_wind_kick" );
@@ -306,15 +308,7 @@ void monk_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
   if ( step.spell_id == 388193 )
     return;
 
-  assisted_combat_step_data_t step_temp = step;
-
-  // Since we separated the Rushing Wind Kick override action from the Rising Sun Kick action
-  // and assisted combat APL uses Rising Sun Kick for this step,
-  // override the step to use the Rushing Wind Kick spell id
-  if ( step.id == 20345 )
-    step_temp.spell_id = 467307;
-
-  base_t::parse_assisted_combat_step( step_temp, assisted_combat );
+  base_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
@@ -372,6 +366,9 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
 
 std::vector<std::string> monk_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
+  if ( spell_id == 107428 && specialization() == MONK_WINDWALKER )
+   return { "rising_sun_kick", "rushing_wind_kick" };
+
   return base_t::action_names_from_spell_id( spell_id );
 }
 
