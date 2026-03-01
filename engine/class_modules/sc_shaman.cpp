@@ -12683,14 +12683,6 @@ bool shaman_t::validate_actor()
     return false;
   }
 
-  if ( !is_ptr() && specialization() == SHAMAN_ELEMENTAL)
-  {
-#ifdef NDEBUG
-    throw sc_unsupported_specialization( "Elemental Shaman sims are non functional for Midnight prepatch" );
-#endif
-    return false;
-  }
-
   // Restoration isn't supported atm
   if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION &&
        primary_role() == ROLE_HEAL )
