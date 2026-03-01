@@ -7275,7 +7275,6 @@ void mage_t::trigger_augury()
   }
   // Regardless of the roll's success, the ICD still applies.
   cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
-
 }
 
 bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_double_proc_delay )
