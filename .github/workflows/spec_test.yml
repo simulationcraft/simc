@@ -23,73 +23,31 @@ jobs:
         class: [deathknight, demonhunter, druid, evoker, hunter, mage, monk, paladin, priest, rogue, shaman, warlock, warrior]
         include:
           - class: deathknight
-            spec: blood
-          - class: deathknight
-            spec: unholy
-          - class: deathknight
-            spec: frost
+            spec: [blood, unholy, frost]
           - class: demonhunter
-            spec: devourer
-          - class: demonhunter
-            spec: havoc
-          - class: demonhunter
-            spec: vengeance
+            spec: [devourer, havoc, vengeance]
           - class: druid
-            spec: balance
-          - class: druid
-            spec: feral
-          - class: druid
-            spec: guardian
-          - class: druid
-            spec: restoration
+            spec: [balance, feral, guardian, restoration]
           - class: evoker
-            spec: devastation
-          - class: evoker
-            spec: augmentation
+            spec: [devastation, augmentation]
           - class: hunter
-            spec: beast_mastery
-          - class: hunter
-            spec: marksmanship
-          - class: hunter
-            spec: survival
+            spec: [beast_mastery, marksmanship, survival]
           - class: mage
-            spec: arcane
-          - class: mage
-            spec: fire
-          - class: mage
-            spec: frost
+            spec: [arcane, fire, frost]
           - class: monk
-            spec: brewmaster
-          - class: monk
-            spec: windwalker
+            spec: [brewmaster, windwalker]
           - class: paladin
-            spec: protection
-          - class: paladin
-            spec: retribution
+            spec: [protection, retribution]
           - class: priest
-            spec: shadow
+            spec: [shadow]
           - class: rogue
-            spec: assassination
-          - class: rogue
-            spec: outlaw
-          - class: rogue
-            spec: subtlety
+            spec: [assassination, outlaw, subtlety]
           - class: shaman
-            spec: elemental
-          - class: shaman
-            spec: enhancement
+            spec: [elemental, enhancement]
           - class: warlock
-            spec: affliction
-          - class: warlock
-            spec: demonology
-          - class: warlock
-            spec: destruction
+            spec: [affliction, demonology, destruction]
           - class: warrior
-            spec: arms
-          - class: warrior
-            spec: fury
-          - class: warrior
-            spec: protection
+            spec: [arms, fury, protection]
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
