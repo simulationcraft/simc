@@ -19,7 +19,7 @@ ptr=1
 # * Must use enchant name (ex: ",enchant=devotion_of_haste_2") instead of ids/hardcoded stats if possible. Rank 2 enchants are permitted.
 
 # Death Knight
-# MID1_Generate_Death_Knight.simc
+MID1_Generate_Death_Knight.simc
 
 # Demon Hunter
 MID1_Generate_Demon_Hunter.simc
