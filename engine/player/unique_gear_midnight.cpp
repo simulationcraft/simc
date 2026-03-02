@@ -3011,10 +3011,10 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232914, consumables::selector_food( 1219185, true ) );  // tasty smoked tetra
   unique_gear::register_special_effect( 1232489, consumables::selector_food( 1219185, true ) );  // twilight angler's medley
   unique_gear::register_special_effect( 1259656, consumables::selector_food( 1232324, true ) );  // blooming feast
+  unique_gear::register_special_effect( 1232919, consumables::selector_food( 1233408, true ) );  // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1259657, consumables::primary_food( 1232325, STAT_STR_AGI_INT, 2 ) ); // quel'dorei medley
   unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
   unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
-  unique_gear::register_special_effect( 1232919, consumables::primary_food( 1233408, STAT_INTELLECT, 3 ) ); // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STR_AGI_INT, 2 ) );  // [impossibly] royal roast
   unique_gear::register_special_effect( 1232902, consumables::secondary_food( 1219183, STAT_CRIT_RATING ) ); // arcano cutlets
   unique_gear::register_special_effect( 1232903, consumables::secondary_food( 1232087, STAT_HASTE_RATING ) ); // fel-kissed filet
