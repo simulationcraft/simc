@@ -1266,9 +1266,9 @@
     "fields": [
       { "data_type": "q", "field": "race_mask" },
       { "data_type": "S", "field": "failure_description_lang" },
-      { "data_type": "H", "field": "class_mask" },
       { "data_type": "H", "field": "min_level" },
-      { "data_type": "i", "field": "max_level" },
+      { "data_type": "H", "field": "max_level" },
+      { "data_type": "i", "field": "class_mask" },
       { "data_type": "I", "field": "skill_logic" },
       { "data_type": "i", "field": "id_language" },
       { "data_type": "B", "field": "min_language" },
