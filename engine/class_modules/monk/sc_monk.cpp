@@ -2139,76 +2139,10 @@ struct keg_smash_t : monk_melee_attack_t
 {
   struct empty_barrel_t : monk_spell_t
   {
-    struct state_t : action_state_t
-    {
-      int count;
-
-      state_t( action_t *a, player_t *t ) : action_state_t( a, t ), count( 0 )
-      {
-      }
-
-      std::ostringstream &debug_str( std::ostringstream &s ) override
-      {
-        action_state_t::debug_str( s );
-        fmt::print( s, " count={}", count );
-        return s;
-      }
-
-      void initialize() override
-      {
-        action_state_t::initialize();
-        count = 0;
-      }
-
-      void copy_state( const action_state_t *o ) override
-      {
-        action_state_t::copy_state( o );
-        auto other = debug_cast<const state_t *>( o );
-        count      = other->count;
-      }
-    };
-
     empty_barrel_t( monk_t *player )
       : monk_spell_t( player, "empty_barrel", player->talent.brewmaster.empty_barrel_damage )
     {
       background = dual = true;
-      aoe               = 0;
-    }
-
-    double composite_da_multiplier( const action_state_t *state ) const override
-    {
-      double mul = monk_spell_t::composite_da_multiplier( state );
-
-      auto chain_state = debug_cast<const state_t *>( state );
-      mul *= pow( chain_multiplier, chain_state->count );
-
-      return mul;
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      monk_spell_t::impact( state );
-
-      auto &tl          = target_list();
-      auto target_count = tl.size();
-
-      if ( target_count == 1 )
-        return;
-
-      auto chain_state = debug_cast<state_t *>( get_state( state ) );
-
-      if ( ++chain_state->count == data().effectN( 1 ).chain_target() )
-        return;
-
-      chain_state->target = tl[ chain_state->count % target_count ];
-
-      snapshot_state( chain_state, amount_type( chain_state ) );
-      schedule_execute( chain_state );
-    }
-
-    action_state_t *new_state() override
-    {
-      return new state_t( this, target );
     }
   };
 
@@ -2256,7 +2190,8 @@ struct keg_smash_t : monk_melee_attack_t
     : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ),
       breath_of_fire( nullptr ),
       empty_barrel( nullptr ),
-      extra_kick( nullptr )
+      extra_kick( nullptr ),
+      fuel_on_the_fire( nullptr )
   {
     parse_options( options_str );
     // TODO: can cast_during_sck be automated?
@@ -2264,7 +2199,8 @@ struct keg_smash_t : monk_melee_attack_t
 
     reduced_aoe_targets = data().effectN( 7 ).base_value();
     aoe                 = -1;
-    // scalding brew is scripted?
+
+    // scalding brew is scripted
     if ( const auto &effect = player->talent.brewmaster.scalding_brew->effectN( 1 ); effect.ok() )
       add_parse_entry( target_multiplier_effects )
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
@@ -4144,7 +4080,7 @@ struct shuffle_t : monk_buff_t<>
     accumulator = 0_s;
   }
 
-  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
     if ( !p().talent.brewmaster.shuffle->ok() )
@@ -5174,8 +5110,6 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 bool monk_t::validate_actor()
 {
-  sim->error( error_level_e::SEVERE, "Monk sims are non-functional for Midnight prepatch." );
-
   if ( specialization() == MONK_MISTWEAVER )
   {
     if ( !quiet )
@@ -6639,7 +6573,7 @@ void monk_t::init_special_effects()
                                                 auto id = state->action->id;
                                                 return id == talent.brewmaster.celestial_brew->id() ||
                                                        id == talent.brewmaster.celestial_infusion->id() ||
-                                                       id == talent.monk.fortifying_brew->id();
+                                                       id == talent.monk.fortifying_brew.find_override_spell()->id();
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.refreshing_drink->trigger();

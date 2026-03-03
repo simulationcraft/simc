@@ -3222,15 +3222,7 @@ struct final_breath_trigger_t : public BASE
 
       if ( BASE::dynamic_tick_action )
       {
-        auto flags_ = BASE::tick_action->update_flags;
-
-        // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
-        // tick_action execute
-        if ( BASE::tick_action->rolling_periodic )
-          flags_ |= STATE_ROLLING_TA;
-
-        BASE::tick_action->update_state( tick_state, flags_,
-                                         BASE::amount_type( tick_state, BASE::tick_action->direct_tick ) );
+        BASE::tick_action->update_state( tick_state, BASE::amount_type( tick_state, BASE::tick_action->direct_tick ) );
       }
 
       BASE::tick_action->snapshot_state( tick_state, result_amount_type::DMG_DIRECT );

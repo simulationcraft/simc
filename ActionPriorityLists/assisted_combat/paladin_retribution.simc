@@ -7,17 +7,13 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=divine_hammer,if=target.distance<=5
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=avenging_wrath
 actions.assisted_combat+=/execution_sentence
-actions.assisted_combat+=/final_reckoning,if=holy_power>=3
 # (Overridden from 'buff.hammer_of_light_ready.up')
 actions.assisted_combat+=/wake_of_ashes,if=(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
 # (Overridden from 'buff.hammer_of_light_ready.up')
 actions.assisted_combat+=/hammer_of_light,if=(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
-# (Overridden from 'talent.final_verdict&buff.divine_arbiter.stack>=25&buff.hammer_of_light_ready.down')
-actions.assisted_combat+=/templars_verdict,if=talent.final_verdict&buff.divine_arbiter.stack>=25&!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
-# (Overridden from 'talent.final_verdict&buff.judge_jury_and_executioner.up&active_enemies>3&buff.hammer_of_light_ready.down')
-actions.assisted_combat+=/templars_verdict,if=talent.final_verdict&buff.judge_jury_and_executioner.up&active_enemies>3&!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
 # (Overridden from 'talent.final_verdict&buff.empyrean_legacy.up&holy_power>=5&buff.hammer_of_light_ready.down')
 actions.assisted_combat+=/templars_verdict,if=talent.final_verdict&buff.empyrean_legacy.up&holy_power>=5&!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
 # (Overridden from 'active_enemies>2&holy_power>=3&buff.hammer_of_light_ready.down')
@@ -34,13 +30,13 @@ actions.assisted_combat+=/divine_toll,if=target.distance<=30&holy_power<=3&activ
 # (Overridden from 'buff.empyrean_power.up&buff.hammer_of_light_ready.down')
 actions.assisted_combat+=/divine_storm,if=buff.empyrean_power.up&!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)
 actions.assisted_combat+=/blade_of_justice,if=holy_power<=3
+actions.assisted_combat+=/judgment,if=buff.avenging_wrath.up&holy_power<=3
 actions.assisted_combat+=/crusader_strike,if=talent.templar_strikes
 actions.assisted_combat+=/hammer_of_the_righteous,if=talent.templar_strikes
 actions.assisted_combat+=/blessed_hammer,if=talent.templar_strikes
 actions.assisted_combat+=/templar_slash,if=talent.templar_strikes
 actions.assisted_combat+=/templar_strike,if=talent.templar_strikes
 actions.assisted_combat+=/judgment,if=holy_power<=3
-actions.assisted_combat+=/hammer_of_wrath
 actions.assisted_combat+=/crusader_strike,if=!talent.crusading_strikes
 actions.assisted_combat+=/hammer_of_the_righteous,if=!talent.crusading_strikes
 actions.assisted_combat+=/blessed_hammer,if=!talent.crusading_strikes
@@ -48,7 +44,7 @@ actions.assisted_combat+=/templar_slash,if=!talent.crusading_strikes
 actions.assisted_combat+=/templar_strike,if=!talent.crusading_strikes
 actions.assisted_combat+=/judgment
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

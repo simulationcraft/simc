@@ -2058,21 +2058,11 @@ void action_t::tick( dot_t* d )
     tick_action->set_target( d->target );
 
     if ( dynamic_tick_action )
-    {
-      auto flags_ = tick_action->update_flags;
-
-      // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
-      // tick_action execute
-      if ( tick_action->rolling_periodic )
-        flags_ |= STATE_ROLLING_TA;
-
-      tick_action->update_state( tick_state, flags_, amount_type( tick_state, tick_action->direct_tick ) );
-    }
+      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
 
     tick_action->schedule_execute( tick_state );
 
-    sim->print_log("{} {} ticks ({} of {}) {}",
-        *player, *this, d->current_tick, d->num_ticks(), *d->target );
+    sim->print_log( "{} {} ticks ({} of {}) {}", *player, *this, d->current_tick, d->num_ticks(), *d->target );
   }
   else
   {
@@ -4335,9 +4325,6 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
 
-  if ( flags & STATE_ROLLING_TA )
-    state->rolling_ta_multiplier = composite_rolling_ta_multiplier( state );
-
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
 
@@ -4498,10 +4485,9 @@ void action_t::trigger_dot( action_state_t* s )
   if ( duration <= timespan_t::zero() )
     return;
 
-  // To simulate precasting HoTs, remove one tick worth of duration if precombat.
-  // We also add a fake zero_tick in dot_t::check_tick_zero().
-  if ( !harmful && is_precombat && !tick_zero && !tick_on_application )
-    duration -= tick_time( s );
+  // Set the rolling ta multiplier before applying the new dot
+  if ( snapshot_flags & STATE_ROLLING_TA )
+    s->rolling_ta_multiplier = composite_rolling_ta_multiplier( s );
 
   dot_t* dot = get_dot( s->target );
 

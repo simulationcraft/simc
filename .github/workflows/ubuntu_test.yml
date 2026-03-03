@@ -44,9 +44,6 @@ jobs:
       - name: "Spell Query"
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS spell_query=spell > /dev/null
 
-      - name: "Log Debug"
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE log=1 debug=1 max_time=100
-
       - name: "Patchwerk"
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE iterations=10 cleanup_threads=1
 

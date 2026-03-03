@@ -777,7 +777,6 @@ public:
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
   virtual bool validate_fight_style( fight_style_e style ) const override;
-  virtual bool validate_actor() override;
   virtual void reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 

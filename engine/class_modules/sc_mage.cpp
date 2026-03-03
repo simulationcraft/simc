@@ -4233,11 +4233,17 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->buffs.glacial_spike->decrement();
     p()->state.icicles = 0;
 
-    p()->trigger_fof( fof_chance, proc_fof );
-    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_splinter( p()->target );
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
+
+    // TODO: If GS is cast with no FoF, the guaranteed FoF from Flash Freeze is applied with a short delay
+    auto fn = [ this ] { p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof ); };
+    if ( p()->bugs && !p()->buffs.fingers_of_frost->check() )
+      make_event( *sim, 100_ms, fn );
+    else
+      fn();
+    p()->trigger_fof( fof_chance, proc_fof );
 
     if ( duality_pyroblast )
       duality_pyroblast->execute_on_target( target );
@@ -5333,7 +5339,7 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
     {
-      // Add a millisecond so that it the ICD doesn't perfectly align with delayed splinters.
+      // Add a millisecond so that the ICD doesn't perfectly align with delayed splinters.
       p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
       if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
         make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );

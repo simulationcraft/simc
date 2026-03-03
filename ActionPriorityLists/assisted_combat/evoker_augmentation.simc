@@ -10,17 +10,21 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=prescience,if=buff.prescience.down,use_auto=1
-actions.assisted_combat+=/ebon_might
+actions.assisted_combat+=/ebon_might,if=buff.ebon_might_self.down
+# (Overridden from 'buff.recall.down&target.distance<=40&buff.recall.down')
+actions.assisted_combat+=/deep_breath,if=target.distance<=40
+actions.assisted_combat+=/tip_the_scales,if=cooldown.fire_breath.ready
 actions.assisted_combat+=/fire_breath,cooldown_allow_casting_success=1
 actions.assisted_combat+=/upheaval,cooldown_allow_casting_success=1
 actions.assisted_combat+=/eruption,if=essence>=4,cooldown_allow_casting_success=1
 actions.assisted_combat+=/blistering_scales,if=!evoker.scales_up&target.distance<=30
 actions.assisted_combat+=/eruption,if=essence>=2&buff.essence_burst.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/time_skip
 actions.assisted_combat+=/eruption
 actions.assisted_combat+=/living_flame,cooldown_allow_casting_success=1
 actions.assisted_combat+=/living_flame
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=potion
 actions.cooldowns+=/prescience,use_auto=1,if=cooldown.breath_of_eons.up&talent.breath_of_eons
 actions.cooldowns+=/ebon_might,if=cooldown.breath_of_eons.up&talent.breath_of_eons

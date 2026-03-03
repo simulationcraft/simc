@@ -1819,15 +1819,35 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   {
     buff_t* haste_buff;
     double hp_threshold;
+    action_t* cleave;
 
-    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff )
-      : generic_proc_t( e, n, id ), haste_buff( buff ), hp_threshold( e.driver()->effectN( 3 ).base_value() )
+    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff,
+                                             action_t* cleave = nullptr )
+      : generic_proc_t( e, n, id ),
+        haste_buff( buff ),
+        hp_threshold( e.driver()->effectN( 3 ).base_value() ),
+        cleave( cleave )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      // Ensure secondary damage doesnt hit the same target as the main hit
-      if ( id == 1268775 )
-        target_filter_callback = secondary_targets_only();
+      if ( cleave )
+        add_child( cleave );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( cleave && sim->target_non_sleeping_list.size() > 1 )
+      {
+        for ( auto& target : sim->target_non_sleeping_list )
+        {
+          if ( target != execute_state->target )
+          {
+            cleave->execute_on_target( target );
+            return;
+          }
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -1842,15 +1862,12 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1264337 ) )
                   ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
-  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem", effect, 1264325, buff );
-
   auto second_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
+      "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
   second_target_damage->name_str_reporting = "Cleave";
 
-  main_target_damage->execute_action = second_target_damage;
-  main_target_damage->add_child( second_target_damage );
+  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem", effect, 1264325, buff, second_target_damage );
 
   effect.execute_action = main_target_damage;
 
@@ -2228,7 +2245,7 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
   struct cosmic_madness_channel_t : public proc_spell_t
   {
     cosmic_madness_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
+      proc_spell_t( "wraps_of_cosmic_madness", e.player, e.driver() )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
@@ -2241,24 +2258,40 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
 
       auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, missile_spell );
-      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, damage_spell );
-      cosmic_barrage->impact_action->base_dd_min = cosmic_barrage->impact_action->base_dd_max = missile_damage;
+      auto damage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage_damage", e, damage_spell );
+      damage->base_dd_min = damage->base_dd_max = missile_damage;
+      damage->dual = true;
 
       tick_action = cosmic_barrage;
+      cosmic_barrage->impact_action = damage;
+      damage->stats = stats;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void last_tick( dot_t* d ) override 
     {
+      // cache first since last_tick() will null out player->channeling
       bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
 
+      // restart the player since the player-ready from use_item_t was canceled
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
-  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", effect );
+  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness", effect );
 }
 
 // 1253113 driver
@@ -2590,7 +2623,6 @@ void eternal_voidsong_chain( special_effect_t& effect )
   auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
   dot->base_td_multiplier *= role_mult( effect );
-  dot->rolling_periodic = true;
 
   effect.execute_action = dot;
 
@@ -2755,6 +2787,21 @@ void arcanoweave_cord( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
+
+// 1241503 driver
+// 1241522 rppm
+// 1241502 damage
+void sunfire_sash( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "radiant_conflagration", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -2964,11 +3011,11 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232914, consumables::selector_food( 1219185, true ) );  // tasty smoked tetra
   unique_gear::register_special_effect( 1232489, consumables::selector_food( 1219185, true ) );  // twilight angler's medley
   unique_gear::register_special_effect( 1259656, consumables::selector_food( 1232324, true ) );  // blooming feast
+  unique_gear::register_special_effect( 1232919, consumables::selector_food( 1233408, true ) );  // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1259657, consumables::primary_food( 1232325, STAT_STR_AGI_INT, 2 ) ); // quel'dorei medley
   unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
   unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
-  unique_gear::register_special_effect( 1232919, consumables::primary_food( 1233408, STAT_INTELLECT, 3 ) ); // flora frenzy / champion's bento
-  unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STAMINA, 7 ) );  // royal roast
+  unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STR_AGI_INT, 2 ) );  // [impossibly] royal roast
   unique_gear::register_special_effect( 1232902, consumables::secondary_food( 1219183, STAT_CRIT_RATING ) ); // arcano cutlets
   unique_gear::register_special_effect( 1232903, consumables::secondary_food( 1232087, STAT_HASTE_RATING ) ); // fel-kissed filet
   unique_gear::register_special_effect( 1232905, consumables::secondary_food( 1232089, STAT_MASTERY_RATING ) ); // warped wise wings
@@ -3082,6 +3129,7 @@ void register_special_effects()
   register_special_effect( 1243876, armors::rangergenerals_call );
   register_special_effect( 1243903, armors::azerothian_power );
   register_special_effect( 1241529, armors::arcanoweave_cord );
+  register_special_effect( 1241503, armors::sunfire_sash );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );

@@ -1533,6 +1533,7 @@ class SpellDataGenerator(DataGenerator):
          1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
+         1255685, 1255687, 1255688, # crucible of erratic energies
         ),
 
         # Warrior:
@@ -2070,7 +2071,8 @@ class SpellDataGenerator(DataGenerator):
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
           ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
-          ( 383009, 0),                                 # Stormkeeper buff for tier set impl
+          ( 383009, 0 ),                                 # Stormkeeper buff for tier set impl
+          ( 211094, 0 ),                                # Arc Discharge Chain Lightning
         ),
 
         # Mage:

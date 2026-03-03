@@ -140,7 +140,6 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* infernos_blessing;
     buff_t* ebon_might;
     buff_t* shifting_sands;
-    buff_t* thread_of_fate;
 
     // Legendary
     buff_t* unbound_surge;
@@ -956,7 +955,6 @@ struct evoker_t : public player_t
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
   vector_with_callback<player_t*> allies_with_my_shifting_sands;
-  vector_with_callback<buff_t*> allied_thread_of_fate_buffs;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::map<player_t*, buff_t*> allied_major_cds;
   player_t* last_scales_target;
@@ -1286,7 +1284,8 @@ struct evoker_t : public player_t
     player_talent_t molten_embers;
     player_talent_t duplicate1;
     const spell_data_t* duplicate_eruption_spell;     // 1259172
-    const spell_data_t* duplicate_fire_breath_spell;  // 431164
+    const spell_data_t* duplicate_fire_breath_charge_spell;  // 1283718
+    const spell_data_t* duplicate_fire_breath_release_spell;  // 431164
     const spell_data_t* duplicate_upheaval_spell;     // 396288
     player_talent_t duplicate2;
     player_talent_t duplicate3;
@@ -1305,9 +1304,6 @@ struct evoker_t : public player_t
       player_talent_t temporality;
       const spell_data_t* temporality_buff;  // 431872
       player_talent_t motes_of_acceleration;
-      player_talent_t threads_of_fate;
-      const spell_data_t* thread_of_fate_buff;    // 431716
-      const spell_data_t* thread_of_fate_damage;  // 432895
       player_talent_t primacy;
       const spell_data_t* primacy_buff;  // 431654
       player_talent_t double_time;
@@ -1647,11 +1643,314 @@ struct pet_action_t : public parse_action_effects_t<Base>
 template <typename T_PET>
 struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
+  using ab = pet_action_t<T_PET, spell_t>;
   pet_spell_t( T_PET* p, std::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : pet_action_t<T_PET, spell_t>( p, name, spell )
+    : ab( p, name, spell )
   {
     /* this->tick_may_crit = true;
      this->hasted_ticks  = false;*/
+  }
+
+  T_PET* p()
+  {
+    return debug_cast<T_PET*>( ab::player );
+  }
+
+  evoker_t* o()
+  {
+    return debug_cast<evoker_t*>( ab::player->owner );
+  }
+};
+
+// Empowered spell base templates
+struct empower_data_t
+{
+  empower_e empower;
+
+  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
+  {
+    fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) );
+  }
+};
+
+template <class T_PET>
+struct empowered_pet_spell_t : public pet_spell_t<T_PET>
+{
+protected:
+  using state_t = evoker_action_state_t<empower_data_t>;
+  using BASE = pet_spell_t<T_PET>;
+
+public:
+  empower_e max_empower;
+
+  empowered_pet_spell_t( T_PET* p, std::string_view name, const spell_data_t* spell )
+    : pet_spell_t<T_PET>( p, name, spell ),
+      max_empower( empower_e::EMPOWER_3 )
+  {
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, BASE::target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+};
+
+template <class T_PET>
+struct empowered_pet_release_t : public empowered_pet_spell_t<T_PET>
+{
+  using ab = empowered_pet_spell_t<T_PET>;
+
+  empowered_pet_release_t( T_PET* p, std::string_view name, const spell_data_t* spell )
+    : ab( p, name, spell )
+  {
+    ab::dual = true;
+
+    // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via
+    // spell queue. Potentally add a better way to model this?
+    const spell_data_t* gcd_spell = p->evoker()->find_spell( 359115 );
+    if ( gcd_spell )
+      ab::trigger_gcd = gcd_spell->gcd();
+    ab::gcd_type = gcd_haste_type::NONE;
+  }
+
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return ab::cast_state( s )->empower;
+  }
+
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( ab::cast_state( s )->empower );
+  }
+
+  void execute() override
+  {
+    ab::p()->was_empowering = false;
+
+    ab::execute();
+  }
+};
+
+template <class T_PET>
+struct empowered_pet_charge_t : public empowered_pet_spell_t<T_PET>
+{
+  using ab = empowered_pet_spell_t<T_PET>;
+
+  action_t* release_spell;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
+  int empower_to;
+  timespan_t base_empower_duration;
+  timespan_t lag;
+
+  void setup_empower_stats( empower_e empower_level )
+  {
+    empower_to = empower_level;
+    if ( static_cast<empower_e>( empower_to ) == EMPOWER_MAX )
+    {
+      base_empower_duration = max_hold_time();
+    }
+    else
+    {
+      empower_to            = std::min( static_cast<int>( ab::max_empower ), empower_to );
+      base_empower_duration = base_time_to_empower( static_cast<empower_e>( empower_to ) );
+    }
+
+    // apply parsed modifiers
+    ab::dot_duration      = ab::player->get_passive_value( ab::data(), "duration" );
+    ab::dot_duration.base = base_empower_duration;
+    ab::base_tick_time    = ab::dot_duration;
+  }
+
+  void setup_empower_stats( int empower_level )
+  {
+    assert( empower_level > 0 );
+    assert( empower_level <= 5 );
+    setup_empower_stats( static_cast<empower_e>( empower_level ) );
+  }
+
+  empowered_pet_charge_t( T_PET* p, std::string_view name, const spell_data_t* spell )
+    : ab( p, name, spell ),
+      release_spell( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( ab::stats ),
+      empower_to( EMPOWER_MAX ),
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
+  {
+    ab::channeled = true;
+
+    setup_empower_stats( empower_to );
+
+    ab::gcd_type = gcd_haste_type::NONE;
+    if ( ab::trigger_gcd > timespan_t::zero() )
+      ab::min_gcd = ab::trigger_gcd;
+  }
+
+  template <typename T>
+  void create_release_spell( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<empowered_pet_release_t<T_PET>, T>,
+                   "Empowered release spell must be dervied from empowered_pet_release_spell_t." );
+
+    release_spell = ab::p()->template get_secondary_action<T_PET, T>( n );
+
+    ab::add_child( release_spell );
+
+    release_spell->stats      = ab::stats;
+    release_spell->background = false;
+  }
+
+  timespan_t base_time_to_empower( empower_e emp ) const
+  {
+    // TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( emp )
+    {
+      case empower_e::EMPOWER_1:
+        return 1000_ms;
+      case empower_e::EMPOWER_2:
+        return 1750_ms;
+      case empower_e::EMPOWER_3:
+        return 2500_ms;
+      case empower_e::EMPOWER_4:
+        return 3250_ms;
+      default:
+        break;
+    }
+
+    return 0_ms;
+  }
+
+  timespan_t max_hold_time() const
+  {
+    // TODO: confirm if this is affected by duration mods/haste
+    return base_time_to_empower( ab::max_empower ) + 2_s;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    return composite_dot_duration( s );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dur = ab::composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
+  }
+
+  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
+  {
+    auto base = base_time_to_empower( emp );
+    auto mult = composite_dot_duration( s ) / base_empower_duration;
+
+    return base * mult;
+  }
+
+  empower_e empower_level( const dot_t* d ) const
+  {
+    auto emp = empower_e::EMPOWER_NONE;
+
+    if ( !d->is_ticking() )
+      return emp;
+
+    auto s       = d->state;
+    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
+
+    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_4 ) )
+      emp = empower_e::EMPOWER_4;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
+      emp = empower_e::EMPOWER_3;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
+      emp = empower_e::EMPOWER_2;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
+      emp = empower_e::EMPOWER_1;
+
+    return std::min( ab::max_empower, emp );
+  }
+
+  void init() override
+  {
+    ab::init();
+    assert( release_spell && "Empowered charge spell must have a release spell." );
+  }
+
+  void execute() override
+  {
+    // pre-determine lag here per every execute
+    lag = ab::rng().gauss( ab::sim->channel_lag );
+
+    ab::execute();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
+    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
+    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
+    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
+    // evoker_t::analyze()
+    ab::stats = dummy_stat;
+    ab::tick( d );
+    ab::stats = orig_stat;
+
+    ab::stats->iteration_total_execute_time += d->time_to_tick();
+  }
+
+  virtual player_t* get_release_target( dot_t* )
+  {
+    return ab::target;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    ab::last_tick( d );
+
+    // being stunned ends the empower without triggering the release spell
+    if ( ab::p()->buffs.stunned->check() )
+    {
+      ab::p()->was_empowering = false;
+      return;
+    }
+
+    auto release_target = get_release_target( d );
+
+    if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
+    {
+      ab::p()->was_empowering = false;
+      return;
+    }
+
+    auto emp_state        = release_spell->get_state();
+    emp_state->target     = release_target;
+    release_spell->target = release_target;
+    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
+
+    ab::cast_state( emp_state )->empower = empower_level( d );
+
+    release_spell->schedule_execute( emp_state );
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_spell;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    ab::p()->last_foreground_action = release_spell;
+    // Start GCD - All Empowerw have a GCD of 0.5s after completion.
+    ab::start_gcd();
   }
 };
 
@@ -1659,13 +1958,31 @@ struct evoker_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn;
   timespan_t precombat_spawn_adjust;
+  bool was_empowering;
+
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T_PET, typename T, typename... Ts>
+  T* get_secondary_action( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a        = new T( dynamic_cast<T_PET*>( this ), n, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return a;
+  }
 
   evoker_pet_t( evoker_t* player, std::string_view name, bool guardian = true, bool auto_attack = true,
                 bool dynamic = true )
     : pet_t( player->sim, player, name, guardian, dynamic ),
       use_auto_attack( auto_attack ),
       precombat_spawn( false ),
-      precombat_spawn_adjust( 0_s )
+      precombat_spawn_adjust( 0_s ),
+      was_empowering( false ),
+      secondary_action_list()
   {
     if ( auto_attack )
     {
@@ -1728,6 +2045,41 @@ struct evoker_pet_t : public pet_t
   void reset() override
   {
     pet_t::reset();
+    was_empowering = false;
+  }
+
+  void moving()
+  {
+    // If we are mid-empower and forced to move, we don't want player_t::interrupt() to schedule_ready as the release
+    // action will handle that for us. We set the bool here and override player_t::schedule_ready to return if bool is
+    // set.
+    if ( channeling && dynamic_cast<empowered_pet_charge_t<evoker_pet_t>*>( channeling ) )
+      was_empowering = true;
+
+    player_t::moving();
+  }
+
+  void analyze( sim_t& sim )
+  {
+    // For proper DPET analysis, we need to treat empowered spell stat objs as non-channelled so the dot ticks from fire
+    // breath do not get summed up into total execute time. All empowered spells have a release spell that is pushed
+    // onto secondary_action_list, which we can use to find stat objs for empowered actions without having to go through
+    // the entire action_list. See empower_charge_spell_t::tick() for more notes.
+    for ( auto a : secondary_action_list )
+    {
+      if ( auto emp = dynamic_cast<empowered_pet_charge_t<evoker_pet_t>*>( a->stats->action_list[ 0 ] ) )
+        range::for_each( emp->stats->action_list, []( action_t* a ) { a->channeled = false; } );
+    }
+
+    player_t::analyze( sim );
+  }
+
+  void schedule_ready( timespan_t delta_time, bool waiting )
+  {
+    if ( was_empowering )
+      return;
+
+    player_t::schedule_ready( delta_time, waiting );
   }
 
   void trigger_pet_movement( double dist )
@@ -2552,18 +2904,6 @@ struct essence_base_t : public BASE
   {
     BASE::execute();
 
-    if ( !BASE::background && BASE::p()->talent.chronowarden.master_of_destiny.ok() &&
-         BASE::base_costs[ RESOURCE_ESSENCE ] > 0 )
-    {
-      for ( auto& b : BASE::p()->allied_thread_of_fate_buffs )
-      {
-        if ( b->check() )
-        {
-          b->extend_duration( BASE::player, master_of_destiny_duration );
-        }
-      }
-    }
-
     if ( !BASE::background && BASE::p()->talent.chronowarden.time_convergence.ok() )
     {
       if ( BASE::p()->buff.time_convergence_intellect->check() )
@@ -2648,125 +2988,6 @@ public:
 template <class BASE>
 struct empowered_release_t : public empowered_base_t<BASE>
 {
-  struct threads_of_fate_t : public evoker_augment_t
-  {
-    threads_of_fate_t( evoker_t* p )
-      : evoker_augment_t( "threads_of_fate", p, p->talent.chronowarden.thread_of_fate_buff )
-    {
-      background = true;
-
-      if ( aoe == 0 )
-        aoe = 1;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      evoker_augment_t::impact( s );
-
-      p()->get_target_data( s->target )->buffs.thread_of_fate->trigger();
-    }
-
-    size_t available_targets( std::vector<player_t*>& target_list ) const override
-    {
-      std::vector<player_t*> helper_list;
-
-      target_list.clear();
-
-      if ( as<int>( sim->player_no_pet_list.size() ) <= n_targets() )
-      {
-        for ( const auto& t : sim->player_no_pet_list )
-        {
-          if ( !t->is_sleeping() )
-            target_list.push_back( t );
-        }
-
-        return target_list.size();
-      }
-
-      for ( const auto& t : sim->player_no_pet_list )
-      {
-        if ( !t->is_sleeping() && t != player )
-        {
-          if ( t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
-               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
-               !p()->get_target_data( t )->buffs.thread_of_fate->check() )
-          {
-            target_list.push_back( t );
-          }
-          else
-          {
-            helper_list.push_back( t );
-          }
-        }
-      }
-
-      if ( as<int>( target_list.size() ) >= n_targets() )
-      {
-        if ( as<int>( target_list.size() ) > n_targets() )
-        {
-          rng().shuffle( target_list.begin(), target_list.end() );
-        }
-        return target_list.size();
-      }
-
-      std::vector<std::function<bool( player_t* )>> lambdas = {
-          [ this ]( player_t* t ) {
-            return p()->get_target_data( t )->buffs.ebon_might->check() &&
-                   !p()->get_target_data( t )->buffs.thread_of_fate->check();
-          },
-          [ this ]( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION &&
-                   !p()->get_target_data( t )->buffs.thread_of_fate->check();
-          },
-          [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.thread_of_fate->check(); },
-          []( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION;
-          },
-          []( player_t* ) { return true; } };
-
-      for ( auto& fn : lambdas )
-      {
-        auto pos = target_list.size();
-
-        for ( size_t i = 0; i < helper_list.size(); )
-        {
-          if ( fn( helper_list[ i ] ) )
-          {
-            target_list.push_back( helper_list[ i ] );
-            erase_unordered( helper_list, helper_list.begin() + i );
-          }
-          else
-          {
-            i++;
-          }
-        }
-
-        if ( as<int>( target_list.size() ) >= n_targets() )
-        {
-          if ( target_list.size() - pos > 1 )
-          {
-            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
-          }
-
-          return target_list.size();
-        }
-      }
-
-      return target_list.size();
-    }
-
-    // No point caching using basic cache, cache would be ruined by every cast.
-    // TODO: If noticable lag caused by this target list implement custom cache.
-    std::vector<player_t*>& target_list() const override
-    {
-      available_targets( target_cache.list );
-
-      return target_cache.list;
-    }
-  };
-
   struct shifting_sands_t : public evoker_augment_t
   {
     shifting_sands_t( evoker_t* p ) : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
@@ -3261,13 +3482,70 @@ struct duplicate_t : evoker_pet_t
   action_t* fire_breath;
   action_t* upheaval;
   action_t* custom_execution_pointer;
+  event_t* custom_readying_event;
 
   duplicate_t( evoker_t* player )
-    : evoker_pet_t( player, "duplicate", true, false, true ), custom_execution_pointer( nullptr )
+    : evoker_pet_t( player, "duplicate", true, false, true ),
+      custom_execution_pointer( nullptr ),
+      custom_readying_event( nullptr )
   {
     owner_coeff.sp_from_sp = 1.0;
     ready_type             = READY_TRIGGER;
   }
+
+  struct duplicate_ready_event_t : public event_t
+  {
+    duplicate_t* _player;
+    duplicate_ready_event_t( duplicate_t& p, timespan_t delta_time ) : event_t( p, delta_time ), _player( &p )
+    {
+      if ( sim().debug )
+        sim().out_debug.printf( "New Player-Duplicate-Ready Event: %s", p.name() );
+    }
+    const char* name() const override
+    {
+      return "Player-Duplicate-Ready";
+    }
+
+    duplicate_t* p()
+    {
+      return player();
+    }
+
+    const duplicate_t* p() const
+    {
+      return player();
+    }
+
+    duplicate_t* player()
+    {
+      return _player;
+    }
+    const duplicate_t* player() const
+    {
+      return _player;
+    }
+
+    void execute() override
+    {
+      p()->custom_readying_event = nullptr;
+      p()->current_execute_type  = execute_type::FOREGROUND;
+      p()->executing             = nullptr;
+      p()->channeling            = nullptr;
+      p()->gcd_ready             = timespan_t::min();
+
+      // There are certain chains of events where an off-gcd ability can be queued such that the queue
+      // time for the action exceeds Player-Ready event (essentially end of GCD). In this case, the
+      // simple solution is to just cancel the queue execute and let the actor select an action from
+      // the action list as normal.
+      if ( p()->queueing )
+      {
+        event_t::cancel( p()->queueing->queue_event );
+        p()->queueing = nullptr;
+      }
+
+      p()->schedule_ready( p()->available(), true );
+    }
+  };
 
   struct eruption_t : public pet_spell_t<duplicate_t>
   {
@@ -3294,13 +3572,127 @@ struct duplicate_t : evoker_pet_t
     void execute() override
     {
       pet_spell_t::execute();
-      player->schedule_ready();
+      p()->schedule_ready( timespan_t::zero(), false );
+    }
+  };
+
+  struct fire_breath_t : public empowered_pet_charge_t<duplicate_t>
+  {
+    struct fire_breath_damage_t : public empowered_pet_release_t<duplicate_t>
+    {
+      timespan_t dot_dur_per_emp;
+      action_t* chrono_flames;
+      int max_afterimage_targets;
+
+      fire_breath_damage_t( duplicate_t* p, std::string_view name )
+        : empowered_pet_release_t( p, name, p->evoker()->spec.fire_breath_damage ),
+          dot_dur_per_emp( 6_s )
+      {
+        aoe                 = -1;  // TODO: actually a cone so we need to model it if possible
+        reduced_aoe_targets = 5.0;
+
+        //dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
+        //dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+        dot_duration = 24_s;  // May not scale with blast furnace.
+      }
+
+      timespan_t reduction_from_empower( const action_state_t* s ) const
+      {
+        return std::max( 0, empower_value( s ) - 1 ) * dot_dur_per_emp;
+      }
+
+      timespan_t composite_dot_duration( const action_state_t* s ) const override
+      {
+        return base_t::composite_dot_duration( s ) - reduction_from_empower( s );
+      }
+
+      double bonus_da( const action_state_t* s ) const override
+      {
+        auto da          = base_t::bonus_da( s );
+        auto ticks       = reduction_from_empower( s ) / tick_time( s );
+        auto tick_damage = s->composite_spell_power() * spell_tick_power_coefficient( s );
+
+        return da + ticks * tick_damage;
+      }
+
+      double calculate_tick_amount( action_state_t* s, double m ) const override
+      {
+        auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
+
+        m *= std::sqrt( reduced_aoe_targets / n );
+
+        return base_t::calculate_tick_amount( s, m );
+      }
+
+      void execute() override
+      {
+        empowered_pet_release_t::execute();
+        p()->schedule_ready( timespan_t::zero(), false );
+      }
+    };
+
+    fire_breath_t( duplicate_t* p )
+      : empowered_pet_charge_t( p, "fire_breath", p->evoker()->talent.duplicate_fire_breath_charge_spell )
+    {
+      create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
+
+      setup_empower_stats( empower_e::EMPOWER_1 );
+    }
+
+    player_t* get_release_target( dot_t* d ) override
+    {
+      auto t = d->state->target;
+
+      if ( t->is_sleeping() )
+      {
+        t = nullptr;
+
+        for ( auto enemy : player->sim->target_non_sleeping_list )
+        {
+          if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
+            continue;
+
+          t = enemy;
+          break;
+        }
+      }
+
+      return t;
+    }
+  };
+
+  struct upheaval_t : public empowered_pet_charge_t<duplicate_t>
+  {
+    struct upheaval_damage_t : public empowered_pet_release_t<duplicate_t>
+    {
+      upheaval_damage_t( duplicate_t* p, std::string_view name )
+        : empowered_pet_release_t( p, name, p->evoker()->talent.duplicate_upheaval_spell )
+      {
+        aoe = -1;
+      }
+
+      void execute() override
+      {
+        empowered_pet_release_t::execute();
+        p()->schedule_ready( timespan_t::zero(), false );
+      }
+    };
+
+    upheaval_t( duplicate_t* p ) : empowered_pet_charge_t( p, "upheaval", p->evoker()->find_spell( 396286 ) )
+    {
+      create_release_spell<upheaval_damage_t>( "upheaval_damage" );
+
+      setup_empower_stats( empower_e::EMPOWER_3 );
     }
   };
 
   void arise() override
   {
     evoker_pet_t::arise();
+
+    // Rough Guess
+    upheaval->cooldown->start( upheaval, rng().gauss( 9_s, 3_s ) );
+    fire_breath->cooldown->start( fire_breath, rng().gauss( 9_s, 3_s ) );
 
     reschedule_actor();
 
@@ -3325,16 +3717,116 @@ struct duplicate_t : evoker_pet_t
   {
     evoker_pet_t::reset();
     custom_execution_pointer = nullptr;
+    custom_readying_event    = nullptr;
   }
 
   void create_actions() override
   {
     evoker_pet_t::create_actions();
-    eruption = new eruption_t( this );
+    eruption    = new eruption_t( this );
+    upheaval    = new upheaval_t( this );
+    fire_breath = new fire_breath_t( this );
+  }
+
+  // Unnecessary as the GCD is unhasted, but just in case I need it later.
+  void adjust_global_cooldown( gcd_haste_type ht ) override
+  {
+    // Don't adjust if the current gcd isnt hasted
+    if ( ht == gcd_haste_type::NONE )
+    {
+      return;
+    }
+
+    // Don't adjust if the changed haste type isnt current GCD haste scaling type
+    if ( ht != gcd_haste_type::HASTE && ht != gcd_type )
+    {
+      return;
+    }
+
+    // Don't adjust elapsed GCDs
+    if ( ( custom_readying_event && custom_readying_event->occurs() <= sim->current_time() ) ||
+         ( gcd_ready <= sim->current_time() ) )
+    {
+      return;
+    }
+
+    double new_haste = 0;
+    switch ( ht )
+    {
+      case gcd_haste_type::SPELL_HASTE:
+        new_haste = cache.spell_haste();
+        break;
+      case gcd_haste_type::ATTACK_HASTE:
+        new_haste = cache.attack_haste();
+        break;
+      case gcd_haste_type::SPELL_CAST_SPEED:
+        new_haste = cache.spell_cast_speed();
+        break;
+      case gcd_haste_type::AUTO_ATTACK_SPEED:
+        new_haste = cache.auto_attack_speed();
+        break;
+      // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
+      // they can be adjusted on state changes.
+      default:
+        assert( 0 && "player_t::adjust_global_cooldown called without proper haste type" );
+        break;
+    }
+
+    // Haste did not change, don't do anything
+    if ( new_haste == gcd_current_haste_value )
+    {
+      return;
+    }
+
+    double delta           = new_haste / gcd_current_haste_value;
+    timespan_t remains = custom_readying_event ? custom_readying_event->remains() : ( gcd_ready - sim->current_time() );
+    timespan_t new_remains = remains * delta;
+
+    // Don't bother processing too small (less than a millisecond) granularity changes
+    if ( remains == new_remains )
+    {
+      return;
+    }
+
+    if ( sim->debug )
+    {
+      sim->out_debug.printf(
+          "%s adjusting GCD due to haste change: old_ready=%.3f new_ready=%.3f old_haste=%f new_haste=%f delta=%f",
+          name(), ( sim->current_time() + remains ).total_seconds(),
+          ( sim->current_time() + new_remains ).total_seconds(), gcd_current_haste_value, new_haste, delta );
+    }
+
+    // We need to adjust the event (GCD is already elapsing)
+    if ( custom_readying_event )
+    {
+      // GCD speeding up, recreate the event
+      if ( delta < 1 )
+      {
+        event_t::cancel( custom_readying_event );
+        custom_readying_event = make_event<duplicate_ready_event_t>(*sim, *this, new_remains );
+      }
+      // GCD slowing down, just reschedule into future
+      else
+      {
+        custom_readying_event->reschedule( new_remains );
+      }
+    }
+
+    gcd_ready               = sim->current_time() + new_remains;
+    gcd_current_haste_value = new_haste;
   }
 
   void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ ) override
   {
+    if ( custom_readying_event )
+      return;
+
+    if ( gcd_ready != timespan_t::min() && gcd_ready - sim->current_time() > 0_s )
+    {
+      custom_readying_event = make_event<duplicate_ready_event_t>( *sim, *this, gcd_ready - sim->current_time() );
+      return;
+    }
+
     reschedule_actor();
   }
 
@@ -3437,6 +3929,12 @@ struct duplicate_t : evoker_pet_t
 
   action_t* execute_action() override
   {
+   if ( fire_breath->cooldown->up() )
+      return fire_breath;
+
+    if ( upheaval->cooldown->up() )
+      return upheaval;
+
     return eruption;
   }
 
@@ -6546,44 +7044,6 @@ public:
   }
 };
 
-struct thread_of_fate_damage_t : public evoker_external_action_t<spell_t>
-{
-protected:
-  using base = evoker_external_action_t<spell_t>;
-
-public:
-  thread_of_fate_damage_t( player_t* p ) : base( "thread_of_fate_damage", p, p->find_spell( 432895 ) )
-  {
-    may_dodge = may_parry = may_block = may_crit = false;
-    background                                   = true;
-  }
-
-  void init() override
-  {
-    spell_t::init();
-    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
-  }
-};
-
-struct thread_of_fate_heal_t : public evoker_external_action_t<heal_t>
-{
-protected:
-  using base = evoker_external_action_t<heal_t>;
-
-public:
-  thread_of_fate_heal_t( player_t* p ) : base( "thread_of_fate_heal", p, p->find_spell( 432896 ) )
-  {
-    may_dodge = may_parry = may_block = may_crit = false;
-    background                                   = true;
-  }
-
-  void init() override
-  {
-    base::init();
-    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
-  }
-};
-
 struct infernos_blessing_t : public evoker_external_action_t<spell_t>
 {
 protected:
@@ -6806,37 +7266,19 @@ public:
     {
       auto& tl = target_list();
 
-      std::sort( tl.begin(), tl.end(), [ this ]( player_t* p1, player_t* p2 ) {
-        auto td1 = p()->get_target_data( p1 );
-        auto td2 = p()->get_target_data( p2 );
-
-        return !td1->buffs.prescience->check() || td2->buffs.prescience->check();
+      // first split into [has buff] vs [no buff]
+      auto it = range::partition( tl, [ this ]( player_t* t ) {
+        return !p()->get_target_data( t )->buffs.prescience->check();
       } );
 
-      auto it = std::find_if( tl.begin(), tl.end(), [ this ]( player_t* tar ) {
-        return p()->get_target_data( tar )->buffs.prescience->check();
-      } );
+      auto is_dps = []( player_t* p ) {
+        return p->primary_role() != ROLE_HYBRID && p->primary_role() != ROLE_HEAL && p->primary_role() != ROLE_TANK &&
+               p->specialization() != EVOKER_AUGMENTATION;
+      };
 
-      std::sort( tl.begin(), it, []( player_t* p1, player_t* p2 ) {
-        auto p1_dps = p1->primary_role() != ROLE_HYBRID && p1->primary_role() != ROLE_HEAL && p1->primary_role() != ROLE_TANK &&
-                      p1->specialization() != EVOKER_AUGMENTATION;
-        auto p2_dps = p2->primary_role() != ROLE_HYBRID && p2->primary_role() != ROLE_HEAL && p2->primary_role() != ROLE_TANK &&
-                      p2->specialization() != EVOKER_AUGMENTATION;
+      std::partition( tl.begin(), it, [ & ]( player_t* t ) { return is_dps( t ); } );
+      std::partition( it, tl.end(), [ & ]( player_t* t ) { return is_dps( t ); } );
 
-        return p1_dps || !p2_dps;
-      } );
-
-      if ( it < tl.end() )
-      {
-        std::sort( it, tl.end(), []( player_t* p1, player_t* p2 ) {
-          auto p1_dps = p1->primary_role() != ROLE_HYBRID && p1->primary_role() != ROLE_HEAL && p1->primary_role() != ROLE_TANK &&
-                        p1->specialization() != EVOKER_AUGMENTATION;
-          auto p2_dps = p2->primary_role() != ROLE_HYBRID && p2->primary_role() != ROLE_HEAL && p2->primary_role() != ROLE_TANK &&
-                        p2->specialization() != EVOKER_AUGMENTATION;
-
-          return p1_dps || !p2_dps;
-        } );
-      }
       target = tl.front();
 
       auto potential_target =
@@ -7420,107 +7862,6 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
         fate_mirror_heal->execute_on_target( s->target, da );
       }
     }
-  }
-};
-
-struct thread_of_fate_buff_t : public evoker_buff_t<buff_t>
-{
-protected:
-  using bb = evoker_buff_t<buff_t>;
-
-public:
-  struct thread_of_fate_cb_t : public dbc_proc_callback_t
-  {
-    evoker_t* source;
-    spells::thread_of_fate_damage_t* thread_of_fate_damage;
-    spells::thread_of_fate_heal_t* thread_of_fate_heal;
-    double mult;
-    buff_t* source_buff;
-
-    thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, buff_t* source_buff_ )
-      : dbc_proc_callback_t( p, e ),
-        source( source ),
-        mult( source->talent.chronowarden.thread_of_fate_buff->effectN( 1 ).percent() ),
-        source_buff( source_buff_ )
-    {
-      // Currently Threads of Fate are not replicated to pets nor trigger from pet damage.
-      allow_pet_procs = false;
-      deactivate();
-      initialize();
-
-      thread_of_fate_damage = debug_cast<spells::thread_of_fate_damage_t*>( p->find_action( "thread_of_fate_damage" ) );
-      thread_of_fate_heal   = debug_cast<spells::thread_of_fate_heal_t*>( p->find_action( "thread_of_fate_heal" ) );
-    }
-
-    evoker_t* p()
-    {
-      return source;
-    }
-
-    void execute( action_t*, action_state_t* s ) override
-    {
-      if ( s->target->is_sleeping() )
-        return;
-
-      double da = s->result_amount;
-      if ( da > 0 )
-      {
-        da *= source_buff->value();
-
-        if ( s->target->is_enemy() )
-        {
-          thread_of_fate_damage->evoker = source;
-          thread_of_fate_damage->execute_on_target( s->target, da );
-        }
-        else
-        {
-          // Assuming identical to Fate Mirror
-          thread_of_fate_heal->evoker = source;
-          thread_of_fate_heal->execute_on_target( s->target, da );
-        }
-      }
-    }
-  };
-
-  thread_of_fate_cb_t* thread_callback;
-
-  thread_of_fate_buff_t( evoker_td_t& td )
-    : bb( td, "thread_of_fate", static_cast<evoker_t*>( td.source )->talent.chronowarden.thread_of_fate_buff ),
-      thread_callback( nullptr )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-    set_chance( 1.0 );
-
-    auto thread_effect          = new special_effect_t( td.target );
-    thread_effect->name_str     = "thread_of_fate_" + td.source->name_str;
-    thread_effect->type         = SPECIAL_EFFECT_EQUIP;
-    thread_effect->spell_id     = data().id();
-    thread_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
-
-    td.target->special_effects.push_back( thread_effect );
-
-    thread_callback = new thread_of_fate_cb_t( td.target, *thread_effect, static_cast<evoker_t*>( td.source ), this );
-    thread_callback->initialize();
-    thread_callback->deactivate();
-
-    set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-      if ( !old_ )
-      {
-        thread_callback->activate();
-        p()->allied_thread_of_fate_buffs.push_back( b );
-      }
-      else if ( !new_ )
-      {
-        thread_callback->deactivate();
-        p()->allied_thread_of_fate_buffs.find_and_erase_unordered( b );
-      }
-    } );
-  };
-
-  void reset()
-  {
-    bb::reset();
-    thread_callback->deactivate();
   }
 };
 
@@ -8121,8 +8462,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.temporal_wound   = make_buff_fallback<temporal_wound_buff_t>( make_temporal_wound, *this, "temporal_wound",
                                                                         evoker->talent.temporal_wound );
 
-  buffs.thread_of_fate = make_buff_fallback<thread_of_fate_buff_t>( is_ally, *this, "thread_of_fate" );
-
   buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands", evoker->find_spell( 413984 ) )
                              ->set_stack_change_callback( [ evoker, target ]( buff_t*, int, int _new ) {
                                if ( _new )
@@ -8266,7 +8605,6 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allies_with_my_ebon(),
     allies_with_my_prescience(),
     allies_with_my_shifting_sands(),
-    allied_thread_of_fate_buffs(),
     allied_ebons_on_me(),
     allied_major_cds(),
     last_scales_target( nullptr ),
@@ -8562,9 +8900,10 @@ parsed_assisted_combat_rule_t evoker_t::parse_assisted_combat_rule( const assist
     return { "!dot.fire_breath_damage.ticking" };
   }
   // recall buff check for deep breath
-  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 371807 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER &&
+       ( rule.condition_value_1 == 371807 || rule.condition_value_1 == 403760 ) )
   {
-    return { "" };
+    return { "", true };
   }
 
   // if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
@@ -9309,7 +9648,8 @@ void evoker_t::init_spells()
   // Apex
   talent.duplicate1                  = find_talent_spell( talent_tree::SPECIALIZATION, 1259173 );
   talent.duplicate_eruption_spell    = find_spell( 1259172 );
-  talent.duplicate_fire_breath_spell = find_spell( 431164 );
+  talent.duplicate_fire_breath_charge_spell = find_spell( 1283718 );
+  talent.duplicate_fire_breath_release_spell = find_spell( 431164 );
   talent.duplicate_upheaval_spell    = find_spell( 396288 );
   talent.duplicate2                  = find_talent_spell( talent_tree::SPECIALIZATION, 1259174 );
   talent.duplicate3                  = find_talent_spell( talent_tree::SPECIALIZATION, 1259175 );
@@ -9355,9 +9695,6 @@ void evoker_t::init_spells()
   talent.chronowarden.temporality                     = HT( "Temporality" );
   talent.chronowarden.temporality_buff                = find_spell( 431872 );
   talent.chronowarden.motes_of_acceleration           = HT( "Motes of Acceleration" );
-  talent.chronowarden.threads_of_fate                 = HT( "Threads of Fate" );
-  talent.chronowarden.thread_of_fate_buff             = find_spell( 431716 );
-  talent.chronowarden.thread_of_fate_damage           = find_spell( 432895 );
   talent.chronowarden.primacy                         = HT( "Primacy" );
   talent.chronowarden.primacy_buff                    = find_spell( 431654 );
   talent.chronowarden.double_time                     = HT( "Double-time" );
@@ -9975,7 +10312,6 @@ void evoker_t::reset()
   // clear runtime variables
   allies_with_my_ebon.clear_without_callbacks();
   allies_with_my_prescience.clear_without_callbacks();
-  allied_thread_of_fate_buffs.clear_without_callbacks();
   allies_with_my_shifting_sands.clear_without_callbacks();
   allied_ebons_on_me.clear();
   last_scales_target = nullptr;
@@ -10640,8 +10976,6 @@ struct evoker_module_t : public module_t
     new spells::blistering_scales_damage_t( p );
     new spells::fate_mirror_damage_t( p );
     new spells::fate_mirror_heal_t( p );
-    new spells::thread_of_fate_damage_t( p );
-    new spells::thread_of_fate_heal_t( p );
     new spells::breath_of_eons_damage_t( p );
     new spells::bombardments_damage_t( p );
   }
