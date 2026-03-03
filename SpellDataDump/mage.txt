@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -5148,7 +5148,6 @@ Description      : $@spelldesc199786
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Comet Storm (id=228601) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -11835,7 +11834,6 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=438609) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -15542,7 +15540,6 @@ $@spelldesc199786
 Icicles generate more rapidly out of combat.
 
 Name             : Shatter (id=1246949) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -17058,7 +17055,6 @@ Effects          :
 Description      : $@spelldesc1262843
 
 Name             : Pyroblast (id=1262863) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -17078,7 +17074,6 @@ Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Al
 Effects          :
 #1 (id=1273366)  : School Damage (2): fire | Attributes: Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.05 | PvP Coefficient: 0.33 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : Attribute (0 -> 65536)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1262843
 

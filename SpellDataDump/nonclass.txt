@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -217973,16 +217973,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Tooltip          : Mister Pick-Me-Up is here to assist!
 
-Name             : Opening (id=467260) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1180286)  : Loot (189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 128659 | Misc Value 2: 436 | Target: Self (1)
-Description      : Create a piece of Astral Gladiator's equipment appropriate for your loot specialization ($@lootspec).
-
 Name             : Experimental Go-Pack (id=467294) 
 School           : Physical
 Spell Type       : None
@@ -230596,78 +230586,6 @@ Effects          :
 Description      : $@spelldesc1229209
 Tooltip          : Haste increased by $w1%.
 
-Name             : Pack of Runed Ethereal Crests (id=1230660) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222316)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132760 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Runed Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Satchel of Carved Ethereal Crests (id=1230662) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222319)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132761 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Carved Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Pouch of Weathered Ethereal Crests (id=1230663) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222320)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132762 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Weathered Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Glorious Cluster of Gilded Ethereal Crests (id=1230665) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222322)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132763 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Gilded Ethereal Crests.
-
-Name             : Celebratory Pack of Runed Ethereal Crests (id=1230667) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222324)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132764 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Runed Ethereal Crests.
-
-Name             : Triumphant Satchel of Carved Ethereal Crests (id=1230668) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222325)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132765 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Carved Ethereal Crests.
-
 Name             : Sands of K'aresh (desc=Rank 1/4) (id=1230698) 
 School           : Physical
 Spell Type       : None
@@ -239169,16 +239087,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
 
-Name             : Opening (id=1237086) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1233645)  : Loot (189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 133413 | Misc Value 2: 436 | Target: Self (1)
-Description      : Create a soulbound Mythic dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 3.
-
 Name             : Draught of Rampant Abandon (id=1237154) 
 School           : Shadow
 Spell Type       : Magic
@@ -241991,7 +241899,6 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -242235,7 +242142,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Farstrider's Guile (id=1245025) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
@@ -242495,15 +242401,6 @@ Effects          :
 #1 (id=1247521)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
-
-Name             : [DNT] Kill Credit (id=1246148) [Hidden] 
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
-Effects          :
-#1 (id=1247609)  : Summon Credit Creature (90)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 248479 | Target: Self (1)
 
 Name             : Lucky Keychain (id=1246298) [Passive] 
 School           : Physical
@@ -242919,7 +242816,6 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -246905,6 +246801,34 @@ Effects          :
 #1 (id=1262403)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike increased by $w1.
+
+Name             : Protocol of Violence (id=1255685) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Do Not Re-apply Area Aura if it Persists Through Update (391), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262653)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the frequency of experiencing Voidlust while fighting enemies within Voidstorm.
+
+Name             : Protocol of Sustenance (id=1255687) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Aura Points On Client (268), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262655)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 2000 | Target: Self (1)
+Description      : Increase the duration of your Voidlust episodes by $s0% while fighting enemies within Voidstorm. 
+
+Name             : Protocol of Predation (id=1255688) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262656)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the intensity of your Voidlust episodes while fighting enemies within Voidstorm.
 
 Name             : Mantle of Stars (id=1255768) 
 School           : Physical
@@ -252451,17 +252375,6 @@ Effects          :
 #2 (id=1281298)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
-
-Name             : Weak Glimmerline (id=1269459) 
-School           : Physical
-Spell Type       : None
-Attributes       : Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1281305)  : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
-#2 (id=1281306)  : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-Description      : Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical
