@@ -4144,7 +4144,7 @@ struct shuffle_t : monk_buff_t<>
     accumulator = 0_s;
   }
 
-  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
     if ( !p().talent.brewmaster.shuffle->ok() )
