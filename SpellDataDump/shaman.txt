@@ -5044,6 +5044,7 @@ Effects          :
 Description      : $@spelldesc33757
 
 Name             : Ancestral Vigor (id=207400) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -5054,7 +5055,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1712: Ancestral Vigor (207401 effect#2)
 Triggered By     : Ancestral Vigor (207401)
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=306723)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -10947,6 +10948,7 @@ Description      : $@spelldesc382021
 Tooltip          : Riptide, Healing Wave, Healing Surge, and Chain Heal healing has a $s2% chance to trigger Earthliving on the target, healing an additional $382024s1 every $382024T for $382024d.
 
 Name             : Earthliving Weapon (id=382024) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -10960,7 +10962,7 @@ Labels           : 16: Class Spells
                  : 1679: Nature's Fury (381655 effect#2)
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Improved Earthliving Weapon (382315 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhanced Imbues (462796 effects: #3, #10), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 41, 81
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441), Non-secret Aura (506)
 Effects          :
 #1 (id=1013214)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46305 | PvP Coefficient: 1.2 | Target: Targeted Ally (21)
@@ -13382,6 +13384,7 @@ If you know Nature's Swiftness, it is replaced by Ancestral Swiftness and causes
 Tooltip          : Your next healing or damaging spell is instant, costs no mana, and deals $s6% increased damage and healing.
 
 Name             : Hydrobubble (id=444490) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -13393,7 +13396,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3494: Latent Wisdom (443449 effect#1)
                  : 5683: Restoration Shaman (137039 effect#3)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Non-secret Aura (506)
 Effects          :
 #1 (id=1140967)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.725 | PvP Coefficient: 0.8 | Misc Value: 0x7f | Target: Targeted Ally (21)

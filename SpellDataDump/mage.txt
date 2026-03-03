@@ -1825,6 +1825,7 @@ Tooltip          : Haste increased by $w1%. $?$W4>0[Time rate increased by $w4%.
 When the effect ends, all affected players are frozen in time for $356346d.][]
 
 Name             : Temporal Displacement (id=80354) 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -1834,7 +1835,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 933
-Attributes       : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162), Allow Class Ability Procs (416)
+Attributes       : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162), Allow Class Ability Procs (416), Non-secret Aura (506)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=68540)    : Apply Aura (6) | Dummy (4)
