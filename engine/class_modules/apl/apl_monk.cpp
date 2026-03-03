@@ -318,7 +318,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
   // Assisted Combat APL is partially updated and still includes references to Emperor's Capacitor
   if ( step.spell_id == 117952 && rule.condition_type == AC_PLAYER_AURA_APPLICATION_GREATER &&
        rule.condition_value_1 == 393039 && rule.condition_value_2 == 20 && rule.condition_value_3 == 0 )
-    return "1";
+    return "0";
 
   if ( step.spell_id == 152175 && rule.condition_type == AC_TARGET_DISTANCE_LESS )
   {
