@@ -251,6 +251,13 @@
       { "data_type": "i", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%6u" }, "ref": "SpellName" }
     ]
   },
+  "CompositeSpellsUIRedirect": {
+    "fields": [
+      { "data_type": "i", "field": "id_parent_spell" },
+      { "data_type": "i", "field": "id_child_spell" },
+      { "data_type": "i", "field": "field_12_0_1_64889_002" }
+    ]
+  },
   "ConditionalContentTuning": {
     "parent": "ContentTuning",
     "fields": [
@@ -2201,6 +2208,14 @@
       { "data_type": "h", "field": "override_height" },
       { "data_type": "b", "field": "flags" },
       { "data_type": "B", "field": "id_ui_canvas" }
+    ]
+  },
+  "UnitCondition": {
+    "fields": [
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "B", "field": "variable" },
+      { "data_type": "B", "field": "op" },
+      { "data_type": "i", "field": "value" }
     ]
   }
 }
