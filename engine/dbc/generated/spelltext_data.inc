@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66198
-static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26568,7 +26568,6 @@ static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   { 1246032, "$@spelldesc1246030", "Your next Blink releases a Blast Wave at your previous location.", 0 },
   { 1246042, "$@spelldesc1245979", "Your next Divine Steed will also grant Shield of the Righteous.", 0 },
   { 1246103, "$@spelldesc1236129", 0, 0 },
-  { 1246124, "Place down the Shrieking Quartz, luring the Nemesis to its location.\r\n\r\nOnly usable after activating the Restoration Stone inside of a Delve.", 0, 0 },
   { 1246131, "Nature's Swiftness now also affects Hex, but its cooldown is increased by ${$s1/1000} sec.", 0, "PvP Talent" },
   { 1246142, "$@spelldesc1245979", 0, 0 },
   { 1246160, "$@spelldesc452402", "Damage of your next Voidsurge is increased by $w2%.", 0 },
@@ -26582,7 +26581,6 @@ static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   { 1246309, "Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.", "Setting souls ablaze.", 0 },
   { 1246312, "Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!\r\n\r\nThis effect can only occur every 30 minutes.", 0, 0 },
   { 1246335, "Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!\r\n\r\nDoes not work on players whose spirits have been released and are above level $ctrmax3322.", 0, 0 },
-  { 1246363, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.", "You'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1246481, "Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.", 0, 0 },
   { 1246488, "Judgment chains to $s1 additional $Ltarget;targets at ${$275779f1*100}% effectiveness.", 0, 0 },
   { 1246517, "Increases the healing done by Holy Word: Serenity by $s2% and causes it to heal $1250581s2 nearby injured allies within $1250581A1 yards for $s3% of its healing done.\r\n\r\nTalents that affect Holy Word: Sanctify instead affect Holy Word: Serenity.", 0, 0 },
