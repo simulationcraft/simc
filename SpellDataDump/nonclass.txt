@@ -244795,6 +244795,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Unknown 38
