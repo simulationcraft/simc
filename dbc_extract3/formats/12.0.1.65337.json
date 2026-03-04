@@ -255,7 +255,7 @@
     "fields": [
       { "data_type": "i", "field": "id_parent_spell" },
       { "data_type": "i", "field": "id_child_spell" },
-      { "data_type": "i", "field": "field_12_0_1_64889_002" }
+      { "data_type": "i", "field": "id_unit_condition", "ref": "UnitCondition" }
     ]
   },
   "ConditionalContentTuning": {
