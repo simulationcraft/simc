@@ -49,7 +49,7 @@ MID1_Generate_Priest.simc
 MID1_Generate_Rogue.simc
 
 # Shaman
-# MID1_Generate_Shaman.simc
+MID1_Generate_Shaman.simc
 
 # Warlock
 MID1_Generate_Warlock.simc
