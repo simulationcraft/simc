@@ -3208,9 +3208,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       m *= 1.0 + p()->buff.stormkeeper->value();
+
     }
 
-    if ( affected_by_stormkeeper_damage_tier && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
+    if ( affected_by_stormkeeper_damage_tier && p()->buff.stormkeeper->up() && !p()->sk_during_cast && !background)
     {
       m *= 1.0 + p()->buff.stormkeeper->data().effectN(4).percent();
     }
@@ -10462,6 +10463,7 @@ void shaman_t::create_actions()
     action.splitstream = new sundering_splitstream_t( this );
   }
 
+
   if ( talent.primordial_storm.ok() )
   {
     action.lightning_bolt_ps = new lightning_bolt_t( this,
@@ -10499,7 +10501,7 @@ void shaman_t::create_actions()
 
     dummy.deeply_rooted_elements->add_child( action.ascendance_damage );
   }
-  else if ( talent.ascendance.ok() )
+  else if ( talent.ascendance.ok() && action.ascendance)
   {
     action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
     action.ascendance->add_child( action.ascendance_damage );
