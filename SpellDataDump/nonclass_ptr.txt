@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -241991,7 +241991,6 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -242235,7 +242234,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Farstrider's Guile (id=1245025) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
@@ -242496,23 +242494,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
 
-Name             : Shrieking Quartz (id=1246124) 
-School           : Physical
-Spell Type       : None
-Range            : 30 yards
-Duration         : 10 seconds
-Cooldown         : 3600 seconds
-Category         : 2353 (Type 0x0)
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), No Aura Log (202), Aura Points On Client (268)
-Effects          :
-#1 (id=1247556)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35685 | Radius: 2 yards | Target: Front of Self (47)
-#2 (id=1247557)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Party in Area (20)
-Description      : Place down the Shrieking Quartz, luring the Nemesis to its location.
-
-Only usable after activating the Restoration Stone inside of a Delve.
-
 Name             : [DNT] Kill Credit (id=1246148) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -242650,26 +242631,6 @@ Effects          :
 Description      : Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!
 
 Does not work on players whose spirits have been released and are above level $ctrmax3322.
-
-Name             : Delver's Bounty (id=1246363) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Proc Chance      : 101%
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1247939)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.
-
-Hidden Trove's contents depend on the completed Delve's Tier.
-Tooltip          : You'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.
-
-Hidden Trove's contents depend on the completed Delve's Tier.
-
-You are able to unlock a Hidden Trove.
 
 Name             : Mind-Fracturing Odium (id=1246378) [Passive] 
 School           : Physical
@@ -242956,7 +242917,6 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -246942,6 +246902,34 @@ Effects          :
 #1 (id=1262403)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike increased by $w1.
+
+Name             : Protocol of Violence (id=1255685) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Do Not Re-apply Area Aura if it Persists Through Update (391), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262653)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the frequency of experiencing Voidlust while fighting enemies within Voidstorm.
+
+Name             : Protocol of Sustenance (id=1255687) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Aura Points On Client (268), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262655)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 2000 | Target: Self (1)
+Description      : Increase the duration of your Voidlust episodes by $s0% while fighting enemies within Voidstorm. 
+
+Name             : Protocol of Predation (id=1255688) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262656)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the intensity of your Voidlust episodes while fighting enemies within Voidstorm.
 
 Name             : Mantle of Stars (id=1255768) 
 School           : Physical

@@ -1533,6 +1533,7 @@ class SpellDataGenerator(DataGenerator):
          1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
+         1255685, 1255687, 1255688, # crucible of erratic energies
         ),
 
         # Warrior:

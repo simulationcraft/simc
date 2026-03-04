@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2121,7 +2121,6 @@ Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
 Name             : Beast Cleave (id=118459) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -4034,7 +4033,6 @@ Effects          :
 Description      : $@spelldesc201430
 
 Name             : Stomp (id=201754) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -10179,7 +10177,6 @@ Effects          :
 Description      : The moth vibrates its wings, releasing tranquil dust all over itself, removing $s1 Disease, Magic, and Poison effect.
 
 Name             : Bestial Wrath (id=344572) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -18475,7 +18472,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 255153 | Misc Value 2: 6550 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
 
 Name             : Wild Thrash (id=1264355) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -18551,7 +18547,6 @@ Effects          :
 Description      : $@spelldesc1264690
 
 Name             : Shadow Thrash (id=1264485) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Melee

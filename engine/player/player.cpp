@@ -1919,7 +1919,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() )
+  if ( is_player() && type != PLAYER_SIMPLIFIED )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2237,7 +2237,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects )
+  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
@@ -15644,13 +15644,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
-      std::string _tmp_full_message_tmp_ = fmt::format(
+      sim->print_debug(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15955,11 +15953,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
+                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
+                        msg );
     };
 
     auto add_reporting = [ & ]( std::string field ) {
@@ -16444,7 +16440,8 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( util::race_mask( race ) & racial_spell.mask_race && util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race &&
+         ( !racial_spell.mask_class || util::class_id_mask( type ) & racial_spell.mask_class ) )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )

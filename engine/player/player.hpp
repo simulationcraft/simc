@@ -988,7 +988,6 @@ protected:
   std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
 
 public:
-  std::vector<std::string> _tmp_registered_passive_printout_tmp_;
   bool disable_class_spell_auto_cloning;
 
   // return { orig, flat, pct }

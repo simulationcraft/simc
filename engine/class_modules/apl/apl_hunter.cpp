@@ -55,7 +55,7 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string lvl90_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:thalassian_phoenix_oil_2";
+  std::string lvl90_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2" : "main_hand:thalassian_phoenix_oil_2";
   std::string lvl80_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:algari_mana_oil_3";
   std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:howling_rune_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
@@ -540,4 +540,5 @@ void survival_ptr( player_t* p )
 //survival_ptr_apl_end
 
 } // namespace hunter_apl
+
 

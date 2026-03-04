@@ -2815,18 +2815,21 @@ struct rogue_poison_t : public rogue_attack_t
       execute_on_target( source_state->target );
     }
 
-    bool result = rng().roll( proc_chance( source_state ) );
+    const double chance = proc_chance( source_state );
+    bool result = rng().roll( chance );
 
     sim->print_debug( "{} attempts to proc poison {}, target={} source={} proc_chance={}: {}", *player, *this,
-                      *source_state->target, *source_state->action, proc_chance( source_state ), result );
+                      *source_state->target, *source_state->action, chance, result );
 
     if ( !result )
       return;
 
     execute_on_target( source_state->target );
 
-    // 2026-01-04 -- Deathmark now causes poisons to trigger twice
-    if ( p()->talent.assassination.deathmark->ok() && td( source_state->target )->dots.deathmark->is_ticking() )
+    // 2026-01-04 -- Deathmark now causes lethal poisons to trigger twice
+    // 2026-03-02 -- Abilities scripted to have 100% poison application rate appear to not trigger this
+    if ( is_lethal && p()->talent.assassination.deathmark->ok() && td( source_state->target )->dots.deathmark->is_ticking()
+         && ( !p()->bugs || chance < 1.0 ) )
     {
       execute_on_target( source_state->target );
     }
@@ -4617,16 +4620,20 @@ struct kingsbane_t : public rogue_attack_t
 {
   struct implacable_strikes_t : public rogue_attack_t
   {
-    struct implacable_strike_t : public rogue_attack_t
+    struct implacable_strike_physical_t : public rogue_attack_t
     {
-      implacable_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      implacable_strike_physical_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
         rogue_attack_t( name, p, s )
       {
         dual = true;
+        aoe = -1;
       }
 
-      double composite_poison_flat_modifier( const action_state_t* ) const override
-      { return 1.0; }
+      double composite_poison_flat_modifier( const action_state_t* s ) const override
+      {
+        // Only triggers poisons on the primary target in AoE
+        return s->chain_target > 0 ? -1.0 : 1.0;
+      }
 
       bool procs_poison() const override
       { return true; }
@@ -4635,15 +4642,26 @@ struct kingsbane_t : public rogue_attack_t
       { return false; }
     };
 
-    implacable_strike_t* nature_strike;
-    implacable_strike_t* physical_strike;
+    struct implacable_strike_nature_t : public rogue_attack_t
+    {
+      implacable_strike_nature_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+        rogue_attack_t( name, p, s )
+      {
+        dual = true;
+      }
+    };
+
+    implacable_strike_nature_t* nature_strike;
+    implacable_strike_physical_t* physical_strike;
 
     implacable_strikes_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.implacable_damage ),
       nature_strike( nullptr ), physical_strike( nullptr )
     {
-      nature_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_nature", p->spec.implacable_damage_nature );
-      physical_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_physical", p->spec.implacable_damage_physical );
+      nature_strike = p->get_background_action<implacable_strike_nature_t>(
+        "implacable_strikes_nature", p->spec.implacable_damage_nature );
+      physical_strike = p->get_background_action<implacable_strike_physical_t>(
+        "implacable_strikes_physical", p->spec.implacable_damage_physical );
     }
 
     void tick( dot_t* d ) override

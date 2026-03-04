@@ -936,6 +936,7 @@ public:
     const spell_data_t* monster_rising_buff;
     const spell_data_t* student_of_suffering_buff;
     const spell_data_t* demonsurge_demonsurge_buff;
+    const spell_data_t* demonsurge_placeholder_buff;
     const spell_data_t* demonsurge_demonic_intensity_buff;
     const spell_data_t* demonsurge_trigger;
     const spell_data_t* demonsurge_damage;
@@ -4843,7 +4844,6 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         {
           p()->buff.demonsurge_abilities[ ability ]->trigger();
         }
-        p()->buff.demonsurge_demonsurge->trigger();
         p()->buff.demonsurge_demonic_intensity->trigger();
         p()->buff.demonsurge->expire();
 
@@ -6032,7 +6032,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     base_t::execute();
 
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
-    auto damage = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
+    auto damage                 = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
     damage->set_target( target );
     action_state_t* damage_state = damage->get_state();
@@ -8926,10 +8926,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       return;
     }
 
-    if ( !p()->buff.metamorphosis->up() )
-    {
-      p()->buff.demonsurge_demonsurge->trigger();
-    }
     p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
     p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
 
@@ -9026,6 +9022,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       event_t::cancel( p()->devourer_fury_state.next_drain_event );
       p()->devourer_fury_state.clear_state();
       p()->cooldown.void_ray->reset( false );
+
+      action_t* executing = p()->executing;
+      if ( executing &&
+           ( executing->id == p()->spec.devour->id() || executing->id == p()->hero_spec.predators_wake->id() ) )
+      {
+        p()->interrupt();
+      }
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
@@ -9896,13 +9899,13 @@ void demon_hunter_t::create_buffs()
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
     buff.demonsurge_abilities[ ability ] =
-        make_buff( this, demonsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )
+        make_buff( this, demonsurge_ability_action_name( ability ), hero_spec.demonsurge_placeholder_buff )
             ->set_quiet( true );
   }
   for ( voidsurge_ability ability : voidsurge_abilities )
   {
     buff.voidsurge_abilities[ ability ] =
-        make_buff( this, voidsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )
+        make_buff( this, voidsurge_ability_action_name( ability ), hero_spec.demonsurge_placeholder_buff )
             ->set_quiet( true );
   }
 
@@ -10956,10 +10959,13 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.student_of_suffering_buff  = talent_spell_lookup( talent.scarred.student_of_suffering, 453239 );
-  hero_spec.monster_rising_buff        = talent_spell_lookup( talent.scarred.monster_rising, 452550 );
-  hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.scarred.enduring_torment, 453314 );
-  hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.scarred.demonsurge, 452435 );
+  hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.scarred.student_of_suffering, 453239 );
+  hero_spec.monster_rising_buff       = talent_spell_lookup( talent.scarred.monster_rising, 452550 );
+  hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.scarred.enduring_torment, 453314 );
+  // 2026-03-04 -- This only buffs Devourer spells and Havoc doesn't get a baseline damage buff from Demonsurge.
+  hero_spec.demonsurge_demonsurge_buff =
+      spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 452435 );
+  hero_spec.demonsurge_placeholder_buff = talent_spell_lookup( talent.scarred.demonsurge, 452443 );
   hero_spec.demonsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonsurge, 453323 );
   hero_spec.demonsurge_damage  = hero_spec.demonsurge_trigger->effectN( 1 ).trigger();
   hero_spec.demonsurge_stacking_buff = hero_spec.demonsurge_damage;

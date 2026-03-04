@@ -13,41 +13,94 @@ namespace brewmaster
 {
 std::string default_potion( const monk_t* player )
 {
-  if ( player->true_level >= 80 )
-    return "tempered_potion_3";
+  if ( player->true_level >= 90 )
+    return "draught_of_rampant_abandon_2";
   return "disabled";
 }
 
 std::string default_flask( const monk_t* player )
 {
-  if ( player->true_level >= 80 )
-    return "flask_of_alchemical_chaos_3";
+  if ( player->true_level >= 90 )
+    return "flask_of_the_magisters_2";
   return "disabled";
 }
 
 std::string default_food( const monk_t* player )
 {
-  if ( player->true_level >= 80 )
-    return "feast_of_the_midnight_masquerade";
+  if ( player->true_level >= 90 )
+    return "harandar_celebration";
   return "disabled";
 }
 
 std::string default_rune( const monk_t* player )
 {
-  if ( player->true_level >= 80 )
-    return "crystallized";
+  if ( player->true_level >= 90 )
+    return "void_touched";
   return "disabled";
 }
 
 std::string default_temporary_enchant( const monk_t* player )
 {
-  if ( player->true_level >= 80 )
-    return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
+  if ( player->true_level >= 90 )
+    return "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2";
   return "disabled";
 }
 
-void default_apl( monk_t* /* player */ )
+void default_apl( monk_t* player )
 {
+  action_priority_list_t* pre = player->get_action_priority_list( "precombat" );
+  action_priority_list_t* def = player->get_action_priority_list( "default" );
+  action_priority_list_t* ite = player->get_action_priority_list( "item_actions" );
+  action_priority_list_t* rac = player->get_action_priority_list( "race_actions" );
+
+  pre->add_action( "snapshot_stats", "Precombat" );
+  pre->add_action( "potion" );
+
+  def->add_action( "auto_attack", "Default List" );
+  def->add_action( "potion" );
+  def->add_action( "call_action_list,name=race_actions" );
+  def->add_action( "call_action_list,name=item_actions" );
+  def->add_action( "black_ox_brew,if=talent.aspect_of_harmony.enabled&cooldown.celestial_brew.charges_fractional<1" );
+  def->add_action( "black_ox_brew,if=!talent.aspect_of_harmony.enabled&energy<40" );
+  def->add_action( "celestial_brew,if=buff.aspect_of_harmony_spender.up&!buff.empty_barrel.up" );
+  def->add_action( "keg_smash,if=buff.aspect_of_harmony_spender.up&buff.empty_barrel.up" );
+  def->add_action( "breath_of_fire,if=talent.wisdom_of_the_wall.enabled&buff.invoke_niuzao_the_black_ox.up" );
+  def->add_action( "keg_smash,if=talent.wisdom_of_the_wall.enabled&buff.invoke_niuzao_the_black_ox.up" );
+  def->add_action( "blackout_kick,if=talent.blackout_combo.enabled&!buff.blackout_combo.up" );
+  def->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.aspect_of_harmony_accumulator.value>0.95*health.max" );
+  def->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&target.time_to_die<15&buff.aspect_of_harmony_accumulator.value>0.2*health.max" );
+  def->add_action( "purifying_brew,if=!(apex.1&buff.empty_barrel.up)" );
+  def->add_action( "fortifying_brew,if=!(apex.3&buff.empty_barrel.up)" );
+  def->add_action( "chi_burst" );
+  def->add_action( "exploding_keg,if=cooldown.keg_smash.charges_fractional<1" );
+  def->add_action( "empty_the_cellar,if=talent.aspect_of_harmony.enabled&cooldown.celestial_brew.remains>15" );
+  def->add_action( "empty_the_cellar,if=!talent.aspect_of_harmony.enabled&buff.empty_the_cellar.remains<1.5" );
+  def->add_action( "invoke_niuzao" );
+  def->add_action( "breath_of_fire,if=cooldown.blackout_kick.remains>1.5&!buff.empty_barrel.up&cooldown.keg_smash.charges<1+talent.stormstouts_last_keg.enabled" );
+  def->add_action( "tiger_palm,if=buff.blackout_combo.up" );
+  def->add_action( "celestial_brew,if=talent.flurry_strikes.enabled&!(apex.3&buff.empty_barrel.up)" );
+  def->add_action( "keg_smash,if=talent.flurry_strikes.enabled" );
+  def->add_action( "keg_smash,if=talent.scalding_brew.enabled" );
+  def->add_action( "keg_smash,if=buff.empty_barrel.up" );
+  def->add_action( "keg_smash,if=cooldown.keg_smash.charges=1+talent.stormstouts_last_keg.enabled" );
+  def->add_action( "breath_of_fire" );
+  def->add_action( "empty_the_cellar" );
+  def->add_action( "rushing_jade_wind" );
+  def->add_action( "keg_smash" );
+  def->add_action( "blackout_kick" );
+  def->add_action( "tiger_palm,if=talent.aspect_of_harmony.enabled&energy>50-energy.regen*2" );
+  def->add_action( "tiger_palm,if=energy>65-energy.regen" );
+  def->add_action( "expel_harm" );
+
+  ite->add_action( "use_items", "Items" );
+
+  rac->add_action( "blood_fury", "Racials" );
+  rac->add_action( "berserking" );
+  rac->add_action( "arcane_torrent" );
+  rac->add_action( "lights_judgment" );
+  rac->add_action( "fireblood" );
+  rac->add_action( "ancestral_call" );
+  rac->add_action( "bag_of_tricks" );
 }
 };  // namespace brewmaster
 
@@ -55,35 +108,35 @@ namespace windwalker
 {
 std::string default_potion( const monk_t* player )
 {
-  if ( player->true_level >= 81 )
+  if ( player->true_level >= 90 )
     return "potion_of_recklessness_2";
   return "disabled";
 }
 
 std::string default_flask( const monk_t* player )
 {
-  if ( player->true_level >= 81 )
+  if ( player->true_level >= 90 )
     return "flask_of_the_blood_knights_2";
   return "disabled";
 }
 
 std::string default_food( const monk_t* player )
 {
-  if ( player->true_level >= 81 )
+  if ( player->true_level >= 90 )
     return "harandar_celebration";
   return "disabled";
 }
 
 std::string default_rune( const monk_t* player )
 {
-  if ( player->true_level >= 81 )
+  if ( player->true_level >= 90 )
     return "void_touched";
   return "disabled";
 }
 
 std::string default_temporary_enchant( const monk_t* player )
 {
-  if ( player->true_level >= 81 )
+  if ( player->true_level >= 90 )
     return "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2";
   return "disabled";
 }
@@ -146,7 +199,7 @@ void live_apl( monk_t* player )
   trinket->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "DMG on use without stat on use" );
   trinket->add_action( "use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
 
-  // Celestial of the Conduit 
+  // Celestial of the Conduit
   coc->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&((cooldown.zenith.up|buff.zenith.remains>13)&!buff.heart_of_the_jade_serpent.up)&(!fight_style.dungeonslice|active_enemies>1|time<60)","Celestial of the Conduit Burst Windows" );
   coc->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&(trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)&(!fight_style.dungeonslice|active_enemies>1|time<60)" );
   coc->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=fight_style.dungeonslice&target.time_to_die>15&active_enemies>4|fight_remains<=25" );
@@ -248,7 +301,6 @@ void live_apl( monk_t* player )
   fallback->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&active_enemies=1" );
   fallback->add_action( "tiger_palm,if=combo_strike" );
   fallback->add_action( "spinning_crane_kick,if=chi>5&combo_strike" );
-  
 }
 
 void ptr_apl( monk_t* player )

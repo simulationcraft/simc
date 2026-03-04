@@ -2497,6 +2497,27 @@ void deadly_precision( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, *driver );
   cb->activate_with_buff( buff );
 }
+
+// 1272091 driver
+// 1277482 buff
+// 1255685 protocol of violence (higher rppm?)
+// 1255687 protocol of sustenance (longer duration?)
+// 1255688 protocol of predation (higher buff value?)
+void crucible_of_erratic_energies( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
+    "They are currently not implemented." );
+
+  // leech & movement NYI
+  // TODO: does this actually have a rolemult?
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3119,6 +3140,7 @@ void register_special_effects()
   register_special_effect( 1258283, trinkets::litany_of_lightblind_wrath );  // litany of lightblind wrath on-use
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
+  register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
