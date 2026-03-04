@@ -1,60 +1,29 @@
-# # shaman="MID1_Shaman_Elemental_Stormbringer"
-# # level=80
-# # race=tauren
-# # spec=elemental
-# # role=spell
-# # position=ranged_back
+shaman="MID1_Shaman_Elemental_Stormbringer"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
+# Stormbringer
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
+head=,id=249979,bonus_id=13575/13575/13575/13575/12806/13335/13338/40/12676/1808,enchant_id=8017,gem_id=240967
+neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
+shoulder=,id=249977,bonus_id=13574/13574/13574/13574/12806/13335/13340/40/12675,enchant_id=7973
+back=,id=249974,bonus_id=12806/13335/40
+chest=,id=249982,bonus_id=13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+wrist=,id=249304,bonus_id=12806/13577/1808,gem_id=240908
+hands=,id=249980,bonus_id=13574/13574/13574/13574/12806/13335/13337/40/12675
+waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/12667/13622/13667/1808,gem_id=240898
+legs=,id=251215,bonus_id=13440/6652/13577/12699/12806,enchant_id=7935
+feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/13622/13667,enchant_id=8019
+finger1=,id=193708,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+finger2=,id=249919,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+trinket1=,id=249343,bonus_id=40/13335/12806
+trinket2=,id=250144,bonus_id=12806/13440/40
+main_hand=,id=251083,bonus_id=12806/13577,enchant_id=7981
+off_hand=,id=251105,bonus_id=12806/13577
 
-# # # Stormbringer
-# # talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbz2yMjZGzysMzMAzMDAAAAAAbmxwGsAzohGbAgZbaGw2iZmphZmZMsNzMDmlBLjxgxMz2YA
-
-# # head=,id=212011,bonus_id=10299/1808/1540,gem_id=213743
-# # neck=,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213470/213491
-# # shoulder=,id=212009,ilevel=639
-# # back=,id=225574,bonus_id=1540/10299/10376,enchant=chant_of_winged_grace_3
-# # chest=,id=212421,bonus_id=1540/10299/10376,enchant=crystalline_radiance_3
-# # wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/8793/11109/8960,enchant=chant_of_armored_avoidance_3,gem_id=213482,crafted_stats=36/40
-# # hands=,id=212012,ilevel=639
-# # waist=,id=221075,bonus_id=3131/10299/10376/1808,gem_id=213458
-# # legs=,id=212010,ilevel=639,enchant=sunset_spellthread_3
-# # feet=,id=212013,bonus_id=1540/10299,enchant=defenders_march_3
-# # finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
-# # finger2=,id=225576,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
-# # trinket1=,id=220202,ilevel=639
-# # trinket2=,id=219314,ilevel=639
-# # main_hand=,id=222445,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=49/36
-# # off_hand=,id=178712,bonus_id=9948/10299/10376
-
-# # save=MID1_Shaman_Elemental_Stormbringer.simc
-
-# shaman="MID1_Shaman_Elemental_Farseer"
-# level=80
-# race=tauren
-# spec=elemental
-# role=spell
-# position=ranged_back
-
-# # Farseer
-# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMjZGzysMGMYmBAAAAwiZWgBMgZjJkZBAMbTzMw2CzMNMzMz2wyMmZYMMLjZGzMmZ2AA
-
-# head=,id=178816,bonus_id=10032/12361/12239/1808,gem_id=213743
-# neck=,id=251880,bonus_id=1572/12361/12239/8781,gem_id=213473/213494
-# shoulder=,id=237635,bonus_id=12361/10356/12233/6652/12675/1533/10255
-# back=,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238046
-# chest=,id=237640,bonus_id=12361/10356/12229/6652/12676/1533/10255,enchant_id=7364
-# wrist=,id=219342,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8794,enchant_id=7385,gem_id=213482,crafted_stats=49/36
-# hands=,id=237638,bonus_id=12361/10356/12230/6652/12675/1533/10255
-# waist=,id=237554,bonus_id=1533/12361/12239/1808,gem_id=213458
-# legs=,id=237636,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant_id=7534
-# feet=,id=243308,bonus_id=1533/12361/12239/13504,enchant_id=7424
-# finger1=,id=185813,bonus_id=10035/12361/12239/8781,enchant_id=7352,gem_id=213458/213458
-# finger2=,id=185840,bonus_id=10035/12361/12239/8781,enchant_id=7352,gem_id=213458/213458
-# trinket1=,id=242402,bonus_id=6652/10356/12361/1533/10255
-# trinket2=,id=242395,bonus_id=1533/12361/12239
-# main_hand=,id=237728,bonus_id=6652/10356/12361/1533/10255,enchant_id=7448
-# off_hand=,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8794,crafted_stats=49/36
-
-# save=MID1_Shaman_Elemental.simc
+save=MID1_Shaman_Elemental.simc
 
 # shaman="MID1_Shaman_Enhancement"
 # level=80
