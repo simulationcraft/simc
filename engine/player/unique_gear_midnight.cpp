@@ -2542,6 +2542,18 @@ void crucible_of_erratic_energies( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void tangle_of_vibrant_vines( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines_missile", effect, effect.trigger() );
+  auto debuff = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines", effect, 1255357 );
+
+  debuff->base_td = effect.driver()->effectN( 2 ).average( effect );
+  missile->impact_action = debuff;
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3166,6 +3178,8 @@ void register_special_effects()
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
+  register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines);
+
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
