@@ -13,6 +13,7 @@ actions.assisted_combat+=/fire_breath,if=talent.consume_flame&!dot.fire_breath_d
 actions.assisted_combat+=/tip_the_scales,if=cooldown.fire_breath.ready
 actions.assisted_combat+=/fire_breath,if=!talent.consume_flame,cooldown_allow_casting_success=1
 actions.assisted_combat+=/eternity_surge,cooldown_allow_casting_success=1
+# (Overridden from 'buff.recall.down&target.distance<=40')
 actions.assisted_combat+=/deep_breath,if=target.distance<=40
 actions.assisted_combat+=/disintegrate,if=active_enemies>3&buff.mass_disintegrate_stacks.up
 actions.assisted_combat+=/pyre,if=active_enemies>3

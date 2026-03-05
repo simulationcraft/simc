@@ -953,14 +953,7 @@ void dot_t::refresh( timespan_t duration )
 
 void dot_t::check_tick_zero( bool start )
 {
-  // If we're precasting a helpful dot and we're not in combat, fake precasting
-  // by using a first tick.
-  // We also reduce the duration by one tick interval in
-  // action_t::trigger_dot().
-  bool fake_first_tick = !current_action->harmful && current_action->is_precombat;
-
-  if ( ( current_action->tick_zero || ( current_action->tick_on_application && start ) ) ||
-       fake_first_tick )
+  if ( current_action->tick_zero || ( current_action->tick_on_application && start ) )
   {
     tick();
   }

@@ -1090,6 +1090,7 @@ public:
     // Unholy
     propagate_const<gain_t*> forbidden_knowledge;
     propagate_const<gain_t*> superstrain;
+    propagate_const<gain_t*> lesser_ghoul_energy;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
@@ -1886,10 +1887,12 @@ public:
     timespan_t first_ams_cast             = 20_s;
     double horsemen_ams_absorb_percent    = 0.6;
     double average_mograines_might_uptime = 0.65;
+    bool extra_unholy_reporting           = false;
   } options;
 
   // Runes
   runes_t _runes;
+  // Other
   rider_of_the_apocalypse_e last_summoned_rider;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
@@ -1897,6 +1900,7 @@ public:
   runeforges_e oh_runeforge;
   player_t* last_target;
   int lesser_ghouls_summoned;
+  uptime_t* lesser_ghoul_uptimes;
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
@@ -1929,7 +1933,8 @@ public:
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
       last_target( this ),
-      lesser_ghouls_summoned( 0 )
+      lesser_ghouls_summoned( 0 ),
+      lesser_ghoul_uptimes( nullptr )
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -3120,27 +3125,6 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   {
     return debug_cast<death_knight_t*>( pet()->owner );
   }
-
-  // Override a bunch of stuff that attack_t overrides to prevent multiple cache hits
-  double composite_hit() const override
-  {
-    return 1.0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    return action_t::composite_crit_chance() + pet()->current_pet_stats.composite_melee_crit;
-  }
-
-  double composite_haste() const override
-  {
-    return action_t::composite_haste() + pet()->current_pet_stats.composite_melee_haste;
-  }
-
-  double composite_versatility( const action_state_t* state ) const override
-  {
-    return action_t::composite_versatility( state ) + dk()->cache.damage_versatility();
-  }
 };
 
 // ==========================================================================
@@ -3473,6 +3457,10 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     lesser_ghoul_claw_base_t( lesser_ghoul_pet_t* p, std::string_view name, const spell_data_t* spell )
       : pet_melee_attack_t( p, name, spell )
     {
+      // Data has these as 0 cost. They cost 40 in game. 
+      base_costs[ RESOURCE_ENERGY ] = 40;
+      // Data has no gcd on these. They have a 1.5s gcd in game.
+      trigger_gcd                   = 1.5_s;
     }
 
     void impact( action_state_t* s ) override
@@ -3502,6 +3490,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
       base_costs[ RESOURCE_ENERGY ] = 0;
+      trigger_gcd                   = 0_ms;
     }
   };
 
@@ -3511,8 +3500,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "sweeping_claws", p->dk()->pet_spell.lesser_sweeping_claws )
     {
       parse_options( options_str );
-      trigger_gcd                   = 2.5_s;
-      gcd_type                      = gcd_haste_type::HASTE;
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
@@ -3533,8 +3520,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
-      trigger_gcd = 2.5_s;
-      gcd_type    = gcd_haste_type::HASTE;
     }
 
     bool ready() override
@@ -3566,28 +3551,43 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
-    resource_regeneration             = regen_type::DISABLED;
     affected_by.commander_of_the_dead = true;
     affected_by.grave_mastery         = true;
   }
 
-  resource_e primary_resource() const override
-  {
-    return RESOURCE_NONE;
-  }
-
   void init_base_stats() override
   {
-    // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
-    death_knight_pet_t::init_base_stats();
+    base_ghoul_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = 0.2325;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 1.75;
   }
 
+  void init_gains() override
+  {
+    base_ghoul_pet_t::init_gains();
+
+    // Merge gains for all lesser ghouls to cleanup reporting
+    if( !dk()->gains.lesser_ghoul_energy )
+      dk()->gains.lesser_ghoul_energy = gains.resource_regen[ RESOURCE_ENERGY ];
+    else
+      gains.resource_regen[ RESOURCE_ENERGY ] = dk()->gains.lesser_ghoul_energy;
+  }
+
+  void init_uptimes() override
+  {
+    base_ghoul_pet_t::init_uptimes();
+
+    // Merge Uptimes for all lesser ghouls to cleanup reporting.
+    if ( !dk()->lesser_ghoul_uptimes )
+      dk()->lesser_ghoul_uptimes = uptimes.primary_resource_cap;
+    else
+      uptimes.primary_resource_cap = dk()->lesser_ghoul_uptimes;
+  }
+
   void arise() override
   {
-    if ( dk()->talent.unholy.commander_of_the_dead.ok() )
+    if ( dk()->talent.unholy.commander_of_the_dead.ok() && dk()->options.extra_unholy_reporting )
       dk()->sample_data.lesser_ghoul_duration->add( duration.total_seconds() );
 
     dk()->lesser_ghouls_summoned++;
@@ -3596,7 +3596,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     dk()->active_lesser_ghouls.push_back( this );
     dk()->buffs.lesser_ghoul_counter->trigger();
-    dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
+    if ( dk()->options.extra_unholy_reporting )
+      dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
   }
 
   void demise() override
@@ -3607,7 +3608,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     base_ghoul_pet_t::demise();
 
-    if ( !sim->event_mgr.canceled )
+    if ( !sim->event_mgr.canceled && dk()->options.extra_unholy_reporting )
       dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
   }
 
@@ -4364,7 +4365,8 @@ struct magus_pet_t : public death_knight_pet_t
       dk()->buffs.forbidden_ritual->trigger();
 
     dk()->magus_active++;
-    dk()->sample_data.magus_active->add( dk()->magus_active );
+    if ( dk()->options.extra_unholy_reporting )
+      dk()->sample_data.magus_active->add( dk()->magus_active );
   }
 
   void demise() override
@@ -4377,7 +4379,8 @@ struct magus_pet_t : public death_knight_pet_t
     if ( !dk()->sim->event_mgr.canceled )
     {
       dk()->magus_active--;
-      dk()->sample_data.magus_active->add( dk()->magus_active );
+      if ( dk()->options.extra_unholy_reporting )
+        dk()->sample_data.magus_active->add( dk()->magus_active );
     }
   }
 
@@ -8189,7 +8192,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       add_child( p->background_actions.soul_rupture );
     }
-    if ( p->talent.deathbringer.exterminate.ok() )
+    if ( p->talent.deathbringer.exterminate.ok() || p->talent.deathbringer.echoing_fury.ok() )
     {
       add_child( p->background_actions.exterminate );
     }
@@ -11494,7 +11497,9 @@ struct pestilence_t final : public death_knight_spell_t
     double damage         = 0.0;
     if ( vp->is_ticking() )
     {
-      p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
+      if ( p()->options.extra_unholy_reporting )
+        p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
+
       if ( duration_mult == 1.0 )
         damage = vp->tick_damage_over_remaining_time() * damage_mult;
       else
@@ -11504,7 +11509,9 @@ struct pestilence_t final : public death_knight_spell_t
     }
     if ( dp->is_ticking() )
     {
-      p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
+      if( p()->options.extra_unholy_reporting)
+        p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
+
       if ( duration_mult == 1.0 )
         damage = dp->tick_damage_over_remaining_time() * damage_mult;
       else
@@ -12705,6 +12712,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.horsemen_ams_absorb_percent", options.horsemen_ams_absorb_percent, 0.0, 1.0 ) );
   add_option(
       opt_float( "deathknight.average_mograines_might_uptime", options.average_mograines_might_uptime, 0.0, 1.0 ) );
+  add_option( opt_bool( "deathknight.extra_unholy_reporting", options.extra_unholy_reporting ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -12722,12 +12730,20 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
-  if ( talent.unholy.commander_of_the_dead.ok() )
-    sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
+  if ( dk.options.extra_unholy_reporting )
+  {
+    if ( talent.unholy.commander_of_the_dead.ok() )
+      sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
 
-  sample_data.lesser_ghouls_summoned->merge( *dk.sample_data.lesser_ghouls_summoned );
-  sample_data.lesser_ghouls_active->merge( *dk.sample_data.lesser_ghouls_active );
-  sample_data.magus_active->merge( *dk.sample_data.magus_active );
+    sample_data.lesser_ghouls_summoned->merge( *dk.sample_data.lesser_ghouls_summoned );
+    sample_data.lesser_ghouls_active->merge( *dk.sample_data.lesser_ghouls_active );
+    sample_data.magus_active->merge( *dk.sample_data.magus_active );
+    if ( talent.unholy.pestilence.ok() )
+    {
+      sample_data.pest_dp_dur->merge( *dk.sample_data.pest_dp_dur );
+      sample_data.pest_vp_dur->merge( *dk.sample_data.pest_vp_dur );
+    }
+  }
 }
 
 std::string death_knight_t::create_profile( save_e type )
@@ -12769,18 +12785,20 @@ void death_knight_t::analyze( sim_t& s )
 
   _runes.rune_waste.analyze();
   _runes.cumulative_waste.analyze();
-
-  if ( talent.unholy.commander_of_the_dead.ok() )
-    sample_data.lesser_ghoul_duration->analyze();
-
-  sample_data.lesser_ghouls_summoned->analyze();
-  sample_data.lesser_ghouls_active->analyze();
-  sample_data.magus_active->analyze();
-
-  if ( talent.unholy.pestilence.ok() )
+  if ( options.extra_unholy_reporting )
   {
-    sample_data.pest_dp_dur->analyze();
-    sample_data.pest_vp_dur->analyze();
+    if ( talent.unholy.commander_of_the_dead.ok() )
+      sample_data.lesser_ghoul_duration->analyze();
+
+    sample_data.lesser_ghouls_summoned->analyze();
+    sample_data.lesser_ghouls_active->analyze();
+    sample_data.magus_active->analyze();
+
+    if ( talent.unholy.pestilence.ok() )
+    {
+      sample_data.pest_dp_dur->analyze();
+      sample_data.pest_vp_dur->analyze();
+    }
   }
 }
 
@@ -13787,11 +13805,11 @@ void death_knight_t::create_actions()
   {
     background_actions.soul_rupture = get_action<soul_rupture_t>( "reapers_mark_soul_rupture", this );
   }
-  if ( talent.deathbringer.exterminate.ok() )
+  if ( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok() )
   {
     background_actions.exterminate = get_action<exterminate_t>( "exterminate", this );
   }
-  if ( talent.deathbringer.exterminate.ok() )
+  if ( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok() )
   {
     background_actions.exterminate_aoe = get_action<exterminate_aoe_t>( "exterminate_second_hit", this );
   }
@@ -15056,9 +15074,12 @@ void death_knight_t::spell_lookups()
   spell.dark_talons_shadowfrost_buff = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
   spell.dark_talons_icy_talons_buff  = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
   spell.soul_rupture_damage          = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
-  spell.exterminate_damage           = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
-  spell.exterminate_aoe              = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
-  spell.exterminate_buff             = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
+  spell.exterminate_damage =
+      conditional_spell_lookup( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok(), 441424 );
+  spell.exterminate_aoe =
+      conditional_spell_lookup( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok(), 441426 );
+  spell.exterminate_buff =
+      conditional_spell_lookup( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok(), 441416 );
   spell.rune_carved_plates_physical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
   spell.rune_carved_plates_magical_buff =
@@ -15504,8 +15525,8 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.exterminate =
-      make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
+  buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok() || talent.deathbringer.echoing_fury.ok(),
+                                     this, "exterminate", spell.exterminate_buff );
 
   buffs.swift_and_painful = make_fallback( talent.deathbringer.swift_and_painful.ok(), this, "swift_and_painful",
                                            spell.swift_and_painful_buff );
@@ -15985,17 +16006,20 @@ void death_knight_t::init_procs()
 void death_knight_t::init_uptimes()
 {
   player_t::init_uptimes();
-  if ( talent.unholy.commander_of_the_dead.ok() )
-    sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
-
-  sample_data.lesser_ghouls_summoned = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Summoned", false );
-  sample_data.lesser_ghouls_active   = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
-  sample_data.magus_active           = std::make_unique<extended_sample_data_t>( "Magus Active", false );
-
-  if ( talent.unholy.pestilence.ok() )
+  if ( options.extra_unholy_reporting )
   {
-    sample_data.pest_dp_dur = std::make_unique<extended_sample_data_t>( "Dread Plague Consume Duration", false );
-    sample_data.pest_vp_dur = std::make_unique<extended_sample_data_t>( "Virulent Plague Consume Duration", false );
+    if ( talent.unholy.commander_of_the_dead.ok() )
+      sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
+
+    sample_data.lesser_ghouls_summoned = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Summoned", false );
+    sample_data.lesser_ghouls_active   = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
+    sample_data.magus_active           = std::make_unique<extended_sample_data_t>( "Magus Active", false );
+
+    if ( talent.unholy.pestilence.ok() )
+    {
+      sample_data.pest_dp_dur = std::make_unique<extended_sample_data_t>( "Dread Plague Consume Duration", false );
+      sample_data.pest_vp_dur = std::make_unique<extended_sample_data_t>( "Virulent Plague Consume Duration", false );
+    }
   }
 
   uptimes.primary_resource_cap->uptime_instance.change_mode( false );
@@ -16220,7 +16244,7 @@ void death_knight_t::reset()
   dom_proc_attempts = 0;
   active_riders     = 0;
   magus_active      = 0;
-  if ( lesser_ghouls_summoned > 0 )
+  if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
     sample_data.lesser_ghouls_summoned->add( lesser_ghouls_summoned );
   lesser_ghouls_summoned = 0;
   dk_active_pets.clear();
@@ -17214,11 +17238,13 @@ public:
     {
       if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
         html_rune_waste( os );
-
+      if ( p.options.extra_unholy_reporting )
+      {
+        lesser_ghoul_charts( os );
+        magus_active_chart( os );
+        pestilence_charts( os );
+      }
       html_rp_waste( os );
-      lesser_ghoul_charts( os );
-      magus_active_chart( os );
-      pestilence_charts( os );
     }
   }
 

@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66017
-static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.1.66220
+static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7170,6 +7170,7 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   {  211056, "Reduces movement speed by $s1%.", "Reduces movement speed by $s1%.", 0 },
   {  211076, "Deals $s1 Arcane damage to all targets within $A1 yds.", "Deals $s1 Arcane damage to all targets within $A1 yds.", 0 },
   {  211088, "Deals $s1 Arcane damage to enemies within $A1 yds.", 0, 0 },
+  {  211094, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.", 0, 0 },
   {  211117, "$@spelldesc197344", "The bond between Hati and the Titanstrike has been weakened temporarily.", 0 },
   {  211141, "$@spelldesc106830", 0, 0 },
   {  211145, "$@spelldesc197344", 0, 0 },
@@ -9201,7 +9202,7 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   {  253748, "Open the container.", 0, 0 },
   {  253793, "Your autoattacks have a chance to deal $253797s1 additional Shadow damage.", 0, 0 },
   {  253797, "$@spelldesc253793", 0, 0 },
-  {  253802, "Increases your Agility against Aberrations by $s1.", 0, 0 },
+  {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
@@ -26247,6 +26248,7 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1241136, "The effectiveness of your Stagger is increased by up to $s1%, based on your missing health.", 0, 0 },
   { 1241167, "$@spelldesc191587", 0, 0 },
   { 1241171, "$@spelldesc1240996", 0, 0 },
+  { 1241227, "Gain $s1 Critical Strike while above $1241262s1% health.", 0, 0 },
   { 1241240, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals ${$<rolemult>*$1236137s13} Nature damage split between targets within $1237033A1 yds.", 0, 0 },
   { 1241241, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137s11 damage for $1236993d. When the shield expires it deals $1236137s12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1241242, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137s10.", 0, 0 },
@@ -26256,9 +26258,11 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1241246, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
   { 1241251, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. ", 0, 0 },
+  { 1241262, "Gain $1241289s1 Critical Strike while above $s1% health.", "Increased Critical Strike.", 0 },
   { 1241275, "Activating Avenging Wrath releases the Light within yourself, healing $200652s2 injured allies instantly and an injured ally every $200652t1 sec within $200653A1 yds for $200654s1.\r\n\r\nAllies healed also receive $200654s2% increased healing from your Holy Light, Flash of Light, and Holy Shock spells for $200654d. ", 0, 0 },
   { 1241285, "$@spelldesc232893", 0, 0 },
   { 1241288, "During Avenging Wrath, Judgment is empowered into Hammer of Wrath.$?c3[\r\n\r\n$@spellicon24275$@spellname24275\r\n$@spelldesc24275][\r\n\r\n$@spellicon1241413 $@spellname1241413\r\n$@spelldesc1241413]", 0, 0 },
+  { 1241289, "$@spelldesc1241262", "Critical Strike increased by $w1.", 0 },
   { 1241358, "Judgment critical strikes empower your next Word of Glory to automatically activate Light of Dawn at $s2% effectiveness.", 0, 0 },
   { 1241410, "$@spelldesc1241288", "Hammer of Wrath can be cast.", 0 },
   { 1241413, "Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
@@ -26564,7 +26568,6 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1246032, "$@spelldesc1246030", "Your next Blink releases a Blast Wave at your previous location.", 0 },
   { 1246042, "$@spelldesc1245979", "Your next Divine Steed will also grant Shield of the Righteous.", 0 },
   { 1246103, "$@spelldesc1236129", 0, 0 },
-  { 1246124, "Place down the Shrieking Quartz, luring the Nemesis to its location.\r\n\r\nOnly usable after activating the Restoration Stone inside of a Delve.", 0, 0 },
   { 1246131, "Nature's Swiftness now also affects Hex, but its cooldown is increased by ${$s1/1000} sec.", 0, "PvP Talent" },
   { 1246142, "$@spelldesc1245979", 0, 0 },
   { 1246160, "$@spelldesc452402", "Damage of your next Voidsurge is increased by $w2%.", 0 },
@@ -26578,7 +26581,6 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1246309, "Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.", "Setting souls ablaze.", 0 },
   { 1246312, "Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!\r\n\r\nThis effect can only occur every 30 minutes.", 0, 0 },
   { 1246335, "Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!\r\n\r\nDoes not work on players whose spirits have been released and are above level $ctrmax3322.", 0, 0 },
-  { 1246363, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.", "You'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1246481, "Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.", 0, 0 },
   { 1246488, "Judgment chains to $s1 additional $Ltarget;targets at ${$275779f1*100}% effectiveness.", 0, 0 },
   { 1246517, "Increases the healing done by Holy Word: Serenity by $s2% and causes it to heal $1250581s2 nearby injured allies within $1250581A1 yards for $s3% of its healing done.\r\n\r\nTalents that affect Holy Word: Sanctify instead affect Holy Word: Serenity.", 0, 0 },
@@ -27131,6 +27133,9 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1255367, 0, "Absorbing $w1 damage.", 0 },
   { 1255460, 0, "$pri increased by $w1.", 0 },
   { 1255504, 0, "Critical Strike increased by $w1.", 0 },
+  { 1255685, "Increase the frequency of experiencing Voidlust while fighting enemies within Voidstorm.", 0, 0 },
+  { 1255687, "Increase the duration of your Voidlust episodes by $s0% while fighting enemies within Voidstorm. ", 0, 0 },
+  { 1255688, "Increase the intensity of your Voidlust episodes while fighting enemies within Voidstorm.", 0, 0 },
   { 1255768, "$@spelldesc1248866", 0, 0 },
   { 1255774, 0, "Recharging.", 0 },
   { 1255804, 0, "Your healing spells and abilities also heal the imbued ally for $w2.", 0 },
@@ -28241,6 +28246,8 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1270910, "Collect 10 Veteran Dawncrests.", 0, 0 },
   { 1270916, "The mana cost of Holy Light is reduced by $s1% and its cast time is reduced by $s2%.", 0, 0 },
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] guarantees that your next $?c1[$s5][$s6] $Lcast:casts; of Tiger Palm or Vivify will trigger a Harmonic Surge, dealing $?c1[${$s1*$1239442s1/100}][${$s2*$1239442s1/100}] Nature damage split between your target and other nearby enemies, and $?c1[${$s3*$1239443s1/100}][${$s4*$1239443s1/100}] healing to up to $1239443s2 injured allies.", 0, 0 },
+  { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
+  { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
   { 1270990, "$@spelldesc1270958", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "$@spelldesc1270958", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
@@ -28631,12 +28638,11 @@ static constexpr std::array<spelltext_data_t, 28629> __ptr_spelltext_data { {
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66017
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
-  { 1255278,  0, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d." },
+// spelltext hotfix entries, wow build 12.0.1.66220
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.1.66017
+// Spell description variables, wow build 12.0.1.66220
 static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29333,7 +29339,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_dat
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66017
+// spelldesc_vars hotfix entries, wow build 12.0.1.66220
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

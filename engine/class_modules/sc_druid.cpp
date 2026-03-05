@@ -1232,7 +1232,6 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* wild_mushroom;
 
     // Feral
-    const spell_data_t* ashamanes_guidance;
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
     const spell_data_t* chomp_controller;
     const spell_data_t* predatory_swiftness;
@@ -1245,7 +1244,6 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* ursine_adept;
 
     // Resto
-    const spell_data_t* cenarius_guidance;
 
     // Hero Talent
     const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
@@ -1721,11 +1719,14 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
       return false;
 
-    if ( Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) &&
-         !a->allow_class_ability_procs )
+    if ( !a->allow_class_ability_procs &&
+         Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     {
       return false;
     }
+
+    if ( a->suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+      return false;
 
     if ( a->proc && !a->not_a_proc )
     {
@@ -1763,7 +1764,10 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
 
-    if ( Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !a->allow_class_ability_procs )
+    if ( !a->allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+      return false;
+
+    if ( a->suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
       return false;
 
     if ( a->proc && !a->not_a_proc )
@@ -3013,17 +3017,9 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     p()->active.unseen_swipe->set_target( _tar );
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
-    {
-      make_event( *sim, FERAL_FLICKER_DELAY, [ this ] {
-        p()->active.unseen_swipe->execute();
-      } );
-    }
+      p()->active.unseen_swipe->execute();
     else
-    {
-      make_event( *sim, FERAL_FLICKER_DELAY, [ this, _tar ] {
-        p()->active.unseen_slash->execute_on_target( _tar );
-      } );
-    }
+      p()->active.unseen_slash->execute_on_target( _tar );
   }
 
   void execute() override
@@ -4181,32 +4177,6 @@ struct chomp_t final : public cat_attack_t
 
 struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
-  struct flicker_event_t final : public event_t
-  {
-    cat_attack_t* action;
-    action_state_t* state;
-
-    flicker_event_t( druid_t* p, cat_attack_t* a, action_state_t* s )
-      : event_t( *p, FERAL_FLICKER_DELAY ), action( a ), state( s )
-    {}
-
-    const char* name() const override { return "flicker_event"; }
-
-    void execute() override
-    {
-      if ( !state->target->is_sleeping() )
-        action->cat_attack_t::trigger_dot( state );
-
-      action_state_t::release( state );
-    }
-
-    ~flicker_event_t()
-    {
-      if ( state )
-        action_state_t::release( state );
-    }
-  };
-
   struct frantic_frenzy_tick_t final : public cat_attack_t
   {
     bool is_direct_damage = false;
@@ -4215,6 +4185,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     {
       background = dual = proc = true;
       direct_bleed = false;
+      travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
       dot_name = "frantic_frenzy_tick";
     }
@@ -4253,12 +4224,6 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       energize_resource = energize_eff.resource_gain_type();
       energize_amount = energize_eff.resource( energize_resource );
     }
-  }
-
-  void trigger_dot( action_state_t* s )
-  {
-    // wild ass guess on delay before the 'pet' spawns
-    make_event<flicker_event_t>( *sim, p(), this, get_state( s ) );
   }
 };
 
@@ -4965,8 +4930,19 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
+    travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    // Unseen Predator 2 has a 0.1s ICD so it can only proc once per execute, we can instead just have it proc only on
+    // the first target hit.
+    if ( s->chain_target == 0 )
+      p()->buff.unseen_predators_craving->trigger();
   }
 };
 
@@ -8064,7 +8040,7 @@ struct shooting_stars_t : public druid_spell_t
     {
       energize->add_parse_entry()
         .set_func( [ p ]( const action_t*, const action_state_t* ) {
-          return p->buff.eclipse_solar->check() && p->buff.eclipse_lunar->check();
+          return !p->buff.eclipse_solar->check() && !p->buff.eclipse_lunar->check();
         } )
         .set_flat( true )
         .set_value( eff.base_value() )
@@ -10591,7 +10567,6 @@ void druid_t::init_spells()
   spec.stellar_amplification    = check( talent.stellar_amplification, 450214 );
 
   // Feral Abilities
-  spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 1244546 );
   spec.berserk_cat              = talent.berserk_cat.find_override_spell();
   spec.chomp_controller         = check( talent.chomp, 1244292 );
   spec.predatory_swiftness      = find_specialization_spell( "Predatory Swiftness" );
@@ -10604,7 +10579,6 @@ void druid_t::init_spells()
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
 
   // Restoration Abilities
-  spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Hero Talents
   spec.atmospheric_exposure     = check( talent.atmospheric_exposure, 430589 );
@@ -10665,8 +10639,11 @@ void druid_t::init_spells()
 
   parse_raid_buffs();
 
-  parse_passive_effects( spec.ashamanes_guidance );
-  parse_passive_effects( spec.cenarius_guidance );
+  if ( talent.ashamanes_guidance.ok() )
+    parse_passive_effects( find_spell( talent.convoke_the_spirits.ok() ? 391538 : 1244546 ) );
+
+  if ( talent.chomp.ok() )
+    parse_passive_effects( find_spell( 1244292 ) );  // chomp controller
 
   // Fury of Nature talent applies value to the passive via script
   if ( talent.fury_of_nature.ok() )
@@ -12145,8 +12122,10 @@ bool druid_t::validate_actor()
     "tier 4pc repeats can proc wild guardian echoes",
   };
 
+#ifdef NDEBUG
   for ( auto ph : placeholders )
     sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
+#endif
 
   return true;
 }

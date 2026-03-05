@@ -8,17 +8,17 @@ namespace shaman_apl
 
 std::string flask_elemental( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "disabled";
+  return ( p->true_level >= 81 ) ? "flask_of_the_magister_2" : "disabled";
 }
 
 std::string food_elemental( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "feast_of_the_divine_day" : "disabled";
+  return ( p->true_level >= 81 ) ? "blooming_feast" : "disabled";
 }
 
 std::string potion_elemental( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "tempered_potion_3" : "disabled";
+  return ( p->true_level >= 81 ) ? "draught_of_rampant_abandon" : "disabled";
 }
 
 std::string temporary_enchant_elemental( const player_t* p )
@@ -28,7 +28,7 @@ std::string temporary_enchant_elemental( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 81 ) ? "void_touched" : ( p->true_level >= 71 ) ? "crystallized" : "disabled";
+  return ( p->true_level >= 81 ) ? "void_touched" : "disabled";
 }
 
 //elemental_apl_start

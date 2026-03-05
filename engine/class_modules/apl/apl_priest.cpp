@@ -23,7 +23,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 80 ) ? "blooming_feast" : "feast_of_the_divine_day";
+  return ( p->true_level > 80 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )

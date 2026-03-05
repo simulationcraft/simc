@@ -2605,8 +2605,18 @@ void sim_t::init_actor( player_t* p )
     // Currently this only holds leech_t.
     p->init_background_actions();
 
-    // First, create all the action objects and set up action lists properly
-    p->create_actions();
+    // First, validate the actor and create all the action objects and set up action lists properly.
+    // If actor is not valid, set quiet and skip action creation.
+    if ( p->validate_actor() )
+    {
+      p->create_actions();
+    }
+#ifdef NDBEBUG
+    else
+    {
+      quiet = true;
+    }
+  #endif
 
     // More initilization of class modules. Needed to create shared actions provided by a class.
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )

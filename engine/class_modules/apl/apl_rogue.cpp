@@ -5,7 +5,8 @@ namespace rogue_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( ( p->true_level >= 71 ) ? "tempered_potion_3" :
+  return ( ( p->true_level >= 81 ) ? "lights_potential_2" :
+           ( p->true_level >= 71 ) ? "tempered_potion_3" :
            ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
            ( p->true_level >= 51 ) ? "potion_of_spectral_agility" :
            ( p->true_level >= 40 ) ? "potion_of_unbridled_fury" :
@@ -15,10 +16,11 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_OUTLAW && p->true_level >= 71 )
-    return "flask_of_tempered_versatility_3";
+  if ( p->specialization() == ROGUE_SUBTLETY && p->true_level >= 81 )
+    return "flask_of_the_magisters_2";
 
-  return ( ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
+  return ( ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" :
+           ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
            ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
@@ -28,7 +30,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( ( p->true_level >= 71 ) ? "feast_of_the_divine_day" :
+  return ( ( p->true_level >= 81 ) ? "harandar_celebration" :
+           ( p->true_level >= 71 ) ? "feast_of_the_divine_day" :
            ( p->true_level >= 61 ) ? "fated_fortune_cookie" :
            ( p->true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
            ( p->true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
@@ -38,7 +41,8 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( ( p->true_level >= 80 ) ? "crystallized" :
+  return ( ( p->true_level >= 90 ) ? "void_touched" :
+           ( p->true_level >= 80 ) ? "crystallized" :
            ( p->true_level >= 70 ) ? "draconic" :
            ( p->true_level >= 60 ) ? "veiled" :
            ( p->true_level >= 50 ) ? "battle_scarred" :
@@ -49,10 +53,8 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_ASSASSINATION && p->true_level >= 71 )
-    return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
-  
-  return ( ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3" :
+  return ( ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2" :
+           ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3" :
            ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" :
            ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
            "disabled" );

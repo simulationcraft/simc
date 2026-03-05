@@ -48,7 +48,7 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surgin
 actions.aoe+=/sundering,if=talent.feral_spirit.enabled
 actions.aoe+=/voltaic_blaze
 actions.aoe+=/lava_lash,if=pet.searing_totem.active
-actions.aoe+=/stormstrike,if=charges_fractional>=1.8
+actions.aoe+=/stormstrike,if=charges_fractional>=1.8|buff.converging_storms.stack=buff.converging_storms.max_stack
 actions.aoe+=/sundering,if=cooldown.surging_totem.remains>25
 actions.aoe+=/stormstrike,if=!talent.surging_totem.enabled
 actions.aoe+=/lava_lash

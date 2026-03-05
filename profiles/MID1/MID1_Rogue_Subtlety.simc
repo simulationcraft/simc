@@ -1,0 +1,111 @@
+rogue="MID1_Rogue_Subtlety"
+source=default
+spec=subtlety
+level=80
+race=pandaren
+role=attack
+position=back
+talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwDMzMzYMbjZmZbbMzMzMjBjZWGAAAAGMGwY2MMwAziWoFbwAmZwMzA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=priority_rotation,value=priority_rotation
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/stealth
+
+# Executed every time the actor is available.
+actions=variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up
+actions+=/variable,name=targets,value=spell_targets.shuriken_storm
+actions+=/variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20
+actions+=/variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&combo_points>=6
+actions+=/call_action_list,name=race
+actions+=/call_action_list,name=item
+actions+=/call_action_list,name=cds
+actions+=/shadowstrike,if=talent.unseen_blade&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=4)
+actions+=/call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up
+actions+=/call_action_list,name=build
+actions+=/call_action_list,name=fill,if=!variable.stealth
+
+actions.build=shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre
+actions.build+=/shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2|variable.priority_rotation
+actions.build+=/shuriken_storm,if=variable.targets>1
+actions.build+=/goremaws_bite,if=combo_points.deficit>=3
+actions.build+=/gloomblade,if=variable.targets<2
+actions.build+=/backstab,if=variable.targets<2
+
+# Cooldowns
+actions.cds=potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up
+actions.cds+=/shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&(cooldown.secret_technique.ready|talent.deathstalkers_mark)|fight_remains<=20
+actions.cds+=/shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)|fight_remains<=10
+actions.cds+=/vanish,if=!variable.stealth&energy>=40&!buff.subterfuge.up&combo_points<=1
+actions.cds+=/shadowmeld,if=energy>=40&combo_points.deficit>=3
+
+# This list usually contains Cooldowns with negligible impact that causes global cooldowns
+actions.fill=arcane_torrent,if=energy.deficit>=15+energy.regen
+actions.fill+=/arcane_pulse
+actions.fill+=/lights_judgment
+actions.fill+=/bag_of_tricks
+
+actions.finish=secret_technique,if=buff.shadow_dance.up
+actions.finish+=/eviscerate,if=buff.darkest_night.up
+actions.finish+=/coup_de_grace
+actions.finish+=/black_powder,if=variable.targets>=2
+actions.finish+=/eviscerate
+
+# Trinket and Items
+actions.item=use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up
+actions.item+=/use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2
+actions.item+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)
+actions.item+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)
+
+# Race Cooldowns
+actions.race=blood_fury,if=variable.racial_sync
+actions.race+=/berserking,if=variable.racial_sync
+actions.race+=/fireblood,if=variable.racial_sync
+actions.race+=/ancestral_call,if=variable.racial_sync
+actions.race+=/invoke_external_buff,name=power_infusion,if=variable.racial_sync
+
+head=masquerade_of_the_grim_jest,id=250006,bonus_id=12676/13338/13534/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900
+shoulders=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+back=rigid_scale_greatcloak,id=258575,ilevel=289
+chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=voidskinned_bracers,id=249327,bonus_id=13534,ilevel=289,gem_id=240900
+hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=silvermoon_agents_utility_belt,id=244573,bonus_id=8791/8960/12214/12214/12214/12214/12384/13534,ilevel=285,gem_id=240900
+legs=shaggy_wyrmleather_leggings,id=133499,ilevel=289,enchant_id=8163
+feet=balancing_boots_of_the_grim_jest,id=250008,ilevel=289
+finger1=platinum_star_band,id=193708,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7967
+finger2=bifurcation_band,id=251115,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7967
+trinket1=light_company_guidon,id=249344,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335,ilevel=289
+main_hand=hungering_victory,id=249925,ilevel=289,enchant_id=8039
+off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12214/12214/12214/12214/12693,ilevel=285,enchant_id=8041
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_agility=1244
+# gear_stamina=17247
+# gear_attack_power=8
+# gear_crit_rating=772
+# gear_haste_rating=581
+# gear_mastery_rating=1004
+# gear_versatility_rating=82
+# gear_armor=874
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

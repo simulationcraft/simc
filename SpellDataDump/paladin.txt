@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66102 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1136,7 +1136,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=46231)    : Apply Aura (6) | Dummy (4)
@@ -3529,7 +3529,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431480 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Retribution Paladin (1258011 effect#23), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46, 89, 115
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
 #1 (id=217570)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1368 | Target: Targeted Ally (21)
@@ -3562,7 +3562,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=218583)   : Apply Aura (6) | Dummy (4)
@@ -4386,7 +4386,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Family Flags     : 56
-Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Can Proc From Procs (122), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456)
+Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Can Proc From Procs (122), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Effects          :
 #1 (id=294436)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -16621,7 +16621,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1122950)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 7143 | Target: Self (1)
@@ -16639,7 +16639,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1122971)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 7144 | Target: Self (1)
@@ -19959,7 +19959,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1245666)  : Apply Aura (6) | Dummy (4)

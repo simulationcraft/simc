@@ -1533,6 +1533,7 @@ class SpellDataGenerator(DataGenerator):
          1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
+         1255685, 1255687, 1255688, # crucible of erratic energies
         ),
 
         # Warrior:
@@ -2070,7 +2071,8 @@ class SpellDataGenerator(DataGenerator):
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
           ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
-          ( 383009, 0),                                 # Stormkeeper buff for tier set impl
+          ( 383009, 0 ),                                 # Stormkeeper buff for tier set impl
+          ( 211094, 0 ),                                # Arc Discharge Chain Lightning
         ),
 
         # Mage:
@@ -4011,6 +4013,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'thewarwithin_season_3',
             'bonuses': [ 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931 ],
             'tier'   : 'TWW3'
+        },
+        {
+            'name'   : 'sunfire_silk_trappings',
+            'bonuses': [ 1957 ],
+            'tier'   : 'MID_ST'
+        },
+        {
+            'name'   : 'arcanoweave_trappings',
+            'bonuses': [ 1958 ],
+            'tier'   : 'MID_AT'
         },
         {
             'name'   : 'shards_of_the_void',

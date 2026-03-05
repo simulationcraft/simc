@@ -12,10 +12,10 @@ on:
 
 jobs:
   spec-test:
-    name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
+    name: spec-test-${{ matrix.spec }}
     runs-on: ubuntu-22.04
     continue-on-error: ${{ inputs.is-ptr }}
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     strategy:
       fail-fast: false
@@ -57,17 +57,13 @@ jobs:
             warrior_fury,
             warrior_protection,
           ]
-        fightstyle: [singletarget, multitarget, dungeonslice]
-        include:
-          - fightstyle: multitarget
-            style_arg: desired_targets=10
-          - fightstyle: dungeonslice
-            style_arg: fight_style=DungeonSlice
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
       SIMC_ARGS: output=/dev/null threads=4 profileset_work_threads=2 iterations=10 cleanup_threads=1 allow_experimental_specializations=1
       PLAYER_ARGS: load_default_gear=1
+      MT_ARGS: desired_targets=10
+      DS_ARGS: fight_style=DungeonSlice
 
     steps:
       - uses: actions/cache@v4
@@ -92,118 +88,223 @@ jobs:
         if: inputs.is-ptr
         run: echo "PTR_ARG=ptr=1" >> "$GITHUB_ENV"
 
+      - name: "Assisted Combat Validation"
+        run: |
+          echo ">>>>> Hero Tree 1 <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} iterations=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1 set_bonus=latest_2pc=1/latest_4pc=1 use_blizzard_action_list=1
+          echo
+          echo ">>>>> Hero Tree 2 <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} iterations=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2 set_bonus=latest_2pc=1/latest_4pc=1 use_blizzard_action_list=1
+
       - name: "Log Debug"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} log=1 debug=1 \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} log=1 debug=1 \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "HTML JSON"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} html=test_mt.html json=test_mt.json \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "Assisted Combat Expression Validation"
-        if: matrix.fightstyle == 'singletarget'
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            iterations=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1
-
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} html=test_ds.html json=test_ds.json \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "No Talents, All Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-
-      - name: "Starter Talents, No Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, No Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, All Effects, No Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-
-      - name: "Starter Talents, All Effects, All Sets"
-        if: always()
-        run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
+            enable_all_item_effects=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, No Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            enable_all_talents=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
-      - name: "All Talents, No Effects, All Sets"
+      - name: "Starter Talents, Hero Tree 1, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
 
-      - name: "All Talents, All Effects, No Sets"
+      - name: "Starter Talents, Hero Tree 2, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
+
+      - name: "Starter Talents, Hero Tree 1, All Sets"
+        if: always()
+        run: |
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=1
+
+      - name: "Starter Talents, Hero Tree 2, All Sets"
+        if: always()
+        run: |
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
+            enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            load_default_talents=1 hero_talents=2
 
       - name: "All Talents, All Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          echo ">>>>> Single Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Multi Target <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo
+          echo ">>>>> Dungeon Slice <<<<<"
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "Profileset Test"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             profileset.base=load_default_talents=1 \
             profileset.one=load_default_talents=1 profileset.one+=hero_talents=1 \
@@ -219,7 +320,7 @@ jobs:
 
       - name: Dump APL Default
         id: dump_apl_default
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
+        if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
           mkdir default
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
@@ -230,7 +331,7 @@ jobs:
 
       - name: Dump APL Assisted
         id: dump_apl_assisted
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
+        if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
           mkdir assisted_combat
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \

@@ -2331,10 +2331,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     direct_tick         = true;
     background          = true;
     may_crit            = true;
-    if ( !p->bugs )
-    {
-      clears_judgment      = false;
-    }
+    clears_judgment     = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3785,7 +3782,7 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
+  std::string retribution_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
 
   std::string protection_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
@@ -3808,7 +3805,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 70 ) ? "the_sushi_special" : "disabled";
+  std::string retribution_food = ( true_level > 80 ) ? "royal_roast" : "disabled";
 
   std::string protection_food = ( true_level > 70 ) ? "feast_of_the_divine_day" : "disabled";
 
@@ -3831,7 +3828,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
+  std::string retribution_flask = ( true_level > 80 ) ? "flask_of_the_magisters_2" : "disabled";
 
   std::string protection_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
@@ -3854,7 +3851,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 70 ) ? "crystallized" : "disabled";
+  return ( true_level > 80 ) ? "void_touched" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -3866,7 +3863,7 @@ std::string paladin_t::default_temporary_enchant() const
     case PALADIN_PROTECTION:
       return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
-      return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3";
+      return true_level < 81 ? "disabled" : "main_hand:thalassian_phoenix_oil_2";
 
     default:
       return "main_hand:howling_rune_3";
@@ -4029,17 +4026,6 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
     }
   }
   return true;
-}
-
-bool paladin_t::validate_actor()
-{
-  wowv_t v = sim->dbc->wowv();
-  if ( !is_ptr() && v.expansion == 12 && v.major == 0 && v.minor == 1 )
-  {
-    throw sc_unsupported_specialization( "Paladin sims are non functional for Midnight prepatch" );
-    return false;
-  }
-  return player_t::validate_actor();
 }
 
 void paladin_t::init_special_effects()

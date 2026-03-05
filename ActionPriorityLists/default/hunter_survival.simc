@@ -32,7 +32,7 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 # AOE - PL
 actions.plcleave=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
 actions.plcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
-actions.plcleave+=/takedown,if=buff.tip_of_the_spear.stack=0
+actions.plcleave+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.plcleave+=/flamefang_pitch
 actions.plcleave+=/wildfire_bomb,if=full_recharge_time<gcd
 actions.plcleave+=/boomstick,if=buff.tip_of_the_spear.up
@@ -74,6 +74,7 @@ actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_s
 actions.sentst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
 actions.sentst+=/moonlight_chakram,if=buff.tip_of_the_spear.up
-actions.sentst+=/flamefang_pitch,if=talent.flamefang_pitch
+actions.sentst+=/flamefang_pitch
 actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.sentst+=/kill_command,if=cooldown.takedown.remains
 actions.sentst+=/takedown

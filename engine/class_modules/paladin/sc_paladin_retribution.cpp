@@ -386,6 +386,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p()->talents.light_within_3->ok() && buff_up )
     {
       make_event<delayed_execute_event_t>( *sim, p(), lw, execute_state->target, 350_ms );
+      p()->buffs.righteous_cause->expire();
     }
   }
 
@@ -947,32 +948,12 @@ struct templar_strike_t : public base_templar_strike_t
   }
 };
 
-struct templar_slash_dot_t : public paladin_spell_t
-{
-  templar_slash_dot_t( paladin_t* p )
-    : paladin_spell_t( "templar_slash_dot", p, p->find_spell( 447142 ) )
-  {
-    background = true;
-    hasted_ticks = false;
-    affected_by.crusade = affected_by.avenging_wrath = affected_by.highlords_judgment = false;
-  }
-
-  void init() override
-  {
-    paladin_spell_t::init();
-    snapshot_flags = update_flags = STATE_MUL_SPELL_TA | STATE_TGT_MUL_TA;
-  }
-};
-
 struct templar_slash_t : public base_templar_strike_t
 {
-  templar_slash_dot_t* dot;
-
   templar_slash_t( paladin_t* p, util::string_view options_str )
-    : base_templar_strike_t( "templar_slash", p, options_str, p->find_spell( 406647 ) ),
-      dot( new templar_slash_dot_t( p ) )
+    : base_templar_strike_t( "templar_slash", p, options_str, p->find_spell( 406647 ) )
   {
-    add_child( dot );
+
   }
 
   void execute() override
@@ -981,21 +962,14 @@ struct templar_slash_t : public base_templar_strike_t
     p()->buffs.templar_strikes->expire();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    base_templar_strike_t::impact( s );
-
-    dot->target = s->target;
-    // TODO: figure out where this formula comes from
-    double mult = 0.5;
-    dot->base_td = ( s->result_total * mult ) / 4;
-    dot->execute();
-  }
-
   bool ready() override
   {
     bool orig = paladin_melee_attack_t::ready();
     return orig && p()->buffs.templar_strikes->up();
+  }
+  double composite_crit_chance() const override
+  {
+    return 1.0;
   }
 };
 
@@ -1135,7 +1109,7 @@ void paladin_t::create_buffs_retribution()
     ->set_default_value_from_effect( 1 );
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
-  buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
+  buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) )->set_chance( 1.0 );
 
   buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
     ->set_default_value( 0.0 )

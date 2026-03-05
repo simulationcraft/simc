@@ -1819,15 +1819,35 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   {
     buff_t* haste_buff;
     double hp_threshold;
+    action_t* cleave;
 
-    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff )
-      : generic_proc_t( e, n, id ), haste_buff( buff ), hp_threshold( e.driver()->effectN( 3 ).base_value() )
+    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff,
+                                             action_t* cleave = nullptr )
+      : generic_proc_t( e, n, id ),
+        haste_buff( buff ),
+        hp_threshold( e.driver()->effectN( 3 ).base_value() ),
+        cleave( cleave )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      // Ensure secondary damage doesnt hit the same target as the main hit
-      if ( id == 1268775 )
-        target_filter_callback = secondary_targets_only();
+      if ( cleave )
+        add_child( cleave );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( cleave && sim->target_non_sleeping_list.size() > 1 )
+      {
+        for ( auto& target : sim->target_non_sleeping_list )
+        {
+          if ( target != execute_state->target )
+          {
+            cleave->execute_on_target( target );
+            return;
+          }
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -1842,15 +1862,12 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1264337 ) )
                   ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
-  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem", effect, 1264325, buff );
-
   auto second_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
+      "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
   second_target_damage->name_str_reporting = "Cleave";
 
-  main_target_damage->execute_action = second_target_damage;
-  main_target_damage->add_child( second_target_damage );
+  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem", effect, 1264325, buff, second_target_damage );
 
   effect.execute_action = main_target_damage;
 
@@ -2228,7 +2245,7 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
   struct cosmic_madness_channel_t : public proc_spell_t
   {
     cosmic_madness_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
+      proc_spell_t( "wraps_of_cosmic_madness", e.player, e.driver() )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
@@ -2241,24 +2258,40 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
 
       auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, missile_spell );
-      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, damage_spell );
-      cosmic_barrage->impact_action->base_dd_min = cosmic_barrage->impact_action->base_dd_max = missile_damage;
+      auto damage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage_damage", e, damage_spell );
+      damage->base_dd_min = damage->base_dd_max = missile_damage;
+      damage->dual = true;
 
       tick_action = cosmic_barrage;
+      cosmic_barrage->impact_action = damage;
+      damage->stats = stats;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void last_tick( dot_t* d ) override 
     {
+      // cache first since last_tick() will null out player->channeling
       bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
 
+      // restart the player since the player-ready from use_item_t was canceled
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
-  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", effect );
+  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness", effect );
 }
 
 // 1253113 driver
@@ -2464,6 +2497,27 @@ void deadly_precision( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, *driver );
   cb->activate_with_buff( buff );
 }
+
+// 1272091 driver
+// 1277482 buff
+// 1255685 protocol of violence (higher rppm?)
+// 1255687 protocol of sustenance (longer duration?)
+// 1255688 protocol of predation (higher buff value?)
+void crucible_of_erratic_energies( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
+    "They are currently not implemented." );
+
+  // leech & movement NYI
+  // TODO: does this actually have a rolemult?
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -2590,7 +2644,6 @@ void eternal_voidsong_chain( special_effect_t& effect )
   auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
   dot->base_td_multiplier *= role_mult( effect );
-  dot->rolling_periodic = true;
 
   effect.execute_action = dot;
 
@@ -2745,6 +2798,31 @@ void azerothian_power( special_effect_t& effect )
   auto cb = new azerothian_power_pickup_cb_t( *pickup, buffs, orb );
   cb->activate_with_buff( orb );
 };
+
+// 1241529 driver
+// 1241530 buff
+void arcanoweave_cord( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+};
+
+// 1241503 driver
+// 1241522 rppm
+// 1241502 damage
+void sunfire_sash( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "radiant_conflagration", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -2868,6 +2946,79 @@ void voidlight_bindings( special_effect_t& effect )
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1241262 driver
+// 1241227 coeff (unused?)
+// 1241289 buff
+void arcanoweave_trappings( special_effect_t& effect )
+{
+  effect.player->sim->error(
+    UNVERIFIED_VALUE,
+    "Arcanoweave Trappings: How the buff value scales with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
+
+  struct arcanoweave_trappings_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    arcanoweave_trappings_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->midnight_opts.arcanoweave_trappings_update_interval,
+                  p->midnight_opts.arcanoweave_trappings_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<arcanoweave_trappings_t>( effect.player, effect.trigger() );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* p ) {
+    buff->trigger();
+
+    make_repeating_event( *p->sim,
+      [ p, buff ] { return p->rng().gauss( buff->interval ); },
+      [ p, buff ] {
+        if ( p->rng().roll( p->midnight_opts.arcanoweave_trappings_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+  } );
+}
+
+// 1270977 driver
+// 1270985 buff
+void sunfire_silk_trappings( special_effect_t& effect )
+{
+  effect.player->sim->error(
+    UNVERIFIED_VALUE,
+    "Sunfire Silk Trappings: How the buff value scales with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
+
+  struct sunfire_silk_trappings_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    sunfire_silk_trappings_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->midnight_opts.sunfire_silk_trappings_update_interval,
+                  p->midnight_opts.sunfire_silk_trappings_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<sunfire_silk_trappings_t>( effect.player, effect.trigger() );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* p ) {
+    buff->trigger();
+
+    make_repeating_event( *p->sim,
+      [ p, buff ] { return p->rng().gauss( buff->interval ); },
+      [ p, buff ] {
+        if ( p->rng().roll( p->midnight_opts.sunfire_silk_trappings_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+  } );
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -2881,11 +3032,11 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232914, consumables::selector_food( 1219185, true ) );  // tasty smoked tetra
   unique_gear::register_special_effect( 1232489, consumables::selector_food( 1219185, true ) );  // twilight angler's medley
   unique_gear::register_special_effect( 1259656, consumables::selector_food( 1232324, true ) );  // blooming feast
+  unique_gear::register_special_effect( 1232919, consumables::selector_food( 1233408, true ) );  // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1259657, consumables::primary_food( 1232325, STAT_STR_AGI_INT, 2 ) ); // quel'dorei medley
   unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
   unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
-  unique_gear::register_special_effect( 1232919, consumables::primary_food( 1233408, STAT_INTELLECT, 3 ) ); // flora frenzy / champion's bento
-  unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STAMINA, 7 ) );  // royal roast
+  unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STR_AGI_INT, 2 ) );  // [impossibly] royal roast
   unique_gear::register_special_effect( 1232902, consumables::secondary_food( 1219183, STAT_CRIT_RATING ) ); // arcano cutlets
   unique_gear::register_special_effect( 1232903, consumables::secondary_food( 1232087, STAT_HASTE_RATING ) ); // fel-kissed filet
   unique_gear::register_special_effect( 1232905, consumables::secondary_food( 1232089, STAT_MASTERY_RATING ) ); // warped wise wings
@@ -2989,6 +3140,7 @@ void register_special_effects()
   register_special_effect( 1258283, trinkets::litany_of_lightblind_wrath );  // litany of lightblind wrath on-use
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
+  register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
@@ -2998,11 +3150,15 @@ void register_special_effects()
   register_special_effect( 1243883, armors::necrotic_hexweave );
   register_special_effect( 1243876, armors::rangergenerals_call );
   register_special_effect( 1243903, armors::azerothian_power );
+  register_special_effect( 1241529, armors::arcanoweave_cord );
+  register_special_effect( 1241503, armors::sunfire_sash );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
   unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
   unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
+  unique_gear::register_special_effect( 1241262, sets::arcanoweave_trappings );
+  //unique_gear::register_special_effect( 1270977, sets::sunfiresilk_trappings );
   unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
