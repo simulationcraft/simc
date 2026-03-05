@@ -7053,6 +7053,8 @@ struct lava_burst_t : public shaman_spell_t
       assert( p()->action.lava_burst_pf );
       p()->action.lava_burst_pf->execute();
       p()->buff.purging_flames->decrement();
+
+      this->target_cache.is_valid = false;
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
