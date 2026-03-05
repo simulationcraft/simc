@@ -5338,7 +5338,6 @@ struct splinter_t final : public mage_spell_t
       sim->print_debug( "Augury Abounds' proc chance: {}% ({}/{} BLP)",
         chance * 100, p()->state.augury_blp_count, p()->options.augury_blp_threshold );
 
-      // TODO: initial Augury -> triggering Augury -> re-triggering Augury; unsure whether the third re-trigger can occur.
       if ( rng().roll( chance ) || p()->state.augury_blp_count >= p()->options.augury_blp_threshold )
       {
         p()->state.augury_blp_count = 0;
