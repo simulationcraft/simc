@@ -1,0 +1,128 @@
+rogue="MID1_Rogue_Outlaw_Trickster"
+source=default
+spec=outlaw
+level=90
+race=pandaren
+role=attack
+position=back
+talents=CQQAAAAAAAAAAAAAAAAAAAAAAAghHYMGzYmZbmZmx4BMb8AzMzy0ygtZAAAAAAz22MzMmZmZmxMzsMAAAAMGAMmNDDZgZhFahNGgZGMwA
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison,nonlethal=none,lethal=instant
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stealth,precombat_seconds=2
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush
+actions.precombat+=/slice_and_dice,precombat_seconds=1,if=talent.improved_adrenaline_rush
+actions.precombat+=/roll_the_bones,precombat_seconds=0,if=buff.loaded_dice.up
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat).
+actions=stealth
+# Interrupt on cooldown to allow simming interactions with that.
+actions+=/kick
+actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush)&energy>=50
+# Use finishers if at -1 from max combo points, but Fatebound uses Dispatch at -2.
+actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(hero_tree.fatebound&!cooldown.between_the_eyes.ready)
+actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
+actions+=/call_action_list,name=cds
+actions+=/run_action_list,name=finish,if=variable.finish_condition
+actions+=/call_action_list,name=build
+actions+=/arcane_torrent,if=energy.base_deficit>=15+energy.regen
+actions+=/arcane_pulse
+actions+=/lights_judgment
+actions+=/bag_of_tricks
+
+# Builders   High priority Ambush with Hidden Opportunity.
+actions.build=ambush,if=talent.hidden_opportunity&buff.audacity.up
+# With Deft Maneuvers, build CPs with Blade Flurry at 4+ targets.
+actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=4
+# Prioritize Coup de Grace if Unseen Blade is guaranteed after Killing Spree.
+actions.build+=/coup_de_grace,if=buff.disorienting_strikes.up
+# With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available.
+actions.build+=/pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
+# With Fan the Hammer, consume Opportunity if at max stacks or if it will expire.
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
+# With Fan the Hammer, consume Opportunity if it will not overcap CPs. Fatebound with stage 2 RTB tries to avoid consuming PS at 1CP.
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+talent.quick_draw+(talent.quick_draw*talent.fan_the_hammer.rank))&(combo_points>1|rtb_buffs<2|!talent.deal_fate))
+# If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw.
+actions.build+=/pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)
+# Fallback pooling just so Hidden Opportunity builds do not skip Ambush at low energy.
+actions.build+=/pool_resource,for_next=1
+actions.build+=/ambush,if=talent.hidden_opportunity
+actions.build+=/sinister_strike
+
+# Cooldowns   Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected.
+actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)
+# Maintain Blade Flurry at 2+ targets.
+actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
+# Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree if Trickster.
+actions.cds+=/preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&(!cooldown.killing_spree.ready|!hero_tree.trickster)|fight_remains<30
+# Use Keep it Rolling with at least stage 2 of RtB. Try not to KIR at stage 2 if your next roll is guaranteed to have Loaded Dice.
+actions.cds+=/keep_it_rolling,if=rtb_buffs=2&buff.roll_the_bones.remains<cooldown.adrenaline_rush.remains&!buff.loaded_dice.up&(cooldown.preparation.remains|!talent.preparation)|rtb_buffs>=3
+# Use Roll the Bones if not active, or reroll for stage 2.
+actions.cds+=/roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1
+# Use Blade Rush if tier bonus is not active, or in AoE, or if you will not overcap energy within the gcd on ST.
+actions.cds+=/blade_rush,if=set_bonus.mid1_4pc&!buff.whirl_of_blades.up|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2
+# Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs.
+actions.cds+=/vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up
+actions.cds+=/shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/fireblood
+actions.cds+=/ancestral_call
+# Default conditions for usable items.
+actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
+actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
+
+# Finishers
+actions.finish=dispatch,if=!buff.slice_and_dice.up
+actions.finish+=/between_the_eyes
+actions.finish+=/pool_resource,for_next=1
+actions.finish+=/killing_spree
+actions.finish+=/coup_de_grace
+actions.finish+=/dispatch
+
+head=voidlashed_hood,id=151336,bonus_id=1808/12806/13577,gem_id=240967,enchant_id=8017
+neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240894
+shoulders=venom_casks_of_the_grim_jest,id=250004,bonus_id=6652/12806/13335/13340/13574,enchant_id=8001
+back=potionstained_cloak,id=193712,bonus_id=12806/13577
+chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=6652/12806/13335/13336/13575,enchant_id=7987
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8960/12066/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/36
+hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=6652/12806/13335/13337/13574
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=1808/12806/13577,gem_id=240916
+legs=blade_holsters_of_the_grim_jest,id=250005,bonus_id=6652/12806/13335/13339/13575,enchant_id=8159
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8960/12066/12214/12384/13622/13667/9627,enchant_id=7963,crafted_stats=32/40
+finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,gem_id=240916/240916,enchant_id=7967
+finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
+trinket2=umbral_plume,id=260235,bonus_id=12806/13577
+main_hand=arators_swift_remembrance,id=260423,bonus_id=12806/13577,enchant_id=7981
+off_hand=kricks_beetle_stabber,id=133491,ilevel=289,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_agility=1234
+# gear_stamina=17589
+# gear_crit_rating=1031
+# gear_haste_rating=882
+# gear_mastery_rating=269
+# gear_versatility_rating=339
+# gear_avoidance_rating=167
+# gear_armor=873
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

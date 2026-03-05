@@ -2160,7 +2160,8 @@ void magisters_alchemist_stone( special_effect_t& effect )
       break;
   }
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell, effect.item );
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2184,6 +2185,29 @@ void vaelgors_final_stare( special_effect_t& e )
                       ->set_max_stack( stacks )
                       ->set_reverse( true );
 }
+
+// Ever-collapsing Void Fissure
+// 1253114 Driver and Buff
+void evercollapsing_void_fissure( special_effect_t& e )
+{
+  struct evercollapsing_void_fissure_buff_t : public stat_buff_t
+  {
+    evercollapsing_void_fissure_buff_t( player_t* p, std::string_view name, const spell_data_t* s, special_effect_t& e )
+      : stat_buff_t( p, name, s )
+    {
+      set_max_stack( static_cast<int>( s->duration() / s->effectN( 4 ).period() ) );
+      set_stat_from_effect_type( A_MOD_RATING, s->effectN( 5 ).average( e ) );
+    }
+
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+    {
+      return stat_buff_t::buff_stat_stack_amount( stat, std::max( 0, s - 1 ) );
+    }
+  };
+
+  e.custom_buff = create_buff<evercollapsing_void_fissure_buff_t>( e.player, e.driver(), e );
+}
+
 
 // Locus-Walker's Ribbon
 // 1259314 Driver
@@ -2496,6 +2520,27 @@ void deadly_precision( special_effect_t& effect )
 
   auto cb = new dbc_proc_callback_t( effect.player, *driver );
   cb->activate_with_buff( buff );
+}
+
+// 1272091 driver
+// 1277482 buff
+// 1255685 protocol of violence (higher rppm?)
+// 1255687 protocol of sustenance (longer duration?)
+// 1255688 protocol of predation (higher buff value?)
+void crucible_of_erratic_energies( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
+    "They are currently not implemented." );
+
+  // leech & movement NYI
+  // TODO: does this actually have a rolemult?
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace trinkets
 
@@ -3119,6 +3164,8 @@ void register_special_effects()
   register_special_effect( 1258283, trinkets::litany_of_lightblind_wrath );  // litany of lightblind wrath on-use
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
+  register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
+  register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );

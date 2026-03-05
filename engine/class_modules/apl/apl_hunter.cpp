@@ -431,13 +431,14 @@ void survival( player_t* p )
   sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentst->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
-  sentst->add_action( "flamefang_pitch,if=talent.flamefang_pitch" );
+  sentst->add_action( "flamefang_pitch" );
   sentst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  sentst->add_action( "kill_command,if=cooldown.takedown.remains" );
   sentst->add_action( "takedown" );
 
   plcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "AOE - PL" );
   plcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack=0" );
+  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plcleave->add_action( "flamefang_pitch" );
   plcleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   plcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
@@ -510,13 +511,14 @@ void survival_ptr( player_t* p )
   sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentst->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
-  sentst->add_action( "flamefang_pitch,if=talent.flamefang_pitch" );
+  sentst->add_action( "flamefang_pitch" );
   sentst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  sentst->add_action( "kill_command,if=cooldown.takedown.remains" );
   sentst->add_action( "takedown" );
 
   plcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "AOE - PL" );
   plcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack=0" );
+  plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plcleave->add_action( "flamefang_pitch" );
   plcleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   plcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -5540,7 +5540,8 @@ Family Flags     : 1, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Always AOE Line of Sight (186), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=312680)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.73025 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.73025 | Chain Multiplier: 0.8 | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : Chain Multiplier (0.7 -> 0.8)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
@@ -14543,9 +14544,10 @@ Effects          :
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
 #2 (id=1158282)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 63, 96
+Hotfixed         : Base Value (20 -> 40)
 #3 (id=1169722)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc455096

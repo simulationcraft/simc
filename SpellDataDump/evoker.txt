@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -10729,6 +10729,7 @@ Effects          :
 Description      : For each second you are in combat, Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $s1% increased damage, up to $s2%.
 
 Name             : Unrelenting Siege (desc=Black) (id=441248) [Spell Family (224)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -10740,6 +10741,7 @@ Labels           : 16: Class Spells
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1135590)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

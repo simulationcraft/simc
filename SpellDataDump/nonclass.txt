@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66198 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -86751,7 +86751,8 @@ Triggered By     : Voidclaw (253793)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=474443)   : School Damage (2): shadow | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 492.6819 - 544.5432 (coefficient=4.057891, delta=0.1) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 832.6089 - 920.252 (coefficient=6.857642, delta=0.1) | Target: Targeted Enemy (6)
+Hotfixed         : Coefficient (4.057891 -> 6.857642)
 Description      : $@spelldesc253793
 
 Name             : Void Hunter (id=253802) [Passive, Hidden] 
@@ -189204,6 +189205,7 @@ Description      : Your abilities have a chance to conjure a hail of meteors, in
 Name             : Vicious Flask of Classical Spirits (id=432403) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189289,6 +189291,7 @@ Tooltip          : Stunned.
 Name             : Vicious Flask of Honor (id=432430) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189423,6 +189426,7 @@ Description      : $@spelldesc432442
 Name             : Vicious Flask of the Wrecking Ball (id=432452) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189577,6 +189581,7 @@ Periodically spreads to nearby enemies.
 Name             : Vicious Flask of Manifested Fury (id=432497) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -193908,21 +193913,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
 Description      : Increases your movement speed by $s1%, but also damages you for $s2% of your maximum health every $t2 sec. Movement impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.
 Tooltip          : Movement speed increased by $s1%.
-
-Name             : Vicious Jeweler's Setting (id=436700) 
-School           : Arcane
-Spell Type       : None
-Attributes       : Allow Item Spell In PvP (13), Not In Combat (Only Peaceful) (28), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Suppress Weapon Procs (151), Not an Attack (194), Visible only to caster (conversations only) (343)
-Effects          :
-#2 (id=1128169)  : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#3 (id=1168099)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Add $M1 $?{$M1==1}[socket][sockets] to a War Within PvP item. Can be used on Helms, Amulets, Bracers, Belts, and Rings. $?{$M2>1)[
-
-Jewelry can have up to $M2 sockets.][]
-
-Must be used during The War Within Season $M3.
 
 Name             : Thundering Orb (id=436789) [Passive, Hidden] 
 School           : Nature
@@ -217973,16 +217963,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Tooltip          : Mister Pick-Me-Up is here to assist!
 
-Name             : Opening (id=467260) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1180286)  : Loot (189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 128659 | Misc Value 2: 436 | Target: Self (1)
-Description      : Create a piece of Astral Gladiator's equipment appropriate for your loot specialization ($@lootspec).
-
 Name             : Experimental Go-Pack (id=467294) 
 School           : Physical
 Spell Type       : None
@@ -230596,78 +230576,6 @@ Effects          :
 Description      : $@spelldesc1229209
 Tooltip          : Haste increased by $w1%.
 
-Name             : Pack of Runed Ethereal Crests (id=1230660) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222316)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132760 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Runed Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Satchel of Carved Ethereal Crests (id=1230662) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222319)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132761 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Carved Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Pouch of Weathered Ethereal Crests (id=1230663) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222320)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132762 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Weathered Ethereal Crests. These Crests ignore the seasonal cap.
-
-Name             : Glorious Cluster of Gilded Ethereal Crests (id=1230665) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222322)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132763 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Gilded Ethereal Crests.
-
-Name             : Celebratory Pack of Runed Ethereal Crests (id=1230667) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222324)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132764 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Runed Ethereal Crests.
-
-Name             : Triumphant Satchel of Carved Ethereal Crests (id=1230668) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Cooldown         : 1.5 seconds
-Category         : 133 (Type 0x0)
-Category Cooldown: 1.5 seconds
-Effects          :
-#1 (id=1222325)  : Loot (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 132765 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 15 Carved Ethereal Crests.
-
 Name             : Sands of K'aresh (desc=Rank 1/4) (id=1230698) 
 School           : Physical
 Spell Type       : None
@@ -236540,11 +236448,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1235168 | Radius: 8 yards | Target: at Random (72)
 
 Name             : Warping Wise (id=1235207) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 25 yards
 Cast Time        : 2 seconds
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), Not In Combat (Only Peaceful) (28), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1230097)  : Trigger Spell (64): Warping Wise
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Trigger Spell: 1235208 | Target: Self (1)
@@ -236807,11 +236716,12 @@ Effects          :
 Description      : $@spelldesc1244636
 
 Name             : Light's Preservation (id=1235568) 
+Hotfixed         : Category (4 -> 30)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Cooldown         : 300 seconds
-Category         : 4 (Type 0x0)
+Category         : 30 (Type 0x0)
 Labels           : 4131
                  : 4875
                  : 4881
@@ -237740,63 +237650,6 @@ Effects          :
 Description      : Permanently enchants a weapon with Arcane Mastery, causing your spells and abilities to grant you Genius Insight, increasing your Mastery by $ec1s1 for $1241759d. Cannot be applied to items lower than level $ecim.
 
 |cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R 
-
-Name             : Illusory Adornment - Blooming Light (id=1236098) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Requires armor   : Any Shoulders
-Labels           : 969
-                 : 974
-                 : 4128
-                 : 4369
-                 : 5036
-                 : 5037
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
-Effects          :
-#1 (id=1231795)  : Craft Enchantment (301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3838 | Misc Value 2: 11
-Description      : Temporarily grants your shoulders a magical illusion of the Lightbloom.
-
-|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
-
-Name             : Illusory Adornment - Nature's Embrace (id=1236099) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Requires armor   : Any Shoulders
-Labels           : 969
-                 : 974
-                 : 4128
-                 : 4369
-                 : 5036
-                 : 5037
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
-Effects          :
-#1 (id=1231796)  : Craft Enchantment (301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3839 | Misc Value 2: 11
-Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
-
-|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
-
-Name             : Illusory Adornment - Voidtouched (id=1236100) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Requires armor   : Any Shoulders
-Labels           : 969
-                 : 974
-                 : 4128
-                 : 4369
-                 : 5036
-                 : 5037
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
-Effects          :
-#1 (id=1231797)  : Craft Enchantment (301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3840 | Misc Value 2: 11
-Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
-
-|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Charged Bolts (id=1236108) [Passive] 
 School           : Physical
@@ -239169,16 +239022,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
 
-Name             : Opening (id=1237086) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1233645)  : Loot (189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 133413 | Misc Value 2: 436 | Target: Self (1)
-Description      : Create a soulbound Mythic dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 3.
-
 Name             : Draught of Rampant Abandon (id=1237154) 
 School           : Shadow
 Spell Type       : Magic
@@ -239638,6 +239481,7 @@ Description      : $@spelldesc1237885
 Tooltip          : Healing $s2 every $t2 sec.
 
 Name             : Thorn Bloom (id=1238474) 
+Hotfixed         : Tooltip
 Race             : Haranir (0x180000)
 School           : Nature
 Spell Type       : Magic
@@ -239652,7 +239496,7 @@ Effects          :
 #2 (id=1235668)  : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc1237885
-Tooltip          : Enduring $s2 Nature damage every $t2 sec.
+Tooltip          : Enduring $w2 Nature damage every $t2 sec.
 
 Name             : Lash Out (id=1238623) [Passive] 
 Race             : Haranir (0x180000)
@@ -241991,7 +241835,6 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -242235,7 +242078,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Farstrider's Guile (id=1245025) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
@@ -242495,15 +242337,6 @@ Effects          :
 #1 (id=1247521)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
-
-Name             : [DNT] Kill Credit (id=1246148) [Hidden] 
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
-Effects          :
-#1 (id=1247609)  : Summon Credit Creature (90)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 248479 | Target: Self (1)
 
 Name             : Lucky Keychain (id=1246298) [Passive] 
 School           : Physical
@@ -242919,7 +242752,6 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -244362,6 +244194,7 @@ Enemies near the shielded ally and active companion are knocked up and take $w3%
 Can only occur every $1255774d.
 
 Name             : Sanctum's Edict (id=1248911) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -244371,7 +244204,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252107)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -244899,6 +244732,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Unknown 38
@@ -246906,6 +246740,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike increased by $w1.
 
+Name             : Protocol of Violence (id=1255685) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Do Not Re-apply Area Aura if it Persists Through Update (391), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262653)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the frequency of experiencing Voidlust while fighting enemies within Voidstorm.
+
+Name             : Protocol of Sustenance (id=1255687) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Aura Points On Client (268), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262655)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 2000 | Target: Self (1)
+Description      : Increase the duration of your Voidlust episodes by $s0% while fighting enemies within Voidstorm. 
+
+Name             : Protocol of Predation (id=1255688) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Mythic+ Mode (Challenge Mode) (368), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1262656)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Increase the intensity of your Voidlust episodes while fighting enemies within Voidstorm.
+
 Name             : Mantle of Stars (id=1255768) 
 School           : Physical
 Spell Type       : None
@@ -248849,6 +248711,7 @@ Effects          :
 Description      : $@spelldesc1248931
 
 Name             : Mandate of Sacred Death (id=1261324) 
+Hotfixed         : Proc Flags 1 (332048 -> 332116), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -248858,7 +248721,7 @@ Labels           : 2916
 Internal Cooldown: 2 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1271016)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -249034,6 +248897,7 @@ Description      : $@spelldesc445260
 Tooltip          : Chance to be critically struck increased by $w1%.
 
 Name             : Porcelain Blade Tip (id=1261803) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249042,7 +248906,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271663)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249117,6 +248981,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1261826|r
 $@spelldesc455680
 
 Name             : Porcelain Blade Tip (id=1261822) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249125,7 +248990,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271687)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249134,6 +248999,7 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261823) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249142,7 +249008,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271688)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249151,6 +249017,7 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261824) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249159,7 +249026,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271689)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249366,6 +249233,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1262400|r
 $@spelldesc455680
 
 Name             : Holy Bounding Hand Grenade (id=1262076) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249374,7 +249242,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272111)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -249537,6 +249405,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262109 | Target: Self (1)
 
 Name             : Time Lost Edict (id=1262112) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -249545,7 +249414,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272169)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250225,6 +250094,7 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Time Lost Edict (id=1262380) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250233,7 +250103,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272634)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250246,6 +250116,7 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262381) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250254,7 +250125,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272635)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250267,6 +250138,7 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262382) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250275,7 +250147,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272636)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250432,6 +250304,7 @@ Description      : $@spelldesc1262387
 Tooltip          : $@spelldesc1262387
 
 Name             : Holy Bounding Hand Grenade (id=1262396) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250440,7 +250313,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272661)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250465,6 +250338,7 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262397) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250473,7 +250347,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272668)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250498,6 +250372,7 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262398) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250506,7 +250381,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272675)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250658,7 +250533,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1273629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4105.006 (coefficient=32.11968) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8499.818 (coefficient=66.50694) | Target: Self (1)
+Hotfixed         : Coefficient (32.119675 -> 66.506943)
 Description      : Restores ${$s1*10} health over $d.
 Tooltip          : Restoring $s1 health every $ts.
 
@@ -251491,6 +251367,7 @@ Effects          :
 Tooltip          : Gashes of corrupting void.
 
 Name             : Sanctum's Edict (id=1265915) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251500,7 +251377,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277959)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -251525,6 +251402,7 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265916) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251534,7 +251412,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277965)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -251559,6 +251437,7 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265919) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251568,7 +251447,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277974)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -253335,12 +253214,13 @@ Name             : Magister's Alchemist Stone (id=1280591) [Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 2.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1293549)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 68.24404 (coefficient=0.520627) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 135.121 (coefficient=1.030825) | Target: Self (1)
+Hotfixed         : Coefficient (0.520627 -> 1.030825)
 Description      : When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d. Your highest stat is always chosen.
 
 Name             : Conjured Illusory Adornment - Blooming Light (id=1281332) 
@@ -253415,7 +253295,8 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1294786)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1278.035 (coefficient=10) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2159.743 (coefficient=16.89894) | Target: Self (1)
+Hotfixed         : Coefficient (10 -> 16.898937)
 
 Name             : Shield of the Guardian Tree (id=1282103) [Passive, Hidden] 
 School           : Physical
@@ -253661,7 +253542,98 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1308891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: -621.3425 (coefficient=-4.861703) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -1050.128 (coefficient=-8.216743) | Target: Self (1)
+Hotfixed         : Coefficient (-4.861703 -> -8.216743)
 #2 (id=1308904)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 14.62806 (coefficient=0.111596) | Target: Self (1)
+
+Name             : Illusory Adornment - Blooming Light (id=1291455) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310825)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8042
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of the Lightbloom.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Illusory Adornment - Blooming Light (id=1291459) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310829)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8043
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of the Lightbloom.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Illusory Adornment - Voidtouched (id=1291460) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310832)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8046
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Illusory Adornment - Nature's Embrace (id=1291464) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310836)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8044
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Illusory Adornment - Voidtouched (id=1291465) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310837)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8047
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Illusory Adornment - Nature's Embrace (id=1291466) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Requires armor   : Any Shoulders
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1310838)  : Enchant Item Temporary (54)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8045
+Hotfixed         : NEW EFFECT
+Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
+
+|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 

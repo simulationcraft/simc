@@ -1,0 +1,123 @@
+shaman="MID1_Shaman_Elemental_Stormbringer"
+source=default
+spec=elemental
+level=90
+race=tauren
+role=spell
+position=ranged_back
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
+
+# Default consumables
+potion=draught_of_rampant_abandon
+flask=flask_of_the_magister_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=disabled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat=snapshot_stats
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/lightning_shield
+actions.precombat+=/thunderstrike_ward
+actions.precombat+=/variable,name=mael_cap,value=100+50*talent.swelling_maelstrom+25*talent.primordial_capacity
+actions.precombat+=/stormkeeper
+
+# Executed every time the actor is available.
+# Enable more movement.
+actions=spiritwalkers_grace,moving=1,if=movement.distance>6
+# Interrupt of casts.
+actions+=/wind_shear
+actions+=/blood_fury
+actions+=/berserking
+actions+=/fireblood
+actions+=/ancestral_call
+# Normal buff trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1
+actions+=/use_item,slot=trinket2,use_off_gcd=1
+# Normal weapons
+actions+=/use_item,slot=main_hand,use_off_gcd=1
+actions+=/lightning_shield,if=buff.lightning_shield.down
+actions+=/natures_swiftness
+# Use Power Infusion on Cooldown.
+actions+=/invoke_external_buff,name=power_infusion
+actions+=/potion
+actions+=/run_action_list,name=aoe,if=spell_targets.chain_lightning>=2
+actions+=/run_action_list,name=single_target
+
+actions.aoe=fire_elemental
+actions.aoe+=/stormkeeper
+actions.aoe+=/ancestral_swiftness
+actions.aoe+=/flame_shock,if=active_dot.flame_shock=0&spell_targets.chain_lightning<=3&cooldown.ascendance.remains>10
+actions.aoe+=/voltaic_blaze,if=active_dot.flame_shock=0|talent.purging_flames
+actions.aoe+=/ascendance,if=cooldown.stormkeeper.remains>10
+actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack=2
+# Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire.
+actions.aoe+=/earthquake
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.purging_flames.up&(buff.ascendance.up&buff.ascendance.remains<3|buff.lava_surge.up)
+actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
+actions.aoe+=/chain_lightning
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+actions.aoe+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.aoe+=/frost_shock,moving=1
+
+actions.single_target=fire_elemental
+actions.single_target+=/stormkeeper
+actions.single_target+=/ancestral_swiftness
+# Apply Flame shock if it is not up.
+actions.single_target+=/flame_shock,if=active_dot.flame_shock=0&!buff.master_of_the_elements.up
+actions.single_target+=/voltaic_blaze,if=active_dot.flame_shock=0
+actions.single_target+=/ascendance,if=cooldown.stormkeeper.remains>10
+# Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering.
+actions.single_target+=/elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+actions.single_target+=/earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+# Use Lava Burst to proc Master of the Elements.
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up
+actions.single_target+=/tempest
+# Filler spell. Always available. Always the bottom line.
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+actions.single_target+=/voltaic_blaze,moving=1,if=movement.distance>6
+# Frost Shock is our movement filler.
+actions.single_target+=/frost_shock,moving=1
+
+head=locus_of_the_primal_core,id=249979,bonus_id=40/1808/12676/12806/13335/13338/13575/13575/13575/13575,gem_id=240967,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
+shoulders=tempests_of_the_primal_core,id=249977,bonus_id=40/12675/12806/13335/13340/13574/13574/13574/13574,enchant_id=7973
+back=guardian_of_the_primal_core,id=249974,bonus_id=40/12806/13335
+chest=embrace_of_the_primal_core,id=249982,bonus_id=40/12676/12806/13335/13336/13575/13575/13575/13575,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,bonus_id=1808/12806/13577,gem_id=240908
+hands=earthgrips_of_the_primal_core,id=249980,bonus_id=40/12675/12806/13335/13337/13574/13574/13574/13574
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/12667/13622/13667/12497,gem_id=240898
+legs=greaves_of_the_divine_guile,id=251215,bonus_id=6652/12699/12806/13440/13577,enchant_id=7935
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/12497,enchant_id=8019
+finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240898,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240898,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335
+trinket2=emberwing_feather,id=250144,bonus_id=40/12806/13440
+main_hand=excavating_cudgel,id=251083,bonus_id=12806/13577,enchant_id=7981
+off_hand=ward_of_the_spellbreaker,id=251105,bonus_id=12806/13577
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_strength=62
+# gear_stamina=17574
+# gear_intellect=1661
+# gear_crit_rating=861
+# gear_haste_rating=366
+# gear_mastery_rating=1170
+# gear_versatility_rating=64
+# gear_speed_rating=76
+# gear_avoidance_rating=431
+# gear_armor=2209
+# set_bonus=root_wardens_regalia_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
