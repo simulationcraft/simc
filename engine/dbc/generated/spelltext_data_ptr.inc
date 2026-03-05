@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66220
-static constexpr std::array<spelltext_data_t, 28638> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28640> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28133,7 +28133,9 @@ static constexpr std::array<spelltext_data_t, 28638> __ptr_spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269453, "Convert $s2 Stranded Bloomline to create a Stranded Bloomline.", 0, 0 },
   { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269458, "Convert $s2 Shredded Glimmerline to create a Stranded Glimmerline.", 0, 0 },
   { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
