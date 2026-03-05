@@ -914,7 +914,6 @@ public:
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
   void trigger_splinter( player_t* target, int count = -1 );
-  void trigger_augury();
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
   void trigger_icicle( int count = 1, bool grant_buff = true );
@@ -5346,7 +5345,24 @@ struct splinter_t final : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p()->trigger_augury();
+    if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
+    {
+      // https://www.desmos.com/calculator/qu5trhaztq;
+      // see trigger_spellfire_sphere().
+      constexpr double random_unmentioned_increase = 0.01;
+      double chance = p()->talents.augury_abounds->effectN( 1 ).percent() + random_unmentioned_increase;
+      chance = 0.952381 * chance * chance + 0.114048 * chance - 0.00638571;
+      chance *= ++p()->state.augury_blp_count;
+
+      // TODO: initial Augury -> triggering Augury -> re-triggering Augury; unsure whether the third re-trigger can occur -- VERY PROBABLY cannot.
+      if ( rng().roll( chance ) || p()->state.augury_blp_count >= p()->options.augury_blp_threshold )
+      {
+        p()->state.augury_blp_count = 0;
+        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+      }
+      // Regardless of the roll's success, the ICD still applies; prevent BLP increments and/or rolls for the next 0.5_s.
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+    }
   }
 
   timespan_t travel_time() const override
@@ -7252,27 +7268,6 @@ void mage_t::trigger_splinter( player_t* target, int count )
       total_delay += splinter_delay;
     }
   }
-}
-
-void mage_t::trigger_augury()
-{
-  if ( !talents.augury_abounds.ok() || !cooldowns.augury_abounds->up() )
-    return;
-
-  // https://www.desmos.com/calculator/qu5trhaztq;
-  // see trigger_spellfire_sphere().
-  double chance = talents.augury_abounds->effectN( 1 ).percent();
-  chance = 0.952381 * chance * chance + 0.114048 * chance - 0.00638571;
-  chance *= ++state.augury_blp_count;
-
-  if ( rng().roll( chance ) || state.augury_blp_count >= options.augury_blp_threshold )
-  {
-    // me: do we need this to be an event?
-    state.augury_blp_count = 0;
-    make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
-  }
-  // Regardless of the roll's success, the ICD still applies.
-  cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
 }
 
 bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_double_proc_delay )
