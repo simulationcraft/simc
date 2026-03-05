@@ -6838,7 +6838,6 @@ struct blade_dance_base_t
     action_t* trail_of_ruin_dot;
     bool first_attack;
     bool last_attack;
-    unsigned glaive_tempest_targets;
 
     blade_dance_damage_first_blood_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                                       const spelleffect_data_t& eff )
@@ -6850,7 +6849,6 @@ struct blade_dance_base_t
     {
       background = dual      = true;
       aoe                    = 0;
-      glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6876,11 +6874,6 @@ struct blade_dance_base_t
           trail_of_ruin_dot->execute_on_target( s->target );
         }
 
-        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets &&
-             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
-        {
-          p()->active.glaive_tempest->execute_on_target( target );
-        }
       }
     }
   };
@@ -6925,10 +6918,12 @@ struct blade_dance_base_t
           trail_of_ruin_dot->execute_on_target( s->target );
         }
 
-        // if First Blood is talented, GT will be triggered by the FB attack
-        if ( p()->talent.havoc.glaive_tempest->ok() && !p()->talent.havoc.first_blood->ok() &&
-             s->n_targets >= glaive_tempest_targets &&
-             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
+        // First Blood splits the primary target into a separate single-target hit,
+        // so add 1 to account for it when checking the target threshold.
+        if ( p()->talent.havoc.glaive_tempest->ok() &&
+             s->n_targets + ( p()->talent.havoc.first_blood->ok() ? 1U : 0U ) >= glaive_tempest_targets &&
+             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) &&
+             s->chain_target == 0 )
         {
           p()->active.glaive_tempest->execute_on_target( target );
         }
