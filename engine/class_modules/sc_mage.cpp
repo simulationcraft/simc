@@ -5338,7 +5338,7 @@ struct splinter_t final : public mage_spell_t
       sim->print_debug( "Augury Abounds' proc chance: {}% ({}/{} BLP)",
         chance * 100, p()->state.augury_blp_count, p()->options.augury_blp_threshold );
 
-      // TODO: initial Augury -> triggering Augury -> re-triggering Augury; unsure whether the third re-trigger can occur -- PROBABLY? cannot.
+      // TODO: initial Augury -> triggering Augury -> re-triggering Augury; unsure whether the third re-trigger can occur.
       if ( rng().roll( chance ) || p()->state.augury_blp_count >= p()->options.augury_blp_threshold )
       {
         p()->state.augury_blp_count = 0;
@@ -5346,7 +5346,7 @@ struct splinter_t final : public mage_spell_t
       }
       // Regardless of the roll's success, the ICD still applies; prevent BLP increments and/or rolls for the next 0.5_s.
       // Add a millisecond so that the ICD doesn't perfectly align with delayed splinters.
-      // The last 2 splinters (not 3, hence delay) of a retrigger'd Augury are (probably) executed simultaneously w/ the initial Augury's splinters.
+      // The last 2 splinters (not 3, hence delay) of a retrigger'd Augury are executed simultaneously w/ the initial Augury's splinters.
       p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
     }
   }
