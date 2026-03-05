@@ -3182,13 +3182,15 @@ Effects          :
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
                    Family Flags: 78
 #8 (id=260909)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 116 | Scaled Value: 116 | Target: Self (1)
+                   Base Value: 578 | Scaled Value: 578 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
+Hotfixed         : Base Value (116 -> 578)
 #9 (id=260910)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 116 | Scaled Value: 116 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 578 | Scaled Value: 578 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
+Hotfixed         : Base Value (116 -> 578)
 #10 (id=260911)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -70 | Scaled Value: -70 | Misc Value 2: 3780 (Label) | Target: Self (1)
                    Affected Spells (Label): Sun's Avatar (431939), Sun's Avatar (463074)
