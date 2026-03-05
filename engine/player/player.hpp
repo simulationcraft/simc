@@ -913,6 +913,8 @@ struct player_t : public actor_t
     // Interval between checking sunfire silk trappings uptime
     timespan_t sunfire_silk_trappings_update_interval = 10_s;
     timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
+    // Chance refueling orb will count as healing.
+    double refueling_orb_heal_chance = 0.10;
   } midnight_opts;
 
 private:

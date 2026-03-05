@@ -2162,11 +2162,26 @@ public:
     ab::parse_effects( p()->buff.demonsurge_demonic_intensity );
     ab::parse_effects( p()->buff.demonsurge );
     ab::parse_effects( p()->buff.voidsurge );
+
+    // 2026-03-05 -- Blind Focus does not get the extra benefit to direct damage in Meta currently.
+    effect_mask_t blind_focus_direct_mask = effect_mask_t( false ).enable( 1, 3 );
+    ab::parse_effects( p()->talent.scarred.blind_focus, blind_focus_direct_mask );
+
+    effect_mask_t blind_focus_periodic_mask = effect_mask_t( false ).enable( 2, 4 );
     ab::parse_effects( p()->talent.scarred.blind_focus, [ this ]( double v ) {
       if ( p()->buff.metamorphosis->check() )
-        v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+      {
+        if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
+        {
+          v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+        }
+        else
+        {
+          v *= 1.0 + p()->spec.metamorphosis_buff->effectN( 13 ).percent();
+        }
+      }
       return v;
-    } );
+    }, blind_focus_periodic_mask );
 
     // Tier sets
   }

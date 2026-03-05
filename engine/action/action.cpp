@@ -514,7 +514,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   }
 
   if ( sim->debug )
-    sim->print_debug( "{} creates {} ({})", *player, *this, ( data().ok() ? data().id() : -1 ) );
+    sim->print_debug( "{} creates {}", *player, *this );
 
   if ( !player->initialized )
   {

@@ -13786,6 +13786,7 @@ void player_t::create_options()
   add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
                             500_ms, 5_s ) );
   add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option( opt_float( "midnight.refueling_orb_heal_chance", midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

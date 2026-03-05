@@ -12,35 +12,30 @@ util::span<const permanent_enchant_entry_t> permanent_enchant_entry_t::data( boo
   return SC_DBC_GET_DATA( __permanent_enchant_data, __ptr_permanent_enchant_data, ptr );
 }
 
-static bool _check_name( const permanent_enchant_entry_t& entry, const std::string_view& name )
-{
-  if ( entry.tokenized_name == name )
-  {
-    return true;
-  }
-
-  // check again with midnight enchant verbose names 'enchant_<slot>__<name>'
-  if ( strstr( entry.tokenized_name, "enchant_" ) == entry.tokenized_name )
-  {
-    if ( auto c = strstr( entry.tokenized_name, "__" ) )
-    {
-      if ( name == c + 2 )
-      {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 const permanent_enchant_entry_t& permanent_enchant_entry_t::find( std::string_view name, unsigned rank, int item_class,
                                                                   int inv_type, int item_subclass, bool ptr )
 {
   auto __data = data( ptr );
+
+  // Check against midnight enchant verbose names 'enchant_<slot>__<name>'
+  for ( const auto& entry : __data )
+  {
+    if ( strstr( entry.tokenized_name, "enchant_" ) == entry.tokenized_name )
+    {
+      if ( auto c = strstr( entry.tokenized_name, "__" ) )
+      {
+        if ( name == c + 2 )
+        {
+          name = entry.tokenized_name;
+          break;
+        }
+      }
+    }
+  }
+
   auto __lower = std::lower_bound( __data.begin(), __data.end(), name,
     [ rank ]( const permanent_enchant_entry_t& left, const std::string_view& right ) {
-      if ( _check_name( left, right ) )
+      if ( left.tokenized_name == right )
       {
         return left.rank < rank;
       }
@@ -50,14 +45,14 @@ const permanent_enchant_entry_t& permanent_enchant_entry_t::find( std::string_vi
       }
     } );
 
-  if ( __lower == __data.end() || !_check_name( *__lower, name ) || __lower->rank != rank )
+  if ( __lower == __data.end() || __lower->tokenized_name != name || __lower->rank != rank )
   {
     return nil();
   }
 
   auto __upper = std::upper_bound( __data.begin(), __data.end(), name,
     [ rank ]( const std::string_view& left, const permanent_enchant_entry_t& right ) {
-      if ( _check_name( right, left ) )
+      if ( left == right.tokenized_name )
       {
         return rank < right.rank;
       }
