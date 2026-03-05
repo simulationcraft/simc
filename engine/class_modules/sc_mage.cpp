@@ -2982,8 +2982,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.clearcasting = !echo;
-    triggers.spellfire_sphere = triggers.mana_cascade = true;  // Echo triggers Mana Cascade as well
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = !echo;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -4394,13 +4393,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     enable_calculate_on_impact( 228598 );
 
     if ( p->talents.fractured_frost.ok() )
-    {
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
-      // TODO: Still seems to be doing 90% damage to the secondary target, despite no longer
-      // having 0.9 chain multiplier (and the talent description)
-      if ( p->bugs )
-        chain_multiplier = 0.9;
-    }
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
@@ -4901,9 +4894,6 @@ struct splintering_ray_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Seems to hit 1 fewer target. See flash_freezeburn_t for possible explanation.
-    if ( p->bugs )
-      aoe--;
   }
 
   void init() override
@@ -5013,14 +5003,7 @@ struct scorch_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
-    {
-      double scald = p()->talents.scald->effectN( 2 ).percent();
-      // TODO: Scald only seems to provide +150% damage (rather than +250%) when
-      // Heat Shimmer isn't active.
-      if ( p()->bugs && p()->talents.scald.ok() && !p()->buffs.heat_shimmer->check() )
-        scald -= 1.0;
-      m *= 1.0 + scald;
-    }
+      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
 
     m *= 1.0 + p()->buffs.heat_shimmer->check_value();
 
@@ -5268,10 +5251,6 @@ struct flash_freezeburn_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Hits one fewer target. It is possible that the main target
-    // (which is not dealt damage) is counted as one of the five targets.
-    if ( p->bugs )
-      aoe--;
   }
 };
 

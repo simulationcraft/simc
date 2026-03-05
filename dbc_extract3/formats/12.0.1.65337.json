@@ -164,7 +164,7 @@
   },
   "CharacterLoadout": {
     "fields": [
-      { "data_type": "q", "field": "race_mask" },
+      { "data_type": "Q", "field": "race_mask" },
       { "data_type": "b", "field": "id_class", "ref": "ChrClasses" },
       { "data_type": "i", "field": "purpose" },
       { "data_type": "B", "field": "id_mod" }
@@ -594,7 +594,7 @@
   },
   "ItemSparse": {
     "fields": [
-      { "data_type": "q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "desc" },
       { "data_type": "S", "field": "pad2" },
       { "data_type": "S", "field": "pad1" },
@@ -645,7 +645,7 @@
       { "data_type": "H", "field": "req_skill_rank" },
       { "data_type": "H", "field": "req_skill" },
       { "data_type": "H", "field": "ilevel" },
-      { "data_type": "h", "field": "class_mask", "formats": { "cpp": "%#.4x" } },
+      { "data_type": "H", "field": "class_mask", "formats": { "cpp": "%#.4x" } },
       { "data_type": "B", "field": "id_artifact" },
       { "data_type": "B", "field": "spell_weight" },
       { "data_type": "B", "field": "spell_weight_category" },
@@ -1275,11 +1275,11 @@
   },
   "PlayerCondition": {
     "fields": [
-      { "data_type": "q", "field": "race_mask" },
+      { "data_type": "Q", "field": "race_mask" },
       { "data_type": "S", "field": "failure_description_lang" },
       { "data_type": "H", "field": "min_level" },
       { "data_type": "H", "field": "max_level" },
-      { "data_type": "i", "field": "class_mask" },
+      { "data_type": "I", "field": "class_mask" },
       { "data_type": "I", "field": "skill_logic" },
       { "data_type": "i", "field": "id_language" },
       { "data_type": "B", "field": "min_language" },
@@ -1492,14 +1492,14 @@
   "SkillLineAbility": {
     "parent": "SkillLine",
     "fields": [
-      { "data_type": "q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "verb" },
       { "data_type": "S", "field": "verb_all" },
       { "data_type": "i", "field": "id" },
       { "data_type": "h", "field": "id_skill", "ref": "SkillLine", "formats": { "cpp": "%4u" } },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "h", "field": "req_skill_level" },
-      { "data_type": "i", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
+      { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
       { "data_type": "i", "field": "id_replace", "ref": "SpellName" },
       { "data_type": "i", "field": "acquire_method" },
       { "data_type": "h", "field": "max_learn_skill" },
@@ -1596,7 +1596,7 @@
       { "data_type": "B", "field": "proc_chance" },
       { "data_type": "i", "field": "proc_charges" },
       { "data_type": "H", "field": "id_ppm", "ref": "SpellProcsPerMinute" },
-      { "data_type": "i", "field": "proc_flags", "elements": 2 }
+      { "data_type": "I", "field": "proc_flags", "elements": 2 }
     ]
   },
   "SpellAuraRestrictions": {
@@ -1640,7 +1640,7 @@
       { "data_type": "h", "field": "id_difficulty" },
       { "data_type": "h", "field": "id_cooldown_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" },
       { "data_type": "b", "field": "dmg_class" },
-	  { "data_type": "i", "field": "unk_3" },
+	    { "data_type": "i", "field": "unk_3" },
       { "data_type": "b", "field": "dispel" },
       { "data_type": "b", "field": "id_mechanic", "ref": "SpellMechanic" },
       { "data_type": "i", "field": "type_prevention" },
@@ -1651,7 +1651,7 @@
   "SpellCategory": {
     "fields": [
       { "data_type": "S", "field": "category" },
-      { "data_type": "i", "field": "flags" },
+      { "data_type": "I", "field": "flags" },
       { "data_type": "i", "field": "uses_per_week" },
       { "data_type": "i", "field": "charges" },
       { "data_type": "i", "field": "charge_cooldown" },
@@ -1663,7 +1663,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "I", "field": "modal_next_spell", "ref": "SpellName" },
       { "data_type": "B", "field": "family" },
-      { "data_type": "i", "field": "flags", "elements": 4 }
+      { "data_type": "I", "field": "flags", "elements": 4 }
     ]
   },
   "SpellCooldowns": {
@@ -1718,7 +1718,7 @@
       { "data_type": "i", "field": "unk_24" },
       { "data_type": "i", "field": "misc_value", "elements": 2 },
       { "data_type": "I", "field": "id_radius", "elements": 2, "ref": "SpellRadius" },
-      { "data_type": "i", "field": "class_mask", "elements": 4 },
+      { "data_type": "I", "field": "class_mask", "elements": 4 },
       { "data_type": "h", "field": "implicit_target", "elements": 2 }
     ]
   },
@@ -1753,8 +1753,8 @@
     "fields": [
       { "data_type": "h", "field": "difficulty" },
       { "data_type": "i", "field": "interrupt_flags" },
-      { "data_type": "i", "field": "aura_interrupt_flags", "elements": 2 },
-      { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 }
+      { "data_type": "I", "field": "aura_interrupt_flags", "elements": 2 },
+      { "data_type": "I", "field": "channel_interrupt_flags", "elements": 2 }
     ]
   },
   "SpellItemEnchantment": {
@@ -1813,7 +1813,7 @@
   "SpellMisc": {
     "parent": "SpellName",
     "fields": [
-      { "data_type": "i", "field": "flags", "elements": 17 },
+      { "data_type": "I", "field": "flags", "elements": 17 },
       { "data_type": "h", "field": "difficulty_id" },
       { "data_type": "H", "field": "id_cast_time", "ref": "SpellCastTimes" },
       { "data_type": "H", "field": "id_duration", "ref": "SpellDuration" },
@@ -1893,7 +1893,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "b", "field": "unk" },
       { "data_type": "i", "field": "flags_not", "elements": 2 },
-      { "data_type": "i", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } }
+      { "data_type": "I", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } }
     ]
   },
   "SpellTargetRestrictions": {
@@ -1901,7 +1901,7 @@
     "fields": [
       { "data_type": "h", "field": "difficulty_id" },
       { "data_type": "f", "field": "cone" },
-      { "data_type": "B", "field": "max_affected_targets" },
+      { "data_type": "b", "field": "max_affected_targets" },
       { "data_type": "I", "field": "max_target_level" },
       { "data_type": "h", "field": "unk_4" },
       { "data_type": "i", "field": "flags" },

@@ -1,5 +1,5 @@
 // Permanent item enchants, wow build 12.0.1.66220
-static constexpr std::array<permanent_enchant_entry_t, 1065> __permanent_enchant_data { {
+static constexpr std::array<permanent_enchant_entry_t, 1059> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -532,12 +532,6 @@ static constexpr std::array<permanent_enchant_entry_t, 1065> __permanent_enchant
   { 3826,  0,  4, 0x00000100, 0x0000001e, "icewalker"                         },
   { 1894,  0,  2, 0x00000000, 0x000ae7f3, "icy_chill"                         },
   { 6219,  0,  4, 0x00000200, 0x0000001f, "illuminated_soul"                  },
-  { 8042,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment__blooming_light" },
-  { 8043,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment__blooming_light" },
-  { 8044,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment__natures_embrace" },
-  { 8045,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment__natures_embrace" },
-  { 8046,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment__voidtouched"   },
-  { 8047,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment__voidtouched"   },
   { 6682,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },
   { 6683,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },
   { 6684,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },

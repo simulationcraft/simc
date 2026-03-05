@@ -12100,22 +12100,17 @@ bool druid_t::validate_actor()
 {
   sim->error( error_level_e::SEVERE, "Druid sims are untested and full of bugs. RESULTS ARE UNRELIABLE." );
   
-  static constexpr std::string_view placeholders[] = {
-  // balance bugs
-    "arcane affinity increases the maximum damage of wrath cast without umbral embrace",
-  // feral bugs
-    "frantic frenzy attacks 6 times",
+  static constexpr std::string_view feral[] = {
     "frantic frenzy does not proc overflowing power",
     "frantic frenzy does not proc coiled to spring",
     "frantic frenzy/unseen attacks assumed to have 500ms delay",
     "primal fury does not proc from 2nd rake with double-clawed rake",
-  // guardian bugs
+  };
+
+  static constexpr std::string_view guardian[] = {
     "red moon does not generate rage when the target is hit with mangle",
     "killing blow excess rage does not trigger memory of ysera",
     "when multiple dread shades are active only the latest one casts dire echo",
-    "bask in moonlight applies balance effects while in guardian spec",
-    "the eternal moon increase to lunar beam mastery rounds up",
-    "bear ravage has a 1s gcd",
     "4th rank of wild guardian does not increase the effectiveness of each echo",
     "all echoed maul/raze/ravage from wild guardians are at 50% effectiveness",
     "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
@@ -12123,8 +12118,19 @@ bool druid_t::validate_actor()
   };
 
 #ifdef NDEBUG
-  for ( auto ph : placeholders )
-    sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
+  switch ( specialization() )
+  {
+    case DRUID_FERAL:
+      for ( auto ph : feral )
+        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
+      break;
+    case DRUID_GUARDIAN:
+      for ( auto ph : guardian )
+        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
+      break;
+    default:
+      break;
+  }
 #endif
 
   return true;

@@ -846,17 +846,13 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
-    std::map<error_level_e, std::vector<std::string_view>> error_map;
-    for ( const auto& error : sim.error_list )
-      error_map[ error.first ].emplace_back( error.second );
-
     os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
-    for ( const auto& error_list : error_map )
+    for ( const auto& error_level : sim.error_list )
     {
-      os.format( "{}:\n", util::error_level_string( error_list.first ) );
+      os.format( "{}:\n", util::error_level_string( error_level.first ) );
 
-      for ( const auto& error : error_list.second )
+      for ( const auto& error : error_level.second )
         os.format( "  {}\n", util::encode_html( error ) );
     }
 

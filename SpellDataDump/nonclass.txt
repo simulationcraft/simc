@@ -189204,6 +189204,7 @@ Description      : Your abilities have a chance to conjure a hail of meteors, in
 Name             : Vicious Flask of Classical Spirits (id=432403) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189289,6 +189290,7 @@ Tooltip          : Stunned.
 Name             : Vicious Flask of Honor (id=432430) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189423,6 +189425,7 @@ Description      : $@spelldesc432442
 Name             : Vicious Flask of the Wrecking Ball (id=432452) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -189577,6 +189580,7 @@ Periodically spreads to nearby enemies.
 Name             : Vicious Flask of Manifested Fury (id=432497) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 80
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
@@ -236458,11 +236462,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1235168 | Radius: 8 yards | Target: at Random (72)
 
 Name             : Warping Wise (id=1235207) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 25 yards
 Cast Time        : 2 seconds
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), Not In Combat (Only Peaceful) (28), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1230097)  : Trigger Spell (64): Warping Wise
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Trigger Spell: 1235208 | Target: Self (1)
@@ -236725,11 +236730,12 @@ Effects          :
 Description      : $@spelldesc1244636
 
 Name             : Light's Preservation (id=1235568) 
+Hotfixed         : Category (4 -> 30)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Cooldown         : 300 seconds
-Category         : 4 (Type 0x0)
+Category         : 30 (Type 0x0)
 Labels           : 4131
                  : 4875
                  : 4881
@@ -239546,6 +239552,7 @@ Description      : $@spelldesc1237885
 Tooltip          : Healing $s2 every $t2 sec.
 
 Name             : Thorn Bloom (id=1238474) 
+Hotfixed         : Tooltip
 Race             : Haranir (0x180000)
 School           : Nature
 Spell Type       : Magic
@@ -239560,7 +239567,7 @@ Effects          :
 #2 (id=1235668)  : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc1237885
-Tooltip          : Enduring $s2 Nature damage every $t2 sec.
+Tooltip          : Enduring $w2 Nature damage every $t2 sec.
 
 Name             : Lash Out (id=1238623) [Passive] 
 Race             : Haranir (0x180000)
@@ -244258,6 +244265,7 @@ Enemies near the shielded ally and active companion are knocked up and take $w3%
 Can only occur every $1255774d.
 
 Name             : Sanctum's Edict (id=1248911) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -244267,7 +244275,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252107)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -248774,6 +248782,7 @@ Effects          :
 Description      : $@spelldesc1248931
 
 Name             : Mandate of Sacred Death (id=1261324) 
+Hotfixed         : Proc Flags 1 (332048 -> 332116), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -248783,7 +248792,7 @@ Labels           : 2916
 Internal Cooldown: 2 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1271016)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -248959,6 +248968,7 @@ Description      : $@spelldesc445260
 Tooltip          : Chance to be critically struck increased by $w1%.
 
 Name             : Porcelain Blade Tip (id=1261803) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -248967,7 +248977,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271663)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249042,6 +249052,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1261826|r
 $@spelldesc455680
 
 Name             : Porcelain Blade Tip (id=1261822) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249050,7 +249061,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271687)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249059,6 +249070,7 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261823) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249067,7 +249079,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271688)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249076,6 +249088,7 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261824) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249084,7 +249097,7 @@ Labels           : 2916
                  : 5758
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1271689)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
@@ -249291,6 +249304,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1262400|r
 $@spelldesc455680
 
 Name             : Holy Bounding Hand Grenade (id=1262076) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249299,7 +249313,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272111)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -249462,6 +249476,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262109 | Target: Self (1)
 
 Name             : Time Lost Edict (id=1262112) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -249470,7 +249485,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272169)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250150,6 +250165,7 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Time Lost Edict (id=1262380) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250158,7 +250174,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272634)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250171,6 +250187,7 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262381) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250179,7 +250196,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272635)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250192,6 +250209,7 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262382) 
+Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250200,7 +250218,7 @@ Labels           : 2916
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Cast Successful
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Cast Successful, Unknown 38
 Attributes       : No Aura Cancel (31), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1272636)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -250357,6 +250375,7 @@ Description      : $@spelldesc1262387
 Tooltip          : $@spelldesc1262387
 
 Name             : Holy Bounding Hand Grenade (id=1262396) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250365,7 +250384,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272661)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250390,6 +250409,7 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262397) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250398,7 +250418,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272668)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250423,6 +250443,7 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262398) 
+Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250431,7 +250452,7 @@ Labels           : 2916
                  : 4285
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1272675)  : Apply Aura (6) | Proc Trigger Spell (42): Holy Bounding Hand Grenade
@@ -250583,7 +250604,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Can't Crit (93), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1273629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4105.006 (coefficient=32.11968) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8499.818 (coefficient=66.50694) | Target: Self (1)
+Hotfixed         : Coefficient (32.119675 -> 66.506943)
 Description      : Restores ${$s1*10} health over $d.
 Tooltip          : Restoring $s1 health every $ts.
 
@@ -251416,6 +251438,7 @@ Effects          :
 Tooltip          : Gashes of corrupting void.
 
 Name             : Sanctum's Edict (id=1265915) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251425,7 +251448,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277959)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -251450,6 +251473,7 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265916) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251459,7 +251483,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277965)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
@@ -251484,6 +251508,7 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265919) 
+Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251493,7 +251518,7 @@ Labels           : 2916
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Unknown 38
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1277974)  : Apply Aura Raid (65) | Proc Trigger Spell (42)

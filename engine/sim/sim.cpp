@@ -3174,10 +3174,13 @@ void sim_t::do_pause()
 void sim_t::set_error( error_level_e level, std::string error )
 {
   util::replace_all( error, "\n", "" );
-  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), error );
-  std::fflush( stderr );
 
-  error_list.emplace_back( level, std::move( error ) );
+  auto [ it, success ] = error_list[ level ].insert( std::move( error ) );
+  if ( !success )
+    return;
+
+  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), *it );
+  std::fflush( stderr );
 }
 
 /// merge sims
