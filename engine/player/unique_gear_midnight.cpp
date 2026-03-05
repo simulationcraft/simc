@@ -2543,6 +2543,9 @@ void crucible_of_erratic_energies( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1255278 driver
+// 1255296 missile trigger
+// 1255357 debuff
 void tangle_of_vibrant_vines( special_effect_t& effect )
 {
   auto missile = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines_missile", effect, effect.trigger() );
