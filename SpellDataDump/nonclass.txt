@@ -252303,6 +252303,17 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.
 
+Name             : Stranded Bloomline (id=1269453) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281295)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281296)  : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Convert $s2 Stranded Bloomline to create a Stranded Bloomline.
+
 Name             : Weak Bloomline (id=1269454) 
 School           : Physical
 Spell Type       : None
@@ -252313,6 +252324,17 @@ Effects          :
 #2 (id=1281298)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
+
+Name             : Stranded Glimmerline (id=1269458) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281303)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281304)  : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Convert $s2 Shredded Glimmerline to create a Stranded Glimmerline.
 
 Name             : Weak Glimmerline (id=1269459) 
 School           : Physical
