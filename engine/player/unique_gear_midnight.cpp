@@ -2522,6 +2522,105 @@ void deadly_precision( special_effect_t& effect )
   cb->activate_with_buff( buff );
 }
 
+// 1254752 Driver
+// 1254577 Buff - Create the buff {target, target} -> it's a shared buff.
+// 1254534 Projectile
+void refueling_orb( special_effect_t& e )
+{
+  struct refueling_orb_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<stat_buff_t> buffs;
+    double refueling_orb_heal_chance;
+    int chain_targets;
+    double velocity;
+    timespan_t min_travel;
+    double buff_size;
+    refueling_orb_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        refueling_orb_heal_chance( effect.player->midnight_opts.refueling_orb_heal_chance ),
+        chain_targets( effect.player->find_spell( 1254534 )->effectN( 1 ).chain_target() ),
+        velocity( effect.player->find_spell( 1254534 )->missile_speed() ),
+        min_travel( timespan_t::from_seconds( effect.player->find_spell( 1254534 )->missile_min_duration() ) ),
+        buff_size( effect.driver()->effectN( 2 ).average( effect ) )
+    {
+      get_buff( effect.player );
+    }
+
+    stat_buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff_spell = effect.player->find_spell( 1254577 );
+
+      if ( auto buff = buff_t::find( buff_player, "refueling_orb" ) )
+      {
+        buffs[ buff_player ] = dynamic_cast<stat_buff_t*>( buff );
+        return buffs[ buff_player ];
+      }
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, buff_player }, "refueling_orb", buff_spell );
+      buff->set_stat_from_effect_type( A_MOD_RATING, buff_size );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void trigger_buff( player_t* buff_player )
+    {
+      if ( buff_player->is_sleeping() )
+          return;
+
+      auto buff               = get_buff( buff_player );
+      buff->stats[ 0 ].amount = buff_size;
+      buff->trigger();
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( effect.player->sim->single_actor_batch || effect.player->sim->player_non_sleeping_list.size() == 1 )
+      {
+        trigger_buff( effect.player );
+      }
+      else
+      {
+        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+        auto it = std::find( helper_vector.begin(), helper_vector.end(), effect.player );
+
+        if ( it != helper_vector.end() )
+        {
+          std::iter_swap( it, std::prev( helper_vector.end() ) );
+        }
+
+        timespan_t total_travel_time = 0_s;
+        player_t* previous_target    = effect.player;
+
+        for ( int i = 0; i < chain_targets; i++ )
+        {
+          auto target_iterator = rng().range( helper_vector.begin(), std::prev( helper_vector.end() ) );
+          player_t* target     = *target_iterator;
+          std::iter_swap( target_iterator, std::prev( helper_vector.end() ) );
+
+          total_travel_time += std::max(
+              min_travel, timespan_t::from_seconds( previous_target->get_player_distance( *target ) / velocity ) );
+
+          if ( !rng().roll( refueling_orb_heal_chance ) )
+            make_event( effect.player->sim, total_travel_time,
+                        std::bind( &refueling_orb_cb_t::trigger_buff, this, target ) );
+
+          previous_target = target;
+        }
+      }
+    }
+  };
+
+  new refueling_orb_cb_t( e );
+}
+
 // 1272091 driver
 // 1277482 buff
 // 1255685 protocol of violence (higher rppm?)
@@ -3182,7 +3281,7 @@ void register_special_effects()
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
   register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines);
-
+  register_special_effect( 1254752, trinkets::refueling_orb );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
