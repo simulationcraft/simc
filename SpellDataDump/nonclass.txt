@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -244194,7 +244194,6 @@ Enemies near the shielded ally and active companion are knocked up and take $w3%
 Can only occur every $1255774d.
 
 Name             : Sanctum's Edict (id=1248911) 
-Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -248711,7 +248710,6 @@ Effects          :
 Description      : $@spelldesc1248931
 
 Name             : Mandate of Sacred Death (id=1261324) 
-Hotfixed         : Proc Flags 1 (332048 -> 332116), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -248897,7 +248895,6 @@ Description      : $@spelldesc445260
 Tooltip          : Chance to be critically struck increased by $w1%.
 
 Name             : Porcelain Blade Tip (id=1261803) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -248981,7 +248978,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1261826|r
 $@spelldesc455680
 
 Name             : Porcelain Blade Tip (id=1261822) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -248999,7 +248995,6 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261823) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249017,7 +249012,6 @@ Description      : Your companion's spells and abilities have a chance to weaken
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
 Name             : Porcelain Blade Tip (id=1261824) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249233,7 +249227,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1262400|r
 $@spelldesc455680
 
 Name             : Holy Bounding Hand Grenade (id=1262076) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -249405,7 +249398,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262109 | Target: Self (1)
 
 Name             : Time Lost Edict (id=1262112) 
-Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250094,7 +250086,6 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Time Lost Edict (id=1262380) 
-Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250116,7 +250107,6 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262381) 
-Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250138,7 +250128,6 @@ Description      : Your companion has a chance during combat to create a sanctif
 Tooltip          : Your companion has a chance during combat to create a sanctified area at a party members' location, warping the flow of time and combat for all inside. Allies within gain $w1% increased movement speed, cooldown recharge rate, and cast speed while enemies suffer the opposite effects. Lasts $1262233d.
 
 Name             : Time Lost Edict (id=1262382) 
-Hotfixed         : Proc Flags 1 (0 -> 340), Proc Flags 2 (4 -> 36)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250304,7 +250293,6 @@ Description      : $@spelldesc1262387
 Tooltip          : $@spelldesc1262387
 
 Name             : Holy Bounding Hand Grenade (id=1262396) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250338,7 +250326,6 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262397) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250372,7 +250359,6 @@ Tooltip          : Your companion has a chance during combat to toss a grenade a
 The grenade can safely bounce on party members.
 
 Name             : Holy Bounding Hand Grenade (id=1262398) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -251367,7 +251353,6 @@ Effects          :
 Tooltip          : Gashes of corrupting void.
 
 Name             : Sanctum's Edict (id=1265915) 
-Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251402,7 +251387,6 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265916) 
-Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -251437,7 +251421,6 @@ Tooltip          : Your companion has a chance to gain Sanctum's Blessings throu
 Each blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.
 
 Name             : Sanctum's Edict (id=1265919) 
-Hotfixed         : Proc Flags 2 (0 -> 32)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
