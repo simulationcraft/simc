@@ -3250,6 +3250,7 @@ Tooltip          : Attacks and spells targeting $@auracaster are missing.
 Damage taken reduced by $w4%.
 
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
+Hotfixed         : Item Subclass (34275 -> 34243)
 Talent Entry     : Survival [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -3258,7 +3259,7 @@ Resource         : 30 Focus (2) (id=10353)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
+Requires weapon  : One-handed Axe, Two-handed Axe, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -7163,6 +7164,7 @@ Effects          :
 Description      : $@spelldesc259495
 
 Name             : Raptor Strike (id=265189) [Spell Family (9)] 
+Hotfixed         : Item Subclass (34275 -> 34243)
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -7171,7 +7173,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Requires weapon  : One-handed Axe, Two-handed Axe, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
+Requires weapon  : One-handed Axe, Two-handed Axe, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -16852,6 +16854,7 @@ Effects          :
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
 
 Name             : Takedown (id=1250646) [Spell Family (9)] 
+Hotfixed         : Item Subclass (34275 -> 34243)
 Talent Entry     : Survival [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
@@ -16860,7 +16863,7 @@ Spell Level      : 1
 Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
+Requires weapon  : One-handed Axe, Two-handed Axe, Polearm, One-handed Sword, Two-handed Sword, Staff, Dagger
 Cooldown         : 90 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells

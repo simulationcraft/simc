@@ -16345,7 +16345,8 @@ Family Flags     : 39, 56, 58, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183500)  : School Damage (2): stormstrike
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : Delta (0 -> 0.05)
 Description      : $@spelldesc384352
 
 Name             : Feral Spirit (id=469314) [Spell Family (11), Passive] 
