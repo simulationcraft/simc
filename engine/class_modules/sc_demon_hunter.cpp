@@ -1202,6 +1202,8 @@ public:
   struct demon_hunter_options_t
   {
     double initial_fury = 0;
+    // Reset fury to soft cap at start of fight
+    bool reset_fury_on_pull = true;
     // Override for target's hitbox size, relevant for Fel Rush and Vengeful Retreat. -1.0 uses default SimC value.
     double target_reach = -1.0;
     // Relative directionality for movement events, 1.0 being directly away and 2.0 being perpendicular
@@ -10082,6 +10084,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "target_reach", options.target_reach ) );
   add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
+  add_option( opt_bool( "reset_fury_on_pull", options.reset_fury_on_pull ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
   add_option( opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
@@ -11704,7 +11707,7 @@ void demon_hunter_t::combat_begin()
   // Cap starting fury
   double fury_cap     = 20.0;
   double current_fury = resources.current[ RESOURCE_FURY ];
-  if ( in_boss_encounter && current_fury > fury_cap )
+  if ( options.reset_fury_on_pull && in_boss_encounter && current_fury > fury_cap )
   {
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
