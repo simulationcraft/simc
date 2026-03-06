@@ -249737,11 +249737,12 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Duration         : 15 seconds
-Triggered By     : Smuggler's Lynxeye (1262295), Smuggler's Lynxeye (1262298)
+Triggered By     : Smuggler's Lynxeye (1262295)
 Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272443)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 27.66087 (coefficient=0.211022) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.211022 -> 0.507458)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249750,7 +249751,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 3
 Proc Flags       : White Ranged, Yellow Ranged
 Attributes       : Passive (6), Don't Cancel When All Effects are Disabled (353)
 Effects          :
@@ -249762,22 +249763,25 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 3
 Proc Flags       : White Ranged, Yellow Ranged
 Attributes       : Passive (6), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272449)  : Apply Aura (6) | Proc Trigger Spell (42): Smuggler's Lynxeye | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 246.5914 (coefficient=1.881221) | Trigger Spell: 1262294 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 246.5914 (coefficient=1.881221) | Trigger Spell: 1262299 | Target: Self (1)
+Hotfixed         : Trigger Spell (1262294 -> 1262299)
 
 Name             : Smuggler's Lynxeye (id=1262299) 
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Duration         : 15 seconds
+Triggered By     : Smuggler's Lynxeye (1262298)
 Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272450)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 45.44285 (coefficient=0.346679) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82.9826 (coefficient=0.633066) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (0.346679 -> 0.633066)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249790,7 +249794,8 @@ Triggered By     : Farstrider's Hawkeye (1262337)
 Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272510)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 27.66087 (coefficient=0.211022) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.211022 -> 0.507458)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249799,7 +249804,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 3
 Proc Flags       : White Ranged, Yellow Ranged
 Attributes       : Passive (6), Don't Cancel When All Effects are Disabled (353)
 Effects          :
@@ -249815,7 +249820,8 @@ Triggered By     : Farstrider's Hawkeye (1262339)
 Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272512)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 45.44285 (coefficient=0.346679) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82.9826 (coefficient=0.633066) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (0.346679 -> 0.633066)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249824,7 +249830,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 3
 Proc Flags       : White Ranged, Yellow Ranged
 Attributes       : Passive (6), Don't Cancel When All Effects are Disabled (353)
 Effects          :
@@ -252658,18 +252664,21 @@ Description      : $@spelldesc1271211
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Crucible of Erratic Energies (id=1272091) [Passive] 
+Hotfixed         : Proc Flags 1 (87360 -> 87296)
 School           : Physical
 Spell Type       : None
 Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 4
-Proc Flags       : White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42): Voidlust | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 147.3637 (coefficient=1.124223) | Trigger Spell: 1277482 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Trigger Spell: 1277482 | Target: Self (1)
+Hotfixed         : Coefficient (1.124223 -> 0.659241)
 #2 (id=1285205)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 5 | Scaled Value: 5
+Hotfixed         : Base Value (3 -> 5)
 #3 (id=1285226)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #4 (id=1289944)  : Dummy (3)
