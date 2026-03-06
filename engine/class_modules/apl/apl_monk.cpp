@@ -354,7 +354,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
       case 1249765:
       case 1249766:
         return { "combo_strike",
-                 fmt::format( "Spell id {} is a helper buff to avoid breaking Combo Strikes for {}.",
+                 fmt::format( "Rule contains a helper buff to avoid breaking Combo Strikes for {}.",
                               rule.condition_value_1, find_spell( step.spell_id )->name_cstr() ),
                  false };
     }
