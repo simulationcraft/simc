@@ -1,5 +1,5 @@
 // Temporary item enchants, wow build 12.0.1.66220
-static constexpr std::array<temporary_enchant_entry_t, 111> __ptr_temporary_enchant_data { {
+static constexpr std::array<temporary_enchant_entry_t, 117> __ptr_temporary_enchant_data { {
   {  2713,  0,   29453, "adamantite_sharpening_stone"  },
   {  2955,  0,   34340, "adamantite_weightstone"       },
   {  7493,  1,  451869, "algari_mana_oil"              },
@@ -50,6 +50,12 @@ static constexpr std::array<temporary_enchant_entry_t, 111> __ptr_temporary_ench
   {  6516,  1,  385575, "howling_rune"                 },
   {  6517,  2,  385576, "howling_rune"                 },
   {  6518,  3,  385577, "howling_rune"                 },
+  {  8042,  1, 1291455, "illusory_adornment__blooming_light" },
+  {  8043,  2, 1291459, "illusory_adornment__blooming_light" },
+  {  8044,  1, 1291464, "illusory_adornment__natures_embrace" },
+  {  8045,  2, 1291466, "illusory_adornment__natures_embrace" },
+  {  8046,  1, 1291460, "illusory_adornment__voidtouched" },
+  {  8047,  2, 1291465, "illusory_adornment__voidtouched" },
   {  7546,  1,  458929, "ironclaw_razorstone"          },
   {  7547,  2,  458930, "ironclaw_razorstone"          },
   {  7548,  3,  458931, "ironclaw_razorstone"          },
