@@ -17658,6 +17658,7 @@ Description      : $@spelldesc1265801
 Tooltip          : Faded into the nether and only able to use Demonic Gateway once more.
 
 Name             : Blight of Weakness (id=1271748) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -17670,7 +17671,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Category Cooldown: 120 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1284646)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -17700,6 +17701,7 @@ Description      : $@spelldesc1271748
 Tooltip          : Time between attacks increased by $w1%. Chance to critically strike reduced by $w2%.
 
 Name             : Blight of Tongues (id=1271802) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=6, max_rank=1, req_points=23, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -17713,7 +17715,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Category Cooldown: 120 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1284756)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
