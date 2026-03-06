@@ -7,12 +7,6 @@ role=spell
 position=back
 talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMDMDzgBmZGjZaYmpZMWmxMzMz8AzMzAmxMGzMLzMDMwYwCsMGN2GQmBBbYGMzghB
 
-potion=potion_of_recklessness_2
-flask=flask_of_the_shattered_sun_2
-food=blooming_feast
-augmentation=void_touched
-temporary_enchant=main_hand:thalassian_phoenix_oil_2
-
 head=hornhelm_of_the_black_talon,id=249997,bonus_id=1808/13575,ilevel=289,gem_id=240983,enchant_id=7961
 neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240906/240906
 shoulders=beacons_of_the_black_talon,id=249995,bonus_id=13574,ilevel=289,enchant_id=8031
