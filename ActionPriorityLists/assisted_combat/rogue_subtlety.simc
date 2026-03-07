@@ -8,38 +8,23 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=goremaws_bite,if=effective_combo_points<=2&buff.cold_blood.down
-actions.assisted_combat+=/flagellation,if=effective_combo_points>=5&buff.cold_blood.down
-actions.assisted_combat+=/symbols_of_death,if=cooldown.shadow_dance.ready&buff.symbols_of_death.down&active_enemies>=1
-actions.assisted_combat+=/symbols_of_death,if=buff.shadow_dance.up&buff.symbols_of_death.down&active_enemies>=1
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=shadow_blades
+actions.assisted_combat+=/goremaws_bite,if=effective_combo_points<=2
 actions.assisted_combat+=/shadow_dance,if=active_enemies>=1&cooldown.backstab.ready
-actions.assisted_combat+=/eviscerate,if=effective_combo_points>=5&buff.darkest_night.up&!talent.deeper_stratagem&!talent.secret_stratagem
-actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&buff.darkest_night.up&!talent.deeper_stratagem&!talent.secret_stratagem
-actions.assisted_combat+=/eviscerate,if=effective_combo_points>=6&buff.darkest_night.up&talent.deeper_stratagem&!talent.secret_stratagem
-actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=6&buff.darkest_night.up&talent.deeper_stratagem&!talent.secret_stratagem
-actions.assisted_combat+=/eviscerate,if=effective_combo_points>=6&buff.darkest_night.up&!talent.deeper_stratagem&talent.secret_stratagem
-actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=6&buff.darkest_night.up&!talent.deeper_stratagem&talent.secret_stratagem
-actions.assisted_combat+=/eviscerate,if=effective_combo_points>=7&buff.darkest_night.up&talent.deeper_stratagem&talent.secret_stratagem
-actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=7&buff.darkest_night.up&talent.deeper_stratagem&talent.secret_stratagem
+actions.assisted_combat+=/eviscerate,if=effective_combo_points>=5&buff.darkest_night.up
+actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&buff.darkest_night.up
 actions.assisted_combat+=/shuriken_storm,if=active_enemies>=3&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
-actions.assisted_combat+=/shuriken_storm,if=active_enemies>=1&buff.clear_the_witnesses.up&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
-actions.assisted_combat+=/shadowstrike,if=talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
-actions.assisted_combat+=/backstab,if=buff.shadow_dance.down&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
-actions.assisted_combat+=/gloomblade,if=buff.shadow_dance.down&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
-actions.assisted_combat+=/symbols_of_death,if=buff.symbols_of_death.down&active_enemies>=1&charges>=2&!cooldown.shadow_dance.ready
-actions.assisted_combat+=/rupture,if=effective_combo_points>=5&buff.shadow_dance.down&!dot.rupture.ticking&buff.darkest_night.down
-actions.assisted_combat+=/cold_blood,if=talent.secret_technique&cooldown.secret_technique.ready&buff.shadow_dance.up&effective_combo_points>=5&active_enemies>=1
-actions.assisted_combat+=/cold_blood,if=active_enemies>=3&cooldown.black_powder.ready&buff.shadow_dance.up&effective_combo_points>=5&active_enemies>=1
-actions.assisted_combat+=/cold_blood,if=cooldown.eviscerate.ready&buff.shadow_dance.up&effective_combo_points>=5
+actions.assisted_combat+=/shadowstrike,if=active_enemies<=3&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
+actions.assisted_combat+=/backstab,if=buff.shadow_dance.down&active_enemies<=2&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
+actions.assisted_combat+=/gloomblade,if=buff.shadow_dance.down&active_enemies<=2&talent.deeper_stratagem&talent.secret_stratagem&effective_combo_points<=5
 actions.assisted_combat+=/secret_technique,if=buff.shadow_dance.up&effective_combo_points>=5&buff.darkest_night.down
 actions.assisted_combat+=/eviscerate,if=effective_combo_points>=5&action.coup_de_grace.ready
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&action.coup_de_grace.ready
 actions.assisted_combat+=/black_powder,if=active_enemies>=3&effective_combo_points>=5&buff.darkest_night.down
 actions.assisted_combat+=/eviscerate,if=effective_combo_points>=5&buff.darkest_night.down
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5&buff.darkest_night.down
-actions.assisted_combat+=/shuriken_tornado,if=active_enemies>=3
 actions.assisted_combat+=/shuriken_storm,if=active_enemies>=3
-actions.assisted_combat+=/shuriken_storm,if=active_enemies>=1&buff.clear_the_witnesses.up
 actions.assisted_combat+=/shadowstrike
 actions.assisted_combat+=/backstab,if=buff.shadow_dance.down
 actions.assisted_combat+=/gloomblade,if=buff.shadow_dance.down
@@ -47,7 +32,7 @@ actions.assisted_combat+=/shuriken_toss,if=buff.stealth.down&buff.vanish.down&ta
 actions.assisted_combat+=/backstab
 actions.assisted_combat+=/gloomblade
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

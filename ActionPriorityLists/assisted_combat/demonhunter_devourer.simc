@@ -1,0 +1,32 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat=metamorphosis,if=target.distance<=25&buff.metamorphosis.down
+actions.assisted_combat+=/metamorphosis,if=buff.collapsing_star.up&spell_targets.unknown_spell_25>0
+actions.assisted_combat+=/void_ray,if=target.distance<=25&buff.metamorphosis.up
+actions.assisted_combat+=/reap,if=buff.moment_of_craving.up&spell_targets.unknown_spell_25>0
+actions.assisted_combat+=/void_ray,if=target.distance<=25
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/the_hunt,if=spell_targets.unknown_spell_25>0
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/voidblade,if=spell_targets.unknown_spell_25>0
+actions.assisted_combat+=/immolation_aura,if=!talent.spontaneous_immolation&dot.soul_immolation.down
+actions.assisted_combat+=/reap,if=buff.soul_fragments.stack>=4
+actions.assisted_combat+=/consume
+actions.assisted_combat+=/consume
+
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call

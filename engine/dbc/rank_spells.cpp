@@ -31,18 +31,13 @@ const rank_class_spell_t& rank_class_spell_t::find( util::string_view name,
   }
 
   // Just do a linear search for the rank spells, there are at most a few for each spell
-  auto it = std::find_if( __range.first, __range.second, [rank, class_id, spec_id]( const rank_class_spell_t& e ) {
-    if ( e.class_id != class_id )
-    {
-      return false;
-    }
-
+  auto it = std::find_if( __range.first, __range.second, [ name, rank, spec_id ]( const rank_class_spell_t& e ) {
     if ( e.spec_id && e.spec_id != spec_id )
     {
       return false;
     }
 
-    return util::str_compare_ci( rank, e.rank );
+    return util::str_compare_ci( name, e.name ) && util::str_compare_ci( rank, e.rank );
   } );
 
   if ( it == __range.second )

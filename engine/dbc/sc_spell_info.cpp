@@ -946,6 +946,12 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::
   {  449, "Reagent Consumes Charges"                                             },
   {  451, "Hide Passive From Tooltip"                                            },
   {  468, "Private Aura"                                                         },
+  {  490, "Asynchronous Buff"                                                    },
+  {  491, "Important Spell (C_Spell.IsSpellImportant)"                           },
+  {  499, "External Defensive (C_Spell.IsExternalDefensive)",                    },
+  {  506, "Non-secret Aura"                                                      },
+  {  511, "Non-secret Spell"                                                     },
+  {  512, "Big Defensive (C_UnitAuras.AuraIsBigDefensive)"                       }
 } );
 
 static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, std::string_view>( {
@@ -1497,7 +1503,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_DAMAGE_DONE_VERSUS,                "Modify Damage Done% vs Race"                       },
   { A_MOD_SPEED_NOT_STACK,                   "Increase Movement Speed%"                          },
   { A_MOD_MOUNTED_SPEED_NOT_STACK,           "Increase Mounted Speed%"                           },
-  { A_MOD_CHARGE_TYPE_RECHARGE_RATE,         "Modify Charge Cooldown Type Recharge Rate%"        },
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,   "Modify Recharge Time% (Category Type Mask)"         },
   { A_AOE_CHARM,                             "Charmed"                                           },
   { A_MOD_MAX_MANA_PCT,                      "Modify Max Mana%"                                  },
   { A_MOD_ATTACKER_SPELL_CRIT_CHANCE,        "Modify Attacker Spell Crit Chance"                 },
@@ -1518,7 +1524,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_FLY,                                   "Fly"                                               },
   { A_MOD_ATTACKER_MELEE_CRIT_DAMAGE,        "Modify Melee Crit Damage Taken from Attacker"      },
   { A_PREVENT_RELEASE_SPIRIT,                "Prevent Releasing Spirit"                          },
-  { A_MOD_RECHARGE_RATE_CATEGORY_MASK,       "Modify Cooldown Recharge Rate (CategoryTypes)"     },
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,       "Modify Recharge Time (Category Type Mask)"         },
   { A_MOD_RAGE_FROM_DAMAGE_DEALT,            "Modify Rage Generated From Auto Attacks"           },
   { A_HASTE_SPELLS,                          "Modify Casting Speed"                              },
   { A_MOD_MELEE_HASTE_2,                     "Modify Melee Haste"                                },
@@ -1565,7 +1571,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_BLOCK_PCT,                         "Modify Block Value%"                               },
   { A_MOD_BLOCK_FLAT,                        "Add Block Value"                                   },
   { A_MOD_IGNORE_SHAPESHIFT,                 "Modify Stance Mask"                                },
-  { A_MOD_DAMAGE_TAKEN_FROM_MECHANIC,        "Modify Damage Taken from Mechanic"                 },
+  { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,      "Modify Damage Done% from Mechanic"                 },
   { A_MOD_TARGET_ARMOR_PCT,                  "Modify Target Armor%"                              },
   { A_MOD_HEALING_RECEIVED_FROM_SPELL,       "Modify Healing Taken% from Caster's Spells"        },
   { A_LINKED_SPELL,                          "Cast Linked Spell"                                 },
@@ -1665,6 +1671,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_MULTISTRIKE_CHANCE,                "Modify Multistrike%"                               },
   { A_MOD_LEECH_PERCENT,                     "Modify Leech%"                                     },
   { A_ADVANCED_FLYING,                       "Dragonriding"                                      },
+  { A_MOD_EXP_FROM_CREATURE_TYPE,            "Modify Experience Gained% vs Race"                 },
   { A_MOD_RECHARGE_TIME_CATEGORY,            "Modify Recharge Time (Category)"                   },
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY,        "Modify Recharge Time% (Category)"                  },
   { A_MOD_ROOT_2,                            "Root (Respects Threat Table)"                      },
@@ -1822,16 +1829,6 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
   { -9, "Replace Secondary"        },
   { -10, "Restore Mana"            },
 } );
-
-std::string mechanic_str( unsigned mechanic )
-{
-  auto it = _mechanic_strings.find( mechanic );
-  if ( it != _mechanic_strings.end() )
-  {
-    return std::string( it->second );
-  }
-  return fmt::format( "UnknownMechanic({})", mechanic );
-}
 
 std::string label_str( int label, const dbc_t& dbc, size_t wrap )
 {
@@ -2203,7 +2200,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back(
       fmt::format( "From Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value1() ) ) ) );
   }
-  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
+  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT ||
+            e->subtype() == A_MOD_MECHANIC_DAMAGE_DONE_PERCENT )
   {
     tokens.emplace_back( fmt::format( "Mechanic: {}", mechanic_str( e->misc_value1() ) ) );
   }
@@ -2232,6 +2230,20 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     else if ( e->subtype() == A_TRIGGER_SPELL_ON_STACK_AMOUNT )
     {
       tokens.emplace_back( fmt::format( "Min Stack Count: {}", e->misc_value1() ) );
+    }
+    else if ( e->type() == E_TRIGGER_SPELL )
+    {
+      tokens.emplace_back( fmt::format( "Delay: {}_ms", e->misc_value1() ) );
+    }
+    else if ( e->subtype() == A_MOD_DAMAGE_DONE_VERSUS || e->subtype() == A_MOD_EXP_FROM_CREATURE_TYPE )
+    {
+      std::vector<std::string> _strs;
+      auto _mask = e->misc_value1();
+      for ( auto i = 1; _mask; _mask >>= 1, i++ )
+        if ( _mask & 1 )
+          _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+      tokens.emplace_back( fmt::format( "Race: {}", fmt::join( _strs, ", " ) ) );
     }
     else
     {
@@ -2467,7 +2479,7 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
     nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
     nibbles.emplace_back( fmt::format( "req_points={}", trait->req_points ) );
 
-    if ( trait->selection_index != -1 )
+    if ( trait->node_type == NODE_TIERED || trait->node_type == NODE_CHOICE )
     {
       nibbles.emplace_back( fmt::format( "select_idx={}", trait->selection_index ) );
     }
@@ -3302,6 +3314,21 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
 std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_t* talent, int /* level */ )
 {
+  auto spec_string = []( const std::array<unsigned, 4>& specs ) {
+    std::vector<std::string> tokens;
+
+    for ( auto spec : specs )
+    {
+      if ( spec )
+      {
+        tokens.emplace_back(
+          fmt::format( "{} ({})", dbc::specialization_string( static_cast<specialization_e>( spec ) ), spec ) );
+      }
+    }
+
+    return util::string_join( tokens, ", " );
+  };
+
   std::ostringstream s;
 
   s << "Name         : " << talent->name << std::endl;
@@ -3310,8 +3337,17 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Definition   : " << talent->id_trait_definition << std::endl;
   s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
+  if ( talent->id_spec[ 0 ] != 0 )
+  {
+    s << "Spec         : " << spec_string( talent->id_spec ) << std::endl;
+  }
+  if ( talent->id_spec_starter[ 0 ] != 0 )
+  {
+    s << "Starter      : " << spec_string( talent->id_spec_starter ) << std::endl;
+  }
   s << "Column       : " << talent->col << std::endl;
   s << "Row          : " << talent->row << std::endl;
+  s << "Req. Points  : " << talent->req_points << std::endl;
   s << "Max Rank     : " << talent->max_ranks << std::endl;
   s << "Spell        : " << talent->id_spell << std::endl;
   if ( talent->id_replace_spell > 0 )
@@ -3323,7 +3359,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
   s << "Subtree      : " << talent->id_sub_tree << std::endl;
-  // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
+  s << "Sel. Index   : " << talent->selection_index << std::endl;
   s << std::endl;
 
   return s.str();
@@ -3773,6 +3809,14 @@ std::string_view spell_info::effect_property_str( const spelleffect_data_t* effe
 {
   auto it = _property_type_strings.find( effect->property_type() );
   if ( it != _property_type_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::mechanic_str( unsigned mechanic )
+{
+  auto it = _mechanic_strings.find( mechanic );
+  if ( it != _mechanic_strings.end() )
     return it->second;
   return {};
 }

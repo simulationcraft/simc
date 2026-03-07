@@ -10,7 +10,9 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=pillar_of_frost,if=cooldown.frost_strike.ready&target.distance<=8
 actions.assisted_combat+=/frostwyrms_fury,if=target.distance<=30&buff.pillar_of_frost.up
-actions.assisted_combat+=/empower_rune_weapon,if=runic_power<=8&buff.killing_machine.stack<=1
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/breath_of_sindragosa
+actions.assisted_combat+=/empower_rune_weapon,if=runic_power<=80&buff.killing_machine.stack<=1
 actions.assisted_combat+=/empower_rune_weapon,if=runic_power<=8&buff.killing_machine.down
 actions.assisted_combat+=/frostwyrms_fury,if=target.distance<=30
 actions.assisted_combat+=/reapers_mark
@@ -29,7 +31,7 @@ actions.assisted_combat+=/frost_strike
 actions.assisted_combat+=/howling_blast,if=target.distance>15
 actions.assisted_combat+=/obliterate
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

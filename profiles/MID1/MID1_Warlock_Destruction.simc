@@ -1,0 +1,96 @@
+warlock="MID1_Warlock_Destruction_Diabolist"
+source=default
+spec=destruction
+level=90
+race=Dwarf
+role=spell
+position=ranged_back
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsAGzYYhMw2wGNWYAAgxAjNAMzAYmxYAAAYmZmBAwMDD
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/cataclysm,if=active_enemies>=2&raid_event.adds.in>15
+actions.precombat+=/soul_fire
+actions.precombat+=/incinerate
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/soul_fire,if=soul_shard<=4
+actions+=/conflagrate,if=(variable.ritual_length<(action.chaos_bolt.execute_time*0.7+gcd.max))&!buff.backdraft.up
+actions+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))
+actions+=/summon_infernal
+actions+=/malevolence
+actions+=/incinerate,if=buff.chaotic_inferno_buff.up&soul_shard<=4.6
+actions+=/shadowburn,if=(!demonic_art|target.health.pct<=20)&(buff.fiendish_cruelty.up|talent.conflagration_of_chaos)
+actions+=/wither,if=!talent.internal_combustion&(((dot.wither.remains-5*(action.chaos_bolt.in_flight))<dot.wither.duration*0.3)|dot.wither.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.wither.remains))&target.time_to_die>8
+actions+=/immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|refreshable|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>8
+actions+=/ruination
+actions+=/conflagrate,if=soul_shard<=4.4&buff.backdraft.stack<2
+actions+=/cataclysm,if=talent.lake_of_fire
+actions+=/chaos_bolt,if=talent.wither
+actions+=/chaos_bolt,if=((variable.ritual_length>(action.chaos_bolt.execute_time+gcd.max))&variable.ritual_length<(2+2*action.chaos_bolt.execute_time))&soul_shard>=4
+actions+=/chaos_bolt,if=variable.ritual_length>(2*action.chaos_bolt.execute_time+2)
+actions+=/infernal_bolt,if=soul_shard<=3
+actions+=/channel_demonfire
+actions+=/incinerate
+
+actions.items=use_item,slot=trinket1
+actions.items+=/use_item,slot=trinket2
+
+actions.ogcd=potion,if=variable.infernal_active|!talent.summon_infernal
+actions.ogcd+=/berserking,use_off_gcd=1
+actions.ogcd+=/blood_fury
+actions.ogcd+=/fireblood
+actions.ogcd+=/ancestral_call
+
+actions.variables=variable,name=infernal_active,op=set,value=pet.infernal.active|(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains)<20
+actions.variables+=/variable,name=ritual_length,value=buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains,default=0,op=set
+
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890
+shoulders=abyssal_immolators_fury,id=250040,bonus_id=13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/13454/13622/13667/9627,crafted_stats=32/36
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+wrists=voracious_wristwraps,id=249315,ilevel=289,gem_id=240890
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574,ilevel=289
+waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240890
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575,ilevel=289,enchant_id=7935
+feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240898/240898,enchant_id=7997
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/12214/13453/13622/13667/9627,gem_id=240898,enchant_id=7997,crafted_stats=32/36
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=shadow_of_the_empyrean_requiem,id=249810,ilevel=289
+main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=7981
+off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_stamina=17604
+# gear_intellect=1673
+# gear_crit_rating=620
+# gear_haste_rating=1244
+# gear_mastery_rating=606
+# gear_versatility_rating=42
+# gear_leech_rating=249
+# gear_armor=532
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
+soul_shards=0
+default_pet=sayaad

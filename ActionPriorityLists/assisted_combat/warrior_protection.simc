@@ -10,15 +10,18 @@ actions+=/auto_attack
 actions+=/charge,if=time<=0.5|movement.distance>5
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=ravager
-actions.assisted_combat+=/champions_spear,if=target.distance<=25
+actions.assisted_combat=battle_shout,if=buff.battle_shout_highlight.up
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/avatar,if=cooldown.heroic_throw.ready
+actions.assisted_combat+=/ravager
 actions.assisted_combat+=/demolish
-actions.assisted_combat+=/thunderous_roar,if=target.distance<=12
 actions.assisted_combat+=/thunder_blast,if=buff.thunder_blast.up&target.distance<=8
 actions.assisted_combat+=/shield_slam
 actions.assisted_combat+=/thunder_clap,if=target.distance<=8
 # (Overridden from 'target.distance<=5&active_enemies>3')
 actions.assisted_combat+=/revenge,if=target.distance<=6&active_enemies>3
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/shield_charge
 actions.assisted_combat+=/execute
 # (Overridden from 'target.distance<=5')
 actions.assisted_combat+=/revenge,if=target.distance<=6
@@ -26,7 +29,7 @@ actions.assisted_combat+=/devastate,if=!talent.devastator
 actions.assisted_combat+=/heroic_throw,if=target.distance>15
 actions.assisted_combat+=/shield_slam
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
@@ -37,6 +40,5 @@ actions.cooldowns+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions.cooldowns+=/shield_charge
 actions.cooldowns+=/avatar
 actions.cooldowns+=/shield_block,if=buff.shield_block.remains<=10
-actions.cooldowns+=/last_stand
 actions.cooldowns+=/shield_wall
 actions.cooldowns+=/ignore_pain,if=rage>=65

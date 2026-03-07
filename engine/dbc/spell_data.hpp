@@ -27,7 +27,7 @@ struct spelleffect_data_t;
 struct spelllabel_data_t;
 struct spellpower_data_t;
 
-constexpr unsigned NUM_SPELL_FLAGS = 15;
+constexpr unsigned NUM_SPELL_FLAGS = 17;
 constexpr unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 // ==========================================================================
@@ -58,7 +58,7 @@ struct power_type_data_t
   const char* _name;
   unsigned _initial;
   unsigned _max;
-  double _divisor;
+  double _divisor = 1.0;
   unsigned _regen_interrupt_time;
   double _regen_combat;
   double _regen_ooc;
@@ -466,6 +466,7 @@ struct spell_data_t
   // SpellCategories.dbc
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   unsigned    _dmg_class;          // Classification for the spell
+  // SpellTargetRestrictions.dbc
   int         _max_targets;        // Max number of targets
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds

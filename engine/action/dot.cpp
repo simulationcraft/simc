@@ -854,26 +854,48 @@ void dot_t::schedule_tick()
   }
 }
 
-double dot_t::tick_damage_over_time( timespan_t dur ) const
+double dot_t::tick_damage_over_time( timespan_t dur, int stacks ) const
 {
-  if ( !ticking || dur <= 0_ms )
+  if ( !ticking || ( dur != timespan_t::min() && dur <= 0_ms ) )
     return 0.0;
 
   action_state_t* as = current_action->get_state( state );
 
   assert( as && "Dot tick damage calculation requires a valid action state." );
 
-  current_action->calculate_tick_amount( as, current_stack() );
+  current_action->calculate_tick_amount( as, stacks == -1 ? current_stack() : stacks );
+
   double tick_base_damage = as->result_raw;
+  double ticks;
 
-  timespan_t dot_tick_time = current_action->tick_time( as );
+  // calculate for full remaining dot
+  if ( dur == timespan_t::min() )
+  {
+    ticks = ticks_left_fractional();
+  }
+  else
+  {
+    timespan_t dot_tick_time = current_action->tick_time( as );
 
-  double ticks = dur / dot_tick_time;
+    ticks = dur / dot_tick_time;
+  }
+
   double damage = ticks * tick_base_damage;
 
   action_state_t::release( as );
 
+  if ( sim.debug )
+  {
+    sim.print_debug( "{} {} on {} tick damage over time: tick_base_damage={} ticks={} total={}", *source, *this,
+                     *target, tick_base_damage, ticks, damage );
+  }
+
   return damage;
+}
+
+double dot_t::tick_damage_over_remaining_time( int stacks ) const
+{
+  return tick_damage_over_time( timespan_t::min(), stacks );
 }
 
 void dot_t::start( timespan_t duration )
@@ -931,14 +953,7 @@ void dot_t::refresh( timespan_t duration )
 
 void dot_t::check_tick_zero( bool start )
 {
-  // If we're precasting a helpful dot and we're not in combat, fake precasting
-  // by using a first tick.
-  // We also reduce the duration by one tick interval in
-  // action_t::trigger_dot().
-  bool fake_first_tick = !current_action->harmful && current_action->is_precombat;
-
-  if ( ( current_action->tick_zero || ( current_action->tick_on_application && start ) ) ||
-       fake_first_tick )
+  if ( current_action->tick_zero || ( current_action->tick_on_application && start ) )
   {
     tick();
   }

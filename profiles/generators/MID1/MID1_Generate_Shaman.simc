@@ -1,0 +1,108 @@
+shaman="MID1_Shaman_Elemental_Stormbringer"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
+# Stormbringer
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
+head=,id=249979,bonus_id=13575/13575/13575/13575/12806/13335/13338/40/12676/1808,enchant_id=8017,gem_id=240967
+neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
+shoulder=,id=249977,bonus_id=13574/13574/13574/13574/12806/13335/13340/40/12675,enchant_id=7973
+back=,id=249974,bonus_id=12806/13335/40
+chest=,id=249982,bonus_id=13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+wrist=,id=249304,bonus_id=12806/13577/1808,gem_id=240908
+hands=,id=249980,bonus_id=13574/13574/13574/13574/12806/13335/13337/40/12675
+waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/12667/13622/13667/1808,gem_id=240898
+legs=,id=251215,bonus_id=13440/6652/13577/12699/12806,enchant_id=7935
+feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/13622/13667,enchant_id=8019
+finger1=,id=193708,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+finger2=,id=249919,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+trinket1=,id=249343,bonus_id=40/13335/12806
+trinket2=,id=250144,bonus_id=12806/13440/40
+main_hand=,id=251083,bonus_id=12806/13577,enchant_id=7981
+off_hand=,id=251105,bonus_id=12806/13577
+
+save=MID1_Shaman_Elemental.simc
+
+shaman="MID1_Shaman_Enhancement"
+level=90
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZmZGAAAAAAAAAYB2gZsox2AYmgNAsMjZMWWmBmZ2GLzMzMMWGzAAYAGzMxMDAMGA
+
+head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892
+shoulders=tempests_of_the_primal_core,id=249977,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289,enchant_id=8001
+back=draconic_nullcape,id=249370,ilevel=289
+chest=embrace_of_the_primal_core,id=249982,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,ilevel=289,gem_id=240892
+hands=earthgrips_of_the_primal_core,id=249980,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=ceinture_of_the_primal_core,id=249976,bonus_id=1808,ilevel=289,gem_id=240892
+legs=eternal_flame_scaleguards,id=249324,ilevel=289,enchant_id=8159
+feet=whipcoil_sabatons,id=251084,ilevel=289,enchant_id=7963
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240892/240892,enchant_id=7969
+finger2=loa_worshipers_band,id=251513,bonus_id=8960/8960/8960/12066/12214/12214/12214/12496,ilevel=285,gem_id=240892,enchant_id=7969
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=clutchmates_caress,id=249287,ilevel=289,enchant_id=7983
+off_hand=farstriders_chopper,id=237850,bonus_id=8793/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=8041,crafted_stats=40/32
+
+save=MID1_Shaman_Enhancement.simc
+
+shaman="MID1_Shaman_Enhancement_Stormbringer"
+level=90
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzYmZmZmZmhZmZAAAAAAAAAsBYzMG2ILwMM0gFAmlZMzMWWmBmZ2YZmZmhhxMAAzwwMmZCMzAYMA
+
+head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892
+shoulders=tempests_of_the_primal_core,id=249977,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289,enchant_id=8001
+back=draconic_nullcape,id=249370,ilevel=289
+chest=embrace_of_the_primal_core,id=249982,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,ilevel=289,gem_id=240892
+hands=earthgrips_of_the_primal_core,id=249980,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=ceinture_of_the_primal_core,id=249976,bonus_id=1808,ilevel=289,gem_id=240892
+legs=eternal_flame_scaleguards,id=249324,ilevel=289,enchant_id=8159
+feet=whipcoil_sabatons,id=251084,ilevel=289,enchant_id=7963
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240892/240892,enchant_id=7969
+finger2=loa_worshipers_band,id=251513,bonus_id=8960/8960/8960/12066/12214/12214/12214/12496,ilevel=285,gem_id=240892,enchant_id=7969
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=clutchmates_caress,id=249287,ilevel=289,enchant_id=7983
+off_hand=farstriders_chopper,id=237850,bonus_id=8793/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=8041,crafted_stats=40/32
+
+save=MID1_Shaman_Enhancement_Stormbringer.simc
+
+
+# # # shaman="MID1_Shaman_Restoration"
+# # # level=70
+# # # race=tauren
+# # # spec=restoration
+# # # role=spell
+# # # position=ranged_back
+# # # talents=0100200
+
+# # # head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
+# # # neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
+# # # shoulder=plagueborne_shoulderguards,id=178764,bonus_id=6536/1540/6646
+# # # back=blighted_margraves_cloak,id=178755,bonus_id=6536/1540/6646
+# # # chest=forsworn_stalkers_hauberk,id=180100,bonus_id=6536/1540/6646,enchant=eternal_insight
+# # # wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646,enchant=eternal_intellect,gem_id=173129
+# # # hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+# # # waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
+# # # legs=lichbone_legguards,id=178778,bonus_id=6536/1540/6646
+# # # feet=boneshatter_treads,id=172323,bonus_id=6716/6986/6649/6650/1532
+# # # finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # # finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # # trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
+# # # trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+# # # main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
+# # # off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+
+# # # save=MID1_Shaman_Restoration.simc

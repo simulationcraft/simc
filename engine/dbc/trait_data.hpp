@@ -31,14 +31,12 @@ struct trait_data_t
   std::array<unsigned, 4> id_spec;
   std::array<unsigned, 4> id_spec_starter;
   unsigned    id_sub_tree;  // hero talent tree
-  unsigned    node_type;    // 1 = normal, 2 = choice, 3 = tree selection
+  unsigned    node_type;    // trait_node_type_e, 0 = normal, 1 = tiered,  2 = choice, 3 = sub tree selection
 
   // static functions
   static const trait_data_t* find( unsigned trait_node_entry_id, bool ptr = false );
   static const trait_data_t* find( talent_tree tree, std::string_view name, unsigned class_id, specialization_e spec,
-                                   bool ptr = false );
-  static const trait_data_t* find_tokenized( talent_tree tree, std::string_view name, unsigned class_id,
-                                             specialization_e spec, bool ptr = false );
+                                   bool ptr = false, bool tokenize = false, unsigned index = 0, unsigned sub_tree_id = 0 );
   static std::vector<const trait_data_t*> find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id = 0,
                                                          specialization_e spec = SPEC_NONE, bool ptr = false );
   static const trait_data_t* find_by_trait_definition( unsigned trait_definition_id, bool ptr = false );
@@ -52,6 +50,7 @@ struct trait_data_t
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
   static util::span<const trait_data_t> data( unsigned class_id, talent_tree tree, bool ptr = false );
+  static util::span<const trait_data_t> data( unsigned node_id, unsigned class_id, talent_tree tree, bool ptr = false );
 
   static const trait_data_t& nil()
   { return dbc::nil<trait_data_t>; }

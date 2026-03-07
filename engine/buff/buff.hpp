@@ -46,7 +46,7 @@ struct rng_t;
 }
 
 
-using buff_tick_callback_t = std::function<void(buff_t* buff, int current_tick, timespan_t tick_time)>;
+using buff_tick_callback_t = std::function<void(buff_t* buff, int remaining_ticks, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
 using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int old_stack, int new_stack)>;
@@ -362,6 +362,7 @@ public:
   rng::rng_t& rng() const;
 
   bool change_regen_rate;
+  bool disable_async_expire_events_removal;
 
   buff_t* set_chance( double chance );
   buff_t* set_duration( timespan_t duration );
@@ -372,6 +373,7 @@ public:
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
+  buff_t* set_initial_stack_to_max_stack();
   buff_t* set_expire_at_max_stack( bool );
   buff_t* set_consume_all_stacks( bool );
   buff_t* set_cooldown( timespan_t duration );
@@ -422,6 +424,8 @@ public:
   buff_t* set_name_reporting( std::string_view );
 
   buff_t* apply_time_rate_modifier( const spell_data_t* spell );
+
+  buff_t* set_disable_async_expire_events_removal( bool b );
 
   friend void sc_format_to( const buff_t&, fmt::format_context::iterator );
 private:

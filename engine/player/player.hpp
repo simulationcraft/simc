@@ -486,6 +486,7 @@ struct player_t : public actor_t
   struct buffs_t
   {
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
+    std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
     buff_t* angelic_feather;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
@@ -522,8 +523,6 @@ struct player_t : public actor_t
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
 
-    buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
-
     // Darkmoon Faire versatility food
     buff_t* dmf_well_fed;
 
@@ -540,7 +539,6 @@ struct player_t : public actor_t
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
 
     // 8.2 misc
-    buff_t* damage_to_aberrations; // Benthic belt special effect
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
@@ -716,7 +714,7 @@ struct player_t : public actor_t
   /// Current execution type
   execute_type current_execute_type;
 
-  using resource_callback_function_t = std::function<void()>;
+  using resource_callback_function_t = std::function<void( bool )>;
 
   template <typename T>
   struct player_option_t
@@ -896,10 +894,30 @@ struct player_t : public actor_t
 
   struct midnight_opts_t
   {
-    // Arcanoweave lining embellishment
-    timespan_t arcanoweave_lining_update_interval = 5.25_s;  // default to heartbeat interval
-    timespan_t arcanoweave_lining_update_stddev = 1.3125_s;  // 25% stddev
-    double arcanoweave_lining_uptime = 0.9;  // !!!PLACEHOLDER!!!
+    // Allow specifying the race for Darkmoon Deck/Embellishment: Hunt
+    // Should allow any valid race string, as well as "random" and "none"
+    // Default is "raid_random", picking a random race of a raid boss in the current tier
+    // "random" picks a random valid race.
+    // "none" will use the targets actual race.
+    player_option_t<std::string> darkmoon_hunt_race = "raid_random";
+    // Set the average duration after getting the sealed chaos urn fear effect where it is dispelled.
+    timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
+    // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.
+    bool sealed_chaos_urn_dispell = false;
+    // Arcanoweave trappings
+    double arcanoweave_trappings_uptime = 0.7;
+    // Interval between checking arcanoweave trappings uptime
+    timespan_t arcanoweave_trappings_update_interval = 10_s;
+    timespan_t arcanoweave_trappings_update_interval_stddev = 2.5_s;
+    double sunfire_silk_trappings_uptime = 0.7;
+    // Interval between checking sunfire silk trappings uptime
+    timespan_t sunfire_silk_trappings_update_interval = 10_s;
+    timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
+    // Chance refueling orb will count as healing.
+    double refueling_orb_heal_chance = 0.10;
+    bool crucible_of_erratic_energies_violence = false;
+    bool crucible_of_erratic_energies_sustenance = false;
+    bool crucible_of_erratic_energies_predation = false;
   } midnight_opts;
 
 private:
@@ -944,6 +962,7 @@ private:
     PARSE_SOURCE_RACIAL,
     PARSE_SOURCE_TALENT,
     PARSE_SOURCE_SET,
+    PARSE_SOURCE_ITEM,
   };
   std::vector<std::pair<unsigned, parse_source_e>> registered_passive_spells_;
 
@@ -966,6 +985,7 @@ protected:
   void parse_all_class_passives();
   void parse_all_passive_talents();
   void parse_all_passive_sets();
+  void parse_raid_buffs();
   // directly override the values
   void register_passive_spell_override( const spell_data_t&, double value, std::string_view field );
   void register_passive_power_override( const spellpower_data_t&, double value, std::string_view field = "cost" );
@@ -973,7 +993,6 @@ protected:
   std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
 
 public:
-  std::vector<std::string> _tmp_registered_passive_printout_tmp_;
   bool disable_class_spell_auto_cloning;
 
   // return { orig, flat, pct }
@@ -996,6 +1015,8 @@ public:
   
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
+  void parse_passive_item_effect( const spell_data_t* );
+  void register_passive_item_effect_override( const spelleffect_data_t&, double );
 
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
@@ -1083,7 +1104,11 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
-  player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
+  player_talent_t find_talent_spell( hero_tree_e tree, std::string_view name, bool name_tokenized = false,
+                                     unsigned index = 0 ) const;
+  player_talent_t find_talent_spell( talent_tree tree, std::string_view name, specialization_e s = SPEC_NONE,
+                                     bool name_tokenized = false, unsigned index = 0, hero_tree_e hero_tree = HERO_NONE ) const;
+  player_talent_t find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const;
   player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
   player_talent_t find_talent_spell( unsigned talent_entry_id ) const;
 
@@ -1423,6 +1448,8 @@ public:
 
   virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
+  virtual void      create_permanent_actors() { }
+
   virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
@@ -1469,7 +1496,7 @@ public:
   rng::rng_t& rng();
   rng::rng_t& rng() const;
   virtual timespan_t time_to_move() const;
-  virtual void trigger_movement( double distance, movement_direction_type);
+  virtual void trigger_movement( double distance, movement_direction_type );
   virtual void update_movement( timespan_t duration );
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_type movement_direction() const
@@ -1571,6 +1598,9 @@ public:
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
   void register_movement_callback( std::function<void( bool )> fn );
   void register_init_finished_callback( std::function<void( player_t* )> fn );
+
+  // buffs that grant increased damage based on target creature type
+  void register_creature_type_buff( buff_t*, const spell_data_t* = spell_data_t::nil() );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

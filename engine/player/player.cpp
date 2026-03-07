@@ -17,7 +17,7 @@
 #include "action/spell.hpp"
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
-#include "dbc/active_spells.hpp"
+#include "dbc/class_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
@@ -1312,8 +1312,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   healing_received_multiplier( 1.0 ),
   armor_penetration( 1.0 ),
   movement_speed( 0 ),
-  stacking_movement_speed_modifier( 1.0 ),
-  non_stacking_movement_speed_modifier( 1.0 ),
+  stacking_movement_speed_modifier( 0.0 ),
+  non_stacking_movement_speed_modifier( 0.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1569,7 +1569,9 @@ void player_t::init_base_stats()
       base.crit_damage_multiplier[ school ] *= get_passive_player_value( 1.0, "crit_damage_multiplier", -1 );
     }
 
-    base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
+    double attack_speed_multiplier = base.attack_speed_multiplier;
+    base.attack_speed_multiplier /= get_passive_player_value( attack_speed_multiplier, "attack_speed" );
+    base.attack_speed_multiplier *= get_passive_player_value( attack_speed_multiplier, "attack_speed_modifier" );
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
 
     base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
@@ -1917,7 +1919,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() )
+  if ( is_player() && type != PLAYER_SIMPLIFIED )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2235,7 +2237,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects )
+  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
@@ -2344,11 +2346,13 @@ void player_t::init_resources( bool force )
 
       resources.current[ resource ] = actual_resource;
     }
-    else
+    else if ( !is_enemy() )
     {
       // Actual "current" resource can never exceed the computed maximum resource for the actor
       resources.current[ resource ] = std::min( max_resource, resources.start_at[ resource ] );
     }
+    else
+      resources.current[ resource ] = max_resource;
   }
 
   // Only collect pet resource timelines if they get reported separately
@@ -2522,6 +2526,50 @@ void player_t::activate_action_list( action_priority_list_t* a, execute_type et 
   a->used = true;
 }
 
+static void allocate_trait( player_t* player, const trait_data_t* trait, talent_tree tree, unsigned ranks )
+{
+  auto it = range::find_if( player->player_traits, [ trait ]( const auto& entry ) {
+    return std::get<1>( entry ) == trait->id_trait_node_entry;
+  } );
+
+  auto id_entry = trait->id_trait_node_entry;
+
+  if ( it != player->player_traits.end() )
+  {
+    auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait->max_ranks ) );
+
+    if ( std::get<2>( *it ) != std::get<2>( entry ) )
+    {
+      player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait->name, id_entry,
+                              std::get<2>( *it ), std::get<2>( entry ) );
+    }
+
+    *it = entry;
+  }
+  else if ( ranks )
+  {
+    auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait->max_ranks ) );
+
+    player->player_traits.push_back( entry );
+    player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                              util::talent_tree_string( tree ), trait->name, trait->id_node, trait->id_trait_node_entry,
+                              ranks, trait->max_ranks );
+
+    if ( tree == talent_tree::HERO )
+    {
+      player->player_sub_traits.push_back( id_entry );
+
+      auto _ret = player->player_sub_trees.insert( trait->id_sub_tree );
+      if ( _ret.second )
+      {
+        player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                  trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
+                                  trait->id_sub_tree );
+      }
+    }
+  }
+}
+
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
   auto talents = util::string_split<std::string_view>( opt_str, "/" );
@@ -2552,7 +2600,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       if ( is_spell_id )
       {
         auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
-                                                 player->specialization(), player->dbc->ptr );
+                                                 player->specialization(), player->is_ptr() );
         if ( objs.empty() )
         {
           trait_obj = &( trait_data_t::nil() );
@@ -2569,13 +2617,13 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       }
       else
       {
-        trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
       }
     }
     else
     {
-      trait_obj = trait_data_t::find_tokenized( tree, talent_split[ 0 ], util::class_id( player->type ),
-                                                player->specialization(), player->dbc->ptr );
+      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
+                                      player->is_ptr(), true );
     }
 
     if ( trait_obj->id_spell == 0 )
@@ -2584,44 +2632,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
     }
     else
     {
-      auto it = range::find_if( player->player_traits, [ trait_obj ]( const auto& entry ) {
-        return std::get<1>( entry ) == trait_obj->id_trait_node_entry;
-      } );
-
-      auto id_entry = trait_obj->id_trait_node_entry;
-
-      if ( it != player->player_traits.end() )
+      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
       {
-        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
-
-        if ( std::get<2>( *it ) != std::get<2>( entry ) )
+        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
+        for ( const auto& trait : _entries )
         {
-          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
-                                  std::get<2>( *it ), std::get<2>( entry ) );
-        }
+          auto allocated = std::min( ranks, trait.max_ranks );
+          allocate_trait( player, &trait, tree, allocated );
 
-        *it = entry;
+          ranks -= allocated;
+          if ( !ranks )
+            break;
+        }
       }
-      else if ( ranks )
+      else
       {
-        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
-
-        player->player_traits.push_back( entry );
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
-                                  trait_obj->name );
-
-        if ( tree == talent_tree::HERO )
-        {
-          player->player_sub_traits.push_back( id_entry );
-
-          auto _ret = player->player_sub_trees.insert( trait_obj->id_sub_tree );
-          if ( _ret.second )
-          {
-            player->sim->print_debug( "{} activating sub tree {} ({})", *player,
-                                      trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
-                                      trait_obj->id_sub_tree );
-          }
-        }
+        allocate_trait( player, trait_obj, tree, ranks );
       }
     }
   }
@@ -2661,39 +2687,14 @@ static bool generate_tree_nodes( player_t* player,
       tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
   }
 
+  // Different entries within the same node are allowed to have non-unique selection indices.
+  // Manually resolve such conflicts here by re-arranging tree_nodes[ node id ] to match in-game ordering.
+  // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
+
   player->sim->print_debug( "{}: {} tree nodes generated for spec {}.", *player, tree_nodes.size(),
                             util::specialization_string( spec ) );
 
   return true;
-}
-
-// Different entries within the same node are allowed to have non-unique selection indices.
-// Manually resolve such conflicts here.
-// ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
-{
-  auto get_index = [ = ]( const trait_data_t* t ) -> short {
-    if ( t->selection_index == -1 )
-    {
-      // Voidweaver Devour Matter / Darkening Horizon clash resolution
-      // Darkening Horizon data was not fully removed after being moved out of the node
-      // The lower ID trait is the correct one; return lower index to get it sorted first
-      if ( t->id_trait_node_entry == 117271 )
-        return 1;
-      else if ( t->id_trait_node_entry == 117298 )
-        return 2;
-    }
-
-    return t->selection_index;
-  };
-
-  auto a_idx = get_index( a );
-  auto b_idx = get_index( b );
-
-  if ( a_idx != -1 && b_idx != -1 )
-    return a_idx < b_idx;
-  else
-    return a->id_trait_node_entry > b->id_trait_node_entry;
 }
 
 namespace
@@ -2767,24 +2768,30 @@ static std::string generate_traits_hash( player_t* player )
 
   for ( auto& [ id, node ] : tree_nodes )
   {
-    if ( node.size() > 1 )
-    {
-      range::sort( node, [ ptr ]( const auto& a, const auto& b ) {
-        return sort_node_entries( a.first, b.first, ptr );
-      } );
-    }
-
-    const trait_data_t* trait = nullptr;
     unsigned rank = 0;
+    unsigned max_rank = 0;
+    unsigned init_rank = 0;
     unsigned index = 0;
-    bool is_choice = node.size() > 0 ? node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3 : false;
+    bool is_choice = node.size() > 0
+                       ? node[ 0 ].first->node_type == NODE_CHOICE || node[ 0 ].first->node_type == NODE_SELECTION
+                       : false;
 
     for ( size_t i = 0; i < node.size(); i++ )
     {
-      rank = node[ i ].second;
-      if ( rank )
+      auto _entry_trait = node[ i ].first;
+      auto _entry_rank = node[ i ].second;
+
+      // tiered nodes add up ranks of all entries
+      if ( _entry_trait->node_type == NODE_TIERED )
       {
-        trait = node[ i ].first;
+        rank += _entry_rank;
+        max_rank += _entry_trait->max_ranks;
+      }
+      else if ( _entry_rank )
+      {
+        rank = _entry_rank;
+        max_rank = _entry_trait->max_ranks;
+        init_rank = trait_data_t::is_granted( _entry_trait, player->type, player->specialization(), ptr ) ? 1U : 0U;
         index = as<unsigned>( i );
         break;
       }
@@ -2801,7 +2808,7 @@ static std::string generate_traits_hash( player_t* player )
     }
 
     // is node purchased? granted nodes are baseline 1 rank.
-    if ( rank > ( trait_data_t::is_granted( trait, player->type, player->specialization(), ptr ) ? 1U : 0U ) )
+    if ( rank > init_rank )
     {
       put_bit( 1, 1 );
     }
@@ -2811,7 +2818,7 @@ static std::string generate_traits_hash( player_t* player )
       continue;
     }
 
-    if ( rank == trait->max_ranks )  // is node partially ranked?
+    if ( rank == max_rank )  // is node partially ranked?
     {
       put_bit( 1, 0 );
     }
@@ -2909,18 +2916,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      // it is possible to have multiple entries per node that are not choice node.
-      // default assumption is that the higher trait entry id is used.
-      // if this is not the case, clashes must be resolved manually in sort_node_entries().
-      if ( node.size() > 1 )
-      {
-        range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-          return sort_node_entries( a.first, b.first, player->is_ptr() );
-        } );
-      }
-
       auto trait = node.front().first;
-      size_t rank = trait->max_ranks;
+      auto max_rank = trait->node_type == NODE_TIERED
+                        ? range::accumulate( node, 0U, []( const auto& n ) { return n.first->max_ranks; } )
+                        : trait->max_ranks;
+      size_t rank = max_rank;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
       bool throwaway = false;  // read bits but don't add to player_traits
 
@@ -2952,7 +2952,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       {
         if ( get_bit( 1 ) )  // partially ranked normal trait
         {
-          if ( node.size() > 1 )
+          if ( trait->node_type != NODE_TIERED && node.size() > 1 )
           {
             do_error( fmt::format( "Non-choice node {} has multiple entries.", id ) );
             return;
@@ -2960,13 +2960,13 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
           rank = get_bit( rank_bits );
 
-          if ( rank > trait->max_ranks )
+          if ( rank > max_rank )
           {
-            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, trait->max_ranks ) );
+            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, max_rank ) );
             return;
           }
 
-          if ( rank == trait->max_ranks )
+          if ( rank == max_rank )
           {
             do_error( fmt::format( "Partial rank for node {} but all {} ranks are allocated.", id, rank ) );
             return;
@@ -2975,7 +2975,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
         if ( get_bit( 1 ) )  // choice trait
         {
-          if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+          if ( node[ 0 ].first->node_type != NODE_CHOICE && node[ 0 ].first->node_type != NODE_SELECTION )
           {
             do_error( fmt::format( "Node {} is not a choice node but has index selection.", id ) );
             return;
@@ -2995,7 +2995,22 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       if ( throwaway )
         continue;
 
-      player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
+      if ( trait->node_type == NODE_TIERED )
+      {
+        for ( const auto& n : node )
+        {
+          auto allocated = std::min( as<unsigned>( rank ), n.first->max_ranks );
+          player->player_traits.emplace_back( _tree, n.first->id_trait_node_entry, allocated );
+
+          rank -= allocated;
+          if ( !rank )
+            break;
+        }
+      }
+      else
+      {
+        player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
+      }
 
       if ( _tree == talent_tree::SELECTION )
       {
@@ -3005,11 +3020,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
                                   trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
                                   trait->id_sub_tree );
       }
-      else
-      {
-        player->sim->print_debug( "{} adding {} talent {} (node={} entry={})", *player, util::talent_tree_string( _tree ),
-                                  trait->name, trait->id_node, trait->id_trait_node_entry );
-      }
+
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( _tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, rank, trait->max_ranks );
     }
   }
 }
@@ -3047,7 +3061,9 @@ static void enable_all_talents( player_t* player )
         }
         else
         {
-          player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                    util::talent_tree_string( _tree ), trait->name, trait->id_node,
+                                    trait->id_trait_node_entry, trait->max_ranks, trait->max_ranks );
         }
       }
     }
@@ -3062,7 +3078,7 @@ static void enable_default_talents( player_t* player )
 
   for ( size_t i = 0; i < traits.size(); i++ )
   {
-    if ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
+    while ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
@@ -3075,10 +3091,12 @@ static void enable_default_talents( player_t* player )
     else
     {
       auto tree = static_cast<talent_tree>( trait->tree_index );
+      auto ranks = traits[ i ].rank;
 
-      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
-      player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
-                                traits[ i ].rank );
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, ranks, trait->max_ranks );
     }
   }
 }
@@ -3616,7 +3634,7 @@ void player_t::init_blizzard_action_list()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* default_  = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns",
-                                                                "Major cooldowns are not used by the Assisted Combat system. "
+                                                                "Some cooldowns are not used by the Assisted Combat system. "
                                                                 "This simple default cooldown usage has been provided by simc." );
   action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat",
                                                                       "This is the default action priority list from the game's Assisted Combat system." );
@@ -3706,12 +3724,16 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   std::string comment = "";
   bool show_diff = false;
   bool cooldown_allow_casting_success = false;
+  bool automation_only = false;
   bool allow_duplicates = true;
 
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
-    if ( rule.condition_type == COOLDOWN_ALLOW_CASTING_SUCCESS )
+    if ( rule.condition_type == AC_COOLDOWN_ALLOW_CASTING_SUCCESS )
       cooldown_allow_casting_success = true;
+
+    if ( rule.condition_type == AC_AUTOMATION_ONLY )
+      automation_only = true;
 
     parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
     parsed_assisted_combat_rule_t base_combat_rule = player_t::parse_assisted_combat_rule( rule, step );
@@ -3732,7 +3754,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( base_expr != expr && show_diff )
     comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
-  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  auto action_names = action_names_from_spell_id( step.spell_id );
+  if ( action_names.empty() )
+  {
+    sim->print_debug(
+      "{} action name not found for assisted combat step {} with spell id {} and expression '{}', skipping.", *this,
+      step.order_index, step.spell_id, expr );
+  }
+
+  for ( const auto& name : action_names )
   {
     if ( name.empty() )
       continue;
@@ -3744,6 +3774,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
     if ( cooldown_allow_casting_success )
       action_str += ",cooldown_allow_casting_success=1";
+
+    if ( automation_only )
+    {
+      if ( !use_cds_with_blizzard_action_list )
+        continue;
+      if ( !comment.empty() )
+        comment += " ";
+      comment += "This is for Blizzard automation and is not included in the game's Assisted Combat system.";
+    }
 
     // Optional duplicate filtering for messy action lists or duplicated overriden criteria
     if ( !allow_duplicates && range::contains( assisted_combat->action_list, action_str, []( const auto& entry ) { return entry.action_; } ) )
@@ -3783,7 +3822,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
   // TODO: verify < vs <= and > vs >= on all condition types
   switch ( rule.condition_type )
   {
-    case SPELL_LEARNED:
+    case AC_SPELL_LEARNED:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
       {
@@ -3791,39 +3830,52 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
         {
           const auto& traits = trait_data_t::find_by_spell( tree, v1, util::class_id( type ), specialization(), is_ptr() );
           if ( traits.size() > 0 )
-            return fmt::format( "talent.{}", tokenize_spell( v1 ) );
+          {
+            auto tok_name = tokenize_spell( v1 );
+
+            // Resolve tiered talent names by adding a _# suffix to the tokenized name.
+            if ( traits.front()->node_type == trait_node_type_e::NODE_TIERED )
+            {
+              auto _entries = trait_data_t::data( traits.front()->id_node, util::class_id( type ), tree, is_ptr() );
+              auto _index = std::distance( _entries.begin(), range::find( _entries, v1, &trait_data_t::id_spell ) );
+
+              tok_name += "_" + util::to_string( _index + 1 );
+            }
+
+            return fmt::format( "talent.{}", tok_name );
+          }
         }
         // TODO: Are there any other types of passives to check here?
         // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
       }
       return ""; // no check necessary because simc actions are filtered out if the spell is not known
-    case SPELL_ON_COOLDOWN:
+    case AC_SPELL_ON_COOLDOWN:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "!cooldown.{}.ready", tokenize_spell( v1 ) );
       return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
-    case SPELL_OFF_COOLDOWN:
+    case AC_SPELL_OFF_COOLDOWN:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "cooldown.{}.ready", tokenize_spell( v1 ) );
       return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
-    case TARGET_DISTANCE_LESS:
+    case AC_TARGET_DISTANCE_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance<={}", v1 );
-    case TARGET_DISTANCE_GREATER:
+    case AC_TARGET_DISTANCE_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance>{}", v1 );
-    case HOSTILE_TARGET:
-    case FRIENDLY_TARGET:
+    case AC_HOSTILE_TARGET:
+    case AC_FRIENDLY_TARGET:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "";
-    case HEALTH_PCT_GREATER:
+    case AC_HEALTH_PCT_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.health.pct>={}", v1 );
-    case HEALTH_PCT_LESS:
+    case AC_HEALTH_PCT_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.health.pct<={}", v1 );
-    case AURA_ON_PLAYER:
+    case AC_AURA_ON_PLAYER:
       // TODO: Are there any cases where a passive here would not be a talent?
       expr_str   = v1 ? aura_expr_from_spell_id( v1, true ) : "";
       expr_str_2 = v2 ? aura_expr_from_spell_id( v2, true ) : "";
@@ -3858,21 +3910,21 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       if ( has_or )
         return { fmt::format( "({})", expr_str ), is_modified };
       return { expr_str, is_modified };
-    case AURA_ON_TARGET:
+    case AC_AURA_ON_TARGET:
       assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "{}.ticking", expr_str );
       return fmt::format( "{}.up", expr_str );
-    case TARGET_COUNT_NEAR_TARGET_GREATER:
+    case AC_TARGET_COUNT_NEAR_TARGET_GREATER:
       assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies>{}", v1 );
-    case TARGET_COUNT_NEAR_PLAYER_GREATER:
+    case AC_TARGET_COUNT_NEAR_PLAYER_GREATER:
       assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies>{}", v1 );
-    case AURA_COUNT_NEAR_PLAYER_GREATER:
+    case AC_AURA_COUNT_NEAR_PLAYER_GREATER:
       // TODO: add distance check?
       // TODO: currently unused; verify condition value indices
       expr_str = aura_expr_from_spell_id( v3, false );
@@ -3880,180 +3932,180 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
         return fmt::format( "active_{}>={}", expr_str, v1 ); // TODO: > or >=?
       // TODO: support debuffs
       throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_GREATER." );
-    case AFFORD_COST:
+    case AC_AFFORD_COST:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "action.{}.cost_affordable", tokenize_spell( v1 ) );
       return ""; // no check necessary because simc actions are not ready unless their cost is affordable
-    case AURA_MISSING_TARGET:
+    case AC_AURA_MISSING_TARGET:
       assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "!{}.ticking", expr_str );
       return fmt::format( "{}.down", expr_str );
-    case AURA_MISSING_PLAYER:
+    case AC_AURA_MISSING_PLAYER:
       assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where a passive here would not be a talent?
       if ( expr_str.find( "talent." ) == 0 )
         return "!" + expr_str;
       return fmt::format( "{}.down", expr_str );
-    case AURA_DURATION_PLAYER:
+    case AC_AURA_DURATION_PLAYER:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where these would be talents we should worry about?
       if ( expr_str.find( "talent." ) == 0 )
         throw std::runtime_error( "Talents are unsupported for condition AURA_DURATION_PLAYER." );
       return fmt::format( "{}.up&{}.remains<={:g}", expr_str, expr_str, v2 / 1000.0 );
-    case AURA_DURATION_TARGET:
+    case AC_AURA_DURATION_TARGET:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
-    case MANA_GREATER:
+    case AC_MANA_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "mana.pct>={:g}", v1 / 10.0 ); // TODO: Double check this
-    case MANA_LESS:
+    case AC_MANA_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "mana.pct<={:g}", v1 / 10.0 ); // TODO: Double check this
-    case RAGE_GREATER:
+    case AC_RAGE_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rage>={:g}", v1 / 10.0 );
-    case RAGE_LESS:
+    case AC_RAGE_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rage<={:g}", v1 / 10.0 );
-    case FOCUS_GREATER:
+    case AC_FOCUS_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "focus>={}", v1 );
-    case FOCUS_LESS:
+    case AC_FOCUS_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "focus<={}", v1 );
-    case ENERGY_GREATER:
+    case AC_ENERGY_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "energy>={}", v1 );
-    case ENERGY_LESS:
+    case AC_ENERGY_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "energy<={}", v1 );
-    case COMBO_POINTS_GREATER:
+    case AC_COMBO_POINTS_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "combo_points>={}", v1 );
-    case COMBO_POINTS_LESS:
+    case AC_COMBO_POINTS_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "combo_points<={}", v1 );
-    case RUNES_GREATER:
+    case AC_RUNES_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rune>={}", v1 );
-    case RUNES_LESS:
+    case AC_RUNES_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rune<={}", v1 );
-    case RUNIC_POWER_GREATER:
+    case AC_RUNIC_POWER_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "runic_power>={:g}", v1 / 10.0 );
-    case RUNIC_POWER_LESS:
+    case AC_RUNIC_POWER_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "runic_power<={:g}", v1 / 10.0 );
-    case SOUL_SHARDS_GREATER:
+    case AC_SOUL_SHARDS_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "soul_shard>={:g}", v1 / 10.0 );
-    case SOUL_SHARDS_LESS:
+    case AC_SOUL_SHARDS_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "soul_shard<={:g}", v1 / 10.0 );
-    case LUNAR_POWER_GREATER:
+    case AC_LUNAR_POWER_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "astral_power>={:g}", v1 / 10.0 );
-    case LUNAR_POWER_LESS:
+    case AC_LUNAR_POWER_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "astral_power<={:g}", v1 / 10.0 );
-    case HOLY_POWER_GREATER:
+    case AC_HOLY_POWER_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "holy_power>={}", v1 );
-    case HOLY_POWER_LESS:
+    case AC_HOLY_POWER_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "holy_power<={}", v1 );
-    case MAELSTROM_GREATER:
+    case AC_MAELSTROM_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "maelstrom>={}", v1 );
-    case MAELSTROM_LESS:
+    case AC_MAELSTROM_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "maelstrom<={}", v1 );
-    case CHI_GREATER:
+    case AC_CHI_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "chi>={}", v1 );
-    case CHI_LESS:
+    case AC_CHI_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "chi<={}", v1 );
-    case INSANITY_GREATER:
+    case AC_INSANITY_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "insanity>={:g}", v1 / 100.0 );
-    case INSANITY_LESS:
+    case AC_INSANITY_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "insanity<={:g}", v1 / 100.0 );
-    case ESSENCE_GREATER:
+    case AC_ESSENCE_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "essence>={}", v1 );
-    case ESSENCE_LESS:
+    case AC_ESSENCE_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "essence<={}", v1 );
-    case ARCANE_CHARGES_GREATER:
+    case AC_ARCANE_CHARGES_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "buff.arcane_charge.stack>={}", v1 );
-    case ARCANE_CHARGES_LESS:
+    case AC_ARCANE_CHARGES_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "buff.arcane_charge.stack<={}", v1 );
-    case TARGET_COUNT_NEAR_TARGET_LESS:
+    case AC_TARGET_COUNT_NEAR_TARGET_LESS:
       assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies<={}", v1 );
-    case TARGET_COUNT_NEAR_PLAYER_LESS:
+    case AC_TARGET_COUNT_NEAR_PLAYER_LESS:
       assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies<={}", v1 );
-    case AURA_COUNT_NEAR_PLAYER_LESS:
+    case AC_AURA_COUNT_NEAR_PLAYER_LESS:
       // TODO: add distance check?
       expr_str = aura_expr_from_spell_id( v3, false );
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "active_{}<={}", expr_str, v1 ); // TODO: < or <=?
       // TODO: support debuffs
       throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_LESS." );
-    case TARGET_AURA_APPLICATION_GREATER:
+    case AC_TARGET_AURA_APPLICATION_GREATER:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.stack>={}", expr_str, v2 );
-    case TARGET_AURA_APPLICATION_LESS:
+    case AC_TARGET_AURA_APPLICATION_LESS:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.stack<={}", expr_str, v2 );
-    case PLAYER_AURA_APPLICATION_GREATER:
+    case AC_PLAYER_AURA_APPLICATION_GREATER:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       return fmt::format( "{}.stack>={}", expr_str, v2 );
-    case PLAYER_AURA_APPLICATION_LESS:
+    case AC_PLAYER_AURA_APPLICATION_LESS:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       return fmt::format( "{}.stack<={}", expr_str, v2 );
-    case SPELL_IN_RANGE:
+    case AC_SPELL_IN_RANGE:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
       return ""; // no check necessary because simc actions are not ready unless they have a target
-    case HAS_PET:
+    case AC_HAS_PET:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "pet.any.active";
-    case HAS_NO_PET:
+    case AC_HAS_NO_PET:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "!pet.any.active";
-    case FURY_GREATER:
+    case AC_FURY_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "fury>={}", v1 );
-    case FURY_LESS:
+    case AC_FURY_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "fury<={}", v1 );
-    case PAIN_GREATER:
+    case AC_PAIN_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "pain>={}", v1 );
-    case PAIN_LESS:
+    case AC_PAIN_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "pain<={}", v1 );
-    case SPELL_CHARGES_GREATER:
+    case AC_SPELL_CHARGES_GREATER:
       assert( v3 == 0 );
       if ( v2 != 0 )
       {
@@ -4068,25 +4120,28 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
         return result;
       }
       return fmt::format( "charges>={}", v1 );
-    case SPELL_CHARGES_LESS:
+    case AC_SPELL_CHARGES_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "charges<={}", v1 );
-    case COOLDOWN_REMAINING_GREATER:
+    case AC_COOLDOWN_REMAINING_GREATER:
       assert( v3 == 0 );
       return fmt::format( "cooldown.{}.remains>={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
-    case COOLDOWN_REMAINING_LESS:
+    case AC_COOLDOWN_REMAINING_LESS:
       assert( v3 == 0 );
       return fmt::format( "cooldown.{}.remains<={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
-    case COOLDOWN_ALLOW_CASTING_SUCCESS:
+    case AC_COOLDOWN_ALLOW_CASTING_SUCCESS:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       // This is handled elsewhere, since it removes a default condition instead of adding a new one.
       return "";
-    case PLAYER_HEALTH_PCT_GREATER:
+    case AC_PLAYER_HEALTH_PCT_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct>={}", v1 );
-    case PLAYER_HEALTH_PCT_LESS:
+    case AC_PLAYER_HEALTH_PCT_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct<={}", v1 );
+    case AC_AUTOMATION_ONLY:
+      // This is handled elsewhere.
+      return "";
     default:
       throw std::runtime_error( fmt::format( "Unknown condition type '{}.'", rule.condition_type ) );
   }
@@ -4105,13 +4160,6 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
-  // if actor is not valid, set `quiet` and skip the rest of action creation
-  if ( !validate_actor() )
-  {
-    quiet = true;
-    return;
-  }
-
   if( is_player() && !is_enemy() && !is_pet() )
     consumable::create_consumeable_actions( this );
 
@@ -5003,11 +5051,9 @@ void player_t::create_buffs()
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
 
     // Dragonflight Raid Damage Modifier Debuffs
-    auto buff_spell      = find_spell( 428402 );
     debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
         ->disable_ticking( true )
-        ->set_default_value( buff_spell->effectN( 1 ).percent() )
-        ->set_schools( buff_spell->effectN( 1 ).affected_schools() );
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -5629,11 +5675,6 @@ double player_t::composite_damage_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cdv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
@@ -5650,11 +5691,6 @@ double player_t::composite_heal_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    chv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
@@ -5670,11 +5706,6 @@ double player_t::composite_mitigation_versatility() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-  }
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
@@ -5755,20 +5786,17 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 {
   double m = 1.0;
 
-  if ( t->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
+  for ( const auto& entry : buffs.creature_type_buffs )
   {
-    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
-    // stat buffs.
-    m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
-  }
+    // check buff if buff exists, otherwise assume passive
+    if ( auto buff = std::get<0>( entry ); buff && !buff->check() )
+      continue;
 
-  if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-    m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-
-  if ( ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL ) &&
-       racials.subterranean_predator->ok() )
-  {
-    m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
+    // check against creature type mask
+    if ( std::get<1>( entry ) & ( 1 << ( t->race - 1 ) ) )
+    {
+      m *= 1.0 + std::get<2>( entry );
+    }
   }
 
   auto td = find_target_data( t );
@@ -6115,8 +6143,7 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->check_value();
 
-  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) &&
-       health_percentage() > debuffs.hunters_mark->data().effectN( 3 ).base_value() )
+  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) )
     m *= 1.0 + debuffs.hunters_mark->check_value();
 
   return m;
@@ -6434,9 +6461,9 @@ void player_t::combat_end()
   // phase, while a child thread is already done (their init). Note that this may mean that with
   // target_error option, some data to estimate the target error can be missed (in the main thread).
   // In turn, lazily finding the parent actor here ensures that the performance hit on the init
-  // process is minimal (no need for locks).
+  // process is minimal.
   if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr &&
-      sim->parent->initialized && sim->thread_index > 0 )
+      sim->parent->is_initialized() && sim->thread_index > 0 )
   {
     // NOTE NOTE NOTE: This search can no longer be run based on find_player() because it uses
     // actor_list. Ever since pet_spawner support, the actor_list of the parent sim can (and will)
@@ -7165,7 +7192,8 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
           action_queued = true;
         }
       }
-      else if ( last_foreground_action->channeled && !last_foreground_action->interrupt_immediate_occurred )
+      else if ( last_foreground_action->channeled && last_foreground_action->apply_channel_lag &&
+                !last_foreground_action->interrupt_immediate_occurred )
       {
         lag = rng().gauss( sim->channel_lag );
       }
@@ -8510,7 +8538,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
       if ( ab->up() )
       {
         // Consume the absorb and grab the effective amount consumed.
-        double absorbed = ab->consume( s->result_amount );
+        double absorbed = ab->consume( s->result_amount, s );
 
         s->result_amount -= absorbed;
 
@@ -9547,7 +9575,8 @@ struct lights_judgment_t : public racial_spell_t
 struct arcane_pulse_t : public racial_spell_t
 {
   arcane_pulse_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ) )
+    // Prevent name conflict with the Mage's Arcane Pulse action
+    racial_spell_t( p, p->type == MAGE ? "arcane_pulse_racial" : "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ) )
   {
     parse_options( options_str );
     may_crit = true;
@@ -10753,7 +10782,7 @@ struct cancel_buff_t : public action_t
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", buff_name ) );
     }
-    else if ( !buff->can_cancel )
+    else if ( !buff->is_fallback && !buff->can_cancel )
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' cannot be cancelled.", buff_name ) );
     }
@@ -11251,7 +11280,7 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
 {
   if ( name == "ancestral_call" )
     return new ancestral_call_t( this, options_str );
-  if ( name == "arcane_pulse" )
+  if ( name == "arcane_pulse" || name == "arcane_pulse_racial" )
     return new arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent" )
     return new arcane_torrent_t( this, options_str );
@@ -11515,25 +11544,17 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
   return { player, trait, rank };
 }
 
-player_talent_t player_t::find_talent_spell(
-    talent_tree        tree,
-    util::string_view name,
-    specialization_e  s,
-    bool              name_tokenized ) const
+player_talent_t player_t::find_talent_spell( hero_tree_e tree, std::string_view name, bool name_tokenized,
+                                             unsigned index ) const
 {
-  const trait_data_t* trait;
-  uint32_t class_idx, spec_idx;
+  return find_talent_spell( talent_tree::HERO, name, _spec, name_tokenized, index, tree );
+}
 
-  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
-
-  if ( name_tokenized )
-  {
-    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  }
-  else
-  {
-    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  }
+player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, specialization_e s,
+                                             bool name_tokenized, unsigned index, hero_tree_e hero_tree ) const
+{
+  auto trait = trait_data_t::find( tree, name, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr,
+                                   name_tokenized, index, static_cast<unsigned>( hero_tree ) );
 
   if ( trait == &trait_data_t::nil() )
   {
@@ -11545,17 +11566,17 @@ player_talent_t player_t::find_talent_spell(
   return create_talent_obj( this, trait );
 }
 
-player_talent_t player_t::find_talent_spell(
-  talent_tree      tree,
-  unsigned         spell_id,
-  specialization_e s ) const
+player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const
 {
-  uint32_t class_idx, spec_idx;
+  return find_talent_spell( tree, name, SPEC_NONE, false, index );
+}
 
-  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
+player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s ) const
+{
+  auto traits =
+    trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr );
 
-  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  if ( traits.size() == 0 )
+    if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
         util::talent_tree_string( tree ), spell_id );
@@ -12367,7 +12388,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw sc_invalid_apl_argument( fmt::format( "Hero tree '{}' not found.", splits[ 1 ] ) );
     }
-  } // splits.size() == 2
+  }
 
   if ( splits.size() == 3 )
   {
@@ -12444,24 +12465,64 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // *** Variable-Length expressions from here on ***
 
   // talents
-  if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
+  if ( splits.size() >= 2 && ( splits[ 0 ] == "apex" || splits[ 0 ] == "talent" ) )
   {
-    const auto ctalent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true );
-    const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true );
-    const auto htalent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true );
+    player_talent_t _talent;
 
-    if ( ctalent.invalid() && stalent.invalid() && htalent.invalid() )
+    if ( splits[ 0 ] == "apex" )
     {
-      throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
+      // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
+      std::vector<const trait_data_t*> apex_traits;
+
+      for ( const auto& _entry : trait_data_t::data( util::class_id( type ), talent_tree::SPECIALIZATION, is_ptr() ) )
+      {
+        if ( _entry.node_type == trait_node_type_e::NODE_TIERED &&
+             range::contains( _entry.id_spec, static_cast<unsigned>( specialization() ) ) )
+        {
+          apex_traits.push_back( &_entry );
+        }
+      }
+
+      auto index = util::to_unsigned( splits[ 1 ] ) - 1;
+      if ( index >= apex_traits.size() )
+        throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
+
+      _talent = create_talent_obj( this, apex_traits[ index ] );
+    }
+    else if ( splits[ 0 ] == "talent" )
+    {
+      auto _name = splits[ 1 ];  // make a copy view
+      auto _index = 0U;
+
+      if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
+           _split.size() >= 2 && util::is_number( _split.back() ) )
+      {
+        _name = _name.substr( 0, _name.size() - _split.back().size() - 1 );
+        _index = util::to_unsigned( _split.back() );
+      }
+
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, _name, specialization(), true, _index );
+      if ( _talent.invalid() )
+        _talent = find_talent_spell( talent_tree::HERO, _name, specialization(), true, _index );
+      if ( _talent.invalid() )
+        _talent = find_talent_spell( talent_tree::CLASS, _name, specialization(), true, _index );
+
+      if ( _talent.invalid() )
+        throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
     }
 
-    if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
+    if ( splits.size() == 2 )
     {
-      return expr_t::create_constant( expression_str, ctalent.enabled() || stalent.enabled() || htalent.enabled() );
+      return expr_t::create_constant( expression_str, _talent.enabled() );
     }
-    else if ( splits.size() == 3 && splits[ 2 ] == "rank" )
+    else if ( splits.size() == 3 )
     {
-      return expr_t::create_constant( expression_str, std::max( { ctalent.rank(), stalent.rank(), htalent.rank() } ) );
+      if ( splits[ 2 ] == "enabled" )
+        return expr_t::create_constant( expression_str, _talent.enabled() );
+      else if ( splits[ 2 ] == "disabled" )
+        return expr_t::create_constant( expression_str, !_talent.enabled() );
+      else if ( splits[ 2 ] == "rank" )
+        return expr_t::create_constant( expression_str, _talent.rank() );
     }
 
     throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
@@ -13721,12 +13782,14 @@ void player_t::create_options()
                         thewarwithin_opts.attuned_to_the_aether ) );
 
   // Midnight options
-  add_option( opt_timespan( "midnight.arcanoweave_lining_update_interval",
-                            midnight_opts.arcanoweave_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "midnight.arcanoweave_lining_update_stddev",
-                            midnight_opts.arcanoweave_lining_update_stddev, 250_ms, timespan_t::max() ) );
-  add_option( opt_float(    "midnight_arcanoweave_lining_uptime",
-                            midnight_opts.arcanoweave_lining_uptime, 0, 1.0 ) );
+  add_option( opt_string( "midnight.darkmoon_hunt_race", midnight_opts.darkmoon_hunt_race ) );
+  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
+                            500_ms, 5_s ) );
+  add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option( opt_float( "midnight.refueling_orb_heal_chance", midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_violence", midnight_opts.crucible_of_erratic_energies_violence ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_sustenance", midnight_opts.crucible_of_erratic_energies_sustenance ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_predation", midnight_opts.crucible_of_erratic_energies_predation ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -14028,47 +14091,64 @@ void player_t::reset_resource_callbacks()
 /**
  * Checks if a resource callback condition has been met and if yes activate it.
  */
-void player_t::check_resource_change_for_callback(resource_e resource, double previous_amount, double previous_pct_points)
- {
-   for (auto& callback : resource_callbacks)
-   {
-     if (callback.is_consumed)
-       continue;
-     if (callback.resource != resource)
-       continue;
+void player_t::check_resource_change_for_callback( resource_e resource, double previous_amount,
+                                                   double previous_pct_points )
+{
+  for ( auto& callback : resource_callbacks )
+  {
+    if ( callback.is_consumed )
+      continue;
 
-     // Evaluate if callback condition is met.
-     bool callback_condition_valid = false;
-     if (callback.is_pct)
-     {
-       double current_pct_points = resources.current[ resource ] / resources.max[ resource ] * 100.0;
-       if ((callback.value < previous_pct_points && callback.value >= current_pct_points) ||
-           (callback.value >= previous_pct_points && callback.value < current_pct_points))
-       {
-         callback_condition_valid = true;
-       }
-     }
-     else
-     {
-       double current_amount = resources.current[ resource ];
-       if ((callback.value < previous_amount && callback.value >= current_amount) ||
-           (callback.value >= previous_amount && callback.value < current_amount))
-       {
-         callback_condition_valid = true;
-       }
-     }
-     if (!callback_condition_valid)
-     {
-       continue;
-     }
+    if ( callback.resource != resource )
+      continue;
 
-     sim->print_debug("{} resource callback triggered.", name());
-     // We have a callback event, trigger stuff.
-     callback.callback();
-     if (callback.fire_once)
-     {
-       callback.is_consumed = true;
-     }
+    // Evaluate if callback condition is met.
+    bool callback_condition_valid = false;
+    bool increasing;
+
+    if ( callback.is_pct )
+    {
+      double current_pct_points = resources.current[ resource ] / resources.max[ resource ] * 100.0;
+      if ( callback.value < previous_pct_points && callback.value >= current_pct_points )
+      {
+        callback_condition_valid = true;
+        increasing = false;
+      }
+      else if ( callback.value >= previous_pct_points && callback.value < current_pct_points )
+      {
+        callback_condition_valid = true;
+        increasing = true;
+      }
+    }
+    else
+    {
+      double current_amount = resources.current[ resource ];
+      if ( callback.value < previous_amount && callback.value >= current_amount )
+      {
+        callback_condition_valid = true;
+        increasing = false;
+      }
+      else if ( callback.value >= previous_amount && callback.value < current_amount )
+      {
+        callback_condition_valid = true;
+        increasing = true;
+      }
+    }
+
+    if ( !callback_condition_valid )
+    {
+      continue;
+    }
+
+    sim->print_debug( "{} resource callback triggered.", name() );
+
+    // We have a callback event, trigger stuff.
+    callback.callback( increasing );
+
+    if ( callback.fire_once )
+    {
+      callback.is_consumed = true;
+    }
   }
 
   check_resource_callback_deactivation();
@@ -14903,6 +14983,34 @@ void player_t::register_init_finished_callback( std::function<void( player_t* )>
   callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
+void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_data )
+{
+  if ( !s_data->ok() )
+    s_data = &buff->data();
+
+  if ( !s_data->ok() )
+    return;
+
+  auto effect = spell_data_t::find_spelleffect( *s_data, E_APPLY_AURA, A_MOD_DAMAGE_DONE_VERSUS );
+  if ( !effect.ok() )
+    return;
+
+  std::vector<std::string> _strs;
+  auto _mask = effect.misc_value1();
+
+  for ( auto i = 1; _mask; _mask >>= 1, i++ )
+    if ( _mask & 1 )
+      _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+  assert( _strs.size() );
+
+  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
+                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+                    fmt::join( _strs, ", " ) );
+
+  buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -15123,19 +15231,22 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
   { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
   { A_HASTE_ALL,                              "all_haste"                        },  // 193
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                          },  // 318
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
   { A_APPLY_HASTED_GCD_LABEL,                 "hasted_gcd"                       },  // 320
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                },  // 341
-  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                     },  // 342
+  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed_modifier"            },  // 342
   { A_MOD_AUTO_ATTACK_PCT,                    "auto_attack_multiplier"           },  // 344
   { A_OVERRIDE_SP_PER_AP,                     "spell_power_per_attack_power"     },  // 366
   { A_MOD_MANA_REGEN_PCT,                     "resource_regen"                   },  // 379
@@ -15179,10 +15290,16 @@ std::string resource_formatter( int type )
   return util::resource_type_string( static_cast<resource_e>( type ) );
 }
 
+std::string mechanic_formatter( int type )
+{
+  return std::string( spell_info::mechanic_str( as<unsigned>( type ) ) );
+}
+
 enum misc_expansion_e
 {
   MISC_EXPANSION_NONE = -1,
   MISC_TYPE_RESOURCE,
+  MISC_TYPE_MECHANIC,
   MISC_LIST_ATTR,
   MISC_BITMAP_ATTR,
   MISC_BITMAP_RATING,
@@ -15196,7 +15313,7 @@ struct misc_expansion_t
   std::function<std::string( int )> formatter;
 };
 
-static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
+static const std::array<misc_expansion_t, 11> misc_expansion_map = { {
   { "attribute_value",           MISC_LIST_ATTR,     &attr_formatter     },
   { "base_attribute_multiplier", MISC_LIST_ATTR,     &attr_formatter     },
   { "attribute_multiplier",      MISC_BITMAP_ATTR,   &attr_formatter     },
@@ -15207,6 +15324,7 @@ static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
   { "resource_max",              MISC_TYPE_RESOURCE, &resource_formatter },
   { "resource_multiplier",       MISC_TYPE_RESOURCE, &resource_formatter },
   { "resource_regen",            MISC_TYPE_RESOURCE, &resource_formatter },
+  { "mechanic_damage_done",      MISC_TYPE_MECHANIC, &mechanic_formatter },
 } };
 
 std::string_view get_field_from_type( int type )
@@ -15316,6 +15434,20 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     case A_HASTED_GCD:  // 417
       affected_spells = dbc->effect_affects_spells( eff.spell()->class_family(), &eff );
       break;
+    case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
+    case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
+      if ( auto _mask = as<unsigned>( eff.misc_value1() ) )
+      {
+        for ( unsigned i = 1; _mask; _mask >>= 1, i++ )
+        {
+          if ( _mask & 1 )
+          {
+            auto span_ = dbc->spells_by_category_mask_bit( i );
+            affected_spells.insert( affected_spells.end(), span_.begin(), span_.end() );
+          }
+        }
+      }
+      break;
     case A_ADD_PCT_LABEL_MODIFIER:  // 218
     case A_ADD_FLAT_LABEL_MODIFIER:  // 219
     case A_APPLY_HASTED_GCD_LABEL:  // 320
@@ -15395,25 +15527,26 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto misc_type = modifying_eff.misc_value1();
     std::string id_field;
     double flat_val = 0.0;
-    double pct_val = 0.0;
+    double pct_val = 0.0;  // initially set in percent value, then multiplied by 0.01 later
 
     switch ( sub_type )
     {
       // special handling
       case A_MOD_STAT:  // 29
         // parse scaling value if necessary
-        flat_val = modifying_eff.scaling_class() < 0 ? modifying_eff.average( this ) : modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_MOD_INCREASE_RESOURCE: // 35
       case A_MOD_MAX_RESOURCE:  // 418
         misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
-        flat_val = modifying_eff.resource();  // resource divisor adjusted value
+        // resource divisor adjusted value
+        flat_val = modifying_eff.average( this ) * modifying_eff.resource_multiplier();
         break;
       case A_MOD_RESISTANCE_PCT:  // 101
       case A_MOD_BASE_RESISTANCE_PCT:  // 142
         if ( ( misc_type & SCHOOL_MASK_PHYSICAL ) == 0 )  // only parse armor
           return false;
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:  // 137
         if ( modifying_spell->equipped_class() == ITEM_CLASS_ARMOR &&
@@ -15427,15 +15560,15 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         }
 
         misc_type = modifying_eff.misc_value2();  // Stat type is in misc_value2
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_MAX_MANA_PCT:  // 178
       case A_MOD_MANA_REGEN_PCT:  // 379
         misc_type = RESOURCE_MANA;  // hardcode to mana
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
-      case A_MOD_TARGET_ARMOR_PCT:  // 280
-        pct_val = -modifying_eff.percent();  // reversed value
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
+        pct_val = -modifying_eff.average( this );  // reversed value
         break;
 
       // percent multipliers
@@ -15451,8 +15584,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_CRIT_DAMAGE_MULTIPLIER:  // 163
       case A_MOD_ATTACK_POWER_PCT:  // 166
       case A_HASTE_ALL:  // 193
+      case A_MOD_MECHANIC_DAMAGE_DONE_PERCENT:  // 276
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:  // 319
-      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
       case A_MOD_AUTO_ATTACK_PCT:  // 344
       case A_MOD_RATING_MULTIPLIER:  // 405
       case A_MOD_ABSORB_DONE_PERCENT:  // 421
@@ -15460,7 +15593,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PET_DAMAGE_DONE:  // 429
       case A_MOD_AUTO_ATTACK_DAMAGE_PCT:  // 530
       case A_MOD_GUARDIAN_DAMAGE_DONE:  // 531
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
 
       // flat modifiers
@@ -15474,17 +15607,19 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_EXPERTISE:  // 240
       case A_MOD_BLOCK_PCT:  // 272
       case A_MOD_ALL_CRIT_CHANCE:  // 290
-      case A_MOD_MASTERY_PCT:  // 318
       case A_OVERRIDE_SP_PER_AP:  // 366
       case A_OVERRIDE_AP_PER_SP:  // 404
       case A_MOD_VERSATILITY_PCT:  // 417
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
-        flat_val = modifying_eff.percent();
+        flat_val = modifying_eff.average( this ) * 0.01;
+        break;
+      case A_MOD_MASTERY_PCT:  // 318
+        flat_val = modifying_eff.average( this );
         break;
 
       case A_MOD_PERCENT_STAT:  // 80
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         sim->error( SEVERE,
                     "{}(id={}) effect #:{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only "
                     "modifies base attributes.",
@@ -15497,6 +15632,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     if ( !flat_val && !pct_val )
       return false;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( id_field.empty() )
       id_field = get_field_from_type( sub_type );
@@ -15511,13 +15648,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
-      std::string _tmp_full_message_tmp_ = fmt::format(
+      sim->print_debug(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15633,6 +15768,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         return true;
       }
       case MISC_TYPE_RESOURCE:
+      case MISC_TYPE_MECHANIC:
       {
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_player_modifiers_, id_type, misc_type, 0, flat_val, pct_val );
@@ -15663,8 +15799,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
-    double pct_val = 0.0;
-    bool is_dbc = true;  // modifies the dbc
+    double pct_val = 0.0;    // initially set in percent value, then multiplied by 0.01 later
+    bool is_dbc = true;      // modifies the dbc
     bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
     bool allow_zero = true;  // modify even if base dbc value is 0
 
@@ -15672,11 +15808,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       case A_ADD_FLAT_MODIFIER:  // 107
       case A_ADD_FLAT_LABEL_MODIFIER:  // 219
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_ADD_PCT_MODIFIER:  // 108
       case A_ADD_PCT_LABEL_MODIFIER:  // 218
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MODIFY_SCHOOL:  // 220
         field = get_field_from_type( sub_type );
@@ -15692,7 +15828,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MODIFY_CATEGORY_COOLDOWN:  // 341
         field = "category_cooldown";
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         // if a spell has category_cooldown but no cooldown, category_cooldown value will be used for cooldown field.
         // if category_cooldown == cooldown assume this happened and modify both.
         if ( spell->get_field( "category_cooldown" ) == spell->get_field( "cooldown" ) )
@@ -15701,13 +15837,15 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field_type2 = P_COOLDOWN;
         }
         break;
+      case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
       case A_MOD_MAX_CHARGES:  // 411
       case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
       default:
@@ -15717,6 +15855,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // filter out zero value
     if ( !flat_val && !pct_val )
       continue;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( !field.empty() && !property )
     {
@@ -15817,11 +15957,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
+                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
+                        msg );
     };
 
     auto add_reporting = [ & ]( std::string field ) {
@@ -16052,7 +16190,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           register_passive_effect( *eff, true );
         }
 
-        auto data_val = eff->base_value();
+        auto data_val = eff->average( this );
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
@@ -16279,17 +16417,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class aura
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
-
-  // class-wide rank spells
-  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  // class passives
+  for ( const auto& passive_spell : passive_class_spell_t::data( dbc->ptr ) )
   {
-    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( passive_spell.class_id ) == util::class_id( type ) )
     {
-      auto spell = find_spell( rank_spell.spell_id );
-      if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+      auto spell = find_spell( passive_spell.spell_id );
+      parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
     }
   }
 
@@ -16310,14 +16444,18 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( static_cast<uint64_t>( 1U ) << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
-         util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race &&
+         ( !racial_spell.mask_class || util::class_id_mask( type ) & racial_spell.mask_class ) )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
         parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
+
+  // may as well handle this here
+  if ( racials.subterranean_predator->ok() )
+    register_creature_type_buff( nullptr, racials.subterranean_predator );
 }
 
 void player_t::parse_all_passive_talents()
@@ -16340,8 +16478,31 @@ void player_t::parse_all_passive_sets()
   for ( const auto& type : sets->set_bonus_spec_data )
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
-        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+        if ( data.enabled )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
+}
+
+void player_t::parse_raid_buffs()
+{
+  // blessing of the bronze
+  if ( sim->overrides.blessing_of_the_bronze )
+  {
+    // classes are assigned alphabetically starting from eff#1
+    auto spell = find_spell( 364342 )->effectN( static_cast<unsigned>( type ) ).trigger();
+    parse_passive_effects( spell, true );
+
+    auto buff = make_buff( this, "blessing_of_the_bronze", spell );
+    register_precombat_begin( [ buff ]( auto ) { buff->override_buff(); } );
+  }
+
+  // mark of the wild
+  if ( sim->overrides.mark_of_the_wild )
+  {
+    // if overrides are registered for the 'self-buff' talents, use the cloned spell_data_t
+    auto spell = dbc_override->find_spell( sim->auras.mark_of_the_wild->data().id(), is_ptr() );
+
+    parse_passive_effects( spell ? spell : &sim->auras.mark_of_the_wild->data(), true );
+  }
 }
 
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
@@ -16378,6 +16539,7 @@ std::string_view player_t::get_parsed_source( unsigned spell_id ) const
         case PARSE_SOURCE_RACIAL: return "Racial";
         case PARSE_SOURCE_TALENT: return "Talent";
         case PARSE_SOURCE_SET:    return "Set Bonus";
+        case PARSE_SOURCE_ITEM:   return "Item";
         default:                  return "BAD_SOURCE";
       }
     }
@@ -16433,9 +16595,9 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.2f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "",
+                   eff->average( this ), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
@@ -16510,7 +16672,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
+                   eff->average( this ), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
         row_open = false;
@@ -16523,4 +16685,14 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
   print_custom_parsed_effects( os );
 
   os << "</div></div>\n";
+}
+
+void player_t::parse_passive_item_effect( const spell_data_t* spell )
+{
+  parse_passive_effects( spell, true, PARSE_SOURCE_ITEM );
+}
+
+void player_t::register_passive_item_effect_override( const spelleffect_data_t& effect, double value )
+{
+  register_passive_effect_override( effect, value );
 }

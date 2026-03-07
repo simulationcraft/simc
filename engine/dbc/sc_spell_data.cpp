@@ -6,7 +6,7 @@
 #include "dbc.hpp"
 #include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
-#include "active_spells.hpp"
+#include "class_spells.hpp"
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/expressions.hpp"
@@ -99,7 +99,7 @@ constexpr sdata_field_t::getter_t::getter_t( nontype_t<Ptr> )
   : type( detail::getter<Ptr>::type ), get( detail::getter<Ptr>::get )
 {}
 
-static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
+static constexpr std::array<sdata_field_t, 9> _talent_data_fields { {
   { "name",  nontype< &trait_data_t::name > },
   { "id",    nontype< &trait_data_t::id_trait_node_entry > },
   { "node",  nontype< &trait_data_t::id_node > },
@@ -107,6 +107,8 @@ static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
   { "col",   nontype< &trait_data_t::col > },
   { "row",   nontype< &trait_data_t::row > },
   { "max_rank", nontype< &trait_data_t::max_ranks > },
+  { "req_points", nontype< &trait_data_t::req_points > },
+  { "class", nontype< &trait_data_t::id_class > },
 } };
 
 static constexpr std::array<sdata_field_t, 27> _effect_data_fields { {
@@ -397,45 +399,44 @@ struct spell_list_expr_t : public spell_data_expr_t
           }
         }
 
-        result_spell_list.insert( result_spell_list.begin(),
-            talent_spells.begin(), talent_spells.end() );
+        result_spell_list.insert( result_spell_list.begin(), talent_spells.begin(), talent_spells.end() );
         break;
       }
       case DATA_CLASS_SPELL:
       {
-        range::for_each( active_class_spell_t::data( dbc.ptr ),
-            [this]( const active_class_spell_t& e ) {
-              result_spell_list.push_back( e.spell_id );
+        range::for_each( active_class_spell_t::data( dbc.ptr ), [ this ]( const active_class_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
         } );
 
-        range::for_each( active_pet_spell_t::data( dbc.ptr ),
-            [this]( const active_pet_spell_t& e ) {
-              result_spell_list.push_back( e.spell_id );
+        range::for_each( active_pet_spell_t::data( dbc.ptr ), [ this ]( const active_pet_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
+        } );
+
+        range::for_each( passive_class_spell_t::data( dbc.ptr ), [ this ]( const passive_class_spell_t& e ) {
+          result_spell_list.push_back( e.spell_id );
         } );
         break;
       }
       case DATA_RACIAL_SPELL:
       {
-        range::for_each( racial_spell_entry_t::data( dbc.ptr ),
-            [this]( const racial_spell_entry_t& entry ) {
-              result_spell_list.push_back( entry.spell_id );
+        range::for_each( racial_spell_entry_t::data( dbc.ptr ), [ this ]( const racial_spell_entry_t& entry ) {
+          result_spell_list.push_back( entry.spell_id );
         } );
         break;
       }
       case DATA_MASTERY_SPELL:
       {
-        range::for_each( mastery_spell_entry_t::data( dbc.ptr ),
-            [this]( const mastery_spell_entry_t& entry ) {
-              result_spell_list.push_back( entry.spell_id );
+        range::for_each( mastery_spell_entry_t::data( dbc.ptr ), [ this ]( const mastery_spell_entry_t& entry ) {
+          result_spell_list.push_back( entry.spell_id );
         } );
         break;
       }
       case DATA_SPECIALIZATION_SPELL:
       {
         range::for_each( specialization_spell_entry_t::data( dbc.ptr ),
-            [this]( const specialization_spell_entry_t& e ) {
-              result_spell_list.push_back( e.spell_id );
-        } );
+          [ this ]( const specialization_spell_entry_t& e ) {
+            result_spell_list.push_back( e.spell_id );
+          } );
         break;
       }
       case DATA_AZERITE_SPELL:
@@ -802,6 +803,10 @@ struct spell_class_expr_t : public spell_list_expr_t
     }
 
     return filter_spells( [ label = it->spell_label, family = it->spell_family, mask = it->mask ]( const auto& spell ) {
+      // filter out racials & azerite
+      if ( spell.race_mask() || spell.power_id() || spell.essence_id() )
+        return false;
+
       return range::contains( spell.labels(), label, &spelllabel_data_t::label ) || spell.class_family() == family ||
              spell.class_mask() & mask;
     } );

@@ -5,38 +5,39 @@ actions.precombat+=/cat_form,if=buff.cat_form.down
 actions.precombat+=/prowl
 
 # Executed every time the actor is available.
-actions=auto_attack
+actions=auto_attack,if=!buff.prowl.up
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=tigers_fury,if=combo_points>=5&target.distance<=8&cooldown.rip.ready
+actions.assisted_combat=tigers_fury,if=combo_points>=5&target.distance<=8
 actions.assisted_combat+=/rake,if=buff.prowl.up
-actions.assisted_combat+=/primal_wrath,if=target.distance<=10&active_enemies>3&!dot.rip.ticking&combo_points>=5
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/berserk
+actions.assisted_combat+=/chomp,if=buff.chomp_enabler.up
+actions.assisted_combat+=/primal_wrath,if=active_enemies>3&!dot.rip.ticking&combo_points>=5&target.distance<=10
 actions.assisted_combat+=/rip,if=!dot.rip.ticking&combo_points>=5
+actions.assisted_combat+=/pool_resource,if=combo_points>=5&energy<=49&buff.apex_predators_craving.down&buff.incarnation_avatar_of_ashamane.down
+actions.assisted_combat+=/pool_resource,if=combo_points>=5&energy<=37&buff.apex_predators_craving.down&buff.incarnation_avatar_of_ashamane.up
 actions.assisted_combat+=/ferocious_bite,if=combo_points>=5
 # (Overridden from '(buff.apex_predators_craving.up|buff.unknown_spell_252752.up)')
 actions.assisted_combat+=/ferocious_bite,if=buff.apex_predators_craving.up
-actions.assisted_combat+=/adaptive_swarm,if=buff.prowl.down
 actions.assisted_combat+=/feral_frenzy,if=combo_points<=1&buff.tigers_fury.up
-actions.assisted_combat+=/feral_frenzy,if=combo_points<=1&cooldown.tigers_fury.remains>=8
+actions.assisted_combat+=/feral_frenzy,if=combo_points<=1&!cooldown.tigers_fury.ready
+actions.assisted_combat+=/frantic_frenzy,if=combo_points<=1&target.distance<=8&buff.tigers_fury.up
+actions.assisted_combat+=/frantic_frenzy,if=combo_points<=1&target.distance<=8&!cooldown.tigers_fury.ready
 actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5&combo_points<=3&buff.tigers_fury.up
-actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5&combo_points<=3&cooldown.tigers_fury.remains>=8
-actions.assisted_combat+=/thrash,if=target.distance<=8&!dot.thrash.ticking&active_enemies>3
 actions.assisted_combat+=/rake,if=!dot.rake.ticking
-actions.assisted_combat+=/moonfire,if=talent.lunar_inspiration&!dot.moonfire.ticking
-actions.assisted_combat+=/brutal_slash,if=target.distance<=8
+actions.assisted_combat+=/lunar_inspiration,if=talent.lunar_inspiration&!dot.moonfire.ticking
 actions.assisted_combat+=/swipe,if=target.distance<=8&active_enemies>3
-actions.assisted_combat+=/thrash,if=target.distance<=8&!dot.thrash.ticking
 actions.assisted_combat+=/shred
-actions.assisted_combat+=/moonfire,if=talent.lunar_inspiration&target.distance>15
+actions.assisted_combat+=/lunar_inspiration,if=talent.lunar_inspiration&target.distance>15
 actions.assisted_combat+=/rake
 
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/berserk
-actions.cooldowns+=/incarnation

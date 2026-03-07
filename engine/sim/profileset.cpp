@@ -18,6 +18,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <chrono>
 
 namespace
 {
@@ -286,10 +287,10 @@ profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_original( nullptr ), m_actor_indices(),
     m_work_index( 0 ),
     m_control_lock( m_mutex, std::defer_lock ),
-    m_max_workers( 0 ), 
+    m_max_workers( 0 ),
     m_work_lock( m_work_mutex, std::defer_lock ),
     m_total_elapsed()
-{ 
+{
 
 }
 
@@ -420,7 +421,9 @@ void worker_t::execute()
     }
   }
 
+  m_mutex.lock();
   m_done = true;
+  m_mutex.unlock();
 
   m_master->notify_worker();
 }
@@ -763,7 +766,7 @@ bool profilesets_t::iterate( sim_t* parent )
     // Wait until we have at least something to sim
     while ( is_initializing() && m_profilesets.size() - m_work_index == 0 )
     {
-      m_control.wait( m_control_lock );
+      m_control.wait_for( m_control_lock, std::chrono::seconds( 1 ) );
     }
 
     // Break out of iteration loop if all work has been done
@@ -1107,6 +1110,10 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
 
     profileset.output_data().corruption( buffed_stats.corruption );
     profileset.output_data().corruption_resistance( buffed_stats.corruption_resistance );
+  }
+  else if ( option == "talents" )
+  {
+    profileset.output_data().talents_str( player->talents_str );
   }
 }
 

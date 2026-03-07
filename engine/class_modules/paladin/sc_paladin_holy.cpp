@@ -350,7 +350,7 @@ struct holy_shock_t : public paladin_spell_t
 struct judgment_holy_t : public judgment_t
 {
   judgment_holy_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
-    judgment_t( p, name )
+    judgment_t( p, name, options_str )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
@@ -362,17 +362,6 @@ struct judgment_holy_t : public judgment_t
     background = true;
     base_multiplier *= 1.0 + p->spec.holy_paladin->effectN( 11 ).percent();
   }*/
-
-  void execute() override
-  {
-    judgment_t::execute();
-
-    if ( p()->talents.fist_of_justice->ok() )
-    {
-      double cdr = -1.0 * p()->talents.fist_of_justice->effectN( 1 ).base_value();
-      p()->cooldowns.hammer_of_justice->adjust( timespan_t::from_seconds( cdr ) );
-    }
-  }
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
@@ -579,7 +568,6 @@ void paladin_t::init_spells_holy()
   talents.lights_hammer   = find_talent_spell( talent_tree::SPECIALIZATION, "Light's Hammer" );
 
   talents.saved_by_the_light = find_talent_spell( talent_tree::SPECIALIZATION, "Saved by the Light" );
-  talents.judgment_of_light  = find_talent_spell( talent_tree::SPECIALIZATION, "Judgment of Light" );
   talents.holy_prism         = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Prism" );
 
   talents.rule_of_law = find_talent_spell( talent_tree::SPECIALIZATION, "Rule of Law" );

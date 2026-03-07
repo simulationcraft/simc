@@ -19,6 +19,7 @@
 
 #include <map>
 #include <memory>
+#include <unordered_set>
 
 struct actor_target_data_t;
 struct buff_t;
@@ -209,6 +210,7 @@ struct sim_t : private sc_thread_t
     // Buff overrides
     int arcane_intellect;
     int battle_shout;
+    int blessing_of_the_bronze;
     int mark_of_the_wild;
     int power_word_fortitude;
     int skyfury;
@@ -537,7 +539,7 @@ struct sim_t : private sc_thread_t
   std::vector<report::json::report_configuration_t> json_reports;
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
-  std::vector<std::pair<error_level_e, std::string>> error_list;
+  std::map<error_level_e, std::unordered_set<std::string>> error_list;
   int display_build;  // 0: none, 1: normal (default), 2: version + hotfix only
   int report_precision;
   int report_pets_separately;
@@ -548,6 +550,7 @@ struct sim_t : private sc_thread_t
   bool report_all_variables;
   int report_rng;
   int hosted_html;
+  int offline;
   int save_raid_summary;
   int save_gear_comments;
   int statistics_level;
@@ -585,6 +588,9 @@ struct sim_t : private sc_thread_t
   // Related Simulations
   mutex_t relatives_mutex;
   std::vector<sim_t*> relatives;
+
+  // Init mutex
+  std::shared_mutex init_mutex;
 
   // Spell database access
   std::unique_ptr<spell_data_expr_t> spell_query;
@@ -677,6 +683,15 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( util::string_view name );
+
+  bool is_initialized()
+  {
+    init_mutex.lock_shared();
+    auto i = initialized;
+    init_mutex.unlock_shared();
+
+    return i;
+  }
 
   /**
    * Create error with printf formatting.

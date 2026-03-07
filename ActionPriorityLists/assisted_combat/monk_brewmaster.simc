@@ -17,18 +17,16 @@ actions.assisted_combat+=/chi_burst,if=target.distance<=30
 actions.assisted_combat+=/breath_of_fire,if=target.distance<=12
 actions.assisted_combat+=/keg_smash
 actions.assisted_combat+=/exploding_keg,if=target.distance<=40
-actions.assisted_combat+=/rising_sun_kick
 actions.assisted_combat+=/rushing_jade_wind
 actions.assisted_combat+=/spinning_crane_kick,if=active_enemies>3,cooldown_allow_casting_success=1
 actions.assisted_combat+=/tiger_palm,if=!talent.press_the_advantage
-actions.assisted_combat+=/rising_sun_kick
+actions.assisted_combat+=/keg_smash
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/weapons_of_order
 actions.cooldowns+=/invoke_niuzao_the_black_ox

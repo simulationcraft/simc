@@ -230,6 +230,8 @@ class profile_output_data_t
             m_corruption,
             m_corruption_resistance;
 
+  std::string m_talents_str;
+
 public:
   profile_output_data_t() : m_race ( RACE_NONE )
   { }
@@ -365,6 +367,12 @@ public:
 
   profile_output_data_t& corruption_resistance( double d )
   { m_corruption_resistance = d; return *this; }
+
+  std::string talents_str() const
+  { return m_talents_str; }
+
+  profile_output_data_t& talents_str( const std::string& s )
+  { m_talents_str = s; return *this; }
 };
 
 class profile_set_t
@@ -417,6 +425,7 @@ class worker_t
   sim_t*         m_sim;
   profile_set_t* m_profileset;
   std::thread*   m_thread;
+  std::mutex     m_mutex;
 
 public:
   worker_t( profilesets_t*, sim_t*, profile_set_t* );
@@ -426,8 +435,13 @@ public:
   std::thread& thread();
   void execute();
 
-  bool is_done() const
-  { return m_done == true; }
+  bool is_done()
+  {
+    m_mutex.lock();
+    auto a = m_done;
+    m_mutex.unlock();
+    return a;
+  }
 
   sim_t* sim() const;
 };
@@ -436,7 +450,7 @@ public:
 class profilesets_t
 {
 public:
-  
+
   using profileset_entry_t = std::unique_ptr<profile_set_t>;
   using profileset_vector_t = std::vector<profileset_entry_t>;
 private:

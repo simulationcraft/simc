@@ -1,0 +1,74 @@
+name: generate-files
+
+on:
+  workflow_call:
+
+jobs:
+  update-generated-files:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
+
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Generate APL Modules
+        if: steps.cache.outputs.cache-hit == 'true'
+        env:
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace }}/generate_apl_modules_ci.sh
+
+      - name: Download APL Dumps
+        uses: actions/download-artifact@v4
+        with:
+          path: ActionPriorityLists
+          pattern: apl-${{ github.sha }}-*
+          merge-multiple: true
+
+      - name: Generate Profiles
+        if: steps.cache.outputs.cache-hit == 'true'
+        continue-on-error: true
+        env:
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
+
+      - name: Dump Spell Data
+        if: steps.cache.outputs.cache-hit == 'true'
+        env:
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
+
+      - name: Check for Non-Trivial Changes
+        run: |
+          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
+            git checkout -- SpellDataDump/build_info.txt
+          fi
+
+      - name: Commit Updated Files
+        continue-on-error: true
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Update Generated Files ${{ env.SHORT_SHA }}"
+          default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
+          add: |
+            - "engine/class_modules/apl"
+            - "*.simc"
+            - "*.txt"
+
+      - name: Cleanup APL Dumps
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: apl-${{ github.sha }}-*

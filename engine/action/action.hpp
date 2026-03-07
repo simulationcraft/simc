@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+struct action_t;
 struct action_priority_t;
 struct action_priority_list_t;
 struct action_state_t;
@@ -50,6 +51,8 @@ namespace report {
 }
 template <typename T>
 struct parsed_value_t;
+
+using target_filter_callback_t = std::function<bool( const action_t*, player_t* )>;
 
 // Action ===================================================================
 
@@ -104,6 +107,9 @@ public:
   /// The amount of targets that an ability impacts on. -1 will hit all targets.
   int aoe;
 
+  /// Which targets to include in the list of available targets.
+  target_filter_callback_t target_filter_callback;
+
   /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
   bool dual;
 
@@ -130,6 +136,9 @@ public:
 
   /// Tells the sim to not perform any other actions, as the ability is channeled.
   bool channeled;
+
+  /// Whether to apply channel lag after the channel ends
+  bool apply_channel_lag;
 
   /// mark this as a sequence_t action
   bool sequence;
@@ -275,7 +284,11 @@ public:
   /// Did a channel action have an interrupt_immediate used to cancel it on it
   bool interrupt_immediate_occurred;
 
+  /// hit at least one target
   bool hit_any_target;
+
+  /// crit at least one target, implies hit_any_target == true
+  bool crit_any_target;
 
   /// Duration of the ground area trigger
   timespan_t ground_aoe_duration;
@@ -1139,6 +1152,9 @@ public:
 
   static bool has_direct_damage_effect( const spell_data_t& );
   static bool has_periodic_damage_effect( const spell_data_t& );
+
+  static target_filter_callback_t secondary_targets_only()
+  { return [] ( const action_t* a, player_t* t ) { return t != a->target; }; }
 
   friend void sc_format_to( const action_t&, fmt::format_context::iterator );
 };

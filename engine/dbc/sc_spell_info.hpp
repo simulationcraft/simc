@@ -32,4 +32,5 @@ void effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffe
 std::string_view effect_type_str( const spelleffect_data_t* effect );
 std::string_view effect_subtype_str( const spelleffect_data_t* effect );
 std::string_view effect_property_str( const spelleffect_data_t* effect );
+std::string_view mechanic_str( unsigned mechanic );
 }  // namespace spell_info

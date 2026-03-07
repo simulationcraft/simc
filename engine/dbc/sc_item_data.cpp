@@ -194,22 +194,73 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     }
     case ITEM_BONUS_SCALE_CONFIG:
-    case ITEM_BONUS_SCALE_CONFIG_2: // TODO: Does this second one do anything differently? It might be supposed to use the item's drop level.
     {
       const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, item.player->dbc->ptr );
       if ( scaling_entries.size() == 0 )
         break;
       const auto& scaling_entry = scaling_entries[ 0 ];
-      const auto& offset_entries = item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
+      const auto& offset_entries =
+          item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      if ( entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
+      else
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item.parsed.data.level += offset_entry.offset;
-      item.parsed.data.req_level = scaling_entry.player_level;
       item.parsed.has_midnight_scaling = true;
+      item.parsed.data.req_level       = scaling_entry.player_level;
       break;
     }
+    case ITEM_BONUS_SCALE_CONFIG_2:
+    {
+      const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, item.player->dbc->ptr );
+      if ( scaling_entries.size() == 0 )
+        break;
+      const auto& scaling_entry = scaling_entries[ 0 ];
+      const auto& offset_entries =
+          item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
+      if ( offset_entries.size() == 0 )
+        break;
+      const auto& offset_entry = offset_entries[ 0 ];
+      if ( item.parsed.drop_level > 0 )
+        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, item.parsed.drop_level ) ) );
+      else
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      item.parsed.data.level += offset_entry.offset;
+      item.parsed.has_midnight_scaling = true;
+      item.parsed.data.req_level       = scaling_entry.player_level;
+      break;
+    }
+    // Adjust quality, bonus item level value is in 'value_1' field, `value_3` is crafting quality. Value 2 unknown
+    case ITEM_BONUS_CRAFTING_QUALITY:
+      item.parsed.data.bonus_level += entry.value_1;
+      item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             item.parsed.data.level + entry.value_1 );
+      item.parsed.data.level += entry.value_1;
+
+      item.sim->print_debug( "Player {} item '{}' adjusting crafting quality by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_3, item.parsed.data.crafting_quality,
+                             item.parsed.data.crafting_quality + entry.value_3 + 1 );
+      item.parsed.data.crafting_quality = entry.value_3 + 1;
+      break;
+    // Adjust ilevel, value is in 'value_1' field
+    // Only seems to apply to items with midnight scaling
+    case ITEM_BONUS_POST_SQUISH_ITEM_LEVEL:
+      if ( !item.parsed.has_midnight_scaling )
+        break;
+
+      item.parsed.data.bonus_level += entry.value_1;
+      item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             item.parsed.data.level + entry.value_1 );
+      item.parsed.data.level += entry.value_1;
+      break;
     // Adjust ilevel, value is in 'value_1' field
     case ITEM_BONUS_ILEVEL:
       // Starting with the Midnight expansion, the new types above seem to prevent other
@@ -228,7 +279,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       item.parsed.data.bonus_level += entry.value_1;
       item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
                              item.name(), entry.value_1, item.parsed.data.level,
-                             item.parsed.data.level + item.parsed.data.bonus_level );
+                             item.parsed.data.level + entry.value_1 );
       item.parsed.data.level += entry.value_1;
       break;
     case ITEM_BONUS_SET_ILEVEL_2:
@@ -462,6 +513,31 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
   }
   return true;
+}
+
+void item_database::sort_item_bonuses( item_t& item )
+{
+  // Sort bonus ids to ensure consistent application order.
+  // Need to ensure item level bonuses are applied after item level setting bonuses.
+  //
+  // TODO: I believe the sorting should be based off of ItemBonusListGroupEntry.db2 data.
+  // Sequence Value field likely determines the order of application. Need to confirm.
+  std::sort( item.parsed.bonus_id.begin(), item.parsed.bonus_id.end(), [ &item ]( uint32_t a, uint32_t b ) {
+    auto a_entries    = item.player->dbc->item_bonus( a );
+    auto b_entries    = item.player->dbc->item_bonus( b );
+    bool a_is_scaling = false;
+    bool b_is_scaling = false;
+    for ( const auto& entry : a_entries )
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+        a_is_scaling = true;
+    for ( const auto& entry : b_entries )
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+        b_is_scaling = true;
+
+    if ( a_is_scaling != b_is_scaling )
+      return !a_is_scaling;  // scaling bonuses go last
+    return a < b;
+  } );
 }
 
 stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index )
@@ -861,14 +937,14 @@ uint32_t item_database::weapon_dmg_min( const dbc_item_data_t& item, const dbc_t
 
 uint32_t item_database::weapon_dmg_max( const dbc_item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
-                            ( 1 + item.dmg_range / 2 ) + 0.5 );
+  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
+                             ( 1 + item.dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database::weapon_dmg_max( item_t& item )
 {
-  return ( uint32_t ) ceil( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
-                            item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
+  return ( uint32_t ) floor( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
+                             item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
 bool item_database::parse_item_spell_enchant( item_t& item,
@@ -1006,6 +1082,9 @@ bool item_database::load_item_from_data( item_t& item )
       item.parsed.bonus_id.push_back( power.bonus_id );
     }
   }
+
+  // Sort item bonuses to ensure consistent application order
+  item_database::sort_item_bonuses( item );
 
   // Item bonus for local source only. TODO: BCP API and Wowhead will need ..
   // something similar
@@ -1198,7 +1277,7 @@ static int get_bonus_id_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_ILEVEL )
+    if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
     {
       return entry.value_1;
     }
@@ -1236,7 +1315,7 @@ static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::
         item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, item_level ) ) );
     }
 
-    if ( entry.type == ITEM_BONUS_SCALE_CONFIG || entry.type == ITEM_BONUS_SCALE_CONFIG_2 ) // TODO: Is ITEM_BONUS_SCALE_CONFIG_2 different?
+    if ( entry.type == ITEM_BONUS_SCALE_CONFIG || entry.type == ITEM_BONUS_SCALE_CONFIG_2 )
     {
       const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, dbc.ptr );
       if ( scaling_entries.size() == 0 )
@@ -1246,7 +1325,12 @@ static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::
       if ( offset_entries.size() == 0 )
         continue;
       const auto& offset_entry = offset_entries[ 0 ];
-      item_level = as<int>( util::round( item_database::curve_point_value( dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      // For type 49, apply the midnight squish curve
+      if ( entry.type == ITEM_BONUS_SCALE_CONFIG && entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
+        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
+      // for type 51 apply the scaling curve directly
+      else
+        item_level = as<int>( util::round( item_database::curve_point_value( dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item_level += offset_entry.offset;
       player_level = scaling_entry.player_level;
     }
@@ -1427,6 +1511,20 @@ static std::string get_bonus_mod_stat( util::span<const item_bonus_entry_t> entr
   return fmt::to_string( b );
 }
 
+static int get_bonus_crafting_quality( util::span<const item_bonus_entry_t> entries )
+{
+  for ( const auto& entry : entries )
+  {
+    if ( entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+    {
+      // Crafting quality is zero-based in the bonus entry. 
+      // Add one here so that it is one-based in the output.
+      return entry.value_3 + 1;
+    }
+  }
+  return 0;
+}
+
 std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
@@ -1447,12 +1545,13 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
          e.type != ITEM_BONUS_SET_ILEVEL_2  && e.type != ITEM_BONUS_SQUISH_CURVE &&
          e.type != ITEM_BONUS_SCALE_CONFIG && e.type != ITEM_BONUS_APPLY_BONUS &&
-         e.type != ITEM_BONUS_SCALE_CONFIG_2 )
+         e.type != ITEM_BONUS_SCALE_CONFIG_2 && e.type != ITEM_BONUS_POST_SQUISH_ITEM_LEVEL &&
+         e.type != ITEM_BONUS_CRAFTING_QUALITY )
     {
       continue;
     }
 
-    if ( e.type == ITEM_BONUS_ILEVEL && e.value_1 == 0 )
+    if ( ( e.type == ITEM_BONUS_ILEVEL || e.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || e.type == ITEM_BONUS_CRAFTING_QUALITY ) && e.value_1 == 0 )
     {
       continue;
     }
@@ -1478,6 +1577,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     auto power_index = get_bonus_power_index( entries );
     std::string item_effects = get_bonus_item_effect( entries, dbc );
     auto item_mod_stat = get_bonus_mod_stat( entries );
+    int crafting_quality = get_bonus_crafting_quality( entries );
     int req_level = 0;
     if ( midnight_scaling.first )
       base_ilevel = midnight_scaling.first;
@@ -1576,6 +1676,11 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     if ( !item_mod_stat.empty() )
     {
       fields.emplace_back( fmt::format( "mod_to_stat={{ {} }}", item_mod_stat ) );
+    }
+
+    if ( crafting_quality > 0 )
+    {
+      fields.emplace_back( fmt::format( "crafting_quality={{ {} }}", crafting_quality ) );
     }
 
     fmt::format_to( std::back_inserter(s), "{}\n", fmt::join( fields, ", " ) );

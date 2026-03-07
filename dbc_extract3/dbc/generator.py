@@ -1526,6 +1526,14 @@ class SpellDataGenerator(DataGenerator):
          # Midnight 12.X.X
          1229746, # Arcanoweave embellishment buff
          1259130, # Primal Spore Binding embellishment heal
+         1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, # Midnight Food Buffs
+         1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
+         1252486, 1252487, 1252488, 1252489, # Darkmoon Deck: Hunt
+         1255853, 1255857, 1255856, # Emberwing Feather
+         1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
+         1263768, # Lightspire Core
+         1263614, # Wraps of Cosmic Madness
+         1255685, 1255687, 1255688, # crucible of erratic energies
         ),
 
         # Warrior:
@@ -1632,6 +1640,8 @@ class SpellDataGenerator(DataGenerator):
             ( 1239282, 0),          # Lesser Weapon Damage (TWW3 Lightsmith 4p)
             ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
             ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
+            ( 431522, 0),           # Dawnlight Buff
+            ( 406957, 0),           # Divine Toll Judgment
         ),
 
         # Hunter:
@@ -1650,6 +1660,7 @@ class SpellDataGenerator(DataGenerator):
           ( 260395, 2 ), # Lethal Shots buff
           ( 342076, 2 ), # Streamline buff
           ( 191043, 2 ), # Legacy of the Windrunners
+          ( 260402, 2 ), # Double Tap Buff
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           ( 265888, 3 ), # Mongoose Bite (AotE version)
@@ -1676,7 +1687,11 @@ class SpellDataGenerator(DataGenerator):
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5 ), # Dire Beast Kill Command
+          ( 1284992, 0 ), # Dire Beast Async Damage Buff
           ( 459834, 3 ), # Sulfur-Lined Pockets (Explosive Shot buff)
+          ( 1259017, 3 ), # Raptor Swipe 2
+          ( 1259019, 3 ), # Raptor Swipe 3
+          ( 1282474, 1 ), # Nature's Ally Pet Summon
           # Hero Talents
           ( 444354, 0 ), # Shadow Lash
           ( 444269, 0 ), # Shadow Surge
@@ -1689,6 +1704,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1249464, 0 ), # Boon of Elune (Sentinel 4pc buff)
           ( 1236564, 0 ), ( 1236565, 0 ), ( 1236566, 0 ), # Grizzled Fur, Hasted Hooves, Sharpened Fangs (Pack Leader 2pc buffs)
           ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
+          ( 1258344, 0 ), # Stampede (Pack Leader)
+          ( 1264357, 0 ), # Shoot (Dark Minion)
         ),
 
         # Rogue:
@@ -1783,6 +1800,12 @@ class SpellDataGenerator(DataGenerator):
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
             ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
             ( 1219264, 0 ),         # Assassination TWW2 4pc set bonus buff spell
+            
+            # Midnight
+            ( 1214933, 0 ),         # Roll the Bones - One of a Kind
+            ( 1214934, 0 ),         # Roll the Bones - Double Trouble
+            ( 1214935, 0 ),         # Roll the Bones - Triple Threat
+            ( 1249093, 0 ),         # Fatebound Coin flips tracker buff
         ),
 
         # Priest:
@@ -1931,8 +1954,9 @@ class SpellDataGenerator(DataGenerator):
           ( 377445, 0 ), # Unholy Aura debuff
           ( 1235391, 0 ), # Dark Transformation player buff
           ( 1250728, 0 ), # Mastery: Dreadblade pet crit buff
+          ( 196910, 0 ), # Raise Skulker
           # The War Within
-          ( 290577, 0 ), # Abomiantion Disease Cloud
+          ( 290577, 5 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
@@ -1985,6 +2009,9 @@ class SpellDataGenerator(DataGenerator):
           ( 1242998, 0 ), # Lesser Ghoul Counter Buff
           ( 1242294, 0 ), # Summon Magus Spell
           ( 1268917, 0 ), # Unholy Aura Mastery Buff
+          ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
+          ( 1277098, 0 ), # Lesser Ghoul
+          ( 1282570, 0 ), # Forbidden Ritual
         ),
 
         # Shaman:
@@ -2044,6 +2071,8 @@ class SpellDataGenerator(DataGenerator):
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
           ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
+          ( 383009, 0 ),                                 # Stormkeeper buff for tier set impl
+          ( 211094, 0 ),                                # Arc Discharge Chain Lightning
         ),
 
         # Mage:
@@ -2115,6 +2144,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1223801, 0 ),                           # Arcane Rebound
           ( 1217750, 0 ),                           # Master of Flame hidden buff
           ( 1236209, 0 ),                           # Frostfire 4pc Glacial Spike
+          ( 1243460, 0 ),                           # Arcane Pulse Echo
         ),
 
         # Warlock:
@@ -2221,6 +2251,27 @@ class SpellDataGenerator(DataGenerator):
           ( 438973, 0 ),    # Diabolist - Felseeker
           ( 434404, 0 ),    # Diabolist - Felseeker
           ( 438823, 0 ),    # Diabolic Bolt (pet spell)
+          ( 1269885, 0 ),   # Diabolic Gaze
+          ( 1269886, 0 ),   # Diabolic Gaze
+          ( 1277099, 5 ),   # Soul Barrage (pet spell)
+          ( 1277116, 5 ),   # Greater Felbolt (pet spell)
+          ( 1277117, 5 ),   # Abyssal Bite (pet spell)
+          ( 1277879, 0 ),   # Echo of Sargeras
+          ( 1279998, 0 ),   # Seed of Corruption Is Out [DNT]
+          ( 1280307, 5 ),   # Soul Barrage (pet spell)
+          ( 1280457, 5 ),   # Mind Sear (pet spell)
+          ( 1280460, 5 ),   # Mind Sear (pet spell)
+          ( 1280461, 5 ),   # Mind Sear (pet spell)
+          ( 1282507, 5 ),   # Shadow Nova (pet spell)
+          ( 1282533, 5 ),   # Blaze (pet spell)
+          ( 1282534, 5 ),   # Blaze (pet spell)
+          ( 1282748, 5 ),   # Blaze (pet spell)
+          ( 1282757, 5 ),   # Shadow Nova (pet spell)
+          ( 1282501, 0 ),   # Dominion of Argus: Lady Sacrolash
+          ( 1282502, 0 ),   # Dominion of Argus: Grand Warlock Alythess
+          ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
+          ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
+          ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
         ),
 
         # Monk:
@@ -2249,6 +2300,7 @@ class SpellDataGenerator(DataGenerator):
           ( 124275, 1 ), # Light Stagger
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
+          ( 215479, 1 ), # shuffle buff
           ( 205523, 1 ), # Blackout Kick Brewmaster version
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
@@ -2355,25 +2407,21 @@ class SpellDataGenerator(DataGenerator):
           ( 106829, 0 ), ( 106899, 0 ), # Bear Form override
           ( 429438, 0 ), # Blooming Infusion buff
           ( 1269186, 0 ), # HOTW caster form?
-          ( 1271400, 0 ), ( 1271910, 0 ), # UI stuff?
           # Balance
           ( 188046, 1 ), # Fey Missile
           ( 274282, 1 ), # Half Moon
           ( 393942, 1 ), ( 393944, 1 ), # Starweaver buffs
           ( 394050, 1 ), # Balance of All Things arcane buff
           ( 1233346, 1 ), # Solar Eclipse
-          ( 1264671, 1 ), ( 1264673, 1 ), # Dryad Starfall?
-          ( 1271222, 1 ), # Star Cascade surge?
+          ( 1264671, 1 ), # Dryad Starfall
+          ( 1271222, 1 ), # Star Cascade surge
           # Feral
           ( 1244038, 2 ), ( 1244046, 2 ), ( 1244050, 2 ), # Flicker Clone
-          ( 1248419, 2 ), # Rake (unused?)
+          ( 1280133, 2 ), # Rake (unused?)
           # Guardian
           ( 1250913, 3 ), # Memory of Ysera heal
-          ( 1252994, 3 ), # Killing Blow (unused?)
           ( 1269633, 3 ), ( 1269645, 3 ), ( 1269648, 3 ), # Apex talent echoes
           # Restoration
-          ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
-          ( 1236647, 4 ), # Dryad Regrowth
         ),
         # Demon Hunter:
         (
@@ -2437,6 +2485,7 @@ class SpellDataGenerator(DataGenerator):
           (  473671, 2 ), # Void Buildup - Meta Resource Spell
           ( 1245455, 2 ), # Cull Damage
           ( 1266301, 2 ), # Consume Soul Heal
+          ( 1223423, 2 ), # Consume Soul Missile
 
           # Annihilator
 
@@ -2479,6 +2528,7 @@ class SpellDataGenerator(DataGenerator):
           ( 410265, 3 ), # Inferno's Blessing
           ( 424368, 3 ), # DF3 4pc Buff Trembling Earth
           ( 409276, 3 ), # Motes of Possibility Buff
+          ( 1259172, 3 ), # Duplicate Eruption
           # Flameshaper
           ( 444249, 0 ), # Firebreath copied by Travelling Flame
           ( 444089, 0 ), # Consume Flame Fire Breath Damage
@@ -3449,11 +3499,12 @@ class SpellDataGenerator(DataGenerator):
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
-                'flags_12', 'flags_13', 'flags_14', 'flags_15')) ]
+                'flags_12', 'flags_13', 'flags_14', 'flags_15', 'flags_16', 'flags_17')) ]
             # Note, bunch up the flags checking into one field,
             hotfix.add(misc,
                 (('flags_1', 'flags_2', 'flags_3',  'flags_4',  'flags_5',  'flags_6',  'flags_7',
-                  'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14', 'flags_15'), 35))
+                  'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14',
+                  'flags_15', 'flags_16', 'flags_17'), 35))
 
             class_opt_entry = spell.child_ref('SpellClassOptions', field='id_spell')
             fields += [ '{ %s }' % ', '.join(class_opt_entry.field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
@@ -3485,7 +3536,7 @@ class SpellDataGenerator(DataGenerator):
                 else:
                     essences = list(set(essences))
                     if len(essences) > 1:
-                        logging.warn('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
+                        logging.warning('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
                             spell.name, spell.id, ', '.join(essences))
 
                     fields.append(essences[0])
@@ -3964,6 +4015,16 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'TWW3'
         },
         {
+            'name'   : 'sunfire_silk_trappings',
+            'bonuses': [ 1957 ],
+            'tier'   : 'MID_ST'
+        },
+        {
+            'name'   : 'arcanoweave_trappings',
+            'bonuses': [ 1958 ],
+            'tier'   : 'MID_AT'
+        },
+        {
             'name'   : 'shards_of_the_void',
             'bonuses': [ 1960 ],
             'tier'   : 'TWW_SOTV'
@@ -4059,7 +4120,7 @@ class SetBonusListGenerator(DataGenerator):
 
 
             if len(class_) == 0:
-                logging.warn('Could not determine class information for required item set "%s" (id=%d)',
+                logging.warning('Could not determine class information for required item set "%s" (id=%d)',
                     item_set.name, item_set.id)
                 continue
 
@@ -4833,7 +4894,7 @@ class TraitGenerator(DataGenerator):
             if _subtree != 0:
                 subtrees.add(_subtree)
 
-            fields.append(f'{_subtree:2d}')
+            fields.append(f'{_subtree:3d}')
             fields += entry['node'].field('type')
 
             self.output_record(fields)
@@ -4841,7 +4902,7 @@ class TraitGenerator(DataGenerator):
     def generate(self, data=None):
         sorted_data = sorted(
             data.values(),
-            key=lambda v: (v['tree'], v['class_'], v['entry'].id)
+            key=lambda v: (v['tree'], v['class_'], v['node'].id, v['selection_index'], v['entry'].id)
         )
 
         subtrees = set()
@@ -5149,6 +5210,49 @@ class ItemOffsetCurveGenerator(DataGenerator):
 
         for entry in data:
             fields = entry.field('id', 'id_curve', 'offset')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class PassiveClassSpellGenerator(DataGenerator):
+    def filter(self):
+        _data = []
+
+        for v in self.db('SkillLineAbility').values():
+            if v.id_parent not in util.class_skills(): # filter out non-class skills
+                continue
+
+            if v.acquire_method != 2: # filter out non-granted spells
+                continue
+
+            _spell = v.ref('id_spell')
+            if _spell.id == 0 or util.is_blacklisted(spell_name = _spell.name): # filter out invalid spells
+                continue
+
+            _misc = _spell.children('SpellMisc')
+            if len(_misc) == 0 or not _misc[0].flags_1 & 0x40: # filter out non-passives
+                continue
+
+            _data.append((next(c for c in constants.CLASS_INFO if c['skill'] == v.id_skill), v, _spell))
+
+        return _data
+
+    def generate(self, data = None):
+        data.sort(key = lambda e: (e[0]['id'], e[1].id_spell))
+
+        self.output_header(
+            header = 'Passive class spells',
+            type = 'passive_class_spell_t',
+            array = 'passive_spells',
+            length = len(data))
+
+        for info, skill, spell in data:
+            fields = []
+
+            fields = [f"{info['id']:2d}"]
+            fields += [f"{skill.id_spell:7d}"]
+            fields += spell.field('name')
+
             self.output_record(fields)
 
         self.output_footer()

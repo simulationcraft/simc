@@ -8,7 +8,7 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
-actions.precombat+=/variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
+actions.precombat+=/use_item,name=algethar_puzzle_box
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -19,58 +19,54 @@ actions+=/call_action_list,name=drcleave,if=talent.black_arrow&(active_enemies>2
 actions+=/call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
 actions+=/call_action_list,name=cleave,if=!talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)
 
-actions.cds=invoke_external_buff,name=power_infusion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30)|fight_remains<16
-actions.cds+=/berserking,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<13
-actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
-actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
-actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9
-actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30|fight_remains<16
+actions.cds+=/berserking,if=buff.bestial_wrath.up|fight_remains<13
+actions.cds+=/blood_fury,if=buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/fireblood,if=buff.bestial_wrath.up|fight_remains<9
+actions.cds+=/potion,if=buff.bestial_wrath.up|fight_remains<31
 
-actions.cleave=bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc|talent.multishot
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8
-actions.cleave+=/bloodshed
-actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
-actions.cleave+=/call_of_the_wild
-actions.cleave+=/explosive_shot,if=talent.thundering_hooves
+actions.cleave=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
+actions.cleave+=/wild_thrash
+actions.cleave+=/bestial_wrath
 actions.cleave+=/kill_command
-actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3|!talent.multishot
+actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4
+actions.cleave+=/barbed_shot
+actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd
 
-actions.drcleave=kill_shot
-actions.drcleave+=/bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild
-actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|buff.thrill_of_the_hunt.remains<1.5*gcd
-actions.drcleave+=/bloodshed
-actions.drcleave+=/multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
-actions.drcleave+=/call_of_the_wild
-actions.drcleave+=/explosive_shot,if=talent.thundering_hooves
-actions.drcleave+=/kill_command,if=buff.withering_fire.tick_time_remains>gcd&buff.withering_fire.tick_time_remains<3|buff.withering_fire.down
-actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.withering_fire.tick_time_remains>0.5&buff.withering_fire.tick_time_remains<3|buff.withering_fire.down
-actions.drcleave+=/cobra_shot,if=buff.withering_fire.down&focus.time_to_max<gcd*2
-actions.drcleave+=/explosive_shot
+actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd
+actions.drcleave+=/bestial_wrath
+actions.drcleave+=/wailing_arrow,if=buff.bestial_wrath.remains<execute_time+gcd|fight_remains<execute_time+gcd
+actions.drcleave+=/wild_thrash
+actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drcleave+=/black_arrow,if=buff.withering_fire.up
+actions.drcleave+=/barbed_shot
+actions.drcleave+=/wailing_arrow
+actions.drcleave+=/black_arrow
+actions.drcleave+=/cobra_shot
 
-actions.drst=kill_shot
-actions.drst+=/bestial_wrath,if=cooldown.call_of_the_wild.remains>30|!talent.call_of_the_wild|time_to_die.remains<cooldown.call_of_the_wild.remains
-actions.drst+=/bloodshed
-actions.drst+=/call_of_the_wild
-actions.drst+=/kill_command,if=buff.withering_fire.tick_time_remains>gcd&buff.withering_fire.tick_time_remains<3|buff.withering_fire.down
-actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.withering_fire.tick_time_remains>0.5&buff.withering_fire.tick_time_remains<3|buff.withering_fire.down
-actions.drst+=/cobra_shot,if=buff.withering_fire.down
+actions.drst=bestial_wrath
+actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drst+=/black_arrow,if=buff.withering_fire.up
+actions.drst+=/cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4
+actions.drst+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
+actions.drst+=/barbed_shot
+actions.drst+=/black_arrow
+actions.drst+=/cobra_shot
 
-actions.st=bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd
-actions.st+=/call_of_the_wild
-actions.st+=/bloodshed
-actions.st+=/kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional&!(buff.lead_from_the_front.remains>gcd&buff.lead_from_the_front.remains<gcd*2&!howl_summon.ready&full_recharge_time>gcd)
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains
+actions.st=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
+actions.st+=/bestial_wrath
+actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3
+actions.st+=/barbed_shot
 actions.st+=/cobra_shot
 
-actions.trinkets=variable,name=quiver_variable,op=set,value=0,if=cooldown.call_of_the_wild.remains<30
-actions.trinkets+=/variable,name=quiver_variable,op=set,value=1,if=buff.blighted_quiver.stack>5&buff.latent_energy.stack>10|equipped.arazs_ritual_forge&(buff.blighted_quiver.stack>5|buff.latent_energy.stack>10)|buff.latent_energy.stack>16|fight_remains<(cooldown.call_of_the_wild.duration+20)
-actions.trinkets+=/variable,name=bw_variable,op=set,value=0,if=!buff.bestial_wrath.up
-actions.trinkets+=/variable,name=bw_variable,op=set,value=1,if=!talent.call_of_the_wild&buff.bestial_wrath.up&(buff.latent_energy.stack>0|equipped.arazs_ritual_forge&buff.latent_energy.stack>10)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=!equipped.unyielding_netherprism&this_trinket.has_use_buff&(this_trinket.cooldown.duration%%cooldown.call_of_the_wild.duration=0&buff.call_of_the_wild.remains>14|!talent.call_of_the_wild&(other_trinket.has_use_buff|prev_gcd.1.bestial_wrath))
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=!equipped.unyielding_netherprism&this_trinket.has_use_buff&(other_trinket.cooldown.duration%%cooldown.call_of_the_wild.duration=0&(buff.call_of_the_wild.remains>14&other_trinket.cooldown.remains|cooldown.call_of_the_wild.remains>20&other_trinket.cooldown.remains<=cooldown.call_of_the_wild.remains)|!talent.call_of_the_wild&other_trinket.cooldown.remains)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=!equipped.arazs_ritual_forge&this_trinket.is.unyielding_netherprism&(variable.quiver_variable&prev_gcd.1.call_of_the_wild|fight_remains<22&(buff.latent_energy.stack>8|!other_trinket.has_use_buff|other_trinket.cooldown.remains)|variable.bw_variable&prev_gcd.1.bestial_wrath)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=!this_trinket.is.unyielding_netherprism&this_trinket.has_use_buff&(other_trinket.is.unyielding_netherprism&fight_remains<cooldown.call_of_the_wild.remains+cooldown.call_of_the_wild.duration+10&cooldown.call_of_the_wild.remains>20|buff.call_of_the_wild.remains>14|buff.call_of_the_wild.up&fight_remains<cooldown.call_of_the_wild.remains+15|fight_remains<42|!talent.call_of_the_wild&prev_gcd.1.bestial_wrath)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.is.unyielding_netherprism&(variable.quiver_variable&prev_gcd.1.call_of_the_wild|fight_remains<22&(buff.latent_energy.stack>8|!other_trinket.has_use_buff|other_trinket.cooldown.remains)|variable.bw_variable&prev_gcd.1.bestial_wrath)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=!equipped.arazs_ritual_forge&other_trinket.has_use_buff&this_trinket.is.unyielding_netherprism&(buff.call_of_the_wild.remains>14|!talent.call_of_the_wild&buff.bestial_wrath.remains>14)&buff.latent_energy.stack>3&(buff.latent_energy.stack+floor((fight_remains-20)%cooldown.call_of_the_wild.duration)*(cooldown.call_of_the_wild.duration%10))>17
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&(cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild&prev_gcd.1.bestial_wrath)
+actions.trinkets=use_item,name=light_company_guidon,if=buff.bestial_wrath.up|fight_remains<21
+actions.trinkets+=/use_item,name=void_execution_mandate,if=buff.bestial_wrath.up|fight_remains<21
+actions.trinkets+=/use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23
+actions.trinkets+=/use_item,name=emberwing_feather,if=buff.bestial_wrath.up|fight_remains<16
+actions.trinkets+=/use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16
+actions.trinkets+=/use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21
+actions.trinkets+=/use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11
+actions.trinkets+=/use_item,name=rangercaptains_iridescent_insignia
+actions.trinkets+=/use_item,name=void_stalkers_contract
+actions.trinkets+=/use_item,name=latchs_crooked_hook

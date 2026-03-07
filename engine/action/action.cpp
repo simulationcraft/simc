@@ -356,6 +356,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     not_a_proc(),
     special(),
     channeled(),
+    apply_channel_lag( true ),
     sequence(),
     quiet(),
     background(),
@@ -402,6 +403,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     cd_waste_data(),
     interrupt_immediate_occurred(),
     hit_any_target(),
+    crit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
     dot_behavior( DOT_REFRESH_DURATION ),
@@ -512,7 +514,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   }
 
   if ( sim->debug )
-    sim->print_debug( "{} creates {} ({})", *player, *this, ( data().ok() ? data().id() : -1 ) );
+    sim->print_debug( "{} creates {}", *player, *this );
 
   if ( !player->initialized )
   {
@@ -697,6 +699,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   if ( spell_data.charge_cooldown() > timespan_t::zero() )
   {
+    cooldown->category = true;
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();
 
@@ -782,6 +785,16 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   auto crit_bonus_mod = player->get_passive_value( spell_data, "crit_bonus" );
   base_crit_bonus += crit_bonus_mod[ 1 ];
   crit_bonus_multiplier *= crit_bonus_mod[ 2 ];
+
+  // handle mechanic modifiers (currently only bleed is found in relevant spell data)
+  // as the effect (subtype 276) is player scoped, we call get_passive_player_value()
+  // only the spell's mechanic field is checked, the effect's mechanic field is not sufficient for this effect subtype
+  if ( spell_data.mechanic() )
+  {
+    auto mechanic_mul = player->get_passive_player_value( 1.0, "mechanic_damage_done", spell_data.mechanic() );
+    base_dd_multiplier *= mechanic_mul;
+    base_td_multiplier *= mechanic_mul;
+  }
 
   for ( const spelleffect_data_t& ed : spell_data.effects() )
   {
@@ -1453,10 +1466,11 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   {
     sim->print_debug(
       "{} tick amount for {} on {}: amount={:.6f} initial_amount={:.6f} base={:.7g} bonus={:.7g} s_mod={:.7g} "
-      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}",
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}, rta_mult={:.7g}",
       *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
       spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
-      state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
+        state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier,
+        state->composite_rolling_ta_multiplier() );
   }
 
   return amount;
@@ -1702,12 +1716,14 @@ int action_t::num_targets() const
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
   tl.clear();
-  if ( !target->is_sleeping() && target->is_enemy() )
+
+  const auto& cb = target_filter_callback;
+  if ( !target->is_sleeping() && target->is_enemy() && ( !cb || cb( this, target ) ) )
     tl.push_back( target );
 
   for ( auto* t : sim->target_non_sleeping_list )
   {
-     if ( t->is_enemy() && ( t != target ) )
+    if ( t->is_enemy() && ( t != target ) && ( !cb || cb( this, t ) ) )
     {
       tl.push_back( t );
     }
@@ -1828,6 +1844,7 @@ void action_t::execute()
   }
 
   hit_any_target               = false;
+  crit_any_target              = false;
   num_targets_hit              = 0;
   interrupt_immediate_occurred = false;
 
@@ -2041,21 +2058,11 @@ void action_t::tick( dot_t* d )
     tick_action->set_target( d->target );
 
     if ( dynamic_tick_action )
-    {
-      auto flags_ = tick_action->update_flags;
-
-      // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
-      // tick_action execute
-      if ( tick_action->rolling_periodic )
-        flags_ |= STATE_ROLLING_TA;
-
-      tick_action->update_state( tick_state, flags_, amount_type( tick_state, tick_action->direct_tick ) );
-    }
+      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
 
     tick_action->schedule_execute( tick_state );
 
-    sim->print_log("{} {} ticks ({} of {}) {}",
-        *player, *this, d->current_tick, d->num_ticks(), *d->target );
+    sim->print_log( "{} {} ticks ({} of {}) {}", *player, *this, d->current_tick, d->num_ticks(), *d->target );
   }
   else
   {
@@ -4318,9 +4325,6 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
 
-  if ( flags & STATE_ROLLING_TA )
-    state->rolling_ta_multiplier = composite_rolling_ta_multiplier( state );
-
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
 
@@ -4445,6 +4449,9 @@ void action_t::schedule_travel( action_state_t* s )
   {
     hit_any_target = true;
     num_targets_hit++;
+
+    if ( s->result == result_e::RESULT_CRIT )
+      crit_any_target = true;
   }
 }
 
@@ -4478,10 +4485,9 @@ void action_t::trigger_dot( action_state_t* s )
   if ( duration <= timespan_t::zero() )
     return;
 
-  // To simulate precasting HoTs, remove one tick worth of duration if precombat.
-  // We also add a fake zero_tick in dot_t::check_tick_zero().
-  if ( !harmful && is_precombat && !tick_zero && !tick_on_application )
-    duration -= tick_time( s );
+  // Set the rolling ta multiplier before applying the new dot
+  if ( snapshot_flags & STATE_ROLLING_TA )
+    s->rolling_ta_multiplier = composite_rolling_ta_multiplier( s );
 
   dot_t* dot = get_dot( s->target );
 

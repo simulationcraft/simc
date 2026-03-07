@@ -84,7 +84,8 @@ ground_aoe_event_t::ground_aoe_event_t( player_t* p, const ground_aoe_params_t* 
   : player_event_t( *p, immediate_pulse ? timespan_t::zero() : _pulse_time( param, p ) ),
     params( param ),
     pulse_state( ps ),
-    current_pulse( 1 )
+    current_pulse( 1 ),
+    expired( false )
 {
   // Ensure we have enough information to start pulsing.
   assert( params->target() != nullptr && "No target defined for ground_aoe_event_t" );
@@ -169,6 +170,10 @@ timespan_t ground_aoe_event_t::_pulse_time( const ground_aoe_params_t* params, c
 
 bool ground_aoe_event_t::may_pulse() const
 {
+  if ( expired )
+  {
+    return false;
+  }
   if ( params->n_pulses() > 0 )
   {
     return current_pulse < params->n_pulses();
@@ -203,42 +208,52 @@ void ground_aoe_event_t::execute()
 {
   action_t* spell_ = params->action();
 
-  if ( sim().debug )
+  if ( !expired )
   {
-    sim().print_debug( "{} {} pulse start_time={:.3f} remaining_time={:.3f} tick_time={:.3f}", player()->name(),
-                       spell_->name(), params->start_time().total_seconds(),
-                       params->n_pulses() > 0
-                           ? ( params->n_pulses() - current_pulse ) * pulse_time().total_seconds()
-                           : ( params->duration() - ( sim().current_time() - params->start_time() ) ).total_seconds(),
-                       pulse_time( false ).total_seconds() );
-  }
-
-  // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
-  // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
-  // use the ground object's x, y coordinates, instead of the source actor's.
-  pulse_state->target = params->target();
-  pulse_state->original_x = params->x();
-  pulse_state->original_y = params->y();
-  spell_->update_state( pulse_state, spell_->amount_type( pulse_state ) );
-
-  // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
-  // for the last (partial) time. Note that pulse-based ground aoe events do not have a concept of
-  // partial ticks.
-  if ( params->n_pulses() == 0 && params->expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
-  {
-    // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
-    // the last pulse.
-    auto pulse = pulse_time( false );
-    auto time_left = _time_left( params, player() );
-    if ( pulse > time_left )
+    if ( sim().debug )
     {
-      double multiplier = time_left / pulse;
-      pulse_state->da_multiplier *= multiplier;
-      pulse_state->ta_multiplier *= multiplier;
+      sim().print_debug( "{} {} pulse start_time={:.3f} remaining_time={:.3f} tick_time={:.3f}", player()->name(),
+                         spell_->name(), params->start_time().total_seconds(),
+                         params->n_pulses() > 0
+                             ? ( params->n_pulses() - current_pulse ) * pulse_time().total_seconds()
+                             : ( params->duration() - ( sim().current_time() - params->start_time() ) ).total_seconds(),
+                         pulse_time( false ).total_seconds() );
     }
-  }
 
-  spell_->schedule_execute( spell_->get_state( pulse_state ) );
+    // Compute nd initialize number of targets hit for amount multipliers based on it
+    std::vector<player_t*>& tl = spell_->target_list();
+    const int max_targets      = as<int>( tl.size() );
+    auto num_targets           = spell_->n_targets();
+    num_targets                = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+
+    // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
+    // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
+    // use the ground object's x, y coordinates, instead of the source actor's.
+    pulse_state->target     = params->target();
+    pulse_state->n_targets  = as<unsigned>( num_targets );
+    pulse_state->original_x = params->x();
+    pulse_state->original_y = params->y();
+    spell_->update_state( pulse_state, spell_->amount_type( pulse_state ) );
+
+    // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
+    // for the last (partial) time. Note that pulse-based ground aoe events do not have a concept of
+    // partial ticks.
+    if ( params->n_pulses() == 0 && params->expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
+    {
+      // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
+      // the last pulse.
+      auto pulse     = pulse_time( false );
+      auto time_left = _time_left( params, player() );
+      if ( pulse > time_left )
+      {
+        double multiplier = time_left / pulse;
+        pulse_state->da_multiplier *= multiplier;
+        pulse_state->ta_multiplier *= multiplier;
+      }
+    }
+
+    spell_->schedule_execute( spell_->get_state( pulse_state ) );
+  }
 
   // This event is about to be destroyed, notify callback of the event if needed
   if ( params->state_callback() )
@@ -280,7 +295,7 @@ void ground_aoe_event_t::handle_expiration()
 
   // Trigger immediately, since no time left. Can happen for example when ground aoe events are
   // not hasted, or when pulse-based behavior is used (instead of duration-based behavior)
-  if ( time_left <= timespan_t::zero() )
+  if ( time_left <= timespan_t::zero() || expired )
   {
     params->expiration_callback()( pulse_state );
   }

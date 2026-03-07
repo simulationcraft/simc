@@ -13,15 +13,19 @@ function(windeployqt target)
 
   add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND "${CMAKE_COMMAND}" -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/winqt/"
+                    COMMENT "[windeployqt] Removing build artefacts..."
+  )
+
+  add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND "${CMAKE_COMMAND}" -E
-                            env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+                            env -- "${WINDEPLOYQT_EXECUTABLE}"
                             ${WINDEPLOYQT_ARGS}
-                            --verbose 0
+                            --verbose 1
                             --no-compiler-runtime
                             --no-translations
                             --dir "${CMAKE_CURRENT_BINARY_DIR}/winqt/"
                             $<TARGET_FILE:${target}>
-                    COMMENT "Deploying Qt..."
+                    COMMENT "[windeployqt] Running windeployqt on target..."
   )
   install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/winqt/" DESTINATION ${SIMC_INSTALL_BIN})
 endfunction()

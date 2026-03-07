@@ -1348,8 +1348,11 @@ std::string item_t::encoded_comment()
     for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
     {
       const special_effect_t& se = *parsed.special_effects[ i ];
-      if ( se.type == SPECIAL_EFFECT_EQUIP && se.source == SPECIAL_EFFECT_SOURCE_ITEM )
+      if ( ( se.type == SPECIAL_EFFECT_EQUIP || se.type == SPECIAL_EFFECT_PASSIVE ) &&
+           se.source == SPECIAL_EFFECT_SOURCE_ITEM )
+      {
         s << "equip=" << se.encoding_str << ",";
+      }
     }
   }
 

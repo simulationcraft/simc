@@ -71,7 +71,7 @@ class ActiveClassSpellSet(DataSet):
         if m.flags_1 & 0x80:
             return False
 
-        if skill_line_ability and skill_line_ability.unk_13 not in [2, 4]:
+        if skill_line_ability and skill_line_ability.acquire_method not in [2, 4]:
             return False
 
         return True
@@ -105,7 +105,7 @@ class ActiveClassSpellSet(DataSet):
             if data.id_skill == 0 or data.id_skill not in util.class_skills():
                 continue
 
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             if not self.valid_spell(data, data.ref('id_spell')):
@@ -162,7 +162,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
         pet_skill_categories = [v for cls_ in constants.PET_SKILL_CATEGORIES for v in cls_]
 
         for data in self.db('SkillLineAbility').values():
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             class_id = util.class_id(pet_skill = data.id_skill)
@@ -228,7 +228,7 @@ class RankSpellSet(DataSet):
             if data.id_skill == 0 or data.id_skill not in util.class_skills():
                 continue
 
-            if data.unk_13 in [3]:
+            if data.acquire_method in [3]:
                 continue
 
             spell_text = self.db('Spell')[data.id_spell]
@@ -438,7 +438,7 @@ class TraitSet(DataSet):
             'tree': 0,
             'row': -1,
             'col': -1,
-            'selection_index': -1,
+            'selection_index': 0,
             'req_points': 0
         })
 
@@ -487,6 +487,7 @@ class TraitSet(DataSet):
                     _traits[key]['spell'] = definition.ref('id_spell')
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
+                    _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
@@ -494,13 +495,14 @@ class TraitSet(DataSet):
 
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
-                    if node['node'].type == 2:
-                        # Note that it's possible to have nodes with entries that have the same selection index.
-                        # In such cases it seems random which entry the game assigns as the first entry, and this
-                        # can vary build by build with no changes to the underlying data. 
-                        _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
+                    # Note that it's possible to have nodes with entries that have the same selection index.
+                    # In such cases it seems random which entry the game assigns as the first entry, and this
+                    # can vary build by build with no changes to the underlying data.
+                    _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
         _coords = {}
+        _x_map = {}
+        _y_map = {}
         for entry in _traits.values():
             if entry['tree'] == 0:
                 continue
@@ -516,8 +518,11 @@ class TraitSet(DataSet):
 
                 if key not in _coords:
                     _coords[key] = {
-                        0: set()
+                        "y": set(),
+                        "x": set()
                     }
+                    _x_map[key] = {}
+                    _y_map[key] = {}
 
                 pos_x = round(entry['node'].pos_x, -2)
                 pos_y = round(entry['node'].pos_y, -2)
@@ -526,11 +531,32 @@ class TraitSet(DataSet):
                 if pos_y < 0:
                     continue
 
-                _coords[key][0].add(pos_y)
-                if pos_y not in _coords[key]:
-                    _coords[key][pos_y] = set()
+                # assume up to +/-50 pixel variance in data coordinate values
+                # _coords[key]["x"] and ["y"] contains all potential grid coordinates of the tree
+                # _x_map and _y_map are used to fast access the nearest grid coordinate to the data coordinate
+                if pos_x not in _x_map[key]:
+                    new_x = True
+                    for _x in _coords[key]["x"]:
+                        if abs(_x - pos_x) < 50:
+                            _x_map[key][pos_x] = _x
+                            new_x = False
+                            continue
 
-                _coords[key][pos_y].add(pos_x)
+                    if new_x:
+                        _coords[key]["x"].add(pos_x)
+                        _x_map[key][pos_x] = pos_x
+
+                if pos_y not in _y_map[key]:
+                    new_y = True
+                    for _y in _coords[key]["y"]:
+                        if abs(_y - pos_y) < 50:
+                            _y_map[key][pos_y] = _y
+                            new_y = False
+                            continue
+
+                    if new_y:
+                        _coords[key]["y"].add(pos_y)
+                        _y_map[key][pos_y] = pos_y
 
         for v in _coords.values():
             for key, data in v.items():
@@ -565,8 +591,8 @@ class TraitSet(DataSet):
                 if pos_y < 0:
                     continue
 
-                entry['row'] = _coords[key][0].index(pos_y) + 1
-                entry['col'] = _coords[key][pos_y].index(pos_x) + 1
+                entry['row'] = _coords[key]["y"].index(_y_map[key][pos_y]) + 1
+                entry['col'] = _coords[key]["x"].index(_x_map[key][pos_x]) + 1
 
         return _traits
 
@@ -686,7 +712,7 @@ class PermanentEnchantItemSet(DataSet):
                     if _enchant_sei.id == 0:
                         continue
 
-                    _key = (tokenized_name, _entry.rank, _enchant.id, _enchant_sei.item_class,
+                    _key = (tokenized_name, _entry.ref('id_crafting_quality').tier, _enchant.id, _enchant_sei.item_class,
                             _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
 
                     if _key not in enchants:
@@ -719,7 +745,7 @@ class PermanentEnchantItemSet(DataSet):
                         if _enchant_sei.id == 0:
                             continue
 
-                        _key = (tokenized_name, _item2.id_crafting_quality, _enchant.id, _enchant_sei.item_class,
+                        _key = (tokenized_name, _item2.ref('id_crafting_quality').tier, _enchant.id, _enchant_sei.item_class,
                                 _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
 
                         if _key not in enchants:

@@ -9,6 +9,7 @@
 #include "buff/buff.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
+#include "sim/cooldown.hpp"
 #include "util/io.hpp"
 
 #include <string_view>
@@ -114,6 +115,10 @@ struct player_effect_t
 
   player_effect_t& set_note( std::string_view n )
   { note = n; return *this; }
+
+  player_effect_t& print_debug( sim_t*, std::string );
+  player_effect_t& print_debug( action_t* );
+  player_effect_t& print_debug( player_t* );
 
   bool operator==( const player_effect_t& other )
   {
@@ -658,6 +663,12 @@ public:
     parse_effect( pack, idx, true );
   }
 
+  // These methods are performance sensitive, make sure you profile when changing them.
+  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
+  double get_effect_value_full( const player_effect_t&, bool benefit ) const;
+  double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
+
+  // virtual methods
   virtual bool is_valid_aura( const spelleffect_data_t& ) const { return false; }
   virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
 
@@ -669,15 +680,11 @@ public:
                                                            const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
+                              const spell_data_t* s_data, size_t i ) = 0;
   virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
-                              bool /* mastery */, const spell_data_t* s_data, size_t i ) = 0;
+                              const spell_data_t* s_data, size_t i ) = 0;
 
   virtual void throw_passive_error( const spell_data_t* s ) = 0;
-
-  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
-  double get_effect_value_full( const player_effect_t&, bool benefit ) const;
-  double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 
   virtual bool can_force( const spelleffect_data_t& ) const { return true; }
 
@@ -703,9 +710,13 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> base_armor_multiplier_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
+  std::vector<player_effect_t> melee_haste_effects;
+  std::vector<player_effect_t> spell_haste_effects;
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
+  std::vector<player_effect_t> damage_taken_multiplier_effects;
+  std::vector<target_effect_t> target_damage_done_multiplier_effects;
   std::vector<player_effect_t> absorb_multiplier_effects;
   std::vector<player_effect_t> absorb_received_mult_effects;
   std::vector<player_effect_t> healing_received_effects;
@@ -748,6 +759,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
 
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+
   void invalidate_cache( cache_e c ) override;
 
   bool is_valid_aura( const spelleffect_data_t& ) const override;
@@ -758,9 +771,9 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
@@ -819,6 +832,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<target_effect_t> target_crit_bonus_effects;
 
 private:
+  std::vector<buff_t*> _cd_buffs;  // buffs that affect the cooldown of this action
   action_t* _action;
 
 public:
@@ -838,9 +852,9 @@ public:
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
                       size_t ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
@@ -849,11 +863,15 @@ public:
 
   bool check_affected_list( const std::vector<affect_list_t>&, const spelleffect_data_t&, bool& );
 
+  void process_cooldown_buffs( bool dynamic, std::vector<player_effect_t>& vec );
+  void initialize_cooldown_buffs();
+
   void parsed_effects_html( report::sc_html_stream& ) const;
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) const {}
 
   virtual size_t total_effects_count() const;
+
 
   template <typename W = parse_action_base_t, typename V>
   void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
@@ -893,55 +911,9 @@ public:
 template <typename BASE>
 struct parse_action_effects_t : public BASE, public parse_action_base_t
 {
-private:
-  std::vector<buff_t*> _cd_buffs;  // buffs that affect the cooldown of this action
-
-public:
   parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_action_base_t( player, this )
   {}
-
-  void initialize_cooldown_buffs()
-  {
-    if ( !BASE::cooldown )
-      return;
-
-    bool dynamic = range::contains( BASE::player->dynamic_cooldown_list, BASE::cooldown );
-
-    auto vec = recharge_multiplier_effects;  // make a copy
-    vec.insert( vec.end(), recharge_rate_effects.begin(), recharge_rate_effects.end() );
-
-    for ( const auto& i : vec )
-    {
-      if ( i.buff && ( i.buff->gcd_type == gcd_haste_type::NONE || !dynamic ) &&
-           !range::contains( _cd_buffs, i.buff ) )
-      {
-        BASE::sim->print_debug( "action-effects: cooldown {} recharge multiplier adjusted by buff {} ({})",
-                                BASE::cooldown->name(), i.buff->name(), i.buff->data().id() );
-
-        if ( BASE::internal_cooldown->charges )
-        {
-          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
-            BASE::cooldown->adjust_recharge_multiplier();
-            BASE::internal_cooldown->adjust_recharge_multiplier();
-          } );
-        }
-        else
-        {
-          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
-            BASE::cooldown->adjust_recharge_multiplier();
-          } );
-        }
-
-        // actions do not necessarily have unique cooldowns, so we need to go through every action and check to see if
-        // the cooldown matches, then add the buff to _cd_buffs so that we don't add duplicate stack_change_callbacks.
-        for ( auto a : BASE::player->action_list )
-          if ( a->cooldown == BASE::cooldown )
-            if ( auto tmp = dynamic_cast<parse_action_effects_t<BASE>*>( a ) )
-              tmp->_cd_buffs.push_back( i.buff );
-      }
-    }
-  }
 
   template <typename U>
   void remove_damage_entries( std::vector<U>& vec, std::string_view vec_name )
@@ -1195,6 +1167,6 @@ public:
 
   void print_custom_parsed_effects( report::sc_html_stream& os ) const override
   {
-    parsed_effects_html( os ); 
+    parsed_effects_html( os );
   }
 };

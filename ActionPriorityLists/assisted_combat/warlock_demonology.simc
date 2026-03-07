@@ -11,24 +11,22 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=summon_felguard,if=!pet.any.active
-actions.assisted_combat+=/summon_felguard,if=buff.unknown_spell_1245326.up
-actions.assisted_combat+=/summon_vilefiend
+actions.assisted_combat=summon_felguard,if=!pet.any.active,cooldown_allow_casting_success=1
+actions.assisted_combat+=/summon_felguard,if=buff.unknown_spell_1245326.up,cooldown_allow_casting_success=1
 actions.assisted_combat+=/call_dreadstalkers
-actions.assisted_combat+=/bilescourge_bombers
-actions.assisted_combat+=/grimoire_felguard
-actions.assisted_combat+=/ruination,if=soul_shard>=3
-actions.assisted_combat+=/hand_of_guldan,if=soul_shard>=3
-actions.assisted_combat+=/demonic_strength
+actions.assisted_combat+=/ruination
+actions.assisted_combat+=/hand_of_guldan
 actions.assisted_combat+=/infernal_bolt,if=buff.infernal_bolt.up
 actions.assisted_combat+=/shadow_bolt,if=buff.infernal_bolt.up
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/summon_demonic_tyrant
 actions.assisted_combat+=/demonbolt,if=buff.demonic_core.up
 actions.assisted_combat+=/power_siphon
 actions.assisted_combat+=/infernal_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/shadow_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/call_dreadstalkers
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking

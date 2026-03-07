@@ -64,6 +64,7 @@ inline bool warforged( unsigned f ) { return ( f & RAID_TYPE_WARFORGED ) == RAID
 inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
+void sort_item_bonuses( item_t& item );
 
 double curve_point_value( const dbc_t& dbc, unsigned curve_id, double point_value );
 void apply_item_scaling( item_t& item, unsigned curve_id, unsigned player_level );

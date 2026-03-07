@@ -213,17 +213,13 @@ public:
     propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> mind_flay_insanity;
-    propagate_const<buff_t*> call_of_the_void;
-    propagate_const<buff_t*> overburdened_mind;
+    propagate_const<buff_t*> idol_of_yshaarj;
     propagate_const<buff_t*> shattered_psyche;
     propagate_const<buff_t*> void_volley;
     propagate_const<buff_t*> horrific_vision;
     propagate_const<buff_t*> vision_of_nzoth;
-
-    // Tier Sets
-    propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
-    propagate_const<buff_t*> tww3_archon_4pc;   // TWW3 Archon Set 4pc helper
-    propagate_const<buff_t*> overflowing_void;  // TWW3 VW Set 4pc
+    propagate_const<buff_t*> crushing_void;
+    propagate_const<buff_t*> ancient_madness;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -311,9 +307,9 @@ public:
 
     struct
     {
-      player_talent_t shadowfiend;
       player_talent_t mindbender;
       player_talent_t inescapable_torment;
+      player_talent_t shadowfiend;
     } shared;
 
     struct
@@ -322,6 +318,7 @@ public:
       // Row 2
       player_talent_t psychic_link;
       player_talent_t misery;
+      player_talent_t invoked_nightmares;
       player_talent_t intangibility;
       player_talent_t mental_fortitude;
       // Row 3
@@ -342,6 +339,7 @@ public:
       const spell_data_t* void_volley_buff;
       const spell_data_t* void_volley_missile;
       const spell_data_t* void_volley_damage;
+      player_talent_t haunting_shadows;
       player_talent_t mental_decay;
       // Row 6
       player_talent_t dark_thoughts;
@@ -366,15 +364,18 @@ public:
       const spell_data_t* death_and_madness_reset_buff;
       player_talent_t mind_devourer;
       player_talent_t auspicious_spirits;
+      player_talent_t maddening_tentacles;
       // Row 9
       player_talent_t madness_weaving;
       player_talent_t deaths_torment;
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
+      player_talent_t crushing_void;
+      const spell_data_t* crushing_void_buff;
       // Row 10
       player_talent_t idol_of_yshaarj;
-      const spell_data_t* call_of_the_void;
+      const spell_data_t* idol_of_yshaarj_buff;
       const spell_data_t* overburdened_mind;
       player_talent_t idol_of_nzoth;
       const spell_data_t* horrific_visions;        // enemy debuff
@@ -590,7 +591,6 @@ public:
       player_talent_t void_empowerment;
       const spell_data_t* void_empowerment_buff;
       player_talent_t darkening_horizon;
-      player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
       const spell_data_t* voidwraith_spell;
       player_talent_t touch_of_the_void;
@@ -657,28 +657,17 @@ public:
     const spell_data_t* echo_of_light;
   } mastery_spells;
 
-  struct
-  {
-    const spell_data_t* voidweaver_4pc_buff;
-    const spell_data_t* archon_2pc_buff;
-    const spell_data_t* voidweaver_4pc;
-  } tww3_spells;
-
   // Cooldowns
   struct
   {
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> mindbender;
-    propagate_const<cooldown_t*> shadowfiend;
-    propagate_const<cooldown_t*> voidwraith;
-    propagate_const<cooldown_t*> fiend;
 
     // Shadow
-    propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> maddening_touch_icd;
+    propagate_const<cooldown_t*> void_volley;
 
     // Discipline
     propagate_const<cooldown_t*> penance;
@@ -694,7 +683,6 @@ public:
   {
     propagate_const<real_ppm_t*> idol_of_cthun;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
-    propagate_const<real_ppm_t*> idol_of_yshaarj;
   } rppm;
 
   struct threshold_rngs_t
@@ -716,7 +704,6 @@ public:
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> shield_discipline;
-    propagate_const<gain_t*> ascension_tww3_2pc;
     propagate_const<gain_t*> insanity_dark_thoughts;
     propagate_const<gain_t*> insanity_horrific_vision;
     propagate_const<gain_t*> insanity_vision_of_nzoth;
@@ -756,7 +743,7 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
-    propagate_const<proc_t*> depth_of_shadows;
+    propagate_const<proc_t*> shadowfiend;
     propagate_const<proc_t*> void_apparition;
     propagate_const<proc_t*> void_apparition_yshaarj;
     propagate_const<proc_t*> void_apparition_horrific_vision;
@@ -932,8 +919,6 @@ public:
   const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
-  std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
-                                                 util::span<util::string_view> splits );
 
   void arise() override;
   void demise() override;
@@ -975,6 +960,7 @@ public:
   double generate_insanity( double num_amount, gain_t* g, action_t* action );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
+  void idol_of_yshaarj_check_and_expire();
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );
@@ -1455,6 +1441,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool triggers_atonement;
   bool ignores_automatic_mastery;
   int idol_of_nzoth_execute_stacks;
+  int idol_of_nzoth_impact_stacks;
   int idol_of_nzoth_tick_stacks;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
@@ -1463,6 +1450,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       triggers_atonement( false ),
       ignores_automatic_mastery( false ),
       idol_of_nzoth_execute_stacks( 0 ),
+      idol_of_nzoth_impact_stacks( 0 ),
       idol_of_nzoth_tick_stacks( 0 )
   {
     weapon_multiplier = 0.0;
@@ -1537,14 +1525,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
         p().trigger_atonement( s, composite_atonement_multiplier( s ) );
       }
 
-      // TODO: need to re-test this logic
-      if ( priest().talents.shadow.idol_of_yshaarj.enabled() && !priest().buffs.call_of_the_void->check() &&
-           !priest().buffs.overburdened_mind->check() )
+      if ( priest().talents.shadow.idol_of_nzoth.enabled() && idol_of_nzoth_impact_stacks > 0 )
       {
-        if ( priest().rppm.idol_of_yshaarj->trigger() )
-        {
-          priest().trigger_idol_of_yshaarj();
-        }
+        priest().trigger_idol_of_nzoth( target, idol_of_nzoth_impact_stacks );
       }
     }
   }

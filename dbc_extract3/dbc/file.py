@@ -119,7 +119,7 @@ class DBCFile:
             else:
                 self.data_class = dbc.data.RawDBCRecord
         except KeyError:
-            logging.warn("Unable to determine data format for %s ...", self.class_name())
+            logging.warning("Unable to determine data format for %s ...", self.class_name())
             self.data_class = dbc.data.RawDBCRecord
 
         if len(args) > 0:

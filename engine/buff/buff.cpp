@@ -243,6 +243,7 @@ struct expiration_t : public buff_event_t
   void execute() override
   {
     assert( !buff->expiration.empty() );
+    assert( *buff->expiration.begin() == this );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
@@ -464,7 +465,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   {
     return make_buff_expr( "buff_value",
       []( buff_t* buff ) {
-        return buff->current_value;
+        return buff->check_value();
       } );
   }
   else if ( type == "default_value" )
@@ -688,7 +689,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    disable_async_expire_events_removal( false )
 {
   if ( source )  // Player Buffs
   {
@@ -750,6 +752,13 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
     ignore_time_modifier = true;
+  set_can_cancel( !s_data->flags( spell_attribute::SX_NO_CANCEL ) );
+
+  if ( s_data->flags( spell_attribute::SX_ASYNCRONOUS_STACKING_BUFF ) && _max_stack > 1 )
+  {
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_activated( false );
+  }
 
   update_trigger_calculations();
 }
@@ -1027,6 +1036,12 @@ buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
   assert( _initial_stack > 0 && "Cannot modify invalid initial stack. Use set_initial_stack() with a postive value.");
   set_initial_stack( _initial_stack + initial_stack );
+  return this;
+}
+
+buff_t* buff_t::set_initial_stack_to_max_stack()
+{
+  set_initial_stack( max_stack() );
   return this;
 }
 
@@ -1510,6 +1525,12 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
   return this;
 }
 
+buff_t* buff_t::set_disable_async_expire_events_removal( bool b )
+{
+  disable_async_expire_events_removal = b;
+  return this;
+}
+
 // Applies a modifier from -99 to infinity that controls how fast the buff functions.
 // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
 // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
@@ -1849,8 +1870,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   // In-game, procs that happen "close to eachother" are usually delayed into the same time slot. We roughly model this
   // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the
   // first delayed proc will happen.
-  if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
-       sim->default_aura_delay.mean > 0_ms )
+  if ( !activated && player && player->in_combat && sim->default_aura_delay.mean > 0_ms )
   {
     // Since we're storing stacks as value in buff_delay_t, _resolve default values first
     if ( reverse && current_stack > 0 )
@@ -2175,17 +2195,11 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
     if ( expiration.size() > 1 )
     {
-      range::sort( expiration, []( const event_t* a, const event_t* b ) {
+      std::stable_sort( expiration.begin(), expiration.end(), []( const event_t* a, const event_t* b ) {
         return a->remains() < b->remains();
       } );
     }
-    /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
-    if ( check() == before_stacks && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
-    {
-      event_t::cancel( expiration.front() );
-      expiration.erase( expiration.begin() );
-    }
-    */
+
   }
 
   timespan_t period = tick_time();
@@ -2345,7 +2359,7 @@ void buff_t::bump( int stacks, double value )
       overflow_total += overflow;
       current_stack = max_stack();
 
-      if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
+      if ( !disable_async_expire_events_removal && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
       {
         // Can't trigger more than max stack at a time
         overflow -= std::max( 0, stacks - max_stack() );
@@ -2356,7 +2370,6 @@ void buff_t::bump( int stacks, double value )
         {
           event_t* e     = expiration.front();
           int exp_stacks = debug_cast<expiration_t*>( e )->stack;
-
           if ( exp_stacks > overflow )
           {
             debug_cast<expiration_t*>( e )->stack -= overflow;
@@ -2471,10 +2484,13 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( !action->allow_class_ability_procs && trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     return false;
 
-  if ( trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+  if ( action->suppress_caster_procs && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+    return false;
+
+  if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
   return true;
@@ -2493,11 +2509,14 @@ bool buff_t::can_consume( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
-  // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
-  if ( action->proc && !action->not_a_proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( !action->allow_class_ability_procs && data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     return false;
 
-  if ( data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+  if ( action->suppress_caster_procs && !data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+    return false;
+
+  // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
+  if ( action->proc && !action->not_a_proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
   return true;

@@ -66,6 +66,7 @@ SC_EXCEPTION( sc_network_error, 60, "Network error" );
 SC_EXCEPTION( sc_report_output_error, 61, "Report output error" );
 SC_EXCEPTION( sc_invalid_sim_argument, 70, "Invalid sim argument" );
 SC_EXCEPTION( sc_invalid_fight_style, 71, "Invalid fight style" );
+SC_EXCEPTION( sc_unsupported_specialization, 72, "Unsupported specialization" );
 SC_EXCEPTION( sc_invalid_player_argument, 80, "Invalid player argument" );
 SC_EXCEPTION( sc_invalid_talent_string, 81, "Invalid talent string" );
 SC_EXCEPTION( sc_invalid_item_string, 82, "Invalid item string" );
@@ -281,6 +282,10 @@ std::string tokenize_fn( util::string_view );
 std::string inverse_tokenize( util::string_view name );
 
 bool is_number( util::string_view s );
+
+// Returns -1 if the property type doesnt have an effect index associated with it, otherwise returns the corresponding
+// effect index.
+int effect_idx_from_property_type( property_type_t type );
 
 void fuzzy_stats( std::string& encoding, util::string_view description );
 

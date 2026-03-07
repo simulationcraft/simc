@@ -1209,13 +1209,15 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e cache_behavior )
     download_item_data( item, cache_behavior );
     item.source_str = "Blizzard";
 
-    for ( const auto& id : item.parsed.bonus_id)
+    item_database::sort_item_bonuses( item );
+
+    for ( const auto& id : item.parsed.bonus_id )
     {
       auto item_bonuses = item.player->dbc->item_bonus( id );
       // Apply bonuses
       for ( const auto& bonus : item_bonuses )
       {
-        if ( ! item_database::apply_item_bonus( item, bonus ) )
+        if ( !item_database::apply_item_bonus( item, bonus ) )
           return false;
       }
     }

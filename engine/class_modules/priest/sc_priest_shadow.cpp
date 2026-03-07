@@ -57,16 +57,6 @@ struct mind_flay_base_t : public priest_spell_t
 
     priest().trigger_idol_of_cthun( d->state );
 
-    if ( priest().talents.shadow.mental_decay.enabled() )
-    {
-      timespan_t dot_extension =
-          timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 1 ).base_value() );
-      priest_td_t& td = get_td( d->state->target );
-
-      td.dots.shadow_word_pain->adjust_duration( dot_extension );
-      td.dots.vampiric_touch->adjust_duration( dot_extension );
-    }
-
     if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( d->state );
@@ -392,6 +382,16 @@ public:
           priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
         }
       }
+
+      if ( priest().talents.shadow.haunting_shadows.enabled() )
+      {
+        timespan_t dot_extension =
+            timespan_t::from_millis( priest().talents.shadow.haunting_shadows->effectN( 2 ).base_value() );
+        priest_td_t& td = get_td( s->target );
+
+        td.dots.shadow_word_pain->adjust_duration( dot_extension );
+        td.dots.vampiric_touch->adjust_duration( dot_extension );
+      }
     }
   };
 
@@ -529,11 +529,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       return false;
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.misery.enabled() )
-    {
-      return false;
-    }
-
     return priest_spell_t::ready();
   }
 
@@ -561,6 +556,21 @@ struct shadow_word_pain_t final : public priest_spell_t
           child_searing_light->execute();
         }
       }
+
+      if ( s->result_amount > 0 && priest().talents.shadow.tormented_spirits.enabled() )
+      {
+        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
+        // TODO: Check if this is nerfed by active SWPs.
+        auto chance = 2.0 / 9.0 * 0.6;
+
+        if ( s->result == RESULT_CRIT )
+          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
+
+        if ( rng().roll( chance ) )
+        {
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        }
+      }
     }
   }
 
@@ -573,15 +583,18 @@ struct shadow_word_pain_t final : public priest_spell_t
       trigger_power_of_the_dark_side();
       priest().trigger_shadowy_insight();
 
-      // its either -0.9 or -0.909. Not too sure right now. Leaning on -0.9
-      auto chance = 2.0 / 9.0 * std::pow( priest().get_active_dots( d ), -0.9 );
-
-      if ( d->state->result == RESULT_CRIT )
-        chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
-
-      if ( priest().talents.shadow.tormented_spirits.enabled() && rng().roll( chance ) )
+      if ( priest().talents.shadow.tormented_spirits.enabled() )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
+        auto chance = 2.0 / 9.0 * 0.6 * std::pow( priest().get_active_dots( d ), -0.9 );
+
+        if ( d->state->result == RESULT_CRIT )
+          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
+
+        if ( rng().roll( chance ) )
+        {
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        }
       }
     }
   }
@@ -762,20 +775,140 @@ struct vampiric_touch_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Devouring Plague
+// Shadow Word: Madness
 // ==========================================================================
 struct shadow_word_madness_t final : public priest_spell_t
 {
-  shadow_word_madness_t( priest_t& p ) : priest_spell_t( "shadow_word_madness", p, p.dot_spells.shadow_word_madness )
+  struct shadow_word_madness_heal_t final : public priest_heal_t
   {
-    may_crit                     = true;
-    affected_by_shadow_weaving   = true;
-    idol_of_nzoth_execute_stacks = 12;
+    mental_fortitude_t* mental_fortitude;
+    double mental_fortitude_percentage;
+
+    shadow_word_madness_heal_t( priest_t& p )
+      : priest_heal_t( "shadow_word_madness_heal", p, p.dot_spells.shadow_word_madness )
+    {
+      background         = true;
+      may_crit           = false;
+      may_miss           = false;
+      base_dd_multiplier = 1.0;
+
+      // Turn off resource consumption
+      base_costs[ RESOURCE_INSANITY ] = 0;
+
+      // Turn off all damage parts of the spell
+      spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
+      dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+      mental_fortitude            = p.background_actions.mental_fortitude;
+      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_heal_t::impact( state );
+
+      if ( priest().talents.shadow.mental_fortitude.enabled() &&
+           state->target->current_health() == state->target->max_health() )
+        trigger_mental_fortitude( state );
+    }
+
+    void trigger_mental_fortitude( action_state_t* state )
+    {
+      double current_value = 0;
+      if ( mental_fortitude->target_specific[ state->target ] )
+        current_value = mental_fortitude->target_specific[ state->target ]->current_value;
+
+      double amount = current_value;
+      amount += state->result_total;
+
+      sim->print_debug( "mental_fortitude_percentage: {}", mental_fortitude_percentage );
+
+      amount = std::min( amount, state->target->max_health() * mental_fortitude_percentage );
+
+      mental_fortitude->base_dd_min = mental_fortitude->base_dd_max = amount;
+
+      mental_fortitude->execute();
+    }
+
+    void trigger( double original_amount )
+    {
+      base_dd_min = base_dd_max = original_amount * data().effectN( 1 ).m_value();
+      execute();
+    }
+  };
+
+  bool casted;
+  bool triggered_by_maddening_tentacles;
+  propagate_const<shadow_word_madness_heal_t*> shadow_word_madness_heal;
+
+  shadow_word_madness_t( priest_t& p, bool _casted = false, bool _triggered_by_maddening_tentacles = true )
+    : priest_spell_t( "shadow_word_madness", p, p.dot_spells.shadow_word_madness ),
+      shadow_word_madness_heal( new shadow_word_madness_heal_t( p ) )
+  {
+    casted                           = _casted;
+    triggered_by_maddening_tentacles = _triggered_by_maddening_tentacles;
+    may_crit                         = true;
+    affected_by_shadow_weaving       = true;
+    idol_of_nzoth_execute_stacks     = 12;
   }
 
-  shadow_word_madness_t( priest_t& p, util::string_view options_str ) : shadow_word_madness_t( p )
+  shadow_word_madness_t( priest_t& p, util::string_view options_str ) : shadow_word_madness_t( p, true, false )
   {
     parse_options( options_str );
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    timespan_t duration = composite_dot_duration( s );
+    if ( duration <= timespan_t::zero() )
+      return;
+
+    dot_t* dot = get_dot( s->target );
+
+    dot->current_action = this;
+    dot->max_stack      = dot_max_stack;
+
+    if ( !dot->state )
+      dot->state = get_state();
+
+    // Combine persistent_multiplier on refresh for Shadow Word: Madness only.
+    // When a partial/weak DoT (e.g., from Tentacle Slam / Maddening Tentacles)
+    // refreshes an existing DoT, the effective persistent multiplier should be
+    // the weighted combination of the old remaining ticks and the new base
+    // ticks so total damage is preserved rather than overwritten or doubled.
+    if ( dot->is_ticking() )
+    {
+      double old_persistent = dot->state->persistent_multiplier;
+      // copy new state first to capture snapshot values from this cast
+      dot->state->copy_state( s );
+
+      // compute weights in ticks
+      double ticks_left = dot->ticks_left_fractional();
+      timespan_t new_tick = tick_time( s );
+      timespan_t new_duration = composite_dot_duration( s );
+      double new_base_ticks = new_duration / new_tick;
+
+      // Protect against divide-by-zero: use sum of weighted ticks to preserve total damage.
+      double ticks_sum = ticks_left + new_base_ticks;
+      if ( ticks_sum > 0.0 )
+      {
+        double combined = ( ticks_left * old_persistent + new_base_ticks * s->persistent_multiplier ) / ticks_sum;
+        sim->print_debug( "shadow_word_madness refresh: old_persistent={} new_persistent={} ticks_left={} new_base_ticks={} ticks_sum={} combined={}",
+                          old_persistent, s->persistent_multiplier, ticks_left, new_base_ticks, ticks_sum, combined );
+        dot->state->persistent_multiplier = combined;
+      }
+      else
+      {
+        sim->print_debug( "shadow_word_madness refresh: ticks_sum<=0, preserving old_persistent={}", old_persistent );
+        dot->state->persistent_multiplier = old_persistent;
+      }
+    }
+    else
+    {
+      dot->state->copy_state( s );
+    }
+
+    dot->trigger( duration );
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -783,9 +916,14 @@ struct shadow_word_madness_t final : public priest_spell_t
     double m = priest_spell_t::composite_persistent_multiplier( s );
 
     // Dummy effect that is hard-coded to 20
-    if ( priest().buffs.mind_devourer->check() )
+    if ( priest().buffs.mind_devourer->check() && casted && !triggered_by_maddening_tentacles )
     {
       m *= 1 + priest().buffs.mind_devourer->data().effectN( 2 ).percent();
+    }
+
+    if ( !casted && triggered_by_maddening_tentacles )
+    {
+      m *= priest().talents.shadow.maddening_tentacles->effectN( 1 ).percent();
     }
 
     return m;
@@ -793,11 +931,14 @@ struct shadow_word_madness_t final : public priest_spell_t
 
   void consume_resource() override
   {
-    priest_spell_t::consume_resource();
-
-    if ( priest().buffs.mind_devourer->up() )
+    if ( casted )
     {
-      priest().buffs.mind_devourer->decrement();
+      priest_spell_t::consume_resource();
+
+      if ( priest().buffs.mind_devourer->up() )
+      {
+        priest().buffs.mind_devourer->decrement();
+      }
     }
   }
 
@@ -809,6 +950,7 @@ struct shadow_word_madness_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      shadow_word_madness_heal->trigger( s->result_amount );
       priest().trigger_psychic_link( s );
       priest().refresh_insidious_ire_buff( s );
     }
@@ -820,6 +962,7 @@ struct shadow_word_madness_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
+      shadow_word_madness_heal->trigger( d->state->result_amount );
       priest().trigger_psychic_link( d->state );
     }
   }
@@ -828,15 +971,26 @@ struct shadow_word_madness_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) && priest().buffs.power_surge->check() )
+    if ( priest().talents.shadow.ancient_madness.enabled() && priest().buffs.voidform->up() && casted )
     {
-      priest().buffs.tww3_archon_4pc->trigger();
-    }
+      timespan_t base_duration = timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() );
 
-    if ( priest().talents.shadow.ancient_madness.enabled() && priest().buffs.voidform->up() )
-    {
-      priest().buffs.voidform->extend_duration(
-          &priest(), timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() ) );
+      if ( priest().buffs.ancient_madness->check() )
+      {
+        // Ancient Madness diminishes by 25% per cast:
+        double factor = std::pow( 1 - priest().talents.shadow.ancient_madness->effectN( 3 ).percent(),
+                                  priest().buffs.ancient_madness->check() );
+
+        timespan_t extension_ms = base_duration * factor;
+
+        priest().buffs.voidform->extend_duration( &priest(), extension_ms );
+      }
+      else
+      {
+        priest().buffs.voidform->extend_duration( &priest(), base_duration );
+      }
+
+      priest().buffs.ancient_madness->trigger();
     }
 
     if ( priest().talents.shadow.screams_of_the_void.enabled() )
@@ -844,7 +998,7 @@ struct shadow_word_madness_t final : public priest_spell_t
       priest().buffs.screams_of_the_void->trigger();
     }
 
-    if ( priest().talents.voidweaver.collapsing_void.enabled() )
+    if ( priest().talents.voidweaver.collapsing_void.enabled() && casted )
     {
       priest().expand_entropic_rift();
     }
@@ -861,7 +1015,7 @@ struct void_volley_damage_t final : public priest_spell_t
   void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
   }
 
   bool insidious_ire_active() const
@@ -891,7 +1045,7 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     : priest_spell_t( n, p, s )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: confirm this
+    affected_by_shadow_weaving = true;
     aoe                        = -1;
     radius                     = _radius;
   }
@@ -967,7 +1121,7 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() )
     {
       return false;
     }
@@ -977,9 +1131,6 @@ struct void_volley_base_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // TODO: verify
-    priest().spawn_idol_of_cthun( s );
-
     // fire s1 bolts at main target
     void_volley_damage->target = s->target;
     make_repeating_event(
@@ -996,6 +1147,11 @@ struct void_volley_base_t : public priest_spell_t
     {
       make_repeating_event(
           sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+    }
+
+    if ( priest().talents.shadow.crushing_void.enabled() && priest().buffs.crushing_void->check() )
+    {
+      priest().buffs.crushing_void->expire();
     }
   }
 };
@@ -1020,7 +1176,6 @@ struct void_volley_voidform_t final : public void_volley_base_t
 
     // 10/03/2025
     // - Generates 10 Insanity
-    // - Procs Idol of C'Thun
     // - Does not give Idol of N'Zoth stacks
     idol_of_nzoth_execute_stacks = 0;
   }
@@ -1043,10 +1198,9 @@ struct voidform_t final : public priest_spell_t
     may_miss                     = false;
     idol_of_nzoth_execute_stacks = 10;
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1370
-    if ( priest().bugs || priest().talents.shadow.improved_voidform.enabled() )
+    if ( priest().talents.shadow.improved_voidform.enabled() )
     {
-      energize_amount   = priest().bugs ? 60 : priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
+      energize_amount   = priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
       energize_type     = action_energize::ON_CAST;
       energize_resource = RESOURCE_INSANITY;
     }
@@ -1066,6 +1220,11 @@ struct voidform_t final : public priest_spell_t
                                                 timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
 
       priest().buffs.sustained_potency->expire();
+    }
+
+    if ( priest().talents.shared.mindbender.enabled() )
+    {
+      priest().pets.mindbender.spawn();
     }
   }
 
@@ -1167,19 +1326,6 @@ struct void_torrent_t final : public priest_spell_t
     return m;
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_persistent_multiplier( s );
-
-    // tww3 set bonus
-    if ( priest().buffs.overflowing_void->check() )
-    {
-      m *= 1 + priest().buffs.overflowing_void->check_value();
-    }
-
-    return m;
-  }
-
   void last_tick( dot_t* d ) override
   {
     priest().buffs.void_torrent->expire();
@@ -1204,14 +1350,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-    priest().buffs.overflowing_void->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest().spawn_idol_of_cthun( s );
   }
 };
 
@@ -1373,66 +1511,29 @@ struct shadow_weaving_t final : public priest_spell_t
 
 // ==========================================================================
 // Tentacle Slam
-// TODO: Refactor this so we can just use reduced_aoe_targets
 // ==========================================================================
 struct tentacle_slam_damage_t final : public priest_spell_t
 {
-  double parent_targets = 1;
-
-  tentacle_slam_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  tentacle_slam_damage_t( priest_t& p, const spell_data_t* s ) : priest_spell_t( "tentacle_slam_damage", p, s )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-  }
-
-  // Hacked in until the base spell covers this
-  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 0.5 );
-  }
-
-  double action_da_multiplier() const override
-  {
-    double m = priest_spell_t::action_da_multiplier();
-
-    double scaled_m = m;
-
-    if ( parent_targets > 5 )
-    {
-      scaled_m *= std::sqrt( 5 / parent_targets );
-      sim->print_debug( "{} {} updates da multiplier: Before: {} After: {} with {} targets from the parent spell.",
-                        *player, *this, m, scaled_m, parent_targets );
-    }
-
-    return scaled_m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( priest().talents.shadow.void_apparitions_3.enabled() )
-    {
-      priest().trigger_random_idol( s );
-    }
+    reduced_aoe_targets        = 5;
+    aoe                        = -1;
   }
 };
 
 struct tentacle_slam_dots_t final : public priest_spell_t
 {
   propagate_const<vampiric_touch_t*> child_vt;
-  double missile_speed;
 
-  tentacle_slam_dots_t( priest_t& p, double _missile_speed, const spell_data_t* s )
+  tentacle_slam_dots_t( priest_t& p, const spell_data_t* s )
     : priest_spell_t( "tentacle_slam_dots", p, s->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true, false ) ),
-      missile_speed( _missile_speed )
+      child_vt( new vampiric_touch_t( priest(), true, false ) )
   {
-    may_miss   = false;
-    background = true;
-    aoe        = as<int>( s->effectN( 3 ).base_value() );
-
+    may_miss             = false;
+    background           = true;
+    aoe                  = as<int>( s->effectN( 3 ).base_value() );
     child_vt->background = true;
   }
 
@@ -1472,12 +1573,6 @@ struct tentacle_slam_dots_t final : public priest_spell_t
     return tl;
   }
 
-  // Copy travel time from parent spell
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( missile_speed );
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1487,61 +1582,67 @@ struct tentacle_slam_dots_t final : public priest_spell_t
   }
 };
 
-struct tentacle_slam_base_t : public priest_spell_t
+struct tentacle_slam_t final : public priest_spell_t
 {
-  double insanity_gain;
   propagate_const<tentacle_slam_dots_t*> tentacle_slam_dots;
+  propagate_const<tentacle_slam_damage_t*> tentacle_slam_damage;
+  propagate_const<shadow_word_madness_t*> child_swm;
 
-  tentacle_slam_base_t( priest_t& p, util::string_view options_str, std::string_view name, const spell_data_t* s )
-    : priest_spell_t( name, p, s ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      tentacle_slam_dots( new tentacle_slam_dots_t( p, 0.5, s ) )
+  tentacle_slam_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "tentacle_slam", p, p.talents.shadow.tentacle_slam ),
+      tentacle_slam_damage( nullptr ),
+      tentacle_slam_dots( nullptr ),
+      child_swm( nullptr )
   {
     parse_options( options_str );
 
-    aoe   = -1;
-    range = data().max_range();
+    tentacle_slam_dots   = new tentacle_slam_dots_t( p, p.talents.shadow.tentacle_slam );
+    tentacle_slam_damage = new tentacle_slam_damage_t( p, priest().talents.shadow.tentacle_slam_damage );
+    child_swm            = new shadow_word_madness_t( priest(), false, true );
 
-    // Assume you are in line of all targets
-    radius = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
-  }
-
-  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
-  // timespan_t travel_time() const override
-  // {
-  //   return timespan_t::from_seconds( data().missile_speed() );
-  // }
-};
-
-struct tentacle_slam_t final : public tentacle_slam_base_t
-{
-  propagate_const<tentacle_slam_damage_t*> tentacle_slam_damage;
-
-  tentacle_slam_t( priest_t& p, util::string_view options_str )
-    : tentacle_slam_base_t( p, options_str, "tentacle_slam", p.talents.shadow.tentacle_slam ),
-      tentacle_slam_damage( nullptr )
-  {
-    tentacle_slam_damage =
-        new tentacle_slam_damage_t( name_str + "_damage", p, priest().talents.shadow.tentacle_slam_damage );
     add_child( tentacle_slam_damage );
+    child_swm->background = true;
+
+    idol_of_nzoth_impact_stacks = 6;
+    radius                      = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
   }
 
-  void execute() override
+  // TODO: Not found in spelldata, manually tested
+  // Alpha: ~400ms
+  // Beta: ~750ms
+  timespan_t travel_time() const override
   {
-    priest_spell_t::execute();
-
-    tentacle_slam_dots->execute();
+    return timespan_t::from_seconds( 0.5 );
   }
 
+  // Triggers actions that only occur once, not per target hit
   void impact( action_state_t* s ) override
   {
-    if ( tentacle_slam_damage )
+    priest_spell_t::impact( s );
+
+    // DoTs are triggered first so that subsequent actions can apply
+    if ( tentacle_slam_dots )
     {
-      tentacle_slam_damage->parent_targets = s->n_targets;
-      tentacle_slam_damage->schedule_execute();
+      tentacle_slam_dots->execute();
     }
 
-    priest_spell_t::impact( s );
+    // Damage occurs after
+    if ( tentacle_slam_damage )
+    {
+      tentacle_slam_damage->execute();
+    }
+
+    // Happens after DoTs have already been applied and Damage has been done
+    if ( priest().talents.shadow.maddening_tentacles.enabled() && child_swm )
+    {
+      child_swm->target = target;
+      child_swm->execute();
+    }
+
+    if ( priest().talents.shadow.void_apparitions_3.enabled() )
+    {
+      priest().trigger_random_idol( s );
+    }
   }
 };
 
@@ -1557,7 +1658,7 @@ struct horrific_vision_t final : public priest_spell_t
   horrific_vision_t( priest_t& p ) : priest_spell_t( "horrific_vision", p, p.talents.shadow.horrific_vision_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1578,7 +1679,7 @@ struct vision_of_nzoth_t final : public priest_spell_t
   vision_of_nzoth_t( priest_t& p ) : priest_spell_t( "vision_of_nzoth", p, p.talents.shadow.vision_of_nzoth_damage )
   {
     background                 = true;
-    affected_by_shadow_weaving = true;  // TODO: verify this
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1638,6 +1739,17 @@ struct voidform_t final : public priest_buff_t<buff_t>
     {
       priest().sample_data.voidform_duration->add( elapsed( sim->current_time() ).total_seconds() );
     }
+
+    if ( priest().talents.shadow.crushing_void.enabled() )
+    {
+      priest().cooldowns.void_volley->reset( true );
+      priest().buffs.crushing_void->trigger();
+    }
+
+    if ( priest().buffs.ancient_madness->check() )
+    {
+      priest().buffs.ancient_madness->expire();
+    }
   }
 };
 
@@ -1691,12 +1803,8 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
     this->reactable = true;
 
     // Create a stack change callback to adjust the number of Mind Blast charges.
-    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-      if ( cur > old )
-      {
-        priest().cooldowns.mind_blast->reset( true );
-      }
-    } );
+    set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1850,28 +1958,9 @@ void priest_t::create_buffs_shadow()
             }
           } ) );
 
-  // Idol of Y'Shaarj
-  buffs.call_of_the_void = make_buff( this, "call_of_the_void", talents.shadow.call_of_the_void )
-                               ->set_default_value_from_effect( 1 )
-                               ->add_invalidate( CACHE_HASTE )
-                               ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t time ) {
-                                 // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1372
-                                 if ( bugs )
-                                 {
-                                   buffs.overburdened_mind->trigger();
-                                 }
-
-                                 return time;
-                               } )
-                               ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
-                                 if ( new_ == 0 )
-                                 {
-                                   buffs.overburdened_mind->trigger();
-                                 }
-                               } ) );
-  buffs.overburdened_mind = make_buff( this, "overburdened_mind", talents.shadow.overburdened_mind )
-                                ->set_default_value_from_effect( 1 )
-                                ->add_invalidate( CACHE_HASTE );
+  buffs.idol_of_yshaarj = make_buff( this, "idol_of_yshaarj", talents.shadow.idol_of_yshaarj_buff )
+                              ->set_default_value_from_effect( 1 )
+                              ->add_invalidate( CACHE_HASTE );
 
   buffs.shattered_psyche =
       make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
@@ -1879,6 +1968,7 @@ void priest_t::create_buffs_shadow()
 
   buffs.horrific_vision = make_buff( this, "horrific_vision", talents.shadow.horrific_vision_buff )
                               ->set_default_value_from_effect( 1 )
+                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.horrific_vision_buff->effectN( 1 ).period() )
                               ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
@@ -1888,6 +1978,7 @@ void priest_t::create_buffs_shadow()
                               } );
   buffs.vision_of_nzoth = make_buff( this, "vision_of_nzoth", talents.shadow.vision_of_nzoth_buff )
                               ->set_default_value_from_effect( 1 )
+                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.vision_of_nzoth_buff->effectN( 1 ).period() )
                               ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
@@ -1900,13 +1991,18 @@ void priest_t::create_buffs_shadow()
   buffs.death_and_madness_reset =
       make_buff( this, "death_and_madness_reset", talents.shadow.death_and_madness_reset_buff )
           ->set_trigger_spell( talents.shadow.death_and_madness );
+
+  buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
+
+  buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness )
+                              ->set_duration( timespan_t::zero() )
+                              ->set_max_stack( 99 );
 }  // namespace priestspace
 
 void priest_t::init_rng_shadow()
 {
   rppm.idol_of_cthun          = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
   rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
-  rppm.idol_of_yshaarj        = get_rppm( "idol_of_yshaarj", talents.shadow.idol_of_yshaarj );
 
   // Shadowy Insight
   const dot_t* shadow_word_pain = get_dot( "shadow_word_pain", this );
@@ -1928,10 +2024,11 @@ void priest_t::init_spells_shadow()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   // Row 2
-  talents.shadow.psychic_link     = ST( "Psychic Link" );
-  talents.shadow.misery           = ST( "Misery" );
-  talents.shadow.intangibility    = ST( "Intangibility" );
-  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );
+  talents.shadow.psychic_link       = ST( "Psychic Link" );
+  talents.shadow.misery             = ST( "Misery" );
+  talents.shadow.invoked_nightmares = ST( "Invoked Nightmares" );
+  talents.shadow.intangibility      = ST( "Intangibility" );
+  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );
   // Row 3
   talents.shadow.thought_harvester    = ST( "Thought Harvester" );
   talents.shadow.tentacle_slam        = ST( "Tentacle Slam" );
@@ -1949,6 +2046,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_volley         = ST( "Void Volley" );
   talents.shadow.void_volley_missile = find_spell( 1242173 );
   talents.shadow.void_volley_damage  = find_spell( 1242189 );
+  talents.shadow.haunting_shadows    = ST( "Haunting Shadows" );
   talents.shadow.mental_decay        = ST( "Mental Decay" );
   // Row 6
   talents.shadow.dark_thoughts            = ST( "Dark Thoughts" );
@@ -1973,16 +2071,18 @@ void priest_t::init_spells_shadow()
   talents.shadow.death_and_madness_reset_buff = find_spell( 390628 );
   talents.shadow.mind_devourer                = ST( "Mind Devourer" );
   talents.shadow.auspicious_spirits           = ST( "Auspicious Spirits" );
+  talents.shadow.maddening_tentacles          = ST( "Maddening Tentacles" );
   // Row 9
   talents.shadow.madness_weaving     = ST( "Madness Weaving" );
   talents.shadow.deaths_torment      = ST( "Death's Torment" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );
+  talents.shadow.crushing_void       = ST( "Crushing Void" );
+  talents.shadow.crushing_void_buff  = find_spell( 1279437 );
   // Row 10
   talents.shadow.idol_of_yshaarj        = ST( "Idol of Y'Shaarj" );
-  talents.shadow.call_of_the_void       = find_spell( 373316 );   // Idol of Y'Shaarj positive haste buff
-  talents.shadow.overburdened_mind      = find_spell( 373317 );   // Idol of Y'Shaarj negative haste buff
+  talents.shadow.idol_of_yshaarj_buff   = find_spell( 373316 );
   talents.shadow.horrific_visions       = find_spell( 1243069 );  // Idol of N'Zoth debuff
   talents.shadow.horrific_vision_damage = find_spell( 1243105 );  // Idol of N'Zoth 50 stack damage
   talents.shadow.vision_of_nzoth_damage = find_spell( 1243106 );  // Idol of N'Zoth 100 stack damage
@@ -2138,12 +2238,6 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc )
     return;
   }
 
-  // Idol of Yogg-Saron only triggers for each cast that generates an apparition
-  if ( talents.shadow.idol_of_yoggsaron.enabled() )
-  {
-    buffs.idol_of_yoggsaron->trigger();
-  }
-
   auto has_vt = []( priest_td_t* t ) { return t && t->dots.vampiric_touch->is_ticking(); };
 
   int vts = 0;
@@ -2154,6 +2248,12 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc )
     {
       vts++;
     }
+  }
+
+  // Idol of Yogg-Saron only triggers for each cast that generates an apparition
+  if ( talents.shadow.idol_of_yoggsaron.enabled() && vts > 0 )
+  {
+    buffs.idol_of_yoggsaron->trigger();
   }
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
@@ -2320,7 +2420,14 @@ void priest_t::spawn_thing_from_beyond()
 
 void priest_t::trigger_idol_of_yshaarj()
 {
-  buffs.call_of_the_void->trigger();
+  pets.shadowfiend.spawn();
+
+  // Shadowfiend will only trigger the buff if you have the talent enabled
+  // Tentacle Slam will still give this buff, even if not talented into it
+  if ( !talents.shadow.idol_of_yshaarj.enabled() )
+  {
+    buffs.idol_of_yshaarj->trigger();
+  }
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
@@ -2373,7 +2480,6 @@ void priest_t::trigger_random_idol( action_state_t* s )
   switch ( chosen_idol )
   {
     case idol_e::YSHAARJ:
-      buffs.call_of_the_void->trigger();
       procs.void_apparition_yshaarj->occur();
       trigger_idol_of_yshaarj();
       break;

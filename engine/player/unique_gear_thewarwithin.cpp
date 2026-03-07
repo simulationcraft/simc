@@ -8057,9 +8057,9 @@ void ringing_ritual_mud( special_effect_t& effect )
 
       tick->base_dd_min = tick->base_dd_max = equip->effectN( 1 ).average( effect.item );
       damage_buff = unique_gear::create_buff<buff_t>( effect.player, effect.driver()->effectN( 2 ).trigger() )
-                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, int current_tick, timespan_t ) {
+                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, int, timespan_t ) {
                           tick->execute();
-                          if ( !absorb_buff->check() && self->check() && current_tick < tick_count )
+                          if ( !absorb_buff->check() && self->check() && self->current_tick < tick_count )
                             // Let events clear before expiring
                             make_event( *sim, 0_ms, [ self ] { self->expire(); } );
                         } );
@@ -9573,6 +9573,7 @@ void befoulers_syringe( special_effect_t& effect )
     {
       return generic_proc_t::create_debuff( t )
         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+        ->set_activated( true )
         // trigger on-next buff here as buffs are cleared before dots in demise()
         // TODO: confirm on-next buff/damage stacks per dot expired
         // TODO: determine if on-next buff ICD affects how often it can be triggered
@@ -9599,8 +9600,7 @@ void befoulers_syringe( special_effect_t& effect )
       // get dot refresh duration, as it accounts for the ongoing tick
       auto duration = calculate_dot_refresh_duration( get_dot( s->target ), dot_duration );
 
-      // execute() instead of trigger() to avoid proc delay
-      get_debuff( s->target )->execute( 1, buff_t::DEFAULT_VALUE(), duration );
+      get_debuff( s->target )->trigger( duration + 1_ms );  // add 1ms to ensure last tick is buffed
     }
   };
 

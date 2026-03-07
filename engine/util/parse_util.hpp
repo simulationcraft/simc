@@ -7,6 +7,7 @@
 
 #include "util/timespan.hpp"
 
+#include <array>
 #include <vector>
 
 #pragma once

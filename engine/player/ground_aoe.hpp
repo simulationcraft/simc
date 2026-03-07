@@ -131,6 +131,7 @@ struct ground_aoe_event_t : public player_event_t
   const ground_aoe_params_t* params;
   action_state_t* pulse_state;
   unsigned current_pulse;
+  bool expired;
 
 protected:
   template <typename Event, typename... Args>

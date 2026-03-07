@@ -972,6 +972,10 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
     ovr[ "stats" ][ "corruption" ] = output_data.corruption();
     ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
+  if( !output_data.talents_str().empty() )
+  {
+    ovr[ "talents" ] = output_data.talents_str();
+  }
 }
 
 void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
@@ -1404,11 +1408,14 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
   {
     auto logs = root[ "logs" ];
     logs.make_array();
-    for ( const auto& error : sim.error_list )
+    for ( const auto& error_level : sim.error_list )
     {
-      auto log = logs.add();
-      log[ "level" ] = util::tokenize_fn( util::error_level_string( error.first ) );
-      log[ "message" ] = util::to_string( error.second  );
+      for ( const auto& error : error_level.second )
+      {
+        auto log = logs.add();
+        log[ "level" ] = util::tokenize_fn( util::error_level_string( error_level.first ) );
+        log[ "message" ] = util::to_string( error );
+      }
     }
   }
 
