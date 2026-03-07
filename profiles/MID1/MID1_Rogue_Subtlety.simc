@@ -1,18 +1,18 @@
 rogue="MID1_Rogue_Subtlety"
 source=default
 spec=subtlety
-level=80
+level=90
 race=pandaren
 role=attack
 position=back
 talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwDMzMzYMbjZmZbbMzMzMjBjZWGAAAAGMGwY2MMwAziWoFbwAmZwMzA
 
 # Default consumables
-potion=tempered_potion_3
-flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
-augmentation=crystallized
-temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -32,11 +32,12 @@ actions.precombat+=/stealth
 actions=variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up
 actions+=/variable,name=targets,value=spell_targets.shuriken_storm
 actions+=/variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20
-actions+=/variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&combo_points>=6
+actions+=/variable,name=shd_cp,value=combo_points>=6
 actions+=/call_action_list,name=race
 actions+=/call_action_list,name=item
 actions+=/call_action_list,name=cds
-actions+=/shadowstrike,if=talent.unseen_blade&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=4)
+# Shadowstrike regardless of combo points to ensure Ancient Arts on every finisher as Trickster, or only on Darkest Night as Deathstalker.
+actions+=/shadowstrike,if=(buff.darkest_night.up|talent.unseen_blade)&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=3+talent.weaponmaster)
 actions+=/call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up
 actions+=/call_action_list,name=build
 actions+=/call_action_list,name=fill,if=!variable.stealth
@@ -49,9 +50,10 @@ actions.build+=/gloomblade,if=variable.targets<2
 actions.build+=/backstab,if=variable.targets<2
 
 # Cooldowns
-actions.cds=potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up
+actions.cds=potion,if=buff.shadow_blades.up|fight_remains<30
 actions.cds+=/shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&(cooldown.secret_technique.ready|talent.deathstalkers_mark)|fight_remains<=20
-actions.cds+=/shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)|fight_remains<=10
+# Shadow Dance with Secret Technique or twice during Shadow Blades, if haste is high enough delay the second use during Blades to align it with second Secret Technique.
+actions.cds+=/shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18)|fight_remains<=10
 actions.cds+=/vanish,if=!variable.stealth&energy>=40&!buff.subterfuge.up&combo_points<=1
 actions.cds+=/shadowmeld,if=energy>=40&combo_points.deficit>=3
 
@@ -63,9 +65,10 @@ actions.fill+=/bag_of_tricks
 
 actions.finish=secret_technique,if=buff.shadow_dance.up
 actions.finish+=/eviscerate,if=buff.darkest_night.up
-actions.finish+=/coup_de_grace
+actions.finish+=/coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up
 actions.finish+=/black_powder,if=variable.targets>=2
-actions.finish+=/eviscerate
+# Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before.
+actions.finish+=/eviscerate,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up|talent.deathstalkers_mark
 
 # Trinket and Items
 actions.item=use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up
@@ -101,9 +104,8 @@ off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12214/12214/12214/
 # gear_ilvl=288.50
 # gear_agility=1244
 # gear_stamina=17247
-# gear_attack_power=8
-# gear_crit_rating=772
-# gear_haste_rating=581
+# gear_crit_rating=804
+# gear_haste_rating=613
 # gear_mastery_rating=1004
 # gear_versatility_rating=82
 # gear_armor=874

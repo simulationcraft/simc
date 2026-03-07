@@ -217,18 +217,18 @@ void subtlety( player_t* p )
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20" );
-  default_->add_action( "variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&combo_points>=6" );
+  default_->add_action( "variable,name=shd_cp,value=combo_points>=6" );
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "shadowstrike,if=talent.unseen_blade&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=4)" );
+  default_->add_action( "shadowstrike,if=(buff.darkest_night.up|talent.unseen_blade)&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=3+talent.weaponmaster)", "Shadowstrike regardless of combo points to ensure Ancient Arts on every finisher as Trickster, or only on Darkest Night as Deathstalker." );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
-  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up", "Cooldowns" );
+  cds->add_action( "potion,if=buff.shadow_blades.up|fight_remains<30", "Cooldowns" );
   cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&(cooldown.secret_technique.ready|talent.deathstalkers_mark)|fight_remains<=20" );
-  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)|fight_remains<=10" );
+  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18)|fight_remains<=10", "Shadow Dance with Secret Technique or twice during Shadow Blades, if haste is high enough delay the second use during Blades to align it with second Secret Technique." );
   cds->add_action( "vanish,if=!variable.stealth&energy>=40&!buff.subterfuge.up&combo_points<=1" );
   cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>=3" );
 
@@ -245,9 +245,9 @@ void subtlety( player_t* p )
 
   finish->add_action( "secret_technique,if=buff.shadow_dance.up" );
   finish->add_action( "eviscerate,if=buff.darkest_night.up" );
-  finish->add_action( "coup_de_grace" );
+  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up" );
   finish->add_action( "black_powder,if=variable.targets>=2" );
-  finish->add_action( "eviscerate" );
+  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up|talent.deathstalkers_mark", "Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before." );
 
   build->add_action( "shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre" );
   build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2|variable.priority_rotation" );

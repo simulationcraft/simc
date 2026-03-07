@@ -108,7 +108,7 @@ void SC_SimulateThread::run()
     std::string error_str_;
     print_exception( error_str_, e );
     range::for_each( sim->error_list, [ this ]( const auto& error_level ) {
-      for ( const auto& error : error.second )
+      for ( const auto& error : error_level.second )
       {
         if ( !error_str.isEmpty() )
         {
