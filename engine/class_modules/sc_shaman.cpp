@@ -2123,6 +2123,7 @@ public:
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   double composite_attribute( attribute_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
@@ -2714,31 +2715,6 @@ public:
     }
 
     ab::snapshot_state( s, rt );
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = ab::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->talent.overcharge.ok() && dbc::is_school( this->get_school(), SCHOOL_NATURE ) )
-    {
-      double crit_chance = 0.0;
-      switch ( this->type )
-      {
-        case ACTION_ATTACK:
-          crit_chance = this->player->cache.attack_crit_chance() *
-            this->player->composite_melee_crit_chance_multiplier();
-          break;
-        case ACTION_SPELL:
-          crit_chance = this->player->cache.spell_crit_chance() *
-            this->player->composite_spell_crit_chance_multiplier();
-          break;
-        default:
-          break;
-      }
-      m += p()->talent.overcharge->effectN( 2 ).percent() * crit_chance;
-    }
-    return m;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5167,6 +5143,14 @@ struct lava_lash_t : public shaman_attack_t
     {
       p()->generate_maelstrom_weapon( this, 1 );
     }
+
+    if ( p()->talent.ashen_catalyst.ok() &&
+      td( execute_state->target )->dot.flame_shock->is_ticking() )
+    {
+      // Ashen Catalyst does not get the Lava Lash recharge multiplier applied to it
+      p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value(),
+        false, false );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5183,11 +5167,6 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
-
-    if ( p()->talent.ashen_catalyst.ok() && td( target )->dot.flame_shock->is_ticking() )
-    {
-      p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value() );
-    }
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
@@ -7053,6 +7032,8 @@ struct lava_burst_t : public shaman_spell_t
       assert( p()->action.lava_burst_pf );
       p()->action.lava_burst_pf->execute();
       p()->buff.purging_flames->decrement();
+
+      this->target_cache.is_valid = false;
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
@@ -11490,9 +11471,11 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
   if ( talent.elemental_tempo.ok() && stacks > 0 )
   {
     cooldown.strike->adjust(
-      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ) );
+      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
+      false, false );
     cooldown.lava_lash->adjust(
-      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ) );
+      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
+      false, false );
   }
 
   if ( talent.lightning_strikes.ok() && stacks > 0 )
@@ -13269,6 +13252,33 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
   double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
   return m;
 }
+
+double shaman_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
+{
+  double m = parse_player_effects_t::composite_player_critical_damage_multiplier( s, school );
+
+  if ( talent.overcharge.ok() && dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    double crit_chance = 0.0;
+    switch ( s->action->type )
+    {
+      case ACTION_ATTACK:
+        crit_chance = cache.attack_crit_chance() * composite_melee_crit_chance_multiplier();
+        break;
+      case ACTION_SPELL:
+        crit_chance = cache.spell_crit_chance() * composite_spell_crit_chance_multiplier();
+        break;
+      default:
+        break;
+    }
+
+    // Multiply by half to get the correct value since this is applied to player damage bonus
+    m *= 1.0 + talent.overcharge->effectN( 2 ).percent() * crit_chance * 0.5;
+  }
+
+  return m;
+}
+
 
 // shaman_t::invalidate_cache ===============================================
 

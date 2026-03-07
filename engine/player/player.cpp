@@ -13787,6 +13787,9 @@ void player_t::create_options()
                             500_ms, 5_s ) );
   add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
   add_option( opt_float( "midnight.refueling_orb_heal_chance", midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_violence", midnight_opts.crucible_of_erratic_energies_violence ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_sustenance", midnight_opts.crucible_of_erratic_energies_sustenance ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_predation", midnight_opts.crucible_of_erratic_energies_predation ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

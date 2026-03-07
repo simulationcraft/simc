@@ -8,39 +8,30 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  return "disabled";
-  return ( p->true_level > 79 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
+  if ( p->specialization() == EVOKER_AUGMENTATION )
+    return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
+
+  return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
 {
-  return "disabled";
-  return ( p->true_level > 79 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  return ( p->true_level > 89 ) ? "flask_of_the_blood_knights_2" : "flask_of_alchemical_chaos_3";
 }
 
 std::string food( const player_t* p )
 {
-  return "disabled";
-  return ( p->true_level > 79 ) ? "feast_of_the_divine_day" : "fated_fortune_cookie";
+  return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
 {
-  return "disabled";
-  return ( p->true_level > 79 ) ? "crystallized" : "draconic";
+  return ( p->true_level > 89 ) ? "void_touched" : "crystallized";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  return "disabled";
-
-  switch ( p->specialization() )
-  {
-    case EVOKER_AUGMENTATION:
-      return ( p->true_level > 79 ) ? "main_hand:algari_mana_oil_3" : "main_hand:hissing_rune_3";
-    default:
-      return ( p->true_level > 79 ) ? "main_hand:algari_mana_oil_3" : "main_hand:buzzing_rune_3";
-  }
+  return ( p->true_level > 89 ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:algari_mana_oil_3";
 }
 
 //devastation_apl_start

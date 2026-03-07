@@ -4958,7 +4958,8 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       if ( p()->talent.flameshaper.essence_well.enabled() )
       {
-        if ( rng().roll( p()->talent.flameshaper.essence_well->effectN( 1 ).percent() ) )
+        if ( p()->buff.dragonrage->check() ||
+             rng().roll( p()->talent.flameshaper.essence_well->effectN( 1 ).percent() ) )
         {
           p()->buff.essence_burst->trigger();
           p()->proc.essence_well->occur();

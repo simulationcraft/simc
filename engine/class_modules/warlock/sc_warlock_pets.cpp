@@ -184,7 +184,7 @@ double warlock_pet_t::composite_player_critical_damage_multiplier( const action_
     // Currently bugged and giving 260% crit damage instead of 230%. Preserving the
     // option to use the intended value for now in case of future issues.
     if ( !o()->bugs )
-      m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
+      m += o()->talents.demonic_brutality->effectN( 2 ).percent() * 0.5;
     else
       m += o()->talents.demonic_brutality->effectN( 2 ).percent();
   }
@@ -675,7 +675,11 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    if ( ( twin != nullptr ) && rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) )
+    // NOTE: 2026-03-06 It has been tested that Infernal Rapidity follows a Flat % chance model for each individual cast
+    // However, the % chance seems to be bugged and only half of what is specified in the spell data is being applied (bug)
+    double infernal_rapidity_chance = p()->o()->talents.infernal_rapidity->effectN( 1 ).percent();
+    infernal_rapidity_chance = p()->bugs ? infernal_rapidity_chance * 0.5 : infernal_rapidity_chance;
+    if ( ( twin != nullptr ) && rng().roll( infernal_rapidity_chance ) )
     {
       p()->o()->procs.infernal_rapidity->occur();
       twin->execute_on_target( target );
@@ -780,10 +784,20 @@ void wild_imp_pet_t::demise()
 
     if ( !power_siphon )
     {
+      // NOTE: 2026-03-06 It has been tested that Demoniac (Wild Imps) follows a Flat % chance model for each imp
       double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
 
       if ( imploded )
+      {
         core_chance += o()->hero.sataiels_volition->effectN( 3 ).percent();
+      }
+      else
+      {
+        // NOTE: 2026-03-06 If a Wild Imp demise normally (by not being imploded), its actual Demoniac chance to generate a
+        // demonic core is about 5x lower than indicated in the spell data (in our tests it is about ~2% instead of 10%).
+        if ( o()->bugs )
+          core_chance *= 0.2;
+      }
 
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
@@ -898,6 +912,7 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::execute();
 
+    // NOTE: 2026-03-06 It has been tested that Carnivorous Stalkers follows a Flat % chance model for each individual melee hit
     if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
     {
       debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
@@ -2050,7 +2065,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
     if ( p()->o()->normalize_destruction_mastery )
-      chaotic_energies_rng = ( min_percentage + 1.0 ) / 2.0;
+      chaotic_energies_rng = ( min_percentage + 1.0 ) * 0.5;
 
     m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
 
@@ -2115,7 +2130,7 @@ struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
     double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
     if ( p()->o()->normalize_destruction_mastery )
-      chaotic_energies_rng = ( min_percentage + 1.0 ) / 2.0;
+      chaotic_energies_rng = ( min_percentage + 1.0 ) * 0.5;
 
     m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
 

@@ -315,25 +315,6 @@ void smugglers_enchanted_edge( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1262295 r1 driver
-// 1262294 r1 buff
-// 1262298 r2 driver
-// 1262299 r2 buff
-void smugglers_lynxeye( special_effect_t& effect )
-{
-  // Smuggler's Lynxeye rank 2 looks bugged and grants the rank 1 buff instead of the rank 1 buff. Manually set the
-  // trigger_spell_id to the rank 2 buff.
-  if ( effect.spell_id == 12622298 )
-  {
-    assert( effect.trigger()->id() == 1262294 && "Smuggler's Lynxeye Rank 2 fix no longer necessary." );
-    effect.trigger_spell_id = 1262299;
-  }
-
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 // 1262120 r1 driver
 // 1262140 r1 missile
 // 1262142 r1 aoe
@@ -487,6 +468,28 @@ void eyes_of_the_eagle( special_effect_t& effect )
 {
   effect.player->parse_passive_item_effect( effect.driver() );
 }
+
+// 1262295 r1 driver
+// 1262294 r1 buff
+// 1262298 r2 driver
+// 1262299 r2 buff
+void smugglers_lynxeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1262337 r1 driver
+// 1262336 r1 buff
+// 1262339 r2 driver
+// 1262338 r2 buff
+void farstriders_hawkeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace enchants
 
 namespace embellishments
@@ -507,10 +510,77 @@ void arcanoweave_lining( special_effect_t& effect )
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
-  effect.custom_buff = buff;
-  effect.spell_id    = effect.trigger()->id();
+  struct arcanoweave_lining_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<buff_t> buffs;
+    double ally_conversion_multiplier;
+    arcanoweave_lining_cb_t( const special_effect_t& e, buff_t* personal_buff )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        ally_conversion_multiplier( e.driver()->effectN( 3 ).percent() / e.driver()->effectN( 2 ).percent() )
+    {
+      buffs[ e.player ] = personal_buff;
+    }
 
-  new dbc_proc_callback_t( effect.player, effect );
+    double ally_buff_size()
+    {
+      return debug_cast<stat_buff_t*>( get_buff( effect.player ) )->stats[ 0 ].amount * ally_conversion_multiplier;
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      if ( auto buff = buff_t::find( buff_player, "arcanoweave_insight", effect.player ) )
+      {
+        buffs[ buff_player ] = buff;
+        return buff;
+      }
+
+      auto buff_spell = effect.player->find_spell( 1229746 );
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
+      buff->set_stat_from_effect_type( A_MOD_RATING, ally_buff_size() );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void trigger_buff( player_t* buff_player )
+    {
+      if ( buff_player->is_sleeping() )
+        return;
+
+      auto buff               = get_buff( buff_player );
+      buff->trigger();
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      trigger_buff( effect.player );
+
+      if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
+      {
+        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+        for ( auto* player : helper_vector )
+        {
+          if ( player->is_pet() || player == effect.player )
+            continue;
+
+          trigger_buff( player );
+          break;
+        }
+      }
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+
+  new arcanoweave_lining_cb_t( effect, buff );
 }
 
 // 1241711 driver
@@ -2567,7 +2637,7 @@ void glorious_crusaders_keepsake( special_effect_t& e )
   struct glorious_crusaders_keepsake_cb_t : public dbc_proc_callback_t
   {
     target_specific_t<std::unordered_map<stat_e, buff_t*>> buffs;
-    std::unordered_map<int, bool> valid_party_targets;
+    std::unordered_map<size_t, bool> valid_party_targets;
 
 
     glorious_crusaders_keepsake_cb_t( const special_effect_t& e )
@@ -2784,6 +2854,38 @@ void refueling_orb( special_effect_t& e )
   new refueling_orb_cb_t( e );
 }
 
+// Driver 1253112
+// Damage 1266366
+// Missile 1 1266370
+// Missile 2 1266371
+// Missile 3 1266372
+void sylvan_wakrapuku( special_effect_t& effect )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "DiveBomb", effect, 1266366 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  struct sylvan_wakrapuku_cb_t : public dbc_proc_callback_t
+  {
+    action_t* divebomb;
+    sylvan_wakrapuku_cb_t( const special_effect_t& e, action_t* divebomb )
+      : dbc_proc_callback_t( e.player, e ), divebomb( divebomb )
+    {
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      for ( auto travel_time : { 0.5, 1.0, 1.5 } )
+      {
+        divebomb->min_travel_time = travel_time;
+        divebomb->execute_on_target( s->target );
+      }
+    }
+  };
+
+  new sylvan_wakrapuku_cb_t( effect, damage );
+}
+
 // 1272091 driver
 // 1277482 buff
 // 1255685 protocol of violence (higher rppm?)
@@ -2791,16 +2893,38 @@ void refueling_orb( special_effect_t& e )
 // 1255688 protocol of predation (higher buff value?)
 void crucible_of_erratic_energies( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
-    "They are currently not implemented." );
+  double stat_value = effect.driver()->effectN( 1 ).average( effect );
+  // Predation increases the crit rating provided by 20%. 
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_predation )
+    stat_value *= 1.0 + effect.driver()->effectN( 4 ).percent();
 
-  // leech & movement NYI
-  // TODO: does this actually have a rolemult?
+  // Without Voilence selected, this behaves as if it were 2rppm, not 4rppm.
+  if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
+    effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
+
+  // Protocol of Sustenance doubles the buff duration.
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_sustenance )
+    buff->set_duration( buff->data().duration() * effect.driver()->effectN( 5 ).base_value() );
 
   effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1255278 driver
+// 1255296 missile trigger
+// 1255357 debuff
+void tangle_of_vibrant_vines( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines_missile", effect, effect.trigger() );
+  auto debuff = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines", effect, 1255357 );
+
+  debuff->base_td = effect.driver()->effectN( 2 ).average( effect );
+  missile->impact_action = debuff;
+  effect.execute_action = missile;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -3183,13 +3307,6 @@ void murder_row_materials( special_effect_t& effect )
 // 1258890 crit
 void root_wardens_regalia( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Root Warden's Regalia: Implementation assumes you can proc while a buff is already up, "
-    "including proccing the same buff again which will refresh the buff." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Root Warden's Regalia: How the stat buff values scale with item level is unknown. "
-    "Currently implemented to scale off player level and values have not been verified in-game." );
-
   // driver does not have SX_SCALE_ILEVEL so average() scales from player level
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
 
@@ -3351,7 +3468,6 @@ void register_special_effects()
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
-  register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond, false, true );
@@ -3364,6 +3480,8 @@ void register_special_effects()
                              1236729, 1236730 },  // Worldsoul Tenacity (Vers)
                            enchants::stat_weapon_enchant );
   register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
+  register_special_effect( { 1262295, 1262298 }, enchants::smugglers_lynxeye );
+  register_special_effect( { 1262337, 1262339 }, enchants::farstriders_hawkeye );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -3428,12 +3546,15 @@ void register_special_effects()
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
+  register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines );
   register_special_effect( 1254752, trinkets::refueling_orb );
   register_special_effect( 1258535, trinkets::volatile_void_suffuser );
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
   register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
-  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake );  
+  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
+  register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
+  
   
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

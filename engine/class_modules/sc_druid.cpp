@@ -776,9 +776,11 @@ struct druid_t final : public parse_player_effects_t
 
     // Restoration
     buff_t* abundance;
+    buff_t* call_of_the_elder_druid;
     buff_t* clearcasting_tree;
     buff_t* incarnation_tree;
     buff_t* natures_swiftness;
+    buff_t* oath_of_the_elder_druid;
     buff_t* soul_of_the_forest_tree;
     buff_t* yseras_gift;
 
@@ -2242,6 +2244,34 @@ public:
 
     if ( d->state->result_total )
       BASE::td( d->target )->debuff.atmospheric_exposure->trigger( this );
+  }
+};
+
+template <typename BASE>
+struct trigger_call_of_the_elder_druid_t : public BASE
+{
+private:
+  druid_t* p_;
+  bool check;
+
+protected:
+  using base_t = trigger_call_of_the_elder_druid_t<BASE>;
+
+public:
+  trigger_call_of_the_elder_druid_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p ), check( !p->buff.oath_of_the_elder_druid->is_fallback )
+  {}
+
+  void execute() override
+  {
+    // triggers before the damage and buffs it
+    if ( check && !p_->buff.oath_of_the_elder_druid->check() )
+    {
+      p_->buff.oath_of_the_elder_druid->trigger();
+      p_->buff.call_of_the_elder_druid->trigger();
+    }
+
+    BASE::execute();
   }
 };
 
@@ -4572,7 +4602,7 @@ struct maim_t final : public cp_spender_t
 };
 
 // Rake =====================================================================
-struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
+struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elder_druid_t<cp_generator_t>>
 {
   struct rake_bleed_t final : public trigger_thriving_growth_t<use_dot_list_t<cat_attack_t>>
   {
@@ -4830,7 +4860,8 @@ struct shred_t final : public trigger_panthers_guile_t<
                               use_fluid_form_t<CAT_FORM,
                               trigger_claw_rampage_t<DRUID_FERAL,
                               trigger_wildpower_surge_t<DRUID_FERAL,
-                              cp_generator_t>>>>
+                              trigger_call_of_the_elder_druid_t<
+                              cp_generator_t>>>>>
 {
   double stealth_mul = 0.0;
 
@@ -6608,7 +6639,8 @@ struct yseras_gift_t final : public druid_heal_t
 // NOTE: this must come after regrowth and rejuvenation due to reinvigoration
 struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_t<
                                               bear_attacks::rage_spender_t<
-                                              druid_heal_t>>
+                                              trigger_call_of_the_elder_druid_t<
+                                              druid_heal_t>>>
 {
   struct echo_of_frenzied_regeneration_t final : public druid_heal_t
   {
@@ -8364,7 +8396,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     base_t::execute();
 
-    if ( p()->buff.owlkin_frenzy->up() )
+    if ( !p()->buff.ascendant_fires->check() && p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->expire();
 
     p()->buff.lunar_eclipse_override->trigger();
@@ -8435,9 +8467,9 @@ struct starfire_t final : public umbral_embrace_t<starfire_base_t>
 };
 
 // Starsurge ================================================================
-struct starsurge_offspec_t final : public druid_spell_t
+struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<druid_spell_t>
 {
-  DRUID_ABILITY( starsurge_offspec_t, druid_spell_t, "starsurge", p->talent.starsurge )
+  DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
     form_mask = MOONKIN_FORM | NO_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
@@ -8470,7 +8502,7 @@ struct starsurge_cascade_t final : public druid_spell_t
   }
 };
 
-struct starsurge_t final : public ap_spender_t
+struct starsurge_t final : public trigger_call_of_the_elder_druid_t<ap_spender_t>
 {
   struct goldrinns_fang_t final : public druid_spell_t
   {
@@ -8485,7 +8517,7 @@ struct starsurge_t final : public ap_spender_t
   action_t* goldrinn = nullptr;
   bool moonkin_form_in_precombat = false;
 
-  DRUID_ABILITY( starsurge_t, ap_spender_t, "starsurge", p->talent.starsurge )
+  DRUID_ABILITY( starsurge_t, base_t, "starsurge", p->talent.starsurge )
   {
     form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
 
@@ -8510,7 +8542,7 @@ struct starsurge_t final : public ap_spender_t
 
   void init() override
   {
-    ap_spender_t::init();
+    base_t::init();
 
     if ( is_precombat )
     {
@@ -8527,7 +8559,7 @@ struct starsurge_t final : public ap_spender_t
   bool ready() override
   {
     if ( !is_precombat )
-      return ap_spender_t::ready();
+      return base_t::ready();
 
     // in precombat, so hijack standard ready() procedure
     // emulate performing check_form_restriction()
@@ -11255,7 +11287,7 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   if ( talent.gift_of_an_ancient_guardian.ok() )
   {
-    buff.ironfur->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    buff.ironfur->set_stack_change_callback( [ this ]( auto, int old_, int new_ ) {
       if ( !old_ )
         buff.gift_of_an_ancient_guardian->trigger();
       else if ( !new_ )
@@ -11344,6 +11376,19 @@ void druid_t::create_buffs()
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
     ->set_duration( 0_ms );
 
+  buff.call_of_the_elder_druid =
+    make_fallback( talent.call_of_the_elder_druid.ok(), this, "call_of_the_elder_druid", find_spell( 319454 ) )
+      ->set_cooldown( 0_ms )
+      ->set_duration( timespan_t::from_seconds( talent.call_of_the_elder_druid->effectN( 1 ).base_value() ) );
+  buff.call_of_the_elder_druid->set_tick_callback(
+    [ this,
+      a = buff.call_of_the_elder_druid->data().effectN( 14 ).base_value(),
+      g = get_gain( "Call of the Elder Druid" ) ]
+    ( auto, auto, auto ) {
+      if ( form == CAT_FORM )
+        resource_gain( RESOURCE_COMBO_POINT, a, g );
+    } );
+
   buff.clearcasting_tree = make_fallback( talent.omen_of_clarity_tree.ok(),
     this, "clearcasting_tree", find_trigger( talent.omen_of_clarity_tree ).trigger() )
       ->set_chance( find_trigger( talent.omen_of_clarity_tree ).percent() )
@@ -11357,6 +11402,9 @@ void druid_t::create_buffs()
   buff.natures_swiftness =
     make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
       ->set_cooldown( 0_ms );
+
+  buff.oath_of_the_elder_druid =
+    make_fallback( talent.call_of_the_elder_druid.ok(), this, "oath_of_the_elder_druid", find_spell( 338643 ) );
 
   buff.soul_of_the_forest_tree =
     make_fallback( talent.soul_of_the_forest_tree.ok(), this, "soul_of_the_forest_tree", find_spell( 114108 ) )
@@ -11426,7 +11474,7 @@ void druid_t::create_buffs()
     ->set_cooldown( talent.implant->internal_cooldown() );
   if ( talent.implant.ok() )
   {
-    buff.tigers_fury->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    buff.tigers_fury->set_stack_change_callback( [ this ]( auto, int old_, int new_ ) {
       if ( !old_ || !new_ )
         buff.implant->trigger();
     } );
@@ -14011,6 +14059,7 @@ void druid_t::parse_action_effects( action_t* action )
 
   // Restoration
   _a->parse_effects( buff.abundance );
+  _a->parse_effects( buff.call_of_the_elder_druid, effect_mask_t( true ).disable( 10, 11, 12 ) );
   _a->parse_effects( buff.clearcasting_tree );
   _a->parse_effects( buff.incarnation_tree );
   _a->parse_effects( buff.natures_swiftness, CONSUME_BUFF );

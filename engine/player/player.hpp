@@ -915,6 +915,9 @@ struct player_t : public actor_t
     timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
     // Chance refueling orb will count as healing.
     double refueling_orb_heal_chance = 0.10;
+    bool crucible_of_erratic_energies_violence = false;
+    bool crucible_of_erratic_energies_sustenance = false;
+    bool crucible_of_erratic_energies_predation = false;
   } midnight_opts;
 
 private:

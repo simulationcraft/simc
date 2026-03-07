@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1650,7 +1650,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Slam (1464), Hamstring (1715), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Raging Blow (85384), Raging Blow (96103), Execute Off-Hand (163558), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383)
                    Family Flags: 1, 20, 21, 40, 41, 42, 45, 53, 69, 72, 108, 115, 116
-Hotfixed         : Affects Spells
 #2 (id=333347)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 65 | Scaled Value: 65 | Target: Self (1)
 Description      : Causes your next single-target attack to strike up to $s1 additional targets for $s2% damage.

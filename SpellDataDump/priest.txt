@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy

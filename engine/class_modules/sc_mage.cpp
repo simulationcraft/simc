@@ -4570,11 +4570,8 @@ struct meteor_burn_t final : public fire_mage_spell_t
     // tick on each pulse.
     dot_duration = base_tick_time = 1_ms;
     hasted_ticks = false;
-
-    // TODO: Hard to say how the new tick_zero attribute is supposed to work with
-    // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs )
-      dot_duration = 3_ms;
+    // Handled by the parent action
+    tick_on_application = false;
   }
 };
 
@@ -4608,10 +4605,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
-
-    // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
-    if ( p->bugs )
-      meteor_burn_duration -= 1.0_s;
   }
 
   void execute() override
@@ -4886,6 +4879,7 @@ struct splintering_ray_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
+    aoe = as<int>( p->talents.splintering_ray->effectN( 2 ).base_value() );
   }
 
   void init() override
@@ -5243,6 +5237,7 @@ struct flash_freezeburn_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
+    aoe = as<int>( p->talents.flash_freezeburn->effectN( 3 ).base_value() );
   }
 };
 
@@ -5253,11 +5248,20 @@ struct controlled_instincts_t final : public spell_t
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
-    // TODO: Only hits 5 targets despite max_targets being 6
+
+    // TODO: Description says the spell does reduced damage beyond 5 targets but
+    // in game it's a 5 target hardcap.
+    int cap = as<int>( p->talents.controlled_instincts->effectN( 5 ).base_value() );
     if ( p->bugs )
-      aoe--;
-    // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
-    reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
+    {
+      aoe = cap;
+    }
+    else
+    {
+      aoe = -1;
+      reduced_aoe_targets = cap;
+    }
+
     base_dd_min = base_dd_max = 1.0;
   }
 };
@@ -5324,7 +5328,7 @@ struct splinter_t final : public mage_spell_t
       // Add a millisecond so that the ICD doesn't perfectly align with delayed splinters.
       p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
       if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
-        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+        make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
     }
   }
 
