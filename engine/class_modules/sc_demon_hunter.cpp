@@ -5115,9 +5115,6 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         case DEMON_HUNTER_VENGEANCE:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
           break;
-        case DEMON_HUNTER_DEVOURER:
-          dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
-          break;
         default:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
           break;
@@ -7041,11 +7038,6 @@ struct blade_dance_base_t
         {
           first_blood_attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
         }
-      }
-
-      if ( first_blood_attacks.front() )
-      {
-        first_blood_attacks.front()->first_attack = true;
       }
     }
   }
