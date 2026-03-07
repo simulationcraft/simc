@@ -8180,6 +8180,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( hit_any_target && furious_throws )
     {
       make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
+
+      if ( p()->active.preemptive_strike )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.preemptive_strike, target, 400_ms );
+      }
     }
 
     if ( td( target )->debuffs.serrated_glaive->up() )
