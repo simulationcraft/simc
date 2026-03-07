@@ -8959,15 +8959,14 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( !p()->buff.metamorphosis->up() )
     {
-      p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-      p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
       p()->buff.demonsurge_demonsurge->trigger();
-
       if ( p()->talent.scarred.volatile_instinct->ok() )
       {
         p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
       }
     }
+    p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+    p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
     p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
@@ -8978,13 +8977,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
-
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.volatile_instinct->ok() )
-    {
-      p()->trigger_demonsurge(
-          demonsurge_ability::ENTER_META,
-          timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
-    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
