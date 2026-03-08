@@ -226,6 +226,27 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    // NOTE (2026-03-08): Wild Imps are currently bugged when updating Hellbent Commander stacks on demise.
+    // Hellbent Commander's stacks are updated to their correct value on each heartbeat update.
+    if ( bugs && talents.hellbent_commander.ok() )
+    {
+      const int expected_stacks = active_demon_count( !bugs );
+      const int current_stacks = buffs.hellbent_commander->check();
+
+      const int stack_diff = expected_stacks - current_stacks;
+      if ( stack_diff > 0 )
+        buffs.hellbent_commander->trigger( stack_diff );
+      else if (stack_diff < 0 )
+        buffs.hellbent_commander->decrement( std::abs( stack_diff ) );
+
+      if ( stack_diff != 0 )
+      {
+        this->sim->print_debug( "{} heartbeat event update {} buff stack number from stacks_before={} to stacks_after={}",
+                        this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
+      }
+      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
+    }
+
     for ( auto pet : active_pets )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
@@ -820,7 +841,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       SOC
     };
 
-    unsigned int action_id = 0;
+    unsigned action_id = 0;
     refreshable_dot_e dot_sel = refreshable_dot_e::INVALID;
     const auto& dot_name = splits[ 1 ];
     if ( dot_name == "wither" )
@@ -1240,7 +1261,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grimoire_imp_lords( "demonic_imp_lord", w ),
     grimoire_fel_ravagers( "demonic_fel_ravager", w ),
     wild_imps( "wild_imp", w ),
-    doomguards( "Doomguard", w ),
+    doomguards( "doomguard", w ),
     lady_sacrolash( "lady_sacrolash", w ),
     grand_warlock_alythess( "grand_warlock_alythess", w ),
     antoran_inquisitor( "antoran_inquisitor", w ),

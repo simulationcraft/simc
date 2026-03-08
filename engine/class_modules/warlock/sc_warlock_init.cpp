@@ -29,7 +29,8 @@ namespace warlock
     // Demonology
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
     warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
-    warlock_base.wild_imp = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 104317 ); // Contains pet summoning information
+    warlock_base.wild_imp = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 104317 ); // Contains pet summoning information (HoG)
+    warlock_base.wild_imp_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 279910 ); // Pet summoning information for Inner Demons, Spiteful Reconstitution and To Hell and Back
     warlock_base.fel_firebolt_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 334591 ); // 20% cost reduction for Wild Imps
 
     // Destruction
@@ -338,9 +339,11 @@ namespace warlock
     talents.stabilized_portals = find_talent_spell( talent_tree::SPECIALIZATION, "Stabilized Portals" ); // Should be ID 1276661
 
     talents.mark_of_shatug = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Shatug" ); // Should be ID 455449
+    talents.gloomhound = conditional_spell_lookup( talents.mark_of_shatug.ok(), 455465 );
     talents.gloom_slash = conditional_spell_lookup( talents.mark_of_shatug.ok(), 455491 );
 
     talents.mark_of_fharg = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of F'harg" ); // Should be ID 455450
+    talents.charhound = conditional_spell_lookup( talents.mark_of_fharg.ok(), 455476 );
     talents.infernal_presence = conditional_spell_lookup( talents.mark_of_fharg.ok(), 428453 );
     talents.infernal_presence_dmg = conditional_spell_lookup( talents.mark_of_fharg.ok(), 428455 );
 
@@ -349,6 +352,10 @@ namespace warlock
     talents.dominion_of_argus_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 3 ); // Should be ID 1276222 (III)
     talents.dominion_of_argus_1_buff = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1276166 );
     talents.dominion_of_argus_3_gain = conditional_spell_lookup( talents.dominion_of_argus_3.ok(), 1276318 );
+    talents.doa_lady_sacrolash_summon = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1282501 );
+    talents.doa_grand_warlock_alythess_summon = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1282502 );
+    talents.doa_antoran_inquisitor_summon = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1276283 );
+    talents.doa_antoran_jailer_summon = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1276182 );
 
     // Additional Tier Set spell data
     tier.wl_demonology_12_0_class_set_2pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B2 ); // Should be ID 1264871
@@ -736,7 +743,7 @@ namespace warlock
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_zero( true )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                               warlock_pet_list.wild_imps.spawn();
+                               warlock_pet_list.wild_imps.spawn( warlock_base.wild_imp_2->duration(), 1u );
                              } );
 
     buffs.tyrants_oblation = make_buff( this, "tyrants_oblation", talents.tyrants_oblation_buff )

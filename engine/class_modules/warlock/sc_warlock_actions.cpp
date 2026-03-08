@@ -2717,7 +2717,7 @@ using namespace helpers;
       {
         if ( p()->talents.spiteful_reconstitution.ok() && p()->spiteful_reconstitution_rng->trigger() )
         {
-          p()->warlock_pet_list.wild_imps.spawn( 1u );
+          p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), 1u );
           p()->procs.spiteful_reconstitution->occur();
         }
       }
@@ -2866,7 +2866,7 @@ using namespace helpers;
         unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
+          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
@@ -3072,7 +3072,7 @@ using namespace helpers;
         unsigned new_imps = ( sac_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
+          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
@@ -3248,7 +3248,7 @@ using namespace helpers;
   struct summon_lady_sacrolash_t : public warlock_spell_t
   {
     summon_lady_sacrolash_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1282501 ) )
+      : warlock_spell_t( n, p, p->talents.doa_lady_sacrolash_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3264,7 +3264,7 @@ using namespace helpers;
   struct summon_grand_warlock_alythess_t : public warlock_spell_t
   {
     summon_grand_warlock_alythess_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1282502 ) )
+      : warlock_spell_t( n, p, p->talents.doa_grand_warlock_alythess_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3280,7 +3280,7 @@ using namespace helpers;
   struct summon_antoran_inquisitor_t : public warlock_spell_t
   {
     summon_antoran_inquisitor_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1276283 ) )
+      : warlock_spell_t( n, p, p->talents.doa_antoran_inquisitor_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3296,7 +3296,7 @@ using namespace helpers;
   struct summon_antoran_jailer_t : public warlock_spell_t
   {
     summon_antoran_jailer_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1276182 ) )
+      : warlock_spell_t( n, p, p->talents.doa_antoran_jailer_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
