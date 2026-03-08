@@ -52,56 +52,29 @@
 
 # save=MID1_Warrior_Fury.simc
 
-# warrior="MID1_Warrior_Protection_Colossus"
-# level=80
-# race=mechagnome
-# spec=protection
-# role=tank
-# position=front
-# talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAAwMzYmZmZYmNzMLDGjRzMLjZYmFwwyMzwMMjZAAAAAAglBAYGLAgNzYYjMwMsQDWwMD
+warrior="MID1_Warrior_Protection"
+level=90
+race=mechagnome
+spec=protection
+role=tank
+position=front
+talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAzMDzMzMzMzmxsMjxYmGGDLzMzMDGzMAAAAYZAYGDwAbwyiRjZAMbYmNYGzMY2GAMzAAwMgB
 
-# head=living_weapons_faceshield,id=237610,bonus_id=12361/10356/12231/40/12921/12676/1533/10255
-# neck=duskblazes_desperation,id=237569,bonus_id=4800/4786/1533/12361/8781,gem_id=213458/213458
-# shoulder=living_weapons_ramparts,id=237608,bonus_id=12361/10356/12233/40/12675/1533/10255
-# back=reshii_wraps,id=235499,bonus_id=12401/9893/12259,enchant=chant_of_winged_grace_3,gem_id=238042
-# chest=living_weapons_bulwark,id=237613,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant=crystalline_radiance_3
-# wrist=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11304,gem_id=213458,crafted_stats=32/36
-# hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
-# waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11304,gem_id=213458,crafted_stats=32/36
-# legs=living_weapons_legguards,id=237609,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant=defenders_armor_kit_3
-# feet=interlopers_plated_sabatons,id=243307,bonus_id=40/10356/12361/1533/10255/13504,enchant=defenders_march_3
-# finger1=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213458/213458
-# finger2=high_nerubian_signet,id=221141,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213458/213458
-# trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
-# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
-# main_hand=factoryissue_plexhammer,id=237813,bonus_id=1533/12361/12239,enchant=councils_guile_3
-# off_hand=ward_of_the_weavingbeast,id=237723,bonus_id=1533/12361/12239
+head=night_enders_tusks,id=249952,ilevel=289,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240906/240906
+shoulder=night_enders_pauldrons,id=249950,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,ilevel=285,embellishment=arcanoweave_lining,crafted_stats=49/36
+chest=night_enders_breastplate,id=249955,ilevel=289,enchant_id=7987
+wrist=spellbreakers_bracers,id=237834,ilevel=285,embellishment=arcanoweave_lining,gem_id=240983,crafted_stats=49/36
+hands=voidclaw_gauntlets,id=151332,ilevel=289
+waist=night_enders_girdle,id=249949,ilevel=289
+legs=night_enders_chausses,id=249951,ilevel=289,enchant_id=8163
+feet=night_enders_greatboots,id=249954,ilevel=289,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240906,enchant_id=7969
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240906/240906,enchant_id=7969
+trinket1=algethar_puzzle_box,id=193701,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=turalyons_false_echo,id=249295,ilevel=289,enchant_id=8039
+off_hand=ward_of_the_spellbreaker,id=251105,ilevel=289
 
-# save=MID1_Warrior_Protection_Colossus.simc
-
-# warrior="MID1_Warrior_Protection_Thane"
-# level=80
-# race=mechagnome
-# spec=protection
-# role=tank
-# position=front
-# talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAAwMzYmZmZYmNzMLDGjRzMLjZYmFww2MzwMMjZAAAAAAglBAYGLAGYDWWMaMDgZJYDzMA
-
-# head=living_weapons_faceshield,id=237610,bonus_id=12361/10356/12231/40/12921/12676/1533/10255
-# neck=duskblazes_desperation,id=237569,bonus_id=4800/4786/1533/12361/8781,gem_id=213470/213470
-# shoulder=living_weapons_ramparts,id=237608,bonus_id=12361/10356/12233/40/12675/1533/10255
-# back=reshii_wraps,id=235499,bonus_id=12401/9893/12259,enchant=chant_of_winged_grace_3,gem_id=238042
-# chest=living_weapons_bulwark,id=237613,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant=crystalline_radiance_3
-# wrist=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
-# hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
-# waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
-# legs=living_weapons_legguards,id=237609,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant=defenders_armor_kit_3
-# feet=interlopers_plated_sabatons,id=243307,bonus_id=40/10356/12361/1533/10255/13504,enchant=defenders_march_3
-# finger1=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213470/213470
-# finger2=high_nerubian_signet,id=221141,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213470/213470
-# trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
-# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
-# main_hand=factoryissue_plexhammer,id=237813,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
-# off_hand=ward_of_the_weavingbeast,id=237723,bonus_id=1533/12361/12239
-
-# save=MID1_Warrior_Protection.simc
+save=MID1_Warrior_Protection.simc
