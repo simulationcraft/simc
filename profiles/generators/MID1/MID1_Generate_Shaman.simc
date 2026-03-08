@@ -25,7 +25,7 @@ off_hand=,id=251105,bonus_id=12806/13577
 
 save=MID1_Shaman_Elemental.simc
 
-shaman="MID1_Shaman_Enhancement"
+shaman="MID1_Shaman_Enhancement_Totemic"
 level=90
 race=troll
 spec=enhancement

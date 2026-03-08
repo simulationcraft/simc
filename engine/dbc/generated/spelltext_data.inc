@@ -28544,7 +28544,7 @@ static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
   { 1281512, "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", 0 },
   { 1281527, "$@spelldesc1273126", "Your next Kill Command has $s1% increased critical strike chance and will deal an additional $1273126s2% damage over $1273145d.", 0 },
   { 1281559, "$@spelldesc1250897", "Your demons deal ${$w1}.1% increased damage.", 0 },
-  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", 0, 0 },
+  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][].", 0, 0 },
   { 1281579, "$@spelldesc1281574", 0, 0 },
   { 1281580, "$@spelldesc1281574", 0, 0 },
   { 1281638, "Ice Lance reduces the cooldown of Frozen Orb by ${$s1/1000}.1 sec, increased by ${$s2/1000}.1 sec for each stack of Freezing Shattered.", 0, 0 },
@@ -28635,8 +28635,9 @@ static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
   { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
+  { 1281574,  0, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][]." },
 } };
 
 // Spell description variables, wow build 12.0.1.66263

@@ -8,6 +8,7 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
 actions.precombat+=/battle_stance,toggle=on
+actions.precombat+=/use_item,name=algethar_puzzle_box
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -35,7 +36,8 @@ actions+=/demolish,if=buff.colossal_might.stack>=3
 actions+=/shield_charge
 actions+=/shield_block,if=buff.shield_block.remains<=10
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
-actions+=/call_action_list,name=generic
+actions+=/run_action_list,name=colossus_st,if=talent.demolish
+actions+=/run_action_list,name=thane_st,if=talent.lightning_strikes
 
 actions.aoe=thunder_blast,if=dot.rend_dot.remains<=1
 actions.aoe+=/thunder_clap,if=dot.rend_dot.remains<=1
@@ -48,19 +50,27 @@ actions.aoe+=/thunder_blast
 actions.aoe+=/thunder_clap
 actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 
-actions.generic=thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up)
-actions.generic+=/shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled
-actions.generic+=/thunder_blast
-actions.generic+=/shield_slam
-actions.generic+=/thunder_blast,if=dot.rend_dot.remains<=2
-actions.generic+=/thunder_clap,if=dot.rend_dot.remains<=2
-actions.generic+=/thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)
-actions.generic+=/execute,if=hero_tree.mountain_thane&(rage>=70|(rage>=40&cooldown.shield_slam.remains)|(buff.sudden_death.up&talent.sudden_death.enabled))
-actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80
-actions.generic+=/revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase
-actions.generic+=/execute,if=hero_tree.mountain_thane&talent.deep_wounds.enabled
-actions.generic+=/revenge
-actions.generic+=/thunder_clap
-actions.generic+=/devastate
+actions.colossus_st=shield_slam
+actions.colossus_st+=/thunder_clap
+actions.colossus_st+=/revenge,if=buff.ravager.up
+actions.colossus_st+=/execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40
+actions.colossus_st+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80
+actions.colossus_st+=/revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase
+actions.colossus_st+=/wrecking_throw,if=talent.javelineer.enabled
+actions.colossus_st+=/shattering_throw,if=talent.javelineer.enabled
+actions.colossus_st+=/revenge
+actions.colossus_st+=/devastate
+
+actions.thane_st=thunder_blast
+actions.thane_st+=/thunder_clap,if=buff.ravager.up
+actions.thane_st+=/shield_slam
+actions.thane_st+=/thunder_clap
+actions.thane_st+=/thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)
+actions.thane_st+=/execute,if=buff.sudden_death.up|rage>=40
+actions.thane_st+=/wrecking_throw,if=talent.javelineer.enabled
+actions.thane_st+=/shattering_throw,if=talent.javelineer.enabled
+actions.thane_st+=/revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase
+actions.thane_st+=/revenge
+actions.thane_st+=/devastate
 
 actions.variables=variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20

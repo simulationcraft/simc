@@ -541,7 +541,7 @@ void arcanoweave_lining( special_effect_t& effect )
       auto buff_spell = effect.player->find_spell( 1229746 );
 
       auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
-      buff->set_stat_from_effect_type( A_MOD_RATING, ally_buff_size() );
+      buff->set_stat_from_effect_type( A_MOD_STAT, ally_buff_size() );
 
       buffs[ buff_player ] = buff;
 

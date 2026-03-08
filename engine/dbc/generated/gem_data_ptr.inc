@@ -1,5 +1,5 @@
 // Gem properties, wow build 12.0.1.66220
-static constexpr std::array<gem_property_data_t, 2405> __ptr_gem_property_data { {
+static constexpr std::array<gem_property_data_t, 2408> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
   {    4,  2688, 0x00000004, 0 }, // +$k1 Stamina
@@ -2187,9 +2187,9 @@ static constexpr std::array<gem_property_data_t, 2405> __ptr_gem_property_data {
   { 4162,  7217, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4163,  7218, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4164,  7219, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
-  { 4165,  7220, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
-  { 4166,  7221, 0x0000000e, 0 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
-  { 4167,  7222, 0x0000000e, 0 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
+  { 4165,  7220, 0x0000000e, 14118 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
+  { 4166,  7221, 0x0000000e, 14118 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
+  { 4167,  7222, 0x0000000e, 14118 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
   { 4168,  7225, 0x01000000, 0 }, // Mark of Arrogance
   { 4169,  7226, 0x01000000, 0 }, // Quick Strike
   { 4170,  7227, 0x01000000, 0 }, // Slay
@@ -2405,5 +2405,8 @@ static constexpr std::array<gem_property_data_t, 2405> __ptr_gem_property_data {
   { 4416,  8576, 0x0000000e, 0 }, // Intricate Everchill Pearl
   { 4417,  8575, 0x0000000e, 0 }, // Pristine Everchill Pearl
   { 4418,  8578, 0x0000000e, 0 }, // Perfected Everchill Pearl
+  { 4423,  8685, 0x0000000e, 14118 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
+  { 4424,  8686, 0x0000000e, 14118 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
+  { 4425,  8684, 0x0000000e, 14118 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
 } };
 

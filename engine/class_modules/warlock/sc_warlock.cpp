@@ -226,6 +226,27 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    // NOTE (2026-03-08): Wild Imps are currently bugged when updating Hellbent Commander stacks on demise.
+    // Hellbent Commander's stacks are updated to their correct value on each heartbeat update.
+    if ( bugs && talents.hellbent_commander.ok() )
+    {
+      const int expected_stacks = active_demon_count( !bugs );
+      const int current_stacks = buffs.hellbent_commander->check();
+
+      const int stack_diff = expected_stacks - current_stacks;
+      if ( stack_diff > 0 )
+        buffs.hellbent_commander->trigger( stack_diff );
+      else if (stack_diff < 0 )
+        buffs.hellbent_commander->decrement( std::abs( stack_diff ) );
+
+      if ( stack_diff != 0 )
+      {
+        this->sim->print_debug( "{} heartbeat event update {} buff stack number from stacks_before={} to stacks_after={}",
+                        this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
+      }
+      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
+    }
+
     for ( auto pet : active_pets )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
@@ -807,6 +828,163 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return this->time_to_imps( amt );
     } );
   }
+  else if ( splits.size() == 2 && splits[ 0 ] == "dot_refreshable_count" )
+  {
+    enum class refreshable_dot_e
+    {
+      INVALID = -1,
+      WITHER,
+      IMMOLATE,
+      CORRUPTION,
+      AGONY,
+      UA,
+      SOC
+    };
+
+    unsigned action_id = 0;
+    refreshable_dot_e dot_sel = refreshable_dot_e::INVALID;
+    const auto& dot_name = splits[ 1 ];
+    if ( dot_name == "wither" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+    }
+    else if ( dot_name == "immolate" )
+    {
+      if ( destruction() )
+      {
+        dot_sel = refreshable_dot_e::IMMOLATE;
+        action_id = warlock_base.immolate_old->id();
+      }
+    }
+    else if ( dot_name == "corruption" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::CORRUPTION;
+        action_id = warlock_base.corruption->id();
+      }
+    }
+    else if ( dot_name == "agony" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::AGONY;
+        action_id = talents.agony->id();
+      }
+    }
+    else if ( dot_name == "unstable_affliction" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::UA;
+        action_id = talents.unstable_affliction->id();
+      }
+    }
+    else if ( dot_name == "seed_of_corruption" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::SOC;
+        action_id = talents.seed_of_corruption->id();
+      }
+    }
+    else if ( dot_name == "immolate_or_wither" || dot_name == "wither_or_immolate" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+      else if ( destruction() )
+      {
+        dot_sel = refreshable_dot_e::IMMOLATE;
+        action_id = warlock_base.immolate_old->id();
+      }
+    }
+    else if ( dot_name == "corruption_or_wither" || dot_name == "wither_or_corruption" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+      else if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::CORRUPTION;
+        action_id = warlock_base.corruption->id();
+      }
+    }
+
+    action_t* action = nullptr;
+    if ( action_id != 0 )
+    {
+      for ( auto a : action_list )
+      {
+        if ( a->id == action_id )
+        {
+          action = a;
+          break;
+        }
+      }
+    }
+
+    return make_fn_expr( name_str, [ this, action, dot_sel, state = std::unique_ptr<action_state_t>() ]() mutable
+    {
+      size_t dot_refresh_targets = 0;
+
+      if ( !action || dot_sel == refreshable_dot_e::INVALID )
+        return dot_refresh_targets;
+
+      const auto& tl = action->target_list();
+      for ( auto t : tl )
+      {
+        warlock_td_t* tdata = get_target_data( t );
+
+        auto& dot = [ dot_sel, tdata ]() -> auto&
+        {
+          switch ( dot_sel )
+          {
+            case refreshable_dot_e::WITHER:
+              return tdata->dots.wither;
+            case refreshable_dot_e::IMMOLATE:
+              return tdata->dots.immolate;
+            case refreshable_dot_e::CORRUPTION:
+              return tdata->dots.corruption;
+            case refreshable_dot_e::AGONY:
+              return tdata->dots.agony;
+            case refreshable_dot_e::UA:
+              return tdata->dots.unstable_affliction;
+            case refreshable_dot_e::SOC:
+              return tdata->dots.seed_of_corruption;
+            default:
+              assert( false && "Unhandled refreshable_dot_e value" );
+              return tdata->dots.corruption;
+          }
+        }();
+
+        if ( dot == nullptr || !dot->is_ticking() )
+        {
+          dot_refresh_targets++;
+          continue;
+        }
+
+        if ( !state || state->action != dot->current_action )
+          state.reset( dot->current_action->get_state() );
+
+        dot->current_action->snapshot_state( state.get(), result_amount_type::DMG_OVER_TIME );
+        timespan_t new_duration = dot->current_action->composite_dot_duration( state.get() );
+
+        if ( dot->current_action->dot_refreshable( dot, new_duration ) )
+          dot_refresh_targets++;
+      }
+
+      return dot_refresh_targets;
+    } );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -1083,7 +1261,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grimoire_imp_lords( "demonic_imp_lord", w ),
     grimoire_fel_ravagers( "demonic_fel_ravager", w ),
     wild_imps( "wild_imp", w ),
-    doomguards( "Doomguard", w ),
+    doomguards( "doomguard", w ),
     lady_sacrolash( "lady_sacrolash", w ),
     grand_warlock_alythess( "grand_warlock_alythess", w ),
     antoran_inquisitor( "antoran_inquisitor", w ),

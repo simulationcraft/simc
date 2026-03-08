@@ -1717,6 +1717,7 @@ struct judgment_base_t : public paladin_melee_attack_t
   hammer_and_anvil_t* hammer_and_anvil;
   int judge_holy_power;
   int sw_holy_power;
+  bool triggers_highlords_judgment;
   judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;

@@ -267,7 +267,8 @@ public:
     // Demonology
     const spell_data_t* demonology_warlock; // Spec aura
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
-    const spell_data_t* wild_imp; // Data for pet summoning
+    const spell_data_t* wild_imp; // Data for pet summoning (HoG)
+    const spell_data_t* wild_imp_2; // Data for pet summoning (Inner Demons / Spiteful Reconstitution / To Hell and Back)
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
 
     // Destruction
@@ -474,13 +475,15 @@ public:
     player_talent_t doom;
     const spell_data_t* doom_debuff;
     const spell_data_t* doom_dmg;
-    player_talent_t hellbent_commander; // TODO: Hellbent Commander has some strange interactions, such as temporarily losing 6 stacks when 3 imps demise (implement this behavior?)
+    player_talent_t hellbent_commander;
     const spell_data_t* hellbent_commander_buff;
     player_talent_t grimoire_imp_lord;
     player_talent_t grimoire_fel_ravager;
     const spell_data_t* grimoire_of_service_buff;
     player_talent_t summon_vilefiend;
     const spell_data_t* vilefiend;
+    const spell_data_t* gloomhound;
+    const spell_data_t* charhound;
     const spell_data_t* bile_spit;
     const spell_data_t* headbutt;
 
@@ -501,6 +504,10 @@ public:
     player_talent_t dominion_of_argus_3;
     const spell_data_t* dominion_of_argus_1_buff;
     const spell_data_t* dominion_of_argus_3_gain;
+    const spell_data_t* doa_lady_sacrolash_summon;
+    const spell_data_t* doa_grand_warlock_alythess_summon;
+    const spell_data_t* doa_antoran_inquisitor_summon;
+    const spell_data_t* doa_antoran_jailer_summon;
 
     // Destruction
     player_talent_t chaos_bolt;

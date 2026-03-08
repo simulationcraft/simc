@@ -3066,7 +3066,7 @@ void algethar_puzzle_box( special_effect_t& effect )
     puzzle_box_channel_t( const special_effect_t& e, buff_t* solved ) :
       proc_spell_t( "algethar_puzzle_box_channel", e.player, e.driver(), e.item)
     {
-      channeled = hasted_ticks = true;
+      channeled = hasted_ticks = hasted_dot_duration = true;
       harmful = false;
       dot_duration = base_tick_time = base_execute_time;
       base_execute_time = 0_s;

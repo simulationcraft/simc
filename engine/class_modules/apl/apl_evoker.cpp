@@ -21,6 +21,9 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
+  if ( p->specialization() == EVOKER_AUGMENTATION )
+    return ( p->true_level > 89 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
+
   return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 

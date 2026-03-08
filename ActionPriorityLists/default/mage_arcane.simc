@@ -8,6 +8,7 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=arcane_intellect
 actions.precombat+=/variable,name=opener,op=set,value=1
+actions.precombat+=/variable,name=pulse_aoe_count,op=set,value=3
 actions.precombat+=/variable,name=funnel,op=reset,default=0
 actions.precombat+=/variable,name=sf_touch_surge,op=reset,default=0
 actions.precombat+=/variable,name=20ssteroid_trinket_equipped,op=set,value=equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn
@@ -19,7 +20,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,if=talent.spellfire_spheres&!variable.sf_touch_surge
 actions.precombat+=/arcane_surge,if=talent.spellfire_spheres&!variable.sf_touch_surge
-actions.precombat+=/arcane_pulse,if=(talent.splintering_sorcery|variable.sf_touch_surge)&talent.arcane_pulse
+actions.precombat+=/arcane_pulse,if=(talent.splintering_sorcery|variable.sf_touch_surge)&talent.arcane_pulse&(active_enemies>=variable.pulse_aoe_count)
 actions.precombat+=/arcane_blast,if=(talent.splintering_sorcery|variable.sf_touch_surge)&!talent.arcane_pulse
 
 # Executed every time the actor is available.
@@ -51,7 +52,7 @@ actions+=/arcane_barrage,if=!prev_gcd.1.arcane_surge|prev_off_gcd.touch_of_the_m
 actions.cooldowns=arcane_orb,if=(talent.splintering_sorcery|variable.sf_touch_surge)&variable.opener,line_cd=30
 actions.cooldowns+=/arcane_missiles,if=talent.spellfire_spheres&!variable.sf_touch_surge&variable.opener,line_cd=30
 # Spellslinger builds Salvo before going into cds the first time. TODO: Add fight length sensitivity.
-actions.cooldowns+=/arcane_pulse,if=(talent.splintering_sorcery|variable.sf_touch_surge)&buff.arcane_salvo.react<20&(variable.opener|(talent.orb_mastery&cooldown.arcane_surge.remains<(gcd.max*(mana.pct%(8+(8*(active_enemies>=2)))))))
+actions.cooldowns+=/arcane_pulse,if=(talent.splintering_sorcery|variable.sf_touch_surge)&buff.arcane_salvo.react<20&(variable.opener|(talent.orb_mastery&cooldown.arcane_surge.remains<(gcd.max*(mana.pct%(8+(8*(active_enemies>variable.pulse_aoe_count)))))))&(active_enemies>=variable.pulse_aoe_count)
 actions.cooldowns+=/arcane_blast,if=(talent.splintering_sorcery|variable.sf_touch_surge)&buff.arcane_salvo.react<20&(variable.opener|(talent.orb_mastery&cooldown.arcane_surge.remains<(gcd.max*(mana.pct%(8+(8*(active_enemies>=2)))))))
 actions.cooldowns+=/wait,sec=0.05,if=(prev_gcd.1._arcane_surge&gcd.remains=0)|(prev_off_gcd.touch_of_the_magi&gcd.remains=0)|(prev_off_gcd.presence_of_mind&gcd.remains=0),line_cd=1
 # Spellslinger uses Touch after Surge, Sunfury holds touch for the end of Surge to capture Soul and the run-off of resources after Soul. TODO: Look into delaying touch slightly for Spellslinger Surges to cover more Splinter generation.
@@ -70,7 +71,7 @@ actions.spellslinger+=/arcane_barrage,if=active_enemies>=2&buff.arcane_charge.st
 actions.spellslinger+=/arcane_missiles,if=buff.clearcasting.react&((buff.arcane_salvo.stack<(10+(5*(buff.overpowered_missiles.react=0))))|(buff.arcane_charge.stack<2&talent.high_voltage&active_enemies>=2)),chain=1
 actions.spellslinger+=/presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles
 actions.spellslinger+=/arcane_blast,if=buff.presence_of_mind.up
-actions.spellslinger+=/arcane_pulse,if=(buff.arcane_charge.stack<4)|((active_enemies>=2)&!variable.funnel)
+actions.spellslinger+=/arcane_pulse,if=((active_enemies>=variable.pulse_aoe_count)&!variable.funnel)
 actions.spellslinger+=/arcane_blast
 actions.spellslinger+=/arcane_barrage,if=!prev_gcd.1.arcane_surge|prev_off_gcd.touch_of_the_magi
 
@@ -82,7 +83,7 @@ actions.spellslinger_orbm+=/arcane_barrage,if=(buff.arcane_charge.stack=4|talent
 actions.spellslinger_orbm+=/arcane_missiles,if=(talent.high_voltage|talent.overpowered_missiles)&buff.clearcasting.react&buff.arcane_salvo.react<=(10+(5*(buff.overpowered_missiles.react=0)))&!prev_gcd.1.arcane_orb&(buff.arcane_surge.down|(talent.high_voltage&active_enemies=1))&(active_enemies<2|talent.overpowered_missiles),chain=1
 actions.spellslinger_orbm+=/presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<2&(buff.clearcasting.react=0|!talent.high_voltage&cooldown.arcane_orb.charges_fractional<0.95)&!prev_gcd.1.arcane_orb&!prev_gcd.1.arcane_missiles
 actions.spellslinger_orbm+=/arcane_blast,if=buff.presence_of_mind.up
-actions.spellslinger_orbm+=/arcane_pulse,if=(buff.arcane_charge.stack<4)|((active_enemies>=2)&!variable.funnel)
+actions.spellslinger_orbm+=/arcane_pulse,if=((active_enemies>=variable.pulse_aoe_count)&!variable.funnel)
 actions.spellslinger_orbm+=/arcane_blast
 actions.spellslinger_orbm+=/arcane_barrage,if=!prev_gcd.1.arcane_surge|prev_off_gcd.touch_of_the_magi
 
@@ -91,7 +92,7 @@ actions.sunfury=arcane_barrage,if=(buff.arcane_charge.stack=4&variable.sunfury_h
 # Missile if you have less than 15 Salvo or 10 with OPM proc except when Surge is up; send Missiles if you have both Surge and Touch going.
 actions.sunfury+=/arcane_missiles,if=buff.clearcasting.react&((((cooldown.touch_of_the_magi.remains>gcd.max*(8-(4*variable.sf_touch_surge))&buff.overpowered_missiles.react=0)|buff.arcane_surge.up|buff.arcane_charge.stack<3|buff.clearcasting.react>1)&buff.arcane_salvo.react<(15-(5*(buff.overpowered_missiles.react&buff.arcane_surge.down))))|(debuff.touch_of_the_magi.up&buff.arcane_surge.up)),chain=1
 actions.sunfury+=/arcane_orb,if=buff.arcane_charge.stack<2
-actions.sunfury+=/arcane_pulse,if=(buff.arcane_charge.stack<4)|((active_enemies>=2)&!variable.funnel)
+actions.sunfury+=/arcane_pulse,if=((active_enemies>=variable.pulse_aoe_count)&!variable.funnel)
 actions.sunfury+=/arcane_explosion,if=active_enemies>3&buff.arcane_charge.stack<2&!talent.impetus
 # Barrage can be used if you didn't have any of the charge generators above to get over 1 stacks. This is also not default behavior but is interestingly neutral. actions.sunfury+=/arcane_barrage,if=buff.arcane_charge.stack<2
 actions.sunfury+=/arcane_blast

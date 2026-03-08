@@ -11448,7 +11448,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p()->buffs.empower_rune_weapon->expire();
 
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ) )
-      p()->buffs.empowered_strikes->consume( this, 1 );
+      make_event( *sim, total_delay, [ this ]() { p()->buffs.empowered_strikes->consume( this, 1 ); } );
   }
 
   // Allow on-cast procs

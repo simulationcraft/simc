@@ -1374,7 +1374,8 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const sp
     judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
-  triggers_higher_calling = true;
+  triggers_higher_calling     = true;
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && s->id() != 24275;
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
@@ -1389,7 +1390,8 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
   parse_options(options_str);
-  triggers_higher_calling = true;
+  triggers_higher_calling     = true;
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && ( s->id() != 24275 || !p->bugs );
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
@@ -1425,6 +1427,21 @@ void judgment_base_t::impact(action_state_t* s)
   if ( result_is_hit( s->result ) && p()->talents.greater_judgment->ok() )
   {
     p()->trigger_greater_judgment( td( s->target ) );
+  }
+  if ( triggers_highlords_judgment )
+  {
+    double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
+    if ( p()->talents.boundless_judgment->ok() )
+      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 1 ).percent();
+    if ( p()->talents.highlords_wrath->ok() )
+      mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() /
+                                  p()->talents.highlords_wrath->effectN( 2 ).base_value();
+
+    if ( rng().roll( mastery_chance ) )
+    {
+      p()->active.highlords_judgment->set_target( s->target );
+      p()->active.highlords_judgment->execute();
+    }
   }
 }
 
@@ -1532,23 +1549,6 @@ struct judgment_ret_t : public judgment_t
     {
       p()->active.divine_resonance_ret->execute_on_target( execute_state->target );
       p()->buffs.divine_resonance->decrement();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    judgment_t::impact( s );
-    double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
-    if ( p()->talents.boundless_judgment->ok() )
-      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 1 ).percent();
-    if ( p()->talents.highlords_wrath->ok() )
-      mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() /
-                                  p()->talents.highlords_wrath->effectN( 2 ).base_value();
-
-    if ( rng().roll( mastery_chance ) )
-    {
-      p()->active.highlords_judgment->set_target( s->target );
-      p()->active.highlords_judgment->execute();
     }
   }
 };

@@ -253283,16 +253283,20 @@ Effects          :
 Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
 
 Name             : Voidlight Bindings (id=1281574) [Passive] 
+Hotfixed         : Attributes, Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : Passive (6)
+Attributes       : Passive (6), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1294777)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.
+#2 (id=1311222)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1281581
+Hotfixed         : NEW EFFECT
+Description      : Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][].
 
 Name             : Twilight Barrage (id=1281579) 
 School           : Shadowlight
@@ -253318,6 +253322,7 @@ Description      : $@spelldesc1281574
 Name             : Voidlight Bindings (id=1281581) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Triggered By     : Voidlight Bindings (1281574)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1294786)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
