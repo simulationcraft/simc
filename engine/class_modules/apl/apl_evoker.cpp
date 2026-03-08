@@ -43,11 +43,11 @@ void devastation( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe_fs = p->get_action_priority_list( "aoe_fs" );
+  action_priority_list_t* st_fs = p->get_action_priority_list( "st_fs" );
   action_priority_list_t* aoe_sc = p->get_action_priority_list( "aoe_sc" );
+  action_priority_list_t* st_sc = p->get_action_priority_list( "st_sc" );
   action_priority_list_t* es = p->get_action_priority_list( "es" );
   action_priority_list_t* green = p->get_action_priority_list( "green" );
-  action_priority_list_t* st_fs = p->get_action_priority_list( "st_fs" );
-  action_priority_list_t* st_sc = p->get_action_priority_list( "st_sc" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
