@@ -5342,7 +5342,7 @@ struct splinter_t final : public mage_spell_t
       sim->print_debug( "Augury Abounds' proc chance: {}% ({}/{} BLP)",
         chance * 100, p()->state.augury_blp_count, p()->options.augury_blp_threshold );
 
-      if ( rng().roll( chance ) || p()->state.augury_blp_count >= p()->options.augury_blp_threshold )
+      if ( p()->state.augury_blp_count >= p()->options.augury_blp_threshold || rng().roll( chance ) )
       {
         p()->state.augury_blp_count = 0;
         make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
