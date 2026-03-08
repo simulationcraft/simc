@@ -3018,19 +3018,19 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
 
-    // In-game, Arcane Pulse internally sets a target it hits as a "Background Target", 
+    // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
     // resulting in all of Pulse's background effects to be directed towards them.
     // TODO: If we're implementing the radius, revise this to use the spell's target list instead.
-    player_t* background_target = p()->target;
+    player_t* effect_target = target;
     if ( !background )
     {
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
-      background_target = rng().range( target_list() );
-      p()->trigger_splinter( background_target );
+      effect_target = rng().range( target_list() );
+      p()->trigger_splinter( effect_target );
     }
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-      make_event( *sim, 500_ms, [ this, t = background_target ] { arcane_pulse_echo->execute_on_target( t ); } );
+      make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
 
   double action_multiplier() const override
@@ -5344,9 +5344,7 @@ struct splinter_t final : public mage_spell_t
         make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
       }
       // Regardless of the roll's success, the ICD still applies; prevent BLP increments and/or rolls for the next 0.5_s.
-      // Add a millisecond so that the ICD doesn't perfectly align with delayed splinters.
-      // The last 2 splinters (not 3, hence delay) of a retrigger'd Augury are executed simultaneously w/ the initial Augury's splinters.
-      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
     }
   }
 
