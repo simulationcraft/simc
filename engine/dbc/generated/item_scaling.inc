@@ -1,4 +1,4 @@
-// Curve points data, wow build 12.0.1.66220
+// Curve points data, wow build 12.0.1.66263
 static constexpr std::array<curve_point_t, 164563> __curve_point_data { {
   {    8,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {    9,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
@@ -111198,9 +111198,9 @@ static constexpr std::array<curve_point_t, 164563> __curve_point_data { {
   { 75388,  2,   20.00000f,    5.00000f,    0.00000f,    0.00000f },
   { 75388,  3,   30.00000f,    4.00000f,    0.00000f,    0.00000f },
   { 75388,  4,   78.00000f,    8.00000f,    0.00000f,    0.00000f },
-  { 75388,  5,   81.00000f,    8.00000f,    0.00000f,    0.00000f },
-  { 75388,  6,   90.00000f,    8.00000f,    0.00000f,    0.00000f },
-  { 75388,  7,  100.00000f,    8.00000f,    0.00000f,    0.00000f },
+  { 75388,  5,   79.00000f,    8.00000f,    0.00000f,    0.00000f },
+  { 75388,  6,   80.00000f,    8.80000f,    0.00000f,    0.00000f },
+  { 75388,  7,  100.00000f,    8.80000f,    0.00000f,    0.00000f },
   { 75390,  0,    0.00000f,    0.00000f,    0.00000f,    0.00000f },
   { 75390,  1,    0.40680f,    0.00000f,    0.40680f,    0.00000f },
   { 75390,  2,    0.47083f,    0.00000f,    0.47083f,    0.00000f },
@@ -164565,7 +164565,7 @@ static constexpr std::array<curve_point_t, 164563> __curve_point_data { {
   { 101248,  6,    1.00000f,  -80.00000f,    1.00000f,  -80.00000f },
 } };
 
-// Item Scaling Config data, wow build 12.0.1.66220
+// Item Scaling Config data, wow build 12.0.1.66263
 static constexpr std::array<item_scaling_config_data_t, 276> __item_scaling_config_data { {
   {   1, 12, 70, 70 },
   {   2, 13, 70, 70 },
@@ -164845,7 +164845,7 @@ static constexpr std::array<item_scaling_config_data_t, 276> __item_scaling_conf
   { 435, 62, 0, 0 },
 } };
 
-// Item Offset Curve data, wow build 12.0.1.66220
+// Item Offset Curve data, wow build 12.0.1.66263
 static constexpr std::array<item_offset_curve_data_t, 62> __item_offset_curve_data { {
   {  1, 6243, 0 },
   {  2, 6243, -6 },

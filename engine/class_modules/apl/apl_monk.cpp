@@ -370,7 +370,9 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
   // Assisted Combat APL is partially updated and still includes references to Emperor's Capacitor
   if ( step.spell_id == 117952 && rule.condition_type == AC_PLAYER_AURA_APPLICATION_GREATER &&
        rule.condition_value_1 == 393039 && rule.condition_value_2 == 20 && rule.condition_value_3 == 0 )
-    return "1";
+    return {
+        "0",
+        "Condition `buff.emperors_capacitor.stack>=20` is not resolvable, as the source talent no longer exists." };
 
   if ( step.spell_id == 152175 && rule.condition_type == AC_TARGET_DISTANCE_LESS )
   {
@@ -404,7 +406,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
       case 1249765:
       case 1249766:
         return { "combo_strike",
-                 fmt::format( "Spell id {} is a helper buff to avoid breaking Combo Strikes for {}.",
+                 fmt::format( "Rule contains a helper buff to avoid breaking Combo Strikes for {}.",
                               rule.condition_value_1, find_spell( step.spell_id )->name_cstr() ),
                  false };
     }

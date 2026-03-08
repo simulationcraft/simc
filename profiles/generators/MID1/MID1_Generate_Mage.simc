@@ -4,7 +4,7 @@ level=90
 race=troll
 role=spell
 position=back
-talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAgBYmZmllZmhFAA2mxMzY2MLzMzYmxYMzMGbMzMjZAAGAAAzsAAmBADD
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzQzMzAAAwAAgAmZmZZZmZYBAgtxMzMmtFLzMzYmxYMzMGLMzMjZAAGAAAzsAAmBADD
 
 potion=lights_potential_2
 flask=flask_of_thalassian_resistance_2
@@ -15,14 +15,14 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 head=voidbreakers_veil,id=250060,ilevel=289,enchant_id=8017,gem_id=240983,bonus_id=13534
 neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240902/240902,bonus_id=13534
 shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
-back=adherents_silken_shroud,id=239656,bonus_id=12214/13454/8960/8791,ilevel=285,crafted_stats=36/32
+back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
 chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
-wrist=bracers_of_blazing_light,id=258580,ilevel=289,gem_id=240908,bonus_id=13534
+wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534
 hands=voidbreakers_gloves,id=250061,ilevel=289
 waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240918,bonus_id=13534
 legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
 feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=masterwork_sindorei_band,id=240949,bonus_id=12214/13453/8960/8791,enchant_id=7997,gem_id=240892,ilevel=285,crafted_stats=36/32
+finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240892
 finger2=eye_of_midnight,id=249920,ilevel=289,enchant_id=7969,gem_id=240902/240902,bonus_id=13534
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,ilevel=289
@@ -48,14 +48,14 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 head=voidbreakers_veil,id=250060,ilevel=289,enchant_id=8017,gem_id=240983,bonus_id=13534
 neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240902/240902,bonus_id=13534
 shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
-back=adherents_silken_shroud,id=239656,bonus_id=12214/13454/8960/8791,ilevel=285,crafted_stats=36/32
+back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
 chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
-wrist=bracers_of_blazing_light,id=258580,ilevel=289,gem_id=240908,bonus_id=13534
+wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534
 hands=voidbreakers_gloves,id=250061,ilevel=289
 waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240918,bonus_id=13534
 legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
 feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=masterwork_sindorei_band,id=240949,bonus_id=12214/13453/8960/8791,enchant_id=7997,gem_id=240892,ilevel=285,crafted_stats=36/32
+finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240892
 finger2=eye_of_midnight,id=249920,ilevel=289,enchant_id=7969,gem_id=240902/240902,bonus_id=13534
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,ilevel=289

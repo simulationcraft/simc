@@ -101,6 +101,7 @@ void devourer( player_t* p )
   default_->add_action( "metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1" );
   default_->add_action( "call_action_list,name=reaps,if=talent.moment_of_craving&action.reap.souls_consumed>=4&buff.metamorphosis.up&!talent.voidfall&cooldown.void_ray.remains<=gcd.max&((buff.collapsing_star_stacking.stack+action.reap.souls_consumed)<=buff.collapsing_star_stacking.max_stack|!variable.should_use_star)" );
   default_->add_action( "void_ray,if=!buff.eradicate.up|active_enemies=1", "Do not waste Eradicate on AOE." );
+  default_->add_action( "voidblade,if=buff.moment_of_craving.up&(buff.collapsing_star_stacking.at_max_stacks|buff.collapsing_star_stacking.stack+soul_fragments>=buff.collapsing_star_stacking.max_stack)&talent.devourers_bite" );
   default_->add_action( "collapsing_star,if=(!cooldown.predators_wake.up&talent.voidrush&!buff.hungering_slash.up&cooldown.voidblade.remains>=6|!talent.voidrush)&variable.should_use_star", "Use CStar after Predators Wake for VS, do not waste Voidblade CDR if possible." );
   default_->add_action( "call_action_list,name=reaps,if=(action.reap.souls_consumed>=4&buff.metamorphosis.up|full_recharge_time<=gcd.max)&!talent.voidfall", "Meta Cull Line" );
   default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.react|buff.eradicate.up&active_enemies>1", "Annihilator Reap Line" );

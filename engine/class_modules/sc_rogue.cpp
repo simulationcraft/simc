@@ -1712,7 +1712,7 @@ public:
     // Subtlety
     affected_by.shadow_blades_cp = ( ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 2 ) ) ||
                                      ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 3 ) ) ||
-                                     ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 4 ) ) );
+                                     ab::data().affected_by_label( p->talent.subtlety.shadow_blades->effectN( 4 ) ) );
 
     if ( p->talent.subtlety.dark_shadow->ok() )
     {
@@ -2059,7 +2059,8 @@ public:
 
       if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->check() )
       {
-        cp += ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 );
+        // 2026-03-07 -- Shadow Blades CP multiplier is now done via modifiers rather than scripted
+        cp += ab::energize_amount * p()->buffs.shadow_blades->data().effectN( 2 ).percent();
       }
 
       if ( affected_by.improved_ambush )
@@ -2593,7 +2594,8 @@ public:
       {
         if ( affected_by.shadow_blades_cp && ab::energize_amount > 0 && p()->buffs.shadow_blades->up() )
         {
-          const int shadow_blades_cp = as<int>( ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 ) );
+          // 2026-03-07 -- Shadow Blades CP multiplier is now done via modifiers rather than scripted
+          const int shadow_blades_cp = as<int>( ab::energize_amount * p()->buffs.shadow_blades->data().effectN( 2 ).percent() );
           trigger_combo_point_gain( shadow_blades_cp, p()->gains.shadow_blades );
         }
 
@@ -3734,12 +3736,6 @@ struct between_the_eyes_t : public rogue_attack_t
       if ( p()->talent.outlaw.gravedigger_1->ok() && rng().roll( p()->talent.outlaw.gravedigger_1->effectN( 1 ).percent() ) )
       {
         p()->buffs.between_the_eyes->trigger( data().duration() * ( cp_spend + 1 ) );
-        
-        // 2026-02-26 -- Gravedigger_1 causes the second Supercharger stack to mistakenly be consumed
-        if ( p()->bugs )
-        {
-          consume_supercharger( execute_state );
-        }
       }
 
       if ( p()->talent.outlaw.ace_up_your_sleeve->ok() )

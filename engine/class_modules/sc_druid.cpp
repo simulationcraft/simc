@@ -580,6 +580,8 @@ struct druid_t final : public parse_player_effects_t
     action_t* shift_to_bear;
     action_t* shift_to_cat;
     action_t* shift_to_moonkin;
+    action_t* hotw_cat;
+    action_t* hotw_owl;
 
     // Balance
     action_t* ascendant_eclipses;  // placeholder action
@@ -774,9 +776,11 @@ struct druid_t final : public parse_player_effects_t
 
     // Restoration
     buff_t* abundance;
+    buff_t* call_of_the_elder_druid;
     buff_t* clearcasting_tree;
     buff_t* incarnation_tree;
     buff_t* natures_swiftness;
+    buff_t* oath_of_the_elder_druid;
     buff_t* soul_of_the_forest_tree;
     buff_t* yseras_gift;
 
@@ -2240,6 +2244,34 @@ public:
 
     if ( d->state->result_total )
       BASE::td( d->target )->debuff.atmospheric_exposure->trigger( this );
+  }
+};
+
+template <typename BASE>
+struct trigger_call_of_the_elder_druid_t : public BASE
+{
+private:
+  druid_t* p_;
+  bool check;
+
+protected:
+  using base_t = trigger_call_of_the_elder_druid_t<BASE>;
+
+public:
+  trigger_call_of_the_elder_druid_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p ), check( !p->buff.oath_of_the_elder_druid->is_fallback )
+  {}
+
+  void execute() override
+  {
+    // triggers before the damage and buffs it
+    if ( check && !p_->buff.oath_of_the_elder_druid->check() )
+    {
+      p_->buff.oath_of_the_elder_druid->trigger();
+      p_->buff.call_of_the_elder_druid->trigger();
+    }
+
+    BASE::execute();
   }
 };
 
@@ -4570,7 +4602,7 @@ struct maim_t final : public cp_spender_t
 };
 
 // Rake =====================================================================
-struct rake_t final : public use_fluid_form_t<CAT_FORM, cp_generator_t>
+struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elder_druid_t<cp_generator_t>>
 {
   struct rake_bleed_t final : public trigger_thriving_growth_t<use_dot_list_t<cat_attack_t>>
   {
@@ -4828,7 +4860,8 @@ struct shred_t final : public trigger_panthers_guile_t<
                               use_fluid_form_t<CAT_FORM,
                               trigger_claw_rampage_t<DRUID_FERAL,
                               trigger_wildpower_surge_t<DRUID_FERAL,
-                              cp_generator_t>>>>
+                              trigger_call_of_the_elder_druid_t<
+                              cp_generator_t>>>>>
 {
   double stealth_mul = 0.0;
 
@@ -6606,7 +6639,8 @@ struct yseras_gift_t final : public druid_heal_t
 // NOTE: this must come after regrowth and rejuvenation due to reinvigoration
 struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_t<
                                               bear_attacks::rage_spender_t<
-                                              druid_heal_t>>
+                                              trigger_call_of_the_elder_druid_t<
+                                              druid_heal_t>>>
 {
   struct echo_of_frenzied_regeneration_t final : public druid_heal_t
   {
@@ -8329,8 +8363,14 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
-    base_aoe_multiplier *= data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() /
-                           ( 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent() );
+
+    // offspec starfire seems to do same splash as balance starfire
+    if ( p->bugs )
+      base_aoe_multiplier *= p->find_spell( 194153 )->effectN( 3 ).percent();
+    else
+      base_aoe_multiplier *= data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
+
+    base_aoe_multiplier /= 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent();
 
     auto m_data = p->get_modified_spell( &data() );
     set_energize( m_data );
@@ -8346,7 +8386,6 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
@@ -8357,7 +8396,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     base_t::execute();
 
-    if ( p()->buff.owlkin_frenzy->up() )
+    if ( !p()->buff.ascendant_fires->check() && p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->expire();
 
     p()->buff.lunar_eclipse_override->trigger();
@@ -8428,9 +8467,9 @@ struct starfire_t final : public umbral_embrace_t<starfire_base_t>
 };
 
 // Starsurge ================================================================
-struct starsurge_offspec_t final : public druid_spell_t
+struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<druid_spell_t>
 {
-  DRUID_ABILITY( starsurge_offspec_t, druid_spell_t, "starsurge", p->talent.starsurge )
+  DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
     form_mask = MOONKIN_FORM | NO_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
@@ -8439,7 +8478,6 @@ struct starsurge_offspec_t final : public druid_spell_t
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
@@ -8464,7 +8502,7 @@ struct starsurge_cascade_t final : public druid_spell_t
   }
 };
 
-struct starsurge_t final : public ap_spender_t
+struct starsurge_t final : public trigger_call_of_the_elder_druid_t<ap_spender_t>
 {
   struct goldrinns_fang_t final : public druid_spell_t
   {
@@ -8479,7 +8517,7 @@ struct starsurge_t final : public ap_spender_t
   action_t* goldrinn = nullptr;
   bool moonkin_form_in_precombat = false;
 
-  DRUID_ABILITY( starsurge_t, ap_spender_t, "starsurge", p->talent.starsurge )
+  DRUID_ABILITY( starsurge_t, base_t, "starsurge", p->talent.starsurge )
   {
     form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
 
@@ -8490,12 +8528,21 @@ struct starsurge_t final : public ap_spender_t
       add_child( goldrinn );
     }
 
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
+      add_parse_entry( da_multiplier_effects )
+        .set_value( eff.percent() )
+        .set_eff( &eff )
+        .print_debug( this );
+    }
+
     weaver_buff = p->buff.starweaver_starsurge;
   }
 
   void init() override
   {
-    ap_spender_t::init();
+    base_t::init();
 
     if ( is_precombat )
     {
@@ -8512,7 +8559,7 @@ struct starsurge_t final : public ap_spender_t
   bool ready() override
   {
     if ( !is_precombat )
-      return ap_spender_t::ready();
+      return base_t::ready();
 
     // in precombat, so hijack standard ready() procedure
     // emulate performing check_form_restriction()
@@ -8867,7 +8914,6 @@ struct wrath_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
@@ -8968,43 +9014,19 @@ struct heart_of_the_wild_t final : public druid_spell_t
   {
     harmful = may_miss = reset_melee_swing = false;
 
-    // set up cat
-    hotw_cat = p->get_secondary_action<druid_attack_t<melee_attack_t>>(
-      "heart_of_the_wild_cat", p, p->apply_override( &data(), p->spec.cat_form ), flag_e::NONE );
-    hotw_cat->name_str_reporting = "Cat";
-
-    hotw_cat->tick_action = p->get_secondary_action<cat_attacks::feral_frenzy_t::feral_frenzy_tick_t>(
-      "heart_of_the_wild_cat_tick", flag_e::NONE );
-    hotw_cat->tick_action->base_multiplier *= data().effectN( 2 ).percent();
-
-    // set up owl
-    hotw_owl =
-      new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", p, &p->buff.heart_of_the_wild_owl->data() );
-    hotw_owl->name_str_reporting = "Moonkin";
-
-    auto hotw_owl_driver = p->get_secondary_action<starfall_t::starfall_driver_t>(
-      "heart_of_the_wild_owl_driver", find_trigger( hotw_owl ).trigger(), nullptr, flag_e::NONE );
-    hotw_owl_driver->damage->name_str_reporting = "HotW";
-    hotw_owl_driver->damage->base_multiplier *= data().effectN( 5 ).percent();
-
-    replace_stats( hotw_owl, hotw_owl_driver, false );
-    replace_stats( hotw_owl, hotw_owl_driver->damage );
-
-    p->buff.heart_of_the_wild_owl->set_tick_callback( [ hotw_owl_driver ]( buff_t*, int, timespan_t ) {
-      hotw_owl_driver->execute();
-    } );
-
     // validate all version of hotw have the same cd
-    assert( cooldown->duration == p->buff.heart_of_the_wild_bear->data().cooldown() );
-    assert( cooldown->duration == hotw_cat->data().cooldown() );
-    assert( cooldown->duration == hotw_owl->data().cooldown() );
+    assert( p->buff.heart_of_the_wild_bear->is_fallback ||
+            cooldown->duration == p->buff.heart_of_the_wild_bear->data().cooldown() );
+    assert( !p->active.hotw_cat || cooldown->duration == p->active.hotw_cat->data().cooldown() );
+    assert( !p->active.hotw_owl || cooldown->duration == p->active.hotw_owl->data().cooldown() );
   }
 
   void init() override
   {
     druid_spell_t::init();
 
-    hotw_cat->tick_action->gain = hotw_cat->gain;
+    if ( p()->active.hotw_cat )
+      p()->active.hotw_cat->tick_action->gain = p()->active.hotw_cat->gain;
   }
 
   void execute() override
@@ -9014,22 +9036,21 @@ struct heart_of_the_wild_t final : public druid_spell_t
     switch( p()->form )
     {
       case BEAR_FORM:
-        if ( p()->specialization() == DRUID_GUARDIAN )
-          break;
-        p()->buff.heart_of_the_wild_bear->trigger();
+        if( !p()->buff.heart_of_the_wild_bear->is_fallback )
+          p()->buff.heart_of_the_wild_bear->trigger();
         break;
 
       case CAT_FORM:
-        if ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_BALANCE )
-          break;
-        hotw_cat->execute_on_target( target );
+        if ( p()->active.hotw_cat )
+          p()->active.hotw_cat->execute_on_target( target );
         break;
 
       case MOONKIN_FORM:
-        if ( p()->specialization() == DRUID_BALANCE )
-          break;
-        hotw_owl->stats->add_execute( 0_ms, target );
-        p()->buff.heart_of_the_wild_owl->trigger();
+        if ( p()->active.hotw_owl )
+        {
+          p()->active.hotw_owl->stats->add_execute( 0_ms, target );
+          p()->buff.heart_of_the_wild_owl->trigger();
+        }
         break;
 
       default: break;
@@ -10832,7 +10853,7 @@ void druid_t::create_buffs()
     make_fallback( talent.forestwalk.ok(), this, "forestwalk", find_trigger( talent.forestwalk ).trigger() )
       ->set_default_value( find_trigger( talent.forestwalk ).percent() );
 
-  buff.heart_of_the_wild_bear = make_fallback( talent.heart_of_the_wild.ok(),
+  buff.heart_of_the_wild_bear = make_fallback( talent.heart_of_the_wild.ok() && specialization() != DRUID_GUARDIAN,
     this, "heart_of_the_wild", apply_override( talent.heart_of_the_wild, spec.bear_form ) )
       ->set_cooldown( 0_ms );
   buff.heart_of_the_wild_bear->set_stack_change_callback(
@@ -11026,11 +11047,13 @@ void druid_t::create_buffs()
   buff.solstice = make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
     ->set_default_value( find_trigger( talent.solstice ).percent() );
 
-  buff.starfall = make_fallback( spec.starfall->ok(), this, "starfall", spec.starfall )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_freeze_stacks( true )
-    ->set_partial_tick( true )                           // TODO: confirm true?
-    ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
+  // lookup via spell_id for convoke
+  buff.starfall = make_fallback( spec.starfall->ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() ),
+    this, "starfall", find_spell( 191034 ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_freeze_stacks( true )
+      ->set_partial_tick( true )                           // TODO: confirm true?
+      ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
 
   buff.starlord = make_fallback( talent.starlord.ok(), this, "starlord", find_spell( 279709 ) )
     ->set_default_value( talent.starlord->effectN( 1 ).percent() )
@@ -11264,7 +11287,7 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   if ( talent.gift_of_an_ancient_guardian.ok() )
   {
-    buff.ironfur->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    buff.ironfur->set_stack_change_callback( [ this ]( auto, int old_, int new_ ) {
       if ( !old_ )
         buff.gift_of_an_ancient_guardian->trigger();
       else if ( !new_ )
@@ -11353,6 +11376,19 @@ void druid_t::create_buffs()
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
     ->set_duration( 0_ms );
 
+  buff.call_of_the_elder_druid =
+    make_fallback( talent.call_of_the_elder_druid.ok(), this, "call_of_the_elder_druid", find_spell( 319454 ) )
+      ->set_cooldown( 0_ms )
+      ->set_duration( timespan_t::from_seconds( talent.call_of_the_elder_druid->effectN( 1 ).base_value() ) );
+  buff.call_of_the_elder_druid->set_tick_callback(
+    [ this,
+      a = buff.call_of_the_elder_druid->data().effectN( 14 ).base_value(),
+      g = get_gain( "Call of the Elder Druid" ) ]
+    ( auto, auto, auto ) {
+      if ( form == CAT_FORM )
+        resource_gain( RESOURCE_COMBO_POINT, a, g );
+    } );
+
   buff.clearcasting_tree = make_fallback( talent.omen_of_clarity_tree.ok(),
     this, "clearcasting_tree", find_trigger( talent.omen_of_clarity_tree ).trigger() )
       ->set_chance( find_trigger( talent.omen_of_clarity_tree ).percent() )
@@ -11366,6 +11402,9 @@ void druid_t::create_buffs()
   buff.natures_swiftness =
     make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
       ->set_cooldown( 0_ms );
+
+  buff.oath_of_the_elder_druid =
+    make_fallback( talent.call_of_the_elder_druid.ok(), this, "oath_of_the_elder_druid", find_spell( 338643 ) );
 
   buff.soul_of_the_forest_tree =
     make_fallback( talent.soul_of_the_forest_tree.ok(), this, "soul_of_the_forest_tree", find_spell( 114108 ) )
@@ -11435,7 +11474,7 @@ void druid_t::create_buffs()
     ->set_cooldown( talent.implant->internal_cooldown() );
   if ( talent.implant.ok() )
   {
-    buff.tigers_fury->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    buff.tigers_fury->set_stack_change_callback( [ this ]( auto, int old_, int new_ ) {
       if ( !old_ || !new_ )
         buff.implant->trigger();
     } );
@@ -11573,6 +11612,45 @@ void druid_t::create_actions()
   {
     active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift" );
     active.shift_to_moonkin->dual = true;
+  }
+
+  if ( talent.heart_of_the_wild.ok() )
+  {
+    // set up cat
+    if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_RESTORATION )
+    {
+      auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>>(
+        "heart_of_the_wild_cat", this, apply_override( talent.heart_of_the_wild, spec.cat_form ), flag_e::NONE );
+      _cat->name_str_reporting = "Cat";
+
+      _cat->tick_action =
+        get_secondary_action<feral_frenzy_t::feral_frenzy_tick_t>( "heart_of_the_wild_cat_tick", flag_e::NONE );
+      _cat->tick_action->base_multiplier *= talent.heart_of_the_wild->effectN( 2 ).percent();
+
+      active.hotw_cat = _cat;
+    }
+
+    // set up owl
+    if ( specialization() != DRUID_BALANCE )
+    {
+      auto _owl =
+        new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
+      _owl->name_str_reporting = "Moonkin";
+
+      auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
+        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), nullptr, flag_e::NONE );
+      _owl_driver->damage->name_str_reporting = "HotW";
+      _owl_driver->damage->base_multiplier *= talent.heart_of_the_wild->effectN( 5 ).percent();
+
+      replace_stats( _owl, _owl_driver, false );
+      replace_stats( _owl, _owl_driver->damage );
+
+      buff.heart_of_the_wild_owl->set_tick_callback( [ _owl_driver ]( buff_t*, int, timespan_t ) {
+        _owl_driver->execute();
+      } );
+
+      active.hotw_owl = _owl;
+    }
   }
 
   // Balance
@@ -13981,6 +14059,7 @@ void druid_t::parse_action_effects( action_t* action )
 
   // Restoration
   _a->parse_effects( buff.abundance );
+  _a->parse_effects( buff.call_of_the_elder_druid, effect_mask_t( true ).disable( 10, 11, 12 ) );
   _a->parse_effects( buff.clearcasting_tree );
   _a->parse_effects( buff.incarnation_tree );
   _a->parse_effects( buff.natures_swiftness, CONSUME_BUFF );

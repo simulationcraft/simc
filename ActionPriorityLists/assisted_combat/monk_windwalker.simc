@@ -10,7 +10,7 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=touch_of_death
-# Spell id 1249766 is a helper buff to avoid breaking Combo Strikes for Strike of the Windlord.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249766.
 actions.assisted_combat+=/strike_of_the_windlord,if=buff.heart_of_the_jade_serpent.down&buff.heart_of_the_jade_serpent_unity_within.down&combo_strike
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/celestial_conduit
@@ -18,34 +18,34 @@ actions.assisted_combat+=/celestial_conduit
 actions.assisted_combat+=/zenith,if=buff.zenith.down
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/flying_serpent_kick,if=talent.slicing_winds
-# Spell id 1249754 is a helper buff to avoid breaking Combo Strikes for Spinning Crane Kick.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249754.
 actions.assisted_combat+=/spinning_crane_kick,if=buff.dance_of_chiji.stack>=2&combo_strike,cooldown_allow_casting_success=1
 actions.assisted_combat+=/rising_sun_kick,if=buff.rushing_wind_kick.up
 actions.assisted_combat+=/rushing_wind_kick,if=buff.rushing_wind_kick.up
-# Spell id 1249756 is a helper buff to avoid breaking Combo Strikes for Tiger Palm.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249756.
 actions.assisted_combat+=/tiger_palm,if=chi<=4&energy>=101&buff.heart_of_the_jade_serpent.down&combo_strike
-# Spell id 1249764 is a helper buff to avoid breaking Combo Strikes for Crackling Jade Lightning.
-actions.assisted_combat+=/crackling_jade_lightning,if=1&combo_strike
-# Extended range check to 10 yards (from 5)., Spell id 1249765 is a helper buff to avoid breaking Combo Strikes for Whirling Dragon Punch. (Overridden from 'target.distance<=5&buff.heart_of_the_jade_serpent.down&buff.combo_strikes_whirling_dragon_punch.down')
+# Condition `buff.emperors_capacitor.stack>=20` is not resolvable, as the source talent no longer exists., Rule contains a helper buff to avoid breaking Combo Strikes for 1249764. (Overridden from 'buff.the_emperors_capacitor.stack>=20&buff.combo_strikes_crackling_jade_lightning.down')
+actions.assisted_combat+=/crackling_jade_lightning,if=0&combo_strike
+# Extended range check to 10 yards (from 5)., Rule contains a helper buff to avoid breaking Combo Strikes for 1249765. (Overridden from 'target.distance<=5&buff.heart_of_the_jade_serpent.down&buff.combo_strikes_whirling_dragon_punch.down')
 actions.assisted_combat+=/whirling_dragon_punch,if=target.distance<=10&buff.heart_of_the_jade_serpent.down&combo_strike
-# Spell id 1249758 is a helper buff to avoid breaking Combo Strikes for Fists of Fury.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249758.
 actions.assisted_combat+=/fists_of_fury,if=target.distance<=8&combo_strike
-# Spell id 1249753 is a helper buff to avoid breaking Combo Strikes for Rising Sun Kick.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249753.
 actions.assisted_combat+=/rising_sun_kick,if=combo_strike
-# Spell id 1249753 is a helper buff to avoid breaking Combo Strikes for Rising Sun Kick.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249753.
 actions.assisted_combat+=/rushing_wind_kick,if=combo_strike
-# The name `Combo Breaker` is used instead of `Blackout Kick` due to standard tokenization rules and clarity., Spell id 1249757 is a helper buff to avoid breaking Combo Strikes for Blackout Kick. (Overridden from 'buff.combo_breaker.up&buff.combo_strikes_blackout_kick.down')
+# The name `Combo Breaker` is used instead of `Blackout Kick` due to standard tokenization rules and clarity., Rule contains a helper buff to avoid breaking Combo Strikes for 1249757. (Overridden from 'buff.combo_breaker.up&buff.combo_strikes_blackout_kick.down')
 actions.assisted_combat+=/blackout_kick,if=buff.combo_breaker.up&combo_strike
 actions.assisted_combat+=/chi_burst
-# Spell id 1249754 is a helper buff to avoid breaking Combo Strikes for Spinning Crane Kick.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249754.
 actions.assisted_combat+=/spinning_crane_kick,if=active_enemies>3&combo_strike,cooldown_allow_casting_success=1
-# Spell id 1249757 is a helper buff to avoid breaking Combo Strikes for Blackout Kick.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249757.
 actions.assisted_combat+=/blackout_kick,if=active_enemies<=2&combo_strike
-# Spell id 1249756 is a helper buff to avoid breaking Combo Strikes for Tiger Palm.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249756.
 actions.assisted_combat+=/tiger_palm,if=combo_strike
 # Checks for Blackout Kick Rank 2 not being known, which is learned at level 17. (Overridden from 'buff.blackout_kick.down')
 actions.assisted_combat+=/tiger_palm,if=level<17
-# Spell id 1249764 is a helper buff to avoid breaking Combo Strikes for Crackling Jade Lightning.
+# Rule contains a helper buff to avoid breaking Combo Strikes for 1249764.
 actions.assisted_combat+=/crackling_jade_lightning,if=energy>=75&target.distance>15&combo_strike,cooldown_allow_casting_success=1
 actions.assisted_combat+=/rising_sun_kick
 actions.assisted_combat+=/rushing_wind_kick

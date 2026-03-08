@@ -315,25 +315,6 @@ void smugglers_enchanted_edge( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1262295 r1 driver
-// 1262294 r1 buff
-// 1262298 r2 driver
-// 1262299 r2 buff
-void smugglers_lynxeye( special_effect_t& effect )
-{
-  // Smuggler's Lynxeye rank 2 looks bugged and grants the rank 1 buff instead of the rank 1 buff. Manually set the
-  // trigger_spell_id to the rank 2 buff.
-  if ( effect.spell_id == 12622298 )
-  {
-    assert( effect.trigger()->id() == 1262294 && "Smuggler's Lynxeye Rank 2 fix no longer necessary." );
-    effect.trigger_spell_id = 1262299;
-  }
-
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 // 1262120 r1 driver
 // 1262140 r1 missile
 // 1262142 r1 aoe
@@ -487,6 +468,28 @@ void eyes_of_the_eagle( special_effect_t& effect )
 {
   effect.player->parse_passive_item_effect( effect.driver() );
 }
+
+// 1262295 r1 driver
+// 1262294 r1 buff
+// 1262298 r2 driver
+// 1262299 r2 buff
+void smugglers_lynxeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1262337 r1 driver
+// 1262336 r1 buff
+// 1262339 r2 driver
+// 1262338 r2 buff
+void farstriders_hawkeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace enchants
 
 namespace embellishments
@@ -507,10 +510,77 @@ void arcanoweave_lining( special_effect_t& effect )
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
-  effect.custom_buff = buff;
-  effect.spell_id    = effect.trigger()->id();
+  struct arcanoweave_lining_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<buff_t> buffs;
+    double ally_conversion_multiplier;
+    arcanoweave_lining_cb_t( const special_effect_t& e, buff_t* personal_buff )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        ally_conversion_multiplier( e.driver()->effectN( 3 ).percent() / e.driver()->effectN( 2 ).percent() )
+    {
+      buffs[ e.player ] = personal_buff;
+    }
 
-  new dbc_proc_callback_t( effect.player, effect );
+    double ally_buff_size()
+    {
+      return debug_cast<stat_buff_t*>( get_buff( effect.player ) )->stats[ 0 ].amount * ally_conversion_multiplier;
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      if ( auto buff = buff_t::find( buff_player, "arcanoweave_insight", effect.player ) )
+      {
+        buffs[ buff_player ] = buff;
+        return buff;
+      }
+
+      auto buff_spell = effect.player->find_spell( 1229746 );
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
+      buff->set_stat_from_effect_type( A_MOD_STAT, ally_buff_size() );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void trigger_buff( player_t* buff_player )
+    {
+      if ( buff_player->is_sleeping() )
+        return;
+
+      auto buff               = get_buff( buff_player );
+      buff->trigger();
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      trigger_buff( effect.player );
+
+      if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
+      {
+        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+        for ( auto* player : helper_vector )
+        {
+          if ( player->is_pet() || player == effect.player )
+            continue;
+
+          trigger_buff( player );
+          break;
+        }
+      }
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+
+  new arcanoweave_lining_cb_t( effect, buff );
 }
 
 // 1241711 driver
@@ -2160,7 +2230,8 @@ void magisters_alchemist_stone( special_effect_t& effect )
       break;
   }
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell, effect.item );
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2184,6 +2255,29 @@ void vaelgors_final_stare( special_effect_t& e )
                       ->set_max_stack( stacks )
                       ->set_reverse( true );
 }
+
+// Ever-collapsing Void Fissure
+// 1253114 Driver and Buff
+void evercollapsing_void_fissure( special_effect_t& e )
+{
+  struct evercollapsing_void_fissure_buff_t : public stat_buff_t
+  {
+    evercollapsing_void_fissure_buff_t( player_t* p, std::string_view name, const spell_data_t* s, special_effect_t& e )
+      : stat_buff_t( p, name, s )
+    {
+      set_max_stack( static_cast<int>( s->duration() / s->effectN( 4 ).period() ) );
+      set_stat_from_effect_type( A_MOD_RATING, s->effectN( 5 ).average( e ) );
+    }
+
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+    {
+      return stat_buff_t::buff_stat_stack_amount( stat, std::max( 0, s - 1 ) );
+    }
+  };
+
+  e.custom_buff = create_buff<evercollapsing_void_fissure_buff_t>( e.player, e.driver(), e );
+}
+
 
 // Locus-Walker's Ribbon
 // 1259314 Driver
@@ -2498,6 +2592,300 @@ void deadly_precision( special_effect_t& effect )
   cb->activate_with_buff( buff );
 }
 
+// 1258535 driver
+// 1258534 buff
+void volatile_void_suffuser( special_effect_t& effect )
+{
+  // create buff
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1258534 ) );
+  buff->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+    buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Volatile Void Suffuser: Implementation may incorrectly over trigger on some DPS specs. Flags are Yellow Melee, Heal, Helpful Periodic." );
+
+  effect.custom_buff = buff;
+}
+
+// On use Driver 1272693
+// Other Driver 1272690
+// Damage Spell 1272720
+// Leech Buff 1272698
+void astalors_anguish_agitator( special_effect_t& e )
+{
+  auto other_driver = e.player->find_spell( 1272690 );
+
+  auto proj_spell = e.player->find_spell( 1272720 );
+  auto buff_spell = e.player->find_spell( 1272698 );
+
+  auto projectile = create_proc_action<generic_proc_t>( util::tokenize_fn( proj_spell->name_cstr() ), e,
+                                                                proj_spell->name_cstr(), proj_spell );
+  projectile->base_dd_min = projectile->base_dd_max = other_driver->effectN( 1 ).average( e );
+
+  auto leech_buff = create_buff<stat_buff_t>( e.player, util::tokenize_fn( buff_spell->name_cstr() ), buff_spell );
+  leech_buff->set_stat_from_effect_type( A_MOD_RATING, other_driver->effectN( 2 ).average( e ) );
+
+  e.execute_action = projectile;
+  e.custom_buff    = leech_buff;
+}
+
+// 1253120 Driver
+// 1266300 Ally Buff
+// 1266299 Player Buff
+void glorious_crusaders_keepsake( special_effect_t& e )
+{
+  struct glorious_crusaders_keepsake_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<std::unordered_map<stat_e, buff_t*>> buffs;
+    std::unordered_map<size_t, bool> valid_party_targets;
+
+
+    glorious_crusaders_keepsake_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), buffs{ true }, valid_party_targets()
+    {
+      create_buffs( effect.player );
+    }
+
+    // Adapted create all buffs.
+    void create_all_buffs( player_t* target, const special_effect_t& effect, const spell_data_t* buff_data,
+                           double amount, std::function<void( stat_e, buff_t* )> add_fn )
+    {
+      auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
+
+      for ( const auto& eff : buff_data->effects() )
+      {
+        if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
+          continue;
+
+        auto stats = util::translate_all_rating_mod( eff.misc_value1() );
+
+        std::vector<std::string_view> stat_strs;
+        range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
+
+        auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
+
+        if ( auto buff = buff_t::find( target, name ) )
+        {
+          add_fn( stats.front(), buff );
+          continue;
+        }
+
+        auto buff = make_buff<stat_buff_t>( actor_pair_t{ target, target }, name, buff_data )
+                        ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
+                        ->set_name_reporting( util::string_join( stat_strs ) );
+
+        if ( target != effect.player )
+          buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+        if ( add_fn )
+          add_fn( stats.front(), buff );
+      }
+    }
+
+    void create_buffs( player_t* target_player )
+    {
+      if ( buffs[ target_player ] )
+        return;
+
+      auto buff_spell =
+          effect.player == target_player ? effect.player->find_spell( 1266299 ) : effect.player->find_spell( 1266300 );
+
+      auto buff_size = effect.driver()->effectN( effect.player == target_player ? 1 : 2 ).average( effect );
+
+      buffs[ target_player ] = new std::unordered_map<stat_e, buff_t*>();
+
+      create_all_buffs( target_player, effect, buff_spell, buff_size,
+                        [ & ]( stat_e s, buff_t* b ) { ( *buffs[ target_player ] )[ s ] = b; } );
+    }
+
+    bool valid_player( player_t* target_player )
+    {
+      if ( target_player == effect.player )
+        return false;
+
+      if ( valid_party_targets[ target_player->actor_index ] )
+        return valid_party_targets[ target_player->actor_index ];
+
+      valid_party_targets[ target_player->actor_index ] = find_special_effect( target_player, effect.trigger()->id() );
+      return valid_party_targets[ target_player->actor_index ];
+    }
+
+    buff_t* highest_buff( player_t* target_player )
+    {
+      create_buffs( target_player );
+
+      return buffs[ target_player ]->at( util::highest_stat( target_player, secondary_ratings ) );
+    }
+
+    buff_t* lowest_buff( player_t* target_player )
+    {
+      create_buffs( target_player );
+
+      return buffs[ target_player ]->at( util::lowest_stat( target_player, secondary_ratings ) );
+    }
+
+    buff_t* get_buff( player_t* target_player )
+    {
+      return target_player == effect.player ? highest_buff( target_player ) : lowest_buff( target_player );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      get_buff( effect.player )->trigger();
+
+      if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+      {
+        int buffs_applied = 0;
+        for ( auto player : effect.player->sim->player_non_sleeping_list )
+        {
+          if ( player->is_sleeping() || player->is_pet() )
+            continue;
+
+          if ( valid_player( player ) )
+          {
+            get_buff( player )->trigger();
+            if ( ++buffs_applied >= 4 )
+              break;
+          }
+        }
+      }
+    }
+  };
+
+  new glorious_crusaders_keepsake_cb_t( e );
+}
+
+// 1254752 Driver
+// 1254577 Buff - Create the buff {target, target} -> it's a shared buff.
+// 1254534 Projectile
+void refueling_orb( special_effect_t& e )
+{
+  struct refueling_orb_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<stat_buff_t> buffs;
+    double refueling_orb_heal_chance;
+    int chain_targets;
+    double velocity;
+    timespan_t min_travel;
+    double buff_size;
+    refueling_orb_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        refueling_orb_heal_chance( effect.player->midnight_opts.refueling_orb_heal_chance ),
+        chain_targets( effect.player->find_spell( 1254534 )->effectN( 1 ).chain_target() ),
+        velocity( effect.player->find_spell( 1254534 )->missile_speed() ),
+        min_travel( timespan_t::from_seconds( effect.player->find_spell( 1254534 )->missile_min_duration() ) ),
+        buff_size( effect.driver()->effectN( 2 ).average( effect ) )
+    {
+      get_buff( effect.player );
+    }
+
+    stat_buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff_spell = effect.player->find_spell( 1254577 );
+
+      if ( auto buff = buff_t::find( buff_player, "refueling_orb" ) )
+      {
+        buffs[ buff_player ] = dynamic_cast<stat_buff_t*>( buff );
+        return buffs[ buff_player ];
+      }
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, buff_player }, "refueling_orb", buff_spell );
+      buff->set_stat_from_effect_type( A_MOD_RATING, buff_size );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void trigger_buff( player_t* buff_player )
+    {
+      if ( buff_player->is_sleeping() )
+          return;
+
+      auto buff               = get_buff( buff_player );
+      buff->stats[ 0 ].amount = buff_size;
+      buff->trigger();
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( effect.player->sim->player_non_sleeping_list.size() == 1 )
+      {
+        trigger_buff( effect.player );
+      }
+      else
+      {
+        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+        auto it = std::find( helper_vector.begin(), helper_vector.end(), effect.player );
+
+        if ( it != helper_vector.end() )
+        {
+          std::iter_swap( it, std::prev( helper_vector.end() ) );
+        }
+
+        timespan_t total_travel_time = 0_s;
+        player_t* previous_target    = effect.player;
+
+        for ( int i = 0; i < chain_targets; i++ )
+        {
+          auto target_iterator = rng().range( helper_vector.begin(), std::prev( helper_vector.end() ) );
+          player_t* target     = *target_iterator;
+          std::iter_swap( target_iterator, std::prev( helper_vector.end() ) );
+
+          total_travel_time += std::max(
+              min_travel, timespan_t::from_seconds( previous_target->get_player_distance( *target ) / velocity ) );
+
+          if ( !rng().roll( refueling_orb_heal_chance ) )
+            make_event( effect.player->sim, total_travel_time,
+                        std::bind( &refueling_orb_cb_t::trigger_buff, this, target ) );
+
+          previous_target = target;
+        }
+      }
+    }
+  };
+
+  new refueling_orb_cb_t( e );
+}
+
+// Driver 1253112
+// Damage 1266366
+// Missile 1 1266370
+// Missile 2 1266371
+// Missile 3 1266372
+void sylvan_wakrapuku( special_effect_t& effect )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "DiveBomb", effect, 1266366 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  struct sylvan_wakrapuku_cb_t : public dbc_proc_callback_t
+  {
+    action_t* divebomb;
+    sylvan_wakrapuku_cb_t( const special_effect_t& e, action_t* divebomb )
+      : dbc_proc_callback_t( e.player, e ), divebomb( divebomb )
+    {
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      for ( auto travel_time : { 0.5, 1.0, 1.5 } )
+      {
+        divebomb->min_travel_time = travel_time;
+        divebomb->execute_on_target( s->target );
+      }
+    }
+  };
+
+  new sylvan_wakrapuku_cb_t( effect, damage );
+}
+
 // 1272091 driver
 // 1277482 buff
 // 1255685 protocol of violence (higher rppm?)
@@ -2505,16 +2893,38 @@ void deadly_precision( special_effect_t& effect )
 // 1255688 protocol of predation (higher buff value?)
 void crucible_of_erratic_energies( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
-    "They are currently not implemented." );
+  double stat_value = effect.driver()->effectN( 1 ).average( effect );
+  // Predation increases the crit rating provided by 20%. 
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_predation )
+    stat_value *= 1.0 + effect.driver()->effectN( 4 ).percent();
 
-  // leech & movement NYI
-  // TODO: does this actually have a rolemult?
+  // Without Voilence selected, this behaves as if it were 2rppm, not 4rppm.
+  if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
+    effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
+
+  // Protocol of Sustenance doubles the buff duration.
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_sustenance )
+    buff->set_duration( buff->data().duration() * effect.driver()->effectN( 5 ).base_value() );
 
   effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1255278 driver
+// 1255296 missile trigger
+// 1255357 debuff
+void tangle_of_vibrant_vines( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines_missile", effect, effect.trigger() );
+  auto debuff = create_proc_action<generic_proc_t>( "tangle_of_vibrant_vines", effect, 1255357 );
+
+  debuff->base_td = effect.driver()->effectN( 2 ).average( effect );
+  missile->impact_action = debuff;
+  effect.execute_action = missile;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2897,13 +3307,6 @@ void murder_row_materials( special_effect_t& effect )
 // 1258890 crit
 void root_wardens_regalia( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Root Warden's Regalia: Implementation assumes you can proc while a buff is already up, "
-    "including proccing the same buff again which will refresh the buff." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Root Warden's Regalia: How the stat buff values scale with item level is unknown. "
-    "Currently implemented to scale off player level and values have not been verified in-game." );
-
   // driver does not have SX_SCALE_ILEVEL so average() scales from player level
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
 
@@ -3065,7 +3468,6 @@ void register_special_effects()
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
-  register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond, false, true );
@@ -3078,6 +3480,8 @@ void register_special_effects()
                              1236729, 1236730 },  // Worldsoul Tenacity (Vers)
                            enchants::stat_weapon_enchant );
   register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
+  register_special_effect( { 1262295, 1262298 }, enchants::smugglers_lynxeye );
+  register_special_effect( { 1262337, 1262339 }, enchants::farstriders_hawkeye );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
@@ -3141,6 +3545,17 @@ void register_special_effects()
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
+  register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
+  register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines );
+  register_special_effect( 1254752, trinkets::refueling_orb );
+  register_special_effect( 1258535, trinkets::volatile_void_suffuser );
+  register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
+  register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
+  register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
+  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
+  register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
+  
+  
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );

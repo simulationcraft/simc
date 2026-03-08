@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66220
-static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28640> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21422,7 +21422,6 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   {  436589, "$@spelldesc436586", 0, 0 },
   {  436651, "Increases your movement speed by $s1%, but also damages you for $s2% of your maximum health every $t2 sec. Movement impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.", "Movement speed increased by $s1%.", 0 },
   {  436687, "$?a137008[Marrowrend and Heart Strike have][Consuming Killing Machine or Rime has] a $s1% chance to grant $s2 stacks of Icy Talons and increase its maximum stacks by the same amount for 6 sec.\r\n\r\nRunic Power spending abilities count as Shadowfrost while Icy Talons is active.", 0, 0 },
-  {  436700, "Add $M1 $?{$M1==1}[socket][sockets] to a War Within PvP item. Can be used on Helms, Amulets, Bracers, Belts, and Rings. $?{$M2>1)[\r\n\r\nJewelry can have up to $M2 sockets.][]\r\n\r\nMust be used during The War Within Season $M3.", 0, 0 },
   {  436707, "Stormstrike or Nature damage your abilities deal is increased by $s1%. Stormstrike damage ignores Armor.\r\n\r\nThunder Clap damage increased by $s4%$?a137050[, no longer costs Rage, and now generates ${$s5/10} Rage][].$?a137050[\r\n\r\nImproved Whirlwind, Meat Cleaver, and Barbaric Training affect Thunder Clap in addition to Whirlwind.][]", 0, 0 },
   {  436789, "Transform into a Thundering Orb, Inflicting ${$s1*(($426748d/$426748t1)-$426748s1)} Nature damage to enemies within $426757A1 yards over $426748d. While you are a Thundering Orb, damage taken is reduced by $426748s2%, movement speed is reduced by $426748s3%, and you are immune to loss of control effects.", 0, 0 },
   {  436852, "Rush forward a short distance.", 0, 0 },
@@ -25974,9 +25973,6 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   { 1236094, "Permanently enchants a weapon with Flames of the Sin'dorei, causing your spells and abilities to sometimes ignite your target. This Phoenix Fire inflicts ${$<rolemult>*($ec1s1*$1242127t1)} Fire damage over $1242127d before detonating for an additional ${$<rolemult>*$ec1s2} Fire damage split among nearby enemies. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
   { 1236095, "Permanently enchants a weapon with Acuity of the Ren'dorei, causing your spells and abilities to grant you Might of the Void, providing you with $ec1s1 $pri for $1241715d. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
   { 1236097, "Permanently enchants a weapon with Arcane Mastery, causing your spells and abilities to grant you Genius Insight, increasing your Mastery by $ec1s1 for $1241759d. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
-  { 1236098, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1236099, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1236100, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1236108, "Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.", 0, 0 },
   { 1236109, "$@spelldesc1236108", 0, 0 },
   { 1236110, "$@spelldesc1236108", "Damaging nearby targets for ${$<rolemult>*$1236137w1} Nature damage every $t sec.", 0 },
@@ -26138,7 +26134,7 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   { 1238281, "Empower Rune Weapon causes your next damaging Rune spending ability to cost no Runes, but now generates ${$s1/-10} less Runic Power.", 0, 0 },
   { 1238443, "For the next $d your damaging abilities have a chance to deal $s3 Holy damage and mark the target with $@spellname1237886. $@spellname1237886 increases the damage taken from $@spellname1237158 by $s4%. Damaging a new target will remove $@spellname1237886 from the previous target.", "Abilities have a chance to deal $s3 Holy damage.", 0 },
   { 1238467, "$@spelldesc1237885", "Healing $s2 every $t2 sec.", 0 },
-  { 1238474, "$@spelldesc1237885", "Enduring $s2 Nature damage every $t2 sec.", 0 },
+  { 1238474, "$@spelldesc1237885", "Enduring $w2 Nature damage every $t2 sec.", 0 },
   { 1238488, "After fully channeling Void Ray, the cooldown of Reap is reset and your next Reap will collect up to $1238495s1 additional Soul Fragments.", 0, 0 },
   { 1238495, "$@spelldesc1238488", "Your next Reap can collect $s1 additional souls.", 0 },
   { 1238623, "Increases critical strike damage by $s1%. Increases critical strike healing by $s2%.", 0, 0 },
@@ -28137,7 +28133,9 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269453, "Convert $s2 Stranded Bloomline to create a Stranded Bloomline.", 0, 0 },
   { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269458, "Convert $s2 Shredded Glimmerline to create a Stranded Glimmerline.", 0, 0 },
   { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
@@ -28554,7 +28552,7 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   { 1281512, "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", 0 },
   { 1281527, "$@spelldesc1273126", "Your next Kill Command has $s1% increased critical strike chance and will deal an additional $1273126s2% damage over $1273145d.", 0 },
   { 1281559, "$@spelldesc1250897", "Your demons deal ${$w1}.1% increased damage.", 0 },
-  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", 0, 0 },
+  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][].", 0, 0 },
   { 1281579, "$@spelldesc1281574", 0, 0 },
   { 1281580, "$@spelldesc1281574", 0, 0 },
   { 1281638, "Ice Lance reduces the cooldown of Frozen Orb by ${$s1/1000}.1 sec, increased by ${$s2/1000}.1 sec for each stack of Freezing Shattered.", 0, 0 },
@@ -28636,10 +28634,18 @@ static constexpr std::array<spelltext_data_t, 28636> __ptr_spelltext_data { {
   { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287949, "$@spelldesc198013", 0, 0 },
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
+  { 1291455, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291459, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291460, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291464, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66220
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
+  { 1281574,  0, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][]." },
 } };
 
 // Spell description variables, wow build 12.0.1.66220

@@ -65,6 +65,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
   // Use havoc_debuff where we need the data but don't have the active talent
+  // Mayhem proc chance follows a Flat % RNG model, but has ICD
   debuffs.havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
                       ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() + p.talents.improved_havoc->effectN( 1 ).time_value() : p.talents.havoc->duration() )
                       ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
@@ -151,13 +152,7 @@ void warlock_td_t::target_demise()
 
   if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() )
   {
-    double chance = 0.0;
-    if ( warlock.affliction() )
-      chance = warlock.rng_settings.feast_of_souls_aff.setting_value;
-    if ( warlock.demonology() )
-      chance = warlock.rng_settings.feast_of_souls_demo.setting_value;
-
-    if ( warlock.rng().roll( chance ) )
+    if ( warlock.feast_of_souls_rng->trigger() )
     {
       warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
 
@@ -197,6 +192,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
+    alythesss_ire_counter( 0 ),
+    alythesss_ire_trigger( 0 ),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
     n_active_pets( 0 ),
@@ -512,8 +509,12 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
     profile_str += append_rng_option( rng_settings.agony );
     profile_str += append_rng_option( rng_settings.nightfall );
-    profile_str += append_rng_option( rng_settings.avatar_of_destruction_dr );
     profile_str += append_rng_option( rng_settings.spiteful_reconstitution );
+    profile_str += append_rng_option( rng_settings.spiteful_reconstitution_hard_cap );
+    profile_str += append_rng_option( rng_settings.demonic_knowledge_rank1_cards );
+    profile_str += append_rng_option( rng_settings.demonic_knowledge_rank2_cards );
+    profile_str += append_rng_option( rng_settings.alythesss_ire_shift );
+    profile_str += append_rng_option( rng_settings.echo_of_sargeras );
     profile_str += append_rng_option( rng_settings.blackened_soul );
     profile_str += append_rng_option( rng_settings.bleakheart_tactics );
     profile_str += append_rng_option( rng_settings.seeds_of_their_demise );
@@ -522,6 +523,8 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.succulent_soul_demo );
     profile_str += append_rng_option( rng_settings.feast_of_souls_aff );
     profile_str += append_rng_option( rng_settings.feast_of_souls_demo );
+    profile_str += append_rng_option( rng_settings.feast_of_souls_hard_cap_aff );
+    profile_str += append_rng_option( rng_settings.feast_of_souls_hard_cap_demo );
     profile_str += append_rng_option( rng_settings.manifested_avarice );
   }
 
@@ -543,8 +546,12 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
   rng_settings.agony = p->rng_settings.agony;
   rng_settings.nightfall = p->rng_settings.nightfall;
-  rng_settings.avatar_of_destruction_dr = p->rng_settings.avatar_of_destruction_dr;
   rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
+  rng_settings.spiteful_reconstitution_hard_cap = p->rng_settings.spiteful_reconstitution_hard_cap;
+  rng_settings.demonic_knowledge_rank1_cards = p->rng_settings.demonic_knowledge_rank1_cards;
+  rng_settings.demonic_knowledge_rank2_cards = p->rng_settings.demonic_knowledge_rank2_cards;
+  rng_settings.alythesss_ire_shift = p->rng_settings.alythesss_ire_shift;
+  rng_settings.echo_of_sargeras = p->rng_settings.echo_of_sargeras;
   rng_settings.blackened_soul = p->rng_settings.blackened_soul;
   rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
@@ -553,6 +560,8 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.succulent_soul_demo = p->rng_settings.succulent_soul_demo;
   rng_settings.feast_of_souls_aff = p->rng_settings.feast_of_souls_aff;
   rng_settings.feast_of_souls_demo = p->rng_settings.feast_of_souls_demo;
+  rng_settings.feast_of_souls_hard_cap_aff = p->rng_settings.feast_of_souls_hard_cap_aff;
+  rng_settings.feast_of_souls_hard_cap_demo = p->rng_settings.feast_of_souls_hard_cap_demo;
   rng_settings.manifested_avarice = p->rng_settings.manifested_avarice;
 }
 
@@ -664,12 +673,19 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
       action_state_t* agony_state = agony->current_action->get_state( agony->state );
       timespan_t dot_tick_time    = agony->current_action->tick_time( agony_state );
-      double creeping_death_mul   = talents.creeping_death.ok() ? ( 1.0 + talents.creeping_death->effectN( 1 ).percent() ) : 1.0;
+      double creeping_death_mul   = 1.0;
+      if ( talents.creeping_death.ok() )
+      {
+        if ( !bugs || talents.creeping_death.rank() < 2 )
+          creeping_death_mul *= 1.0 + talents.creeping_death->effectN( 1 ).percent();
+        else
+          creeping_death_mul *= 1.0 + ( talents.creeping_death->effectN( 1 ).percent() * 0.5 );
+      }
 
       // Seeks to return the average expected time for the player to generate a single soul shard.
       // TOCHECK regularly.
 
-      double average = 1.0 / ( ( rng_settings.agony.setting_value / 2.0 ) * std::pow( active_agonies, -2.0 / 3.0 ) * creeping_death_mul )
+      double average = 1.0 / ( ( rng_settings.agony.setting_value * 0.5 ) * std::pow( active_agonies, -2.0 / 3.0 ) * creeping_death_mul )
                        * dot_tick_time.total_seconds() / active_agonies;
 
       if ( sim->debug )
@@ -791,6 +807,163 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return this->time_to_imps( amt );
     } );
   }
+  else if ( splits.size() == 2 && splits[ 0 ] == "dot_refreshable_count" )
+  {
+    enum class refreshable_dot_e
+    {
+      INVALID = -1,
+      WITHER,
+      IMMOLATE,
+      CORRUPTION,
+      AGONY,
+      UA,
+      SOC
+    };
+
+    unsigned int action_id = 0;
+    refreshable_dot_e dot_sel = refreshable_dot_e::INVALID;
+    const auto& dot_name = splits[ 1 ];
+    if ( dot_name == "wither" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+    }
+    else if ( dot_name == "immolate" )
+    {
+      if ( destruction() )
+      {
+        dot_sel = refreshable_dot_e::IMMOLATE;
+        action_id = warlock_base.immolate_old->id();
+      }
+    }
+    else if ( dot_name == "corruption" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::CORRUPTION;
+        action_id = warlock_base.corruption->id();
+      }
+    }
+    else if ( dot_name == "agony" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::AGONY;
+        action_id = talents.agony->id();
+      }
+    }
+    else if ( dot_name == "unstable_affliction" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::UA;
+        action_id = talents.unstable_affliction->id();
+      }
+    }
+    else if ( dot_name == "seed_of_corruption" )
+    {
+      if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::SOC;
+        action_id = talents.seed_of_corruption->id();
+      }
+    }
+    else if ( dot_name == "immolate_or_wither" || dot_name == "wither_or_immolate" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+      else if ( destruction() )
+      {
+        dot_sel = refreshable_dot_e::IMMOLATE;
+        action_id = warlock_base.immolate_old->id();
+      }
+    }
+    else if ( dot_name == "corruption_or_wither" || dot_name == "wither_or_corruption" )
+    {
+      if ( hero.wither.ok() )
+      {
+        dot_sel = refreshable_dot_e::WITHER;
+        action_id = hero.wither_direct->id();
+      }
+      else if ( affliction() )
+      {
+        dot_sel = refreshable_dot_e::CORRUPTION;
+        action_id = warlock_base.corruption->id();
+      }
+    }
+
+    action_t* action = nullptr;
+    if ( action_id != 0 )
+    {
+      for ( auto a : action_list )
+      {
+        if ( a->id == action_id )
+        {
+          action = a;
+          break;
+        }
+      }
+    }
+
+    return make_fn_expr( name_str, [ this, action, dot_sel, state = std::unique_ptr<action_state_t>() ]() mutable
+    {
+      size_t dot_refresh_targets = 0;
+
+      if ( !action || dot_sel == refreshable_dot_e::INVALID )
+        return dot_refresh_targets;
+
+      const auto& tl = action->target_list();
+      for ( auto t : tl )
+      {
+        warlock_td_t* tdata = get_target_data( t );
+
+        auto& dot = [ dot_sel, tdata ]() -> auto&
+        {
+          switch ( dot_sel )
+          {
+            case refreshable_dot_e::WITHER:
+              return tdata->dots.wither;
+            case refreshable_dot_e::IMMOLATE:
+              return tdata->dots.immolate;
+            case refreshable_dot_e::CORRUPTION:
+              return tdata->dots.corruption;
+            case refreshable_dot_e::AGONY:
+              return tdata->dots.agony;
+            case refreshable_dot_e::UA:
+              return tdata->dots.unstable_affliction;
+            case refreshable_dot_e::SOC:
+              return tdata->dots.seed_of_corruption;
+            default:
+              assert( false && "Unhandled refreshable_dot_e value" );
+              return tdata->dots.corruption;
+          }
+        }();
+
+        if ( dot == nullptr || !dot->is_ticking() )
+        {
+          dot_refresh_targets++;
+          continue;
+        }
+
+        if ( !state || state->action != dot->current_action )
+          state.reset( dot->current_action->get_state() );
+
+        dot->current_action->snapshot_state( state.get(), result_amount_type::DMG_OVER_TIME );
+        timespan_t new_duration = dot->current_action->composite_dot_duration( state.get() );
+
+        if ( dot->current_action->dot_refreshable( dot, new_duration ) )
+          dot_refresh_targets++;
+      }
+
+      return dot_refresh_targets;
+    } );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -896,7 +1069,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return actual_amount;
 }
 
-void warlock_t::feast_of_souls_gain()
+void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
 {
   // TOCHECK: 2025-08-27 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
   if ( bugs )
@@ -907,6 +1080,12 @@ void warlock_t::feast_of_souls_gain()
   buffs.succulent_soul->trigger();
   procs.succulent_soul->occur();
   procs.feast_of_souls->occur();
+
+  // NOTE: 2026-03-06 If Feast of Souls is gained by consuming Nightfall with SoC (Quietus hero talent) and after
+  // the gain you only have one stack of Succulent Soul, it will be spent without producing its effects (bug)
+  // This behavior is modeled here simply by decrementing a stack of Succulent Soul without triggering its effects
+  if ( bugs && from_quietus_seed && buffs.succulent_soul->check() == 1 )
+    buffs.succulent_soul->decrement();
 }
 
 // Setup to allow taking specific pets from Dominion of Argus, or a random one if the random enum is passed in.
