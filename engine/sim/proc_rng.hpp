@@ -278,6 +278,8 @@ constexpr double find_constant( double p, int K )
 
   if ( p <= 1.0 / K )
     return 0.0;
+  if ( p >= 1.0 )
+    return 1.0;
 
   double tgt_expected = 1.0 / p;
   // Initial guess that works well for normal p and K values.
