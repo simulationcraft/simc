@@ -1919,7 +1919,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() )
+  if ( is_player() && type != PLAYER_SIMPLIFIED )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2237,7 +2237,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects )
+  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
@@ -3093,29 +3093,10 @@ static void enable_default_talents( player_t* player )
       auto tree = static_cast<talent_tree>( trait->tree_index );
       auto ranks = traits[ i ].rank;
 
-      if ( trait->node_type == NODE_TIERED )
-      {
-        auto _entries = trait_data_t::data( trait->id_node, util::class_id( player->type ), tree, player->is_ptr() );
-        for ( const auto& entry : _entries )
-        {
-          auto allocated = std::min( ranks, entry.max_ranks );
-          player->player_traits.emplace_back( tree, entry.id_trait_node_entry, allocated );
-          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                    util::talent_tree_string( tree ), entry.name, entry.id_node,
-                                    entry.id_trait_node_entry, allocated, entry.max_ranks );
-
-          ranks -= allocated;
-          if ( !ranks )
-            break;
-        }
-      }
-      else
-      {
-        player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
-        player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                  util::talent_tree_string( tree ), trait->name, trait->id_node,
-                                  trait->id_trait_node_entry, ranks, trait->max_ranks );
-      }
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, ranks, trait->max_ranks );
     }
   }
 }
@@ -4179,13 +4160,6 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
-  // if actor is not valid, set `quiet` and skip the rest of action creation
-  if ( !validate_actor() )
-  {
-    quiet = true;
-    return;
-  }
-
   if( is_player() && !is_enemy() && !is_pet() )
     consumable::create_consumeable_actions( this );
 
@@ -10808,7 +10782,7 @@ struct cancel_buff_t : public action_t
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", buff_name ) );
     }
-    else if ( !buff->can_cancel )
+    else if ( !buff->is_fallback && !buff->can_cancel )
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' cannot be cancelled.", buff_name ) );
     }
@@ -13812,6 +13786,10 @@ void player_t::create_options()
   add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
                             500_ms, 5_s ) );
   add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option( opt_float( "midnight.refueling_orb_heal_chance", midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_violence", midnight_opts.crucible_of_erratic_energies_violence ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_sustenance", midnight_opts.crucible_of_erratic_energies_sustenance ) );
+  add_option( opt_bool( "midnight.crucible_of_erratic_energies_predation", midnight_opts.crucible_of_erratic_energies_predation ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -15670,13 +15648,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
-      std::string _tmp_full_message_tmp_ = fmt::format(
+      sim->print_debug(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15981,11 +15957,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
+                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
+                        msg );
     };
 
     auto add_reporting = [ & ]( std::string field ) {
@@ -16470,7 +16444,8 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( util::race_mask( race ) & racial_spell.mask_race && util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race &&
+         ( !racial_spell.mask_class || util::class_id_mask( type ) & racial_spell.mask_class ) )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
@@ -16503,7 +16478,7 @@ void player_t::parse_all_passive_sets()
   for ( const auto& type : sets->set_bonus_spec_data )
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
-        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+        if ( data.enabled )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
 }
 
@@ -16564,6 +16539,7 @@ std::string_view player_t::get_parsed_source( unsigned spell_id ) const
         case PARSE_SOURCE_RACIAL: return "Racial";
         case PARSE_SOURCE_TALENT: return "Talent";
         case PARSE_SOURCE_SET:    return "Set Bonus";
+        case PARSE_SOURCE_ITEM:   return "Item";
         default:                  return "BAD_SOURCE";
       }
     }
@@ -16619,7 +16595,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.2f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
                    eff->average( this ), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
@@ -16709,4 +16685,14 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
   print_custom_parsed_effects( os );
 
   os << "</div></div>\n";
+}
+
+void player_t::parse_passive_item_effect( const spell_data_t* spell )
+{
+  parse_passive_effects( spell, true, PARSE_SOURCE_ITEM );
+}
+
+void player_t::register_passive_item_effect_override( const spelleffect_data_t& effect, double value )
+{
+  register_passive_effect_override( effect, value );
 }

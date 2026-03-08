@@ -1502,7 +1502,7 @@ void emerald_coachs_whistle( special_effect_t& effect )
   effect.custom_buff = buff;
 
   // self driver procs off druid hostile abilities as well as shadow hostile abilities
-  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW )
+  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW || effect.player->type == EVOKER )
     effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -3066,7 +3066,7 @@ void algethar_puzzle_box( special_effect_t& effect )
     puzzle_box_channel_t( const special_effect_t& e, buff_t* solved ) :
       proc_spell_t( "algethar_puzzle_box_channel", e.player, e.driver(), e.item)
     {
-      channeled = hasted_ticks = true;
+      channeled = hasted_ticks = hasted_dot_duration = true;
       harmful = false;
       dot_duration = base_tick_time = base_execute_time;
       base_execute_time = 0_s;

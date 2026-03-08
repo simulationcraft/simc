@@ -8057,9 +8057,9 @@ void ringing_ritual_mud( special_effect_t& effect )
 
       tick->base_dd_min = tick->base_dd_max = equip->effectN( 1 ).average( effect.item );
       damage_buff = unique_gear::create_buff<buff_t>( effect.player, effect.driver()->effectN( 2 ).trigger() )
-                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, int current_tick, timespan_t ) {
+                        ->set_tick_callback( [ &, tick_count ]( buff_t* self, int, timespan_t ) {
                           tick->execute();
-                          if ( !absorb_buff->check() && self->check() && current_tick < tick_count )
+                          if ( !absorb_buff->check() && self->check() && self->current_tick < tick_count )
                             // Let events clear before expiring
                             make_event( *sim, 0_ms, [ self ] { self->expire(); } );
                         } );

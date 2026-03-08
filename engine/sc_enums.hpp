@@ -597,6 +597,7 @@ enum special_effect_e
   SPECIAL_EFFECT_NONE = -1,
   SPECIAL_EFFECT_EQUIP,
   SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_PASSIVE,
   SPECIAL_EFFECT_FALLBACK // Internal use only for fallback special effects
 };
 
@@ -864,6 +865,8 @@ enum set_bonus_type_e
   TWW_WDawn,
   TWW2,
   TWW3,
+  MID_ST,
+  MID_AT,
   TWW_SOTV,
   MID_MRM,
   MID_RWR,
@@ -1506,5 +1509,8 @@ enum error_level_e : unsigned short
   TRIVIAL,
   MODERATE,
   SEVERE,
-  PLACEHOLDER,
+  UNIMPLEMENTED,
+  UNVERIFIED_VALUE,
+  UNVERIFIED_IMPLEMENTATION,
+  IMPLEMENTATION_NOTES,
 };

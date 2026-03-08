@@ -69,9 +69,10 @@ actions.cds+=/ancestral_call
 actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
 actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
 
-# Finishers
+# Finishers 
 actions.finish=dispatch,if=!buff.slice_and_dice.up
-actions.finish+=/between_the_eyes
+# With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush
+actions.finish+=/between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in
 actions.finish+=/pool_resource,for_next=1
 actions.finish+=/killing_spree
 actions.finish+=/coup_de_grace

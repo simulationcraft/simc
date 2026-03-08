@@ -52,34 +52,34 @@
 # trinket2=arazs_ritual_forge,id=242402,bonus_id=6652/10356/12361/1533/10255
 # main_hand=harvesters_interdiction,id=221159,enchant_id=7445,ilevel=723
 
-# save=MID1_Druid_Feral.simc
+# save=MID1_Druid_Feral_DOTC.simc
 
-# druid="MID1_Druid_Feral_Wildstalker"
-# level=80
-# race=night_elf
-# timeofday=night
-# role=attack
-# position=back
-# spec=feral
-# talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmBmZZmZMzsNbjx2MmxMzAAAAAAsEMLwYmRNjZhlZmxYmZGAAAAAAAMAAAACAmtZWaWmZZDMDALmBD
+druid="MID1_Druid_Feral_Wildstalker"
+level=80
+race=night_elf
+timeofday=night
+role=attack
+position=back
+spec=feral
+talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmBmZZmZMzsNbjx2MmxMzAAAAAAsEMLwYmRNjZhlZmxYmZGAAAAAAAMAAAACAmtZWaWmZZDMDALmBD
 
-# head=skymane_of_the_mother_eagle,id=237682,bonus_id=12361/10356/12231/6652/12921/12676/1533/10255/1808,gem_id=213743
-# neck=duskblazes_desperation,id=237569,bonus_id=10879,gem_id=213482/213482,ilevel=723
-# shoulder=ritual_pauldrons_of_the_mother_eagle,id=237680,bonus_id=12361/10356/12233/6652/12675/1533/10255
-# back=reshii_wraps,id=235499,bonus_id=12401/9893/12257,enchant_id=7403,gem_id=238046
-# chest=soazmis_fractal_vest,id=185786,enchant_id=7364,ilevel=723
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/12053/12050/1485/1808/11304/8960,enchant_id=7391,gem_id=213482,crafted_stats=49/36
-# hands=wings_of_the_mother_eagle,id=237683,bonus_id=12361/10356/12230/6652/12675/1533/10255
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/12053/12050/1485/1808/11304/8960,gem_id=213482,crafted_stats=49/36
-# legs=breeches_of_the_mother_eagle,id=237681,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant_id=7601
-# feet=interlopers_reinforced_sandals,id=243306,bonus_id=6652/10356/12361/1533/10255/13504,enchant_id=7424
-# finger1=logic_gate_alpha,id=237567,bonus_id=10879,enchant_id=7346,gem_id=213482/213470,ilevel=723
-# finger2=radiant_necromancers_band,id=221200,bonus_id=10879,enchant_id=7346,gem_id=213494/213458,ilevel=723
-# trinket1=astral_antenna,id=242395,ilevel=723
-# trinket2=arazs_ritual_forge,id=242402,bonus_id=6652/10356/12361/1533/10255
-# main_hand=harvesters_interdiction,id=221159,enchant_id=7439,ilevel=723
+head=branches_of_the_luminous_bloom,id=250024,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/1808,enchant_id=8017,gem_id=240983,ilevel=289
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892,ilevel=289
+shoulder=fallen_grunts_mantle,id=251092,bonus_id=4795,enchant_id=8001,ilevel=289
+back=defiant_defenders_drape,id=260312,bonus_id=4795,ilevel=289
+chest=trunk_of_the_luminous_bloom,id=250027,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilevel=289
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/12214/12214/12214/12214/12214/12214/12214/1808/8790/8960/12384,gem_id=240892,ilevel=285,crafted_stats=32/49
+hands=arbortenders_of_the_luminous_bloom,id=250025,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=4795/1808,gem_id=240892,ilevel=289
+legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=8159,ilevel=289
+feet=canopy_walkers_footwraps,id=249382,enchant_id=7993,ilevel=289
+finger1=eye_of_midnight,id=249920,bonus_id=40/13534/13335/12806,enchant_id=7967,gem_id=240892/240892,ilevel=289
+finger2=loa_worshipers_band,id=251513,bonus_id=8960/12214/8960/12214/12066/9627,enchant_id=7967,gem_id=240892,ilevel=285
+trinket1=algethars_puzzle_box,id=193701,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=roostwardens_bough,id=251077,enchant_id=8039,ilevel=289
 
-# save=MID1_Druid_Feral_Wildstalker.simc
+save=MID1_Druid_Feral.simc
 
 # druid=MID1_Druid_Guardian
 # level=80

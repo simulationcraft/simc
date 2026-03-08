@@ -558,7 +558,7 @@ struct consecration_t : public paladin_spell_t
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
     int totalTargets = 0;
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && dg_heal && p()->buffs.lightsmith.divine_guidance->up() )
     {
       for (auto friendly : sim->player_non_sleeping_list)
       {
@@ -599,7 +599,7 @@ struct consecration_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     // Damage events come after Consecration cast
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && p()->buffs.lightsmith.divine_guidance->up() )
     {
       // Only create damage events when we're dealing damage, so not to proc stuff accidentally
       if ( dg_damage->base_dd_multiplier > 0 )
@@ -1374,7 +1374,8 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const sp
     judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
-  triggers_higher_calling = true;
+  triggers_higher_calling     = true;
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && s->id() != 24275;
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
@@ -1389,7 +1390,8 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
   parse_options(options_str);
-  triggers_higher_calling = true;
+  triggers_higher_calling     = true;
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && ( s->id() != 24275 || !p->bugs );
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
@@ -1425,6 +1427,21 @@ void judgment_base_t::impact(action_state_t* s)
   if ( result_is_hit( s->result ) && p()->talents.greater_judgment->ok() )
   {
     p()->trigger_greater_judgment( td( s->target ) );
+  }
+  if ( triggers_highlords_judgment )
+  {
+    double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
+    if ( p()->talents.boundless_judgment->ok() )
+      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 1 ).percent();
+    if ( p()->talents.highlords_wrath->ok() )
+      mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() /
+                                  p()->talents.highlords_wrath->effectN( 2 ).base_value();
+
+    if ( rng().roll( mastery_chance ) )
+    {
+      p()->active.highlords_judgment->set_target( s->target );
+      p()->active.highlords_judgment->execute();
+    }
   }
 }
 
@@ -1534,23 +1551,6 @@ struct judgment_ret_t : public judgment_t
       p()->buffs.divine_resonance->decrement();
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    judgment_t::impact( s );
-    double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
-    if ( p()->talents.boundless_judgment->ok() )
-      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 1 ).percent();
-    if ( p()->talents.highlords_wrath->ok() )
-      mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() /
-                                  p()->talents.highlords_wrath->effectN( 2 ).base_value();
-
-    if ( rng().roll( mastery_chance ) )
-    {
-      p()->active.highlords_judgment->set_target( s->target );
-      p()->active.highlords_judgment->execute();
-    }
-  }
 };
 struct divine_toll_judgment_ret_t :judgment_ret_t
 {
@@ -1645,7 +1645,6 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
                                         const spell_data_t* s )
     : judgment_base_t( p, name, options_str, s ), echo( nullptr )
   {
-    parse_options( options_str );
     if ( p->talents.adjudication->ok() )
     {
       add_child( p->active.background_blessed_hammer );
@@ -2231,7 +2230,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
        // 21.12.25 Fluttershy - Currently, the main target just never gets a Judgment stack
        if ( !p()->bugs )
          p()->trigger_greater_judgment( td( s->target ), removeStack );
-
+     }
+     // 25.02.26 Fluttershy - Same bug which affects Ret now also affects Prot. We will lose a Judgment stack for free.
+     else if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.greater_judgment->ok() )
+     {
+       make_event( *sim, 600_ms, [ this, s ]() { td( s->target )->debuff.judgment->decrement(); } );
      }
    }
 };
@@ -2328,10 +2331,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     direct_tick         = true;
     background          = true;
     may_crit            = true;
-    if ( !p->bugs )
-    {
-      clears_judgment      = false;
-    }
+    clears_judgment     = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3782,7 +3782,7 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
+  std::string retribution_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
 
   std::string protection_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
@@ -3805,7 +3805,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 70 ) ? "the_sushi_special" : "disabled";
+  std::string retribution_food = ( true_level > 80 ) ? "royal_roast" : "disabled";
 
   std::string protection_food = ( true_level > 70 ) ? "feast_of_the_divine_day" : "disabled";
 
@@ -3828,7 +3828,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
+  std::string retribution_flask = ( true_level > 80 ) ? "flask_of_the_magisters_2" : "disabled";
 
   std::string protection_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
@@ -3851,7 +3851,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 70 ) ? "crystallized" : "disabled";
+  return ( true_level > 80 ) ? "void_touched" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -3863,7 +3863,7 @@ std::string paladin_t::default_temporary_enchant() const
     case PALADIN_PROTECTION:
       return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
-      return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3";
+      return true_level < 81 ? "disabled" : "main_hand:thalassian_phoenix_oil_2";
 
     default:
       return "main_hand:howling_rune_3";
@@ -4026,17 +4026,6 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
     }
   }
   return true;
-}
-
-bool paladin_t::validate_actor()
-{
-  wowv_t v = sim->dbc->wowv();
-  if ( !is_ptr() && v.expansion == 12 && v.major == 0 && v.minor == 1 )
-  {
-    throw sc_unsupported_specialization( "Paladin sims are non functional for Midnight prepatch" );
-    return false;
-  }
-  return player_t::validate_actor();
 }
 
 void paladin_t::init_special_effects()

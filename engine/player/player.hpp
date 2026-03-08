@@ -904,6 +904,20 @@ struct player_t : public actor_t
     timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
     // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.
     bool sealed_chaos_urn_dispell = false;
+    // Arcanoweave trappings
+    double arcanoweave_trappings_uptime = 0.7;
+    // Interval between checking arcanoweave trappings uptime
+    timespan_t arcanoweave_trappings_update_interval = 10_s;
+    timespan_t arcanoweave_trappings_update_interval_stddev = 2.5_s;
+    double sunfire_silk_trappings_uptime = 0.7;
+    // Interval between checking sunfire silk trappings uptime
+    timespan_t sunfire_silk_trappings_update_interval = 10_s;
+    timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
+    // Chance refueling orb will count as healing.
+    double refueling_orb_heal_chance = 0.10;
+    bool crucible_of_erratic_energies_violence = false;
+    bool crucible_of_erratic_energies_sustenance = false;
+    bool crucible_of_erratic_energies_predation = false;
   } midnight_opts;
 
 private:
@@ -948,6 +962,7 @@ private:
     PARSE_SOURCE_RACIAL,
     PARSE_SOURCE_TALENT,
     PARSE_SOURCE_SET,
+    PARSE_SOURCE_ITEM,
   };
   std::vector<std::pair<unsigned, parse_source_e>> registered_passive_spells_;
 
@@ -978,7 +993,6 @@ protected:
   std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
 
 public:
-  std::vector<std::string> _tmp_registered_passive_printout_tmp_;
   bool disable_class_spell_auto_cloning;
 
   // return { orig, flat, pct }
@@ -1001,6 +1015,8 @@ public:
   
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
+  void parse_passive_item_effect( const spell_data_t* );
+  void register_passive_item_effect_override( const spelleffect_data_t&, double );
 
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;

@@ -5,7 +5,8 @@ namespace rogue_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( ( p->true_level >= 71 ) ? "tempered_potion_3" :
+  return ( ( p->true_level >= 81 ) ? "lights_potential_2" :
+           ( p->true_level >= 71 ) ? "tempered_potion_3" :
            ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
            ( p->true_level >= 51 ) ? "potion_of_spectral_agility" :
            ( p->true_level >= 40 ) ? "potion_of_unbridled_fury" :
@@ -15,10 +16,11 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_OUTLAW && p->true_level >= 71 )
-    return "flask_of_tempered_versatility_3";
+  if ( p->specialization() == ROGUE_SUBTLETY && p->true_level >= 81 )
+    return "flask_of_the_magisters_2";
 
-  return ( ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
+  return ( ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" :
+           ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
            ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
@@ -28,7 +30,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( ( p->true_level >= 71 ) ? "feast_of_the_divine_day" :
+  return ( ( p->true_level >= 81 ) ? "harandar_celebration" :
+           ( p->true_level >= 71 ) ? "feast_of_the_divine_day" :
            ( p->true_level >= 61 ) ? "fated_fortune_cookie" :
            ( p->true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
            ( p->true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
@@ -38,7 +41,8 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( ( p->true_level >= 80 ) ? "crystallized" :
+  return ( ( p->true_level >= 90 ) ? "void_touched" :
+           ( p->true_level >= 80 ) ? "crystallized" :
            ( p->true_level >= 70 ) ? "draconic" :
            ( p->true_level >= 60 ) ? "veiled" :
            ( p->true_level >= 50 ) ? "battle_scarred" :
@@ -49,10 +53,8 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_ASSASSINATION && p->true_level >= 71 )
-    return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
-  
-  return ( ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3" :
+  return ( ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2" :
+           ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3" :
            ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" :
            ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
            "disabled" );
@@ -185,7 +187,7 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
   finish->add_action( "dispatch,if=!buff.slice_and_dice.up", "Finishers" );
-  finish->add_action( "between_the_eyes" );
+  finish->add_action( "between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in", "With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush" );
   finish->add_action( "pool_resource,for_next=1" );
   finish->add_action( "killing_spree" );
   finish->add_action( "coup_de_grace" );
@@ -212,22 +214,21 @@ void subtlety( player_t* p )
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "stealth" );
 
-  default_->add_action( "stealth" );
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20" );
-  default_->add_action( "variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|talent.unseen_blade&(combo_points<=1|combo_points>=6)" );
+  default_->add_action( "variable,name=shd_cp,value=combo_points>=6" );
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
+  default_->add_action( "shadowstrike,if=(buff.darkest_night.up|talent.unseen_blade)&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&(variable.targets<=3+talent.weaponmaster)", "Shadowstrike regardless of combo points to ensure Ancient Arts on every finisher as Trickster, or only on Darkest Night as Deathstalker." );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
-  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up", "Cooldowns" );
-  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready" );
-  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&(buff.shadow_blades.up|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>7)" );
-  cds->add_action( "thistle_tea" );
+  cds->add_action( "potion,if=buff.shadow_blades.up|fight_remains<30", "Cooldowns" );
+  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&(cooldown.secret_technique.ready|talent.deathstalkers_mark)|fight_remains<=20" );
+  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&(buff.shadow_blades.remains>=cooldown.secret_technique.remains|buff.shadow_blades.up&cooldown.secret_technique.duration>=18)|fight_remains<=10", "Shadow Dance with Secret Technique or twice during Shadow Blades, if haste is high enough delay the second use during Blades to align it with second Secret Technique." );
   cds->add_action( "vanish,if=!variable.stealth&energy>=40&!buff.subterfuge.up&combo_points<=1" );
   cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>=3" );
 
@@ -237,21 +238,23 @@ void subtlety( player_t* p )
   race->add_action( "ancestral_call,if=variable.racial_sync" );
   race->add_action( "invoke_external_buff,name=power_infusion,if=variable.racial_sync" );
 
-  item->add_action( "use_item,name=unyielding_netherprism,use_off_gcd=1,if=buff.shadow_blades.up&(buff.latent_energy.stack>=8+8*(trinket.arazs_ritual_forge.cooldown.ready|!equipped.arazs_ritual_forge)|!equipped.arazs_ritual_forge&fight_remains<=90)|fight_remains<=20", "Trinket and Items" );
-  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
-  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up", "Trinket and Items" );
+  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2" );
+  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
   finish->add_action( "secret_technique,if=buff.shadow_dance.up" );
-  finish->add_action( "eviscerate,if=buff.darkest_night.up&!debuff.deathstalkers_mark.up" );
-  finish->add_action( "coup_de_grace" );
+  finish->add_action( "eviscerate,if=buff.darkest_night.up" );
+  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up" );
   finish->add_action( "black_powder,if=variable.targets>=2" );
-  finish->add_action( "eviscerate" );
+  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up|talent.deathstalkers_mark", "Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before." );
 
-  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up|variable.targets<=2" );
+  build->add_action( "shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre" );
+  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2|variable.priority_rotation" );
   build->add_action( "shuriken_storm,if=variable.targets>1" );
   build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
-  build->add_action( "gloomblade" );
-  build->add_action( "backstab" );
+  build->add_action( "gloomblade,if=variable.targets<2" );
+  build->add_action( "backstab,if=variable.targets<2" );
 
   fill->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "This list usually contains Cooldowns with negligible impact that causes global cooldowns" );
   fill->add_action( "arcane_pulse" );

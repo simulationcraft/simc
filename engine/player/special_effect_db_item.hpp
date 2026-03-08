@@ -15,8 +15,8 @@ struct special_effect_db_item_t
   std::string encoded_options;
   scoped_callback_t* cb_obj;
   bool fallback;
+  bool passive;
 
-  special_effect_db_item_t() : spell_id( 0 ), encoded_options(), cb_obj( nullptr ), fallback( false )
-  {
-  }
+  special_effect_db_item_t() : spell_id( 0 ), encoded_options(), cb_obj( nullptr ), fallback( false ), passive( false )
+  {}
 };

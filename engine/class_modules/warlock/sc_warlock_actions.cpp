@@ -42,6 +42,8 @@ using namespace helpers;
 
       // Destruction
       bool fiendish_cruelty = false;
+      bool dimensional_rift = false;
+      bool embers_of_nihilam_1 = false;
 
       // Diabolist
       bool diabolic_ritual = false;
@@ -245,6 +247,7 @@ using namespace helpers;
         int shards_used = as<int>( last_resource_cost );
         int base_shards = as<int>( base_cost() );
 
+        // Only effective shards consumed count towards the Rain of Chaos proc
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
         {
           for ( int i = 0; i < shards_used; i++ )
@@ -380,13 +383,26 @@ using namespace helpers;
 
       if ( destruction() && triggers.fiendish_cruelty )
       {
-        // TODO: Check if havoc hits and FnB Incinerate hits are affected by fiendish cruelty
-        if ( s->result == RESULT_CRIT )
+        if ( s->result == RESULT_CRIT && p()->fiendish_cruelty_rng->trigger() )
         {
-          bool success = p()->buffs.fiendish_cruelty->trigger();
+          p()->buffs.fiendish_cruelty->trigger();
+          p()->procs.fiendish_cruelty->occur();
+        }
+      }
 
-          if ( success )
-            p()->procs.fiendish_cruelty->occur();
+      if ( destruction() && triggers.dimensional_rift )
+      {
+        if ( p()->dimensional_rift_rng->trigger() )
+          p()->proc_actions.dimensional_rift->execute_on_target( s->target );
+      }
+
+      if ( destruction() && triggers.embers_of_nihilam_1 )
+      {
+        if ( p()->echo_of_sargeras_rng->trigger() )
+        {
+          p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
+          p()->procs.echo_of_sargeras->occur();
+          p()->buffs.vision_of_nihilam->trigger();
         }
       }
     }
@@ -419,7 +435,7 @@ using namespace helpers;
         double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
         if ( p()->normalize_destruction_mastery )
-          chaotic_energies_rng = ( 1.0 + min_percentage ) / 2.0;
+          chaotic_energies_rng = ( 1.0 + min_percentage ) * 0.5;
 
         m *= 1.0 + chaotic_energies_rng * p()->cache.mastery_value();
       }
@@ -794,7 +810,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls_aff.setting_value ) )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
           p()->feast_of_souls_gain();
       }
 
@@ -808,15 +824,13 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_sb_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -1167,7 +1181,7 @@ using namespace helpers;
 
       if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
-        p()->buffs.shard_instability->trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->buffs.shard_instability->trigger();
         p()->procs.seeds_of_their_demise->occur();
         seeds_triggered = true;
       }
@@ -1346,19 +1360,29 @@ using namespace helpers;
 
     void tick( dot_t* d ) override
     {
-      // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
-      // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
-      // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
-      // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
-      // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
+      // 2018-08-24:
+      //   Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard. This set of code is based on results from
+      //   500+ Soul Shard sample sizes, and matches in-game results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
+      // 2026-03-06:
+      //   New tests were conducted using over 55000+ Soul Shards in both single and multi-target scenarios. The results confirm that Blizzard is still
+      //   using the same formula for Agony, though they occasionally make unusual adjustments to talent normalization (so this should be checked regularly).
+      //   With the larger sample size, we obtained a more precise initial value for Agony's RNG 'increment_max' of 0.370 (previously 0.368).
+      // TOCHECK regularly. If any changes are made to this section of code, please also update the Time_to_Shard expression in sc_warlock.cpp.
+
       double increment_max = p()->rng_settings.agony.setting_value;
 
       double active_agonies = p()->get_active_dots( d );
       increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
-      // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
+      // NOTE: 2026-03-06 Recent tests noted that Creeping Death is renormalizing shard generation to be neutral with/without the talent
+      // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
       if ( p()->talents.creeping_death.ok() )
-        increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+      {
+        if ( !p()->bugs || p()->talents.creeping_death.rank() < 2 )
+          increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+        else
+          increment_max *= 1.0 + ( p()->talents.creeping_death->effectN( 1 ).percent() * 0.5 );
+      }
 
       p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -1451,7 +1475,7 @@ using namespace helpers;
       {
         for ( int i = 0; i < stacks; i++ )
         {
-          if ( rng().roll( p()->talents.fatal_echoes->effectN( 1 ).percent() ) )
+          if ( p()->fatal_echoes_rng->trigger() )
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
@@ -1602,16 +1626,7 @@ using namespace helpers;
 
         if ( p()->talents.sow_the_seeds.ok() )
         {
-          // NOTE: 2026-02-20 The reduced effectiveness of additional seeds only affects the host (bug?)
-          if ( p()->bugs )
-          {
-            if ( t == target )
-              m *= effectiveness;
-          }
-          else
-          {
-            m *= effectiveness;
-          }
+          m *= effectiveness;
         }
 
         return m;
@@ -1710,7 +1725,7 @@ using namespace helpers;
 
       p()->buffs.seed_of_corruption_is_out_dnt->trigger();
 
-      if ( time_to_execute == 0_ms && soul_harvester() && p()->buffs.nightfall->check() )
+      if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
           p()->proc_actions.wicked_reaping->execute_on_target( target );
@@ -1718,10 +1733,13 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls_aff.setting_value ) )
-          p()->feast_of_souls_gain();
+        // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+          p()->feast_of_souls_gain( true );
       }
 
+      // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
+      // benefits from the cost reduction but does not consume the effect. (bug?)
       if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
@@ -1995,7 +2013,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls_aff.setting_value ) )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -2008,16 +2026,14 @@ using namespace helpers;
       if ( result_is_hit( d->state->result ) )
       {
         // NOTE: 2026-02-20 Malefic Grasp can proc Shard Instability
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
-        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty (PRD: 50% nominal rate if SB is used, 25% nominal rate if DS is used)
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2136,7 +2152,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls_aff.setting_value ) )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -2148,15 +2164,13 @@ using namespace helpers;
 
       if ( result_is_hit( d->state->result ) )
       {
-        if ( p()->talents.shard_instability.ok() )
+        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
         {
-          bool success = p()->buffs.shard_instability->trigger();
-
-          if ( success )
-            p()->procs.shard_instability->occur();
+          p()->buffs.shard_instability->trigger();
+          p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
+        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2254,7 +2268,8 @@ using namespace helpers;
       : warlock_spell_t( "Dark Harvest", p, p->talents.dark_harvest, options_str ),
       dark_harvest_dmg( new dark_harvest_dmg_t( p ) )
     {
-      aoe = -1;
+      channeled = true;
+
       add_child( dark_harvest_dmg );
     }
 
@@ -2288,15 +2303,15 @@ using namespace helpers;
     {
       warlock_spell_t::tick( d );
 
-      auto t = d->state->target;
-      if ( td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking() || td( t )->dots.agony->is_ticking() || td( t )->dots.unstable_affliction->is_ticking() )
+      const auto& tl = target_list();
+      for ( auto t : tl )
         dark_harvest_dmg->execute_on_target( t );
 
-      // Shadow of Death gain effect is processed only once
-      if ( soul_harvester() && p()->hero.shadow_of_death.ok() && d->state->chain_target == 0 )
+      // Shadow of Death gain starts on the second tick
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() && d->current_tick > 0 )
       {
-        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         // NOTE: 2026-02-20 The shards gained by Shadow of Death can also proc another Succulent Soul each (bug?)
+        double gain = p()->hero.shadow_of_death->effectN( 2 ).base_value();
         if ( p()->bugs )
           p()->resource_gain( RESOURCE_SOUL_SHARD, gain, p()->gains.shadow_of_death );
         else
@@ -2380,13 +2395,11 @@ using namespace helpers;
         int shards_used;
         bool rancora_empowered;
         int last_hit_random_target;
-        bool allow_succulent_soul;
 
         hogi_state_t()
           : shards_used( 0 ),
           rancora_empowered( false ),
-          last_hit_random_target( 0 ),
-          allow_succulent_soul( true )
+          last_hit_random_target( 0 )
         { }
       };
 
@@ -2405,7 +2418,6 @@ using namespace helpers;
           state.shards_used = 0;
           state.rancora_empowered = false;
           state.last_hit_random_target = 0;
-          state.allow_succulent_soul = true;
         }
 
         std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -2414,7 +2426,6 @@ using namespace helpers;
           s << " shards_used=" << state.shards_used;
           s << " rancora_empowered=" << state.rancora_empowered;
           s << " last_hit_random_target=" << state.last_hit_random_target;
-          s << " allow_succulent_soul=" << state.allow_succulent_soul;
           return s;
         }
 
@@ -2430,7 +2441,7 @@ using namespace helpers;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->talents.hog_impact ),
-        meteor_time( 400_ms )
+        meteor_time( 20_ms )
       {
         aoe = -1;
         dual = true;
@@ -2517,33 +2528,17 @@ using namespace helpers;
         {
           // NOTE: Old Behavior (pre Midnight):
           //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
-          //   Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+          //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
           //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
           //   Imps then spawn roughly every 0.18 seconds seconds after the damage event.
-          // NOTE: New Behavior:
+          // NOTE: New Behavior (from Midnight onwards):
           //   Wild Imps spawn on HoG impact almost instantly, with a 1ms delay between them
+          //   The HoG damage event no longer takes 0.4 seconds after cast (only a few milliseconds)
           //   Last tested: 2026-02-20
           for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
           {
             auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i - 1 );
             p()->wild_imp_spawns.push_back( ev );
-          }
-        }
-
-        if ( soul_harvester() && debug_cast<hog_impact_state_t*>( s )->state.allow_succulent_soul && p()->buffs.succulent_soul->check() )
-        {
-          if ( s->chain_target == 0 )
-          {
-            p()->buffs.succulent_soul->decrement();
-
-            if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
-            {
-              p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
-              p()->buffs.manifested_demonic_soul->trigger();
-              p()->procs.manifested_avarice->occur();
-            }
-
-            p()->proc_actions.demonic_soul->execute_on_target( s->target );
           }
         }
       }
@@ -2611,7 +2606,6 @@ using namespace helpers;
         impact_spell->state.rancora_empowered = false;
         triggers.demonic_art_buff = false;
       }
-      impact_spell->state.allow_succulent_soul = true;
 
       if ( p()->hero.diabolic_oculi.ok() )
         p()->buffs.demonic_oculi->trigger();
@@ -2627,10 +2621,24 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.demonic_knowledge.ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
+      if ( p()->talents.demonic_knowledge.ok() && p()->demonic_knowledge_rng->trigger() )
       {
         p()->buffs.demonic_core->trigger();
         p()->procs.demonic_knowledge->occur();
+      }
+
+      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+      {
+          p()->buffs.succulent_soul->decrement();
+
+          if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
+          {
+            p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
+            p()->buffs.manifested_demonic_soul->trigger();
+            p()->procs.manifested_avarice->occur();
+          }
+
+          p()->proc_actions.demonic_soul->execute_on_target( target );
       }
 
       // TODO: Are these execute, or impact? Check ingame timings to see when these effects are applied
@@ -2707,9 +2715,9 @@ using namespace helpers;
 
       if ( p()->buffs.demonic_core->check() )
       {
-        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( p()->rng_settings.spiteful_reconstitution.setting_value ) )
+        if ( p()->talents.spiteful_reconstitution.ok() && p()->spiteful_reconstitution_rng->trigger() )
         {
-          p()->warlock_pet_list.wild_imps.spawn( 1u );
+          p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), 1u );
           p()->procs.spiteful_reconstitution->occur();
         }
       }
@@ -2722,7 +2730,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls_demo.setting_value ) )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
           p()->feast_of_souls_gain();
       }
 
@@ -2858,7 +2866,7 @@ using namespace helpers;
         unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
+          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
@@ -3064,7 +3072,7 @@ using namespace helpers;
         unsigned new_imps = ( sac_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( new_imps );
+          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
@@ -3240,7 +3248,7 @@ using namespace helpers;
   struct summon_lady_sacrolash_t : public warlock_spell_t
   {
     summon_lady_sacrolash_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1282501 ) )
+      : warlock_spell_t( n, p, p->talents.doa_lady_sacrolash_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3256,7 +3264,7 @@ using namespace helpers;
   struct summon_grand_warlock_alythess_t : public warlock_spell_t
   {
     summon_grand_warlock_alythess_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1282502 ) )
+      : warlock_spell_t( n, p, p->talents.doa_grand_warlock_alythess_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3272,7 +3280,7 @@ using namespace helpers;
   struct summon_antoran_inquisitor_t : public warlock_spell_t
   {
     summon_antoran_inquisitor_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1276283 ) )
+      : warlock_spell_t( n, p, p->talents.doa_antoran_inquisitor_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3288,7 +3296,7 @@ using namespace helpers;
   struct summon_antoran_jailer_t : public warlock_spell_t
   {
     summon_antoran_jailer_t( std::string_view n, warlock_t* p )
-      : warlock_spell_t( n, p, p->find_spell( 1276182 ) )
+      : warlock_spell_t( n, p, p->talents.doa_antoran_jailer_summon )
     {
       harmful = may_crit = false;
       background = not_a_proc = true;
@@ -3316,7 +3324,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // TODO: Check if Fiendish Cruelty actually affects FnB's Incinerate and how it affects it
+        triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // Incinerate FnB crits can trigger Fiendish Cruelty
+        triggers.embers_of_nihilam_1 = p->talents.embers_of_nihilam_1.ok(); // Incinerate FnB hits can trigger Embers of Nihilam 1
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
       }
@@ -3352,13 +3361,6 @@ using namespace helpers;
 
         if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
-
-        if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
-        {
-          p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
-          p()->procs.echo_of_sargeras->occur();
-          p()->buffs.vision_of_nihilam->trigger();
-        }
       }
     };
 
@@ -3380,6 +3382,7 @@ using namespace helpers;
       affected_by.havoc = true;
 
       triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok();
+      triggers.embers_of_nihilam_1 = p->talents.embers_of_nihilam_1.ok();
 
       add_child( fnb_action );
     }
@@ -3420,7 +3423,8 @@ using namespace helpers;
 
       // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
       // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
-      if ( p()->bugs ? p()->buffs.chaotic_inferno->check() : ( time_to_execute == 0_ms ) )
+      bool consume_backdraft = p()->bugs ? !p()->buffs.chaotic_inferno->check() : ( time_to_execute != 0_ms );
+      if ( consume_backdraft )
         p()->buffs.backdraft->decrement();
 
       // Chaotic Inferno buff is only consumed by an Incinerate cast that benefits from the effect
@@ -3439,13 +3443,6 @@ using namespace helpers;
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
         else if ( p()->talents.diabolic_embers.ok() )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
-      }
-
-      if ( p()->talents.embers_of_nihilam_1.ok() && p()->rng().roll( p()->rng_settings.echo_of_sargeras.setting_value ) )
-      {
-        p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
-        p()->procs.echo_of_sargeras->occur();
-        p()->buffs.vision_of_nihilam->trigger();
       }
     }
   };
@@ -3550,19 +3547,26 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      int rift = rng().range( 3 );
+      dimensional_rift_pet_e rift_pet_index = p()->dimensional_rift_summon_rng->draw();
 
-      switch ( rift )
+      switch ( rift_pet_index )
       {
-        case 0:
+        case DR_PET_SHADOWY_TEAR:
           p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+          p()->procs.dimensional_rift->occur();
           break;
-        case 1:
+        case DR_PET_UNSTABLE_TEAR:
           p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+          p()->procs.dimensional_rift->occur();
           break;
-        case 2:
+        case DR_PET_CHAOS_TEAR:
           p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+          p()->procs.dimensional_rift->occur();
           break;
+        case DR_PET_OVERFIEND:
+          p()->warlock_pet_list.overfiends.spawn();
+          p()->buffs.summon_overfiend->trigger();
+          p()->procs.avatar_of_destruction->occur();
         default:
           break;
       }
@@ -3607,7 +3611,6 @@ using namespace helpers;
 
     double havoc_rancora_mod_value;
     internal_combustion_t* internal_combustion;
-    dimensional_rift_t* dimensional_rift;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str ),
@@ -3619,13 +3622,11 @@ using namespace helpers;
       affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
 
       triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok();
+      triggers.dimensional_rift = p->talents.dimensional_rift.ok();
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
       triggers.rancora_cb_bonus = true;
 
       havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
-
-      if ( p->talents.dimensional_rift.ok() )
-        dimensional_rift = new dimensional_rift_t( p );
 
       if ( p->talents.internal_combustion.ok() )
       {
@@ -3700,33 +3701,18 @@ using namespace helpers;
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
+      p()->buffs.backdraft->decrement();
+
       p()->buffs.crashing_chaos->decrement();
 
-      if ( p()->talents.chaotic_inferno.ok() )
+      if ( p()->talents.chaotic_inferno.ok() && p()->chaotic_inferno_rng->trigger() )
       {
         // Delay the buff a bit to simulate the ingame behavior where an Incinerate cast
         // queued right after a Chaos Bolt that procs Chaotic Inferno is not affected by it
         make_event( *sim, 10_ms, [ this ] {
-          bool success = p()->buffs.chaotic_inferno->trigger();
-          if ( success )
-            p()->procs.chaotic_inferno->occur();
+          p()->buffs.chaotic_inferno->trigger();
+          p()->procs.chaotic_inferno->occur();
         } );
-      }
-
-      if ( p()->talents.dimensional_rift.ok() && rng().roll( p()->talents.dimensional_rift->effectN( 1 ).percent() ) )
-      {
-        p()->procs.dimensional_rift->occur();
-
-        if ( p()->talents.avatar_of_destruction.ok() && rng().roll( p()->rng_settings.avatar_of_destruction_dr.setting_value ) )
-        {
-          p()->warlock_pet_list.overfiends.spawn();
-          p()->buffs.summon_overfiend->trigger();
-          p()->procs.avatar_of_destruction->occur();
-        }
-        else
-        {
-          dimensional_rift->execute_on_target( target );
-        }
       }
     }
 
@@ -3930,13 +3916,14 @@ using namespace helpers;
 
       warlock_spell_t::execute();
 
+      // Rain of Fire has no expiration pulse (none, neither partial nor full) (NO_EXPIRATION_PULSE is already the default for ground_aoe_params_t)
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
                                         .target( execute_state->target )
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
                                         .pulse_time( base_tick_time * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
-                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
+                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
@@ -3949,10 +3936,20 @@ using namespace helpers;
       {
         p()->buffs.alythesss_ire->decrement();
 
-        bool success = p()->buffs.alythesss_ire->trigger();
+        p()->alythesss_ire_counter++;
 
-        if ( success )
+        if ( p()->alythesss_ire_counter >= p()->alythesss_ire_trigger )
+        {
+          p()->buffs.alythesss_ire->trigger();
           p()->procs.alythesss_ire->occur();
+
+          // NOTE: 2026-03-06 Alythess's Ire usually procs at a fixed interval of attempts. Rarely, the cycle
+          // shifts and advances the next proc; testing suggests this happens randomly in roughly ~1% of procs.
+          if ( rng().roll( p()->rng_settings.alythesss_ire_shift.setting_value ) )
+            p()->alythesss_ire_counter = rng().range( 1, p()->alythesss_ire_trigger );
+          else
+            p()->alythesss_ire_counter = 0;
+        }
       }
     }
   };
@@ -4103,7 +4100,6 @@ using namespace helpers;
   struct shadowburn_t : public warlock_spell_t
   {
     double havoc_rancora_mod_value;
-    dimensional_rift_t* dimensional_rift;
 
     shadowburn_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str ),
@@ -4114,12 +4110,10 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
+      triggers.dimensional_rift = p->talents.dimensional_rift.ok();
       triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
 
       havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
-
-      if ( p->talents.dimensional_rift.ok() )
-        dimensional_rift = new dimensional_rift_t( p );
     }
 
     bool ready() override
@@ -4166,12 +4160,6 @@ using namespace helpers;
 
         if ( success )
           p()->procs.conflagration_of_chaos_sb->occur();
-      }
-
-      if ( p()->talents.dimensional_rift.ok() && rng().roll( p()->talents.dimensional_rift->effectN( 1 ).percent() ) )
-      {
-        p()->procs.dimensional_rift->occur();
-        dimensional_rift->execute_on_target( target );
       }
 
       p()->buffs.fiendish_cruelty->decrement();
@@ -4473,6 +4461,7 @@ using namespace helpers;
       affected_by.havoc = true;
 
       triggers.fiendish_cruelty = p->talents.fiendish_cruelty.ok(); // Infernal Bolt crits can trigger Fiendish Cruelty
+      triggers.embers_of_nihilam_1 = p->talents.embers_of_nihilam_1.ok(); // Infernal Bolt hits can trigger Embers of Nihilam 1
     }
 
     void init() override
@@ -4508,8 +4497,10 @@ using namespace helpers;
 
       p()->buffs.infernal_bolt->decrement();
 
-      // NOTE: 2026-02-18 Infernal Bolt benefits from Chaotic Inferno but does not consume the effect (bug?)
-      if ( !p()->bugs )
+      p()->buffs.backdraft->decrement();
+
+      // Chaotic Inferno buff is only consumed by an Infernal Bolt cast that benefits from the effect
+      if ( time_to_execute == 0_ms )
         p()->buffs.chaotic_inferno->decrement();
     }
   };
@@ -4534,7 +4525,6 @@ using namespace helpers;
           hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
           hog_impact_spell->state.shards_used = as<int>( p->hero.ruination_buff->effectN( 2 ).base_value() );
           hog_impact_spell->state.rancora_empowered = false;    // Ruination HoG impact is never rancora empowered
-          hog_impact_spell->state.allow_succulent_soul = false; // Ruination HoG impact can't benefit from succulent soul
         }
       }
 
@@ -4657,6 +4647,20 @@ using namespace helpers;
     }
   };
 
+  struct diabolic_oculi_t : public warlock_spell_t
+  {
+    diabolic_oculi_t( warlock_t* p )
+      : warlock_spell_t( "Diabolic Oculi", p, p->hero.diabolic_oculi )
+    {
+      background = dual = true;
+
+      add_child( p->proc_actions.eye_explosion );
+      add_child( p->proc_actions.diabolic_gaze_3 );
+      add_child( p->proc_actions.diabolic_gaze_2 );
+      add_child( p->proc_actions.diabolic_gaze_1 );
+    }
+  };
+
   // Diabolist Actions End
   // Helper Functions Begin
 
@@ -4666,15 +4670,21 @@ using namespace helpers;
     // We determined this is the probable functionality copied from Agony by first confirming the
     // DR formula was the same and then confirming that you can get procs on 1st tick.
     // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-    // Last checked 09-28-2020.
+    // Last checked 2026-03-06.
     double increment_max = p->rng_settings.nightfall.setting_value;
 
     double active_corruptions = p->get_active_dots( d );
     increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
 
-    // Creeping Death no longer affects the chance of gaining Nightfall
+    // NOTE: 2026-03-06 Creeping Death no longer affects the chance of gaining Nightfall
+    // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
     if ( p->talents.creeping_death.ok() )
-      increment_max *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
+    {
+      if ( !p->bugs || p->talents.creeping_death.rank() < 2 )
+        increment_max *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
+      else
+        increment_max *= 1.0 + ( p->talents.creeping_death->effectN( 1 ).percent() * 0.5 );
+    }
 
     // Sataiel’s Volition no longer affects the chance of gaining Nightfall
     if ( p->hero.sataiels_volition.ok() )
@@ -4854,8 +4864,8 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && rng().roll( p->talents.fatal_echoes->effectN( 1 ).percent() ) )
+      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->fatal_echoes_rng->trigger() )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->fatal_echoes_rng->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
@@ -5099,6 +5109,7 @@ using namespace helpers;
 
   void warlock_t::create_destruction_proc_actions()
   {
+    proc_actions.dimensional_rift = new dimensional_rift_t( this );
     proc_actions.demonfire_infusion = new demonfire_infusion_t( this );
 
     if ( talents.embers_of_nihilam_1.ok() )
@@ -5118,6 +5129,7 @@ using namespace helpers;
     proc_actions.diabolic_gaze_1 = new diabolic_gaze_1_t( this );
     proc_actions.diabolic_gaze_2 = new diabolic_gaze_2_t( this );
     proc_actions.diabolic_gaze_3 = new diabolic_gaze_3_t( this );
+    proc_actions.diabolic_oculi = new diabolic_oculi_t( this );
   }
 
   void warlock_t::create_hellcaller_proc_actions()

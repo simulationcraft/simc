@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66044
-static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
+// Spell text, wow build 12.0.1.66263
+static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7170,6 +7170,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  211056, "Reduces movement speed by $s1%.", "Reduces movement speed by $s1%.", 0 },
   {  211076, "Deals $s1 Arcane damage to all targets within $A1 yds.", "Deals $s1 Arcane damage to all targets within $A1 yds.", 0 },
   {  211088, "Deals $s1 Arcane damage to enemies within $A1 yds.", 0, 0 },
+  {  211094, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.", 0, 0 },
   {  211117, "$@spelldesc197344", "The bond between Hati and the Titanstrike has been weakened temporarily.", 0 },
   {  211141, "$@spelldesc106830", 0, 0 },
   {  211145, "$@spelldesc197344", 0, 0 },
@@ -9201,7 +9202,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  253748, "Open the container.", 0, 0 },
   {  253793, "Your autoattacks have a chance to deal $253797s1 additional Shadow damage.", 0, 0 },
   {  253797, "$@spelldesc253793", 0, 0 },
-  {  253802, "Increases your Agility against Aberrations by $s1.", 0, 0 },
+  {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
@@ -19735,6 +19736,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  406907, "Blistering Scales no longer loses charges and deals $s2% more damage.", 0, 0 },
   {  406921, "$@spelldesc406219", "Adapted to the situation, gaining $w1 Versatility and Critical Strike.", 0 },
   {  406927, "$@spelldesc406219", "Adapted to the situation, gaining $w1 Mastery and Haste.", 0 },
+  {  406957, "Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][]$?s315867[\r\n\r\n|cFFFFFFFFGenerates $220637s1 Holy Power.][]", 0, 0 },
   {  406963, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M1 uses and each provides $371513M1 potions. The cauldron lasts for $d.", 0, 0 },
   {  406964, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M1 uses and each provides $371518M1 potions. The cauldron lasts for $d.", 0, 0 },
   {  406965, "Creates a cauldron that raid members can use to acquire Fleeting Elemental Potions of Ultimate Power. When consumed, their primary stat is increased by $371028s1 for $371028d.\r\n\r\nCauldron has $M2 uses and each provides $371520M1 potions. The cauldron lasts for $d.", 0, 0 },
@@ -21420,7 +21422,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  436589, "$@spelldesc436586", 0, 0 },
   {  436651, "Increases your movement speed by $s1%, but also damages you for $s2% of your maximum health every $t2 sec. Movement impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.", "Movement speed increased by $s1%.", 0 },
   {  436687, "$?a137008[Marrowrend and Heart Strike have][Consuming Killing Machine or Rime has] a $s1% chance to grant $s2 stacks of Icy Talons and increase its maximum stacks by the same amount for 6 sec.\r\n\r\nRunic Power spending abilities count as Shadowfrost while Icy Talons is active.", 0, 0 },
-  {  436700, "Add $M1 $?{$M1==1}[socket][sockets] to a War Within PvP item. Can be used on Helms, Amulets, Bracers, Belts, and Rings. $?{$M2>1)[\r\n\r\nJewelry can have up to $M2 sockets.][]\r\n\r\nMust be used during The War Within Season $M3.", 0, 0 },
   {  436707, "Stormstrike or Nature damage your abilities deal is increased by $s1%. Stormstrike damage ignores Armor.\r\n\r\nThunder Clap damage increased by $s4%$?a137050[, no longer costs Rage, and now generates ${$s5/10} Rage][].$?a137050[\r\n\r\nImproved Whirlwind, Meat Cleaver, and Barbaric Training affect Thunder Clap in addition to Whirlwind.][]", 0, 0 },
   {  436789, "Transform into a Thundering Orb, Inflicting ${$s1*(($426748d/$426748t1)-$426748s1)} Nature damage to enemies within $426757A1 yards over $426748d. While you are a Thundering Orb, damage taken is reduced by $426748s2%, movement speed is reduced by $426748s3%, and you are immune to loss of control effects.", 0, 0 },
   {  436852, "Rush forward a short distance.", 0, 0 },
@@ -24221,7 +24222,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   {  467059, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
   {  467250, "Your healing spells and abilities have a chance to summon Mister Pick-Me-Up for $467251d, firing a healing beam every $467251t1 sec that jumps between $s3 injured allies to restore $467250s1 health each.\r\n\r\nOverhealing from this effect irradiates allies to deal Nature damage to nearby enemies over $474467d, increased by additional overhealing.", 0, 0 },
   {  467251, 0, "Mister Pick-Me-Up is here to assist!", 0 },
-  {  467260, "Create a piece of Astral Gladiator's equipment appropriate for your loot specialization ($@lootspec).", 0, 0 },
   {  467263, "$@spelldesc114051", 0, 0 },
   {  467270, "Life Cocoon grants up to $s1 stacks of Mana Tea and applies $s2 stacks of Healing Elixir to its target.", 0, 0 },
   {  467274, "Sundering grants you Hot Hand for 8 sec.\r\n\r\nWhile Hot Hand is active, Lava Lash casts Sundering at $s1% effectiveness. Sundering cast from this effect does not incapacitate.", 0, 0 },
@@ -25556,12 +25556,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1230366, "$@spelldesc1241711", "$pri increased by $w1.", 0 },
   { 1230569, "$@spelldesc1229209", "Attack and cast speed reduced by $w1%.", 0 },
   { 1230571, "$@spelldesc1229209", "Haste increased by $w1%.", 0 },
-  { 1230660, "Collect 15 Runed Ethereal Crests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1230662, "Collect 15 Carved Ethereal Crests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1230663, "Collect 15 Weathered Ethereal Crests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1230665, "Collect 15 Gilded Ethereal Crests.", 0, 0 },
-  { 1230667, "Collect 15 Runed Ethereal Crests.", 0, 0 },
-  { 1230668, "Collect 15 Carved Ethereal Crests.", 0, 0 },
   { 1230698, "When Brann uses $@spellname453812, sands begin swirling around party members, granting $s2% Critical Strike up to $1230706u times and slowing nearby enemies by $s1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "When Brann uses $@spellname453812, sands begin swirling around party members, granting $w2% Critical Strike up to $1230706u times and slowing nearby enemies by $w1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "Rank 1/4" },
   { 1230706, "$@spelldesc1229205", "Slow nearby enemies by $w%. Critical Strike increased by $w1%. Your critical attacks create a Sand Devil at the targets location that periodically pulls in enemies over $1230713d.\r\n\r\nThis can occur once every $1230708proccooldown sec.", 0 },
   { 1230708, "$@spelldesc1229205", 0, 0 },
@@ -25972,9 +25966,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1236094, "Permanently enchants a weapon with Flames of the Sin'dorei, causing your spells and abilities to sometimes ignite your target. This Phoenix Fire inflicts ${$<rolemult>*($ec1s1*$1242127t1)} Fire damage over $1242127d before detonating for an additional ${$<rolemult>*$ec1s2} Fire damage split among nearby enemies. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
   { 1236095, "Permanently enchants a weapon with Acuity of the Ren'dorei, causing your spells and abilities to grant you Might of the Void, providing you with $ec1s1 $pri for $1241715d. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
   { 1236097, "Permanently enchants a weapon with Arcane Mastery, causing your spells and abilities to grant you Genius Insight, increasing your Mastery by $ec1s1 for $1241759d. Cannot be applied to items lower than level $ecim.\r\n\r\n|cnNORMAL_FONT_COLOR:Thalassian Talents - Silvermoon's Spellpower|R ", 0, 0 },
-  { 1236098, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1236099, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1236100, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1236108, "Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.", 0, 0 },
   { 1236109, "$@spelldesc1236108", 0, 0 },
   { 1236110, "$@spelldesc1236108", "Damaging nearby targets for ${$<rolemult>*$1236137w1} Nature damage every $t sec.", 0 },
@@ -26096,7 +26087,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1237032, "$@spelldesc377668", 0, 0 },
   { 1237033, "$@spelldesc1236135", 0, 0 },
   { 1237069, "$@spelldesc1236129", 0, 0 },
-  { 1237086, "Create a soulbound Mythic dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 3.", 0, 0 },
   { 1237128, "$@spelldesc377668", 0, 0 },
   { 1237158, "Deal $s1 Holy damage to your current target.", 0, 0 },
   { 1237172, "Causes each of your Virulent Plagues to flare up, dealing $s1 Shadow damage to the infected enemy, and an additional $s2 Shadow damage to all other enemies near them.", 0, 0 },
@@ -26136,7 +26126,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1238281, "Empower Rune Weapon causes your next damaging Rune spending ability to cost no Runes, but now generates ${$s1/-10} less Runic Power.", 0, 0 },
   { 1238443, "For the next $d your damaging abilities have a chance to deal $s3 Holy damage and mark the target with $@spellname1237886. $@spellname1237886 increases the damage taken from $@spellname1237158 by $s4%. Damaging a new target will remove $@spellname1237886 from the previous target.", "Abilities have a chance to deal $s3 Holy damage.", 0 },
   { 1238467, "$@spelldesc1237885", "Healing $s2 every $t2 sec.", 0 },
-  { 1238474, "$@spelldesc1237885", "Enduring $s2 Nature damage every $t2 sec.", 0 },
+  { 1238474, "$@spelldesc1237885", "Enduring $w2 Nature damage every $t2 sec.", 0 },
   { 1238488, "After fully channeling Void Ray, the cooldown of Reap is reset and your next Reap will collect up to $1238495s1 additional Soul Fragments.", 0, 0 },
   { 1238495, "$@spelldesc1238488", "Your next Reap can collect $s1 additional souls.", 0 },
   { 1238623, "Increases critical strike damage by $s1%. Increases critical strike healing by $s2%.", 0, 0 },
@@ -26246,6 +26236,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1241136, "The effectiveness of your Stagger is increased by up to $s1%, based on your missing health.", 0, 0 },
   { 1241167, "$@spelldesc191587", 0, 0 },
   { 1241171, "$@spelldesc1240996", 0, 0 },
+  { 1241227, "Gain $s1 Critical Strike while above $1241262s1% health.", 0, 0 },
   { 1241240, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals ${$<rolemult>*$1236137s13} Nature damage split between targets within $1237033A1 yds.", 0, 0 },
   { 1241241, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137s11 damage for $1236993d. When the shield expires it deals $1236137s12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1241242, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137s10.", 0, 0 },
@@ -26255,9 +26246,11 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1241246, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
   { 1241251, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. ", 0, 0 },
+  { 1241262, "Gain $1241289s1 Critical Strike while above $s1% health.", "Increased Critical Strike.", 0 },
   { 1241275, "Activating Avenging Wrath releases the Light within yourself, healing $200652s2 injured allies instantly and an injured ally every $200652t1 sec within $200653A1 yds for $200654s1.\r\n\r\nAllies healed also receive $200654s2% increased healing from your Holy Light, Flash of Light, and Holy Shock spells for $200654d. ", 0, 0 },
   { 1241285, "$@spelldesc232893", 0, 0 },
   { 1241288, "During Avenging Wrath, Judgment is empowered into Hammer of Wrath.$?c3[\r\n\r\n$@spellicon24275$@spellname24275\r\n$@spelldesc24275][\r\n\r\n$@spellicon1241413 $@spellname1241413\r\n$@spelldesc1241413]", 0, 0 },
+  { 1241289, "$@spelldesc1241262", "Critical Strike increased by $w1.", 0 },
   { 1241358, "Judgment critical strikes empower your next Word of Glory to automatically activate Light of Dawn at $s2% effectiveness.", 0, 0 },
   { 1241410, "$@spelldesc1241288", "Hammer of Wrath can be cast.", 0 },
   { 1241413, "Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
@@ -26563,7 +26556,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1246032, "$@spelldesc1246030", "Your next Blink releases a Blast Wave at your previous location.", 0 },
   { 1246042, "$@spelldesc1245979", "Your next Divine Steed will also grant Shield of the Righteous.", 0 },
   { 1246103, "$@spelldesc1236129", 0, 0 },
-  { 1246124, "Place down the Shrieking Quartz, luring the Nemesis to its location.\r\n\r\nOnly usable after activating the Restoration Stone inside of a Delve.", 0, 0 },
   { 1246131, "Nature's Swiftness now also affects Hex, but its cooldown is increased by ${$s1/1000} sec.", 0, "PvP Talent" },
   { 1246142, "$@spelldesc1245979", 0, 0 },
   { 1246160, "$@spelldesc452402", "Damage of your next Voidsurge is increased by $w2%.", 0 },
@@ -26577,7 +26569,6 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1246309, "Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.", "Setting souls ablaze.", 0 },
   { 1246312, "Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!\r\n\r\nThis effect can only occur every 30 minutes.", 0, 0 },
   { 1246335, "Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!\r\n\r\nDoes not work on players whose spirits have been released and are above level $ctrmax3322.", 0, 0 },
-  { 1246363, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.", "You'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve's Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1246481, "Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.", 0, 0 },
   { 1246488, "Judgment chains to $s1 additional $Ltarget;targets at ${$275779f1*100}% effectiveness.", 0, 0 },
   { 1246517, "Increases the healing done by Holy Word: Serenity by $s2% and causes it to heal $1250581s2 nearby injured allies within $1250581A1 yards for $s3% of its healing done.\r\n\r\nTalents that affect Holy Word: Sanctify instead affect Holy Word: Serenity.", 0, 0 },
@@ -27130,6 +27121,9 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1255367, 0, "Absorbing $w1 damage.", 0 },
   { 1255460, 0, "$pri increased by $w1.", 0 },
   { 1255504, 0, "Critical Strike increased by $w1.", 0 },
+  { 1255685, "Increase the frequency of experiencing Voidlust while fighting enemies within Voidstorm.", 0, 0 },
+  { 1255687, "Increase the duration of your Voidlust episodes by $s0% while fighting enemies within Voidstorm. ", 0, 0 },
+  { 1255688, "Increase the intensity of your Voidlust episodes while fighting enemies within Voidstorm.", 0, 0 },
   { 1255768, "$@spelldesc1248866", 0, 0 },
   { 1255774, 0, "Recharging.", 0 },
   { 1255804, 0, "Your healing spells and abilities also heal the imbued ally for $w2.", 0 },
@@ -28131,7 +28125,10 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1269450, "Combine $s2 Apprentice's Scribbles to create a Artisan's Ledger.", 0, 0 },
   { 1269451, "Combine $s2 Artisan's Ledger to create a Mentor's Helpful Handiwork.", 0, 0 },
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
+  { 1269453, "Convert $s2 Stranded Bloomline to create a Stranded Bloomline.", 0, 0 },
   { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269458, "Convert $s2 Shredded Glimmerline to create a Stranded Glimmerline.", 0, 0 },
+  { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28239,6 +28236,8 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1270910, "Collect 10 Veteran Dawncrests.", 0, 0 },
   { 1270916, "The mana cost of Holy Light is reduced by $s1% and its cast time is reduced by $s2%.", 0, 0 },
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] guarantees that your next $?c1[$s5][$s6] $Lcast:casts; of Tiger Palm or Vivify will trigger a Harmonic Surge, dealing $?c1[${$s1*$1239442s1/100}][${$s2*$1239442s1/100}] Nature damage split between your target and other nearby enemies, and $?c1[${$s3*$1239443s1/100}][${$s4*$1239443s1/100}] healing to up to $1239443s2 injured allies.", 0, 0 },
+  { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
+  { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
   { 1270990, "$@spelldesc1270958", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "$@spelldesc1270958", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
@@ -28545,7 +28544,7 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1281512, "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", 0 },
   { 1281527, "$@spelldesc1273126", "Your next Kill Command has $s1% increased critical strike chance and will deal an additional $1273126s2% damage over $1273145d.", 0 },
   { 1281559, "$@spelldesc1250897", "Your demons deal ${$w1}.1% increased damage.", 0 },
-  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", 0, 0 },
+  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][].", 0, 0 },
   { 1281579, "$@spelldesc1281574", 0, 0 },
   { 1281580, "$@spelldesc1281574", 0, 0 },
   { 1281638, "Ice Lance reduces the cooldown of Frozen Orb by ${$s1/1000}.1 sec, increased by ${$s2/1000}.1 sec for each stack of Freezing Shattered.", 0, 0 },
@@ -28627,14 +28626,21 @@ static constexpr std::array<spelltext_data_t, 28627> __spelltext_data { {
   { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287949, "$@spelldesc198013", 0, 0 },
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
+  { 1291455, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291459, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291460, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291464, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66044
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  { 1255278,  0, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d." },
+// spelltext hotfix entries, wow build 12.0.1.66263
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
+  { 1281574,  0, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][]." },
 } };
 
-// Spell description variables, wow build 12.0.1.66044
+// Spell description variables, wow build 12.0.1.66263
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29331,7 +29337,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66044
+// spelldesc_vars hotfix entries, wow build 12.0.1.66263
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

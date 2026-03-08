@@ -70,6 +70,11 @@ struct warlock_pet_t : public pet_t
     bool demonic_brutality;
   } affected_by;
 
+  struct triggers_t
+  {
+    bool hellbent_commander;
+  } triggers;
+
   action_t* special_action; // Used for pet interrupts (Axe Toss, Spell Lock)
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
@@ -417,6 +422,7 @@ struct felguard_pet_t : public warlock_pet_t
 struct wild_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
+  bool is_hog_imp;
   bool power_siphon;
   bool imploded;
 
