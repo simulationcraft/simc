@@ -9816,7 +9816,7 @@ struct graveyard_damage_aoe_t final : public epidemic_damage_base_t
   graveyard_damage_aoe_t( std::string_view name, death_knight_t* p )
     : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
   {
-    aoe                     = -1;
+    aoe                     = data().max_targets() - 1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
 };
