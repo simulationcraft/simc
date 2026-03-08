@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 
 struct action_state_t;
 struct item_t;
@@ -236,3 +237,68 @@ public:
   double get_accumulated_chance();
   double get_increment_max();
 };
+
+namespace prd
+{
+// Computes the expected number of attempts before getting a proc given the
+// PRD constant C and a cap after which the proc is guaranteed. Returns the
+// expectation and its derivative with respect to C.
+constexpr std::pair<double, double> expected_attempts( double C, int K )
+{
+  double chain = 1.0;   // Chance of getting a chain of unsuccessful procs
+  double d_chain = 0.0; // and its derivative
+
+  double expected = 0.0;
+  double d_expected = 0.0;
+
+  for ( int i = 1; i <= K; i++ )
+  {
+    expected += chain;
+    d_expected += d_chain;
+
+    double p = i * C;
+    if ( p >= 1.0 )
+      break;
+
+    d_chain = d_chain * ( 1 - p ) - chain * i; // Chain rule
+    chain *= 1 - p;
+  }
+
+  return { expected, d_expected };
+}
+
+// Finds the PRD constant C given the average proc rate p and a cap K
+// after which a proc is guaranteed. K <= 0 is treated as no cap.
+constexpr double find_constant( double p, int K )
+{
+  // This isn't strictly speaking correct for really small p values but
+  // such values aren't realistic in the sim setting.
+  if ( K <= 0 )
+    K = 1000000;
+
+  if ( p <= 1.0 / K )
+    return 0.0;
+
+  double tgt_expected = 1.0 / p;
+  // Initial guess that works well for normal p and K values.
+  double guess = std::min( 1.25 * p * p, 0.99 );
+
+  constexpr int max_iterations = 20;
+  constexpr double precision = 1e-12;
+
+  for ( int i = 0; i < max_iterations; i++ )
+  {
+    auto [ expected, d_expected ] = expected_attempts( guess, K );
+    double error = expected - tgt_expected;
+    // TODO: Change to std::fabs when we switch to C++ version where it's constexpr
+    if ( error < precision && -error < precision )
+      break;
+
+    // Newton's method update
+    guess -= error / d_expected;
+  }
+
+  return guess;
+}
+
+} // namespace prd
