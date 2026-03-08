@@ -296,11 +296,13 @@ void protection( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* generic = p->get_action_priority_list( "generic" );
+  action_priority_list_t* thane_st = p->get_action_priority_list( "thane_st" );
+  action_priority_list_t* colossus_st = p->get_action_priority_list( "colossus_st" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "battle_stance,toggle=on" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=variables" );
@@ -327,7 +329,8 @@ void protection( player_t* p )
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.remains<=10" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
-  default_->add_action( "call_action_list,name=generic" );
+  default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
+  default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
   aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
   aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
@@ -340,20 +343,29 @@ void protection( player_t* p )
   aoe->add_action( "thunder_clap" );
   aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
-  generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up)" );
-  generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
-  generic->add_action( "thunder_blast" );
-  generic->add_action( "shield_slam" );
-  generic->add_action( "thunder_blast,if=dot.rend_dot.remains<=2" );
-  generic->add_action( "thunder_clap,if=dot.rend_dot.remains<=2" );
-  generic->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)" );
-  generic->add_action( "execute,if=hero_tree.mountain_thane&(rage>=70|(rage>=40&cooldown.shield_slam.remains)|(buff.sudden_death.up&talent.sudden_death.enabled))" );
-  generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
-  generic->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
-  generic->add_action( "execute,if=hero_tree.mountain_thane&talent.deep_wounds.enabled" );
-  generic->add_action( "revenge" );
-  generic->add_action( "thunder_clap" );
-  generic->add_action( "devastate" );
+
+  thane_st->add_action( "thunder_blast" );
+  thane_st->add_action( "thunder_clap,if=buff.ravager.up" );
+  thane_st->add_action( "shield_slam" );
+  thane_st->add_action( "thunder_clap" );
+  thane_st->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)" );
+  thane_st->add_action( "execute,if=buff.sudden_death.up|rage>=40" );
+  thane_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
+  thane_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
+  thane_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
+  thane_st->add_action( "revenge" );
+  thane_st->add_action( "devastate" );
+
+  colossus_st->add_action( "shield_slam" );
+  colossus_st->add_action( "thunder_clap" );
+  colossus_st->add_action( "revenge,if=buff.ravager.up" );
+  colossus_st->add_action( "execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40" );
+  colossus_st->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
+  colossus_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
+  colossus_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
+  colossus_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
+  colossus_st->add_action( "revenge" );
+  colossus_st->add_action( "devastate" );
 
   variables->add_action( "variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
 }
