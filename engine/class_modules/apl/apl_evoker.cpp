@@ -43,11 +43,11 @@ void devastation( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe_fs = p->get_action_priority_list( "aoe_fs" );
-  action_priority_list_t* st_fs = p->get_action_priority_list( "st_fs" );
   action_priority_list_t* aoe_sc = p->get_action_priority_list( "aoe_sc" );
-  action_priority_list_t* st_sc = p->get_action_priority_list( "st_sc" );
   action_priority_list_t* es = p->get_action_priority_list( "es" );
   action_priority_list_t* green = p->get_action_priority_list( "green" );
+  action_priority_list_t* st_fs = p->get_action_priority_list( "st_fs" );
+  action_priority_list_t* st_sc = p->get_action_priority_list( "st_sc" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
@@ -89,7 +89,7 @@ void devastation( player_t* p )
   default_->add_action( "run_action_list,name=st_sc,if=talent.mass_disintegrate" );
   default_->add_action( "run_action_list,name=st_fs" );
 
-  aoe_fs->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&active_enemies<=4", "Fameshaper 3+ Target List" );
+  aoe_fs->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&active_enemies<=4" );
   aoe_fs->add_action( "fire_breath,target_if=max:target.health.pct,empower_to=1,if=cooldown.dragonrage.remains<gcd.max*2&active_dot.fire_breath_damage=0&(target.time_to_die>=15|!raid_event.adds.exists)" );
   aoe_fs->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&cooldown.eternity_surge.remains<=action.fire_breath.usable_in" );
   aoe_fs->add_action( "call_action_list,name=es,if=buff.tip_the_scales.up" );
@@ -104,7 +104,7 @@ void devastation( player_t* p )
   aoe_fs->add_action( "living_flame,target_if=max:target.health.pct,if=talent.engulfing_blaze&(buff.leaping_flames.up|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)" );
   aoe_fs->add_action( "azure_strike,target_if=max:target.health.pct" );
 
-  st_fs->add_action( "dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0", "Fameshaper 1 / 2 Target List" );
+  st_fs->add_action( "dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0" );
   st_fs->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5" );
   st_fs->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.eternity_surge.usable_in<=action.fire_breath.usable_in" );
   st_fs->add_action( "eternity_surge,target_if=max:target.health.pct,empower_to=2,if=active_enemies=2&!talent.eternitys_span&variable.can_use_empower" );
@@ -119,26 +119,29 @@ void devastation( player_t* p )
   st_fs->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up" );
   st_fs->add_action( "azure_strike" );
 
-  aoe_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5", "Scalemander 3+ Target List" );
+  aoe_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5" );
   aoe_sc->add_action( "deep_breath,if=talent.imminent_destruction&talent.strafing_run&!buff.strafing_run.up,cancel_if=gcd.remains=0" );
-  aoe_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up" );
+  aoe_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in" );
   aoe_sc->add_action( "dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists" );
   aoe_sc->add_action( "eternity_surge,target_if=max:target.health.pct,empower_to=1" );
   aoe_sc->add_action( "fire_breath,target_if=max:target.health.pct,empower_to=1" );
   aoe_sc->add_action( "deep_breath,if=talent.imminent_destruction,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0" );
-  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=cooldown.dragonrage.remains>gcd.max*4&!buff.mass_disintegrate_stacks.up&(active_enemies>=4|active_enemies>=3&(talent.feed_the_flames|talent.volatility))" );
-  aoe_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,if=talent.mass_disintegrate&(!talent.volatility|buff.mass_disintegrate_stacks.up),interrupt=1,interrupt_if=talent.volatility&active_enemies>=8" );
+  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&buff.charged_blast.stack>=18&cooldown.dragonrage.remains>gcd.max*4" );
+  aoe_sc->add_action( "azure_sweep,if=set_bonus.mid1_4pc&active_enemies<=3&(buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack)" );
+  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=cooldown.dragonrage.remains>gcd.max*4&!buff.mass_disintegrate_stacks.up&(active_enemies>=4|active_enemies>=3&talent.feed_the_flames)" );
+  aoe_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,if=talent.mass_disintegrate&(!talent.feed_the_flames|buff.mass_disintegrate_stacks.up),interrupt=1,interrupt_if=talent.volatility&active_enemies>=8" );
   aoe_sc->add_action( "azure_sweep,target_if=max:target.health.pct" );
-  aoe_sc->add_action( "living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1)", "Check" );
+  aoe_sc->add_action( "living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1)" );
   aoe_sc->add_action( "call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe)&(talent.azure_sweep&!buff.azure_sweep.up)" );
   aoe_sc->add_action( "azure_strike,target_if=max:target.health.pct" );
 
-  st_sc->add_action( "deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0", "Scalemander 1 / 2 Target List" );
+  st_sc->add_action( "deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0" );
   st_sc->add_action( "dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0" );
   st_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5" );
-  st_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up" );
+  st_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in" );
   st_sc->add_action( "eternity_surge,empower_to=1" );
   st_sc->add_action( "fire_breath,empower_to=1" );
+  st_sc->add_action( "azure_sweep,if=set_bonus.mid1_4pc&(buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack)" );
   st_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&talent.mass_disintegrate" );
   st_sc->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,chain=1,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1" );
   st_sc->add_action( "azure_sweep" );
@@ -148,16 +151,17 @@ void devastation( player_t* p )
   st_sc->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up" );
   st_sc->add_action( "azure_strike" );
 
-  es->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|active_enemies>4+4*talent.eternitys_span|talent.mass_disintegrate|buff.dragonrage.up", "Eternity Surge" );
+  es->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|active_enemies>4+4*talent.eternitys_span|talent.mass_disintegrate|buff.dragonrage.up" );
   es->add_action( "eternity_surge,empower_to=2,target_if=max:target.health.pct,if=active_enemies<=2+2*talent.eternitys_span" );
   es->add_action( "eternity_surge,empower_to=3,target_if=max:target.health.pct,if=active_enemies<=3+3*talent.eternitys_span" );
   es->add_action( "eternity_surge,empower_to=4,target_if=max:target.health.pct,if=active_enemies<=4+4*talent.eternitys_span" );
 
-  green->add_action( "emerald_blossom", "And that one's still green" );
+  green->add_action( "emerald_blossom" );
   green->add_action( "verdant_embrace" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_2_buffs&!cooldown.fire_breath.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=1|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual", "Trinket Spaghetti" );
-  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.is.vaelgors_final_stare&buff.dragonrage.up&active_enemies>=3", "other spagetti is so complicated. Just Trinket in AoE without a delay." );
+  trinkets->add_action( "use_item,slot=trinket1,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_2_buffs&!cooldown.fire_breath.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=1|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual" );
+  trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.is.vaelgors_final_stare&buff.dragonrage.up&active_enemies>=3" );
+  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.is.vaelgors_final_stare&buff.dragonrage.up&active_enemies>=3" );
   trinkets->add_action( "use_item,slot=trinket2,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_1_buffs&!cooldown.fire_breath.up&trinket.1.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=2|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)&!variable.trinket_2_manual" );
   trinkets->add_action( "use_item,slot=main_hand,if=variable.weapon_buffs&((variable.trinket_2_buffs&(trinket.2.cooldown.remains|trinket.2.cooldown.duration<=20)|!variable.trinket_2_buffs|variable.trinket_2_exclude|variable.trinket_priority=3)&(variable.trinket_1_buffs&(trinket.1.cooldown.remains|trinket.1.cooldown.duration<=20)|!variable.trinket_1_buffs|variable.trinket_1_exclude|variable.trinket_priority=3)&(!cooldown.fire_breath.up|(!cooldown.fire_breath.up)|active_enemies>=3))&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=3|variable.trinket_priority=1&trinket.1.cooldown.remains|variable.trinket_priority=2&trinket.2.cooldown.remains)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(gcd.remains>0.1&!prev_gcd.1.deep_breath)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))" );
