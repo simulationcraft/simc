@@ -237,7 +237,7 @@ void destruction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  // action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+  action_priority_list_t* aoe_hc = p->get_action_priority_list( "aoe_hc" );
   // action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   // action_priority_list_t* havoc = p->get_action_priority_list( "havoc" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
@@ -254,6 +254,7 @@ void destruction( player_t* p )
   default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither" );
   default_->add_action( "soul_fire,if=soul_shard<=4" );
   default_->add_action( "conflagrate,if=(variable.ritual_length<(action.chaos_bolt.execute_time*0.7+gcd.max))&!buff.backdraft.up" );
   default_->add_action( "chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))" );
@@ -272,6 +273,21 @@ void destruction( player_t* p )
   default_->add_action( "infernal_bolt,if=soul_shard<=3" );
   default_->add_action( "channel_demonfire" );
   default_->add_action( "incinerate" );
+
+  aoe_hc->add_action( "summon_infernal" );
+  aoe_hc->add_action( "malevolence" );
+  aoe_hc->add_action( "rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=4" );
+  aoe_hc->add_action( "conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=dot_refreshable_count.wither>0&!dot.wither.refreshable" );
+  aoe_hc->add_action( "shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.malevolence.up||buff.fiendish_cruelty.up|active_enemies<=3|(talent.conflagration_of_chaos&((active_enemies<=5&talent.destructive_rapidity)|(active_enemies<=6&!talent.destructive_rapidity)))" );
+  aoe_hc->add_action( "cataclysm,if=raid_event.adds.in>15" );
+  aoe_hc->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.wither.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5" );
+  aoe_hc->add_action( "rain_of_fire,if=active_enemies>=4" );
+  aoe_hc->add_action( "chaos_bolt,if=active_enemies<=(3+(havoc_active*!talent.destructive_rapidity))" );
+  aoe_hc->add_action( "soul_fire,target_if=min:(dot.wither.remains+100*debuff.havoc.remains),if=soul_shard<4&(active_enemies<=8|talent.avatar_of_destruction)" );
+  aoe_hc->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&active_dot.wither<=active_enemies&target.time_to_die>8" );
+  aoe_hc->add_action( "incinerate,if=talent.fire_and_brimstone&buff.backdraft.up" );
+  aoe_hc->add_action( "conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=buff.backdraft.stack<2|!talent.backdraft" );
+  aoe_hc->add_action( "incinerate" );
 
   items->add_action( "use_item,slot=trinket1" );
   items->add_action( "use_item,slot=trinket2" );
