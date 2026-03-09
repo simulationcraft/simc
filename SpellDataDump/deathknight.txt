@@ -11724,8 +11724,9 @@ Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), 
 Family Flags     : 43, 78, 85
 Attributes       : Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1026875)  : School Damage (2): shadow
+#1 (id=1026875)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.215 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc1247378
 
 Name             : Commander of the Dead (id=390259) [Spell Family (15), Passive] 
