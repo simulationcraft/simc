@@ -241826,9 +241826,11 @@ Triggered By     : Primal Spore Explosion (1259128), Primal Spore Explosion (125
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1244943)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1761.979 (coefficient=13.78663) | Trigger Spell: 1259124 | Target: Self (1)
-#2 (id=1268068)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2642.471 (coefficient=20.67605) | Trigger Spell: 1259127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3008.664 (coefficient=23.54133) | Trigger Spell: 1259124 | Target: Self (1)
+Hotfixed         : Coefficient (13.786629 -> 23.541328)
+#2 (id=1268068)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 4512.145 (coefficient=35.30534) | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4), Coefficient (20.676048 -> 35.30534), Trigger Spell (1259127 -> 0)
 Description      : Your spells and abilities have a chance to detonate hidden Explosive Spores near your target. If your target is an ally, the spore heals them and nearby allies for ${$<rolemult>*$s2} health. If your target is hostile, the spore instead detonates on nearby foes for ${$<rolemult>*$s1} Nature damage.
 
 These explosions are split among all targets hit, and their effectiveness increases for every target hit, up to $1259124s2.
@@ -247603,6 +247605,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 
 Name             : Primal Spore Binding (id=1259124) [Passive, Hidden] 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Labels           : 4124
@@ -247610,10 +247613,11 @@ Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Primal Spore Binding (1244276)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3008.664 (coefficient=23.54133) | Target: Self (1)
+#1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Coefficient (23.541328 -> 0), Scaling Class (-9 -> 0)
 #2 (id=1268069)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc1244276
@@ -247622,7 +247626,6 @@ Name             : Primal Spore Binding (id=1259127) [Passive, Hidden]
 School           : Nature
 Spell Type       : None
 Labels           : 4124
-Triggered By     : Primal Spore Binding (1244276)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268070)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
@@ -247642,6 +247645,7 @@ Effects          :
 Description      : $@spelldesc1244276
 
 Name             : Primal Spore Explosion (id=1259130) 
+Hotfixed         : Description
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
@@ -247651,6 +247655,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=1269110)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244276
+Description      : $@spelldesc1244276
 
 Name             : Wraps of Cosmic Madness (id=1259153) 
 School           : Cosmic
