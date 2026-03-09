@@ -43,6 +43,7 @@ void affliction( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* end_of_fight = p->get_action_priority_list( "end_of_fight" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
