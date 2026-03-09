@@ -245472,6 +245472,7 @@ Description      : Double the gems, double the power!
 All Jewelcrafting embellishments operate at double strength.
 
 Name             : Prismatic Focusing Iris (id=1251906) [Passive] 
+Hotfixed         : Description
 School           : None
 Spell Type       : Magic
 Labels           : 4133
@@ -245483,7 +245484,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1266101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$1252383s2} Arcane damage every second for $1252389d.
+Description      : Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$s1} Arcane damage every second for $1252389d.
 
 Each unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -245617,8 +245618,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1257497)  : Apply Aura (6) | Proc Trigger Spell (42): Prismatic Focusing Iris
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1252389 | Target: Self (1)
-#2 (id=1257498)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1395.625 (coefficient=10.92008) | Target: Self (1)
+#2 (id=1310948)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#3 (id=1310949)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1251906
 
 Name             : Prismatic Focusing Iris (id=1252389) 
