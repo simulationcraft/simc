@@ -134,9 +134,9 @@ void affliction( player_t* p )
   HC_cleave->add_action( "summon_darkglare" );
   HC_cleave->add_action( "malevolence" );
   HC_cleave->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
-  HC_cleave->add_action( "unstable_affliction,if=pet.darkglare.active|(!talent.patient_zero&!talent.sow_the_seeds)" );
-  HC_cleave->add_action( "seed_of_corruption" );
-  HC_cleave->add_action( "unstable_affliction,if=buff.shard_instability.react" );
+  HC_cleave->add_action( "unstable_affliction,if=(pet.darkglare.active|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)&!talent.patient_zero&!talent.sow_the_seeds" );
+  HC_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+  HC_cleave->add_action( "unstable_affliction,if=buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max)" );
   HC_cleave->add_action( "drain_soul,if=buff.nightfall.react>1" );
   HC_cleave->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
 

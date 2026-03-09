@@ -21,7 +21,7 @@ finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,enchant_id=7967,gem
 finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240916
 trinket1=emberwing_feather,id=250144,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-main_hand=belomelorn_the_shattered_talon,id=251111,bonus_id=12806/13577,enchant_id=8039
+main_hand=splitshroud_stinger,id=251111,bonus_id=12806/13577,enchant_id=8039
 off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 
 save=MID1_Warlock_Affliction.simc
@@ -49,7 +49,7 @@ finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,enchant_id=7967,gem
 finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240916
 trinket1=emberwing_feather,id=250144,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-main_hand=belomelorn_the_shattered_talon,id=251111,bonus_id=12806/13577,enchant_id=8039
+main_hand=splitshroud_stinger,id=251111,bonus_id=12806/13577,enchant_id=8039
 off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 
 save=MID1_Warlock_Affliction_Hellcaller.simc
