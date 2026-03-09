@@ -932,12 +932,14 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
     }
 
-    return make_fn_expr( name_str, [ this, action, dot_sel, state = std::unique_ptr<action_state_t>() ]() mutable
+    return make_fn_expr( name_str, [ this, action, dot_sel ]()
     {
       size_t dot_refresh_targets = 0;
 
       if ( !action || dot_sel == refreshable_dot_e::INVALID )
         return dot_refresh_targets;
+
+      action_state_t* state = nullptr;
 
       const auto& tl = action->target_list();
       for ( auto t : tl )
@@ -973,14 +975,22 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
         }
 
         if ( !state || state->action != dot->current_action )
-          state.reset( dot->current_action->get_state() );
+        {
+          if ( state )
+            action_state_t::release( state );
 
-        dot->current_action->snapshot_state( state.get(), result_amount_type::DMG_OVER_TIME );
-        timespan_t new_duration = dot->current_action->composite_dot_duration( state.get() );
+          state = dot->current_action->get_state();
+        }
+
+        dot->current_action->snapshot_state( state, result_amount_type::DMG_OVER_TIME );
+        timespan_t new_duration = dot->current_action->composite_dot_duration( state );
 
         if ( dot->current_action->dot_refreshable( dot, new_duration ) )
           dot_refresh_targets++;
       }
+
+      if ( state )
+        action_state_t::release( state );
 
       return dot_refresh_targets;
     } );

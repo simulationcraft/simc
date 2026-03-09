@@ -3138,8 +3138,8 @@ void rangergenerals_call( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     [ damage, delay ]( auto, auto, const action_state_t* s ) {
-      make_event( *s->action->sim, delay, [ damage, s ] {
-        damage->execute_on_target( s->target );
+      make_event( *s->action->sim, delay, [ damage, t = s->target ] {
+        damage->execute_on_target( t );
       } );
     } );
 
