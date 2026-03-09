@@ -3222,43 +3222,26 @@ void item::dreadstone_of_endless_shadows( special_effect_t& effect )
 }
 
 // Reality Breacher =========================================================
-
+// 250846 driver
+// 250848 delay
+// 250834 damage
 void item::reality_breacher( special_effect_t& effect )
 {
-  struct reality_breach_driver_t : public spell_t
-  {
-    action_t* damage;
+  auto damage = create_proc_action<generic_proc_t>( "void_tendril", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_multiplier *= role_mult( effect );
 
-    reality_breach_driver_t( const special_effect_t& effect ) :
-      spell_t( "reality_breacher_driver", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
-      damage( create_proc_action<proc_spell_t>( "void_tendril", effect ) )
-    {
-      quiet = background = true;
-      callbacks = false;
-    }
+  auto delay = timespan_t::from_millis( effect.trigger()->effectN( 1 ).misc_value1() );
 
-    void execute() override
-    {
-      spell_t::execute();
-
-      // TODO: Is the actual delay 500ms?
-      auto delay = timespan_t::from_millis( data().effectN( 1 ).misc_value1() );
-
-      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
-        .target( execute_state -> target )
-        .x( execute_state -> target -> x_position )
-        .y( execute_state -> target -> y_position )
-        .duration( delay )
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, delay ]( auto, auto, const action_state_t* s ) {
+      make_event<ground_aoe_event_t>( *damage->player->sim, damage->player, ground_aoe_params_t()
+        .target( s->target )
+        .x( s->target->x_position )
+        .y( s->target->y_position )
         .pulse_time( delay )
-        .start_time( sim -> current_time() )
         .action( damage )
         .n_pulses( 1 ) );
-    }
-  };
-
-  effect.trigger_spell_id = 250834;
-
-  effect.execute_action = new reality_breach_driver_t( effect );
+    } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }

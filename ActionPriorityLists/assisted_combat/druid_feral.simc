@@ -1,7 +1,6 @@
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
-actions.precombat+=/mark_of_the_wild,if=aura.mark_of_the_wild.down
 actions.precombat+=/cat_form,if=buff.cat_form.down
 actions.precombat+=/prowl
 

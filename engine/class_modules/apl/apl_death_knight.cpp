@@ -14,7 +14,7 @@ std::string potion( const player_t* p )
 
   std::string unholy_potion = ( p->true_level >= 81 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 
-  std::string blood_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
+  std::string blood_potion = ( p->true_level >= 81 ) ? "draught_of_rampant_abandon_2" : "tempered_potion_3";
 
   switch ( p->specialization() )
   {
@@ -33,7 +33,7 @@ std::string flask( const player_t* p )
 
   std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
-  std::string blood_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
+  std::string blood_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
   switch ( p->specialization() )
   {
@@ -92,7 +92,7 @@ std::string temporary_enchant( const player_t* p )
       ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:algari_mana_oil_3";
 
   std::string blood_temporary_enchant =
-      ( p->true_level >= 81 ) ? "disabled" : "main_hand:ironclaw_whetstone_3";
+      ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:ironclaw_whetstone_3";
 
   switch ( p->specialization() )
   {
@@ -113,70 +113,64 @@ void blood( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* high_prio_actions = p->get_action_priority_list( "high_prio_actions" );
   action_priority_list_t* deathbringer = p->get_action_priority_list( "deathbringer" );
-  action_priority_list_t* san_drw = p->get_action_priority_list( "san_drw" );
+  action_priority_list_t* san_gift = p->get_action_priority_list( "san_gift" );
   action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
-  precombat->add_action( "snapshot_stats", "Default consumables otion=tempered_potion_ lask=flask_of_alchemical_chaos_ ood=beledars_bount ugmentation=crystallize emporary_enchant=main_hand:algari_mana_oil_" );
+  precombat->add_action( "snapshot_stats", "Default consumables otion=draught_of_rampant_abandon_ lask=flask_of_the_shattered_sun_ ood=silvermoon_parad ugmentation=void_touche emporary_enchant=main_hand:thalassian_phoenix_oil_" );
   precombat->add_action( "deaths_caress" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up,use_off_gcd=1" );
-  default_->add_action( "use_item,name=unyielding_netherprism,if=cooldown.dancing_rune_weapon.remains<1|target.time_to_die<=20,use_off_gcd=1" );
-  default_->add_action( "use_items" );
-  default_->add_action( "use_item,name=bestinslots,use_off_gcd=1" );
-  default_->add_action( "blood_fury,if=buff.dancing_rune_weapon.up" );
-  default_->add_action( "berserking,if=buff.dancing_rune_weapon.up" );
-  default_->add_action( "ancestral_call,if=buff.dancing_rune_weapon.up" );
-  default_->add_action( "fireblood,if=buff.dancing_rune_weapon.up" );
-  default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  default_->add_action( "use_items,use_off_gcd=1" );
+  default_->add_action( "fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8" );
+  default_->add_action( "blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12" );
+  default_->add_action( "berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15" );
+  default_->add_action( "ancestral_call,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<15" );
+  default_->add_action( "potion,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=30" );
   default_->add_action( "vampiric_blood,if=!buff.vampiric_blood.up" );
-  default_->add_action( "gorefiends_grasp" );
   default_->add_action( "call_action_list,name=high_prio_actions" );
   default_->add_action( "run_action_list,name=deathbringer,if=hero_tree.deathbringer" );
-  default_->add_action( "run_action_list,name=san_drw,if=hero_tree.sanlayn&buff.dancing_rune_weapon.up" );
+  default_->add_action( "run_action_list,name=san_gift,if=hero_tree.sanlayn&buff.gift_of_the_sanlayn.up" );
   default_->add_action( "run_action_list,name=sanlayn,if=hero_tree.sanlayn" );
 
   high_prio_actions->add_action( "raise_dead,use_off_gcd=1" );
   high_prio_actions->add_action( "death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd" );
-  high_prio_actions->add_action( "dancing_rune_weapon" );
-  high_prio_actions->add_action( "abomination_limb" );
+  high_prio_actions->add_action( "dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&!buff.dancing_rune_weapon.up&(fight_remains>95|fight_remains<25|time>300)" );
 
   deathbringer->add_action( "death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))" );
-  deathbringer->add_action( "reapers_mark" );
-  deathbringer->add_action( "blood_boil,if=buff.dancing_rune_weapon.up&!drw.bp_ticking" );
   deathbringer->add_action( "death_and_decay,if=!buff.death_and_decay.up" );
-  deathbringer->add_action( "marrowrend,if=buff.exterminate.up|(buff.bone_shield.stack<5&!dot.bonestorm.ticking)" );
+  deathbringer->add_action( "reapers_mark" );
+  deathbringer->add_action( "marrowrend,if=buff.exterminate.up" );
+  deathbringer->add_action( "deaths_caress,if=(!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6)&rune<4" );
+  deathbringer->add_action( "marrowrend,if=!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6" );
   deathbringer->add_action( "death_strike" );
-  deathbringer->add_action( "consumption" );
   deathbringer->add_action( "blood_boil" );
-  deathbringer->add_action( "heart_strike,if=buff.coagulopathy.stack<5" );
+  deathbringer->add_action( "consumption,empower_to=1,if=!buff.dancing_rune_weapon.up" );
   deathbringer->add_action( "heart_strike" );
+  deathbringer->add_action( "consumption,empower_to=1" );
   deathbringer->add_action( "arcane_torrent,if=runic_power.deficit>20" );
 
-  san_drw->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains" );
-  san_drw->add_action( "death_strike,if=runic_power.deficit<36" );
-  san_drw->add_action( "blood_boil,if=!drw.bp_ticking" );
-  san_drw->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
-  san_drw->add_action( "heart_strike" );
-  san_drw->add_action( "death_strike" );
-  san_drw->add_action( "consumption" );
-  san_drw->add_action( "blood_boil" );
+  san_gift->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains" );
+  san_gift->add_action( "death_strike,if=runic_power.deficit<36" );
+  san_gift->add_action( "blood_boil,if=!drw.bp_ticking" );
+  san_gift->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
+  san_gift->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.stack<7" );
+  san_gift->add_action( "death_strike" );
+  san_gift->add_action( "blood_boil,if=buff.boiling_point.up" );
+  san_gift->add_action( "heart_strike" );
+  san_gift->add_action( "blood_boil" );
 
-  sanlayn->add_action( "blood_boil,if=(!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1)&active_enemies>=2" );
   sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1" );
   sanlayn->add_action( "blood_boil,if=dot.blood_plague.remains<3" );
   sanlayn->add_action( "heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)" );
   sanlayn->add_action( "death_strike,if=runic_power.deficit<20" );
-  sanlayn->add_action( "consumption,if=buff.death_and_decay.up" );
-  sanlayn->add_action( "heart_strike,if=(buff.vampiric_strike.up)&buff.death_and_decay.up" );
-  sanlayn->add_action( "blood_boil,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking&active_enemies>=2" );
-  sanlayn->add_action( "deaths_caress,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
-  sanlayn->add_action( "marrowrend,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
-  sanlayn->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
+  sanlayn->add_action( "deaths_caress,if=buff.bone_shield.stack<6" );
+  sanlayn->add_action( "marrowrend,if=buff.bone_shield.stack<6" );
+  sanlayn->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
   sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
   sanlayn->add_action( "death_strike" );
+  sanlayn->add_action( "blood_boil,if=buff.boiling_point.up" );
+  sanlayn->add_action( "consumption,empower_to=1" );
   sanlayn->add_action( "heart_strike,if=rune>=2" );
-  sanlayn->add_action( "consumption" );
   sanlayn->add_action( "blood_boil" );
   sanlayn->add_action( "heart_strike" );
 }
@@ -294,11 +288,11 @@ void unholy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
@@ -322,50 +316,50 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
-  cooldowns->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
-  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
-  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&fight_remains>5&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(!talent.infliction_of_sorrow&cooldown.dark_transformation.remains<3|talent.infliction_of_sorrow&!buff.gift_of_the_sanlayn.up|fight_remains<3|raid_event.adds.exists&raid_event.adds.remains<3)" );
-  cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
-  cooldowns->add_action( "soul_reaper,if=(!talent.pestilence|!talent.infliction_of_sorrow)&cooldown.putrefy.charges>=1|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&((talent.soul_reaper&!target.health.pct<=35|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>3&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
-
   aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
   aoe->add_action( "festering_strike,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
-  aoe->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.at_max_stacks" );
-  aoe->add_action( "epidemic,if=(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)&(buff.sudden_doom.react|variable.spending_rp)" );
-  aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react|variable.spending_rp)" );
-  aoe->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
+  aoe->add_action( "epidemic,if=variable.spending_rp&variable.epidemic_prio" );
+  aoe->add_action( "death_coil,if=variable.spending_rp&!variable.epidemic_prio" );
+  aoe->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
   aoe->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
-  aoe->add_action( "putrefy,if=!talent.soul_reaper" );
-  aoe->add_action( "epidemic,if=variable.spending_rp&(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)" );
-  aoe->add_action( "death_coil,if=variable.spending_rp" );
+  aoe->add_action( "putrefy" );
+  aoe->add_action( "epidemic,if=variable.epidemic_prio" );
+  aoe->add_action( "death_coil,if=!variable.epidemic_prio" );
 
-  single_target->add_action( "festering_strike,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)", "Single Target Rotation" );
-  single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.at_max_stacks" );
-  single_target->add_action( "death_coil,if=buff.sudden_doom.react|variable.spending_rp" );
-  single_target->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
-  single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
-  single_target->add_action( "putrefy,if=!talent.soul_reaper" );
-  single_target->add_action( "death_coil,if=variable.spending_rp" );
+  cooldowns->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active", "Cooldowns" );
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
+  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&fight_remains>5&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>7)|buff.pestilence.up&dot.virulent_plague.ticking&(!talent.infliction_of_sorrow&cooldown.dark_transformation.remains<3|talent.infliction_of_sorrow&!buff.gift_of_the_sanlayn.up|fight_remains>7|raid_event.adds.exists&raid_event.adds.remains>7)" );
+  cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
+  cooldowns->add_action( "soul_reaper,if=!talent.pestilence|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&cooldown.dark_transformation.remains>15&((talent.soul_reaper&!target.health.pct<=35&!action.soul_reaper.ready|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>3&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
 
-  racials->add_action( "ancestral_call,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Racials");
+  racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
   racials->add_action( "arcane_torrent,if=runic_power<20&rune<2" );
   racials->add_action( "bag_of_tricks,if=runic_power<20&rune<2" );
   racials->add_action( "blood_fury,if=buff.dark_transformation.up" );
-  racials->add_action( "berserking,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
-  racials->add_action( "fireblood,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
+  racials->add_action( "berserking,if=variable.cds_active" );
+  racials->add_action( "fireblood,if=variable.cds_active" );
   racials->add_action( "lights_judgment,if=runic_power<20&rune<2" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)", "Trinkets" );
-  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
+  single_target->add_action( "festering_strike,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)", "Single Target Rotation" );
+  single_target->add_action( "death_coil,if=variable.spending_rp" );
+  single_target->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
+  single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
+  single_target->add_action( "putrefy,if=!talent.soul_reaper&cooldown.dark_transformation.remains>12" );
+  single_target->add_action( "death_coil" );
+
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(variable.cds_active)", "Trinkets" );
+  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(variable.cds_active)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
-  variables->add_action( "variable,name=spending_rp,value=cooldown.army_of_the_dead.remains>5&runic_power.deficit<20|cooldown.army_of_the_dead.remains<=5&runic_power.deficit<60|!talent.army_of_the_dead|rune<2|buff.forbidden_knowledge.up&rune<4", "Variables" );
+  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&rune<4|buff.sudden_doom.react", "Variables" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15)" );
   variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|!raid_event.pull.exists&raid_event.adds.remains>5|raid_event.pull.exists&raid_event.adds.in>20)" );
+  variables->add_action( "variable,name=cds_active,value=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );
+  variables->add_action( "variable,name=epidemic_prio,value=active_enemies>=4-pet.whitemane.active&!buff.forbidden_knowledge.up|active_enemies>=6-pet.whitemane.active&buff.forbidden_knowledge.up" );
 }
 //unholy_apl_end
 

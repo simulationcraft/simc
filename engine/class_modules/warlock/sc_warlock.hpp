@@ -9,6 +9,14 @@
 namespace warlock
 {
 
+enum dimensional_rift_pet_e
+{
+  DR_PET_SHADOWY_TEAR,
+  DR_PET_UNSTABLE_TEAR,
+  DR_PET_CHAOS_TEAR,
+  DR_PET_OVERFIEND
+};
+
 enum dominion_of_argus_pet_e
 {
   DOA_PET_RANDOM = -1,
@@ -94,6 +102,106 @@ struct warlock_td_t : public actor_target_data_t
   int count_affliction_dots() const;
 };
 
+// Shuffled Bag RNG (sampling without replacement)
+// Each draw removes an item until the bag is exhausted, then it automatically resets
+template<typename T>
+struct shuffled_bag_rng_t
+{
+private:
+  player_t* player;
+  std::vector<T> bag;
+  int remaining;
+
+public:
+  shuffled_bag_rng_t( std::vector<T> items, player_t* p )
+    : player( p ), bag( std::move( items ) ), remaining( as<int>( bag.size() ) )
+  { assert( !bag.empty() ); }
+
+  shuffled_bag_rng_t( std::initializer_list<T> items, player_t* p )
+    : shuffled_bag_rng_t( std::vector<T>( items ), p )
+  {}
+
+  void reset()
+  { remaining = as<int>( bag.size() ); }
+
+  T draw()
+  {
+    if ( remaining == 0 )
+      reset();
+
+    const int index = player->rng().range( 0, remaining );
+    const T item = bag[ index ];
+
+    std::swap( bag[ index ], bag[ remaining - 1 ] );
+    remaining--;
+
+    return item;
+  }
+
+  int num_remaining() const
+  { return remaining; }
+
+  int size() const
+  { return as<int>( bag.size() ); }
+};
+
+// Variant of accumulated RNG with a hard cap.
+// Chance increases per attempt and guarantees a proc once max_count is reached.
+struct accumulated_hardcap_rng_t : public proc_rng_t
+{
+private:
+  accumulated_rng_fn accumulator_fn;
+  double proc_chance;
+  unsigned max_count;
+  unsigned initial_count;
+  unsigned trigger_count;
+
+public:
+  static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
+
+  accumulated_hardcap_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn = nullptr,
+                                        unsigned max_count_ = std::numeric_limits<unsigned>::max(), unsigned initial_count_ = 0 )
+    : proc_rng_t( rng_type, n, p ),
+      accumulator_fn( std::move( fn ) ),
+      proc_chance( c ),
+      max_count( max_count_ ),
+      initial_count( initial_count_ ),
+      trigger_count( initial_count_ )
+  {}
+
+  void reset( reset_type_e /* reset_type */ ) override
+  { trigger_count = initial_count; }
+
+  int trigger( action_state_t* state = nullptr ) override
+  {
+    if ( proc_chance <= 0 )
+      return false;
+
+    trigger_count++;
+
+    if ( trigger_count >= max_count )
+    {
+      reset( reset_type_e::COMBAT );
+      return true;
+    }
+
+    double chance = accumulator_fn ? accumulator_fn( proc_chance, trigger_count, state ) : proc_chance * trigger_count;
+    assert( !std::isnan( chance ) ); // nan check
+    bool result = player->rng().roll( chance );
+
+    if ( player->sim->debug )
+    {
+      player->sim->print_debug( "Accumulated (Hard Cap) RNG: {}, base={:.3f} count={} max={} chance={:.5f}%", name(),
+                                proc_chance, trigger_count, max_count, chance * 100.0 );
+    }
+
+    if ( result )
+      reset( reset_type_e::COMBAT );
+
+    return result;
+  }
+};
+
 // utility to create target_effect_t compatible functions from warlock_td_t member references
 template <typename T>
 static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
@@ -135,6 +243,8 @@ public:
   player_t* haunt_target; // Used for tracking the current haunt target
   double agony_accumulator;
   double corruption_accumulator;
+  int alythesss_ire_counter; // Used to consistently cycle the Alythess's Ire proc
+  int alythesss_ire_trigger; // Used to consistently cycle the Alythess's Ire proc
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
@@ -157,7 +267,8 @@ public:
     // Demonology
     const spell_data_t* demonology_warlock; // Spec aura
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
-    const spell_data_t* wild_imp; // Data for pet summoning
+    const spell_data_t* wild_imp; // Data for pet summoning (HoG)
+    const spell_data_t* wild_imp_2; // Data for pet summoning (Inner Demons / Spiteful Reconstitution / To Hell and Back)
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
 
     // Destruction
@@ -364,13 +475,15 @@ public:
     player_talent_t doom;
     const spell_data_t* doom_debuff;
     const spell_data_t* doom_dmg;
-    player_talent_t hellbent_commander; // TODO: Hellbent Commander has some strange interactions, such as temporarily losing 6 stacks when 3 imps demise (implement this behavior?)
+    player_talent_t hellbent_commander;
     const spell_data_t* hellbent_commander_buff;
     player_talent_t grimoire_imp_lord;
     player_talent_t grimoire_fel_ravager;
     const spell_data_t* grimoire_of_service_buff;
     player_talent_t summon_vilefiend;
     const spell_data_t* vilefiend;
+    const spell_data_t* gloomhound;
+    const spell_data_t* charhound;
     const spell_data_t* bile_spit;
     const spell_data_t* headbutt;
 
@@ -391,6 +504,10 @@ public:
     player_talent_t dominion_of_argus_3;
     const spell_data_t* dominion_of_argus_1_buff;
     const spell_data_t* dominion_of_argus_3_gain;
+    const spell_data_t* doa_lady_sacrolash_summon;
+    const spell_data_t* doa_grand_warlock_alythess_summon;
+    const spell_data_t* doa_antoran_inquisitor_summon;
+    const spell_data_t* doa_antoran_jailer_summon;
 
     // Destruction
     player_talent_t chaos_bolt;
@@ -609,11 +726,13 @@ public:
     action_t* demonic_soul;
     action_t* shared_fate;
     action_t* wicked_reaping;
+    action_t* dimensional_rift;
     action_t* demonfire_infusion;
     action_t* eye_explosion;
     action_t* diabolic_gaze_1;
     action_t* diabolic_gaze_2;
     action_t* diabolic_gaze_3;
+    action_t* diabolic_oculi;
     action_t* blighted_maw;
     action_t* echo_of_sargeras;
     action_t* echo_of_sargeras_cb;
@@ -819,14 +938,17 @@ public:
     // Affliction
     rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb" };
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
-    rng_setting_t agony = { 0.368, 0.368, "agony" };
-    rng_setting_t nightfall = { 0.13, 0.13, "nightfall" };
+    rng_setting_t agony = { 0.370, 0.370, "agony" };
+    rng_setting_t nightfall = { 0.130, 0.130, "nightfall" };
 
     // Demonology
-    rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
+    rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
+    rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
+    rng_setting_t demonic_knowledge_rank1_cards = { 10.0, 10.0, "demonic_knowledge_rank1_cards" };
+    rng_setting_t demonic_knowledge_rank2_cards = { 18.0, 18.0, "demonic_knowledge_rank2_cards" };
 
     // Destruction
-    rng_setting_t avatar_of_destruction_dr = { 0.30, 0.30, "avatar_of_destruction_dr" }; // TODO: PLACEHOLDER VALUE! Need to calculate ingame the type of RNG and the average RNG
+    rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift" };
     rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras" };
 
     // Diabolist
@@ -838,10 +960,12 @@ public:
     rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
 
     // Soul Harvester
-    rng_setting_t succulent_soul_aff = { 0.22, 0.22, "succulent_soul_aff" };
+    rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff" };
     rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
-    rng_setting_t feast_of_souls_aff = { 0.15, 0.15, "feast_of_souls" };
-    rng_setting_t feast_of_souls_demo = { 0.0975, 0.0975, "feast_of_souls" };
+    rng_setting_t feast_of_souls_aff = { 0.04, 0.04, "feast_of_souls_aff" };
+    rng_setting_t feast_of_souls_demo = { 0.10, 0.10, "feast_of_souls_demo" };
+    rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff" };
+    rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo" };
     rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };
   } rng_settings;
 
@@ -850,10 +974,23 @@ public:
   bool disable_auto_felstorm; // For Demonology main pet
   bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
+  shuffled_rng_t* demonic_knowledge_rng;
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* wrath_of_nathreza_rng;
   real_ppm_t* devil_fruit_rng;
+  accumulated_rng_t* cunning_cruelty_rng;
+  accumulated_rng_t* shard_instability_ds_rng;
+  accumulated_rng_t* shard_instability_sb_rng;
+  accumulated_rng_t* fatal_echoes_rng;
+  accumulated_rng_t* fiendish_cruelty_rng;
+  accumulated_rng_t* chaotic_inferno_rng;
+  accumulated_rng_t* dimensional_rift_rng;
+  accumulated_rng_t* echo_of_sargeras_rng;
+  accumulated_rng_t* succulent_soul_rng;
   accumulated_rng_t* manifested_avarice_rng;
+  accumulated_hardcap_rng_t* feast_of_souls_rng;
+  accumulated_hardcap_rng_t* spiteful_reconstitution_rng;
+  std::unique_ptr<shuffled_bag_rng_t<dimensional_rift_pet_e>> dimensional_rift_summon_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -876,8 +1013,8 @@ public:
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
+  double pseudo_random_p_from_c( double c ) const;
+  double pseudo_random_c_from_p( double p ) const;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count( bool include_diabolist = true ) const;
@@ -912,7 +1049,7 @@ public:
   std::vector<player_t*> get_smart_targets( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, int n_targets, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   player_t* get_smart_target( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
-  void feast_of_souls_gain();
+  void feast_of_souls_gain( bool from_quietus_seed = false );
   void summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet );
 
   bool affliction() const;

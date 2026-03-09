@@ -1092,7 +1092,7 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
-      if ( p()->talents.protection.ravager.ok() )
+      if ( p()->talents.protection.ravager.ok() || p()->talents.protection.whirling_blade.ok() )
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
@@ -7567,7 +7567,6 @@ void warrior_t::init_spells()
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
-  cooldown.thunder_clap->category=true;
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
@@ -8482,6 +8481,13 @@ parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assis
     rule_copy.condition_value_1 = 6;
     return { player_t::parse_assisted_combat_rule( rule_copy, step ), true };
   }
+
+  // New rule added to slam in midnight, refers to old legion-era Rampage! (209694), so ignoring for now
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 209694 )
+  {
+    return { "", true };
+  }
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 

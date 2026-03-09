@@ -2589,6 +2589,11 @@ void sim_t::init_actor( player_t* p )
     // Main spell looksup. Populate class/spec/hero talents & spells.
     p->init_spells();
 
+    // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
+    // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may
+    // be flagged to have their custom initialization run on creation.
+    p->create_special_effects();
+
     // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
     p->init_base_stats();
 
@@ -2600,12 +2605,18 @@ void sim_t::init_actor( player_t* p )
     // Currently this only holds leech_t.
     p->init_background_actions();
 
-    // First-phase creation of special effects from various sources. Needed to be able to create
-    // actions (APLs, really) based on the presence of special effects on items.
-    p->create_special_effects();
-
-    // First, create all the action objects and set up action lists properly
-    p->create_actions();
+    // First, validate the actor and create all the action objects and set up action lists properly.
+    // If actor is not valid, set quiet and skip action creation.
+    if ( p->validate_actor() )
+    {
+      p->create_actions();
+    }
+#ifdef NDBEBUG
+    else
+    {
+      quiet = true;
+    }
+  #endif
 
     // More initilization of class modules. Needed to create shared actions provided by a class.
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -3163,10 +3174,13 @@ void sim_t::do_pause()
 void sim_t::set_error( error_level_e level, std::string error )
 {
   util::replace_all( error, "\n", "" );
-  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), error );
-  std::fflush( stderr );
 
-  error_list.emplace_back( level, std::move( error ) );
+  auto [ it, success ] = error_list[ level ].insert( std::move( error ) );
+  if ( !success )
+    return;
+
+  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), *it );
+  std::fflush( stderr );
 }
 
 /// merge sims

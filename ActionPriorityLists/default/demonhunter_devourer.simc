@@ -40,6 +40,7 @@ actions+=/metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1
 actions+=/call_action_list,name=reaps,if=talent.moment_of_craving&action.reap.souls_consumed>=4&buff.metamorphosis.up&!talent.voidfall&cooldown.void_ray.remains<=gcd.max&((buff.collapsing_star_stacking.stack+action.reap.souls_consumed)<=buff.collapsing_star_stacking.max_stack|!variable.should_use_star)
 # Do not waste Eradicate on AOE.
 actions+=/void_ray,if=!buff.eradicate.up|active_enemies=1
+actions+=/voidblade,if=buff.moment_of_craving.up&(buff.collapsing_star_stacking.at_max_stacks|buff.collapsing_star_stacking.stack+soul_fragments>=buff.collapsing_star_stacking.max_stack)&talent.devourers_bite
 # Use CStar after Predators Wake for VS, do not waste Voidblade CDR if possible.
 actions+=/collapsing_star,if=(!cooldown.predators_wake.up&talent.voidrush&!buff.hungering_slash.up&cooldown.voidblade.remains>=6|!talent.voidrush)&variable.should_use_star
 # Meta Cull Line
