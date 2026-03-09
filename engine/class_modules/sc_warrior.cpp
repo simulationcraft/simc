@@ -1611,9 +1611,9 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     master_of_warfare_proc_chance( 0 )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
-      slayers_strike_proc_chance = p->pseudo_random_c_from_p( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+      slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
     if ( p->talents.arms.master_of_warfare_1.ok() )
-      master_of_warfare_proc_chance = p->pseudo_random_c_from_p( 0.15 );  // Not in spelldata
+      master_of_warfare_proc_chance = prd::find_constant( 0.15 );  // Not in spelldata
     special = true;
   }
 
@@ -9145,58 +9145,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
   never_surrender_percentage = p -> never_surrender_percentage;
-}
-
-double warrior_t::pseudo_random_p_from_c( double c )
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_on_n       = 0;
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double warrior_t::pseudo_random_c_from_p( double p )
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p1;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 0 )
-      break;
-
-    if ( p1 > p )
-    {
-      c_upper = c_mid;
-    }
-    else
-    {
-      c_lower = c_mid;
-    }
-
-    p2 = p1;
-  }
-
-  return c_mid;
 }
 
 void warrior_t::parse_player_effects()
