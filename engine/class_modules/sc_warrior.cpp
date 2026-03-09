@@ -919,8 +919,6 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
 
   void datacollection_begin() override;
   void datacollection_end() override;
