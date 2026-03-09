@@ -8181,22 +8181,25 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
 
   // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
   make_event( *p()->sim, [ this ] {
+    if ( !p()->buffs.ancient_arts->check() )
+      return;
+
     const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-    if ( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit )
+    if ( current_deficit == 0 || p()->buffs.shadow_techniques->check() < current_deficit )
+      return;
+    
+    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
+    p()->buffs.shadow_techniques->decrement( current_deficit );
+
+    // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
+    if ( p()->talent.subtlety.ancient_arts_1->ok() )
     {
-      trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
-      p()->buffs.shadow_techniques->decrement( current_deficit );
-
-      // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
-      if ( p()->talent.subtlety.ancient_arts_1->ok() )
-      {
-        const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
-        trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
-      }
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
+      trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
     }
-  } );
 
-  p()->buffs.ancient_arts->expire();
+    p()->buffs.ancient_arts->expire();
+  } );
 }
 
 template <typename Base>

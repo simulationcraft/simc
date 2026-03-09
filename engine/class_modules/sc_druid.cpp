@@ -7633,7 +7633,22 @@ struct full_moon_t final : public trigger_atmospheric_exposure_t<moon_base_t>
 
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
+    {
       energize_type = action_energize::NONE;
+    }
+    else if ( has_flag( flag_e::ORBIT ) )
+    {
+      if ( !energize )
+       set_energize( p->get_modified_spell( &data() ) );
+
+      const auto& eff = p->talent.orbit_breaker->effectN( 2 );
+      if ( !energize->modified_by( eff ) )
+      {
+        energize->add_parse_entry()
+          .set_value( p->talent.orbit_breaker->effectN( 2 ).percent() - 1.0 )
+          .set_eff( &eff );
+      }
+    }
 
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
     {
