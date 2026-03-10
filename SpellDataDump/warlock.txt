@@ -1821,7 +1821,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 1851: Fel Armaments (1263938 effect#1), Empowered Felstorm (1279575 effect#1), Empowered Felstorm (1279575 effect#2)
+                 : 1851: Fel Armaments (1263935 effect#2), Fel Armaments (1263938 effect#1), Empowered Felstorm (1279575 effect#1), Empowered Felstorm (1279575 effect#2)
 Family Flags     : 35
 Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -1850,7 +1850,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 768
                  : 885
-                 : 1851: Fel Armaments (1263938 effect#1), Empowered Felstorm (1279575 effect#1), Empowered Felstorm (1279575 effect#2)
+                 : 1851: Fel Armaments (1263935 effect#2), Fel Armaments (1263938 effect#1), Empowered Felstorm (1279575 effect#1), Empowered Felstorm (1279575 effect#2)
 Triggered By     : Felstorm (89751)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Cast While Casting (135), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
@@ -16743,6 +16743,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1274908)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1311804)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 1851 (Label) | Target: Self (1)
+                   Affected Spells (Label): Felstorm (89751), Felstorm (89753)
+Hotfixed         : NEW EFFECT
 Description      : The cooldown of your Felguard's Felstorm is reduced by ${$1263938s1/-1000} sec and damage dealt to your primary demon is reduced by $1263938s2%.
 
 Name             : Fel Armaments (id=1263938) [Spell Family (5), Hidden] 
