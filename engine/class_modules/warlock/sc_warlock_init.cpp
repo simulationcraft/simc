@@ -1252,8 +1252,9 @@ namespace warlock
       flat_rng.infernal_rapidity = get_simple_proc_rng( "infernal_rapidity", infernal_rapidity_chance );
     }
 
-    // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with a nominal rate of 10% and a hard cap
-    // of 21 attempts. The PRD nominal rate corresponds to PRD constant C = 0.014745844781072676.
+    // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with an uncapped nominal rate of 10%.
+    // That nominal rate corresponds to PRD constant C = 0.014745844781072676.
+    // A separate hard cap of 21 attempts is then applied on top of the PRD, raising the effective average proc chance to ~10.06%.
     if ( talents.spiteful_reconstitution.ok() )
     {
       double c_sr = prd::find_constant( rng_settings.spiteful_reconstitution.setting_value );
@@ -1409,8 +1410,9 @@ namespace warlock
       prd_rng.manifested_avarice = get_accumulated_rng( "manifested_avarice", c_ma );
     }
 
-    // Modeling Feast of Souls as a pseudo-random distribution (PRD) with a nominal rate of 4% (aff) / 10% (demo) and a hard cap
-    // of 26 attempts. The PRD nominal rate corresponds to PRD C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo)
+    // Modeling Feast of Souls as a pseudo-random distribution (PRD) with an uncapped nominal rate of 4% (aff) / 10% (demo). Those
+    // nominal rates correspond to PRD constants C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo). A separate hard
+    // cap of 26 attempts is then applied on top of the PRD, raising the effective average proc chance to ~4.94% (aff) / ~10.01% (demo).
     if ( hero.feast_of_souls.ok() )
     {
       assert( affliction() || demonology() );
