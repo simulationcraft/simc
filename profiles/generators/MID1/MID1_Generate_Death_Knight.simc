@@ -51,7 +51,6 @@ main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
 save=MID1_Death_Knight_Blood_Deathbringer.simc
 
 deathknight="MID1_Death_Knight_Frost"
-source=default
 spec=frost
 level=90
 race=pandaren
@@ -69,39 +68,39 @@ hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337
 waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240908
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7969
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7997
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
 trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
 main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=3368
 
 save="MID1_Death_Knight_Frost.simc"
 
-# deathknight="MID1_Death_Knight_Frost_Rider"
-# spec=frost
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMzYGjZGGmZmZmhxMyMmZmhZgHwMDmZmZmBAAAAAAAAAAAgNzihBGY20QDbGzMzYmBmxA
+deathknight="MID1_Death_Knight_Frost_Rider"
+spec=frost
+level=90
+race=pandaren
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMmZY2mZmZmZxMjMjxMDzw4BMzgZmZmZAAAAAAAAAwY2mFzyMMWYYZmtphmxGmZMzMwMAGmZwMzMgB
 
-# head=hollow_sentinels_stonemask,id=237628,bonus_id=12361/10356/12231/6652/12921/12676/1533/10255/1808,gem_id=213743
-# neck=salhadaars_folly,id=242406,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213458/213458
-# shoulders=hollow_sentinels_perches,id=237626,bonus_id=12361/10356/6652/1533/10255
-# back=reshii_wraps,id=235499,bonus_id=12399/9893,gem_id=238046
-# chest=hollow_sentinels_breastplate,id=237631,bonus_id=12361/10356/12229/6652/12676/1533/10255,enchant=crystalline_radiance_3
-# wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11109/8960/10878,gem_id=213470,crafted_stats=49/32
-# hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
-# waist=girdle_of_somber_ploys,id=221133,bonus_id=4786/3215/12361/1808,gem_id=213494
-# legs=hollow_sentinels_stonekilt,id=237627,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant=stormbound_armor_kit_3
-# feet=interlopers_plated_sabatons,id=243307,bonus_id=4800/4786/1533/12361/13504
-# finger1=logic_gate_alpha,id=237567,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213482/213482,enchant=radiant_mastery_3
-# finger2=band_of_the_shattered_soul,id=242405,bonus_id=4800/4786/1533/12361/6935/1808,gem_id=213458/213458,enchant=radiant_mastery_3
-# trinket1=astral_antenna,id=242395,bonus_id=10356/12361/1533/10255
-# trinket2=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
-# main_hand=charged_claymore,id=222447,bonus_id=12053/12050/9627/11300/8960,enchant=rune_of_the_fallen_crusader,enchant_id=3368,crafted_stats=49/32
+head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240890/240890
+shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
+back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
+chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
+wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240890
+hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
+waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240890
+legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
+feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
+trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
+main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=3368
 
-# save="MID1_Death_Knight_Frost.simc"
+save="MID1_Death_Knight_Frost_Rider.simc"
 
 deathknight="MID1_Death_Knight_Unholy_Rider"
 spec=unholy
