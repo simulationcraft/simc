@@ -238417,8 +238417,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232935)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 982.0534 (coefficient=7.68409) | Trigger Spell: 1241728 | Target: Self (1)
-#2 (id=1289524)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Trigger Spell: 1277263 | Target: Self (1)
+#2 (id=1289524)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Flames of the Sin'dorei (id=1236740) [Passive] 
@@ -238432,8 +238433,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232936)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1228 (coefficient=9.608502) | Trigger Spell: 1241728 | Target: Self (1)
-#2 (id=1289525)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Trigger Spell: 1277263 | Target: Self (1)
+#2 (id=1289525)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Acuity of the Ren'dorei (id=1236741) [Passive] 
@@ -252965,17 +252967,6 @@ Effects          :
 #1 (id=1289370)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 138706 | Target: Self (1)
 Description      : Open to collect 10 Hero and Myth Dawncrests.
-
-Name             : Flames of the Sin'dorei (id=1277263) [Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Labels           : 3959: Item Effects
-Triggered By     : Flames of the Sin'dorei (1236739), Flames of the Sin'dorei (1236740)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1289523)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1236094
 
 Name             : Vantus Rune: Radiant (id=1277389) [Hidden] 
 School           : Physical
