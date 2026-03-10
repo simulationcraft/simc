@@ -253336,8 +253336,11 @@ Triggered By     : Voidlight Bindings (1281574)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1294786)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2159.743 (coefficient=16.89894) | Target: Self (1)
-Hotfixed         : Coefficient (10 -> 16.898937)
+                   Base Value: 0 | Scaled Value: 2159.743 (coefficient=16.89894) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
+#2 (id=1311823)  : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Shield of the Guardian Tree (id=1282103) [Passive, Hidden] 
 School           : Physical
