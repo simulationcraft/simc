@@ -29,23 +29,29 @@ def->add_action( "variable,name=tfRemains,op=setif,condition=variable.use_custom
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "tigers_fury,if=!variable.use_custom_timers|variable.tfNow","tigers fury on cooldown" );
 def->add_action( "rake,if=buff.prowl.up|buff.shadowmeld.up","rake out of stealth" );
-def->add_action( "chomp,if=buff.chomp_enabler.up","chomp if its possible" );
+def->add_action( "chomp,if=buff.chomp_enabler.up","chomp if its possible. Check this in aoe" );
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up","cast bite with apex procs asap" );
 def->add_action( "call_action_list,name=finisher,if=spell_targets=1" );
-def->add_action( "call_action_list,name=aoe_finisher,if=combo_points>=4&spell_targets>=2" );
+def->add_action( "call_action_list,name=aoe_finisher,if=spell_targets>=2" );
 def->add_action( "call_action_list,name=builder,if=spell_targets=1&combo_points<=4" );
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4" );
 def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
 aoe_builder->add_action( "rake,target_if=refreshable,if=talent.doubleclawed_rake|hero_tree.wildstalker&active_dot.rake=0","ensure at last 1 rake at all times if wildstalker, rake highest prio with dcr" );
+aoe_builder->add_action( "swipe_cat,if=buff.sudden_ambush.up&spell_targets.swipe_cat>=5+(2*hero_tree.wildstalker)","sa swipe takes precedence over single-rake at 5t for dotc 7t for wildstalker (0.1% at 7t for wildstalker, 0.2% for dotc at 5t)" );
 aoe_builder->add_action( "swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.up","with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t" );
 aoe_builder->add_action( "rake,target_if=refreshable,if=hero_tree.wildstalker|spell_targets.swipe_cat<=variable.dotc_rake_threshold","no dcr, spread rakes up to 3t(ws+noiw)->5t(nows+noiw/wild slashes+iw)->8t(no ws+iw)" );
-aoe_builder->add_action( "swipe_cat" );
+aoe_builder->add_action( "rake,target_if=min:pmultiplier,if=persistent_multiplier>pmultiplier&spell_targets=2","on 2t replace weaker rakes with stronger ones. (its a tiny gain for 3t too, @0.2% but keeping track of 3 snapshots is a bit much I think)" );
+aoe_builder->add_action( "shred,if=combo_points<=1&spell_targets=2&talent.panthers_guile","with panther's guile, its worth using shred at 0/1 combo points on 2t" );
+aoe_builder->add_action( "swipe_cat,if=combo_points>1|spell_targets>2|!talent.panthers_guile" );
 
-aoe_finisher->add_action( "primal_wrath,target_if=min:dot.primal_wrath.ticking,if=spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)","primal wrath in pandemic during berserk, else with sub 6.5s remaining" );
-aoe_finisher->add_action( "ferocious_bite,if=talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5","we can send bite with rampant or under 5t with vines, 8t with ravage" );
-aoe_finisher->add_action( "primal_wrath","fallback primal wrath" );
+aoe_finisher->add_action( "primal_wrath,target_if=min:remains,if=combo_points>=5&spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)","primal wrath in pandemic during berserk, else with sub 6.5s remaining" );
+aoe_finisher->add_action( "ferocious_bite,if=buff.ravage.up&combo_points>=4&!talent.primal_wrath&spell_targets>=2+(3*!talent.rampant_ferocity)","without pw, we prio ravage>rip at 2t with rampant ferocity, and 5t without TODO: check vines" );
+aoe_finisher->add_action( "rip,target_if=min:remains,if=combo_points>=4&!talent.primal_wrath&refreshable","if we dont have primal wrath, indefinitely apply manual 4cp rips (minmax note: without rampant, its ~0.3% better to do 5cp rip/5cp bite on 3/4t)" );
+aoe_finisher->add_action( "ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath&(talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5)","we can send bite with rampant or under 5t with vines, 8t with ravage. TODO: check these numbers" );
+aoe_finisher->add_action( "primal_wrath,if=combo_points>=5","fallback primal wrath" );
+aoe_finisher->add_action( "ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath","if we dont have primal wrath then bite here" );
 
 builder->add_action( "prowl,if=!buff.shadowmeld.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );
 builder->add_action( "shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );

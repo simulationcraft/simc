@@ -16533,7 +16533,8 @@ Family Flags     : 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Target: Targeted Enemy (6)
+Hotfixed         : Target 1 (22 -> 6), Target 2 (15 -> 0)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387

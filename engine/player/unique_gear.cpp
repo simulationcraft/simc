@@ -4853,30 +4853,37 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   midnight::register_target_data_initializers( *sim );
 }
 
-special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
+std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, unsigned id, special_effect_e type )
 {
-  auto it = range::find_if( actor -> special_effects, [ spell_id, type ]( const special_effect_t* e ) {
-    return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
-  });
+  std::vector<special_effect_t*> effects;
 
-  if ( it != actor -> special_effects.end() )
+  for ( auto e : p->special_effects )
   {
-    return *it;
-  }
-
-  for ( const auto& item: actor -> items )
-  {
-    auto it = range::find_if( item.parsed.special_effects, [ spell_id, type ]( const special_effect_t* e ) {
-      return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
-    });
-
-    if ( it != item.parsed.special_effects.end() )
+    if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
     {
-      return *it;
+      effects.push_back( e );
     }
   }
 
-  return nullptr;
+  for ( const auto& item : p->items )
+  {
+    for ( auto e : item.parsed.special_effects )
+    {
+      if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
+      {
+        effects.push_back( e );
+      }
+    }
+  }
+
+  return effects;
+}
+
+special_effect_t* unique_gear::find_special_effect( player_t* p, unsigned id, special_effect_e type )
+{
+  auto effects = unique_gear::find_special_effects( p, id, type );
+
+  return effects.empty() ? nullptr : effects.front();
 }
 
 // Some special effects may use fallback initializers, where the fallback initializer is called if

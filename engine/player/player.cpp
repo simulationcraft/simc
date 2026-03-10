@@ -9023,11 +9023,11 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_e
   return get_rng<shuffled_rng_t>( name, success_entries, total_entries );
 }
 
-accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance, unsigned cap,
                                                   accumulated_rng_fn accumulator_fn,
                                                   unsigned initial_count )
 {
-  return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
+  return get_rng<accumulated_rng_t>( name, chance, cap, accumulator_fn, initial_count );
 }
 
 threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,

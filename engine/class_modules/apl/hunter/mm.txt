@@ -23,8 +23,10 @@ actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_r
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
 
-actions.draoe=black_arrow
-actions.draoe+=/multishot,if=buff.precise_shots.up|buff.trick_shots.down
+actions.draoe=black_arrow,target_if=1+!dot.black_arrow.ticking
+actions.draoe+=/trueshot,if=!buff.double_tap.up&(fight_remains>120|target.health.pct<20|fight_remains<20)
+actions.draoe+=/rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.draoe+=/multishot,if=buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down
 actions.draoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.draoe+=/trueshot,if=!buff.double_tap.up
 actions.draoe+=/volley,if=!buff.double_tap.up
@@ -33,8 +35,10 @@ actions.draoe+=/wailing_arrow
 actions.draoe+=/rapid_fire
 actions.draoe+=/steady_shot
 
-actions.drst=black_arrow
-actions.drst+=/rapid_fire,if=talent.unload&buff.withering_fire.up
+actions.drst=black_arrow,target_if=1+!dot.black_arrow.ticking
+actions.drst+=/trueshot,if=!buff.double_tap.up&(fight_remains>120|target.health.pct<20|fight_remains<20)
+actions.drst+=/rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.drst+=/multishot,if=active_enemies>1&buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down&active_enemies>2&talent.trick_shots.enabled
 actions.drst+=/arcane_shot,if=buff.precise_shots.up
 actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.drst+=/trueshot,if=!buff.double_tap.up
@@ -44,21 +48,25 @@ actions.drst+=/wailing_arrow
 actions.drst+=/rapid_fire
 actions.drst+=/steady_shot
 
-actions.sentaoe=multishot,if=buff.precise_shots.up|buff.trick_shots.down
+actions.sentaoe=rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.sentaoe+=/multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentaoe+=/trueshot,if=!buff.double_tap.up
+actions.sentaoe+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up
 actions.sentaoe+=/volley,if=!buff.double_tap.up
-actions.sentaoe+=/aimed_shot
+actions.sentaoe+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/rapid_fire
-actions.sentaoe+=/moonlight_chakram,if=buff.trueshot.up
 actions.sentaoe+=/steady_shot
 
-actions.sentst=arcane_shot,if=buff.precise_shots.up
+actions.sentst=volley,if=!buff.double_tap.up&active_enemies=1&buff.bulletstorm.stack<11
+actions.sentst+=/rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.sentst+=/multishot,target_if=1+debuff.sentinels_mark.down,if=active_enemies>1&buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down&active_enemies>2&talent.trick_shots.enabled
+actions.sentst+=/arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentst+=/trueshot,if=!buff.double_tap.up
+actions.sentst+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up
 actions.sentst+=/volley,if=!buff.double_tap.up
-actions.sentst+=/aimed_shot
-actions.sentst+=/moonlight_chakram,if=buff.trueshot.up
+actions.sentst+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
 actions.sentst+=/steady_shot
 

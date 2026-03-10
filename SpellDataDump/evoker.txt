@@ -3745,7 +3745,8 @@ Effects          :
 #1 (id=999377)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 25294 | Target: Front of Self (47)
 #2 (id=1044076)  : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
                    Modified By: Tempo Charged (1237978 effect#3)
 #3 (id=1179965)  : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34997 | Target: Front of Self (47)
@@ -12573,6 +12574,7 @@ Description      : $@spelldesc1256577
 Tooltip          : Reversion is upgraded to Merithra's Blessing.
 
 Name             : Merithra's Blessing (desc=Green) (id=1256581) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -12589,14 +12591,16 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
 Family Flags     : 1, 85
-Attributes       : Allow Cast While Dead (23), Bouncy Chain Missiles (146), Treat as Area Effect (175), Not On Trivial (182), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Chain by Most Hit (440)
+Attributes       : Allow Cast While Dead (23), Bouncy Chain Missiles (146), Treat as Area Effect (175), Not On Trivial (182), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264151)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Chain Heal Ally (45)
+                   Base Value: 0 | Scaled Value: 0
+Hotfixed         : Target 1 (45 -> 0)
 #2 (id=1264152)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | PvP Coefficient: 1.4 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Chain Heal Ally (45)
-#3 (id=1264164)  : Dummy (3)
+#3 (id=1308097)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
+Hotfixed         : NEW EFFECT
 Description      : Spring a bloom of life from your target, healing them and up to ${$x2-1} other allies within $s3 yards for $s2. Blooms may heal your primary target multiple times if no nearby injured allies are present.
 Variables        : $cap=${6}
 

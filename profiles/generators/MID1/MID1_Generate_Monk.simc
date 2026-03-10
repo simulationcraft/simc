@@ -25,54 +25,56 @@ main_hand=inescapable_reach,id=249302,bonus_id=12806/13577,enchant_id=8039
 
 save=MID1_Monk_Brewmaster.simc
 
-# monk="MID1_Monk_Windwalker"
-# spec=windwalker
-# level=80
-# race=void_elf
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBzYGzyMDGAAAAAAAAAAAYZZYmYmBzMMsNzw2MGMbYGmlZCAAmZGzMzMbzAAYZZWWmlZmJIAYA
+monk="MID1_Monk_Windwalker"
+spec=windwalker
+level=90
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYw2wwsMzMLzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYzMbzMMmZGAAbAoZZWamZmFAMwMDAsMGwAG
 
-# head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
-# neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213470
-# shoulders=glyphs_of_fallen_storms,id=237671,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=9893,gem_id=238046,enchant_id=7403
-# chest=gi_of_fallen_storms,id=237676,ilevel=723,enchant=crystalline_radiance_3
-# wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=720,gem_id=213485,enchant=chant_of_armored_leech_3,crafted_stats=40/49
-# hands=grasp_of_fallen_storms,id=237674,ilevel=723
-# waist=runebranded_waistband,id=219331,bonus_id=3524/10520/8960/11307,ilevel=720,gem_id=213461,crafted_stats=40/49
-# legs=spittlestained_trousers,id=242473,bonus_id=4786/3215/12361,enchant=stormbound_armor_kit_3
-# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant=defenders_march_3
-# finger1=signet_of_the_false_accuser,id=178824,bonus_id=4786/10032/12361/8781,gem_id=213455/213494,enchant=radiant_haste_3
-# finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213494/213494,enchant=radiant_haste_3
-# trinket1=unyielding_netherprism,id=242396,bonus_id=4800/4786/1533/12361
-# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
-# main_hand=harvesters_interdiction,id=221159,bonus_id=4786/3215/12361,enchant=stonebound_artistry_3
+head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=1808/6652/12667/12676/12806/13335/13338/13575,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=3170/4786/4800/12806/13668,gem_id=240892/240892
+shoulders=aurastones_of_radens_chosen,id=250013,bonus_id=6652/12675/12806/13335/13340/13574,enchant_id=8001
+back=windwrap_of_radens_chosen,id=250010,bonus_id=6652/12806/13335
+chest=battle_garb_of_radens_chosen,id=250018,bonus_id=6652/12676/12806/13335/13336/13575,enchant_id=7987
+wrists=voidskinned_bracers,id=249327,bonus_id=3157/4786/4800/11307/12802/12806,gem_id=240892
+hands=vaelgors_fearsome_grasp,id=249321,bonus_id=12806/13577
+waist=snapvine_cinch,id=251082,bonus_id=3190/4786/11307/12806,gem_id=240892
+legs=swiftsweepers_of_radens_chosen,id=250014,bonus_id=6652/12676/12806/13335/13339/13575,enchant_id=8159
+feet=storm_crashers_of_radens_chosen,id=250017,bonus_id=6652/12806/13335,enchant_id=7963
+finger1=loa_worshipers_band,id=251513,bonus_id=8960/12066/12214/13622/12497,gem_id=240892,enchant_id=7967
+finger2=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13534,gem_id=240892/240892,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
+trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/12699/12801/12806/13440
+main_hand=shadowslash_slicer,id=251122,bonus_id=3190/4786/12806,enchant_id=7981
+off_hand=bloomforged_claw,id=237845,bonus_id=8960/12066/12214/12693/13622/12497,enchant_id=7981,crafted_stats=36/49
 
-# save=MID1_Monk_Windwalker.simc
+save=MID1_Monk_Windwalker.simc
 
-# monk="MID1_Monk_Windwalker_Shadopan"
-# spec=windwalker
-# level=80
-# race=void_elf
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmZMLzMmZGAAAAAAAAAAAssMMTMzgZGGWmZYbGDmNMDzyMBAwyMzgZG2mBAwGA0sMLNzMzCgZA
+monk="MID1_Monk_Windwalker_Conduit"
+spec=windwalker
+level=90
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GGsMzMbzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYzMbjhZmZGAALmZZWGTQAAYAMDALjBMzMLG
 
-# head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
-# neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213497
-# shoulders=glyphs_of_fallen_storms,id=237671,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=9893,gem_id=238046,enchant_id=7403
-# chest=gi_of_fallen_storms,id=237676,ilevel=723,enchant=crystalline_radiance_3
-# wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307/8795,ilevel=720,gem_id=213485,enchant=chant_of_armored_leech_3,crafted_stats=40/49
-# hands=grasp_of_fallen_storms,id=237674,ilevel=723
-# waist=runebranded_waistband,id=219331,bonus_id=3524/10520/8960/11307/8795,ilevel=720,gem_id=213461,crafted_stats=40/49
-# legs=elite_shadowguard_legwraps,id=237531,bonus_id=4800/4786/1533/12361,enchant=stormbound_armor_kit_3
-# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant=defenders_march_3
-# finger1=seal_of_the_panoply,id=185840,bonus_id=4786/10035/12361/8781,gem_id=213461/213461,enchant=radiant_versatility_3
-# finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213461/213461,enchant=radiant_critical_strike_3
-# trinket1=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
-# trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
-# main_hand=harvesters_interdiction,id=221159,bonus_id=4786/3215/12361,enchant=stonebound_artistry_3
+head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=1808/6652/12667/12676/12806/13335/13338/13575,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=3170/4786/4800/12806/13668,gem_id=240892/240892
+shoulders=aurastones_of_radens_chosen,id=250013,bonus_id=6652/12675/12806/13335/13340/13574,enchant_id=8001
+back=rigid_scale_greatcloak,id=258575,bonus_id=3202/4786/12806
+chest=battle_garb_of_radens_chosen,id=250018,bonus_id=6652/12676/12806/13335/13336/13575,enchant_id=7987
+wrists=frenzyroot_cuffs,id=193714,bonus_id=3165/4786/11307/12806,gem_id=240892
+hands=vaelgors_fearsome_grasp,id=249321,bonus_id=12806/13577
+waist=snapvine_cinch,id=251082,bonus_id=3190/4786/11307/12806,gem_id=240892
+legs=swiftsweepers_of_radens_chosen,id=250014,bonus_id=6652/12676/12806/13335/13339/13575,enchant_id=8159
+feet=boots_of_burning_focus,id=258577,bonus_id=3202/4786/12806,enchant_id=7963
+finger1=loa_worshipers_band,id=251513,bonus_id=8960/12066/12214/13622/12497,gem_id=240892,enchant_id=7967
+finger2=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13534,gem_id=240892/240892,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
+trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/12699/12801/12806/13440
+main_hand=clutchmates_caress,id=249287,bonus_id=3160/4786/4800/12803/12806,enchant_id=8041
+off_hand=bloomforged_claw,id=237845,bonus_id=8960/12066/12214/12693/13622/12497,enchant_id=7983,crafted_stats=36/49
 
-# save=MID1_Monk_Windwalker_Shadopan.simc
+save=MID1_Monk_Windwalker_Conduit.simc

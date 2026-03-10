@@ -36,7 +36,7 @@ actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thu
 actions.assisted_combat+=/heroic_throw,if=target.distance>15
 # (Overridden from 'buff.unknown_spell_209694.down')
 actions.assisted_combat+=/slam
-actions.assisted_combat+=/whirlwind,if=target.distance<=10
+actions.assisted_combat+=/whirlwind
 
 # Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items

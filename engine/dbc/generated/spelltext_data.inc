@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66263
-static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26939,7 +26939,7 @@ static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
   { 1251903, "On Use: Activate the array and generate a Voidstone Barrier, absorbing ${$<rolemult>*$s2} damage for the next $d.\r\n\r\nThe barrier is further empowered by $s3% per unique gem color you have socketed.", "Enveloped by a protective Voidstone Barrier, absorbing the next $w2 damage.", 0 },
   { 1251904, "Your damaging spells and abilities have a chance to charge the band, calling forth the avatar of a Loa to assist you in combat.\r\n\r\nEach unique socketed gem color in your gear allows for different Loa to be summoned. These effects range from dealing damage to your foes or granting you temporary power.", 0, 0 },
   { 1251905, "Double the gems, double the power!\r\n\r\nAll Jewelcrafting embellishments operate at double strength.", 0, 0 },
-  { 1251906, "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$1252383s2} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.", 0, 0 },
+  { 1251906, "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$s1} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.", 0, 0 },
   { 1251907, "The Phoenix Flames blaze hot, dealing $s1 Fire damage every $t for $d.", "The Phoenix Flames blaze hot, dealing $w1 Fire damage every $t.", 0 },
   { 1251908, "The Phoenix Flames heal you for $w1 every $t.", "The Phoenix Flames heal you for $w1 every $t.", 0 },
   { 1251920, "Empowers your artifact's other light traits.", "Your artifact's light traits are empowered.", 0 },
@@ -27258,6 +27258,7 @@ static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
   { 1259124, "$@spelldesc1244276", 0, 0 },
   { 1259127, "$@spelldesc1244276", 0, 0 },
   { 1259128, "$@spelldesc1244276", 0, 0 },
+  { 1259130, "$@spelldesc1244276", 0, 0 },
   { 1259153, "Desperately unravel yourself over $d to unleash a barrage of ${$d/$t1} cosmic missiles at your target, increased by your haste. Each deals ${$1259103s1*$<rolemult>} Cosmic damage split between nearby enemies. $@spelldesc1240903\r\n\r\nAllied deaths induce further madness, reducing the cooldown by $1259103s3 sec.", "Dealing Cosmic damage to your target every ${$t1}.2 sec. Slowed by $w2%.", 0 },
   { 1259171, "$@spelldesc1259173", "Ebon Might is $s2% more effective and your Upheaval and Eruption deal $s3% more damage.", 0 },
   { 1259172, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
@@ -28635,8 +28636,10 @@ static constexpr std::array<spelltext_data_t, 28632> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
+  { 1251906,  0, "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$1252383s2} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.", "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$s1} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per." },
+  { 1259130,  0, nullptr, "$@spelldesc1244276" },
   { 1281574,  0, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][]." },
 } };
 

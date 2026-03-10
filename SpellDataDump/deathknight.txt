@@ -5392,8 +5392,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212654 | Target: Self (1)
 #5 (id=315371)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=334744)   : Apply Aura (6) | Unknown(91)
-                   Base Value: -5 | Scaled Value: -5
+#6 (id=334744)   : Apply Aura (6) | Modify Aggro Distance (152)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
+Hotfixed         : Sub Type (91 -> 152), Target 1 (0 -> 1)
 #7 (id=756394)   : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : Embrace the power of the Shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Taking any action cancels the effect.
@@ -11723,8 +11724,9 @@ Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), 
 Family Flags     : 43, 78, 85
 Attributes       : Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1026875)  : School Damage (2): shadow
+#1 (id=1026875)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.215 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc1247378
 
 Name             : Commander of the Dead (id=390259) [Spell Family (15), Passive] 

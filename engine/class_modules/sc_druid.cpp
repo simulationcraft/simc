@@ -4216,6 +4216,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     frantic_frenzy_tick_t( druid_t* p, std::string_view n, flag_e f ) : cat_attack_t( n, p, p->find_spell( 1244079 ), f )
     {
       background = dual = proc = true;
+      aoe = -1;
       direct_bleed = false;
       travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
@@ -7633,7 +7634,22 @@ struct full_moon_t final : public trigger_atmospheric_exposure_t<moon_base_t>
 
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
+    {
       energize_type = action_energize::NONE;
+    }
+    else if ( has_flag( flag_e::ORBIT ) )
+    {
+      if ( !energize )
+       set_energize( p->get_modified_spell( &data() ) );
+
+      const auto& eff = p->talent.orbit_breaker->effectN( 2 );
+      if ( !energize->modified_by( eff ) )
+      {
+        energize->add_parse_entry()
+          .set_value( p->talent.orbit_breaker->effectN( 2 ).percent() - 1.0 )
+          .set_eff( &eff );
+      }
+    }
 
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
     {
@@ -8082,9 +8098,9 @@ struct shooting_stars_t : public druid_spell_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    druid_spell_t::execute();
+    druid_spell_t::impact( s );
 
     p()->buff.orbit_breaker->trigger();
 
@@ -8407,7 +8423,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start. this must be
     // done in starfire_base_t as opposed to starfire_t as it's possible to get an umbral proc from 2x wrath resulting
     // in umbral shunt during execute().
-    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && s->chain_target == 0 )
     {
       starfire_base_t::base_t::schedule_travel( s );
 

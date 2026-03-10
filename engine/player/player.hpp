@@ -1166,7 +1166,7 @@ public:
   real_ppm_t* get_rppm( std::string_view name, const spell_data_t* spell_data = nullptr, const item_t* item = nullptr );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
-  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
+  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0, unsigned cap = 0,
                                           accumulated_rng_fn accumulator_fn = nullptr, unsigned initial_count = 0 );
   threshold_rng_t* get_threshold_rng( std::string_view name, double increment_max = 0.0,
                                       threshold_rng_fn accumulator_fn = nullptr, bool random_initial_state = true,

@@ -846,17 +846,23 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
-    os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
+    os << "<div class=\"section section-open\" style=\"color: black; background-color: white;\">\n";
 
     for ( const auto& error_level : sim.error_list )
     {
-      os.format( "{}:\n", util::error_level_string( error_level.first ) );
+      os.format( "<h2>{}</h2>\n", util::error_level_string( error_level.first ) );
+
+      os << "<ul>\n";
 
       for ( const auto& error : error_level.second )
-        os.format( "  {}\n", util::encode_html( error ) );
+      {
+        os.format( "<li>{}</li>\n", util::encode_html( error ) );
+      }
+
+      os << "</ul>\n";
     }
 
-    os << "</pre>\n\n";
+    os << "</div>\n";
   }
 }
 

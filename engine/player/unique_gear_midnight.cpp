@@ -2911,6 +2911,8 @@ void crucible_of_erratic_energies( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
+  effect.proc_flags2_ = PF2_LANDED;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -3136,8 +3138,8 @@ void rangergenerals_call( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     [ damage, delay ]( auto, auto, const action_state_t* s ) {
-      make_event( *s->action->sim, delay, [ damage, s ] {
-        damage->execute_on_target( s->target );
+      make_event( *s->action->sim, delay, [ damage, t = s->target ] {
+        damage->execute_on_target( t );
       } );
     } );
 
@@ -3327,22 +3329,22 @@ void root_wardens_regalia( special_effect_t& effect )
 };
 
 // Voidlight Bindings
-// 1281574 Driver
-// 1281581 Value Spell
+// 1281574 Set Driver
+// 1281581 Equip
 // 1281580 Area Trigger
 // 1281579 Damage
 void voidlight_bindings( special_effect_t& effect )
 {
-  auto value_spell    = effect.player->find_spell( 1281581 );
-  assert( value_spell && "Voidlight Bindings missing value spell" );
+  auto equip = find_special_effects( effect.player, 1281581 );
+  assert( !equip.empty() && "Voidlight Bindings missing equip effect" );
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
-  // ilevel scaling unknown, using player level scaling as placeholder
-  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect.player );
 
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Voidlight Bindings: How the damage scales with item level is unknown."
-    "Currently implemented to scale off player level and values have not been verified in-game." );
+  range::for_each( equip, [ damage ]( auto e ) {
+    damage->base_dd_min += e->driver()->effectN( 1 ).average( *e );
+    damage->base_dd_max += e->driver()->effectN( 1 ).average( *e );
+  } );
+
   // No Role multiplier currently
   //damage->base_multiplier *= role_mult( effect );
 
@@ -3568,8 +3570,8 @@ void register_special_effects()
   register_special_effect( 1241529, armors::arcanoweave_cord );
   register_special_effect( 1241503, armors::sunfire_sash );
   // Sets
-  // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
-  unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
+  register_special_effect( 1281574, sets::voidlight_bindings );
+  register_special_effect( 1281581, DISABLED_EFFECT );  // voidlight bindings equip effect
   unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
   unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
   unique_gear::register_special_effect( 1241262, sets::arcanoweave_trappings );

@@ -690,11 +690,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::execute();
 
-    // NOTE: 2026-03-06 It has been tested that Infernal Rapidity follows a Flat % chance model for each individual cast
-    // However, the % chance seems to be bugged and only half of what is specified in the spell data is being applied (bug)
-    double infernal_rapidity_chance = p()->o()->talents.infernal_rapidity->effectN( 1 ).percent();
-    infernal_rapidity_chance = p()->bugs ? infernal_rapidity_chance * 0.5 : infernal_rapidity_chance;
-    if ( ( twin != nullptr ) && rng().roll( infernal_rapidity_chance ) )
+    if ( ( twin != nullptr ) && p()->o()->flat_rng.infernal_rapidity->trigger() )
     {
       p()->o()->procs.infernal_rapidity->occur();
       twin->execute_on_target( target );
@@ -959,8 +955,7 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::execute();
 
-    // NOTE: 2026-03-06 It has been tested that Carnivorous Stalkers follows a Flat % chance model for each individual melee hit
-    if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
+    if ( p()->o()->talents.carnivorous_stalkers.ok() && p()->o()->flat_rng.carnivorous_stalkers->trigger() )
     {
       debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
