@@ -263,7 +263,7 @@ void destruction( player_t* p )
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither" );
   default_->add_action( "soul_fire,if=soul_shard<=4" );
-  default_->add_action( "actions+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20" );
+  default_->add_action( "chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20" );
   default_->add_action( "conflagrate,if=soul_shard<=4.2&buff.backdraft.stack<1" );
   default_->add_action( "summon_infernal" );
   default_->add_action( "malevolence" );
