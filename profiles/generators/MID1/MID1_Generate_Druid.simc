@@ -75,7 +75,7 @@ legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=13575/13575/13575/1357
 feet=canopy_walkers_footwraps,id=249382,enchant_id=7993,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=40/13534/13335/12806,enchant_id=7967,gem_id=240892/240892,ilevel=289
 finger2=loa_worshipers_band,id=251513,bonus_id=8960/12214/8960/12214/12066/9627,enchant_id=7967,gem_id=240892,ilevel=285
-trinket1=algethars_puzzle_box,id=193701,ilevel=289
+trinket1=algethar_puzzle_box,id=193701,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
 main_hand=roostwardens_bough,id=251077,enchant_id=8039,ilevel=289
 
