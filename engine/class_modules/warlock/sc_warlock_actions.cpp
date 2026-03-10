@@ -252,7 +252,7 @@ using namespace helpers;
         {
           for ( int i = 0; i < shards_used; i++ )
           {
-            if ( p()->rain_of_chaos_rng->trigger() )
+            if ( p()->deck_rng.rain_of_chaos->trigger() )
             {
               // Random extra duration time between 0_ms and 820_ms following a uniform distribution
               const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
@@ -285,7 +285,7 @@ using namespace helpers;
           if ( destruction() && p()->hero.touch_of_rancora.ok() && triggers.rancora_cb_bonus )
             adjustment += -timespan_t::from_seconds( p()->hero.touch_of_rancora->effectN( 3 ).base_value() );
 
-          switch( p()->diabolic_ritual )
+          switch ( p()->diabolic_ritual )
           {
             case 0:
               if ( p()->buffs.ritual_overlord->check() )
@@ -383,7 +383,7 @@ using namespace helpers;
 
       if ( destruction() && triggers.fiendish_cruelty )
       {
-        if ( s->result == RESULT_CRIT && p()->fiendish_cruelty_rng->trigger() )
+        if ( s->result == RESULT_CRIT && p()->prd_rng.fiendish_cruelty->trigger() )
         {
           p()->buffs.fiendish_cruelty->trigger();
           p()->procs.fiendish_cruelty->occur();
@@ -392,13 +392,13 @@ using namespace helpers;
 
       if ( destruction() && triggers.dimensional_rift )
       {
-        if ( p()->dimensional_rift_rng->trigger() )
+        if ( p()->prd_rng.dimensional_rift->trigger() )
           p()->proc_actions.dimensional_rift->execute_on_target( s->target );
       }
 
       if ( destruction() && triggers.embers_of_nihilam_1 )
       {
-        if ( p()->echo_of_sargeras_rng->trigger() )
+        if ( p()->prd_rng.echo_of_sargeras->trigger() )
         {
           p()->proc_actions.echo_of_sargeras->execute_on_target( s->target );
           p()->procs.echo_of_sargeras->occur();
@@ -411,7 +411,7 @@ using namespace helpers;
     {
       action_base_t::tick( d );
 
-      if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->rppm_rng.ravenous_afflictions->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
@@ -568,11 +568,11 @@ using namespace helpers;
     bool soul_harvester() const
     { return p()->soul_harvester(); }
 
-    template<set_bonus_type_e Tier>
+    template <set_bonus_type_e Tier>
     bool active_2pc() const
     { return p()->active_2pc<Tier>(); }
 
-    template<set_bonus_type_e Tier>
+    template <set_bonus_type_e Tier>
     bool active_4pc() const
     { return p()->active_4pc<Tier>(); }
   };
@@ -719,8 +719,11 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
-          helpers::nightfall_updater( p(), d );
+        if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() && p()->progress_rng.nightfall->trigger( d->state ) )
+        {
+          p()->procs.nightfall->occur();
+          p()->buffs.nightfall->trigger();
+        }
       }
     };
 
@@ -810,7 +813,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain();
       }
 
@@ -824,13 +827,13 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        if ( p()->talents.shard_instability.ok() && p()->shard_instability_sb_rng->trigger() )
+        if ( p()->talents.shard_instability.ok() && p()->prd_rng.shard_instability_sb->trigger() )
         {
           p()->buffs.shard_instability->trigger();
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
+        if ( p()->talents.cunning_cruelty.ok() && p()->prd_rng.cunning_cruelty->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -945,7 +948,7 @@ using namespace helpers;
 
       auto pet = w->warlock_pet_list.active;
 
-      switch( pet->pet_type )
+      switch ( pet->pet_type )
       {
         case PET_FELGUARD:
         case PET_FELHUNTER:
@@ -967,7 +970,7 @@ using namespace helpers;
 
       auto pet = w->warlock_pet_list.active;
 
-      switch( pet->pet_type )
+      switch ( pet->pet_type )
       {
         case PET_FELGUARD:
         case PET_FELHUNTER:
@@ -1025,13 +1028,16 @@ using namespace helpers;
 
         if ( affliction() )
         {
-          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
-            helpers::nightfall_updater( p(), d );
+          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() && p()->progress_rng.nightfall->trigger( d->state ) )
+          {
+            p()->procs.nightfall->occur();
+            p()->buffs.nightfall->trigger();
+          }
         }
 
         if ( destruction() )
         {
-          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
+          if ( d->state->result == RESULT_CRIT && p()->flat_rng.wither_crit_energize->trigger() )
             p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
 
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
@@ -1039,7 +1045,7 @@ using namespace helpers;
           if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
             p()->buffs.flashpoint->trigger();
 
-          if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+          if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
           {
             p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
             p()->procs.demonfire_infusion_dot->occur();
@@ -1060,7 +1066,7 @@ using namespace helpers;
           }
         }
 
-        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
+        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
         {
           // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
           d->increment( 1 );
@@ -1069,7 +1075,7 @@ using namespace helpers;
 
         if ( p()->hero.devil_fruit.ok() )
         {
-          if ( p()->devil_fruit_rng->trigger() )
+          if ( p()->rppm_rng.devil_fruit->trigger() )
           {
             p()->buffs.malevolence->trigger( timespan_t::from_seconds( p()->hero.devil_fruit->effectN( 1 ).base_value() ) );
             p()->procs.devil_fruit->occur();
@@ -1117,7 +1123,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
+      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
       {
         // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
         td( s->target )->dots.wither->increment( 1 );
@@ -1179,14 +1185,14 @@ using namespace helpers;
 
       bool seeds_triggered = false;
 
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
       {
         p()->buffs.shard_instability->trigger();
         p()->procs.seeds_of_their_demise->occur();
         seeds_triggered = true;
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
       {
         p()->buffs.flashpoint->trigger( 2 );
         p()->procs.seeds_of_their_demise->occur();
@@ -1327,8 +1333,9 @@ using namespace helpers;
 
     void last_tick( dot_t* d ) override
     {
+      // TOCHECK: Is this reset to a random state still a thing?
       if ( p()->get_active_dots( d ) == 1 )
-        p()->agony_accumulator = rng().range( 0.0, 0.99 );
+        p()->progress_rng.agony_energize->reset( reset_type_e::COMBAT );
 
       warlock_spell_t::last_tick( d );
     }
@@ -1360,37 +1367,8 @@ using namespace helpers;
 
     void tick( dot_t* d ) override
     {
-      // 2018-08-24:
-      //   Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard. This set of code is based on results from
-      //   500+ Soul Shard sample sizes, and matches in-game results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
-      // 2026-03-06:
-      //   New tests were conducted using over 55000+ Soul Shards in both single and multi-target scenarios. The results confirm that Blizzard is still
-      //   using the same formula for Agony, though they occasionally make unusual adjustments to talent normalization (so this should be checked regularly).
-      //   With the larger sample size, we obtained a more precise initial value for Agony's RNG 'increment_max' of 0.370 (previously 0.368).
-      // TOCHECK regularly. If any changes are made to this section of code, please also update the Time_to_Shard expression in sc_warlock.cpp.
-
-      double increment_max = p()->rng_settings.agony.setting_value;
-
-      double active_agonies = p()->get_active_dots( d );
-      increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
-
-      // NOTE: 2026-03-06 Recent tests noted that Creeping Death is renormalizing shard generation to be neutral with/without the talent
-      // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
-      if ( p()->talents.creeping_death.ok() )
-      {
-        if ( !p()->bugs || p()->talents.creeping_death.rank() < 2 )
-          increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-        else
-          increment_max *= 1.0 + ( p()->talents.creeping_death->effectN( 1 ).percent() * 0.5 );
-      }
-
-      p()->agony_accumulator += rng().range( 0.0, increment_max );
-
-      if ( p()->agony_accumulator >= 1 )
-      {
+      if ( p()->progress_rng.agony_energize->trigger( d->state ) )
         p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
-        p()->agony_accumulator -= 1.0;
-      }
 
       warlock_spell_t::tick( d );
 
@@ -1427,7 +1405,7 @@ using namespace helpers;
       {
         p()->buffs.succulent_soul->decrement();
 
-        if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
+        if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
         {
           p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
@@ -1475,7 +1453,7 @@ using namespace helpers;
       {
         for ( int i = 0; i < stacks; i++ )
         {
-          if ( p()->fatal_echoes_rng->trigger() )
+          if ( p()->prd_rng.fatal_echoes->trigger() )
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
@@ -1734,7 +1712,7 @@ using namespace helpers;
           p()->proc_actions.shared_fate->execute_on_target( target );
 
         // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain( true );
       }
 
@@ -1750,7 +1728,7 @@ using namespace helpers;
       {
         p()->buffs.succulent_soul->decrement();
 
-        if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
+        if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
         {
           p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
           p()->buffs.manifested_demonic_soul->trigger();
@@ -1858,7 +1836,7 @@ using namespace helpers;
         if ( result_is_hit( s->result ) )
         {
           // DoT (Malefic Grasp) extra tick crits can trigger Ravenous Afflictions
-          if ( p()->talents.ravenous_afflictions.ok() && s->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+          if ( p()->talents.ravenous_afflictions.ok() && s->result == RESULT_CRIT && p()->rppm_rng.ravenous_afflictions->trigger() )
           {
             p()->buffs.nightfall->trigger();
             p()->procs.ravenous_afflictions->occur();
@@ -2013,7 +1991,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -2026,14 +2004,14 @@ using namespace helpers;
       if ( result_is_hit( d->state->result ) )
       {
         // NOTE: 2026-02-20 Malefic Grasp can proc Shard Instability
-        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
+        if ( p()->talents.shard_instability.ok() && p()->prd_rng.shard_instability_ds->trigger() )
         {
           p()->buffs.shard_instability->trigger();
           p()->procs.shard_instability->occur();
         }
 
         // NOTE: 2026-02-20 Malefic Grasp can proc Cunning Cruelty (PRD: 50% nominal rate if SB is used, 25% nominal rate if DS is used)
-        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
+        if ( p()->talents.cunning_cruelty.ok() && p()->prd_rng.cunning_cruelty->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2152,7 +2130,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -2164,13 +2142,13 @@ using namespace helpers;
 
       if ( result_is_hit( d->state->result ) )
       {
-        if ( p()->talents.shard_instability.ok() && p()->shard_instability_ds_rng->trigger() )
+        if ( p()->talents.shard_instability.ok() && p()->prd_rng.shard_instability_ds->trigger() )
         {
           p()->buffs.shard_instability->trigger();
           p()->procs.shard_instability->occur();
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && p()->cunning_cruelty_rng->trigger() )
+        if ( p()->talents.cunning_cruelty.ok() && p()->prd_rng.cunning_cruelty->trigger() )
         {
           p()->procs.shadowbolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2621,7 +2599,7 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.demonic_knowledge.ok() && p()->demonic_knowledge_rng->trigger() )
+      if ( p()->talents.demonic_knowledge.ok() && p()->deck_rng.demonic_knowledge->trigger() )
       {
         p()->buffs.demonic_core->trigger();
         p()->procs.demonic_knowledge->occur();
@@ -2631,7 +2609,7 @@ using namespace helpers;
       {
           p()->buffs.succulent_soul->decrement();
 
-          if ( p()->hero.manifested_avarice.ok() && p()->manifested_avarice_rng->trigger() )
+          if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
           {
             p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
             p()->buffs.manifested_demonic_soul->trigger();
@@ -2715,7 +2693,7 @@ using namespace helpers;
 
       if ( p()->buffs.demonic_core->check() )
       {
-        if ( p()->talents.spiteful_reconstitution.ok() && p()->spiteful_reconstitution_rng->trigger() )
+        if ( p()->talents.spiteful_reconstitution.ok() && p()->prd_rng.spiteful_reconstitution->trigger() )
         {
           p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), 1u );
           p()->procs.spiteful_reconstitution->occur();
@@ -2730,7 +2708,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->feast_of_souls_rng->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain();
       }
 
@@ -3415,7 +3393,7 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
-      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
       {
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
         p()->procs.demonfire_infusion_inc->occur();
@@ -3463,7 +3441,7 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate_old->effectN( 2 ).percent() ) )
+        if ( d->state->result == RESULT_CRIT && p()->flat_rng.immolate_crit_energize->trigger() )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
@@ -3471,7 +3449,7 @@ using namespace helpers;
         if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
           p()->buffs.flashpoint->trigger();
 
-        if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+        if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
         {
           p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
           p()->procs.demonfire_infusion_dot->occur();
@@ -3547,7 +3525,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      dimensional_rift_pet_e rift_pet_index = p()->dimensional_rift_summon_rng->draw();
+      dimensional_rift_pet_e rift_pet_index = p()->deck_rng.dimensional_rift_summon->draw();
 
       switch ( rift_pet_index )
       {
@@ -3705,7 +3683,7 @@ using namespace helpers;
 
       p()->buffs.crashing_chaos->decrement();
 
-      if ( p()->talents.chaotic_inferno.ok() && p()->chaotic_inferno_rng->trigger() )
+      if ( p()->talents.chaotic_inferno.ok() && p()->prd_rng.chaotic_inferno->trigger() )
       {
         // Delay the buff a bit to simulate the ingame behavior where an Incinerate cast
         // queued right after a Chaos Bolt that procs Chaotic Inferno is not affected by it
@@ -3936,19 +3914,10 @@ using namespace helpers;
       {
         p()->buffs.alythesss_ire->decrement();
 
-        p()->alythesss_ire_counter++;
-
-        if ( p()->alythesss_ire_counter >= p()->alythesss_ire_trigger )
+        if ( p()->cycle_proc.alythesss_ire->trigger() )
         {
           p()->buffs.alythesss_ire->trigger();
           p()->procs.alythesss_ire->occur();
-
-          // NOTE: 2026-03-06 Alythess's Ire usually procs at a fixed interval of attempts. Rarely, the cycle
-          // shifts and advances the next proc; testing suggests this happens randomly in roughly ~1% of procs.
-          if ( rng().roll( p()->rng_settings.alythesss_ire_shift.setting_value ) )
-            p()->alythesss_ire_counter = rng().range( 1, p()->alythesss_ire_trigger );
-          else
-            p()->alythesss_ire_counter = 0;
         }
       }
     }
@@ -4489,7 +4458,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       // 2026-02-18 Infernal Bolt can proc Demonfire Infusion
-      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
       {
         p()->proc_actions.demonfire_infusion->execute_on_target( target );
         p()->procs.demonfire_infusion_inc->occur();
@@ -4664,42 +4633,6 @@ using namespace helpers;
   // Diabolist Actions End
   // Helper Functions Begin
 
-  void helpers::nightfall_updater( warlock_t* p, dot_t* d )
-  {
-    // Blizzard did not publicly release how nightfall was changed.
-    // We determined this is the probable functionality copied from Agony by first confirming the
-    // DR formula was the same and then confirming that you can get procs on 1st tick.
-    // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-    // Last checked 2026-03-06.
-    double increment_max = p->rng_settings.nightfall.setting_value;
-
-    double active_corruptions = p->get_active_dots( d );
-    increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-    // NOTE: 2026-03-06 Creeping Death no longer affects the chance of gaining Nightfall
-    // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
-    if ( p->talents.creeping_death.ok() )
-    {
-      if ( !p->bugs || p->talents.creeping_death.rank() < 2 )
-        increment_max *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
-      else
-        increment_max *= 1.0 + ( p->talents.creeping_death->effectN( 1 ).percent() * 0.5 );
-    }
-
-    // Sataiel’s Volition no longer affects the chance of gaining Nightfall
-    if ( p->hero.sataiels_volition.ok() )
-      increment_max *= 1.0 + p->hero.sataiels_volition->effectN( 1 ).percent();
-
-    p->corruption_accumulator += p->rng().range( 0.0, increment_max );
-
-    if ( p->corruption_accumulator >= 1 )
-    {
-      p->procs.nightfall->occur();
-      p->buffs.nightfall->trigger();
-      p->corruption_accumulator -= 1.0;
-    }
-  }
-
   void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
   {
     if ( !malevolence && p->cooldowns.blackened_soul->down() )
@@ -4729,7 +4662,7 @@ using namespace helpers;
       if ( p->buffs.malevolence->check() && !malevolence )
         tdata->dots.wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
-      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
+      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->flat_rng.bleakheart_tactics->trigger() )
       {
         tdata->dots.wither->increment( 1 );
         p->procs.bleakheart_tactics->occur();
@@ -4747,7 +4680,7 @@ using namespace helpers;
           p->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (stack gain check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
                       p->name(), target->name(), tdata->dots.wither->current_stack(), target->health_percentage() );
         }
-        else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
+        else if ( p->flat_rng.blackened_soul->trigger() )
         {
           tdata->debuffs.blackened_soul->trigger();
           p->procs.blackened_soul->occur();
@@ -4801,7 +4734,7 @@ using namespace helpers;
       return;
 
     // TOCHECK: Spell data suggests ~2 RPPM (hasted) - verify in-game
-    if ( !p->wrath_of_nathreza_rng->trigger() )
+    if ( !p->rppm_rng.wrath_of_nathreza->trigger() )
       return;
 
     p->proc_actions.wrath_of_nathreza->execute_on_target( target );
@@ -4864,8 +4797,8 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->fatal_echoes_rng->trigger() )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->fatal_echoes_rng->trigger() )
+      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->prd_rng.fatal_echoes->trigger() )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );

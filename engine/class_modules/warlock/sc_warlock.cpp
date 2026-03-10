@@ -152,7 +152,7 @@ void warlock_td_t::target_demise()
 
   if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() )
   {
-    if ( warlock.feast_of_souls_rng->trigger() )
+    if ( warlock.prd_rng.feast_of_souls->trigger() )
     {
       warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
 
@@ -190,10 +190,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : parse_player_effects_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     havoc_spells(),
-    agony_accumulator( 0.0 ),
-    corruption_accumulator( 0.0 ),
-    alythesss_ire_counter( 0 ),
-    alythesss_ire_trigger( 0 ),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
     n_active_pets( 0 ),
@@ -354,52 +350,6 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
-double warlock_t::pseudo_random_p_from_c( double c ) const
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    double p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double warlock_t::pseudo_random_c_from_p( double p ) const
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    double p1 = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 1e-12 )
-      break;
-
-    if ( p1 > p )
-      c_upper = c_mid;
-    else
-      c_lower = c_mid;
-
-    p2 = p1;
-  }
-
-  return c_mid;
-}
-
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
 int warlock_t::get_spawning_imp_count()
 { return as<int>( wild_imp_spawns.size() ); }
@@ -526,27 +476,10 @@ std::string warlock_t::create_profile( save_e stype )
     if ( normalize_destruction_mastery )
       profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
 
-    profile_str += append_rng_option( rng_settings.cunning_cruelty_sb );
-    profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
-    profile_str += append_rng_option( rng_settings.agony );
-    profile_str += append_rng_option( rng_settings.nightfall );
-    profile_str += append_rng_option( rng_settings.spiteful_reconstitution );
-    profile_str += append_rng_option( rng_settings.spiteful_reconstitution_hard_cap );
-    profile_str += append_rng_option( rng_settings.demonic_knowledge_rank1_cards );
-    profile_str += append_rng_option( rng_settings.demonic_knowledge_rank2_cards );
-    profile_str += append_rng_option( rng_settings.alythesss_ire_shift );
-    profile_str += append_rng_option( rng_settings.echo_of_sargeras );
-    profile_str += append_rng_option( rng_settings.blackened_soul );
-    profile_str += append_rng_option( rng_settings.bleakheart_tactics );
-    profile_str += append_rng_option( rng_settings.seeds_of_their_demise );
-    profile_str += append_rng_option( rng_settings.mark_of_perotharn );
-    profile_str += append_rng_option( rng_settings.succulent_soul_aff );
-    profile_str += append_rng_option( rng_settings.succulent_soul_demo );
-    profile_str += append_rng_option( rng_settings.feast_of_souls_aff );
-    profile_str += append_rng_option( rng_settings.feast_of_souls_demo );
-    profile_str += append_rng_option( rng_settings.feast_of_souls_hard_cap_aff );
-    profile_str += append_rng_option( rng_settings.feast_of_souls_hard_cap_demo );
-    profile_str += append_rng_option( rng_settings.manifested_avarice );
+    rng_settings.for_each( [ this, &profile_str ]( auto& setting )
+    {
+      profile_str += append_rng_option( setting );
+    } );
   }
 
   return profile_str;
@@ -563,27 +496,7 @@ void warlock_t::copy_from( player_t* source )
   disable_auto_felstorm = p->disable_auto_felstorm;
   normalize_destruction_mastery = p->normalize_destruction_mastery;
 
-  rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
-  rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
-  rng_settings.agony = p->rng_settings.agony;
-  rng_settings.nightfall = p->rng_settings.nightfall;
-  rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
-  rng_settings.spiteful_reconstitution_hard_cap = p->rng_settings.spiteful_reconstitution_hard_cap;
-  rng_settings.demonic_knowledge_rank1_cards = p->rng_settings.demonic_knowledge_rank1_cards;
-  rng_settings.demonic_knowledge_rank2_cards = p->rng_settings.demonic_knowledge_rank2_cards;
-  rng_settings.alythesss_ire_shift = p->rng_settings.alythesss_ire_shift;
-  rng_settings.echo_of_sargeras = p->rng_settings.echo_of_sargeras;
-  rng_settings.blackened_soul = p->rng_settings.blackened_soul;
-  rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
-  rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
-  rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
-  rng_settings.succulent_soul_aff = p->rng_settings.succulent_soul_aff;
-  rng_settings.succulent_soul_demo = p->rng_settings.succulent_soul_demo;
-  rng_settings.feast_of_souls_aff = p->rng_settings.feast_of_souls_aff;
-  rng_settings.feast_of_souls_demo = p->rng_settings.feast_of_souls_demo;
-  rng_settings.feast_of_souls_hard_cap_aff = p->rng_settings.feast_of_souls_hard_cap_aff;
-  rng_settings.feast_of_souls_hard_cap_demo = p->rng_settings.feast_of_souls_hard_cap_demo;
-  rng_settings.manifested_avarice = p->rng_settings.manifested_avarice;
+  rng_settings = p->rng_settings;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -705,8 +618,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
       // Seeks to return the average expected time for the player to generate a single soul shard.
       // TOCHECK regularly.
-
-      double average = 1.0 / ( ( rng_settings.agony.setting_value * 0.5 ) * std::pow( active_agonies, -2.0 / 3.0 ) * creeping_death_mul )
+      double average = 1.0 / ( ( rng_settings.agony_energize.setting_value * 0.5 ) * std::pow( active_agonies, -2.0 / 3.0 ) * creeping_death_mul )
                        * dot_tick_time.total_seconds() / active_agonies;
 
       if ( sim->debug )
@@ -1089,7 +1001,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     for ( int i = 0; i < as<int>( actual_amount ); i++ )
     {
-      if ( succulent_soul_rng->trigger() )
+      if ( prd_rng.succulent_soul->trigger() )
       {
         buffs.succulent_soul->trigger();
         procs.succulent_soul->occur();
