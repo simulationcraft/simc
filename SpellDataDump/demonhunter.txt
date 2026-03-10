@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -5369,6 +5369,7 @@ Effects          :
 Description      : $@spelldesc317009
 
 Name             : Swallowed Anger (id=320313) [Spell Family (107), Passive] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
@@ -5381,7 +5382,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=807325)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Consume Magic generates $278326s2 Fury when a beneficial Magic effect is successfully removed from the target.
+Description      : Consume Magic generates $1277738s1 Fury when a beneficial Magic effect is successfully removed from the target.
 
 Name             : Infernal Armor (id=320331) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=2, req_points=8]

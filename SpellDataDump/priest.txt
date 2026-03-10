@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4240,7 +4240,6 @@ Description      : When Guardian Spirit saves the target from death, it does not
 When Guardian Spirit expires without saving the target from death, reduce its remaining cooldown to $s1 seconds.
 
 Name             : Plea (id=200829) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Discipline Priest
 School           : Holy
 Spell Type       : Magic

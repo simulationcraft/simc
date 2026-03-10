@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -86752,7 +86752,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=474443)   : School Damage (2): shadow | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 832.6089 - 920.252 (coefficient=6.857642, delta=0.1) | Target: Targeted Enemy (6)
-Hotfixed         : Coefficient (4.057891 -> 6.857642)
 Description      : $@spelldesc253793
 
 Name             : Void Hunter (id=253802) [Passive, Hidden] 
@@ -236448,7 +236447,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1235168 | Radius: 8 yards | Target: at Random (72)
 
 Name             : Warping Wise (id=1235207) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 25 yards
@@ -236716,7 +236714,6 @@ Effects          :
 Description      : $@spelldesc1244636
 
 Name             : Light's Preservation (id=1235568) 
-Hotfixed         : Category (4 -> 30)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -238417,8 +238414,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232935)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 982.0534 (coefficient=7.68409) | Trigger Spell: 1241728 | Target: Self (1)
-#2 (id=1289524)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Trigger Spell: 1277263 | Target: Self (1)
+#2 (id=1289524)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Flames of the Sin'dorei (id=1236740) [Passive] 
@@ -238432,8 +238430,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232936)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1228 (coefficient=9.608502) | Trigger Spell: 1241728 | Target: Self (1)
-#2 (id=1289525)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of the Sin'dorei | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Trigger Spell: 1277263 | Target: Self (1)
+#2 (id=1289525)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Acuity of the Ren'dorei (id=1236741) [Passive] 
@@ -239481,7 +239480,6 @@ Description      : $@spelldesc1237885
 Tooltip          : Healing $s2 every $t2 sec.
 
 Name             : Thorn Bloom (id=1238474) 
-Hotfixed         : Tooltip
 Race             : Haranir (0x180000)
 School           : Nature
 Spell Type       : Magic
@@ -244330,10 +244328,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1263561)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Base Value (10 -> 20)
 #5 (id=1263571)  : Apply Aura Raid (65) | Periodic Dummy (226): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Period (6000 -> 4000)
 #6 (id=1265028)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 Description      : Standing still during combat gain stacks of Cosmic Momentum every $t5 sec up to $s2. Each stack increases your movement speed by $s1%.
@@ -248920,7 +248916,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1271663)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1261796 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 Description      : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $s1% for $1261796d.
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
@@ -249004,7 +248999,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1271687)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1261796 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 10)
 Description      : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $s1% for $1261796d.
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
@@ -249022,7 +249016,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1271688)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1261796 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 15)
 Description      : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $s1% for $1261796d.
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
@@ -249040,7 +249033,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1271689)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Blade Tip
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1261796 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 Description      : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $s1% for $1261796d.
 Tooltip          : Your companion's spells and abilities have a chance to weaken enemies, increasing the chance to critically strike affected targets by $w1% for $1261796d.
 
@@ -249752,7 +249744,6 @@ Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140
 Effects          :
 #1 (id=1272443)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458) | Rating: Mastery | Target: Self (1)
-Hotfixed         : Coefficient (0.211022 -> 0.507458)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249779,7 +249770,6 @@ Attributes       : Passive (6), Don't Cancel When All Effects are Disabled (353)
 Effects          :
 #1 (id=1272449)  : Apply Aura (6) | Proc Trigger Spell (42): Smuggler's Lynxeye | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 246.5914 (coefficient=1.881221) | Trigger Spell: 1262299 | Target: Self (1)
-Hotfixed         : Trigger Spell (1262294 -> 1262299)
 
 Name             : Smuggler's Lynxeye (id=1262299) 
 School           : Physical
@@ -249791,7 +249781,6 @@ Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140
 Effects          :
 #1 (id=1272450)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 82.9826 (coefficient=0.633066) | Rating: Mastery | Target: Self (1)
-Hotfixed         : Coefficient (0.346679 -> 0.633066)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249805,7 +249794,6 @@ Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140
 Effects          :
 #1 (id=1272510)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458) | Rating: Crit | Target: Self (1)
-Hotfixed         : Coefficient (0.211022 -> 0.507458)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -249831,7 +249819,6 @@ Attributes       : No Aura Cancel (31), Retain Item Cast (95), Aura Is Buff (140
 Effects          :
 #1 (id=1272512)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 82.9826 (coefficient=0.633066) | Rating: Crit | Target: Self (1)
-Hotfixed         : Coefficient (0.346679 -> 0.633066)
 Description      : $@spelldesc386154
 Tooltip          : Mastery increased by $w1.
 
@@ -250542,7 +250529,6 @@ Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Im
 Effects          :
 #1 (id=1273629)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 8499.818 (coefficient=66.50694) | Target: Self (1)
-Hotfixed         : Coefficient (32.119675 -> 66.506943)
 Description      : Restores ${$s1*10} health over $d.
 Tooltip          : Restoring $s1 health every $ts.
 
@@ -251961,10 +251947,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1279070)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Base Value (20 -> 30)
 #5 (id=1279071)  : Apply Aura Raid (65) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Period (3000 -> 2000)
 #6 (id=1279072)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 Description      : Standing still during combat gain stacks of Cosmic Momentum every $t5 sec up to $s2. Each stack increases your movement speed by $s1%.
@@ -251997,10 +251981,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1279076)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Base Value (20 -> 30)
 #5 (id=1279077)  : Apply Aura Raid (65) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Period (4000 -> 3000)
 #6 (id=1279078)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 Description      : Standing still during combat gain stacks of Cosmic Momentum every $t5 sec up to $s2. Each stack increases your movement speed by $s1%.
@@ -252033,10 +252015,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1279082)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Base Value (10 -> 20)
 #5 (id=1279083)  : Apply Aura Raid (65) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
-Hotfixed         : Period (4000 -> 3000)
 #6 (id=1279084)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1000 yards | Target: Self (1)
 Description      : Standing still during combat gain stacks of Cosmic Momentum every $t5 sec up to $s2. Each stack increases your movement speed by $s1%.
@@ -252674,7 +252654,6 @@ Description      : $@spelldesc1271211
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Crucible of Erratic Energies (id=1272091) [Passive] 
-Hotfixed         : Proc Flags 1 (87360 -> 87296)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -252685,10 +252664,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42): Voidlust | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Trigger Spell: 1277482 | Target: Self (1)
-Hotfixed         : Coefficient (1.124223 -> 0.659241)
 #2 (id=1285205)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Hotfixed         : Base Value (3 -> 5)
 #3 (id=1285226)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #4 (id=1289944)  : Dummy (3)
@@ -252965,17 +252942,6 @@ Effects          :
 #1 (id=1289370)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 138706 | Target: Self (1)
 Description      : Open to collect 10 Hero and Myth Dawncrests.
-
-Name             : Flames of the Sin'dorei (id=1277263) [Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Labels           : 3959: Item Effects
-Triggered By     : Flames of the Sin'dorei (1236739), Flames of the Sin'dorei (1236740)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1289523)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1236094
 
 Name             : Vantus Rune: Radiant (id=1277389) [Hidden] 
 School           : Physical
@@ -253256,7 +253222,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1293549)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 135.121 (coefficient=1.030825) | Target: Self (1)
-Hotfixed         : Coefficient (0.520627 -> 1.030825)
 Description      : When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d. Your highest stat is always chosen.
 
 Name             : Conjured Illusory Adornment - Blooming Light (id=1281332) 
@@ -253293,7 +253258,6 @@ Effects          :
 Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
 
 Name             : Voidlight Bindings (id=1281574) [Passive] 
-Hotfixed         : Attributes, Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -253305,7 +253269,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1311222)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1281581
-Hotfixed         : NEW EFFECT
 Description      : Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][].
 
 Name             : Twilight Barrage (id=1281579) 
@@ -253587,12 +253550,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1308891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: -1050.128 (coefficient=-8.216743) | Target: Self (1)
-Hotfixed         : Coefficient (-4.861703 -> -8.216743)
 #2 (id=1308904)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 14.62806 (coefficient=0.111596) | Target: Self (1)
 
 Name             : Illusory Adornment - Blooming Light (id=1291455) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253601,13 +253562,11 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310825)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8042
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of the Lightbloom.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Illusory Adornment - Blooming Light (id=1291459) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253616,13 +253575,11 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310829)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8043
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of the Lightbloom.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Illusory Adornment - Voidtouched (id=1291460) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253631,13 +253588,11 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310832)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8046
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Illusory Adornment - Nature's Embrace (id=1291464) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253646,13 +253601,11 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310836)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8044
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Illusory Adornment - Voidtouched (id=1291465) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253661,13 +253614,11 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310837)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8047
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of the Void's might.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Illusory Adornment - Nature's Embrace (id=1291466) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -253676,7 +253627,6 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1310838)  : Enchant Item Temporary (54)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8045
-Hotfixed         : NEW EFFECT
 Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 

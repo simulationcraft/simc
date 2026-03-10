@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -2926,7 +2926,6 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -3035,7 +3034,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage (3): fire every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.52 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
-Hotfixed         : Period (1000 -> 500)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
@@ -4174,7 +4172,6 @@ Description      : $@spelldesc1246832
 Tooltip          : $w1 |4Icicle:Icicles; stored. Upon reaching 5 Icicles, your $?s431044[Frostfire Bolt][Frostbolt] is replaced with Glacial Spike.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12097,7 +12094,6 @@ Effects          :
 Description      : $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
 
 Name             : Controlled Instincts (id=444487) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12146,7 +12142,6 @@ Effects          :
 Description      : $?c1[Casting Arcane Barrage conjures an Arcane Splinter for every $s1 Arcane Salvo stacks consumed][Ice Lance conjures a Frost Splinter for every $s3 Freezing stacks Shattered from its primary target].
 
 Name             : Controlled Instincts (id=444720) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -17056,7 +17051,6 @@ Effects          :
 Description      : $@spelldesc1262843
 
 Name             : Pyroblast (id=1262863) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
