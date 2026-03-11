@@ -1135,45 +1135,131 @@ namespace warlock
 
   void warlock_t::init_rng_affliction()
   {
-    ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
-    wrath_of_nathreza_rng = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
+    // Agony energize proc
+    {
+      // 2018-08-24:
+      //   Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard. This set of code is based on results from
+      //   500+ Soul Shard sample sizes, and matches in-game results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
+      // 2026-03-06:
+      //   New tests were conducted using over 55000+ Soul Shards in both single and multi-target scenarios. The results confirm that Blizzard is still
+      //   using the same formula for Agony, though they occasionally make unusual adjustments to talent normalization (so this should be checked regularly).
+      //   With the larger sample size, we obtained a more precise initial value for Agony's RNG 'increment_max' of 0.370 (previously 0.368).
+      // TOCHECK regularly. If any changes are made to this section of code, please also update the Time_to_Shard expression in sc_warlock.cpp.
+      double inc_max = rng_settings.agony_energize.setting_value;
+
+      // NOTE: 2026-03-06 Recent tests noted that Creeping Death is renormalizing shard generation to be neutral with/without the talent
+      // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
+      if ( talents.creeping_death.ok() )
+      {
+        if ( !bugs || talents.creeping_death.rank() < 2 )
+          inc_max *= 1.0 + talents.creeping_death->effectN( 1 ).percent();
+        else
+          inc_max *= 1.0 + ( talents.creeping_death->effectN( 1 ).percent() * 0.5 );
+      }
+
+      progress_rng.agony_energize = get_threshold_rng( "agony_energize", inc_max,
+        [ this ]( double increment_max, action_state_t* s ) {
+          assert( s );
+          auto tdata = get_target_data( s->target );
+          assert( tdata );
+          dot_t* agony_dot = tdata->dots.agony;
+          unsigned active_agonies = get_active_dots( agony_dot );
+          assert( agony_dot && agony_dot->is_ticking() && active_agonies > 0 );
+          increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
+          return rng().range( 0.0, increment_max );
+        }, true, true );
+    }
+
+    // Nightfall proc
+    if ( talents.nightfall.ok() )
+    {
+      // Blizzard did not publicly release how nightfall was changed.
+      // We determined this is the probable functionality copied from Agony by first confirming the
+      // DR formula was the same and then confirming that you can get procs on 1st tick.
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+      // Last checked 2026-03-06.
+      double inc_max = rng_settings.nightfall.setting_value;
+
+      // NOTE: 2026-03-06 Creeping Death no longer affects the chance of gaining Nightfall
+      // However, Creeping Death rank 2 is normalizing using -0.1 value instead of -0.2 (the value of rank 1 or half of rank 2) (bug?)
+      if ( talents.creeping_death.ok() )
+      {
+        if ( !bugs || talents.creeping_death.rank() < 2 )
+          inc_max *= 1.0 + talents.creeping_death->effectN( 1 ).percent();
+        else
+          inc_max *= 1.0 + ( talents.creeping_death->effectN( 1 ).percent() * 0.5 );
+      }
+
+      // Sataiel’s Volition no longer affects the chance of gaining Nightfall
+      if ( hero.sataiels_volition.ok() )
+        inc_max *= 1.0 + hero.sataiels_volition->effectN( 1 ).percent();
+
+      progress_rng.nightfall = get_threshold_rng( "nightfall", inc_max,
+        [ this ]( double increment_max, action_state_t* s ) {
+          assert( s );
+          auto tdata = get_target_data( s->target );
+          assert( tdata );
+          dot_t* corruption_dot = hero.wither.ok() ? tdata->dots.wither : tdata->dots.corruption;
+          unsigned active_corruptions = get_active_dots( corruption_dot );
+          assert( corruption_dot && corruption_dot->is_ticking() && active_corruptions > 0 );
+          increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+          return rng().range( 0.0, increment_max );
+        }, true, true );
+    }
+
+    rppm_rng.ravenous_afflictions = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
+    rppm_rng.wrath_of_nathreza = get_rppm( "wrath_of_nathreza", talents.shadow_of_nathreza_3 );
 
     // Modeling Cunning Cruelty as a pseudo-random distribution (PRD) with a nominal rate of 50% (SB) / 25% (DS) (MG uses DS rate if
     // selected, SB rate otherwise) which corresponds to PRD constant C = 0.302103025348741965 (SB) / C = 0.084744091852316990 (DS)
     if ( talents.cunning_cruelty.ok() )
     {
-      double c_cc = pseudo_random_c_from_p( talents.drain_soul.ok() ? rng_settings.cunning_cruelty_ds.setting_value : rng_settings.cunning_cruelty_sb.setting_value );
-      cunning_cruelty_rng = get_accumulated_rng( "cunning_cruelty", c_cc );
+      double c_cc = prd::find_constant( talents.drain_soul.ok() ? rng_settings.cunning_cruelty_ds.setting_value : rng_settings.cunning_cruelty_sb.setting_value );
+      prd_rng.cunning_cruelty = get_accumulated_rng( "cunning_cruelty", c_cc );
     }
 
     // Modeling Shard Instability as a pseudo-random distribution (PRD) with a nominal rate of 10% (DS/MG) / 20% (SB),
     // which corresponds to PRD constant C = 0.014745844781072676 (DS/MG) / C = 0.055704042949781852 (SB)
     if ( talents.shard_instability.ok() )
     {
-      double c_ds = pseudo_random_c_from_p( talents.shard_instability->effectN( 1 ).percent() );
-      shard_instability_ds_rng = get_accumulated_rng( "shard_instability_ds", c_ds );
-      double c_sb = pseudo_random_c_from_p( talents.shard_instability->effectN( 2 ).percent() );
-      shard_instability_sb_rng = get_accumulated_rng( "shard_instability_sb", c_sb );
+      double c_ds = prd::find_constant( talents.shard_instability->effectN( 1 ).percent() );
+      prd_rng.shard_instability_ds = get_accumulated_rng( "shard_instability_ds", c_ds );
+      double c_sb = prd::find_constant( talents.shard_instability->effectN( 2 ).percent() );
+      prd_rng.shard_instability_sb = get_accumulated_rng( "shard_instability_sb", c_sb );
     }
 
     // Modeling Fatal Echoes as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
     if ( talents.fatal_echoes.ok() )
     {
-      double c_fe = pseudo_random_c_from_p( talents.fatal_echoes->effectN( 1 ).percent() );
-      fatal_echoes_rng = get_accumulated_rng( "fatal_echoes", c_fe );
+      double c_fe = prd::find_constant( talents.fatal_echoes->effectN( 1 ).percent() );
+      prd_rng.fatal_echoes = get_accumulated_rng( "fatal_echoes", c_fe );
     }
   }
 
   void warlock_t::init_rng_demonology()
   {
-    // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with a nominal rate of 10% and a hard cap
-    // of 21 attempts. The PRD nominal rate corresponds to PRD constant C = 0.014745844781072676.
+    // NOTE: 2026-03-06 It has been tested that Carnivorous Stalkers follows a Flat % chance model for each individual melee hit
+    if ( talents.carnivorous_stalkers.ok() )
+      flat_rng.carnivorous_stalkers = get_simple_proc_rng( "carnivorous_stalkers", talents.carnivorous_stalkers->effectN( 1 ).percent() );
+
+    // NOTE: 2026-03-06 It has been tested that Infernal Rapidity follows a Flat % chance model for each individual cast
+    // However, the % chance seems to be bugged and only half of what is specified in the spell data is being applied (bug)
+    if ( talents.infernal_rapidity.ok() )
+    {
+      double infernal_rapidity_chance = talents.infernal_rapidity->effectN( 1 ).percent();
+      infernal_rapidity_chance = bugs ? infernal_rapidity_chance * 0.5 : infernal_rapidity_chance;
+      flat_rng.infernal_rapidity = get_simple_proc_rng( "infernal_rapidity", infernal_rapidity_chance );
+    }
+
+    // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with an uncapped nominal rate of 10%.
+    // That nominal rate corresponds to PRD constant C = 0.014745844781072676.
+    // A separate hard cap of 21 attempts is then applied on top of the PRD, raising the effective average proc chance to ~10.06%.
     if ( talents.spiteful_reconstitution.ok() )
     {
-      double c_sr = pseudo_random_c_from_p( rng_settings.spiteful_reconstitution.setting_value );
+      double c_sr = prd::find_constant( rng_settings.spiteful_reconstitution.setting_value );
       int spiteful_reconstitution_hardcap = static_cast<int>( rng_settings.spiteful_reconstitution_hard_cap.setting_value );
-      spiteful_reconstitution_rng = get_rng<accumulated_hardcap_rng_t>( "spiteful_reconstitution", c_sr, nullptr, spiteful_reconstitution_hardcap );
+      prd_rng.spiteful_reconstitution = get_accumulated_rng( "spiteful_reconstitution", c_sr, spiteful_reconstitution_hardcap );
     }
 
     // Demonic Knowledge uses Deck of Cards RNG at 10 out of 80 (rank 1) and 18 out of 80 (rank 2)
@@ -1197,37 +1283,39 @@ namespace warlock
         cards = static_cast<int>( talents.demonic_knowledge->effectN( 1 ).percent() * max_cards + 0.5 );
       }
 
-      demonic_knowledge_rng = get_shuffled_rng( "demonic_knowledge", cards, max_cards );
+      deck_rng.demonic_knowledge = get_shuffled_rng( "demonic_knowledge", cards, max_cards );
     }
   }
 
   void warlock_t::init_rng_destruction()
   {
+    flat_rng.immolate_crit_energize = get_simple_proc_rng( "immolate_crit_energize", warlock_base.immolate_old->effectN( 2 ).percent() );
+
     // Modeling Fiendish Cruelty as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
     if ( talents.fiendish_cruelty.ok() )
     {
-      double c_fc = pseudo_random_c_from_p( talents.fiendish_cruelty->effectN( 1 ).percent() );
-      fiendish_cruelty_rng = get_accumulated_rng( "fiendish_cruelty", c_fc );
+      double c_fc = prd::find_constant( talents.fiendish_cruelty->effectN( 1 ).percent() );
+      prd_rng.fiendish_cruelty = get_accumulated_rng( "fiendish_cruelty", c_fc );
     }
 
     // Modeling Chaotic Inferno as a pseudo-random distribution (PRD) with a nominal
     // rate of 25%, which corresponds to PRD constant C = 0.084744091852316990.
     if ( talents.chaotic_inferno.ok() )
     {
-      double c_ci = pseudo_random_c_from_p( talents.chaotic_inferno->effectN( 2 ).percent() );
-      chaotic_inferno_rng = get_accumulated_rng( "chaotic_inferno", c_ci );
+      double c_ci = prd::find_constant( talents.chaotic_inferno->effectN( 2 ).percent() );
+      prd_rng.chaotic_inferno = get_accumulated_rng( "chaotic_inferno", c_ci );
     }
 
     // Rain of Chaos uses Deck of Cards RNG at 3 out of 20
-    rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+    deck_rng.rain_of_chaos = get_shuffled_rng( "rain_of_chaos", 3, 20 );
 
     // Modeling Dimensional Rift as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
     if ( talents.dimensional_rift.ok() )
     {
-      double c_dr = pseudo_random_c_from_p( talents.dimensional_rift->effectN( 1 ).percent() );
-      dimensional_rift_rng = get_accumulated_rng( "dimensional_rift", c_dr );
+      double c_dr = prd::find_constant( talents.dimensional_rift->effectN( 1 ).percent() );
+      prd_rng.dimensional_rift = get_accumulated_rng( "dimensional_rift", c_dr );
 
       // The pets summoned by Dimensional Rift is choosen following a Deck of Cards model of 2/2/2 out of 6.
       // With the Avatar of Destruction talent, this is modified to a Deck of Cards model of 2/2/2/1 out of 7.
@@ -1239,7 +1327,7 @@ namespace warlock
             DR_PET_CHAOS_TEAR,    DR_PET_CHAOS_TEAR,
             DR_PET_OVERFIEND };
 
-        dimensional_rift_summon_rng = std::make_unique<shuffled_bag_rng_t<dimensional_rift_pet_e>>( std::move( deck ), this );
+        deck_rng.dimensional_rift_summon = std::make_unique<shuffled_bag_rng_t<dimensional_rift_pet_e>>( std::move( deck ), this );
       }
       else
       {
@@ -1248,22 +1336,38 @@ namespace warlock
             DR_PET_UNSTABLE_TEAR, DR_PET_UNSTABLE_TEAR,
             DR_PET_CHAOS_TEAR,    DR_PET_CHAOS_TEAR };
 
-        dimensional_rift_summon_rng = std::make_unique<shuffled_bag_rng_t<dimensional_rift_pet_e>>( std::move( deck ), this );
+        deck_rng.dimensional_rift_summon = std::make_unique<shuffled_bag_rng_t<dimensional_rift_pet_e>>( std::move( deck ), this );
       }
+    }
+
+    if ( talents.demonfire_infusion.ok() )
+    {
+      flat_rng.demonfire_infusion_dot = get_simple_proc_rng( "demonfire_infusion_dot", talents.demonfire_infusion->effectN( 1 ).percent() );
+      flat_rng.demonfire_infusion_inc = get_simple_proc_rng( "demonfire_infusion_incinerate", talents.demonfire_infusion->effectN( 2 ).percent() );
     }
 
     if ( talents.alythesss_ire.ok() )
     {
-      assert( as<int>( talents.alythesss_ire->effectN( 1 ).base_value() ) != 0 );
-      alythesss_ire_trigger = 100 / as<int>( talents.alythesss_ire->effectN( 1 ).base_value() );
+      flat_rng.alythesss_ire_shift = get_simple_proc_rng( "alythesss_ire_shift", rng_settings.alythesss_ire_shift.setting_value );
+
+      const unsigned chance = as<unsigned>( talents.alythesss_ire->effectN( 1 ).base_value() );
+      assert( chance != 0u );
+      assert( 100u % chance == 0u );
+      const unsigned alythesss_ire_trigger = 100u / chance;
+
+      cycle_proc.alythesss_ire = get_rng<fixed_cycle_proc_t>( "alythesss_ire", alythesss_ire_trigger, true, [ this ]( unsigned trigger_count ){
+        // NOTE: 2026-03-06 Alythess's Ire usually procs at a fixed interval of attempts. Rarely, the cycle
+        // shifts and advances the next proc; testing suggests this happens randomly in roughly ~1% of procs.
+        return flat_rng.alythesss_ire_shift->trigger() ? rng().range( 1u, trigger_count ) : 0u;
+      } );
     }
 
     // Modeling Echo of Sargeras as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
     if ( talents.embers_of_nihilam_1.ok() )
     {
-      double c_es = pseudo_random_c_from_p( rng_settings.echo_of_sargeras.setting_value );
-      echo_of_sargeras_rng = get_accumulated_rng( "echo_of_sargeras", c_es );
+      double c_es = prd::find_constant( rng_settings.echo_of_sargeras.setting_value );
+      prd_rng.echo_of_sargeras = get_accumulated_rng( "echo_of_sargeras", c_es );
     }
   }
 
@@ -1273,7 +1377,13 @@ namespace warlock
 
   void warlock_t::init_rng_hellcaller()
   {
-    devil_fruit_rng = get_rppm( "devil_fruit", hero.devil_fruit );
+    flat_rng.wither_crit_energize = get_simple_proc_rng( "wither_crit_energize", hero.wither_direct->effectN( 2 ).percent() );
+    flat_rng.blackened_soul = get_simple_proc_rng( "blackened_soul", rng_settings.blackened_soul.setting_value );
+    flat_rng.bleakheart_tactics = get_simple_proc_rng( "bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value );
+    flat_rng.seeds_of_their_demise = get_simple_proc_rng( "seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value );
+    flat_rng.mark_of_perotharn = get_simple_proc_rng( "mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value );
+
+    rppm_rng.devil_fruit = get_rppm( "devil_fruit", hero.devil_fruit );
   }
 
   void warlock_t::init_rng_soul_harvester()
@@ -1285,23 +1395,24 @@ namespace warlock
       assert( affliction() || demonology() );
       double c_ss = 0.0;
       if ( affliction() )
-        c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_aff.setting_value );
+        c_ss = prd::find_constant( rng_settings.succulent_soul_aff.setting_value );
       else if ( demonology() )
-        c_ss = pseudo_random_c_from_p( rng_settings.succulent_soul_demo.setting_value );
+        c_ss = prd::find_constant( rng_settings.succulent_soul_demo.setting_value );
 
-      succulent_soul_rng = get_accumulated_rng( "succulent_soul", c_ss );
+      prd_rng.succulent_soul = get_accumulated_rng( "succulent_soul", c_ss );
     }
 
     // Modeling Manifested Avarice as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
     if ( hero.manifested_avarice.ok() )
     {
-      double c_ma = pseudo_random_c_from_p( rng_settings.manifested_avarice.setting_value );
-      manifested_avarice_rng = get_accumulated_rng( "manifested_avarice", c_ma );
+      double c_ma = prd::find_constant( rng_settings.manifested_avarice.setting_value );
+      prd_rng.manifested_avarice = get_accumulated_rng( "manifested_avarice", c_ma );
     }
 
-    // Modeling Feast of Souls as a pseudo-random distribution (PRD) with a nominal rate of 4% (aff) / 10% (demo) and a hard cap
-    // of 26 attempts. The PRD nominal rate corresponds to PRD C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo)
+    // Modeling Feast of Souls as a pseudo-random distribution (PRD) with an uncapped nominal rate of 4% (aff) / 10% (demo). Those
+    // nominal rates correspond to PRD constants C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo). A separate hard
+    // cap of 26 attempts is then applied on top of the PRD, raising the effective average proc chance to ~4.94% (aff) / ~10.01% (demo).
     if ( hero.feast_of_souls.ok() )
     {
       assert( affliction() || demonology() );
@@ -1309,16 +1420,16 @@ namespace warlock
       int feast_of_souls_hardcap = 0;
       if ( affliction() )
       {
-        c_fs = pseudo_random_c_from_p( rng_settings.feast_of_souls_aff.setting_value );
+        c_fs = prd::find_constant( rng_settings.feast_of_souls_aff.setting_value );
         feast_of_souls_hardcap = static_cast<int>( rng_settings.feast_of_souls_hard_cap_aff.setting_value );
       }
       else if ( demonology() )
       {
-        c_fs = pseudo_random_c_from_p( rng_settings.feast_of_souls_demo.setting_value );
+        c_fs = prd::find_constant( rng_settings.feast_of_souls_demo.setting_value );
         feast_of_souls_hardcap = static_cast<int>( rng_settings.feast_of_souls_hard_cap_demo.setting_value );
       }
 
-      feast_of_souls_rng = get_rng<accumulated_hardcap_rng_t>( "feast_of_souls", c_fs, nullptr, feast_of_souls_hardcap );
+      prd_rng.feast_of_souls = get_accumulated_rng( "feast_of_souls", c_fs, feast_of_souls_hardcap );
     }
   }
 
@@ -1486,27 +1597,10 @@ namespace warlock
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
     add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
 
-    add_rng_option( rng_settings.cunning_cruelty_sb );
-    add_rng_option( rng_settings.cunning_cruelty_ds );
-    add_rng_option( rng_settings.agony );
-    add_rng_option( rng_settings.nightfall );
-    add_rng_option( rng_settings.spiteful_reconstitution );
-    add_rng_option( rng_settings.spiteful_reconstitution_hard_cap );
-    add_rng_option( rng_settings.demonic_knowledge_rank1_cards );
-    add_rng_option( rng_settings.demonic_knowledge_rank2_cards );
-    add_rng_option( rng_settings.alythesss_ire_shift );
-    add_rng_option( rng_settings.echo_of_sargeras );
-    add_rng_option( rng_settings.blackened_soul );
-    add_rng_option( rng_settings.bleakheart_tactics );
-    add_rng_option( rng_settings.seeds_of_their_demise );
-    add_rng_option( rng_settings.mark_of_perotharn );
-    add_rng_option( rng_settings.succulent_soul_aff );
-    add_rng_option( rng_settings.succulent_soul_demo );
-    add_rng_option( rng_settings.feast_of_souls_aff );
-    add_rng_option( rng_settings.feast_of_souls_demo );
-    add_rng_option( rng_settings.feast_of_souls_hard_cap_aff );
-    add_rng_option( rng_settings.feast_of_souls_hard_cap_demo );
-    add_rng_option( rng_settings.manifested_avarice );
+    rng_settings.for_each( [ this ]( auto& setting )
+    {
+      add_rng_option( setting );
+    } );
   }
 
   void warlock_t::combat_begin()
@@ -1534,17 +1628,12 @@ namespace warlock
       } );
     } );
 
-    if ( dimensional_rift_summon_rng )
-      dimensional_rift_summon_rng->reset();
-
-    if ( talents.alythesss_ire.ok() )
-      alythesss_ire_counter = as<int>( rng().range( 0, alythesss_ire_trigger ) );
+    if ( deck_rng.dimensional_rift_summon )
+      deck_rng.dimensional_rift_summon->reset();
 
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
     haunt_target = nullptr;
-    agony_accumulator = rng().range( 0.0, 0.99 );
-    corruption_accumulator = rng().range( 0.0, 0.99 );
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );
     demonic_art_buff_replaced = false;

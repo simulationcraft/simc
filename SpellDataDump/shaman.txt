@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16341,7 +16341,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=1183500)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : Delta (0 -> 0.05)
 Description      : $@spelldesc384352
 
 Name             : Feral Spirit (id=469314) [Spell Family (11), Passive] 

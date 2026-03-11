@@ -1506,11 +1506,11 @@ enum trait_node_type_e
 // sim_t::error() severity level
 enum error_level_e : unsigned short
 {
-  TRIVIAL,
-  MODERATE,
   SEVERE,
+  MODERATE,
+  TRIVIAL,
   UNIMPLEMENTED,
-  UNVERIFIED_VALUE,
   UNVERIFIED_IMPLEMENTATION,
+  UNVERIFIED_VALUE,
   IMPLEMENTATION_NOTES,
 };

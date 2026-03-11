@@ -9254,6 +9254,7 @@ struct surging_totem_t : public spell_totem_pet_t
     o()->buff.whirling_earth->expire();
     o()->buff.totemic_rebound->expire();
     o()->buff.surging_totem->expire();
+    o()->buff.amplification_core->expire();
   }
 };
 

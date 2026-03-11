@@ -1,0 +1,123 @@
+warrior="MID1_Warrior_Protection"
+source=default
+spec=protection
+level=90
+race=mechagnome
+role=tank
+position=front
+talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAzMDzMzMzMzmxsMjxYmGGDLzMzMDGzMAAAAYZAYGDwAbwyiRjZAMbYmNYGzMY2GAMzAAwMgB
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/battle_stance,toggle=on
+actions.precombat+=/use_item,name=algethar_puzzle_box
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=variables
+actions+=/charge,if=time=0
+actions+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
+actions+=/use_items
+actions+=/avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2
+actions+=/shield_wall
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20
+actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=15|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.practiced_strikes.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.practiced_strikes.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains,use_off_gcd=1
+actions+=/ravager
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/champions_leap
+actions+=/champions_spear
+actions+=/thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.stack=2
+actions+=/demolish,if=buff.colossal_might.stack>=3
+actions+=/shield_charge
+actions+=/shield_block,if=buff.shield_block.remains<=10
+actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
+actions+=/run_action_list,name=colossus_st,if=talent.demolish
+actions+=/run_action_list,name=thane_st,if=talent.lightning_strikes
+
+actions.aoe=thunder_blast,if=dot.rend_dot.remains<=1
+actions.aoe+=/thunder_clap,if=dot.rend_dot.remains<=1
+actions.aoe+=/thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up
+actions.aoe+=/execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled
+actions.aoe+=/thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up
+actions.aoe+=/revenge,if=rage>=70&spell_targets.revenge>=3
+actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up
+actions.aoe+=/thunder_blast
+actions.aoe+=/thunder_clap
+actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+
+actions.colossus_st=shield_slam
+actions.colossus_st+=/thunder_clap
+actions.colossus_st+=/revenge,if=buff.ravager.up
+actions.colossus_st+=/execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40
+actions.colossus_st+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80
+actions.colossus_st+=/revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase
+actions.colossus_st+=/wrecking_throw,if=talent.javelineer.enabled
+actions.colossus_st+=/shattering_throw,if=talent.javelineer.enabled
+actions.colossus_st+=/revenge
+actions.colossus_st+=/devastate
+
+actions.thane_st=thunder_blast
+actions.thane_st+=/thunder_clap,if=buff.ravager.up
+actions.thane_st+=/shield_slam
+actions.thane_st+=/thunder_clap
+actions.thane_st+=/thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)
+actions.thane_st+=/execute,if=buff.sudden_death.up|rage>=40
+actions.thane_st+=/wrecking_throw,if=talent.javelineer.enabled
+actions.thane_st+=/shattering_throw,if=talent.javelineer.enabled
+actions.thane_st+=/revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase
+actions.thane_st+=/revenge
+actions.thane_st+=/devastate
+
+actions.variables=variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
+
+head=night_enders_tusks,id=249952,ilevel=289,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240906/240906
+shoulders=night_enders_pauldrons,id=249950,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,ilevel=285,embellishment=arcanoweave_lining,crafted_stats=49/36
+chest=night_enders_breastplate,id=249955,ilevel=289,enchant_id=7987
+wrists=spellbreakers_bracers,id=237834,ilevel=285,gem_id=240983,embellishment=arcanoweave_lining,crafted_stats=49/36
+hands=voidclaw_gauntlets,id=151332,ilevel=289
+waist=night_enders_girdle,id=249949,ilevel=289
+legs=night_enders_chausses,id=249951,ilevel=289,enchant_id=8163
+feet=night_enders_greatboots,id=249954,ilevel=289,enchant_id=7993
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240906,enchant_id=7969
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240906/240906,enchant_id=7969
+trinket1=algethar_puzzle_box,id=193701,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=turalyons_false_echo,id=249295,ilevel=289,enchant_id=8039
+off_hand=ward_of_the_spellbreaker,id=251105,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_strength=1243
+# gear_stamina=17489
+# gear_intellect=190
+# gear_crit_rating=645
+# gear_haste_rating=1331
+# gear_mastery_rating=518
+# gear_versatility_rating=56
+# gear_leech_rating=249
+# gear_armor=2816
+# gear_bonus_armor=27
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

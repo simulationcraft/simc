@@ -919,8 +919,6 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -1611,9 +1609,9 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     master_of_warfare_proc_chance( 0 )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
-      slayers_strike_proc_chance = p->pseudo_random_c_from_p( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+      slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
     if ( p->talents.arms.master_of_warfare_1.ok() )
-      master_of_warfare_proc_chance = p->pseudo_random_c_from_p( 0.15 );  // Not in spelldata
+      master_of_warfare_proc_chance = prd::find_constant( 0.15 );  // Not in spelldata
     special = true;
   }
 
@@ -8249,24 +8247,24 @@ void warrior_t::init_procs()
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   std::string arms_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   std::string protection_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   switch ( specialization() )
@@ -8286,13 +8284,13 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  if ( specialization() == WARRIOR_PROTECTION && true_level > 70 )
-    return "flask_of_alchemical_chaos_3";
+  if ( specialization() == WARRIOR_FURY && true_level > 80 )
+    return "flask_of_the_magisters_2";
 
-  return ( true_level > 70 )
-             ? "flask_of_alchemical_chaos_3"
-             : ( true_level > 50 )
-                   ? "spectral_flask_of_power"
+  return ( true_level > 80 )
+             ? "flask_of_the_shattered_sun_2"
+             : ( true_level > 70 )
+                   ? "flask_of_alchemical_chaos_3"
                    : "disabled";
 }
 
@@ -8300,22 +8298,22 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 70 )
-                              ? "the_sushi_special"
-                              : ( true_level > 60 )
-                                    ? "thousandbone_tongueslicer"
+  std::string fury_food = ( true_level > 80 )
+                              ? "harandar_celebration"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
-  std::string arms_food = ( true_level > 70 )
-                              ? "the_sushi_special"
-                              : ( true_level > 60 )
-                                    ? "feisty_fish_sticks"
+  std::string arms_food = ( true_level > 80 )
+                              ? "blooming_feast"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
-  std::string protection_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
-                              : ( true_level > 60 )
-                                    ? "feisty_fish_sticks"
+  std::string protection_food = ( true_level > 80 )
+                              ? "harandar_celebration"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
   switch ( specialization() )
@@ -8335,24 +8333,24 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 70 ) ? "crystallized"
-                               : ( true_level >= 60 ) ? "draconic" : "disabled";
+  return ( true_level >= 80 ) ? "void_touched"
+                               : ( true_level >= 70 ) ? "crystallized" : "disabled";
 }
 
 // warrior_t::default_temporary_enchant =====================================
 
 std::string warrior_t::default_temporary_enchant() const
 {
-  std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
+  std::string fury_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2"
                               : "disabled";
 
-  std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:algari_mana_oil_3"
+  std::string arms_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2"
                               : "disabled";
 
-  std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:ironclaw_whetstone_3"
+  std::string protection_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2"
                               : "disabled";
   switch ( specialization() )
   {
@@ -9145,58 +9143,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
   never_surrender_percentage = p -> never_surrender_percentage;
-}
-
-double warrior_t::pseudo_random_p_from_c( double c )
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_on_n       = 0;
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double warrior_t::pseudo_random_c_from_p( double p )
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p1;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 0 )
-      break;
-
-    if ( p1 > p )
-    {
-      c_upper = c_mid;
-    }
-    else
-    {
-      c_lower = c_mid;
-    }
-
-    p2 = p1;
-  }
-
-  return c_mid;
 }
 
 void warrior_t::parse_player_effects()

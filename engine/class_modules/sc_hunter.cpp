@@ -6492,9 +6492,6 @@ struct kill_command_t: public hunter_spell_t
         fury_of_the_wyvern.extension = p->talents.fury_of_the_wyvern->effectN( 2 ).time_value();
         fury_of_the_wyvern.cap = timespan_t::from_seconds( p->talents.fury_of_the_wyvern->effectN( 4 ).base_value() );
       }
-
-      if ( p->talents.dire_command.ok() && p->talents.dire_command->effectN( 1 ).base_value() != 20 )
-        sim->error( "Dire Command's nominal chance has changed since BLP was calculated, please tell a Hunter maintainer." );
     }
   }
 
@@ -8206,12 +8203,7 @@ void hunter_t::init_rng()
   rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
   rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
 
-  /* 2026-02-03:
-    Dire Command's accumulating chance has been precomputed using...
-    death_knight_t::pseudo_random_c_from_p() based on the nominal chance (20%) and hard coded.
-    A trivial error will be thrown if the nominal value changes.
-  */
-  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", talents.dire_command.ok() ? 0.055704042949781851858398652 : 0 );
+  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", prd::find_constant( talents.dire_command->effectN( 1 ).percent() ) );
 }
 
 void hunter_t::init_scaling()

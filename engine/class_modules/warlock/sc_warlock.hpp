@@ -104,7 +104,7 @@ struct warlock_td_t : public actor_target_data_t
 
 // Shuffled Bag RNG (sampling without replacement)
 // Each draw removes an item until the bag is exhausted, then it automatically resets
-template<typename T>
+template <typename T>
 struct shuffled_bag_rng_t
 {
 private:
@@ -145,60 +145,73 @@ public:
   { return as<int>( bag.size() ); }
 };
 
-// Variant of accumulated RNG with a hard cap.
-// Chance increases per attempt and guarantees a proc once max_count is reached.
-struct accumulated_hardcap_rng_t : public proc_rng_t
+// Fixed-cycle proc helper
+// Advances a counter on each call and triggers every Nth event
+struct fixed_cycle_proc_t : public proc_rng_t
 {
 private:
-  accumulated_rng_fn accumulator_fn;
-  double proc_chance;
-  unsigned max_count;
-  unsigned initial_count;
+  using proc_reset_counter_fn = std::function<unsigned( unsigned )>;
+
+  proc_reset_counter_fn proc_reset_fn;
+  unsigned counter;
   unsigned trigger_count;
+  bool random_initial_state;
 
 public:
-  static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
+  static constexpr rng_type_e rng_type = RNG_CUSTOM;
 
-  accumulated_hardcap_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn = nullptr,
-                                        unsigned max_count_ = std::numeric_limits<unsigned>::max(), unsigned initial_count_ = 0 )
+  fixed_cycle_proc_t( std::string_view n, player_t* p, unsigned trigger_count_,
+                      bool random_initial_state_ = false, proc_reset_counter_fn proc_reset_fn_ = nullptr )
     : proc_rng_t( rng_type, n, p ),
-      accumulator_fn( std::move( fn ) ),
-      proc_chance( c ),
-      max_count( max_count_ ),
-      initial_count( initial_count_ ),
-      trigger_count( initial_count_ )
-  {}
+      proc_reset_fn( proc_reset_fn_ ),
+      counter( 0u ),
+      trigger_count( trigger_count_ ),
+      random_initial_state( random_initial_state_ )
+  { assert( trigger_count > 0u ); }
 
-  void reset( reset_type_e /* reset_type */ ) override
-  { trigger_count = initial_count; }
-
-  int trigger( action_state_t* state = nullptr ) override
+  void reset( reset_type_e reset_type ) override
   {
-    if ( proc_chance <= 0 )
-      return false;
+    switch ( reset_type )
+    {
+      case reset_type_e::COMBAT:
+        counter = proc_reset_fn ? proc_reset_fn( trigger_count ) : 0u;
+        assert( counter < trigger_count );
+        break;
+      case reset_type_e::ITERATION:
+        counter = random_initial_state ? player->rng().range( 0u, trigger_count ) : 0u;
+        break;
+      default:
+        assert( false && "Unhandled reset_type_e value" );
+    }
+  }
 
-    trigger_count++;
+  int trigger( action_state_t* = nullptr ) override
+  {
+    counter++;
 
-    if ( trigger_count >= max_count )
+    if ( player->sim->debug )
+      player->sim->print_debug( "Fixed Cycle Proc: {}, current_count={} trigger_count={}, proc={}", name(), counter,
+                                trigger_count, counter >= trigger_count );
+
+    if ( counter >= trigger_count )
     {
       reset( reset_type_e::COMBAT );
       return true;
     }
 
-    double chance = accumulator_fn ? accumulator_fn( proc_chance, trigger_count, state ) : proc_chance * trigger_count;
-    assert( !std::isnan( chance ) ); // nan check
-    bool result = player->rng().roll( chance );
+    return false;
+  }
 
-    if ( player->sim->debug )
-    {
-      player->sim->print_debug( "Accumulated (Hard Cap) RNG: {}, base={:.3f} count={} max={} chance={:.5f}%", name(),
-                                proc_chance, trigger_count, max_count, chance * 100.0 );
-    }
+  unsigned get_counter() const
+  { return counter; }
 
-    if ( result )
-      reset( reset_type_e::COMBAT );
+  unsigned get_trigger_count() const
+  { return trigger_count; }
 
-    return result;
+  void set_counter( unsigned v )
+  {
+    assert( v < trigger_count );
+    counter = v;
   }
 };
 
@@ -241,10 +254,6 @@ public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
-  double agony_accumulator;
-  double corruption_accumulator;
-  int alythesss_ire_counter; // Used to consistently cycle the Alythess's Ire proc
-  int alythesss_ire_trigger; // Used to consistently cycle the Alythess's Ire proc
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
@@ -925,6 +934,62 @@ public:
     proc_t* manifested_avarice;
   } procs;
 
+  struct cycle_proc_t
+  {
+    fixed_cycle_proc_t* alythesss_ire;
+  } cycle_proc;
+
+  struct deck_rng_t
+  {
+    shuffled_rng_t* rain_of_chaos;
+    shuffled_rng_t* demonic_knowledge;
+    std::unique_ptr<shuffled_bag_rng_t<dimensional_rift_pet_e>> dimensional_rift_summon;
+  } deck_rng;
+
+  struct rppm_rng_t
+  {
+    real_ppm_t* ravenous_afflictions;
+    real_ppm_t* wrath_of_nathreza;
+    real_ppm_t* devil_fruit;
+  } rppm_rng;
+
+  struct progress_rng_t
+  {
+    threshold_rng_t* agony_energize;
+    threshold_rng_t* nightfall;
+  } progress_rng;
+
+  struct prd_rng_t
+  {
+    accumulated_rng_t* cunning_cruelty;
+    accumulated_rng_t* shard_instability_ds;
+    accumulated_rng_t* shard_instability_sb;
+    accumulated_rng_t* fatal_echoes;
+    accumulated_rng_t* fiendish_cruelty;
+    accumulated_rng_t* chaotic_inferno;
+    accumulated_rng_t* dimensional_rift;
+    accumulated_rng_t* echo_of_sargeras;
+    accumulated_rng_t* succulent_soul;
+    accumulated_rng_t* manifested_avarice;
+    accumulated_rng_t* feast_of_souls;
+    accumulated_rng_t* spiteful_reconstitution;
+  } prd_rng;
+
+  struct flat_rng_t
+  {
+    simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
+    simple_proc_t* carnivorous_stalkers;
+    simple_proc_t* infernal_rapidity;
+    simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
+    simple_proc_t* demonfire_infusion_inc; // TODO: Need to check the type of rng
+    simple_proc_t* alythesss_ire_shift;
+    simple_proc_t* wither_crit_energize;   // TODO: Need to check the type of rng
+    simple_proc_t* blackened_soul;         // TODO: Need to check the type of rng and chance value
+    simple_proc_t* bleakheart_tactics;     // TODO: Need to check the type of rng and chance value
+    simple_proc_t* seeds_of_their_demise;  // TODO: Need to check the type of rng and chance value
+    simple_proc_t* mark_of_perotharn;      // TODO: Need to check the type of rng and chance value
+  } flat_rng;
+
   // TODO: Need to check that these RNG values ​​are still correct in Midnight
   struct rng_settings_t
   {
@@ -936,10 +1001,10 @@ public:
     };
 
     // Affliction
+    rng_setting_t agony_energize = { 0.370, 0.370, "agony_energize" };
+    rng_setting_t nightfall = { 0.130, 0.130, "nightfall" };
     rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb" };
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
-    rng_setting_t agony = { 0.370, 0.370, "agony" };
-    rng_setting_t nightfall = { 0.130, 0.130, "nightfall" };
 
     // Demonology
     rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
@@ -967,30 +1032,38 @@ public:
     rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff" };
     rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo" };
     rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };
+
+    template <typename F>
+    void for_each( F&& f )
+    {
+      f( agony_energize );
+      f( nightfall );
+      f( cunning_cruelty_sb );
+      f( cunning_cruelty_ds );
+      f( spiteful_reconstitution );
+      f( spiteful_reconstitution_hard_cap );
+      f( demonic_knowledge_rank1_cards );
+      f( demonic_knowledge_rank2_cards );
+      f( alythesss_ire_shift );
+      f( echo_of_sargeras );
+      f( blackened_soul );
+      f( bleakheart_tactics );
+      f( seeds_of_their_demise );
+      f( mark_of_perotharn );
+      f( succulent_soul_aff );
+      f( succulent_soul_demo );
+      f( feast_of_souls_aff );
+      f( feast_of_souls_demo );
+      f( feast_of_souls_hard_cap_aff );
+      f( feast_of_souls_hard_cap_demo );
+      f( manifested_avarice );
+    }
   } rng_settings;
 
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   bool normalize_destruction_mastery;
-  shuffled_rng_t* rain_of_chaos_rng;
-  shuffled_rng_t* demonic_knowledge_rng;
-  real_ppm_t* ravenous_afflictions_rng;
-  real_ppm_t* wrath_of_nathreza_rng;
-  real_ppm_t* devil_fruit_rng;
-  accumulated_rng_t* cunning_cruelty_rng;
-  accumulated_rng_t* shard_instability_ds_rng;
-  accumulated_rng_t* shard_instability_sb_rng;
-  accumulated_rng_t* fatal_echoes_rng;
-  accumulated_rng_t* fiendish_cruelty_rng;
-  accumulated_rng_t* chaotic_inferno_rng;
-  accumulated_rng_t* dimensional_rift_rng;
-  accumulated_rng_t* echo_of_sargeras_rng;
-  accumulated_rng_t* succulent_soul_rng;
-  accumulated_rng_t* manifested_avarice_rng;
-  accumulated_hardcap_rng_t* feast_of_souls_rng;
-  accumulated_hardcap_rng_t* spiteful_reconstitution_rng;
-  std::unique_ptr<shuffled_bag_rng_t<dimensional_rift_pet_e>> dimensional_rift_summon_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -1013,8 +1086,6 @@ public:
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
-  double pseudo_random_p_from_c( double c ) const;
-  double pseudo_random_c_from_p( double p ) const;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count( bool include_diabolist = true ) const;
@@ -1059,13 +1130,13 @@ public:
   bool hellcaller() const;
   bool soul_harvester() const;
 
-  template<set_bonus_type_e Tier>
+  template <set_bonus_type_e Tier>
   bool active_2pc() const
   {
     return sets->has_set_bonus( specialization(), Tier, B2 );
   }
 
-  template<set_bonus_type_e Tier>
+  template <set_bonus_type_e Tier>
   bool active_4pc() const
   {
     return sets->has_set_bonus( specialization(), Tier, B4 );
@@ -1153,8 +1224,6 @@ namespace helpers
     virtual const char* name() const override;
     virtual void execute() override;
   };
-
-  void nightfall_updater( warlock_t* p, dot_t* d );
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 

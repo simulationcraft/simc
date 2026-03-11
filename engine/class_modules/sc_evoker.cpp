@@ -1088,6 +1088,7 @@ struct evoker_t : public player_t
     int eternity_surge_default_rank                            = 0;
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
+    int estimated_raid_dps_allies                              = 13;
   } option;
 
   // Action pointers
@@ -3083,6 +3084,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
         aoe = 1;
     }
 
+    void execute() override
+    {
+      target_cache.is_valid = false;
+      select_target();
+
+      evoker_augment_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       evoker_augment_t::impact( s );
@@ -3093,100 +3102,41 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     size_t available_targets( std::vector<player_t*>& target_list ) const override
     {
-      std::vector<player_t*> helper_list;
-
       target_list.clear();
-
-      if ( as<int>( sim->player_no_pet_list.size() ) <= n_targets() )
-      {
-        for ( const auto& t : sim->player_no_pet_list )
-        {
-          if ( !t->is_sleeping() )
-            target_list.push_back( t );
-        }
-
-        return target_list.size();
-      }
 
       for ( const auto& t : sim->player_no_pet_list )
       {
-        if ( !t->is_sleeping() && t != player )
-        {
-          if ( t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
-               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
-               !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-               std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) )
-          {
-            target_list.push_back( t );
-          }
-          else
-          {
-            helper_list.push_back( t );
-          }
-        }
+        if ( t->is_sleeping() )
+          continue;
+        target_list.push_back( t );
       }
 
-      if ( as<int>( target_list.size() ) >= n_targets() )
-      {
-        if ( as<int>( target_list.size() ) > n_targets() )
-        {
-          rng().shuffle( target_list.begin(), target_list.end() );
-        }
+      if ( target_list.size() <= n_targets() )
         return target_list.size();
+
+      auto shifting_point = std::partition( target_list.begin(), target_list.end(), [ & ]( player_t* t ) {
+        return std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+      } );
+
+      // if (shifting_point)
+
+      if ( shifting_point > target_list.begin() )
+      {
+        rng().shuffle( target_list.begin(), shifting_point );
+        std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION;
+        } );
       }
 
-      std::vector<std::function<bool( player_t* )>> lambdas = {
-          [ this ]( player_t* t ) {
-            return p()->get_target_data( t )->buffs.ebon_might->check() &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          [ this ]( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          [ this ]( player_t* t ) {
-            return !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          []( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION;
-          },
-          []( player_t* ) { return true; } };
-
-      for ( auto& fn : lambdas )
+      if ( shifting_point < target_list.end() )
       {
-        auto pos = target_list.size();
-
-        for ( size_t i = 0; i < helper_list.size(); )
-        {
-          if ( fn( helper_list[ i ] ) )
-          {
-            target_list.push_back( helper_list[ i ] );
-            erase_unordered( helper_list, helper_list.begin() + i );
-          }
-          else
-          {
-            i++;
-          }
-        }
-
-        if ( as<int>( target_list.size() ) >= n_targets() )
-        {
-          if ( target_list.size() - pos > 1 )
-          {
-            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
-          }
-
-          return target_list.size();
-        }
+        rng().shuffle( shifting_point, target_list.end() );
+        std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION;
+        } );
       }
 
       return target_list.size();
@@ -4479,9 +4429,9 @@ public:
 
   double ebon_int()
   {
-    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
+    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}, active_buffs: {}",
                       player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
-                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
+                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value(), p()->allies_with_my_ebon.size() );
 
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
@@ -4549,6 +4499,8 @@ public:
   {
     if ( ebon->check() && ebon->stats[ 0 ].amount != _ebon_int )
     {
+      sim->print_debug( "{} updating em values on player {}. New amount: {}, was: {}", *p(), *ebon->player, _ebon_int,
+                        ebon->stats[ 0 ].amount );
       ebon->stats[ 0 ].amount = _ebon_int;
       adjust_int( ebon );
     }
@@ -7164,10 +7116,20 @@ public:
     if ( p( s )->close_as_clutchmates )
       m *= 1 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
 
-    if ( p( s )->allies_with_my_ebon.size() > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
+    size_t player_count = p( s )->allies_with_my_ebon.size();
+
+    // Depower Breath of Eons in Raid Encounters
+    if ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
+         p( s )->option.estimated_raid_dps_allies > player_count )
     {
-      m *= p( s )->spec.ebon_might->effectN( 3 ).base_value() / p( s )->allies_with_my_ebon.size();
+      player_count = p( s )->option.estimated_raid_dps_allies;
     }
+    
+    if ( player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
+    {
+      m *= p( s )->spec.ebon_might->effectN( 3 ).base_value() / player_count;
+    }
+
 
     return m;
   }
@@ -9105,25 +9067,18 @@ void evoker_t::create_permanent_actors()
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob UHDK1", "unh" },
-               { "Bob UHDK2", "unh" },
-               { "Bob FDK1", "dk_frost" },
-               { "Bob Arcane", "arcane" },
-               { "Bob Assa", "assa" },
-               { "Bob Flat1", "default" },
-               { "Bob Flat2", "default" },
-               { "Bob Flat3", "default" },
-               { "Bob Flat4", "default" },
-               { "Bob Flat5", "default" },
-               { "Bob BM", "bm" },
-               { "Bob ShadowA", "shadow_archon" }, // These exist to Sandbag because Shadow sucks right now. This will more accurately represent what the game looks like in a normal comp.
-               { "Bob ShadowVW", "shadow" },
-               { "Bob Tank1", "tank" },
-               { "Bob Tank2", "tank" },
-               { "Bob Healer1", "healer" },
-               { "Bob Healer2", "healer" },
-               { "Bob Healer3", "healer" },
-               { "Bob Healer4", "healer" },
+      // Spawn in a vastly reduced Raid Cohort and estimate Breath of Eons instead.
+      // This will slightly over-estimate the power of Ebon Might but makes the sims significantly faster.
+      bobs = {
+          { "Bob UHDK1", "unh" },
+          { "Bob FDK1", "dk_frost" },
+          { "Bob BM", "bm" },
+          { "Bob Flat1", "default" },
+          { "Bob Flat2", "default" },
+          { "Bob ShadowA", "shadow_archon" },  // These exist to Sandbag because Shadow sucks right now. This will
+                                               // more accurately represent what the game looks like in a normal comp.
+          { "Bob Healer1", "healer" },
+          { "Bob Tank1", "tank" },
       };
     }
 
@@ -10324,6 +10279,7 @@ void evoker_t::create_options()
   add_option( opt_int( "evoker.eternity_surge_default_rank", option.eternity_surge_default_rank, 0, 5 ) );
   add_option( opt_int( "evoker.upheaval_default_rank", option.upheaval_default_rank, 0, 5 ) );
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
+  add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

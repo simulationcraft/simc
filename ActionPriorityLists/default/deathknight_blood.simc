@@ -6,7 +6,6 @@
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-# Default consumables otion=draught_of_rampant_abandon_ lask=flask_of_the_shattered_sun_ ood=silvermoon_parad ugmentation=void_touche emporary_enchant=main_hand:thalassian_phoenix_oil_
 actions.precombat=snapshot_stats
 actions.precombat+=/deaths_caress
 
@@ -47,7 +46,7 @@ actions.san_gift+=/blood_boil,if=!drw.bp_ticking
 actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains
 actions.san_gift+=/heart_strike,if=buff.essence_of_the_blood_queen.stack<7
 actions.san_gift+=/death_strike
-actions.san_gift+=/blood_boil,if=buff.boiling_point.up
+actions.san_gift+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
 actions.san_gift+=/heart_strike
 actions.san_gift+=/blood_boil
 
@@ -60,7 +59,7 @@ actions.sanlayn+=/marrowrend,if=buff.bone_shield.stack<6
 actions.sanlayn+=/any_dnd,if=buff.crimson_scourge.remains
 actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
 actions.sanlayn+=/death_strike
-actions.sanlayn+=/blood_boil,if=buff.boiling_point.up
+actions.sanlayn+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
 actions.sanlayn+=/consumption,empower_to=1
 actions.sanlayn+=/heart_strike,if=rune>=2
 actions.sanlayn+=/blood_boil

@@ -800,13 +800,8 @@ public:
   bool runeforge_expression_warning;
 
   // Counters
-  unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
-  unsigned int dom_proc_attempts; // Counts how many attempts to proc dance of midnight have been made
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   unsigned int magus_active;      // Number of active Magus of the Dead pets
-
-  // Dance of Midnight Proc Chance
-  double dance_of_midnight_proc_chance;
 
   std::vector<player_t*> undeath_tl;
 
@@ -1745,6 +1740,17 @@ public:
     real_ppm_t* frostreaper;
   } rppm;
 
+  struct pseudo_random_t
+  {
+    // Blood
+    accumulated_rng_t* dance_of_midnight;
+    // Frost
+    accumulated_rng_t* killing_machine;
+    // Unholy
+    accumulated_rng_t* sudden_doom;
+    accumulated_rng_t* forbidden_knowledge;
+  } pseudo_random;
+
   // Pets and Guardians
   struct pets_t
   {
@@ -1908,11 +1914,8 @@ public:
       runic_power_decay( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
-      km_proc_attempts( 0 ),
-      dom_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
-      dance_of_midnight_proc_chance( pseudo_random_c_from_p( 0.10 ) ),  // Hard coded, not found anywhere in spelldata.  Was mentioned in patch notes during midnight beta
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -1923,6 +1926,7 @@ public:
       talent(),
       spell(),
       pet_spell(),
+      pseudo_random(),
       pets( this ),
       procs(),
       options(),
@@ -2079,8 +2083,6 @@ public:
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
   void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
   void trigger_rune_of_the_apocalypse( player_t* target );
   // Rider of the Apocalypse
@@ -7258,7 +7260,7 @@ using death_knight_debuff_t = death_knight_buff_base_t<buff_t>;
 struct melee_t : public death_knight_melee_attack_t
 {
   melee_t( const char* name, death_knight_t* p, int sw )
-    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), km_chance( 0 ), idt_chance( 0 )
+    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), idt_chance( 0 )
   {
     school                    = SCHOOL_PHYSICAL;
     may_crit                  = true;
@@ -7270,11 +7272,6 @@ struct melee_t : public death_knight_melee_attack_t
     trigger_gcd               = 0_ms;
     special                   = false;
     weapon_multiplier         = 1.0;
-
-    if ( p->talent.frost.killing_machine.ok() )
-    {
-      km_chance = p->spec.might_of_the_frozen_wastes->ok() && p->main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3;
-    }
 
     if ( p->talent.frost.icy_death_torrent.ok() )
     {
@@ -7334,17 +7331,12 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s->result == RESULT_CRIT )
       {
-        if ( p()->talent.frost.killing_machine.ok() && rng().roll( km_chance * ++p()->km_proc_attempts ) )
-        {
+        if ( p()->talent.frost.killing_machine.ok() && p()->pseudo_random.killing_machine->trigger() )
           p()->trigger_killing_machine( false, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
-          p()->km_proc_attempts = 0;
-        }
 
         // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
         if ( p()->talent.frost.icy_death_torrent.ok() && rng().roll( idt_chance ) )
-        {
           p()->background_actions.icy_death_torrent_damage->execute();
-        }
 
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
         {
@@ -7366,7 +7358,6 @@ struct melee_t : public death_knight_melee_attack_t
 private:
   int sync_weapons;
   bool first;
-  double km_chance;
   double idt_chance;
 };
 
@@ -7561,24 +7552,12 @@ struct dread_plague_t final : public death_knight_disease_t
   dread_plague_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
       last_target( nullptr ),
-      erupt( nullptr ),
-      sudden_doom_rng( nullptr ),
-      forbidden_knowledge_rng( nullptr )
+      erupt( nullptr )
   {
-    if ( p->talent.unholy.sudden_doom.ok() )
-    {
-      double sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                                    ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
-                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
-      sudden_doom_rng  = p->get_accumulated_rng( "sudden_doom", sd_chance );
-    }
-
     add_child( p->background_actions.dread_plague_death );
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
-      forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
 
@@ -7619,7 +7598,7 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     death_knight_disease_t::tick( d );
 
-    if ( p()->talent.unholy.sudden_doom.ok() && sudden_doom_rng->trigger() )
+    if ( p()->talent.unholy.sudden_doom.ok() && p()->pseudo_random.sudden_doom->trigger() )
       p()->buffs.sudden_doom->trigger();
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
@@ -7640,15 +7619,13 @@ struct dread_plague_t final : public death_knight_disease_t
       }
     }
 
-    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && forbidden_knowledge_rng->trigger() )
+    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && p()->pseudo_random.forbidden_knowledge->trigger() )
       p()->pet_summon.fk_ghoul->execute();
   }
 
 private:
   player_t* last_target;
   action_t* erupt;
-  accumulated_rng_t* sudden_doom_rng;
-  accumulated_rng_t* forbidden_knowledge_rng;
 };
 
 // Frost Fever =======================================================
@@ -12566,12 +12543,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      double proc_chance = dance_of_midnight_proc_chance * ++dom_proc_attempts * std::max( amount, 1.0 );
-      if ( rng().roll( proc_chance ) )
-      {
-        dom_proc_attempts = 0;
-        pets.dance_of_midnight_pet.spawn();
-      }
+      for ( int i = 0; i < as<int>( amount ); i++ )
+        if ( pseudo_random.dance_of_midnight->trigger() )
+          pets.dance_of_midnight_pet.spawn();
     }
   }
 
@@ -13429,58 +13403,6 @@ void death_knight_t::trigger_drw_action( drw_actions_e action )
       drw_action_execute( dom, action );
     }
   }
-}
-
-double death_knight_t::pseudo_random_p_from_c( double c )
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_on_n       = 0;
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double death_knight_t::pseudo_random_c_from_p( double p )
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p1;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 0 )
-      break;
-
-    if ( p1 > p )
-    {
-      c_upper = c_mid;
-    }
-    else
-    {
-      c_lower = c_mid;
-    }
-
-    p2 = p1;
-  }
-
-  return c_mid;
 }
 
 void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t period )
@@ -14458,6 +14380,21 @@ void death_knight_t::init_rng()
   rppm.carnage     = get_rppm( "carnage", talent.blood.carnage );
   rppm.blood_beast = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
   rppm.frostreaper = get_rppm( "frostreaper", talent.frost.frostreaper );
+
+  // Blood
+  pseudo_random.dance_of_midnight =
+      get_accumulated_rng( "dance_of_midnight", prd::find_constant( 0.10 ) );  // 10% chance, not in data.
+  // Frost
+  pseudo_random.killing_machine = get_accumulated_rng(
+      "killing_machine", spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3 );
+  // Unholy
+  pseudo_random.sudden_doom = get_accumulated_rng(
+      "sudden_doom", prd::find_constant( talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                         ( 1.0 + talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                         ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) ) );
+
+  pseudo_random.forbidden_knowledge = get_accumulated_rng(
+      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) );
 }
 
 // death_knight_t::init_base ================================================
@@ -16240,8 +16177,6 @@ void death_knight_t::reset()
 
   _runes.reset();
   runic_power_decay = nullptr;
-  km_proc_attempts  = 0;
-  dom_proc_attempts = 0;
   active_riders     = 0;
   magus_active      = 0;
   if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
@@ -16515,8 +16450,6 @@ inline double death_knight_t::rune_regen_coefficient() const
 void death_knight_t::arise()
 {
   runic_power_decay            = nullptr;
-  km_proc_attempts             = 0;
-  dom_proc_attempts            = 0;
   active_riders                = 0;
   magus_active                 = 0;
   dk_active_pets.clear();
