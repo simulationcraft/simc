@@ -8826,7 +8826,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       if ( p->talent.scarred.undying_embers->ok() )
       {
         functional_buff->set_expire_callback( [ this, p ]( buff_t*, int, timespan_t ) {
-          if ( rng().roll( undying_embers_proc_chance ) && p->cooldown.immolation_aura->up() )
+          if ( rng().roll( undying_embers_proc_chance ) )
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
