@@ -8,32 +8,32 @@
 namespace warlock_apl{
   std::string potion( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "tempered_potion_3";
-    return ( p->true_level >= 70 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
+    if ( p->true_level >= 90 ) return "lights_potential_2";
+    return ( p->true_level >= 80 ) ? "tempered_potion_3" : "disabled";
   }
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "flask_of_alchemical_chaos_3";
-    return ( p->true_level >= 70 ) ? "iced_phial_of_corrupting_rage_3" : "disabled";
+    if ( p->true_level >= 90 ) return "flask_of_the_magisters_2";
+    return ( p->true_level >= 80 ) ? "flask_of_alchemical_chaos_3" : "disabled";
   }
 
   std::string food( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "feast_of_the_divine_day";
-    return ( p->true_level >= 70 ) ? "fated_fortune_cookie" : "disabled";
+    if ( p->true_level >= 90 ) return "blooming_feast";
+    return ( p->true_level >= 80 ) ? "feast_of_the_divine_day" : "disabled";
   }
 
   std::string rune( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "crystallized";
-    return ( p->true_level >= 70 ) ? "draconic_augment_rune" : "disabled";
+    if ( p->true_level >= 90 ) return "void_touched";
+    return ( p->true_level >= 80 ) ? "crystallized" : "disabled";
   }
 
   std::string temporary_enchant( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "main_hand:algari_mana_oil_3";
-    return ( p->true_level >= 70 ) ? "main_hand:howling_rune_3" : "disabled";
+    if ( p->true_level >= 90 ) return "main_hand:thalassian_phoenix_oil_2";
+    return ( p->true_level >= 80 ) ? "main_hand:algari_mana_oil_3" : "disabled";
   }
 
 //affliction_apl_start
