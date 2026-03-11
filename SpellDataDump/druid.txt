@@ -14687,6 +14687,7 @@ Effects          :
 Description      : Strike with the might of Ursoc, dealing $s1 Physical damage to your target and $s2 to all other enemies in front of you. Damage reduced beyond $s3 targets.
 
 Name             : Moonless Night (id=400278) [Spell Family (7), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Druid
 School           : Arcane
@@ -14697,7 +14698,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1045106)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
