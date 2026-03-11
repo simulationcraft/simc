@@ -162,4 +162,4 @@ trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
 
-# # save=MID1_Warlock_Destruction_Hellcaller.simc
+save=MID1_Warlock_Destruction.simc
