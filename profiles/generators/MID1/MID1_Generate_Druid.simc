@@ -1,7 +1,7 @@
 # druid="MID1_Druid_Balance"
 # source=default
 # spec=balance
-# level=80
+# level=90
 # race=night_elf
 # timeofday=night
 # role=spell
@@ -28,7 +28,7 @@
 # save=MID1_Druid_Balance.simc
 
 # druid="MID1_Druid_Feral_DOTC"
-# level=80
+# level=90
 # race=night_elf
 # timeofday=night
 # role=attack
@@ -55,7 +55,7 @@
 # save=MID1_Druid_Feral_DOTC.simc
 
 druid="MID1_Druid_Feral_Wildstalker"
-level=80
+level=90
 race=night_elf
 timeofday=night
 role=attack
@@ -82,7 +82,7 @@ main_hand=roostwardens_bough,id=251077,enchant_id=8039,ilevel=289
 save=MID1_Druid_Feral.simc
 
 # druid=MID1_Druid_Guardian
-# level=80
+# level=90
 # race=night_elf
 # timeofday=night
 # role=tank
