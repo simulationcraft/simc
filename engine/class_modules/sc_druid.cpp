@@ -831,6 +831,15 @@ struct druid_t final : public parse_player_effects_t
     cooldown_t* thrash;
   } cooldown;
 
+  // RNGs
+  struct rngs_t
+  {
+    proc_rng_t* convoke;
+    proc_rng_t* ravage;
+    proc_rng_t* bloodseeker_vines;
+    proc_rng_t* symbiotic_blooms;
+  } rngs;
+
   // Gains
   struct gains_t
   {
@@ -1270,6 +1279,7 @@ struct druid_t final : public parse_player_effects_t
       caster_form_weapon(),
       buff(),
       cooldown(),
+      rngs(),
       gain(),
       mastery(),
       proc(),
@@ -1300,6 +1310,7 @@ struct druid_t final : public parse_player_effects_t
                                                             const assisted_combat_step_data_t& ) const override;
   void init_base_stats() override;
   void init_stats() override;
+  void init_rng() override;
   void init_gains() override;
   void init_procs() override;
   void init_uptimes() override;
@@ -2479,153 +2490,19 @@ public:
   }
 };
 
-// community testing (~257k ticks) memorial
-// https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-
-/* Dev Notes:
-Whenever an event occurs that can trigger Bloodseeker Vines or Symbiotic Blooms occurs, an amount is added to an
-accumulator. That amount is initialized by a value in the Thriving Growth spell, modified by the number of DoTs or HoTs
-that are active so chance doesn't grow linearly with number of targets in AOE, and randomized. When the accumulator is
-greater than 1000, an instance of Bloodseeker Vines or Symbiotic Blooms is generated and the accumulator is reduced by
-1000. Thriving Growth Parameters in SpellID 439528:
-
-100 - Rip tick accumulator initial value
-135 - Rake tick accumulator initial value
-85 - Wild Growth tick accumulator initial value
-155 - Regrowth tick accumulator initial value
-155 - Efflorescence tick accumulator initial value
-62 - Bloodseeker Vines inverse growth coefficient * 100
-75 - Symbiotic Blooms inverse growth coefficient * 100
-The formula for the amount added by a triggering event is:
-
-Aura Accumulator Initial Value / (Number of Active Auras) ^ (Inverse Coefficient)
-
-Efflorescence works slightly differently - its accumulator value is just divided by the number of targets healed.
-
-These formulas causes it to behave similarly to the chance for Apex Predator’s Craving to proc, where each additional
-affected target provides a smaller increase than the one before. For example, if you have 4 Rips active, the amount
-accumulated per damage tick is 100 / (4 ^ 0.62), or 42. Since you have 4 Rips ticking, you’ll accumulate 168 in the time
-you’d accumulate 100 with just one Rip active.
-
-The calculated amount of every event is then randomized by multiplying its value by a random value between 0 and 2.
-Finally, it is added to the accumulator. There is no bad luck protection or delay before another growth can occur.
-
-The 11.2 Set Bonus works by multiplying the accumulator initial values by 1 + the set bonus chance.
-*/
-struct thriving_growth_rng_t : public proc_rng_t
-{
-  static constexpr rng_type_e rng_type = RNG_CUSTOM;
-  static constexpr double threshold = 1000.0;
-  static constexpr double rng_mult = 2.0;
-
-  struct coeffs_t
-  {
-    std::vector<dot_t*>* dot_list = nullptr;
-    action_t* action = nullptr;
-    double scale = 0.0;
-    double scale_mul = 1.0;
-    double dot_exp = 1.0;
-  };
-
-  coeffs_t c_rip;
-  coeffs_t c_rake;
-  coeffs_t c_wild_growth;
-  coeffs_t c_regrowth;
-  coeffs_t c_efflorescence;
-  druid_t*p;
-  double count = 0.0;
-
-  thriving_growth_rng_t( std::string_view n, player_t* p_ )
-    : proc_rng_t( rng_type, n, p_ ), p( static_cast<druid_t*>( p_ ) )
-  {
-    auto vine_mul  = p->specialization() == DRUID_FERAL ? 1.0 + p->talent.green_thumb->effectN( 1 ).percent() : 1.0;
-    auto bloom_mul = p->specialization() == DRUID_FERAL ? 1.0 : 1.0 + p->talent.green_thumb->effectN( 2 ).percent();
-
-    auto vine_exp  = p->talent.thriving_growth->effectN( 6 ).percent();
-    auto bloom_exp = p->talent.thriving_growth->effectN( 7 ).percent();
-
-    c_rip  = { &p->dot_lists.rip, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 1 ).base_value(),
-               vine_mul, vine_exp };
-    c_rake = { &p->dot_lists.rake, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 2 ).base_value(),
-               vine_mul, vine_exp };
-
-    c_wild_growth   = { &p->dot_lists.wild_growth, nullptr, p->talent.thriving_growth->effectN( 3 ).base_value(),
-                        bloom_mul, bloom_exp };
-    c_regrowth      = { &p->dot_lists.regrowth, nullptr, p->talent.thriving_growth->effectN( 4 ).base_value(),
-                        bloom_mul, bloom_exp };
-    c_efflorescence = { &p->dot_lists.efflorescence, nullptr, p->talent.thriving_growth->effectN( 5 ).base_value(),
-                        bloom_mul, bloom_exp };
-  }
-
-  void reset( reset_type_e r_type ) override
-  {
-    if ( r_type == reset_type_e::COMBAT )
-      count -= threshold;
-    else
-      count = player->rng().range( threshold );  // accumulator seems to never reset, so randomize each start
-  }
-
-  int _calculate( const coeffs_t& c, action_state_t* s )
-  {
-    auto raw = c.scale * c.scale_mul / std::pow( as<double>( c.dot_list->size() ), c.dot_exp );
-    auto val = player->rng().range( 0.0, raw * rng_mult );
-
-    count += val;
-
-    auto result = count >= threshold;
-
-    if ( player->sim->debug )
-    {
-      player->sim->print_debug(
-        "{} from {}: scale={} scale_mul={} num_dots={} dot_exp={} raw={} value={} count={} result={}",
-        name(), *s->action, c.scale, c.scale_mul, c.dot_list->size(), c.dot_exp, raw, val, count, result );
-    }
-
-    if ( result )
-    {
-      if ( c.action )
-        c.action->execute_on_target( s->target );
-
-      reset( reset_type_e::COMBAT );
-    }
-
-    return result;
-  }
-
-  int trigger( action_state_t* s ) override
-  {
-    switch ( s->action->id )
-    {
-      case 1079:  return _calculate( c_rip, s );            // rip
-      case 155722: return _calculate( c_rake, s );           // rake
-      case 48438:  return _calculate( c_wild_growth, s );    // wild growth
-      case 8936:   return _calculate( c_regrowth, s );     // regrowth
-      case 81269:  return _calculate( c_efflorescence, s );  // efflorescence
-      default:     return 0;
-    }
-  }
-};
-
 template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 private:
-  thriving_growth_rng_t* vine_rng = nullptr;
-  thriving_growth_rng_t* bloom_rng = nullptr;
+  druid_t* p_;
 
 protected:
   using base_t = trigger_thriving_growth_t<BASE>;
 
 public:
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f )
-  {
-    if ( p->talent.thriving_growth.ok() )
-    {
-      vine_rng = p->get_rng<thriving_growth_rng_t>( "bloodseeker_vines" );
-      // bloom_rng = p->get_rng<thriving_growth_rng_t>( "symbiotic_blooms" ); NYI
-    }
-  }
+    : BASE( n, p, s, f ), p_( p )
+  {}
 
   void tick( dot_t* d ) override
   {
@@ -2635,13 +2512,13 @@ public:
     {
       case result_amount_type::DMG_DIRECT:
       case result_amount_type::DMG_OVER_TIME:
-        if ( vine_rng )
-          vine_rng->trigger( d->state );
+        if ( p_->rngs.bloodseeker_vines )
+          p_->rngs.bloodseeker_vines->trigger( d->state );
         break;
       case result_amount_type::HEAL_DIRECT:
       case result_amount_type::HEAL_OVER_TIME:
-        if ( bloom_rng )
-          bloom_rng->trigger( d->state );
+        if ( p_->rngs.symbiotic_blooms )
+          p_->rngs.symbiotic_blooms->trigger( d->state );
         break;
       default:
         break;
@@ -9130,8 +9007,6 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   std::vector<std::pair<convoke_cast_e, double>> chances;
   std::vector<std::pair<convoke_cast_e, double>> offspec;
 
-  shuffled_rng_t* deck = nullptr;
-
   int max_ticks = 0;
   unsigned main_count = 0;
   unsigned filler_count = 0;
@@ -9151,9 +9026,6 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     harmful = may_miss = false;
 
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
-
-    // create deck for exceptional spell cast
-    deck = p->get_shuffled_rng( "convoke_the_spirits", 1, guidance ? 2 : p->options.convoke_the_spirits_deck );
   }
 
   void init() override
@@ -9286,7 +9158,9 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
 
   void insert_exceptional()
   {
-    if ( !deck->trigger() )
+    assert( p()->rngs.convoke );
+
+    if ( !p()->rngs.convoke->trigger() )
       return;
 
     // Restoration with CS (only 9 ticks) seem to only succeed ~85% of the time
@@ -9653,7 +9527,6 @@ struct druid_melee_t : public Base
 {
 private:
   using ab = Base;
-  accumulated_rng_t* ravage_rng = nullptr;
   buff_t* ravage_buff = nullptr;
   proc_t* ravage_proc = nullptr;
   double ooc_chance = 0.0;
@@ -9685,31 +9558,9 @@ public:
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    // Assuming pseudo random distribution with the following nominal probability and C-values:
-    // Feral baseline:           5.0% 0.003801658303553
-    // Feral limb from limb:     6.5% 0.006364707054314
-    // Guardian baseline:       10.0% 0.014745844781073
-    // Guardian limb from limb: 13.0% 0.024482409502286
-
-    // *** Outdated Info Below **
-    // Feral: 0.286% via community testing (~197k auto attacks)
-    // Guardian: 1.144% via community testing (9921 auto attacks), 4x feral
-    // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
     if ( p->talent.ravage.ok() )
     {
-      auto c = 0.0;
-      if ( p->specialization() == DRUID_FERAL )
-      {
-        c = p->talent.limb_from_limb.ok() ? 0.006364707054314 : 0.003801658303553;
-        ravage_buff = p->buff.ravage_fb;
-      }
-      else if ( p->specialization() == DRUID_GUARDIAN )
-      {
-        c = p->talent.limb_from_limb.ok() ? 0.024482409502286 : 0.014745844781073;
-        ravage_buff = p->buff.ravage_maul;
-      }
-
-      ravage_rng = p->get_accumulated_rng( "ravage", c );
+      ravage_buff = p->specialization() == DRUID_FERAL ? p->buff.ravage_fb : p->buff.ravage_maul;
       ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
     }
   }
@@ -9743,7 +9594,7 @@ public:
         }
       }
 
-      if ( ravage_rng && ravage_rng->trigger() )
+      if ( ab::p()->rngs.ravage && ab::p()->rngs.ravage->trigger() )
       {
         ravage_proc->occur();
         ravage_buff->trigger();
@@ -12228,6 +12079,173 @@ bool druid_t::validate_actor()
 #endif
 
   return true;
+}
+
+// Thriving Growth RNG ======================================================
+// community testing (~257k ticks) memorial
+// https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+
+/* Dev Notes:
+Whenever an event occurs that can trigger Bloodseeker Vines or Symbiotic Blooms occurs, an amount is added to an
+accumulator. That amount is initialized by a value in the Thriving Growth spell, modified by the number of DoTs or HoTs
+that are active so chance doesn't grow linearly with number of targets in AOE, and randomized. When the accumulator is
+greater than 1000, an instance of Bloodseeker Vines or Symbiotic Blooms is generated and the accumulator is reduced by
+1000. Thriving Growth Parameters in SpellID 439528:
+
+100 - Rip tick accumulator initial value
+135 - Rake tick accumulator initial value
+85 - Wild Growth tick accumulator initial value
+155 - Regrowth tick accumulator initial value
+155 - Efflorescence tick accumulator initial value
+62 - Bloodseeker Vines inverse growth coefficient * 100
+75 - Symbiotic Blooms inverse growth coefficient * 100
+The formula for the amount added by a triggering event is:
+
+Aura Accumulator Initial Value / (Number of Active Auras) ^ (Inverse Coefficient)
+
+Efflorescence works slightly differently - its accumulator value is just divided by the number of targets healed.
+
+These formulas causes it to behave similarly to the chance for Apex Predator’s Craving to proc, where each additional
+affected target provides a smaller increase than the one before. For example, if you have 4 Rips active, the amount
+accumulated per damage tick is 100 / (4 ^ 0.62), or 42. Since you have 4 Rips ticking, you’ll accumulate 168 in the time
+you’d accumulate 100 with just one Rip active.
+
+The calculated amount of every event is then randomized by multiplying its value by a random value between 0 and 2.
+Finally, it is added to the accumulator. There is no bad luck protection or delay before another growth can occur.
+
+The 11.2 Set Bonus works by multiplying the accumulator initial values by 1 + the set bonus chance.
+*/
+struct thriving_growth_rng_t : public proc_rng_t
+{
+  static constexpr rng_type_e rng_type = RNG_CUSTOM;
+  static constexpr double threshold = 1000.0;
+  static constexpr double rng_mult = 2.0;
+
+  struct coeffs_t
+  {
+    std::vector<dot_t*>* dot_list = nullptr;
+    action_t* action = nullptr;
+    double scale = 0.0;
+    double scale_mul = 1.0;
+    double dot_exp = 1.0;
+  };
+
+  coeffs_t c_rip;
+  coeffs_t c_rake;
+  coeffs_t c_wild_growth;
+  coeffs_t c_regrowth;
+  coeffs_t c_efflorescence;
+  druid_t*p;
+  double count = 0.0;
+
+  thriving_growth_rng_t( std::string_view n, player_t* p_ )
+    : proc_rng_t( rng_type, n, p_ ), p( static_cast<druid_t*>( p_ ) )
+  {
+    auto vine_mul  = p->specialization() == DRUID_FERAL ? 1.0 + p->talent.green_thumb->effectN( 1 ).percent() : 1.0;
+    auto bloom_mul = p->specialization() == DRUID_FERAL ? 1.0 : 1.0 + p->talent.green_thumb->effectN( 2 ).percent();
+
+    auto vine_exp  = p->talent.thriving_growth->effectN( 6 ).percent();
+    auto bloom_exp = p->talent.thriving_growth->effectN( 7 ).percent();
+
+    c_rip  = { &p->dot_lists.rip, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 1 ).base_value(),
+               vine_mul, vine_exp };
+    c_rake = { &p->dot_lists.rake, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 2 ).base_value(),
+               vine_mul, vine_exp };
+
+    c_wild_growth   = { &p->dot_lists.wild_growth, nullptr, p->talent.thriving_growth->effectN( 3 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_regrowth      = { &p->dot_lists.regrowth, nullptr, p->talent.thriving_growth->effectN( 4 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_efflorescence = { &p->dot_lists.efflorescence, nullptr, p->talent.thriving_growth->effectN( 5 ).base_value(),
+                        bloom_mul, bloom_exp };
+  }
+
+  void reset( reset_type_e r_type ) override
+  {
+    if ( r_type == reset_type_e::COMBAT )
+      count -= threshold;
+    else
+      count = player->rng().range( threshold );  // accumulator seems to never reset, so randomize each start
+  }
+
+  int _calculate( const coeffs_t& c, action_state_t* s )
+  {
+    auto raw = c.scale * c.scale_mul / std::pow( as<double>( c.dot_list->size() ), c.dot_exp );
+    auto val = player->rng().range( 0.0, raw * rng_mult );
+
+    count += val;
+
+    auto result = count >= threshold;
+
+    if ( player->sim->debug )
+    {
+      player->sim->print_debug(
+        "{} from {}: scale={} scale_mul={} num_dots={} dot_exp={} raw={} value={} count={} result={}",
+        name(), *s->action, c.scale, c.scale_mul, c.dot_list->size(), c.dot_exp, raw, val, count, result );
+    }
+
+    if ( result )
+    {
+      if ( c.action )
+        c.action->execute_on_target( s->target );
+
+      reset( reset_type_e::COMBAT );
+    }
+
+    return result;
+  }
+
+  int trigger( action_state_t* s ) override
+  {
+    switch ( s->action->id )
+    {
+      case 1079:  return _calculate( c_rip, s );            // rip
+      case 155722: return _calculate( c_rake, s );           // rake
+      case 48438:  return _calculate( c_wild_growth, s );    // wild growth
+      case 8936:   return _calculate( c_regrowth, s );     // regrowth
+      case 81269:  return _calculate( c_efflorescence, s );  // efflorescence
+      default:     return 0;
+    }
+  }
+};
+
+// druid_t::init_rng ========================================================
+void druid_t::init_rng()
+{
+  player_t::init_rng();
+
+  if ( talent.convoke_the_spirits.ok() )
+  {
+    bool guidance = talent.elunes_guidance.ok() || talent.ashamanes_guidance.ok() ||
+                    talent.ursocs_guidance.ok() || talent.cenarius_guidance.ok();
+
+    rngs.convoke = get_shuffled_rng( "convoke_the_spirits", 1, guidance ? 2 : options.convoke_the_spirits_deck );
+  }
+
+  if ( talent.ravage.ok() )
+  {
+    // Assuming pseudo random distribution with the following nominal probabilities:
+    // Feral baseline:           5.0%
+    // Feral limb from limb:     6.5%
+    // Guardian baseline:       10.0%
+    // Guardian limb from limb: 13.0%
+
+    // *** Outdated Info Below **
+    // Feral: 0.286% via community testing (~197k auto attacks)
+    // Guardian: 1.144% via community testing (9921 auto attacks), 4x feral
+    // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+
+    auto c = specialization() == DRUID_FERAL ? 0.05 : 0.10;
+    c *= 1.0 + talent.limb_from_limb->effectN( 1 ).percent();
+
+    rngs.ravage = get_accumulated_rng( "ravage", prd::find_constant( c ) );
+  }
+
+  if ( talent.thriving_growth.ok() )
+  {
+    rngs.bloodseeker_vines = get_rng<thriving_growth_rng_t>( "bloodseeker_vines" );
+    // rngs.symbiotic_blooms = get_rng<thriving_growth_rng_t>( "symbiotic_blooms" );  // NYI
+  }
 }
 
 // druid_t::init_gains ======================================================
