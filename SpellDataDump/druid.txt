@@ -4125,8 +4125,9 @@ Effects          :
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #6 (id=1072297)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2594 (Label) | Target: Self (1)
-                   Affected Spells (Label): Bristling Fur (155835)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6517 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bristling Fur (155835), Sundering Roar (1253799)
+Hotfixed         : Misc Value (2594 -> 6517)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
@@ -4765,6 +4766,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
                  : 2594
+                 : 6517
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : No Threat (42), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -21232,6 +21234,8 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 5979: Tear Down the Mighty (441846 effect#1)
+                 : 6517
+Stance Mask      : 0x00000010
 Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2), Guardian Druid (1256993 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 77
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
