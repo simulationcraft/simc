@@ -654,6 +654,7 @@ Spell Type       : None
 Resource         : 2.2% Base Mana (0) (id=232449)
 Range            : 30 yards
 Duration         : 8 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 2411 (Type 0x1): Just in Time (376204 effect#1), Just in Time (376204 effect#2), Flow State (390148 effect#5), Temporal Burst (431698 effect#13)
 Labels           : 16: Class Spells

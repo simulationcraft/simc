@@ -21176,7 +21176,8 @@ Effects          :
 #1 (id=1289252)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
 #2 (id=1289253)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258578 | Misc Value 2: 3772 | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258578 | Misc Value 2: 6686 | Target: Random in Area (86)
+Hotfixed         : Misc Value 2 (3772 -> 6686)
 Description      : A mindless servant of the Scourge, raised to obey its master's commands for $d.
 
 Name             : Blood Bond (id=1277365) [Spell Family (15)] 
