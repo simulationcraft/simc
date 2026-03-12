@@ -6803,7 +6803,8 @@ Family Flags     : 32, 85, 88
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Do Not Display Range (126), Extra Initial Period (169), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844163)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21832 | Target: at Ground (62)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21832 | Target: at Ground (62) -> at Area (87)
+Hotfixed         : Target 2 (0 -> 87)
 #2 (id=900270)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: at Ground (62)
 Description      : $@spelldesc1244557
@@ -10157,16 +10158,17 @@ Effects          :
 Description      : For ${$427793D-($428160s1/10)} sec after using Fel Rush, activating it again will dash back towards your initial location.
 
 Name             : Deflecting Dance (id=427901) [Spell Family (107)] 
+Hotfixed         : School (2 -> 1), Attributes
 Class            : Demon Hunter
-School           : Holy
+School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
-Duration         : Aura (infinite)
+Duration         : 1.1 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Family Flags     : 51
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1107739)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -15630,6 +15632,7 @@ Description      : $@spelldesc1253304
 Tooltip          : Ready to call down Voidfall meteor strikes.
 
 Name             : Voidfall Meteor (id=1256303) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Shadowflame
 Spell Type       : Magic
@@ -15639,7 +15642,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -15648,6 +15651,7 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Voidfall Meteor (id=1256304) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Cosmic
 Spell Type       : Magic
@@ -15657,7 +15661,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263761)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -15666,6 +15670,7 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Voidfall Meteor (id=1256305) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage, Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
@@ -15676,13 +15681,14 @@ Labels           : 16: Class Spells
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Harness the Cosmos (1279247 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Voidfall Meteor (1256304)
 Family Flags     : 95, 108, 109
-Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage, Demon Hunter
 School           : Shadowflame
 Spell Type       : Magic
@@ -15693,7 +15699,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Harness the Cosmos (1279247 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Voidfall Meteor (1256303), Voidfall Meteor (1266127)
 Family Flags     : 70, 72, 108, 109
-Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263764)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.4 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -15837,6 +15843,7 @@ Effects          :
 Description      : The third Voidfall meteor strike called down in sequence is larger, has $s1% increased area, deals $s2% increased damage, and $?a212613[reduces the remaining cooldown of Metamorphosis by $s3 sec][generates $s4 Soul $LFragment:Fragments;].
 
 Name             : World Killer (id=1256616) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Shadowflame
 Spell Type       : Magic
@@ -15846,7 +15853,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264189)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -15855,6 +15862,7 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : World Killer (id=1256617) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage, Demon Hunter
 School           : Shadowflame
 Spell Type       : Magic
@@ -15865,13 +15873,14 @@ Labels           : 16: Class Spells
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Harness the Cosmos (1279247 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : World Killer (1256616), World Killer (1266123)
 Family Flags     : 70, 72, 108, 109
-Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264191)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 8.1 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : World Killer (id=1256618) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Cosmic
 Spell Type       : Magic
@@ -15881,7 +15890,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264192)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -15890,6 +15899,7 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : World Killer (id=1256619) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage, Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
@@ -15900,7 +15910,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4), Harness the Cosmos (1279247 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : World Killer (1256618)
 Family Flags     : 95, 108, 109
-Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264194)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -16432,6 +16442,7 @@ Variables        : $baseAbsorb=${15*$AP}
 $fragmentAbsorb=${3*$AP}
 
 Name             : World Killer (id=1266123) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Shadowflame
 Spell Type       : Magic
@@ -16441,7 +16452,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1278334)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -16450,6 +16461,7 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Voidfall Meteor (id=1266127) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Shadowflame
 Spell Type       : Magic
@@ -16459,7 +16471,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Family Flags     : 108
-Attributes       : Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1278346)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)

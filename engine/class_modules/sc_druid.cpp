@@ -11643,7 +11643,7 @@ void druid_t::create_actions()
 
     if ( talent.red_moon.ok() )
     {
-      auto s_data = find_trigger( buff.lunar_wrath ).trigger();
+      auto s_data = find_spell( 1253609 );  // hardcoded
 
       auto lw = get_secondary_action<druid_spell_t>( "lunar_wrath", this, s_data );
       lw->proc = true;

@@ -16003,6 +16003,20 @@ void death_knight_t::init_finished()
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
 
+  // Exclude Blood from recklessness checks
+  if ( specialization() != DEATH_KNIGHT_BLOOD )
+  {
+    std::array<stat_e, 4> offensive_stats = { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
+                                              STAT_VERSATILITY_RATING };
+    if ( ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
+         util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) ) &&
+             util::highest_stat( this, offensive_stats ) != STAT_MASTERY_RATING )
+      sim->error( MODERATE,
+                  "Player {} has selected Potion of Recklessness but does not have Mastery as their highest offensive "
+                  "stat. Results may be inaccurate.",
+                  name() );
+  }
+
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     magus_active = 0;
 

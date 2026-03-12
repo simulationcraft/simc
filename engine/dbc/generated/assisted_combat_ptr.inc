@@ -1,4 +1,4 @@
-// Assisted Combat Step data, wow build 12.0.1.66220
+// Assisted Combat Step data, wow build 12.0.5.66330
 static constexpr std::array<assisted_combat_step_data_t, 674> __ptr_assisted_combat_step_data { {
   { 18862, 62, 0, 1459 },
   {  3037, 62, 1, 44425 },
@@ -676,8 +676,8 @@ static constexpr std::array<assisted_combat_step_data_t, 674> __ptr_assisted_com
   { 11586, 1480, 10, 473662 },
 } };
 
-// Assisted Combat Rule data, wow build 12.0.1.66220
-static constexpr std::array<assisted_combat_rule_data_t, 3011> __ptr_assisted_combat_rule_data { {
+// Assisted Combat Rule data, wow build 12.0.5.66330
+static constexpr std::array<assisted_combat_rule_data_t, 3015> __ptr_assisted_combat_rule_data { {
   {    32,     9, 0, 15, 703, 0, 0 },
   {  1480,     9, 1, 0, 0, 0, 0 },
   {  1481,     9, 2, 14, 0, 0, 0 },
@@ -2930,6 +2930,7 @@ static constexpr std::array<assisted_combat_rule_data_t, 3011> __ptr_assisted_co
   { 47969, 11056, 3, 58, 0, 0, 0 },
   { 47970, 11056, 4, 16, 196099, 0, 0 },
   { 47971, 11056, 5, 67, 0, 0, 0 },
+  { 90967, 11056, 6, 16, 1288970, 0, 0 },
   { 47972, 11057, 0, 0, 0, 0, 0 },
   { 47973, 11057, 1, 14, 0, 0, 0 },
   { 47974, 11057, 2, 2, 0, 0, 0 },
@@ -2940,17 +2941,20 @@ static constexpr std::array<assisted_combat_rule_data_t, 3011> __ptr_assisted_co
   { 47979, 11058, 2, 2, 0, 0, 0 },
   { 47980, 11058, 3, 58, 0, 0, 0 },
   { 47981, 11058, 4, 16, 196099, 0, 0 },
+  { 91168, 11058, 5, 16, 1288970, 0, 0 },
   { 48061, 11078, 0, 0, 0, 0, 0 },
   { 48062, 11078, 1, 14, 0, 0, 0 },
   { 48063, 11078, 2, 2, 0, 0, 0 },
   { 48064, 11078, 3, 58, 0, 0, 0 },
   { 48065, 11078, 4, 16, 196099, 0, 0 },
   { 48066, 11078, 5, 67, 0, 0, 0 },
+  { 91360, 11078, 6, 16, 1288970, 0, 0 },
   { 48067, 11079, 0, 0, 0, 0, 0 },
   { 48068, 11079, 1, 14, 0, 0, 0 },
   { 48069, 11079, 2, 2, 0, 0, 0 },
   { 48070, 11079, 3, 58, 0, 0, 0 },
   { 48071, 11079, 4, 16, 196099, 0, 0 },
+  { 91366, 11079, 5, 16, 1288970, 0, 0 },
   { 48072, 11080, 0, 0, 0, 0, 0 },
   { 48073, 11080, 1, 14, 0, 0, 0 },
   { 48074, 11080, 2, 2, 0, 0, 0 },

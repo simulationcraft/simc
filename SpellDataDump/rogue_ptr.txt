@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -757,7 +757,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.533333 | Target: Targeted Enemy (6)
                    Modified By: Master Poisoner (378436 effect#2)
 Description      : $@spelldesc5761
-Tooltip          : Attack and casting speed slowed by $s1%.
+Tooltip          : Attack and casting speed slowed by $w1%.
 
 Name             : Numbing Poison (id=5761) [Spell Family (8)] 
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
@@ -818,7 +818,7 @@ Your Nature and Bleed ]?a319032[
 
 Your Nature ]?a400783[
 
-Your Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]
+Your Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $1291471S1% for $1291471d.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -1254,7 +1254,7 @@ Labels           : 16: Class Spells
                  : 930
 Affecting Spells : Ethereal Cloak (457022 effect#1), Bait and Switch (457034 effect#2)
 Family Flags     : 48
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=20791)    : Apply Aura (6) | Modify Attacker Spell Hit Chance (186)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 126 | Target: Self (1)
@@ -4680,7 +4680,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6667 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
-Description      : Shadow Dance increases all ability damage by $s2%, and Shadowstrike and Shruiken Storm damage by an additional $s1%.
+Description      : Shadow Dance increases all ability damage by $s2%, and Shadowstrike and Shuriken Storm damage by an additional $s1%.
 
 Name             : Backstab (id=245689) [Spell Family (8)] 
 Class            : Rogue
@@ -6227,7 +6227,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3875
-Affecting Spells : Hemotoxin (354124 effect#1), Arterial Precision (400783 effect#1)
+Affecting Spells : Arterial Precision (400783 effect#1)
 Family Flags     : 91
 Attributes       : Is Ability (4), Do Not Sheath (18), Aura Is Debuff (26), No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -6238,7 +6238,6 @@ Effects          :
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046107)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (470679), Crimson Tempest (1247227), Rupture (1270203)
@@ -7644,13 +7643,13 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 118
                  : 292
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Required by Client (262), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=886329)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Shiv (319504), Shiv (400789)
-                   Family Flags: 91
-Description      : Shiv also reduces the target's healing received by $S1% for $319504d.
+#1 (id=886329)   : Apply Aura (6) | Proc Trigger Spell (42): Hemotoxin
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1291471 | Target: Self (1)
+Description      : Shiv also reduces the target's healing received by $1291471S1% for $1291471d.
 
 Name             : Drink Up Me Hearties (desc=PvP Talent) (id=354425) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -10205,7 +10204,7 @@ Effects          :
                    Affected Spells: Backstab (53), Kidney Shot (408), Gouge (1776), Cheap Shot (1833), Rupture (1943), Shiv (5938), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Rupture (360826), Rupture (394031), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203)
                    Family Flags: 2, 3, 10, 17, 18, 20, 21, 29, 32, 44, 75, 82, 92, 104, 109, 118, 127
 Description      : $@spelldesc382528
-Tooltip          : Attacks that generate or spend combo points deal $w1% increased damage.
+Tooltip          : Attacks that generate or spend combo points deal additional Shadow damage.
 
 Name             : Soothing Darkness (id=393970) [Spell Family (8), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=23]
@@ -10886,7 +10885,7 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Hemotoxin (354124 effect#1), Arterial Precision (400783 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Arterial Precision (400783 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 54, 91
 Attributes       : Is Ability (4), Do Not Sheath (18), Aura Is Debuff (26), No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -10895,7 +10894,6 @@ Effects          :
 #2 (id=1046118)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046119)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (470679), Crimson Tempest (1247227), Rupture (1270203)
@@ -16533,7 +16531,7 @@ Family Flags     : 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Target: Targeted Enemy (6)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387
@@ -17321,7 +17319,7 @@ Name             : Deathstalker's Mark (id=1273061) [Spell Family (8)]
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 12 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -17330,12 +17328,12 @@ Labels           : 16: Class Spells
                  : 6113: Subtlety Rogue (137035 effect#11), Corrupt the Blood (1248785 effect#2)
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 54, 123
-Attributes       : No Active Defense (21), Allow Class Ability Procs (416)
+Attributes       : No Active Defense (21), Always Line of Sight (185), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1286429)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1286438)  : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $@spelldesc457052
 
 Name             : Whirl of Blades (id=1275176) [Spell Family (8)] 
@@ -17626,4 +17624,24 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Damage done increased by $s1%.
 
+
+Name             : Hemotoxin (id=1291471) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Requires weapon  : Dagger
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 3875
+Triggered By     : Hemotoxin (354124)
+Attributes       : Do Not Sheath (18), Aura Is Debuff (26), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1310845)  : Apply Aura (6) | Modify Healing Received% (118)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc354124
+Tooltip          : Healing received reduced by $w1%.
 

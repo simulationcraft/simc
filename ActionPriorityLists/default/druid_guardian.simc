@@ -61,4 +61,4 @@ actions.cooldowns+=/lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.up|coo
 actions.cooldowns+=/convoke_the_spirits
 actions.cooldowns+=/sundering_roar,if=(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
 actions.cooldowns+=/berserk,if=!cooldown.heart_of_the_wild.up
-actions.cooldowns+=/wild_guardian
+actions.cooldowns+=/wild_guardian,if=(buff.ravage.up&talent.ravage.enabled)|!talent.ravage.enabled

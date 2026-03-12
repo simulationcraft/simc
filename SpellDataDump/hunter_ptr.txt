@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2524,6 +2524,9 @@ Effects          :
 #9 (id=1302325)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 4692 (Label) | Target: Self (1)
                    Affected Spells (Label): Howl of the Pack Leader (471876)
+#10 (id=1311166) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 3 | Misc Value 2: 6512 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lethal Barbs (1264783)
 
 Name             : Counter Shot (id=147362) [Spell Family (9)] 
 Talent Entry     : Beast Mastery [tree=class, row=4, col=4, max_rank=1, req_points=0]
@@ -3250,7 +3253,6 @@ Tooltip          : Attacks and spells targeting $@auracaster are missing.
 Damage taken reduced by $w4%.
 
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
-Hotfixed         : Item Subclass (34275 -> 34243)
 Talent Entry     : Survival [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -3626,7 +3628,7 @@ Velocity         : 20 yards/sec
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Hogstrider (472640 effects: #2, #4, #5), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 1, 41, 106, 112
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
@@ -3648,7 +3650,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Killing Frenzy (363760 effect#1), Cobra Senses (378244 effects: #1, #2), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Serpentine Strikes (468701 effect#1), Wyvern's Cry (471881 effects: #1, #2), Hogstrider (472640 effects: #1, #3, #5), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Thrill of the Hunt (1265051 effect#2), Nature's Ally (1273126 effects: #1, #3), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Killing Frenzy (363760 effect#1), Cobra Senses (378244 effects: #1, #2), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Serpentine Strikes (468701 effect#1), Wyvern's Cry (471881 effects: #1, #2), Hogstrider (472640 effects: #1, #3, #4), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Thrill of the Hunt (1265051 effect#2), Nature's Ally (1273126 effects: #1, #3), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 1, 86, 106
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
@@ -6075,7 +6077,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.05 seconds
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1), Lunge (378934 effect#2)
+Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -7164,7 +7166,6 @@ Effects          :
 Description      : $@spelldesc259495
 
 Name             : Raptor Strike (id=265189) [Spell Family (9)] 
-Hotfixed         : Item Subclass (34275 -> 34243)
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -7454,7 +7455,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1), Lunge (378934 effect#2)
+Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -7532,7 +7533,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1), Lunge (378934 effect#2)
+Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -7750,7 +7751,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1), Lunge (378934 effect#2)
+Category         : 1716 (Type 0x1): Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -8710,13 +8711,13 @@ Effects          :
 Description      : Increases your critical strike chance by $s3% and critical strike damage by $s4% for $d.
 
 $@spellicon19434 $@spellname19434
-Reduces its cooldown rate by $s2%$?a471366[, its cast time by $471366s1%, and its Focus cost by $471366s2%.][.]
+Cooldown recovers $s2% faster$?a471366[, cast time reduced by $471366s1%, and Focus cost reduced $471366s2%.][.]
 
 $@spellicon257044 $@spellname257044
-Reduces its cooldown by $s1%.$?a470943[
+Cooldown recovers $s1% faster.$?a470943[
 
 |cFFFFFFFFApplies Spotter's Mark.|r][]
-Tooltip          : Critical strike chance increased by $s3% and critical strike damage increased by $s4%. The cooldown of Aimed Shot and Rapid Fire is reduced by ${100*(1-(100/(100+$m1)))}%$?a471366[, the cast time of Aimed Shot by $471366s1%, and the Focus cost of Aimed Shot by $471366s2%.][.]
+Tooltip          : Critical strike chance increased by $s3% and critical strike damage increased by $s4%. Aimed Shot recovers its cooldown $s2% faster and Rapid Fire recovers its cooldown $s1% faster$?a471366[, the cast time of Aimed Shot by $471366s1%, and the Focus cost of Aimed Shot by $471366s2%.][.]
 
 Name             : Frenzy Strikes (id=294029) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -11193,18 +11194,19 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Proc Chance      : 101%
-Proc Flags       : White Melee
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1007441)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#2 (id=1167594)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1716 (Category) | Target: Self (1)
-                   Affected Spells (Category): Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
+#2 (id=1167594)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#3 (id=1311168)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#4 (id=1311171)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 2 | Scaled Value: 2 | Stat: Agi | Target: Self (1)
 Description      : The damage of your auto-attacks is increased by $s1%.
 
-The cooldown of Wildfire Bomb is reduced by ${-$s2/1000}.1 sec.
+Your Agility is increased by $s2%, increased by an additional $s3% while dual-wielding.
 
 Name             : Explosives Expert (id=378937) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=8, col=2, max_rank=2, req_points=20]
@@ -13754,8 +13756,8 @@ Effects          :
                    Base Value: 392060 | Scaled Value: 392060 | Misc Value: 288613 | Target: Self (1)
 #2 (id=1275894)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Wailing Arrow overrides Bestial Wrath
                    Base Value: 392060 | Scaled Value: 392060 | Misc Value: 19574 | Target: Self (1)
-Description      : $@spelldesc459730
-Tooltip          : Your next Aimed Shot is a Wailing Arrow.
+Description      : $@spelldesc1264290
+Tooltip          : $?c1[Bestial Wrath][Trueshot] is temporarily replaced with Wailing Arrow.
 
 Name             : Sulfur-Lined Pockets (id=459828) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -14972,7 +14974,7 @@ $@spellicon471881 Wyvern
 A Wyvern descends from the skies, letting out a battle cry that increases the damage of you and your pets by ${$471881s1*$s3}% for $471881d.
 
 $@spellicon471936 Boar
-A Boar charges through your target $s2 $Ltime:times;, dealing $471936s1 physical damage to the primary target and $471938s1 damage to up to $471938s2 nearby enemies.
+A Boar charges through your target $s2 $Ltime:times;, dealing $471938s1 damage to nearby enemies and an additional $471936s1 physical damage to its primary target. Damage reduced beyond $471938s2 targets.
 
 $@spellicon471993 Bear
 A Bear leaps into the fray, rending the flesh of your enemies, dealing $471999o1 damage over $471999d to up to $471999s2 nearby enemies.
@@ -15435,9 +15437,9 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1190877)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : When your Boar deals damage, the damage of your next $?c1[Cobra Shot][Hatchet Toss] is increased by $?c1[$472640s1][$472640s2]%.
+Description      : $?c1[When your Boar deals damage, the damage of your next Cobra Shot is increased by $472640s1%.
 
-Each target damaged by your Boar causes $?c1[Cobra Shot][Hatchet Toss] to strike $?c1[${$472640s3}][${$472640s4}] additional $Ltarget:targets;, up to $472640u.
+Each additional enemy damaged by your Boar causes Cobra Shot to strike $472640s3 additional $Ltarget:targets;, up to $472640u][Each time your Boar deals damage, the damage of your next Boomstick is increased by $472640s2%, up to ${$472640s2*$472640u}%].
 
 Name             : Hogstrider (id=472640) [Spell Family (9)] 
 Class            : Hunter
@@ -15459,25 +15461,21 @@ Effects          :
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
                    Modified By: Hoof and Blade (1264797 effect#1)
-#2 (id=1190880)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Hatchet Toss (193265)
-                   Family Flags: 41
+#2 (id=1190880)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Boomstick (1261193), Boomstick (1261215)
+                   Family Flags: 116
                    Modified By: Hoof and Blade (1264797 effect#2)
 #3 (id=1190881)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
-#4 (id=1190882)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
+#4 (id=1190882)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Hatchet Toss (193265)
-                   Family Flags: 41
-#5 (id=1259166)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Hatchet Toss (193265), Cobra Shot (193455)
-                   Family Flags: 41, 86
+                   Affected Spells: Cobra Shot (193455)
+                   Family Flags: 86
 Description      : $@spelldesc472639
-Tooltip          : Your next $?c1[Cobra Shot][Hatchet Toss] strikes $?c1[$s3][$s4] additional $ltarget:targets; and its damage is increased by $?c1[$s1][$s2]%
+Tooltip          : $?c1[Your next Cobra Shot strikes $s3 additional $Ltarget:targets; and its damage is increased by $s1%][Boomstick damage increased by $s2%].
 
 Name             : No Mercy (id=472660) [Spell Family (9), Passive] 
 Talent Entry     : Pack Leader (Beast Mastery, Survival) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
@@ -16854,7 +16852,6 @@ Effects          :
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
 
 Name             : Takedown (id=1250646) [Spell Family (9)] 
-Hotfixed         : Item Subclass (34275 -> 34243)
 Talent Entry     : Survival [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
@@ -17254,7 +17251,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1258673)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : When Kill Command critically strikes, it bleeds its target for an additional $1253138o1 damage over $1253138d.
+Description      : When Strike as One critically strikes, it bleeds its target for an additional $1253138o1 damage over $1253138d.
 
 Name             : Sic 'Em (id=1253138) [Spell Family (9)] 
 Class            : Hunter
@@ -17567,7 +17564,7 @@ Effects          :
                    Affected Spells (Label): Moonlight Chakram (1264946)
 Description      : $?c2[Precise Shots damage bonus][Tip of the Spear damage bonus] increased by $?c2[$s1][$s2]%.
 
-$?c2[Trueshot][Takedown] duration increased by $?c2[${$s3/1000} ][${$s4/1000}] sec.
+$?c2[Trueshot][Takedown] duration increased by $?c2[${$s3/1000}][${$s4/1000}] sec.
 
 Name             : Sanctified Armaments (id=1253831) [Spell Family (9), Passive] 
 Talent Entry     : Sentinel (Marksmanship, Survival) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
@@ -18168,7 +18165,7 @@ Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Explosives Expert (378937 effect#1), Tip of the Spear (471536 effect#1), Vulnerability (1257011 effect#1), Quick Reload (1272136 effect#1)
+Affecting Spells : Explosives Expert (378937 effect#1), Tip of the Spear (471536 effect#1), Hogstrider (472640 effect#2), Vulnerability (1257011 effect#1), Quick Reload (1272136 effect#1)
 Family Flags     : 116
 Attributes       : Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), No Pushback (207), Delay Combat Timer During Cast (211), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
@@ -18189,7 +18186,7 @@ Range            : 20 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Explosives Expert (378937 effect#1), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Tip of the Spear (471536 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Vulnerability (1257011 effect#1), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Quick Reload (1272136 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Explosives Expert (378937 effect#1), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Tip of the Spear (471536 effect#1), Wyvern's Cry (471881 effects: #1, #2), Hogstrider (472640 effect#2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Vulnerability (1257011 effect#1), Lethality (1259922 effect#1), Lethal Calibration (1262408 effect#1), Quick Reload (1272136 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Triggered By     : Boomstick (1261193)
 Family Flags     : 106, 116
 Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Bouncy Chain Missiles (146), No Cooldown On Tooltip (192), AI Face Target (283), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -18619,7 +18616,11 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1276352)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Your mastery is increased by $s1%.
+#2 (id=1311163)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Your mastery is increased by $s1%.$?c3[
+
+Wildfire Bomb deals an additional $s2% increased damage to its primary target.][]
 
 Name             : Lethal Barbs (id=1264781) [Spell Family (9), Passive] 
 Talent Entry     : Pack Leader (Beast Mastery, Survival) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
@@ -18653,11 +18654,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
+                 : 6512: Survival Hunter (137017 effect#10)
 Triggered By     : Lethal Barbs (1264781)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1276369)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: focus | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Modified By: Survival Hunter (137017 effect#10)
 Description      : $@spelldesc1264781
 
 Name             : Wyvern's Gaze (id=1264792) [Spell Family (9), Passive] 
@@ -18697,12 +18700,12 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 5828 (Label) | Target: Self (1)
                    Affected Spells (Label): Hogstrider (472640)
 #2 (id=1276390)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Misc Value 2: 5828 (Label) | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 5828 (Label) | Target: Self (1)
                    Affected Spells (Label): Hogstrider (472640)
 #3 (id=1276404)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 37 | Misc Value 2: 5828 (Label) | Target: Self (1)
                    Affected Spells (Label): Hogstrider (472640)
-Description      : Hogstrider further increases the damage of $?c1[Cobra Shot][Hatchet Toss] by $?c1[$s1][$s2]% and it now strikes up to $s3 additional targets.
+Description      : $?c1[Hogstrider further increases the damage of Cobra Shot by $s1% and it now strikes up to $s3 additional targets][Hogstrider further increases the damage of Boomstick by $s2%].
 
 Name             : Hunter Beast Mastery 12.0 Class Set 2pc (id=1264825) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -20019,7 +20022,7 @@ Effects          :
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.
 
-Name             : Heart of the Pack (id=1286400) [Spell Family (9), Hidden] 
+Name             : Scout's Vigil (id=1286400) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -20033,4 +20036,26 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : $@spelldesc1265052
 Tooltip          : Haste increased by $W1%.
+
+Name             : Misdirection (id=1289896) [Spell Family (9), Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 27
+Range            : 100 yards
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Proc Chance      : 101%
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Require All Targets (58), Allow Low Level Buff (67), Include In Advanced Combat Log (72), PvP Enabling (96), Can Proc From Procs (122), AI Doesn't Face Target (179), Vehicle Immunity Category (218), Only Proc From Class Abilities (415)
+Aura Interrupt   : Mount (17), Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=1308485)  : Redirect Threat (130)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 38000 | Target: Targeted Raid Member (57)
+#2 (id=1308487)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc34477
+Tooltip          : Threat redirected from Hunter.
 

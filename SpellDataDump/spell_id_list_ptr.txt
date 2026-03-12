@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.66220
+Class Spell ID List, wow build 12.0.5.66330
 
 Death Knight
 3714     Path of Frost
@@ -1608,7 +1608,7 @@ Death Knight
 1241567  Clawing Shadows
 1241569  Clawing Shadows
 1241705  Outnumber
-1241707  March of Madness
+1241707 *March of Madness
 1241719 *Festering Scythe
 1241732 *Festering Scythe
 1241786  Infected Claws
@@ -1624,13 +1624,13 @@ Death Knight
 1242283 *Reanimation
 1242289 *Reawakening
 1242294  Army of the Damned
-1242561  Scythe of Decay
+1242561 *Scythe of Decay
 1242564  Dread Plague
 1242597 *Blighted
 1242601 *Festering Corruption
 1242604  Scourging
 1242608  Raise Abomination
-1242616  Blightfall
+1242616 *Blightfall
 1242619 *Compromised
 1242654  Reaping
 1242756 *Compromised
@@ -1638,7 +1638,7 @@ Death Knight
 1242998  Lesser Ghoul
 1244030 *Putrefy
 1244102  Disease Cloud
-1244158  March of Madness
+1244158 *March of Madness
 1244347  Disease Cloud
 1244516 *Forbidden Knowledge
 1244519  Reaping
@@ -1733,10 +1733,10 @@ Death Knight
 1271198  Rejuvenating Blood
 1271199  Blighted
 1271390 *Battle Resurrection Highlight
-1271967  Pestilence
-1271974  Pestilence
-1271975  Pestilence
-1272116  Pestilence
+1271967  Blightfall
+1271974  Blightfall
+1271975  Blightfall
+1272116  Blightfall
 1277016  Putrefy
 1277098  Lesser Ghoul
 1277365  Blood Bond
@@ -1750,10 +1750,12 @@ Death Knight
 1282535  Lesser Ghoul
 1282554 *Superstrain
 1282564 *Death and Decay
-1282565  Scythe of Decay
+1282565 *Scythe of Decay
 1282570  Forbidden Ritual
 1283621  Death Knight - Midnight PrePatch - 11.2 Class Set 2pc
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
+1286168 *Frenzied Decay
+1290864  Cycle of Death
 
 Demon Hunter
 1490     Chaos Brand
@@ -3226,6 +3228,7 @@ Demon Hunter
 1285383 *Initial Demon Hunter
 1285387 *Shattered Souls
 1287949  Eye Beam
+1288123  Devour
 
 Druid
 99       Incapacitating Roar
@@ -5638,8 +5641,8 @@ Evoker
 373770  *Sands of Time
 373771  *Sands of Time
 373834   Call of Ysera
-373861   Temporal Anomaly
-373862   Temporal Anomaly
+373861  *Temporal Anomaly
+373862  *Temporal Anomaly
 374227   Zephyr
 374229   Zephyr
 374251   Cauterizing Flame
@@ -6103,7 +6106,7 @@ Evoker
 459152  *Rumbling Earth
 459537   Imminent Destruction
 459574   Imminent Destruction
-459725   Molten Embers
+459725  *Molten Embers
 460688   Double-time
 461039  *Wing Buffet
 461526  *Return
@@ -6186,7 +6189,7 @@ Evoker
 1259174  Duplicate
 1259175  Duplicate
 1260484  Chronoboon
-1260568  Energy Cycles
+1260568 *Energy Cycles
 1260647  Overclock
 1260745  Command Squadron
 1261393 *Command Squadron
@@ -6236,6 +6239,10 @@ Evoker
 1289618 *Blistering Scales
 1289630 *Source of Magic
 1289631 *Timelessness
+1289650 *Visage Chosen Identity Tracker [DNT]
+1291457  Mighty Inferno
+1291522  Chronal Dynamo
+1291636  Temporal Anomaly
 
 Hunter
 75       Auto Shot
@@ -8784,7 +8791,8 @@ Hunter
 1283818 *Dire Beast
 1284992  Pet Damage
 1285912  Bestial Wrath
-1286400  Heart of the Pack
+1286400  Scout's Vigil
+1289896  Misdirection
 
 Mage
 66       Invisibility
@@ -9025,7 +9033,7 @@ Mage
 32266   *Portal: Exodar
 32267   *Portal: Silvermoon (Burning Crusade)
 32271   *Teleport: Exodar
-32272   *Teleport: Silvermoon
+32272   *Teleport: Silvermoon (Burning Crusade)
 32366   *Summon Void Zone
 32602   *Energy Stream
 32603   *Energy Stream
@@ -11119,7 +11127,8 @@ Mage
 1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
 1284108 *Conjure Refreshment Table
 1285457 *Frost Mage
-1286314 *Arcane Phoenix - Dissolve Delay and Transport
+1286314 *Dissolve Delay and Transport
+1286444  Cauterize
 
 Monk
 8647     Mystic Touch
@@ -12788,7 +12797,7 @@ Monk
 1221044 *Touch of Death Notification
 1222923  Windwalker Monk
 1226058  Luck of the Draw!
-1236377  Monk Master of Harmony 11.2 Class Set 2pc
+1236377 *Monk Master of Harmony 11.2 Class Set 2pc
 1236378 *Monk Master of Harmony 11.2 Class Set 4pc
 1236379 *Monk Shado-Pan 11.2 Class Set 2pc
 1236380 *Monk Shado-Pan 11.2 Class Set 4pc
@@ -12799,9 +12808,9 @@ Monk
 1238883 *Concentrated Mistfall
 1238901  Jade Serpent's Blessing
 1238904  Heart of the Jade Serpent
-1239442  Harmonic Surge
-1239443  Harmonic Surge
-1239483  Potential Energy
+1239442 *Harmonic Surge
+1239443 *Harmonic Surge
+1239483 *Potential Energy
 1240636 *Health Globe
 1240640 *Health Globe
 1241059  Celestial Infusion
@@ -12846,7 +12855,7 @@ Monk
 1249758  Combo Strikes: Fists of Fury
 1249759  Combo Strikes: Slicing Winds
 1249762  Combo Strikes: Storm, Earth, and Fire
-1249763  Combo Strikes: Zenith
+1249763  Combo Strikes: Zenith Stomp
 1249764  Combo Strikes: Crackling Jade Lightning
 1249765  Combo Strikes: Whirling Dragon Punch
 1249766  Combo Strikes: Strike of the Windlord
@@ -12890,7 +12899,6 @@ Monk
 1262017  Fuel on the Fire
 1262035  Fuel on the Fire
 1262040  Fuel on the Fire
-1262042  Tigereye Brew
 1262159  Fuel on the Fire
 1262329  Empty the Cellar
 1262334  Jade Flash
@@ -12947,7 +12955,7 @@ Monk
 1269159  Rushing Wind Kick
 1270621  Tranquil Tea
 1270958  Harmonic Surge
-1270990  Harmonic Surge
+1270990 *Potential Energy
 1271011  Harmonic Surge
 1271045  Harmonic Surge
 1271048  Potential Energy
@@ -12978,6 +12986,7 @@ Monk
 1283666  Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283667  Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1285660  Serene Vitality
+1291484  Zenith Stomp
 
 Paladin
 465      Devotion Aura
@@ -15149,6 +15158,14 @@ Paladin
 1283660  Paladin - Midnight PrePatch - 11.2 Class Set 4pc
 1283662  Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283663  Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1289616  Divine Steed
+1289617  Divine Steed
+1289728  Holy Armaments
+1289890  Holy Armaments
+1289892  Holy Armaments
+1289922  Holy Armament Override
+1289943  Holy Armament Override
+1291678 *Hammer of Wrath
 
 Priest
 17       Power Word: Shield
@@ -18749,6 +18766,7 @@ Rogue
 1281468  Umbral Edge
 1283637  Rogue - Midnight PrePatch - 11.2 Class Set 2pc
 1283639  Rogue - Midnight PrePatch - 11.2 Class Set 4pc
+1291471  Hemotoxin
 
 Shaman
 370      Purge
@@ -20258,9 +20276,9 @@ Shaman
 383648   Earth Shield
 384087  *Echoes of Great Sundering
 384088  *Echoes of Great Sundering
-384143   Raging Maelstrom
+384143   Overflowing Maelstrom
 384146  *Focused Maelstrom
-384149   Overflowing Maelstrom
+384149   Raging Maelstrom
 384352   Doom Winds
 384355   Elemental Weapons
 384357  *Ice Strike
@@ -20339,7 +20357,7 @@ Shaman
 409834   Crackling Thunder
 410018   Primal Fracture
 410673   Stormweaver
-410681   Raging Maelstrom
+410681   Overflowing Maelstrom
 412180  *Spiritwalker's Grace
 412692   Maelstrom Weapon
 417374   Initial Shaman
@@ -22730,6 +22748,9 @@ Warlock
 1282757  Shadow Nova
 1283640  Warlock - Midnight PrePatch - 11.2 Class Set 2pc
 1283641  Warlock - Midnight PrePatch - 11.2 Class Set 4pc
+1288945 *Imp Lord
+1288950 *Fel Ravager
+1288970 *Recently Demon Has Been Summoned [DNT]
 
 Warrior
 71       Vanguard
