@@ -15205,16 +15205,17 @@ Effects          :
 Description      : For ${$427793D-($428160s1/10)} sec after using Fel Rush, activating it again will dash back towards your initial location.
 
 Name             : Deflecting Dance (id=427901) [Spell Family (107)] 
+Hotfixed         : School (2 -> 1), Attributes
 Class            : Demon Hunter
-School           : Holy
+School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
-Duration         : Aura (infinite)
+Duration         : 1.1 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Family Flags     : 51
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1107739)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
