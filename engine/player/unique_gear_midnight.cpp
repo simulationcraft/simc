@@ -2912,6 +2912,10 @@ void crucible_of_erratic_energies( special_effect_t& effect )
   effect.custom_buff = buff;
 
   effect.proc_flags2_ = PF2_LANDED;
+  // Spell data proc_flags (0x00015500) has no melee ability types. The driver has
+  // SX_ONLY_PROC_FROM_CLASS_ABILITIES set, which gates procs on allow_class_ability_procs,
+  // but the callback is never registered for melee actions without this addition.
+  effect.proc_flags_ = effect.driver()->proc_flags() | PF_MELEE_ABILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
