@@ -4,7 +4,7 @@ level=90
 race=pandaren
 role=spell
 position=ranged_back
-talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjtlBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA
 default_pet=sayaad
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
