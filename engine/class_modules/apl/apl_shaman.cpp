@@ -13,17 +13,18 @@ std::string flask_elemental( const player_t* p )
 
 std::string food_elemental( const player_t* p )
 {
-  return ( p->true_level >= 81 ) ? "blooming_feast" : "disabled";
+  return ( p->true_level >= 81 ) ? "harandar_celebration" : "disabled";
 }
 
 std::string potion_elemental( const player_t* p )
 {
-  return ( p->true_level >= 81 ) ? "draught_of_rampant_abandon" : "disabled";
+  return ( p->true_level >= 81 ) ? "lights_potential_2" : "disabled";
 }
 
 std::string temporary_enchant_elemental( const player_t* p )
 {
-  return "disabled";
+  return ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2,if=!talent.flametongue_weapon"
+    : "disabled";
 }
 
 std::string rune( const player_t* p )
