@@ -8790,6 +8790,10 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   {
     set_cooldown( timespan_t::zero() );
     set_tick_behavior( buff_tick_behavior::NONE );
+
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_max_stack( 5 );
+
     disable_ticking( true );
 
     set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
@@ -8802,16 +8806,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p->talent.demon_hunter.infernal_armor->ok() )
     {
       add_invalidate( CACHE_ARMOR );
-    }
-
-    if ( p->talent.havoc.a_fire_inside )
-    {
-      set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-      set_max_stack( 5 );
-    }
-    else
-    {
-      set_max_stack( 1 );
     }
 
     if ( p->talent.scarred.undying_embers->ok() )
