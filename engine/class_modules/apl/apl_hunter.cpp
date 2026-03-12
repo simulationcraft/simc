@@ -256,49 +256,53 @@ void marksmanship( player_t* p )
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
-  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
+  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
 
   draoe->add_action( "black_arrow" );
-  draoe->add_action( "multishot,if=buff.precise_shots.up|buff.trick_shots.down" );
+  draoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  draoe->add_action( "multishot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
+  draoe->add_action( "rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)" );
   draoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  draoe->add_action( "trueshot,if=!buff.double_tap.up" );
   draoe->add_action( "volley,if=!buff.double_tap.up" );
-  draoe->add_action( "aimed_shot" );
+  draoe->add_action( "aimed_shot,target_if=1+debuff.spotters_mark.remains" );
   draoe->add_action( "wailing_arrow" );
   draoe->add_action( "rapid_fire" );
   draoe->add_action( "steady_shot" );
 
   drst->add_action( "black_arrow" );
-  drst->add_action( "rapid_fire,if=talent.unload&buff.withering_fire.up" );
-  drst->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  drst->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  drst->add_action( "rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)" );
+  drst->add_action( "arcane_shot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up" );
   drst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  drst->add_action( "trueshot,if=!buff.double_tap.up" );
   drst->add_action( "volley,if=!buff.double_tap.up" );
-  drst->add_action( "aimed_shot" );
+  drst->add_action( "aimed_shot,target_if=1+debuff.spotters_mark.remains" );
   drst->add_action( "wailing_arrow" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "steady_shot" );
 
-  sentaoe->add_action( "multishot,if=buff.precise_shots.up|buff.trick_shots.down" );
+  sentaoe->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentaoe->add_action( "trueshot,if=!buff.double_tap.up" );
+  sentaoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
   sentaoe->add_action( "volley,if=!buff.double_tap.up" );
-  sentaoe->add_action( "aimed_shot" );
+  sentaoe->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
+  sentaoe->add_action( "moonlight_chakram" );
   sentaoe->add_action( "rapid_fire" );
-  sentaoe->add_action( "moonlight_chakram,if=buff.trueshot.up" );
   sentaoe->add_action( "steady_shot" );
 
-  sentst->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=1" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=1&variable.trueshot_ready" );
+  sentst->add_action( "rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)" );
+  sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,if=!buff.double_tap.up" );
-  sentst->add_action( "volley,if=!buff.double_tap.up" );
-  sentst->add_action( "aimed_shot" );
-  sentst->add_action( "moonlight_chakram,if=buff.trueshot.up" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=2&variable.trueshot_ready" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=2" );
+  sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
+  sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
 
-  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.remains>17|cooldown.trueshot.remains>45" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<23" );
+  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=(cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.up|cooldown.trueshot.remains>45)&!this_trinket.is.algethar_puzzle_box" );
+  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=!buff.double_tap.up&variable.trueshot_ready&cooldown.trueshot.remains<5" );
 }
 //marksmanship_apl_end
 
@@ -335,49 +339,53 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
-  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
+  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
 
   draoe->add_action( "black_arrow" );
-  draoe->add_action( "multishot,if=buff.precise_shots.up|buff.trick_shots.down" );
+  draoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  draoe->add_action( "multishot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
+  draoe->add_action( "rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)" );
   draoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  draoe->add_action( "trueshot,if=!buff.double_tap.up" );
   draoe->add_action( "volley,if=!buff.double_tap.up" );
-  draoe->add_action( "aimed_shot" );
+  draoe->add_action( "aimed_shot,target_if=1+debuff.spotters_mark.remains" );
   draoe->add_action( "wailing_arrow" );
   draoe->add_action( "rapid_fire" );
   draoe->add_action( "steady_shot" );
 
   drst->add_action( "black_arrow" );
-  drst->add_action( "rapid_fire,if=talent.unload&buff.withering_fire.up" );
-  drst->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  drst->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  drst->add_action( "rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)" );
+  drst->add_action( "arcane_shot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up" );
   drst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  drst->add_action( "trueshot,if=!buff.double_tap.up" );
   drst->add_action( "volley,if=!buff.double_tap.up" );
-  drst->add_action( "aimed_shot" );
+  drst->add_action( "aimed_shot,target_if=1+debuff.spotters_mark.remains" );
   drst->add_action( "wailing_arrow" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "steady_shot" );
 
-  sentaoe->add_action( "multishot,if=buff.precise_shots.up|buff.trick_shots.down" );
+  sentaoe->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentaoe->add_action( "trueshot,if=!buff.double_tap.up" );
+  sentaoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
   sentaoe->add_action( "volley,if=!buff.double_tap.up" );
-  sentaoe->add_action( "aimed_shot" );
+  sentaoe->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
+  sentaoe->add_action( "moonlight_chakram" );
   sentaoe->add_action( "rapid_fire" );
-  sentaoe->add_action( "moonlight_chakram,if=buff.trueshot.up" );
   sentaoe->add_action( "steady_shot" );
 
-  sentst->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=1" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=1&variable.trueshot_ready" );
+  sentst->add_action( "rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)" );
+  sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,if=!buff.double_tap.up" );
-  sentst->add_action( "volley,if=!buff.double_tap.up" );
-  sentst->add_action( "aimed_shot" );
-  sentst->add_action( "moonlight_chakram,if=buff.trueshot.up" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=2&variable.trueshot_ready" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=2" );
+  sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
+  sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
 
-  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.remains>17|cooldown.trueshot.remains>45" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<23" );
+  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=(cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.up|cooldown.trueshot.remains>45)&!this_trinket.is.algethar_puzzle_box" );
+  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=!buff.double_tap.up&variable.trueshot_ready&cooldown.trueshot.remains<5" );
 }
 //marksmanship_ptr_apl_end
 

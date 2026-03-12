@@ -3138,8 +3138,8 @@ void rangergenerals_call( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     [ damage, delay ]( auto, auto, const action_state_t* s ) {
-      make_event( *s->action->sim, delay, [ damage, s ] {
-        damage->execute_on_target( s->target );
+      make_event( *s->action->sim, delay, [ damage, t = s->target ] {
+        damage->execute_on_target( t );
       } );
     } );
 
@@ -3271,15 +3271,21 @@ void murder_row_materials( special_effect_t& effect )
     "Crystal (aoe) is assumed to split damage and increase by 30% per target hit." );
   effect.player->sim->error( UNVERIFIED_VALUE,
     "Murder Row Materials: What determines the damage/heal value of the procs is unknown. "
-    "Crystal (aoe) is assumed to have the lowest value, then Shiv (ST), and Tonic (heal) has the highest. "
-    "How the damage/heal values scale with item level is unknown. "
-    "Currently implemented to scale off player level and values have not been verified in-game." );
+    "Crystal (aoe) is assumed to have the lowest value, then Shiv (ST), and Tonic (heal) has the highest." );
 
-  auto coeffs = effect.player->find_spell( 1259297 );
-  // ilevel scaling unknown, using player level scaling as placeholder
-  auto shiv_amount = coeffs->effectN( 1 ).average( effect.player );
-  auto crystal_amount = coeffs->effectN( 2 ).average( effect.player );
-  auto tonic_amount = coeffs->effectN( 3 ).average( effect.player );
+  auto equip = find_special_effects( effect.player, 1259297 );
+  assert( !equip.empty() && "Murder Row Materials missing equip effect" );
+
+  double shiv_amount = 0;
+  double crystal_amount = 0;
+  double tonic_amount = 0;
+
+  // TODO: figure out which index corresponds to which proc value
+  range::for_each( equip, [ & ]( auto e ) {
+    shiv_amount += e->driver()->effectN( 1 ).average( *e );
+    crystal_amount += e->driver()->effectN( 2 ).average( *e );
+    tonic_amount += e->driver()->effectN( 3 ).average( *e );
+  } );
 
   auto shiv = create_mrm_action<generic_proc_t, generic_proc_t>(
     "murder_row_shiv", effect, 1259504, shiv_amount );
@@ -3329,22 +3335,22 @@ void root_wardens_regalia( special_effect_t& effect )
 };
 
 // Voidlight Bindings
-// 1281574 Driver
-// 1281581 Value Spell
+// 1281574 Set Driver
+// 1281581 Equip
 // 1281580 Area Trigger
 // 1281579 Damage
 void voidlight_bindings( special_effect_t& effect )
 {
-  auto value_spell    = effect.player->find_spell( 1281581 );
-  assert( value_spell && "Voidlight Bindings missing value spell" );
+  auto equip = find_special_effects( effect.player, 1281581 );
+  assert( !equip.empty() && "Voidlight Bindings missing equip effect" );
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
-  // ilevel scaling unknown, using player level scaling as placeholder
-  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect.player );
 
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Voidlight Bindings: How the damage scales with item level is unknown."
-    "Currently implemented to scale off player level and values have not been verified in-game." );
+  range::for_each( equip, [ damage ]( auto e ) {
+    damage->base_dd_min += e->driver()->effectN( 1 ).average( *e );
+    damage->base_dd_max += e->driver()->effectN( 1 ).average( *e );
+  } );
+
   // No Role multiplier currently
   //damage->base_multiplier *= role_mult( effect );
 
@@ -3556,8 +3562,6 @@ void register_special_effects()
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
   register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
-  
-  
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
@@ -3570,13 +3574,14 @@ void register_special_effects()
   register_special_effect( 1241529, armors::arcanoweave_cord );
   register_special_effect( 1241503, armors::sunfire_sash );
   // Sets
-  // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
-  unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
-  unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
-  unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
-  unique_gear::register_special_effect( 1241262, sets::arcanoweave_trappings );
-  //unique_gear::register_special_effect( 1270977, sets::sunfiresilk_trappings );
-  unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
+  register_special_effect( 1281574, sets::voidlight_bindings );
+  register_special_effect( 1281581, DISABLED_EFFECT );  // voidlight bindings equip effect
+  register_special_effect( 1244005, sets::murder_row_materials );
+  register_special_effect( 1259297, DISABLED_EFFECT );  // murder row materials equip effect
+  register_special_effect( 1244021, sets::root_wardens_regalia );
+  register_special_effect( 1241262, sets::arcanoweave_trappings );
+  register_special_effect( 1270977, sets::sunfire_silk_trappings );
+  register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
 void register_target_data_initializers( sim_t& )

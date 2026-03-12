@@ -116,7 +116,7 @@ void blood( player_t* p )
   action_priority_list_t* san_gift = p->get_action_priority_list( "san_gift" );
   action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
-  precombat->add_action( "snapshot_stats", "Default consumables otion=draught_of_rampant_abandon_ lask=flask_of_the_shattered_sun_ ood=silvermoon_parad ugmentation=void_touche emporary_enchant=main_hand:thalassian_phoenix_oil_" );
+  precombat->add_action( "snapshot_stats" );
   precombat->add_action( "deaths_caress" );
 
   default_->add_action( "auto_attack" );
@@ -155,7 +155,7 @@ void blood( player_t* p )
   san_gift->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
   san_gift->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.stack<7" );
   san_gift->add_action( "death_strike" );
-  san_gift->add_action( "blood_boil,if=buff.boiling_point.up" );
+  san_gift->add_action( "blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up" );
   san_gift->add_action( "heart_strike" );
   san_gift->add_action( "blood_boil" );
 
@@ -168,7 +168,7 @@ void blood( player_t* p )
   sanlayn->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
   sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
   sanlayn->add_action( "death_strike" );
-  sanlayn->add_action( "blood_boil,if=buff.boiling_point.up" );
+  sanlayn->add_action( "blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up" );
   sanlayn->add_action( "consumption,empower_to=1" );
   sanlayn->add_action( "heart_strike,if=rune>=2" );
   sanlayn->add_action( "blood_boil" );

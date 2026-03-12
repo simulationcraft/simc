@@ -11,11 +11,13 @@ def->add_action( "auto_attack","Executed every time the actor is available." );
 def->add_action( "call_action_list,name=cooldowns" );
 def->add_action( "call_action_list,name=bear" );
 
+bear->add_action( "bear_form,if=!buff.bear_form.up" );
 bear->add_action( "maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled" );
 bear->add_action( "maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled" );
 bear->add_action( "mangle,if=dot.red_moon.ticking" );
 bear->add_action( "rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies<=5&rage<30" );
-bear->add_action( "moonkin_form,if=!buff.moonkin_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies>=6" );
+bear->add_action( "cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies<=5&rage<30" );
+bear->add_action( "moonkin_form,if=!buff.moonkin_form.up&cooldown.heart_of_the_wild.up&active_enemies>=6" );
 bear->add_action( "thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)" );
 bear->add_action( "ironfur,if=!buff.ironfur.up&!buff.ravage.up&!target.cooldown.pause_action.remains" );
 bear->add_action( "ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!dot.rip.refreshable)" );

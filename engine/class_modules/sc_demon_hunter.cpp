@@ -4918,6 +4918,13 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
           p()->buff.metamorphosis_move->distance_moved = landing_distance;
           p()->buff.metamorphosis_move->trigger();
         }
+
+        if ( p()->talent.scarred.volatile_instinct->ok() )
+        {
+          p()->trigger_demonsurge(
+              demonsurge_ability::ENTER_META,
+              timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
+        }
         break;
       case DEMON_HUNTER_VENGEANCE:
         if ( untethered )
@@ -8180,6 +8187,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( hit_any_target && furious_throws )
     {
       make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
+
+      if ( p()->active.preemptive_strike )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.preemptive_strike, target, 400_ms );
+      }
     }
 
     if ( td( target )->debuffs.serrated_glaive->up() )
@@ -8814,7 +8826,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       if ( p->talent.scarred.undying_embers->ok() )
       {
         functional_buff->set_expire_callback( [ this, p ]( buff_t*, int, timespan_t ) {
-          if ( rng().roll( undying_embers_proc_chance ) && p->cooldown.immolation_aura->up() )
+          if ( rng().roll( undying_embers_proc_chance ) )
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
@@ -8950,6 +8962,14 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       return;
     }
 
+    if ( !p()->buff.metamorphosis->up() )
+    {
+      p()->buff.demonsurge_demonsurge->trigger();
+      if ( p()->talent.scarred.volatile_instinct->ok() )
+      {
+        p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
+      }
+    }
     p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
     p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
 
@@ -8962,13 +8982,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
-
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.volatile_instinct->ok() )
-    {
-      p()->trigger_demonsurge(
-          demonsurge_ability::ENTER_META,
-          timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
-    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -11900,8 +11913,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
 
       s->result_amount *= 1.0 + buff.painbringer->check_value();
 
-      s->result_amount *= 1.0 + buff.demon_spikes->check() * spec.demon_spikes_buff->effectN( 3 ).percent();
-
       if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
       {
         s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
@@ -11914,12 +11925,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       break;
     default:
       break;
-  }
-
-  if ( talent.annihilator.phase_shift->ok() )
-  {
-    s->result_amount *= 1.0 + buff.voidfall_building->check_stack_value();
-    s->result_amount *= 1.0 + buff.voidfall_final_hour->check_stack_value();
   }
 }
 
@@ -12351,12 +12356,18 @@ void demon_hunter_t::trigger_demonic() const
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, const bool check_buff )
 {
-  timespan_t delay = timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() );
-  if ( ability == demonsurge_ability::DEATH_SWEEP )
-  {
-    delay = timespan_t::from_millis( hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() );
-  }
+  timespan_t delay;
 
+  // TOCHECK: Death sweep currently uses a 700 ms delay, while all other abilities use 450 ms delay.
+  switch ( ability )
+  {
+    case demonsurge_ability::DEATH_SWEEP:
+      delay = timespan_t::from_millis( hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() );
+      break;
+    default:
+      delay = timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() );
+      break;
+  }
   trigger_demonsurge( ability, delay, check_buff );
 }
 

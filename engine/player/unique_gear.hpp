@@ -72,7 +72,8 @@ void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth 
 
 void init( player_t* );
 
-special_effect_t* find_special_effect( player_t* actor, unsigned spell_id, special_effect_e = SPECIAL_EFFECT_NONE );
+std::vector<special_effect_t*> find_special_effects( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );
+special_effect_t* find_special_effect( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );
 
 // First-phase special effect initializers
 void initialize_special_effect( special_effect_t& effect, unsigned spell_id );

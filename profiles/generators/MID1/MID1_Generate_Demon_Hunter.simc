@@ -1,57 +1,57 @@
-# demonhunter="MID1_Demon_Hunter_Devourer_Void-Scarred"
-# level=90
-# race=night_elf
-# spec=devourer
-# role=spell
-# position=back
-# talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmZGDjZbmhhtZMjhZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgF
+demonhunter="MID1_Demon_Hunter_Devourer_Void-Scarred"
+level=90
+race=night_elf
+spec=devourer
+role=spell
+position=back
+talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMDzsYGjNtsxMzMzWbzMzAYmZmZWmZmmtZWmZGMmB
 
-# head=irradiated_impurity_filter,id=237525,ilevel=723,gem_id=213470
-# neck=ornately_engraved_amplifier,id=185842,ilevel=723,gem_id=213485/213743
-# shoulders=charhounds_vicious_hornguards,id=237689,ilevel=723
-# back=reshii_wraps,id=235499,ilevel=730,gem_id=238045,enchant_id=7409
-# chest=charhounds_vicious_bindings,id=237694,ilevel=723,enchant_id=7364
-# wrists=runebranded_armbands,id=219334,bonus_id=11109/8790,ilevel=720,gem_id=213485,enchant_id=7391
-# hands=charhounds_vicious_felclaws,id=237692,ilevel=723
-# waist=venzas_powderbelt,id=185809,ilevel=723,gem_id=213485
-# legs=charhounds_vicious_hidecoat,id=237690,ilevel=723,enchant_id=7601
-# feet=interlopers_reinforced_sandals,id=243306,ilevel=723
-# finger1=band_of_the_shattered_soul,id=242405,ilevel=723,gem_id=213485/213485,enchant_id=7340
-# finger2=ring_of_the_panoply,id=246281,ilevel=723,gem_id=213485/213485,enchant_id=7352
-# trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=723
-# trinket2=tome_of_lights_devotion,id=219309,ilevel=723
-# main_hand=sonic_kaboomerang,id=234491,ilevel=723,enchant_id=7460
-# off_hand=everforged_longsword,id=222440,bonus_id=11300/8790,ilevel=720,enchant_id=7439
+head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240892/240892
+shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
+back=draconic_nullcape,id=249370,ilevel=289
+chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=frenzyroot_cuffs,id=193714,bonus_id=1808/12806/13577,gem_id=240892
+hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=13534,ilevel=289,gem_id=240892
+legs=shaggy_wyrmleather_leggings,id=49817,ilevel=289,enchant_id=7935
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8793/8960/12066/12214/12214/12214/12384/13622/13667/9627,enchant_id=7963,crafted_stats=32/49
+finger1=loa_worshipers_band,id=251513,bonus_id=8960/8960/12214/12214,ilevel=285,gem_id=240892,enchant_id=7969
+finger2=bond_of_light,id=249369,bonus_id=13534,ilevel=289,gem_id=240892,enchant_id=7969
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,ilevel=289
+main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=7983
+off_hand=blade_of_the_blind_verdict,id=249294,ilevel=289,enchant_id=7983
 
-# save=MID1_Demon_Hunter_Devourer_Void-Scarred.simc
+save=MID1_Demon_Hunter_Devourer_Void-Scarred.simc
 
 
-# demonhunter="MID1_Demon_Hunter_Devourer_Annihilator"
-# level=90
-# race=night_elf
-# spec=devourer
-# role=spell
-# position=back
-# talents=CUkAVVFIvriGAPx6R1rEiLo2cCAGjZmZMmZkZmxYYMbzMYsNjZMjZGmZWmZsMzMMDGAAAAmlZWmlZmZW2mtppZwMzgN
+demonhunter="MID1_Demon_Hunter_Devourer_Annihilator"
+level=90
+race=night_elf
+spec=devourer
+role=spell
+position=back
+talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMzYmFzYsotNmZmZ2abmZGAjZAIwMzgxMA
 
-# head=irradiated_impurity_filter,id=237525,ilevel=723,gem_id=213470
-# neck=ornately_engraved_amplifier,id=185842,ilevel=723,gem_id=213485/213743
-# shoulders=charhounds_vicious_hornguards,id=237689,ilevel=723
-# back=reshii_wraps,id=235499,ilevel=730,gem_id=238045,enchant_id=7409
-# chest=charhounds_vicious_bindings,id=237694,ilevel=723,enchant_id=7364
-# wrists=runebranded_armbands,id=219334,bonus_id=11109/8790,ilevel=720,gem_id=213485,enchant_id=7391
-# hands=charhounds_vicious_felclaws,id=237692,ilevel=723
-# waist=venzas_powderbelt,id=185809,ilevel=723,gem_id=213485
-# legs=charhounds_vicious_hidecoat,id=237690,ilevel=723,enchant_id=7601
-# feet=interlopers_reinforced_sandals,id=243306,ilevel=723
-# finger1=band_of_the_shattered_soul,id=242405,ilevel=723,gem_id=213485/213485,enchant_id=7340
-# finger2=ring_of_the_panoply,id=246281,ilevel=723,gem_id=213485/213485,enchant_id=7352
-# trinket1=arazs_ritual_forge,id=242402,ilevel=723
-# trinket2=tome_of_lights_devotion,id=219309,ilevel=723
-# main_hand=sonic_kaboomerang,id=234491,ilevel=723,enchant_id=7460
-# off_hand=everforged_longsword,id=222440,bonus_id=11300/8790,ilevel=720,enchant_id=7439
+head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900/240900
+shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574,ilevel=289
+back=draconic_nullcape,id=249370,ilevel=289
+chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+wrists=frenzyroot_cuffs,id=193714,bonus_id=1808/12806/13577,gem_id=240900
+hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574,ilevel=289
+waist=silvermoon_agents_utility_belt,id=244573,bonus_id=8960/12214/12214/12384,ilevel=285,gem_id=240900,crafted_stats=49/36
+legs=shaggy_wyrmleather_leggings,id=49817,ilevel=289,enchant_id=7935
+feet=devouring_reavers_soul_flatteners,id=250035,ilevel=289,enchant_id=7963
+finger1=bond_of_light,id=249369,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7969
+finger2=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,ilevel=289,gem_id=240900/240900,enchant_id=7969
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,ilevel=289
+main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=7983
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8960/12066/12214/12214/12693/13622/13667/9627,ilevel=285,enchant_id=8041,crafted_stats=49/36
 
-# save=MID1_Demon_Hunter_Devourer.simc
+save=MID1_Demon_Hunter_Devourer.simc
 
 # demonhunter="MID1_Demon_Hunter_Havoc_Aldrachi_Reaver"
 # level=90

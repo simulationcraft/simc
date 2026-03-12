@@ -367,9 +367,9 @@ public:
     unsigned initial_spellfire_spheres = 5;
     unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
-    int clearcasting_blp_threshold = -1;
-    int sphere_blp_threshold = 11;
-    int augury_blp_threshold = 21;
+    unsigned clearcasting_blp_threshold = 0;
+    unsigned sphere_blp_threshold = 11;
+    unsigned augury_blp_threshold = 21;
     bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -411,6 +411,9 @@ public:
   struct accumulated_rngs_t
   {
     accumulated_rng_t* pyromaniac;
+    accumulated_rng_t* clearcasting;
+    accumulated_rng_t* spellfire_spheres;
+    accumulated_rng_t* augury_abounds;
   } accumulated_rng;
 
   // Sample data
@@ -454,11 +457,8 @@ public:
     bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
-    int clearcasting_blp_count;
-    int sphere_blp_count;
     int icicles;
     int fired_up_count; // number of Fired Up procs in this Combustion
-    int augury_blp_count;
   } state;
 
   // Talents
@@ -1855,42 +1855,11 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in
-      // the base rate being 12% and 15% with Illuminated Thoughts.
-      //
-      // The quadratic expression is an approximation based upon what was visible in-game,
-      // tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
-      // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random
-      // proc chance needed with a BLP of 13 to match expected total.
-      double proc_chance = p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
-      proc_chance = 0.41342 * proc_chance * proc_chance + 0.325242 * proc_chance - 0.0264015;
-
-      // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed.
-      // We're unsure whether or not the random proc chance was increased to match the expected rate.
-      // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath),
-      // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal)
-      // matches the ~11.35% expected total seen in-game.
-      //
-      // However, it's hard to tell with IT and/or AW talented as their initial proc chances being higher
-      // leads to less deviation from the 15% total.  For the moment, the equation above is accurate enough
-      // for pretty much 99% of purposes, the result is losing around 40 total applications out of thousands.
-      // We just need more data -- specifically for IT/AW -- which takes a bunch of time.
-      p()->state.clearcasting_blp_count++;
-      if ( p()->state.clearcasting_blp_count == p()->options.clearcasting_blp_threshold )
-        proc_chance = 1.0;
-      else
-        proc_chance *= p()->state.clearcasting_blp_count;
-
-      sim->print_debug( "Clearcasting proc chance: {}% ({}/{} BLP)",
-        proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
-
-      if ( proc_chance == 1.0 || !background )
+      int result = p()->accumulated_rng.clearcasting->trigger();
+      if ( result == ARNG_GUARANTEED || ( !background && result ) )
       {
-        if ( p()->trigger_clearcasting( proc_chance, !background ) )
-        {
-          p()->state.last_random_clearcasting = sim->current_time();
-          p()->state.clearcasting_blp_count = 0;
-        }
+        p()->trigger_clearcasting( 1.0, false );
+        p()->state.last_random_clearcasting = sim->current_time();
       }
     }
 
@@ -5333,22 +5302,9 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
     {
-      // https://www.desmos.com/calculator/qu5trhaztq;
-      // see trigger_spellfire_sphere().
-      double chance = p()->talents.augury_abounds->effectN( 1 ).percent();
-      chance = 0.952381 * chance * chance + 0.114048 * chance - 0.00638571;
-      chance *= ++p()->state.augury_blp_count;
-
-      sim->print_debug( "Augury Abounds' proc chance: {}% ({}/{} BLP)",
-        chance * 100, p()->state.augury_blp_count, p()->options.augury_blp_threshold );
-
-      if ( p()->state.augury_blp_count >= p()->options.augury_blp_threshold || rng().roll( chance ) )
-      {
-        p()->state.augury_blp_count = 0;
-        make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
-      }
-      // Regardless of the roll's success, the ICD still applies; prevent BLP increments and/or rolls for the next 0.5_s.
       p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      if ( p()->accumulated_rng.augury_abounds->trigger() )
+        make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
     }
   }
 
@@ -5801,9 +5757,9 @@ void mage_t::create_options()
                   throw std::invalid_argument( "valid options are 'default', 'st', and 'aoe'." );
                 return true;
               } ) );
-  add_option( opt_int( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
-  add_option( opt_int( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
-  add_option( opt_int( "mage.augury_blp_threshold", options.augury_blp_threshold ) );
+  add_option( opt_uint( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
+  add_option( opt_uint( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
+  add_option( opt_uint( "mage.augury_blp_threshold", options.augury_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -6550,6 +6506,23 @@ void mage_t::init_rng()
   // Accumulated RNG is also not present in the game data.
   // TODO: Double check that this RNG is the same in Midnight.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
+
+  // TODO: Seems to have an undocumented extra 2% proc chance.
+  double cc_chance = spec.clearcasting->effectN( 2 ).percent() + talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
+  // TODO: There is no longer a cap on the BLP but the constant still assumes a BLP cap is present
+  accumulated_rng.clearcasting = get_accumulated_rng(
+    "clearcasting", prd::find_constant( cc_chance, bugs ? 13 : options.clearcasting_blp_threshold ),
+    options.clearcasting_blp_threshold );
+
+  double sphere_chance = talents.spellfire_spheres->effectN( 1 ).percent();
+  accumulated_rng.spellfire_spheres = get_accumulated_rng(
+    "spellfire_spheres", prd::find_constant( sphere_chance, options.sphere_blp_threshold ),
+    options.sphere_blp_threshold );
+
+  double augury_chance = talents.augury_abounds->effectN( 1 ).percent();
+  accumulated_rng.augury_abounds = get_accumulated_rng(
+    "augury_abounds", prd::find_constant( augury_chance, options.augury_blp_threshold ),
+    options.augury_blp_threshold );
 }
 
 void mage_t::init_finished()
@@ -7197,23 +7170,11 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   if ( !talents.spellfire_spheres.ok() || m_spec != specialization() )
     return;
 
-  // https://www.desmos.com/calculator/7akzzy14fg;
-  // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
-  // TODO: Does Fire use the same BLP formula?
-  double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
-  proc_chance = -0.202381 * proc_chance * proc_chance + 0.550833 * proc_chance - 0.0481071;
-
-  state.sphere_blp_count++;
-  proc_chance *= state.sphere_blp_count;
-
-  sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)",
-    proc_chance * 100, state.sphere_blp_count, options.sphere_blp_threshold );
-
-  if ( state.sphere_blp_count == options.sphere_blp_threshold || ( !background && rng().roll( proc_chance ) ) )
+  int result = accumulated_rng.spellfire_spheres->trigger();
+  if ( result == ARNG_GUARANTEED || ( !background && result ) )
   {
     buffs.spellfire_sphere->trigger();
     buffs.glorious_incandescence->trigger();
-    state.sphere_blp_count = 0;
   }
 }
 

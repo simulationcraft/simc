@@ -238,7 +238,7 @@ void live_apl( monk_t* player )
   st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.remains<1&buff.combo_breaker.stack<2&talent.sequenced_strikes&buff.dance_of_chiji.up&talent.celestial_conduit" );
   st->add_action( "fists_of_fury,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up|buff.flurry_charge.stack=30&!buff.zenith.up" );
   st->add_action( "whirling_dragon_punch,if=talent.celestial_conduit&buff.heart_of_the_jade_serpent_unity_within.remains<2&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|!fight_style.patchwerk)|talent.flurry_strikes" );
-  st->add_action( "tiger_palm,if=chi<4&combo_strike&energy.time_to_max<=gcd.max*3&!buff.zenith.up&!buff.bloodlust.up&buff.combo_breaker.stack<2" );
+  st->add_action( "tiger_palm,if=chi<4&combo_strike&energy.time_to_max<=gcd.max*3&!buff.zenith.up&(!buff.bloodlust.up|chi<2)&buff.combo_breaker.stack<2" );
   st->add_action( "strike_of_the_windlord,if=talent.celestial_conduit&buff.heart_of_the_jade_serpent_unity_within.remains<2&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|!fight_style.patchwerk)|talent.flurry_strikes" );
   st->add_action( "fists_of_fury,if=combo_strike&(buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_yulons_avatar.up|buff.heart_of_the_jade_serpent_unity_within.up)&buff.bloodlust.up|buff.bloodlust.up&talent.flurry_strikes|!buff.zenith.up&(talent.flurry_strikes|cooldown.invoke_xuen_the_white_tiger.remains>3|!fight_style.patchwerk)|buff.zenith.up&(talent.flurry_strikes|!buff.bloodlust.up)&(fight_style.patchwerk|target.time_to_die>5)" );
   st->add_action( "rushing_wind_kick" );
@@ -255,6 +255,7 @@ void live_apl( monk_t* player )
   st->add_action( "rising_sun_kick,if=combo_strike&(buff.flurry_charge.stack<30|chi>3|buff.zenith.up|buff.bloodlust.up|energy>50&chi>2)|combo_strike&buff.heart_of_the_jade_serpent.up" );
   st->add_action( "tiger_palm,if=combo_strike&buff.zenith.up&(chi<1|chi<2&!buff.combo_breaker.up)&talent.celestial_conduit" );
   st->add_action( "blackout_kick,if=combo_strike&buff.zenith.up&chi>1&(talent.obsidian_spiral|cooldown.fists_of_fury.remains|buff.combo_breaker.up)&(chi<6|buff.combo_breaker.up)|combo_strike&buff.bloodlust.up&buff.combo_breaker.up" );
+  st->add_action( "spinning_crane_kick,if=combo_strike&!buff.bloodlust.up&buff.zenith.up&talent.flurry_strikes&chi>3" );
   st->add_action( "slicing_winds" );
   st->add_action( "spinning_crane_kick,if=talent.flurry_strikes&buff.zenith.up&chi>5&combo_strike|combo_strike&buff.bloodlust.up&buff.dance_of_chiji.up&buff.combo_breaker.stack<2" );
   st->add_action( "blackout_kick,if=combo_strike&buff.combo_breaker.up&(buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_unity_within.up)" );
@@ -283,7 +284,7 @@ void live_apl( monk_t* player )
   multi->add_action( "blackout_kick,target_if=max:target.time_to_die,if=combo_strike&buff.zenith.up&chi>1&(talent.obsidian_spiral|cooldown.fists_of_fury.remains|buff.combo_breaker.up)&chi<6" );
   multi->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&buff.combo_breaker.stack<2&talent.sequenced_strikes&buff.dance_of_chiji.remains<4" );
   multi->add_action( "slicing_winds" );
-  multi->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=talent.flurry_strikes&buff.zenith.up&chi>5&combo_strike" );
+  multi->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=talent.flurry_strikes&buff.zenith.up&chi>3&combo_strike" );
   multi->add_action( "blackout_kick,target_if=max:target.time_to_die,if=combo_strike&buff.combo_breaker.up&(buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_unity_within.up)" );
   multi->add_action( "tiger_palm,target_if=max:target.time_to_die,if=chi<5&combo_strike&energy.time_to_max<=gcd.max*3&!buff.zenith.up&!buff.bloodlust.up" );
   multi->add_action( "blackout_kick,target_if=max:target.time_to_die,if=combo_strike&buff.combo_breaker.stack=2" );
