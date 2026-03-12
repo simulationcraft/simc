@@ -15833,6 +15833,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lunar Beam (414613), Lunar Beam (1270292)
                    Family Flags: 109
+#8 (id=1312423)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Misc Value 2: 5960 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lunar Beam (1270292)
+Hotfixed         : NEW EFFECT
 Description      : Further increases the power of Boundless Moonlight.
 
 $?a137010[$@spellicon204066 $@spellname204066
@@ -21021,6 +21025,7 @@ Description      : Ironfur increases your Mastery by $s1%.
 Tooltip          : Mastery increased by $s1%.
 
 Name             : Red Moon (id=1252871) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=8, col=7, max_rank=1, req_points=20, select_idx=100, replace="Moonfire" (id=8921)]
 Class            : Druid
 School           : Arcane
@@ -21037,7 +21042,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Melee Taken
 Affecting Spells : Eclipse (Lunar) (48518 effects: #1, #2), Incarnation: Guardian of Ursoc (102558 effects: #14, #15), Incarnation: Chosen of Elune (102560 effects: #6, #7), Guardian Druid (137010 effects: #22, #23), Restoration Druid (137012 effects: #3, #4, #24, #25), Balance Druid (137013 effects: #14, #15), Moonfire (164812 effects: #3, #4), Starfall (191034 effect#2), Feral Overrides Passive (197692 effects: #1, #2), Twin Moonfire (200818 effects: #1, #2), Lunar Beam (204066 effects: #6, #7), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effects: #2, #3), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Balance of All Things (339946 effect#1), Umbral Embrace (365473 effects: #2, #3, #4, #5), Twin Moonfire (372567 effects: #1, #2), Incarnation: Chosen of Elune (390414 effects: #6, #7), Sabertooth (391722 effect#1), Mastery: Astral Invocation (393014 effects: #1, #2, #5, #6), Balance of All Things (394050 effect#1), Cosmic Rapidity (400059 effect#1), Druid Balance 10.1 Class Set 2pc (405510 effects: #2, #3), Lunar Insight (429530 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Hunt Beneath the Open Skies (439868 effects: #4, #5), Lore of the Grove (449185 effects: #1, #2), Stellar Amplification (450214 effect#1), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Big Winner!!! (1217245 effect#1), Celestial Fire (1240185 effects: #1, #2), Guardian Druid (1256993 effects: #3, #4), Restoration Druid (1256995 effects: #3, #4), Druid Guardian 12.0 Class Set 2pc (1264815 effects: #2, #3), Patient Custodian (1270592 effect#1)
 Family Flags     : 92
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1258287)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.3 | Target: Targeted Enemy (6)
@@ -21199,7 +21204,11 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal
 Attributes       : Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1259466)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1253609 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : Trigger Spell (1253609 -> 0)
+#2 (id=1312315)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1252871
 Tooltip          : During Red Moon, your next $s1 Rage spending abilities will deal $1253609s1~ additional damage and heal you for $1253609s2~.
 
@@ -21212,7 +21221,6 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Affecting Spells : Eclipse (Lunar) (48518 effects: #1, #2), Incarnation: Guardian of Ursoc (102558 effects: #14, #15), Incarnation: Chosen of Elune (102560 effects: #6, #7), Guardian Druid (137010 effects: #22, #23), Restoration Druid (137012 effects: #3, #4, #24, #25), Balance Druid (137013 effects: #14, #15), Moonfire (164812 effects: #3, #4), Starfall (191034 effect#2), Feral Overrides Passive (197692 effects: #1, #2), Twin Moonfire (200818 effects: #1, #2), Lunar Beam (204066 effects: #6, #7), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effects: #2, #3), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Balance of All Things (339946 effect#1), Umbral Embrace (365473 effects: #2, #3, #4, #5), Twin Moonfire (372567 effects: #1, #2), Incarnation: Chosen of Elune (390414 effects: #6, #7), Sabertooth (391722 effect#1), Mastery: Astral Invocation (393014 effects: #1, #2, #5, #6), Balance of All Things (394050 effect#1), Cosmic Rapidity (400059 effect#1), Druid Balance 10.1 Class Set 2pc (405510 effects: #2, #3), Lunar Insight (429530 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Hunt Beneath the Open Skies (439868 effects: #4, #5), Lore of the Grove (449185 effects: #1, #2), Stellar Amplification (450214 effect#1), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Big Winner!!! (1217245 effect#1), Celestial Fire (1240185 effects: #1, #2), Guardian Druid (1256993 effects: #3, #4), Restoration Druid (1256995 effects: #3, #4), Druid Guardian 12.0 Class Set 2pc (1264815 effects: #2, #3), Patient Custodian (1270592 effect#1)
-Triggered By     : Lunar Wrath (1253600)
 Family Flags     : 92
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -22797,7 +22805,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 2691: Fury of Nature (370701 effect#1), Fury of Nature (370701 effect#4)
-                 : 5960: Bask in Moonlight (1271305 effect#4)
+                 : 5960: The Eternal Moon (424113 effect#8), Bask in Moonlight (1271305 effect#4)
 Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #14, #15), Incarnation: Chosen of Elune (102560 effects: #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Lunar Beam (204066 effects: #6, #7), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effects: #6, #7), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Initial Druid (417382 effects: #1, #2), The Eternal Moon (424113 effects: #6, #7), Arcane Affinity (429540 effects: #1, #2), Stellar Command (429668 effect#3), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2), Guardian Druid (1256993 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Triggered By     : Lunar Beam (204066)
 Family Flags     : 77, 109
