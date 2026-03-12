@@ -5348,6 +5348,17 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    demon_hunter_spell_t::init_finished();
+    harmful = !is_precombat;  // Do not count towards the precombat hostile action limit
+  }
+
+  bool usable_precombat() const override
+  {
+    return true;  // Has virtual travel time due to Sigil activation delay
+  }
+
   void execute() override
   {
     demon_hunter_spell_t::execute();
