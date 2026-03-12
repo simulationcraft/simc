@@ -8767,7 +8767,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( p()->talent.havoc.ragefire->ok() )
       {
-        make_event( *sim, 0_ms, [ this ] {
+        make_event( *sim, 200_ms, [ this ] {
           p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
           ragefire_accumulator      = 0;
           ragefire_crit_accumulator = 0;
@@ -8830,7 +8830,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, 1_ms, [ this ] { trigger(); } );
+            make_event( sim, 300_ms, [ this ] { trigger(); } );
           }
         } );
       }
