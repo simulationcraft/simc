@@ -27,6 +27,7 @@ actions=call_action_list,name=variables
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither
+actions+=/call_action_list,name=aoe_dia,if=active_enemies>=2&talent.diabolic_ritual
 actions+=/soul_fire,if=soul_shard<=4
 actions+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20
 actions+=/conflagrate,if=soul_shard<=4.2&buff.backdraft.stack<1
@@ -42,6 +43,21 @@ actions+=/chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.in
 actions+=/infernal_bolt,if=soul_shard<=3
 actions+=/channel_demonfire
 actions+=/incinerate
+
+actions.aoe_dia=summon_infernal
+actions.aoe_dia+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20&active_enemies<=4
+actions.aoe_dia+=/rain_of_fire,if=((soul_shard>=(3.5-0.1*(active_dot.immolate)))|buff.alythesss_ire.up)&active_enemies>=4
+actions.aoe_dia+=/conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=dot_refreshable_count.immolate>0&!dot.immolate.refreshable
+actions.aoe_dia+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(active_enemies<=(3+buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6-talent.destructive_rapidity+buff.fiendish_cruelty.up))
+actions.aoe_dia+=/ruination
+actions.aoe_dia+=/cataclysm,if=raid_event.adds.in>15|talent.lake_of_fire
+actions.aoe_dia+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8|time<5
+actions.aoe_dia+=/infernal_bolt,if=soul_shard<3
+actions.aoe_dia+=/chaos_bolt,if=active_enemies<=3&variable.ritual_length>4
+actions.aoe_dia+=/soul_fire,target_if=min:(dot.immolate.remains+100*debuff.havoc.remains),if=soul_shard<4&(talent.avatar_of_destruction&active_enemies<=10|active_enemies<=5)
+actions.aoe_dia+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&active_dot.immolate<=5&!talent.cataclysm&target.time_to_die>18
+actions.aoe_dia+=/conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=buff.backdraft.stack<2|!talent.backdraft
+actions.aoe_dia+=/incinerate
 
 actions.aoe_hc=summon_infernal
 actions.aoe_hc+=/malevolence

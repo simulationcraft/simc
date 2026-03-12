@@ -8,32 +8,32 @@
 namespace warlock_apl{
   std::string potion( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "tempered_potion_3";
-    return ( p->true_level >= 70 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
+    if ( p->true_level >= 90 ) return "lights_potential_2";
+    return ( p->true_level >= 80 ) ? "tempered_potion_3" : "disabled";
   }
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "flask_of_alchemical_chaos_3";
-    return ( p->true_level >= 70 ) ? "iced_phial_of_corrupting_rage_3" : "disabled";
+    if ( p->true_level >= 90 ) return "flask_of_the_magisters_2";
+    return ( p->true_level >= 80 ) ? "flask_of_alchemical_chaos_3" : "disabled";
   }
 
   std::string food( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "feast_of_the_divine_day";
-    return ( p->true_level >= 70 ) ? "fated_fortune_cookie" : "disabled";
+    if ( p->true_level >= 90 ) return "blooming_feast";
+    return ( p->true_level >= 80 ) ? "feast_of_the_divine_day" : "disabled";
   }
 
   std::string rune( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "crystallized";
-    return ( p->true_level >= 70 ) ? "draconic_augment_rune" : "disabled";
+    if ( p->true_level >= 90 ) return "void_touched";
+    return ( p->true_level >= 80 ) ? "crystallized" : "disabled";
   }
 
   std::string temporary_enchant( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "main_hand:algari_mana_oil_3";
-    return ( p->true_level >= 70 ) ? "main_hand:howling_rune_3" : "disabled";
+    if ( p->true_level >= 90 ) return "main_hand:thalassian_phoenix_oil_2";
+    return ( p->true_level >= 80 ) ? "main_hand:algari_mana_oil_3" : "disabled";
   }
 
 //affliction_apl_start
@@ -238,6 +238,7 @@ void destruction( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe_hc = p->get_action_priority_list( "aoe_hc" );
+  action_priority_list_t* aoe_dia = p->get_action_priority_list( "aoe_dia" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
@@ -262,6 +263,7 @@ void destruction( player_t* p )
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither" );
+  default_->add_action( "call_action_list,name=aoe_dia,if=active_enemies>=2&talent.diabolic_ritual" );
   default_->add_action( "soul_fire,if=soul_shard<=4" );
   default_->add_action( "chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20" );
   default_->add_action( "conflagrate,if=soul_shard<=4.2&buff.backdraft.stack<1" );
@@ -292,6 +294,21 @@ void destruction( player_t* p )
   aoe_hc->add_action( "incinerate,if=talent.fire_and_brimstone&buff.backdraft.up" );
   aoe_hc->add_action( "conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=buff.backdraft.stack<2|!talent.backdraft" );
   aoe_hc->add_action( "incinerate" );
+
+  aoe_dia->add_action( "summon_infernal" );
+  aoe_dia->add_action( "chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20&active_enemies<=4" );
+  aoe_dia->add_action( "rain_of_fire,if=((soul_shard>=(3.5-0.1*(active_dot.immolate)))|buff.alythesss_ire.up)&active_enemies>=4" );
+  aoe_dia->add_action( "conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=dot_refreshable_count.immolate>0&!dot.immolate.refreshable" );
+  aoe_dia->add_action( "shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(active_enemies<=(3+buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6-talent.destructive_rapidity+buff.fiendish_cruelty.up))" );
+  aoe_dia->add_action( "ruination" );
+  aoe_dia->add_action( "cataclysm,if=raid_event.adds.in>15|talent.lake_of_fire" );
+  aoe_dia->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8|time<5" );
+  aoe_dia->add_action( "infernal_bolt,if=soul_shard<3" );
+  aoe_dia->add_action( "chaos_bolt,if=active_enemies<=3&variable.ritual_length>4" );
+  aoe_dia->add_action( "soul_fire,target_if=min:(dot.immolate.remains+100*debuff.havoc.remains),if=soul_shard<4&(talent.avatar_of_destruction&active_enemies<=10|active_enemies<=5)" );
+  aoe_dia->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&active_dot.immolate<=5&!talent.cataclysm&target.time_to_die>18" );
+  aoe_dia->add_action( "conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=buff.backdraft.stack<2|!talent.backdraft" );
+  aoe_dia->add_action( "incinerate" );
 
   items->add_action( "use_item,slot=trinket1,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_1_will_lose_cast)&(variable.trinket_priority=1|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.2.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_1_buffs|(variable.trinket_1_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,slot=trinket2,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_2_will_lose_cast)&(variable.trinket_priority=2|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.1.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_2_buffs|(variable.trinket_2_buff_duration+1>=fight_remains)" );

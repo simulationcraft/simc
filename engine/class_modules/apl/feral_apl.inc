@@ -27,7 +27,7 @@ def->add_action( "invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|!ta
 def->add_action( "call_action_list,name=custom_timers,if=variable.use_custom_timers" );
 def->add_action( "variable,name=tfRemains,op=setif,condition=variable.use_custom_timers,value=(!variable.tfNow*(variable.nextTFTimer-time)),value_else=cooldown.tigers_fury.remains","instead of using tigers fury remains, we want to use our next timer for tigers fury" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
-def->add_action( "tigers_fury,if=!variable.use_custom_timers|variable.tfNow","tigers fury on cooldown" );
+def->add_action( "tigers_fury,if=(cooldown.frantic_frenzy.remains<buff.tigers_fury.duration-1.5|cooldown.frantic_frenzy.remains>22|!talent.frantic_frenzy|spell_targets=1)&!variable.use_custom_timers|variable.tfNow","tigers fury on cooldown" );
 def->add_action( "rake,if=buff.prowl.up|buff.shadowmeld.up","rake out of stealth" );
 def->add_action( "chomp,if=buff.chomp_enabler.up","chomp if its possible. Check this in aoe" );
 def->add_action( "call_action_list,name=cooldown" );
@@ -38,9 +38,10 @@ def->add_action( "call_action_list,name=builder,if=spell_targets=1&combo_points<
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4" );
 def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
-aoe_builder->add_action( "rake,target_if=refreshable,if=talent.doubleclawed_rake|hero_tree.wildstalker&active_dot.rake=0","ensure at last 1 rake at all times if wildstalker, rake highest prio with dcr" );
+aoe_builder->add_action( "rake,target_if=refreshable,if=(talent.doubleclawed_rake&(!talent.lunar_inspiration|!talent.panthers_guile|active_dot.rake<5))|hero_tree.wildstalker&(active_dot.rake<2+!talent.panthers_guile+talent.lunar_inspiration)","ensure at last 2(pg)/3(nopg) rake at all times if wildstalker, rake highest prio with dcr. on 4t raking all 4 first (no pg) is 0.3% gain. DCR PG LI rakes up to 6 then moonfire" );
+aoe_builder->add_action( "moonfire_cat,target_if=refreshable","there are scenarios where this is -0.1/-0.2% vs being under cc swipe line, but im willing to scrap that complexity" );
+aoe_builder->add_action( "swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.react&spell_targets>2&(hero_tree.druid_of_the_claw|spell_targets<7)","with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t. Ignore cc at 2t. Wildstalker begins ignoring cc again if you have the energy to rake at 7t" );
 aoe_builder->add_action( "swipe_cat,if=buff.sudden_ambush.up&spell_targets.swipe_cat>=5+(2*hero_tree.wildstalker)","sa swipe takes precedence over single-rake at 5t for dotc 7t for wildstalker (0.1% at 7t for wildstalker, 0.2% for dotc at 5t)" );
-aoe_builder->add_action( "swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.up","with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t" );
 aoe_builder->add_action( "rake,target_if=refreshable,if=hero_tree.wildstalker|spell_targets.swipe_cat<=variable.dotc_rake_threshold","no dcr, spread rakes up to 3t(ws+noiw)->5t(nows+noiw/wild slashes+iw)->8t(no ws+iw)" );
 aoe_builder->add_action( "rake,target_if=min:pmultiplier,if=persistent_multiplier>pmultiplier&spell_targets=2","on 2t replace weaker rakes with stronger ones. (its a tiny gain for 3t too, @0.2% but keeping track of 3 snapshots is a bit much I think)" );
 aoe_builder->add_action( "shred,if=combo_points<=1&spell_targets=2&talent.panthers_guile","with panther's guile, its worth using shred at 0/1 combo points on 2t" );
@@ -94,13 +95,13 @@ cooldown->add_action( "use_item,slot=trinket1,if=fight_remains<=(21<?trinket.1.p
 cooldown->add_action( "use_item,slot=trinket2,if=fight_remains<=(21<?trinket.2.proc.any_dps.duration)" );
 cooldown->add_action( "incarnation,if=buff.tigers_fury.up&!variable.holdBerserk&!variable.use_custom_timers|variable.zerkNow" );
 cooldown->add_action( "berserk,if=buff.tigers_fury.up&!variable.holdBerserk&!variable.use_custom_timers|variable.zerkNow" );
-cooldown->add_action( "feral_frenzy,if=combo_points<=2+(2*buff.bs_inc.up)","0/1/2 combo points outside zerk, 0-4 combo points inside zerk" );
-cooldown->add_action( "frantic_frenzy,if=combo_points<=2+(2*buff.bs_inc.up)" );
+cooldown->add_action( "feral_frenzy,if=!talent.frantic_frenzy&combo_points<=2+(2*buff.bs_inc.up)","0-2 combo points outside zerk, 0-4 combo points inside zerk" );
+cooldown->add_action( "frantic_frenzy,if=buff.tigers_fury.up&spell_targets>=2|(spell_targets=1|fight_style.dungeonslice|fight_style.dungeonroute)&combo_points<=2+(2*buff.bs_inc.up)" );
 cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buff.bs_inc.remains<5-talent.ashamanes_guidance|buff.tigers_fury.up&!variable.holdConvoke&(prev_gcd.1.rip|prev_gcd.1.ferocious_bite)|variable.use_custom_timers&variable.nextTFTimer+cooldown.convoke_the_spirits.duration-10>variable.nextBSTimer&combo_points<=2","always line up convoke with berserk if you can. If we are using jank tigers fury timings, send naked convoke" );
 
 custom_timers->add_action( "variable,name=currentTFTimer,default=-10,op=set,if=time>variable.nextTFTimer,value=variable.nextTFTimer","hold our current timer" );
 custom_timers->add_action( "variable,name=currentBSTimer,default=-10,op=set,if=time>variable.nextBSTimer,value=variable.nextBSTimer" );
-custom_timers->add_action( "variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=30","Tiger's Fury Timers (the value= are where you would edit, leave the rest alone). I recommend some leeway if youre playing puzzlebox" );
+custom_timers->add_action( "variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=30","Tiger's Fury Timers (the value= are where you would edit, leave the rest alone). I recommend some leeway esp if youre playing puzzlebox" );
 custom_timers->add_action( "variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=60" );
 custom_timers->add_action( "variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=90" );
 custom_timers->add_action( "variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=120" );
@@ -123,5 +124,5 @@ custom_timers->add_action( "variable,name=nextBSTimer,op=set,if=time>variable.ne
 custom_timers->add_action( "variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=363" );
 custom_timers->add_action( "variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=483" );
 custom_timers->add_action( "variable,name=use_custom_timers,op=set,if=time>variable.nextTFTimer&time>variable.nextBSTimer,value=0","if we run out of custom timers, assume default behavior from that point on. THIS MUST STAY BELOW ALL OF THE SET TIMERS" );
-custom_timers->add_action( "variable,name=tfNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentTFTimer+4>time&time>=variable.currentTFTimer)","we are clear to use tigers fury. This is the same as timer < time < timer + 2. So if our timer is 30s, then its true between 30 and 34 seconds." );
-custom_timers->add_action( "variable,name=zerkNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentBSTimer+4>time&time>=variable.currentBSTimer)","we are clear to use berserk. This is the same timer < time < timer + 2, so if our timer is 121s, then its true between 121 and 125 seconds." );
+custom_timers->add_action( "variable,name=tfNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentTFTimer+4>time&time>=variable.currentTFTimer)","we are clear to use tigers fury. This is the same as timer < time < timer + 4. So if our timer is 30s, then its true between 30 and 34 seconds." );
+custom_timers->add_action( "variable,name=zerkNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentBSTimer+4>time&time>=variable.currentBSTimer)","we are clear to use berserk. This is the same timer < time < timer + 4, so if our timer is 121s, then its true between 121 and 125 seconds." );

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -477,7 +477,6 @@ Effects          :
                    Affected Spells (Label): Adaptive Swarm (325727)
 
 Name             : Wrath (id=5176) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -5716,7 +5715,6 @@ Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Starsurge (id=197626) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Feral, Guardian, Restoration [tree=class, row=2, col=9, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
@@ -5740,7 +5738,6 @@ Effects          :
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage.
 
 Name             : Starfire (id=197628) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Feral, Guardian, Restoration [tree=class, row=1, col=8, max_rank=1, req_points=0]
                  : Feral, Guardian [tree=class, row=1, col=8, max_rank=1, req_points=0]
 Class            : Druid
@@ -17477,7 +17474,6 @@ Description      : $@spelldesc441583
 Tooltip          : Your next $?s400254[Raze][Maul] becomes Ravage.
 
 Name             : Ravage (id=441605) [Spell Family (7)] 
-Hotfixed         : GCD (1000 -> 1500)
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -20578,7 +20574,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Frantic Frenzy (id=1244079) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -21122,7 +21117,6 @@ Effects          :
 Description      : $@spelldesc1253461
 
 Name             : Waking Nightmare (id=1253488) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -21138,7 +21132,6 @@ Effects          :
 Description      : $@spelldesc1253461
 
 Name             : Dire Echo (id=1253489) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -21620,7 +21613,6 @@ Effects          :
 Description      : Mark of the Wild is $s1% more effective on yourself.
 
 Name             : Lunar Bolt (id=1263137) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -22711,7 +22703,6 @@ Description      : $@spelldesc1269614
 Tooltip          : Your next cast of Frenzied Regeneration will be echoed.
 
 Name             : Echo of Raze (id=1269972) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee

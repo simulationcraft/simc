@@ -1,18 +1,18 @@
-warlock="MID1_Warlock_Destruction_Diabolist"
+warlock="MID1_Warlock_Destruction_Hellcaller"
 source=default
 spec=destruction
 level=90
 race=Dwarf
 role=spell
 position=ranged_back
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsAGzYYhMw2wGNWYAAgxAjNAMzAYmxYAAAYmZmBAwMDD
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwMDD
 
 # Default consumables
-potion=tempered_potion_3
-flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
-augmentation=crystallized
-temporary_enchant=main_hand:algari_mana_oil_3
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -42,6 +42,7 @@ actions=call_action_list,name=variables
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither
+actions+=/call_action_list,name=aoe_dia,if=active_enemies>=2&talent.diabolic_ritual
 actions+=/soul_fire,if=soul_shard<=4
 actions+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20
 actions+=/conflagrate,if=soul_shard<=4.2&buff.backdraft.stack<1
@@ -57,6 +58,21 @@ actions+=/chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.in
 actions+=/infernal_bolt,if=soul_shard<=3
 actions+=/channel_demonfire
 actions+=/incinerate
+
+actions.aoe_dia=summon_infernal
+actions.aoe_dia+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20&active_enemies<=4
+actions.aoe_dia+=/rain_of_fire,if=((soul_shard>=(3.5-0.1*(active_dot.immolate)))|buff.alythesss_ire.up)&active_enemies>=4
+actions.aoe_dia+=/conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=dot_refreshable_count.immolate>0&!dot.immolate.refreshable
+actions.aoe_dia+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(active_enemies<=(3+buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6-talent.destructive_rapidity+buff.fiendish_cruelty.up))
+actions.aoe_dia+=/ruination
+actions.aoe_dia+=/cataclysm,if=raid_event.adds.in>15|talent.lake_of_fire
+actions.aoe_dia+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8|time<5
+actions.aoe_dia+=/infernal_bolt,if=soul_shard<3
+actions.aoe_dia+=/chaos_bolt,if=active_enemies<=3&variable.ritual_length>4
+actions.aoe_dia+=/soul_fire,target_if=min:(dot.immolate.remains+100*debuff.havoc.remains),if=soul_shard<4&(talent.avatar_of_destruction&active_enemies<=10|active_enemies<=5)
+actions.aoe_dia+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&active_dot.immolate<=5&!talent.cataclysm&target.time_to_die>18
+actions.aoe_dia+=/conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=buff.backdraft.stack<2|!talent.backdraft
+actions.aoe_dia+=/incinerate
 
 actions.aoe_hc=summon_infernal
 actions.aoe_hc+=/malevolence
@@ -91,33 +107,33 @@ actions.variables+=/variable,name=ritual_length,value=buff.diabolic_ritual_mothe
 actions.variables+=/variable,name=trinket_1_will_lose_cast,value=((floor((fight_remains%trinket.1.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.1.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.1.cooldown.duration)+1))|((floor((fight_remains%trinket.1.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.1.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_1_buff_duration)>0)))&cooldown.summon_infernal.remains>20
 actions.variables+=/variable,name=trinket_2_will_lose_cast,value=((floor((fight_remains%trinket.2.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.2.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.2.cooldown.duration)+1))|((floor((fight_remains%trinket.2.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.2.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_2_buff_duration)>0)))&cooldown.summon_infernal.remains>20
 
-head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
-neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890
-shoulders=abyssal_immolators_fury,id=250040,bonus_id=13574/13574,ilevel=289,enchant_id=8031
-back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/13454/13622/13667/9627,crafted_stats=32/36
-chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575,ilevel=289,enchant_id=7987
-wrists=voracious_wristwraps,id=249315,ilevel=289,gem_id=240890
-hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574,ilevel=289
-waist=whisperinscribed_sash,id=249376,ilevel=289,gem_id=240890
-legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240898/240898,enchant_id=7997
-finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/12214/13453/13622/13667/9627,gem_id=240898,enchant_id=7997,crafted_stats=32/36
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240908
+shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12214/12214/12214/12384/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12384/13622/13667/9627,gem_id=240914,crafted_stats=32/49
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574,ilevel=289
+waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240890
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=slippers_of_the_midnight_flame,id=249305,bonus_id=1532/4786/4800/12803/12806,enchant_id=7993
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240890/240890,enchant_id=7967
+finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,gem_id=240898,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=shadow_of_the_empyrean_requiem,id=249810,ilevel=289
-main_hand=belomelorn_the_shattered_talon,id=249283,ilevel=289,enchant_id=7981
-off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
+trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.50
+# gear_ilvl=288.47
 # gear_stamina=17604
-# gear_intellect=1673
-# gear_crit_rating=634
-# gear_haste_rating=1244
-# gear_mastery_rating=606
-# gear_versatility_rating=42
-# gear_leech_rating=249
-# gear_armor=532
+# gear_intellect=1670
+# gear_crit_rating=931
+# gear_haste_rating=917
+# gear_mastery_rating=520
+# gear_versatility_rating=122
+# gear_leech_rating=83
+# gear_avoidance_rating=111
+# gear_armor=531
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1
 soul_shards=0

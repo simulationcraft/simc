@@ -8,11 +8,11 @@ position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjtlBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA
 
 # Default consumables
-potion=tempered_potion_3
-flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
-augmentation=crystallized
-temporary_enchant=main_hand:algari_mana_oil_3
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -156,8 +156,8 @@ off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 # gear_ilvl=288.50
 # gear_stamina=17604
 # gear_intellect=1670
-# gear_crit_rating=753
-# gear_haste_rating=1185
+# gear_crit_rating=760
+# gear_haste_rating=1192
 # gear_mastery_rating=301
 # gear_versatility_rating=237
 # gear_leech_rating=83

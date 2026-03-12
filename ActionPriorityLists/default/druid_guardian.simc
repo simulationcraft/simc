@@ -21,11 +21,13 @@ actions=auto_attack
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=bear
 
-actions.bear=maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled
+actions.bear=bear_form,if=!buff.bear_form.up
+actions.bear+=/maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled
 actions.bear+=/maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled
 actions.bear+=/mangle,if=dot.red_moon.ticking
 actions.bear+=/rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies<=5&rage<30
-actions.bear+=/moonkin_form,if=!buff.moonkin_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies>=6
+actions.bear+=/cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&active_enemies<=5&rage<30
+actions.bear+=/moonkin_form,if=!buff.moonkin_form.up&cooldown.heart_of_the_wild.up&active_enemies>=6
 actions.bear+=/thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)
 actions.bear+=/ironfur,if=!buff.ironfur.up&!buff.ravage.up&!target.cooldown.pause_action.remains
 actions.bear+=/ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!dot.rip.refreshable)

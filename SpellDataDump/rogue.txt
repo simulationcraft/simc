@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66263 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -785,6 +785,7 @@ Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
+Hotfixed         : Description
 Talent Entry     : Generic [free=(Assassination), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -818,7 +819,7 @@ Your Nature and Bleed ]?a319032[
 
 Your Nature ]?a400783[
 
-Your Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]
+Your Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $1291471S1% for $1291471d.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -6227,7 +6228,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3875
-Affecting Spells : Hemotoxin (354124 effect#1), Arterial Precision (400783 effect#1)
+Affecting Spells : Arterial Precision (400783 effect#1)
 Family Flags     : 91
 Attributes       : Is Ability (4), Do Not Sheath (18), Aura Is Debuff (26), No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -6238,7 +6239,6 @@ Effects          :
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046107)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (470679), Crimson Tempest (1247227), Rupture (1270203)
@@ -7637,6 +7637,7 @@ Description      : $@spelldesc340092
 Tooltip          : Damage increased by $w1%.
 
 Name             : Hemotoxin (desc=PvP Talent) (id=354124) [Spell Family (8), Passive, Hidden] 
+Hotfixed         : Description
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7644,13 +7645,14 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 118
                  : 292
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Required by Client (262), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=886329)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Shiv (319504), Shiv (400789)
-                   Family Flags: 91
-Description      : Shiv also reduces the target's healing received by $S1% for $319504d.
+#1 (id=886329)   : Apply Aura (6) | Proc Trigger Spell (42): Hemotoxin
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1291471 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 42), Base Value (-30 -> 0), Misc Value (12 -> 0), Affects Spells, Trigger Spell (0 -> 1291471)
+Description      : Shiv also reduces the target's healing received by $1291471S1% for $1291471d.
 
 Name             : Drink Up Me Hearties (desc=PvP Talent) (id=354425) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -10886,7 +10888,7 @@ Requires weapon  : Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Hemotoxin (354124 effect#1), Arterial Precision (400783 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Arterial Precision (400783 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 54, 91
 Attributes       : Is Ability (4), Do Not Sheath (18), Aura Is Debuff (26), No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -10895,7 +10897,6 @@ Effects          :
 #2 (id=1046118)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046119)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (470679), Crimson Tempest (1247227), Rupture (1270203)
@@ -17627,4 +17628,26 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Damage done increased by $s1%.
 
+
+Name             : Hemotoxin (id=1291471) [Spell Family (8)] 
+Hotfixed         : NEW SPELL
+Class            : Rogue
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Requires weapon  : Dagger
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 3875
+Triggered By     : Hemotoxin (354124)
+Attributes       : Do Not Sheath (18), Aura Is Debuff (26), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1310845)  : Apply Aura (6) | Modify Healing Received% (118)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc354124
+Tooltip          : Healing received reduced by $w1%.
 

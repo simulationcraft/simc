@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.66263
+Class Spell ID List, wow build 12.0.1.66337
 
 Death Knight
 3714     Path of Frost
@@ -15149,6 +15149,7 @@ Paladin
 1283660  Paladin - Midnight PrePatch - 11.2 Class Set 4pc
 1283662  Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283663  Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1291678 *Hammer of Wrath
 
 Priest
 17       Power Word: Shield
@@ -18749,6 +18750,7 @@ Rogue
 1281468  Umbral Edge
 1283637  Rogue - Midnight PrePatch - 11.2 Class Set 2pc
 1283639  Rogue - Midnight PrePatch - 11.2 Class Set 4pc
+1291471  Hemotoxin
 
 Shaman
 370      Purge

@@ -1,7 +1,7 @@
 druid="MID1_Druid_Feral_Wildstalker"
 source=default
 spec=feral
-level=80
+level=90
 race=night_elf
 timeofday=night
 role=attack
@@ -147,7 +147,7 @@ legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=13575/13575/13575/1357
 feet=canopy_walkers_footwraps,id=249382,ilevel=289,enchant_id=7993
 finger1=eye_of_midnight,id=249920,bonus_id=40/12806/13335/13534,ilevel=289,gem_id=240892/240892,enchant_id=7967
 finger2=loa_worshipers_band,id=251513,bonus_id=8960/8960/12066/12214/12214/9627,ilevel=285,gem_id=240892,enchant_id=7967
-trinket1=algethars_puzzle_box,id=193701,ilevel=289
+trinket1=algethar_puzzle_box,id=193701,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
 main_hand=roostwardens_bough,id=251077,ilevel=289,enchant_id=8039
 

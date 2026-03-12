@@ -1,4 +1,4 @@
-// Spell text, wow build 12.0.1.66263
+// Spell text, wow build 12.0.1.66337
 static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -189,7 +189,7 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {    5760, "$@spelldesc5761", "Attack and casting speed slowed by $s1%.", 0 },
   {    5761, "Coats your weapons with a Non-Lethal Poison that lasts for $d. Each strike has a $5761h% chance of poisoning the enemy, clouding their mind and slowing their attack and casting speed by $5760s1% for $5760d.", "Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.", 0 },
   {    5782, "Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.$?a386648[\r\n\r\n$@spelldesc386648][]", "Disoriented.", 0 },
-  {    5938, "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
+  {    5938, "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $1291471S1% for $1291471d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {    6196, "Changes your viewpoint to the targeted location for $d.", "Cannot move while using Far Sight.", 0 },
   {    6197, "Changes your viewpoint to the targeted location for $d. Only usable outdoors.", "Vision is enhanced.", 0 },
   {    6201, "Creates a Healthstone that can be consumed to restore $6262s1% health.$?a386646[\r\n\r\n$@spelldesc386646][]", 0, 0 },
@@ -13569,7 +13569,7 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {  320259, "Increases the amount of Versatility you gain from all sources by $s1%.", "Versatility increased by $s1%.", 0 },
   {  320261, "Critical Strike rating increased by $s1%.", "Critical Strike rating increased by $s1%.", 0 },
   {  320297, "$@spelldesc315362", "Corruption increased by $w1.", 0 },
-  {  320313, "Consume Magic generates $278326s2 Fury when a beneficial Magic effect is successfully removed from the target.", 0, 0 },
+  {  320313, "Consume Magic generates $1277738s1 Fury when a beneficial Magic effect is successfully removed from the target.", 0, 0 },
   {  320331, "Immolation Aura increases your armor by $s1% and causes melee attackers to suffer ${$320334s1/$s3} $@spelldesc395020 damage.", 0, 0 },
   {  320334, "$@spelldesc320331", 0, 0 },
   {  320338, "$@spelldesc258860", "Takes $1245759s1 additional Chaos damage when struck by $@auracaster's Chaos Strike or Blade Dance.", 0 },
@@ -15206,7 +15206,7 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {  354115, "You and your Kindred Spirit each gain a bonus secondary stat based on their Covenant. This bonus is halved for your Kindred Spirit, however both bonuses are doubled while the bond is Empowered.\r\n\r\n|CFFffffffKyrian|r: Mastery increased by $357564s2.\r\n|CFFffffffNight Fae|r: Haste increased by $357564s3%.\r\n|CFFffffffVenthyr|r: Critical Strike chance increased by $357564s4%.\r\n|CFFffffffNecrolord|r: Versatility increased by $357564s5%.", 0, 0 },
   {  354118, "Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   {  354123, "Adaptive Swarm has a $s1% chance to split into two Swarms each time it jumps.", "Adaptive Swarm has a $w1% chance to split into two Swarms each time it jumps.", 0 },
-  {  354124, "Shiv also reduces the target's healing received by $S1% for $319504d.", 0, "PvP Talent" },
+  {  354124, "Shiv also reduces the target's healing received by $1291471S1% for $1291471d.", 0, "PvP Talent" },
   {  354131, "Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000}.1 sec].\r\n", 0, 0 },
   {  354161, "Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} Nature damage over $354163d, stacking $354163u times.", 0, 0 },
   {  354163, "$@spelldesc354161", "Taking $w1 Nature damage every $t1 sec.", 0 },
@@ -28442,7 +28442,6 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   { 1277151, "$@spelldesc1264017", 0, 0 },
   { 1277162, "Shield of the Righteous consumes up to $s2 more Holy Power and deals $s1% increased damage for each additional Holy Power consumed.", 0, 0 },
   { 1277169, "Open to collect 10 Hero and Myth Dawncrests.", 0, 0 },
-  { 1277263, "$@spelldesc1236094", 0, 0 },
   { 1277297, "Fight through the pain, ignoring $s2% of damage taken for $d sec or until ${($s1)*(1+$@versadmg)} damage has been prevented.", "Ignoring $s2% of damage taken, preventing $w1 total damage.", 0 },
   { 1277302, "Rising Sun Kick's damage is increased by your Mastery rating and Thunder Focus Tea resets its cooldown.", 0, 0 },
   { 1277365, "$@spelldesc1267028", 0, 0 },
@@ -28633,17 +28632,19 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   { 1291464, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291471, "$@spelldesc354124", "Healing received reduced by $w1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
-  { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
+// spelltext hotfix entries, wow build 12.0.1.66337
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {    5938,  0, "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $1291471S1% for $1291471d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
+  {  320313,  0, "Consume Magic generates $278326s2 Fury when a beneficial Magic effect is successfully removed from the target.", "Consume Magic generates $1277738s1 Fury when a beneficial Magic effect is successfully removed from the target." },
+  {  354124,  0, "Shiv also reduces the target's healing received by $S1% for $319504d.", "Shiv also reduces the target's healing received by $1291471S1% for $1291471d." },
   { 1251906,  0, "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$1252383s2} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.", "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$s1} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per." },
   { 1259130,  0, nullptr, "$@spelldesc1244276" },
-  { 1281574,  0, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target$?a1281574[, inflicting $w1 Twilight damage split between nearby enemies][]." },
 } };
 
-// Spell description variables, wow build 12.0.1.66263
+// Spell description variables, wow build 12.0.1.66337
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29340,7 +29341,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66263
+// spelldesc_vars hotfix entries, wow build 12.0.1.66337
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
