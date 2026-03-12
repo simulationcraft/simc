@@ -5341,9 +5341,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
       if ( _dot->is_ticking() )
       {
         _dot->adjust_duration( red_moon_extend );
-
-        if ( !p()->bugs )
-          p()->resource_gain( RESOURCE_RAGE, red_moon_rage, red_moon_gain );
+        p()->resource_gain( RESOURCE_RAGE, red_moon_rage, red_moon_gain );
       }
     }
   }
@@ -9839,7 +9837,7 @@ void druid_t::activate()
         g = get_gain( "Hunger for Battle" ),
         amt = find_effect( find_spell( 1244550 ), E_ENERGIZE ).resource( RESOURCE_ENERGY ) ]
       ( player_t* t ) {
-        if ( get_target_data( t )->dots.rip->is_ticking() )
+        if ( auto td = find_target_data( t ); td && td->dots.rip->is_ticking() )
         {
           buff.hunger_for_battle->trigger();
           resource_gain( RESOURCE_ENERGY, amt, g );
@@ -9850,27 +9848,30 @@ void druid_t::activate()
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
-      auto td = get_target_data( t );
-      auto stacks = td->debuff.bloodseeker_vines->check();
-      auto dur = td->dots.bloodseeker_vines->remains();
-      if ( stacks && dur > 0_ms )
+      if ( auto td = find_target_data( t ) )
       {
-        auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
-        const auto& tl = vines->target_list();
-        if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
+        auto stacks = td->debuff.bloodseeker_vines->check();
+        auto dur = td->dots.bloodseeker_vines->remains();
+
+        if ( stacks && dur > 0_ms )
         {
-          // TODO: ugly hack. possibly use custom action_state
-          auto orig_dur = vines->dot_duration;
+          auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
+          const auto& tl = vines->target_list();
+          if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
+          {
+            // TODO: ugly hack. possibly use custom action_state
+            auto orig_dur = vines->dot_duration;
 
-          vines->dot_duration = dur;
-          vines->dual = true;
-          vines->dot_stacks = stacks;
+            vines->dot_duration = dur;
+            vines->dual = true;
+            vines->dot_stacks = stacks;
 
-          vines->execute_on_target( tar );
+            vines->execute_on_target( tar );
 
-          vines->dot_duration = orig_dur;
-          vines->dual = false;
-          vines->dot_stacks = 1;
+            vines->dot_duration = orig_dur;
+            vines->dual = false;
+            vines->dot_stacks = 1;
+          }
         }
       }
     } );
@@ -10483,9 +10484,6 @@ void druid_t::init_spells()
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
-
-  // Effect is cosmetic for tooltip purposes
-  register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
 
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION
@@ -12043,21 +12041,17 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
 bool druid_t::validate_actor()
 {
-  sim->error( error_level_e::SEVERE, "Druid sims are untested and full of bugs. RESULTS ARE UNRELIABLE." );
+  sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
   
   static constexpr std::string_view feral[] = {
     "frantic frenzy does not proc overflowing power",
     "frantic frenzy does not proc coiled to spring",
     "frantic frenzy/unseen attacks assumed to have 500ms delay",
-    "primal fury does not proc from 2nd rake with double-clawed rake",
   };
 
   static constexpr std::string_view guardian[] = {
-    "red moon does not generate rage when the target is hit with mangle",
     "killing blow excess rage does not trigger memory of ysera",
     "when multiple dread shades are active only the latest one casts dire echo",
-    "4th rank of wild guardian does not increase the effectiveness of each echo",
-    "all echoed maul/raze/ravage from wild guardians are at 50% effectiveness",
     "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
     "tier 4pc repeats can proc wild guardian echoes",
   };
@@ -12601,7 +12595,7 @@ void druid_t::init_special_effects()
           throw sc_runtime_error( fmt::format( "{} triggering Moonless Night on {}.", *a, *s->target ) );
         }
 
-        if ( !s->result_amount || !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+        if ( !s->result_amount )
           return;
 
         // raze (400254) & ravage (441605) trigger moonless night despite being an aoe spell
@@ -12610,6 +12604,7 @@ void druid_t::init_special_effects()
         {
           case 164812:  // moonfire
           case 164815:  // sunfire
+          case 400360:  // moonless night
             return;     // end
           case 400254:  // raze
           case 441605:  // ravage
@@ -12620,6 +12615,9 @@ void druid_t::init_special_effects()
             else
               break;    // continue
         }
+
+        if ( auto td = p()->find_target_data( s->target ); !td || !td->dots.moonfire->is_ticking() )
+          return;
 
         druid_cb_t::trigger( a, s );
       }
@@ -13580,16 +13578,17 @@ void druid_t::target_mitigation( school_e school, result_amount_type rt, action_
 
   if ( s->action->player != this )
   {
-    auto td = get_target_data( s->action->player );
+    if ( auto td = find_target_data( s->action->player ) )
+    {
+      if ( talent.rend_and_tear.ok() )
+        s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() * td->dots.thrash->current_stack();
 
-    if ( talent.rend_and_tear.ok() )
-      s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() * td->dots.thrash->current_stack();
+      if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
+        s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
 
-    if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
-      s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
-
-    if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking())
-      s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
+      if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking() )
+        s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
+    }
   }
 
   player_t::target_mitigation( school, rt, s );
@@ -13880,15 +13879,23 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
     {
       // sort by time remaining
       range::sort( tl, [ this, &dot ]( player_t* a, player_t* b ) {
-        return std::invoke( dot, get_target_data( a )->dots )->remains() <
-               std::invoke( dot, get_target_data( b )->dots )->remains();
+        auto td_a = find_target_data( a );
+        auto td_b = find_target_data( b );
+
+        if ( td_a && td_b )
+          return std::invoke( dot, td_a->dots )->remains() < std::invoke( dot, td_b->dots )->remains();
+        else
+          return ( td_a != nullptr ) < ( td_b != nullptr );
       } );
     }
     else
     {
       // prioritize undotted over dotted
       std::partition( tl.begin(), tl.end(), [ this, &dot ]( player_t* t ) {
-        return !std::invoke( dot, get_target_data( t )->dots )->is_ticking();
+        if ( auto td = find_target_data( t ) )
+          return !std::invoke( dot, td->dots )->is_ticking();
+        else
+          return true;
       } );
     }
   }

@@ -7877,7 +7877,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   hit_by_fresh_meat = false;
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
-  dots_rend        = target->get_dot( "rend", &p );
+  dots_rend        = target->get_dot( "rend_dot", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );

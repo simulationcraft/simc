@@ -5742,9 +5742,11 @@ struct consume_t : public consume_base_t
   }
 };
 
+// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
+
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct voidblade_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
@@ -7650,6 +7652,7 @@ struct essence_break_t : public demon_hunter_attack_t
 
 // Felblade =================================================================
 // TODO: Real movement stuff.
+// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
 
 struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
@@ -8767,7 +8770,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( p()->talent.havoc.ragefire->ok() )
       {
-        make_event( *sim, 0_ms, [ this ] {
+        make_event( *sim, 200_ms, [ this ] {
           p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
           ragefire_accumulator      = 0;
           ragefire_crit_accumulator = 0;
@@ -8804,7 +8807,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       add_invalidate( CACHE_ARMOR );
     }
 
-    if ( p->talent.havoc.a_fire_inside )
+    if ( p->talent.havoc.a_fire_inside->ok() )
     {
       set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
       set_max_stack( 5 );
@@ -8830,7 +8833,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, [ this ] { trigger(); } );
+            make_event( sim, 300_ms, [ this ] { trigger(); } );
           }
         } );
       }

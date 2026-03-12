@@ -4125,8 +4125,9 @@ Effects          :
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #6 (id=1072297)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2594 (Label) | Target: Self (1)
-                   Affected Spells (Label): Bristling Fur (155835)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6517 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bristling Fur (155835), Sundering Roar (1253799)
+Hotfixed         : Misc Value (2594 -> 6517)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
@@ -4765,6 +4766,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
                  : 2594
+                 : 6517
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : No Threat (42), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -14685,6 +14687,7 @@ Effects          :
 Description      : Strike with the might of Ursoc, dealing $s1 Physical damage to your target and $s2 to all other enemies in front of you. Damage reduced beyond $s3 targets.
 
 Name             : Moonless Night (id=400278) [Spell Family (7), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Druid
 School           : Arcane
@@ -14695,7 +14698,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Attributes       : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1045106)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
@@ -21232,6 +21235,8 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 5979: Tear Down the Mighty (441846 effect#1)
+                 : 6517
+Stance Mask      : 0x00000010
 Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2), Guardian Druid (1256993 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc (1283647 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc (1283648 effects: #1, #2)
 Family Flags     : 77
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
