@@ -5363,6 +5363,7 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     sigil->place_sigil( target );
+    p()->buff.reavers_glaive->trigger();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
