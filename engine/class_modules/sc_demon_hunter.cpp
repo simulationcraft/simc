@@ -8830,7 +8830,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, [ this ] { trigger(); } );
+            make_event( sim, 1_ms, [ this ] { trigger(); } );
           }
         } );
       }
