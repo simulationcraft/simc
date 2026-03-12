@@ -238227,7 +238227,8 @@ Triggered By     : Arcane Mastery (1241729)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1232896)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcane Mastery | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 66.33289 (coefficient=0.506047) | Trigger Spell: 1236721 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 66.33289 (coefficient=0.506047) | Trigger Spell: 1241729 | Target: Self (1)
+Hotfixed         : Trigger Spell (1236721 -> 1241729)
 Description      : $@spelldesc445385
 
 Name             : Arcane Mastery (id=1236721) [Passive] 
@@ -238236,7 +238237,7 @@ Spell Type       : None
 Max Scaling Level: 90
 Labels           : 969
                  : 974
-Triggered By     : Arcane Mastery (1236712), Arcane Mastery (1241729)
+Triggered By     : Arcane Mastery (1241729)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1232908)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcane Mastery | Scaling Class: Secondary Rating (-7)
@@ -240502,7 +240503,7 @@ Labels           : 969
 Proc Chance      : 101%
 Real PPM         : 3
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Triggered By     : Arcane Mastery (1236721)
+Triggered By     : Arcane Mastery (1236712), Arcane Mastery (1236721)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1240891)  : Apply Aura (6) | Proc Trigger Spell (42): Genius Insight
