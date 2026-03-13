@@ -847,6 +847,7 @@ public:
     const spell_data_t* inner_demon_buff;
     const spell_data_t* inner_demon_damage;
     const spell_data_t* exergy_buff;
+    const spell_data_t* inertia_trigger_buff;
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
     const spell_data_t* soulscar_debuff;
@@ -9779,7 +9780,7 @@ void demon_hunter_t::create_buffs()
   buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
   } );
-  buff.inertia_trigger = make_buff( this, "inertia_trigger", spell_data_t::nil() )->set_quiet( true );
+  buff.inertia_trigger = make_buff( this, "inertia_trigger", spec.inertia_trigger_buff );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
@@ -10903,6 +10904,7 @@ void demon_hunter_t::init_spells()
   spec.inner_demon_buff                          = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
   spec.inner_demon_damage                        = talent_spell_lookup( talent.havoc.inner_demon, 390137 );
   spec.exergy_buff                               = talent_spell_lookup( talent.havoc.exergy, 208628 );
+  spec.inertia_trigger_buff                      = talent_spell_lookup( talent.havoc.inertia, 1215159 );
   spec.inertia_buff                              = talent_spell_lookup( talent.havoc.inertia, 427641 );
   spec.ragefire_damage                           = talent_spell_lookup( talent.havoc.ragefire, 390197 );
   spec.soulscar_debuff                           = talent_spell_lookup( talent.havoc.soulscar, 390181 );
