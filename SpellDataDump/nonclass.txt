@@ -247961,6 +247961,7 @@ Effects          :
 Description      : $@spelldesc1244005
 
 Name             : Shadow of the Empyrean Requiem (id=1259518) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -247978,7 +247979,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35
 Description      : Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.
 
-If either enemy is below $s3% health, gain $s4 Haste for $1264337d as you speed them to their fate.
+If either enemy is below $s3% health, gain $s2 Haste for $1264337d as you speed them to their fate.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Murder Row Swiftstrike Phial (id=1259591) [Hidden] 

@@ -5379,6 +5379,7 @@ Druid
 1283650  Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1286243  Starfall
 1286247  Starfall
+1292031  Dream Guide
 
 Evoker
 351338   Quell
