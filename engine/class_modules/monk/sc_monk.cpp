@@ -4075,8 +4075,7 @@ struct shuffle_t : monk_buff_t<>
     accumulator = 0_s;
   }
 
-  bool trigger( int = -1, double value = DEFAULT_VALUE(), double = -1.0,
-                timespan_t duration = timespan_t::min() ) override
+  bool trigger( int = -1, double = DEFAULT_VALUE(), double = -1.0, timespan_t duration = timespan_t::min() ) override
   {
     if ( !p().talent.brewmaster.shuffle->ok() )
       return false;
@@ -5126,25 +5125,25 @@ bool monk_t::validate_actor()
     return false;
   }
 
-  if ( specialization() == MONK_WINDWALKER && has_hero_tree( HERO_CONDUIT_OF_THE_CELESTIALS ) )
+  int expected = 13;
+  for ( const auto &hero_tree : player_sub_trees )
   {
-    auto count =
-        range::count_if( player_traits, [ is_ptr = is_ptr() ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-            return false;
-          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-          if ( !trait )
-            return false;
-          return static_cast<hero_tree_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
-        } );
+    int count = range::count_if( player_traits,
+                                 [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+                                   if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+                                     return false;
+                                   const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+                                   if ( !trait )
+                                     return false;
+                                   return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+                                 } );
 
     // Report without counting the hidden talent that activates the subtree
     count -= 1;
-    if ( count < 10 )
+    if ( count < expected )
     {
-      sim->error(
-          "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
-          count );
+      sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
+                  expected );
       return false;
     }
   }
