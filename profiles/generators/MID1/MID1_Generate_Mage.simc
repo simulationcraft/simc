@@ -70,7 +70,7 @@ level=90
 race=orc
 role=spell
 position=ranged_back
-talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sssMDAwmZmx2YmZmHAAAAAAsZmZmZAAwYGzYmZmZ2AwMDxMGDGMA
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sssMDAwmZmx2wYmBAAAAAsZmZmZAAwYGzYmZMz2AwMDxMGDmhB
 
 potion=lights_potential_2
 flask=flask_of_the_magisters_2
@@ -92,7 +92,7 @@ finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=796
 finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
 trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=289,enchant_id=8039
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13452,ilevel=289,enchant_id=8039
 
 save=MID1_Mage_Fire.simc
 
