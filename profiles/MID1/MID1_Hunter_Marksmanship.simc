@@ -1,0 +1,121 @@
+hunter="MID1_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=90
+race=orc
+role=attack
+position=ranged_back
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGQmBbAAAAAAAAAzYGzwMmZGzgx0MmZmZ222MzMDzMYmZbwsMYGAAwMzMAwMjNmFDwGG
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_shattered_sun_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/summon_pet,if=talent.unbreakable_bond
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot
+actions.precombat+=/steady_shot
+
+# Executed every time the actor is available.
+actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25
+actions+=/auto_shot
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=draoe,if=active_enemies>2&talent.trick_shots&hero_tree.dark_ranger
+actions+=/call_action_list,name=sentaoe,if=active_enemies>2&talent.trick_shots&hero_tree.sentinel
+actions+=/call_action_list,name=drst,if=hero_tree.dark_ranger
+actions+=/call_action_list,name=sentst,if=hero_tree.sentinel
+
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12|fight_remains<13
+actions.cds+=/berserking,if=buff.trueshot.up|fight_remains<13
+actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
+actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
+actions.cds+=/lights_judgment,if=buff.trueshot.down
+actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31
+
+actions.draoe=black_arrow
+actions.draoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.draoe+=/multishot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
+actions.draoe+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.draoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
+actions.draoe+=/volley,if=!buff.double_tap.up
+actions.draoe+=/aimed_shot,target_if=1+debuff.spotters_mark.remains
+actions.draoe+=/wailing_arrow
+actions.draoe+=/rapid_fire
+actions.draoe+=/steady_shot
+
+actions.drst=black_arrow
+actions.drst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.drst+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.drst+=/arcane_shot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up
+actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
+actions.drst+=/volley,if=!buff.double_tap.up
+actions.drst+=/aimed_shot,target_if=1+debuff.spotters_mark.remains
+actions.drst+=/wailing_arrow
+actions.drst+=/rapid_fire
+actions.drst+=/steady_shot
+
+actions.sentaoe=multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
+actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
+actions.sentaoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.sentaoe+=/volley,if=!buff.double_tap.up
+actions.sentaoe+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentaoe+=/moonlight_chakram
+actions.sentaoe+=/rapid_fire
+actions.sentaoe+=/steady_shot
+
+actions.sentst=volley,if=!buff.double_tap.up&active_enemies=1
+actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies=1&variable.trueshot_ready
+actions.sentst+=/rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.sentst+=/arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up
+actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
+actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready
+actions.sentst+=/volley,if=!buff.double_tap.up&active_enemies>1
+actions.sentst+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentst+=/moonlight_chakram
+actions.sentst+=/rapid_fire
+actions.sentst+=/steady_shot
+
+actions.trinkets=use_items,slots=trinket1:trinket2,if=(cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.up|cooldown.trueshot.remains>45)&!this_trinket.is.algethar_puzzle_box
+actions.trinkets+=/use_item,name=algethar_puzzle_box,if=!buff.double_tap.up&variable.trueshot_ready&cooldown.trueshot.remains<5
+
+head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240967
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240914
+shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
+back=imperators_banner,id=249335,ilevel=289
+chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240914
+hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
+legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
+finger1=signet_of_the_starved_beast,id=249336,bonus_id=1808,ilevel=289,gem_id=240890,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=1808,ilevel=289,gem_id=240908,enchant_id=7967
+trinket1=umbral_plume,id=260235,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=289,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_agility=1352
+# gear_stamina=17342
+# gear_crit_rating=1135
+# gear_haste_rating=411
+# gear_mastery_rating=667
+# gear_versatility_rating=197
+# gear_armor=1256
+# set_bonus=root_wardens_regalia_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

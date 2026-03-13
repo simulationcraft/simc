@@ -9,7 +9,7 @@ position=back
 talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMDzsYGjNtsxMzMzWbzMzAYmZmZWmZmmtZWmZGMmB
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_magisters_2
 food=blooming_feast
 augmentation=void_touched
@@ -97,7 +97,7 @@ actions.reaps+=/cull
 actions.reaps+=/reap
 
 head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240892/240892
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240892
 shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
 back=draconic_nullcape,id=249370,ilevel=289
 chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
@@ -118,8 +118,8 @@ off_hand=blade_of_the_blind_verdict,id=249294,ilevel=289,enchant_id=7983
 # gear_stamina=17589
 # gear_intellect=1844
 # gear_crit_rating=496
-# gear_haste_rating=964
-# gear_mastery_rating=1113
+# gear_haste_rating=972
+# gear_mastery_rating=1118
 # gear_avoidance_rating=19
 # gear_armor=874
 # set_bonus=midnight_season_1_2pc=1

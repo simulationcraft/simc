@@ -50,56 +50,56 @@
 
 # save=MID1_Paladin_Retribution.simc
 
-# paladin=MID1_Paladin_Protection
-# level=80
-# race=human
-# role=tank
-# position=front
-# spec=protection
-# talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMMzyYZMzMzM2mZmxMYGDAAwAAAAAAAQbZmZxwMYMzMbtBAjBGAGsNAAAIAzMLbLtNzYxAAYGMMG
+paladin=MID1_Paladin_Protection
+level=90
+race=draenei
+role=tank
+position=front
+spec=protection
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzAzyMLmZMDLLDzYmFbzYAAAAAAAAg0MziZMmxYmt2AgBADsNAAwMTbzMbzAEYzADWMzMAzMAALzAMzAG
 
-# head=,id=246283,gem_id=213743,ilevel=723
-# neck=,id=185820,gem_id=213470/213491,ilevel=723
-# shoulder=,id=237617,bonus_id=4800/4786/1527/11996,ilevel=723
-# back=,id=235499,bonus_id=12401/9893/12259,enchant_id=7409,gem_id=238045
-# chest=,id=237622,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3,ilevel=723
-# wrist=,id=222435,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213494,ilevel=720,crafted_stats=36/32
-# hands=,id=237620,bonus_id=4800/4786/1527/11996,ilevel=723
-# waist=,id=222431,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213479,ilevel=720,crafted_stats=36/32
-# legs=,id=237618,bonus_id=4800/4786/1527/11996,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
-# feet=,id=243307,ilevel=723
-# finger1=,id=237567,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
-# finger2=,id=221136,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
-# trinket1=,id=242402,bonus_id=4800/4786/1527/11996,ilevel=723
-# trinket2=,id=219309,bonus_id=4800/4786/1527/11996,ilevel=723
-# main_hand=,id=237734,bonus_id=4800/4786/1527/11996,enchant=authority_of_the_depths_3,ilevel=723
-# off_hand=,id=237723,bonus_id=4800/4786/1527/11996,ilevel=723
+head=,id=249961,bonus_id=13575/13575/13575/13575/1808,gem_id=240983,ilevel=289
+neck=,id=249368,bonus_id=13668/4800/4786/12806,gem_id=240890
+shoulder=,id=249959,bonus_id=13574/13574/13574/13574,ilevel=289
+back=,id=251161,bonus_id=4786/12806
+chest=,id=249964,bonus_id=13575/13575/13575,enchant_id=7987,ilevel=289
+wrist=,id=237834,bonus_id=12214/12214/13668/13622/13667/12066/9627/12384,gem_id=240890,crafted_stats=36/32
+hands=,id=151332,bonus_id=13574,ilevel=289
+waist=,id=251112,bonus_id=4786/13668/12806,gem_id=240888
+legs=,id=249960,bonus_id=13575/13575/13575/13575,enchant_id=8159,ilevel=289
+feet=,id=244774,bonus_id=12214/12214/13622/13667/12066/9627/12384,crafted_stats=36/32
+finger1=,id=251217,bonus_id=13668/4800/4786/12806,enchant_id=8025,gem_id=240890
+finger2=,id=251093,bonus_id=13668/4800/4786/12806,enchant_id=8025,gem_id=240890
+trinket1=,id=260235,ilevel=289
+trinket2=,id=193701,ilevel=289
+main_hand=,id=249295,enchant_id=8039,ilevel=289
+off_hand=,id=249275,ilevel=289
 
-# save=MID1_Paladin_Protection.simc
+save=MID1_Paladin_Protection.simc
 
-# paladin=MID1_Paladin_Protection_Templar
-# level=80
-# race=dwarf
-# role=tank
-# position=front
-# spec=protection
-# talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMMzyYZMzMzM2mZmxMYGDAAwAAAAAAAQbZmZxwMYMzMbtBAjBGAGsNAAAzMtNLz2MAB2MAAmBDjB
+paladin=MID1_Paladin_Protection_Lightsmith
+level=90
+race=draenei
+role=tank
+position=front
+spec=protection
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzAzyMLmZMDLLDzYmFbzYAAAAAAAAg0MziZMmxYmt2AgBADsNAAACwMzyySbzMWMwgFzMDwMDAmZAwMDyA
 
-# head=,id=237619,gem_id=213743,ilevel=723
-# neck=,id=237568,gem_id=213470/213491,ilevel=723
-# shoulder=,id=237617,bonus_id=4800/4786/1527/11996,ilevel=723
-# back=,id=235499,bonus_id=12401/9893/12259,enchant_id=7409,gem_id=238045
-# chest=,id=237622,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3,ilevel=723
-# wrist=,id=222435,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213494,ilevel=720,crafted_stats=36/32
-# hands=,id=237620,bonus_id=4800/4786/1527/11996,ilevel=723
-# waist=,id=222431,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213479,ilevel=720,crafted_stats=36/32
-# legs=,id=178818,bonus_id=4800/4786/1527/11996,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
-# feet=,id=243307,bonus_id=4800/4786/1533/12361
-# finger1=,id=237567,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
-# finger2=,id=221141,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
-# trinket1=,id=242401,bonus_id=4800/4786/1527/11996,ilevel=723
-# trinket2=,id=219309,bonus_id=4800/4786/1527/11996,ilevel=723
-# main_hand=,id=237734,bonus_id=4800/4786/1527/11996,enchant=authority_of_the_depths_3,ilevel=723
-# off_hand=,id=237723,bonus_id=4800/4786/1527/11996,ilevel=723
+head=,id=249961,bonus_id=13575/13575/13575/13575/1808,gem_id=240983,ilevel=289
+neck=,id=249368,bonus_id=13668/4800/4786/12806,gem_id=240890
+shoulder=,id=249959,bonus_id=13574/13574/13574/13574,ilevel=289
+back=,id=251161,bonus_id=4786/12806
+chest=,id=249964,bonus_id=13575/13575/13575,enchant_id=7987,ilevel=289
+wrist=,id=237834,bonus_id=12214/12214/13668/13622/13667/12066/9627/12384,gem_id=240890,crafted_stats=36/32
+hands=,id=151332,bonus_id=13574,ilevel=289
+waist=,id=251112,bonus_id=4786/13668/12806,gem_id=240888
+legs=,id=249960,bonus_id=13575/13575/13575/13575,enchant_id=8159,ilevel=289
+feet=,id=244774,bonus_id=12214/12214/13622/13667/12066/9627/12384,crafted_stats=36/32
+finger1=,id=251217,bonus_id=13668/4800/4786/12806,enchant_id=8025,gem_id=240890
+finger2=,id=251093,bonus_id=13668/4800/4786/12806,enchant_id=8025,gem_id=240890
+trinket1=,id=260235,ilevel=289
+trinket2=,id=193701,ilevel=289
+main_hand=,id=249295,enchant_id=8039,ilevel=289
+off_hand=,id=249275,ilevel=289
 
-# save=MID1_Paladin_Protection_Templar.simc
+save=MID1_Paladin_Protection_Lightsmith.simc

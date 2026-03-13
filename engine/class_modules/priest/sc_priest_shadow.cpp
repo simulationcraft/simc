@@ -335,6 +335,12 @@ public:
       may_miss                   = false;
       may_crit                   = true;
       mod                        = _mod;
+
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1384
+      if ( priest().bugs )
+      {
+        spell_power_mod.direct *= 2.0;
+      } 
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -2497,7 +2503,8 @@ void priest_t::trigger_random_idol( action_state_t* s )
       break;
     case idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
-      trigger_idol_of_cthun( s );
+      // Tentacle Slam already rolled this idol. Spawn directly to avoid additional C'Thun RPPM gating.
+      spawn_idol_of_cthun( s );
       break;
     default:
       sim->print_debug( "Could not trigger a valid Idol" );

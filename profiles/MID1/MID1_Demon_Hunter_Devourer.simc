@@ -9,7 +9,7 @@ position=back
 talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMzYmFzYsotNmZmZ2abmZGAjZAIwMzgxMA
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_magisters_2
 food=blooming_feast
 augmentation=void_touched
@@ -97,7 +97,7 @@ actions.reaps+=/cull
 actions.reaps+=/reap
 
 head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575,ilevel=289,gem_id=240983
-neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900/240900
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900
 shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574,ilevel=289
 back=draconic_nullcape,id=249370,ilevel=289
 chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575,ilevel=289,enchant_id=7987
@@ -118,8 +118,8 @@ off_hand=spellbreakers_warglaive,id=237840,bonus_id=8960/12066/12214/12214/12693
 # gear_stamina=17594
 # gear_intellect=1831
 # gear_crit_rating=327
-# gear_haste_rating=1131
-# gear_mastery_rating=1139
+# gear_haste_rating=1138
+# gear_mastery_rating=1151
 # gear_avoidance_rating=19
 # gear_armor=874
 # set_bonus=midnight_season_1_2pc=1

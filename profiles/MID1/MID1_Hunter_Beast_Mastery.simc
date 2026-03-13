@@ -1,0 +1,117 @@
+hunter="MID1_Hunter_Beast_Mastery"
+source=default
+spec=beast_mastery
+level=90
+race=orc
+role=attack
+position=ranged_back
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYG2GzsMzwMmZYYmxYmxMzYGzwMzYGzghmBAAAAAMDAAAzMzMAzshwwsA2MA
+
+# Default consumables
+potion=draught_of_rampant_abandon_2
+flask=flask_of_the_magisters_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
+actions+=/call_action_list,name=drcleave,if=talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)
+actions+=/call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
+actions+=/call_action_list,name=cleave,if=!talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)
+
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30|fight_remains<16
+actions.cds+=/berserking,if=buff.bestial_wrath.up|fight_remains<13
+actions.cds+=/blood_fury,if=buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/fireblood,if=buff.bestial_wrath.up|fight_remains<9
+actions.cds+=/potion,if=buff.bestial_wrath.up|fight_remains<31
+
+actions.cleave=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
+actions.cleave+=/wild_thrash
+actions.cleave+=/bestial_wrath
+actions.cleave+=/kill_command
+actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4
+actions.cleave+=/barbed_shot
+actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd
+
+actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd
+actions.drcleave+=/bestial_wrath
+actions.drcleave+=/wailing_arrow,if=buff.bestial_wrath.remains<execute_time+gcd|fight_remains<execute_time+gcd
+actions.drcleave+=/wild_thrash
+actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drcleave+=/black_arrow,if=buff.withering_fire.up
+actions.drcleave+=/barbed_shot
+actions.drcleave+=/wailing_arrow
+actions.drcleave+=/black_arrow
+actions.drcleave+=/cobra_shot
+
+actions.drst=bestial_wrath
+actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drst+=/black_arrow,if=buff.withering_fire.up
+actions.drst+=/cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4
+actions.drst+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
+actions.drst+=/barbed_shot
+actions.drst+=/black_arrow
+actions.drst+=/cobra_shot
+
+actions.st=barbed_shot,if=cooldown.bestial_wrath.remains<gcd
+actions.st+=/bestial_wrath
+actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3
+actions.st+=/barbed_shot
+actions.st+=/cobra_shot
+
+actions.trinkets=use_item,name=light_company_guidon,if=buff.bestial_wrath.up|fight_remains<21
+actions.trinkets+=/use_item,name=void_execution_mandate,if=buff.bestial_wrath.up|fight_remains<21
+actions.trinkets+=/use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23
+actions.trinkets+=/use_item,name=emberwing_feather,if=buff.bestial_wrath.up|fight_remains<16
+actions.trinkets+=/use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16
+actions.trinkets+=/use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21
+actions.trinkets+=/use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11
+actions.trinkets+=/use_item,name=rangercaptains_iridescent_insignia
+actions.trinkets+=/use_item,name=void_stalkers_contract
+actions.trinkets+=/use_item,name=latchs_crooked_hook
+
+head=primal_sentrys_maw,id=249988,bonus_id=40/1808/12676/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240898
+shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289,enchant_id=8001
+back=imperators_banner,id=249335,ilevel=289
+chest=primal_sentrys_scaleplate,id=249991,bonus_id=40/12676/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240898
+hands=primal_sentrys_talonguards,id=249989,bonus_id=40/12675/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,gem_id=240898
+legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575,ilevel=289,enchant_id=8159
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,enchant_id=7963
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240898/240908,enchant_id=7967
+finger2=bond_of_light,id=249369,bonus_id=1808,ilevel=289,gem_id=240892,enchant_id=7967
+trinket1=radiant_plume,id=249806,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=sunstrike_rifle,id=249279,ilevel=289,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_agility=1361
+# gear_stamina=17574
+# gear_crit_rating=526
+# gear_haste_rating=838
+# gear_mastery_rating=970
+# gear_versatility_rating=100
+# gear_avoidance_rating=362
+# gear_armor=1256
+# set_bonus=root_wardens_regalia_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

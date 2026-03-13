@@ -398,6 +398,7 @@ public:
     buff_t* implacable_tracker;
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
+    damage_buff_t* inspiring_strike;
     damage_buff_t* kingsbane;
     stat_buff_t* regicides_reward;
     buff_t* scent_of_blood;
@@ -811,7 +812,7 @@ public:
 
       player_talent_t zoldyck_recipe;
       player_talent_t regicides_reward;
-      // Inspiring Strike NYI
+      player_talent_t inspiring_strike;
       player_talent_t poisoners_drive;
       player_talent_t deadly_momentum;
       player_talent_t scent_of_blood;
@@ -1805,6 +1806,7 @@ public:
     register_damage_buff( p()->buffs.fatebound_coin_heads );
     register_damage_buff( p()->buffs.finish_the_job );
     register_damage_buff( p()->buffs.flawless_form );
+    register_damage_buff( p()->buffs.inspiring_strike );
     register_damage_buff( p()->buffs.kingsbane );
     register_damage_buff( p()->buffs.momentum_of_despair );
     register_damage_buff( p()->buffs.shadow_focus );
@@ -4153,6 +4155,11 @@ struct envenom_t : public rogue_attack_t
           trigger_combo_point_gain( as<int>( p()->spec.poisoners_drive_energize->effectN( 1 ).base_value() ),
                                     p()->gains.poisoners_drive );
         } );
+      }
+
+      if ( p()->talent.assassination.inspiring_strike->ok() )
+      {
+        p()->buffs.inspiring_strike->trigger( envenom_duration );
       }
 
       p()->buffs.implacable_tracker->trigger();
@@ -9536,6 +9543,7 @@ void rogue_t::init_spells()
   talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
   talent.assassination.improved_garrote = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Garrote" );
   talent.assassination.improved_poisons = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Poisons" );
+  talent.assassination.inspiring_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Strike" );
   talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
   talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
   talent.assassination.iron_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Wire" );
@@ -10244,6 +10252,10 @@ void rogue_t::create_buffs()
         buffs.implacable->trigger( 1, regen_bonus );
         buffs.implacable_tracker->expire();
       }
+      if ( new_ == 0 && talent.assassination.inspiring_strike->ok() )
+      {
+        buffs.inspiring_strike->expire();
+      }
     } );
 
   // Outlaw =================================================================
@@ -10509,6 +10521,18 @@ void rogue_t::create_buffs()
   buffs.implacable_tracker = make_buff( this, "implacable_tracker", spec.implacable_tracker_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ); // Set to 14s in spell data to match Envenom, makes timing easier this way
+
+  // Part of the Envenom buff in effects 8-10 but entirely scripted in-game, handle as a distinct buff in sims for tracking
+  // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
+  buffs.inspiring_strike = make_buff<damage_buff_t>( this, "inspiring_strike", talent.assassination.inspiring_strike, false );
+  buffs.inspiring_strike->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  if ( talent.assassination.inspiring_strike->ok() )
+  {
+    const double talent_value = talent.assassination.inspiring_strike->effectN( 1 ).percent();
+    buffs.inspiring_strike->set_direct_mod( spec.envenom, 8, talent_value );
+    buffs.inspiring_strike->set_periodic_mod( spec.envenom, 9, talent_value );
+    buffs.inspiring_strike->set_auto_attack_mod( spec.envenom, 10, talent_value );
+  }
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::DISABLED );

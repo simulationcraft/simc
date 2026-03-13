@@ -1,0 +1,125 @@
+hunter="MID1_Hunter_Survival_Sentinel_2H"
+source=default
+spec=survival
+level=90
+race=pandaren
+role=attack
+position=back
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNjZmxMPwy8AAAAAAAMjZmZYGDjZwYaGAAAAwAAYZbmZWMzMzYmZMAMDbMMGzYjB
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=plst,if=active_enemies<3&talent.howl_of_the_pack_leader
+actions+=/call_action_list,name=plcleave,if=active_enemies>2&talent.howl_of_the_pack_leader
+actions+=/call_action_list,name=sentst,if=active_enemies<3&!talent.howl_of_the_pack_leader
+actions+=/call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader
+
+# CDS
+actions.cds=blood_fury,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16
+actions.cds+=/harpoon,if=prev.kill_command
+actions.cds+=/ancestral_call,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/fireblood,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/berserking,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/muzzle
+actions.cds+=/potion,if=target.time_to_die<25|cooldown.takedown.ready
+actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
+
+# AOE - PL
+actions.plcleave=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
+actions.plcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.plcleave+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
+actions.plcleave+=/flamefang_pitch
+actions.plcleave+=/wildfire_bomb,if=full_recharge_time<gcd
+actions.plcleave+=/boomstick,if=buff.tip_of_the_spear.up
+actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up
+actions.plcleave+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.plcleave+=/kill_command,if=cooldown.takedown.remains
+actions.plcleave+=/wildfire_bomb
+actions.plcleave+=/takedown
+
+# ST - PL
+actions.plst=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
+actions.plst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.plst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
+actions.plst+=/flamefang_pitch
+actions.plst+=/boomstick,if=buff.tip_of_the_spear.up
+actions.plst+=/wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up
+actions.plst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.plst+=/kill_command,if=cooldown.takedown.remains
+actions.plst+=/wildfire_bomb
+actions.plst+=/takedown
+
+# AOE - Sent
+actions.sentcleave=kill_command,if=buff.tip_of_the_spear.stack=0
+actions.sentcleave+=/wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)
+actions.sentcleave+=/boomstick,if=buff.tip_of_the_spear.up
+actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
+actions.sentcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.sentcleave+=/takedown,if=buff.tip_of_the_spear.up
+actions.sentcleave+=/moonlight_chakram,if=buff.tip_of_the_spear.up
+actions.sentcleave+=/flamefang_pitch,if=talent.flamefang_pitch&buff.tip_of_the_spear.up
+actions.sentcleave+=/raptor_strike,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up
+actions.sentcleave+=/kill_command
+
+# ST - Sent
+actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)
+actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains
+actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
+actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.sentst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
+actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
+actions.sentst+=/moonlight_chakram,if=buff.tip_of_the_spear.up
+actions.sentst+=/flamefang_pitch
+actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.sentst+=/kill_command,if=cooldown.takedown.remains
+actions.sentst+=/takedown
+
+head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240890
+shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
+back=draconic_nullcape,id=249370,ilevel=289
+chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240908
+hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
+legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
+finger1=occlusion_of_void,id=251217,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
+finger2=omission_of_light,id=251093,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
+trinket1=radiant_plume,id=249806,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=inescapable_reach,id=249302,ilevel=289,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_agility=1243
+# gear_stamina=17342
+# gear_crit_rating=800
+# gear_haste_rating=693
+# gear_mastery_rating=966
+# gear_versatility_rating=68
+# gear_armor=1256
+# set_bonus=root_wardens_regalia_2pc=1
+# set_bonus=voidlight_bindings_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

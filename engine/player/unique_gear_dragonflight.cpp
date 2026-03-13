@@ -3058,7 +3058,7 @@ void tome_of_unstable_power( special_effect_t& effect )
 // 383781 Driver and Buff
 void algethar_puzzle_box( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "algethar_puzzle_box" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "algethar_puzzle" } ) )
     return;
 
   struct puzzle_box_channel_t : public proc_spell_t

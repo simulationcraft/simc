@@ -433,16 +433,6 @@ void flames_of_the_sindorei( special_effect_t& effect )
 void stat_weapon_enchant( special_effect_t& effect )
 {
   auto proc_value = effect.driver()->effectN( 1 ).average( effect );
-
-  // Arcane Mastery rank 1 looks bugged and triggers rank 2 instead of the rppm driver. After getting the value,
-  // manually set the effect spell_id to the rank 2 spell, which has correct data. It's currently unknown if this data
-  // bug has any detrimental effect on the enchant in-game.
-  if ( effect.spell_id == 1236712 )
-  {
-    assert( effect.trigger()->id() == 1236721 && "Arcane Mastery Rank 1 fix no longer necessary." );
-    effect.spell_id = 1236721;
-  }
-
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_subtype = proc_data->effectN( 1 ).subtype();
 

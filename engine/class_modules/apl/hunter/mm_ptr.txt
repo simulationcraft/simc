@@ -40,9 +40,9 @@ actions.drst+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.sta
 actions.drst+=/arcane_shot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up
 actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.drst+=/volley,if=!buff.double_tap.up
+actions.drst+=/wailing_arrow,if=cooldown.aimed_shot.charges<2
+actions.drst+=/rapid_fire,if=cooldown.aimed_shot.charges<2
 actions.drst+=/aimed_shot,target_if=1+debuff.spotters_mark.remains
-actions.drst+=/wailing_arrow
-actions.drst+=/rapid_fire
 actions.drst+=/steady_shot
 
 actions.sentaoe=multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
