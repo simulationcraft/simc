@@ -80,32 +80,32 @@ save=MID1_Demon_Hunter_Devourer.simc
 
 # save=MID1_Demon_Hunter_Havoc_Aldrachi_Reaver.simc
 
-# demonhunter="MID1_Demon_Hunter_Havoc_Fel-Scarred"
-# level=90
-# race=blood_elf
-# spec=havoc
-# role=attack
-# position=back
-# talents=CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMzYMzMjZmJmZGAAAAAAwsNmhBGLjZ2wyMmxMjhlNYb2MjhZTTjxMzMD2A
+demonhunter="MID1_Demon_Hunter_Havoc_Fel-Scarred"
+spec=havoc
+level=90
+race=blood_elf
+role=attack
+position=back
+talents=CEkAAAAAAAAAAAAAAAAAAAAAAYgZmZMjZmZmhJjZGAAAAAAwsZMbzMmZmtZmx2sNPwMMGzYZgtZxMGmNNNmZGDbAAAAAAAAMzgBAAAgB
 
-# head=,id=237691,bonus_id=1808,gem_id=213743,ilevel=723
-# neck=,id=242406,bonus_id=8781,gem_id=213467/213494,ilevel=723
-# shoulder=,id=237689,ilevel=723
-# back=,id=235499,bonus_id=12401/9893/12259,gem_id=238042
-# chest=,id=237694,enchant_id=7364,ilevel=723
-# wrist=,id=219334,bonus_id=10222/11109/8960/8780/8791,enchant_id=7385,gem_id=213491,ilevel=720
-# hands=,id=237692,ilevel=723
-# waist=,id=237533,bonus_id=1808,gem_id=213491,ilevel=723
-# legs=,id=221153,enchant_id=7601,ilevel=723
-# feet=,id=243306,bonus_id=13504,enchant_id=7424,ilevel=723
-# finger1=,id=242405,bonus_id=8781,enchant_id=7334,gem_id=213491/213491,ilevel=723
-# finger2=,id=237567,bonus_id=8781,enchant_id=7334,gem_id=213479/213455,ilevel=723
-# trinket1=,id=242402,ilevel=723
-# trinket2=,id=242395,ilevel=723
-# main_hand=,id=237727,enchant_id=7439,ilevel=723
-# off_hand=,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7442,enchant=stormriders_fury_3,ilevel=720
+head=spellsnap_shadowmask,id=251109,bonus_id=1808/4786/12806,gem_id=240983
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=4786/4800/12806/13668,gem_id=240908/240908
+shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=4786/4800/12806/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574
+back=rigid_scale_greatcloak,id=258575,bonus_id=4786/12806
+chest=devouring_reavers_engine,id=250036,bonus_id=4786/4800/12806/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8960/12066/12214/12214/12384/13622/13667/9627,gem_id=240908,crafted_stats=32/49
+hands=devouring_reavers_essence_grips,id=250034,bonus_id=4786/12806/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574
+waist=snapvine_cinch,id=251082,bonus_id=1808/4786/12806,gem_id=240908
+legs=devouring_reavers_pistons,id=250032,bonus_id=4786/12806/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=8159
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8960/12066/12214/12214/12214/12214/12384/13622/13667/9627,enchant_id=7963,crafted_stats=32/49
+finger1=sindorei_band_of_hope,id=249919,bonus_id=4786/4800/12806/13668,gem_id=240908,enchant_id=7967
+finger2=platinum_star_band,id=193708,bonus_id=4786/12806/13668,gem_id=240908,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=4786/4800/12806
+trinket2=algethar_puzzle_box,id=193701,bonus_id=4786/12806
+main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=8039
+off_hand=soulblight_cleaver,id=251175,bonus_id=4786/12806,enchant_id=8039
 
-# save=MID1_Demon_Hunter_Havoc.simc
+save=MID1_Demon_Hunter_Havoc.simc
 
 demonhunter="MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver"
 level=90
