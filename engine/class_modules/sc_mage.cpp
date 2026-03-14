@@ -2945,7 +2945,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
-  const bool ac_affects_cast;
+  const bool ac_affects_cast; // Delete whenever 12.0.5 goes live.
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
     arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse ),
