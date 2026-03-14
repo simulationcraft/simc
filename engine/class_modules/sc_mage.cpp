@@ -2945,9 +2945,11 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
+  const bool ac_affects_cast;
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
-    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
+    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse ),
+    ac_affects_cast( data().affected_by( p->buffs.arcane_charge->data().effectN( 4 ) ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3016,7 +3018,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
 
     // Unmentioned by tooltip
-    if ( data().affected_by( p()->buffs.arcane_charge->data().effectN( 4 ) ) )
+    if ( ac_affects_cast )
       mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
     return mul;
