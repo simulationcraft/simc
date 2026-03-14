@@ -1659,7 +1659,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 
   double composite_target_multiplier( player_t* target ) const override
   {
-    double m = attack_t::composite_target_multiplier( target );
+    double m = base_t::composite_target_multiplier( target );
     auto target_data = td( target );
     if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
     target_data->debuffs_colossus_smash->up() && p()->buff.master_of_warfare_colossus_smash->up() )
