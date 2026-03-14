@@ -3498,7 +3498,7 @@ struct heroic_strike_t : public slam_base_t
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
     {
-      p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
+      // p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
       p()->buff.master_of_warfare_colossus_smash->trigger();
     }
   }
