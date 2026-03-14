@@ -135,18 +135,10 @@ void monk_action_t<Base>::apply_buff_effects()
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
-      const std::array<unsigned, 3> rsk_ids = {
-          p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.glory_of_the_dawn_damage->id() };
-
-      double value = effect.mastery_value();
-      if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
-        value *= 1 + p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
           .set_func( [ & ] { return ww_mastery; } )
-          .set_value( value )
+          .set_value( effect.mastery_value() )
           .set_mastery( true )
           .set_eff( &effect );
     };
@@ -876,6 +868,13 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_note( "Nearby Enemy Scaling" )
             .set_eff( &effect );
       }
+
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && !player->bugs )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.combo_strikes )
+            .set_value( effect.percent() )
+            .set_note( "Applies when buffed by Mastery" )
+            .set_eff( &effect );
     }
 
     void impact( action_state_t *state ) override
@@ -988,6 +987,12 @@ struct rising_sun_kick_t : monk_melee_attack_t
     damage_t( monk_t *player )
       : combined_type_t( player, "rising_sun_kick_damage", player->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && player->bugs )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.combo_strikes )
+            .set_value( effect.percent() )
+            .set_note( "Applies when buffed by Mastery" )
+            .set_eff( &effect );
     }
   };
 
@@ -5128,15 +5133,15 @@ bool monk_t::validate_actor()
   int expected = 13;
   for ( const auto &hero_tree : player_sub_trees )
   {
-    int count = (int)( range::count_if( player_traits,
-                                 [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-                                   if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-                                     return false;
-                                   const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-                                   if ( !trait )
-                                     return false;
-                                   return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
-                                 } ) );
+    int count = as<int>( range::count_if(
+        player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+            return false;
+          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+          if ( !trait )
+            return false;
+          return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+        } ) );
 
     // Report without counting the hidden talent that activates the subtree
     count -= 1;
@@ -6953,6 +6958,7 @@ public:
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
+    ReportIssue( "Sunfire Spiral only applies to Rising Sun Kick.", "20205-03-14", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";
