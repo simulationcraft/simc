@@ -3016,7 +3016,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
 
     // Unmentioned by tooltip
-    if ( sim->dbc->ptr )
+    if ( data().affected_by( p()->buffs.arcane_charge->data().effectN( 4 ) ) )
       mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
     return mul;
