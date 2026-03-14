@@ -28,6 +28,18 @@ ignored_comments = [
     '# Executed every time the actor is available.',
 ]
 
+def strip_whitespace_preserve_quotes(s):
+    """Strip whitespace outside of double-quoted regions."""
+    result = []
+    in_quotes = False
+    for c in s:
+        if c == '"':
+            in_quotes = not in_quotes
+            result.append(c)
+        elif in_quotes or not c.isspace():
+            result.append(c)
+    return ''.join(result)
+
 # Returns the next SimC string/line in file (defined as a comment line or TCI syntax to next whitespace)
 def read_by_whitespace(fileObj):
     for line in fileObj:
@@ -35,8 +47,9 @@ def read_by_whitespace(fileObj):
             if line.strip() not in ignored_comments:
                 yield line
         else:
-            for token in line.split(): # If it doesn't then just yield until next whitespace as TCI commands count them as line breaks
-                yield token
+            stripped = strip_whitespace_preserve_quotes(line)
+            if stripped:
+                yield stripped
 
 # Opens the input file and generates C++ syntax apl from the given TCI syntax APL. List of sub-action lists returned in subaplList and list of actions (with comments) returned in aplList. aplList is formatted already.
 def read_apl(inputFilePath):

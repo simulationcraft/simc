@@ -722,13 +722,32 @@ void option_db_t::parse_line( util::string_view line )
     return;
   }
 
-  auto tokens = util::string_split_allow_quotes( line, " \t\n\r" );
+  // Strip whitespace outside of double-quoted regions.
+  // Since spaces are never valid within option tokens (they are
+  // already used as token separators), this is a lossless operation
+  // that allows users to write readable .simc files with spaces.
+  std::string stripped;
+  stripped.reserve( line.size() );
+  bool in_quotes = false;
+  for ( char c : line )
+  {
+    if ( c == '"' )
+    {
+      in_quotes = !in_quotes;
+      stripped += c;
+    }
+    else if ( in_quotes || !is_white_space( c ) )
+    {
+      stripped += c;
+    }
+  }
 
-  for( const auto& token : tokens )
+  auto tokens = util::string_split_allow_quotes( stripped, " \t\n\r" );
+
+  for ( const auto& token : tokens )
   {
     parse_token( token );
   }
-
 }
 
 // option_db_t::parse_token =================================================
