@@ -4944,7 +4944,6 @@ void monk_t::parse_player_effects()
   parse_target_effects( td_fn( &monk_td_t::dots_t::breath_of_fire ), talent.brewmaster.breath_of_fire_dot );
 
   // windwalker talent auras
-  parse_effects( buff.memory_of_the_monastery );
   parse_effects( buff.momentum_boost_speed );
   parse_effects( talent.windwalker.ferociousness, [ & ]( double value ) {
     if ( buff.invoke_xuen->check() )
@@ -5504,7 +5503,6 @@ void monk_t::init_spells()
     talent.windwalker.echo_technique                 = _ST( "Echo Technique" );
     talent.windwalker.universal_energy               = _ST( "Universal Energy" );
     talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
-    talent.windwalker.memory_of_the_monastery_buff   = find_spell( 454970 );
     talent.windwalker.rushing_wind_kick              = _ST( "Rushing Wind Kick" );
     talent.windwalker.rushing_wind_kick_buff         = find_spell( 1250554 );
     talent.windwalker.rushing_wind_kick_action       = find_spell( 467307 );
@@ -6031,11 +6029,6 @@ void monk_t::create_buffs()
                          talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->ok(), this,
                          "invoke_xuen_the_white_tiger", talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger )
                          ->add_invalidate( CACHE_CRIT_CHANCE );
-
-  buff.memory_of_the_monastery =
-      make_buff_fallback( talent.windwalker.memory_of_the_monastery->ok(), this, "memory_of_the_monastery",
-                          talent.windwalker.memory_of_the_monastery_buff )
-          ->set_trigger_spell( talent.windwalker.memory_of_the_monastery );
 
   buff.momentum_boost_damage =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
@@ -6955,7 +6948,6 @@ public:
     };
 
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
     ReportIssue( "Sunfire Spiral only applies to Rising Sun Kick.", "20205-03-14", true );
