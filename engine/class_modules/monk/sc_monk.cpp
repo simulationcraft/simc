@@ -1853,12 +1853,15 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       bool allowed;
 
-      damage_t( monk_t *player )
+      damage_t( monk_t *player, weapon_t *weapon )
         : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
         may_miss                  = false;
+
+        if ( weapon->group() == WEAPON_2H )
+          add_parse_entry( da_multiplier_effects ).set_value( 3.6 / 2.6 * 2.0 - 1.0 ).set_note( "Two-hand adjustment" );
       }
 
       void reset() override
@@ -1892,7 +1895,7 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( action_t *dt = player->find_action( "dual_threat" ); dt )
         damage = debug_cast<damage_t *>( dt );
       else
-        damage = new damage_t( player );
+        damage = new damage_t( player, weapon );
 
       if ( action_t *aa = player->find_action( "auto_attack" ); aa )
         aa->add_child( damage );
