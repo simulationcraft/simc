@@ -12287,12 +12287,15 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
     unsigned active_fragments = get_active_soul_fragments( frag->type );
     if ( active_fragments > max_soul_frags )
     {
-      // Find and delete the oldest active fragment of this type.
+      // Find and consume the oldest active fragment of this type.
+      // 2026-03-13 -- WCL analysis shows overflow consumption is instant in-game
+      //               (fragments go 7->6 at the same timestamp), consistent with
+      //               how Soul Cleave and Spirit Bomb consume with instant=true.
       for ( auto& it : soul_fragments )
       {
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
-          it->consume( false );
+          it->consume( true );
 
           if ( sim->debug )
           {
