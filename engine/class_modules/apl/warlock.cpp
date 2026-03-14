@@ -169,58 +169,75 @@ void demonology( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
+  action_priority_list_t* variables = p->get_action_priority_list( "soulharvest" );
+  action_priority_list_t* variables = p->get_action_priority_list( "diabolist" );
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_actions( "variable,name=in_opener,op=set,value=1" );
+  precombat->add_actions( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_actions( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  precombat->add_actions( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration" );
+  precombat->add_actions( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration" );
+  precombat->add_actions( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)" );
+  precombat->add_actions( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.2.cooldown.duration=0)" );
+  precombat->add_actions( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl" );
+  precombat->add_actions( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>(((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
   precombat->add_action( "power_siphon" );
-  precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
+  precombat->add_action( "demonbolt,if=!buff.power_siphon.up&(talent.ruination&!talent.grimoire_imp_lord|talent.ruination&!talent.summon_doomguard)" );
   precombat->add_action( "shadow_bolt" );
 
-  default_->add_action( "potion,if=pet.demonic_tyrant.active" );
+  default_->add_action( "potion,if=pet.demonic_tyrant.active|fight_remains<=30" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=pet.demonic_tyrant.active" );
   default_->add_action( "call_action_list,name=racials,if=pet.demonic_tyrant.active|fight_remains<22,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=items,use_off_gcd=1" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*6+cast_time" );
-  default_->add_action( "grimoire_imp_lord" );
-  default_->add_action( "grimoire_fel_ravager" );
-  default_->add_action( "summon_doomguard" );
-  default_->add_action( "call_dreadstalkers" );
-  default_->add_action( "summon_demonic_tyrant" );
-  default_->add_action( "implosion,if=buff.wild_imps.stack>=6" );
-  default_->add_action( "ruination" );
-  default_->add_action( "demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=3&talent.doom" );
-  default_->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.stack>=3&!talent.doom" );
-  default_->add_action( "power_siphon,if=!buff.demonic_core.up" );
-  default_->add_action( "infernal_bolt,if=soul_shard<3" );
-  default_->add_action( "hand_of_guldan" );
-  default_->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.react" );
-  default_->add_action( "shadow_bolt" );
-  default_->add_action( "infernal_bolt" );
+  default_->add_action( "call_action_list,name=diabolist,if=talent.diabolic_ritual" );
+  default_->add_action( "call_action_list,name=soulharvest,if=talent.demonic_soul" );
 
-  items->add_action( "use_item,slot=trinket1" );
-  items->add_action( "use_item,slot=trinket2" );
+  diabolist->add_action( "power_siphon,if=buff.demonic_core.stack<=1|fight_remains<10" );
+  diabolist->add_action( "hand_of_guldan,if=buff.dominion_of_argus.up" );
+  diabolist->add_action( "grimoire_imp_lord" );
+  diabolist->add_action( "grimoire_fel_ravager" );
+  diabolist->add_action( "summon_doomguard" );
+  diabolist->add_action( "call_dreadstalkers,if=talent.reign_of_tyranny&(cooldown.summon_demonic_tyrant.remains>=20+gcd.max|cooldown.summon_demonic_tyrant.remains<=12-gcd.max)" );
+  diabolist->add_action( "call_dreadstalkers,if=!talent.reign_of_tyranny" );
+  diabolist->add_action( "summon_demonic_tyrant,if=soul_shard=5" );
+  diabolist->add_action( "implosion,if=buff.wild_imps.stack>=6&(active_enemies>2|talent.to_hell_and_back.enabled)" );
+  diabolist->add_action( "ruination" );
+  diabolist->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>5|soul_shard=5" );
+  diabolist->add_action( "infernal_bolt,if=soul_shard<3" );
+  diabolist->add_action( "demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.react&talent.doom" );
+  diabolist->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.react" );
+  diabolist->add_action( "shadow_bolt" );
+  diabolist->add_action( "infernal_bolt" );
+  
+  soulharvest->add_action( "power_siphon,if=buff.demonic_core.stack<=1|fight_remains<10" );
+  soulharvest->add_action( "hand_of_guldan,if=buff.dominion_of_argus.up" );
+  soulharvest->add_action( "grimoire_imp_lord" );
+  soulharvest->add_action( "grimoire_fel_ravager" );
+  soulharvest->add_action( "summon_doomguard" );
+  soulharvest->add_action( "call_dreadstalkers" );
+  soulharvest->add_action( "summon_demonic_tyrant" );
+  soulharvest->add_action( "implosion,if=buff.wild_imps.stack>=6&(active_enemies>2|talent.to_hell_and_back.enabled)" );
+  soulharvest->add_action( "hand_of_guldan" );
+  soulharvest->add_action( "infernal_bolt,if=soul_shard<3" );
+  soulharvest->add_action( "demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=1&talent.doom" );
+  soulharvest->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.stack>=2&!talent.doom" );
+  soulharvest->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.react" );
+  soulharvest->add_action( "shadow_bolt" );
+
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=2&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.2.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_buff_duration>=fight_remains" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=1&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.1.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_buff_duration>=fight_remains" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
+  items->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
+  items->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
+  items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
   racials->add_action( "berserking,use_off_gcd=1" );
   racials->add_action( "blood_fury" );
   racials->add_action( "fireblood" );
   racials->add_action( "ancestral_call" );
-
-  variables->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected" );
-  variables->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
-  variables->add_action( "variable,name=imp_despawn,op=set,value=2*spell_haste*6+0.58+time,if=prev_gcd.1.hand_of_guldan&buff.dreadstalkers.up&cooldown.summon_demonic_tyrant.remains<13&variable.imp_despawn=0" );
-  variables->add_action( "variable,name=imp_despawn,op=set,value=buff.dreadstalkers.remains+time,if=prev_gcd.1.hand_of_guldan&buff.dreadstalkers.up&cooldown.summon_demonic_tyrant.remains<13&variable.imp_despawn=0" );
-  variables->add_action( "variable,name=imp_despawn,op=set,value=(variable.imp_despawn>?buff.dreadstalkers.remains+time),if=variable.imp_despawn" );
-  variables->add_action( "variable,name=imp_despawn,op=set,value=variable.imp_despawn>?buff.vilefiend.remains+time,if=variable.imp_despawn&buff.vilefiend.up" );
-  variables->add_action( "variable,name=imp_despawn,op=set,value=0,if=buff.tyrant.up" );
-  variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.down,if=active_enemies>1+(talent.sacrificed_souls.enabled)" );
-  variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.remains<6,if=active_enemies>2+(talent.sacrificed_souls.enabled)&active_enemies<5+(talent.sacrificed_souls.enabled)" );
-  variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.remains<8,if=active_enemies>4+(talent.sacrificed_souls.enabled)" );
-  variables->add_action( "variable,name=pool_cores_for_tyrant,op=set,value=cooldown.summon_demonic_tyrant.remains<20&variable.next_tyrant_cd<20&(buff.demonic_core.stack<=2|!buff.demonic_core.up)&cooldown.summon_vilefiend.remains<gcd.max*8&cooldown.call_dreadstalkers.remains<gcd.max*8" );
-  variables->add_action( "variable,name=last_ds,default=0,value=time,if=prev_gcd.1.call_dreadstalkers" );
-  variables->add_action( "variable,name=last_ds,value=0,if=buff.tyrant.up" );
-  variables->add_action( "variable,name=last_hog,default=0,value=time,if=prev_gcd.1.hand_of_guldan" );
-  variables->add_action( "variable,name=last_hog,value=0,if=buff.tyrant.up" );
-  variables->add_action( "variable,name=hog_after_ds,value=variable.last_ds>0&variable.last_hog>0&variable.last_hog>variable.last_ds" );
 }
 //demonology_apl_end
 
