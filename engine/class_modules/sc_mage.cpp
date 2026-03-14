@@ -3010,6 +3010,17 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
     return am;
   }
+
+  double execute_time_pct_multiplier() const override
+  {
+    double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
+
+    // Unmentioned by tooltip
+    if ( sim->dbc->ptr )
+      mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
+
+    return mul;
+  }
 };
 
 struct arcane_assault_t final : public arcane_mage_spell_t
