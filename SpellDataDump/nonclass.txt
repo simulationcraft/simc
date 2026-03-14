@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -238417,7 +238417,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 982.0534 (coefficient=7.68409) | Trigger Spell: 1241728 | Target: Self (1)
 #2 (id=1289524)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4175.72 (coefficient=32.67298) | Target: Self (1)
-Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Flames of the Sin'dorei (id=1236740) [Passive] 
@@ -238433,7 +238432,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1228 (coefficient=9.608502) | Trigger Spell: 1241728 | Target: Self (1)
 #2 (id=1289525)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 5220 (coefficient=40.84396) | Target: Self (1)
-Hotfixed         : Sub Type (285 -> 4), Trigger Spell (1277263 -> 0)
 Description      : $@spelldesc1236094
 
 Name             : Acuity of the Ren'dorei (id=1236741) [Passive] 
@@ -239249,7 +239247,6 @@ Throwing multiple fish can extend this buff up to $M1 min.
 Tooltip          : Quel'Thalas Fishing increased by $w2.
 
 Name             : Invigorating Healing Potion (id=1238009) 
-Hotfixed         : Attributes
 School           : Shadowstorm
 Spell Type       : None
 Cooldown         : 300 seconds
@@ -241827,10 +241824,8 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1244943)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Primal Spore Binding | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 3008.664 (coefficient=23.54133) | Trigger Spell: 1259124 | Target: Self (1)
-Hotfixed         : Coefficient (13.786629 -> 23.541328)
 #2 (id=1268068)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4512.145 (coefficient=35.30534) | Target: Self (1)
-Hotfixed         : Sub Type (285 -> 4), Coefficient (20.676048 -> 35.30534), Trigger Spell (1259127 -> 0)
 Description      : Your spells and abilities have a chance to detonate hidden Explosive Spores near your target. If your target is an ally, the spore heals them and nearby allies for ${$<rolemult>*$s2} health. If your target is hostile, the spore instead detonates on nearby foes for ${$<rolemult>*$s1} Nature damage.
 
 These explosions are split among all targets hit, and their effectiveness increases for every target hit, up to $1259124s2.
@@ -245472,7 +245467,6 @@ Description      : Double the gems, double the power!
 All Jewelcrafting embellishments operate at double strength.
 
 Name             : Prismatic Focusing Iris (id=1251906) [Passive] 
-Hotfixed         : Description
 School           : None
 Spell Type       : Magic
 Labels           : 4133
@@ -245620,10 +245614,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1252389 | Target: Self (1)
 #2 (id=1310948)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1310949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1251906
 
 Name             : Prismatic Focusing Iris (id=1252389) 
@@ -247603,7 +247595,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 
 Name             : Primal Spore Binding (id=1259124) [Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Labels           : 4124
@@ -247615,7 +247606,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Coefficient (23.541328 -> 0), Scaling Class (-9 -> 0)
 #2 (id=1268069)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc1244276
@@ -247643,7 +247633,6 @@ Effects          :
 Description      : $@spelldesc1244276
 
 Name             : Primal Spore Explosion (id=1259130) 
-Hotfixed         : Description
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
@@ -247961,6 +247950,7 @@ Effects          :
 Description      : $@spelldesc1244005
 
 Name             : Shadow of the Empyrean Requiem (id=1259518) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -247978,7 +247968,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35
 Description      : Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.
 
-If either enemy is below $s3% health, gain $s4 Haste for $1264337d as you speed them to their fate.
+If either enemy is below $s3% health, gain $s2 Haste for $1264337d as you speed them to their fate.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Murder Row Swiftstrike Phial (id=1259591) [Hidden] 
@@ -248740,7 +248730,6 @@ Tooltip          : Your harmful spells and abilities have a $?a1248927[${($12489
 $?a1262364[Mandate of Sacred Death has a very small chance to execute non-boss enemies.]?a1262359[Mandate of Sacred Death has a very small chance to execute non-boss enemies.][]
 
 Name             : Mandate of Sacred Death (id=1261341) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
@@ -253303,10 +253292,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1294786)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 2159.743 (coefficient=16.89894) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1311823)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Shield of the Guardian Tree (id=1282103) [Passive, Hidden] 
 School           : Physical

@@ -332,7 +332,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
   cooldowns->add_action( "soul_reaper,if=!talent.pestilence|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&cooldown.dark_transformation.remains>15&((talent.soul_reaper&!target.health.pct<=35&!action.soul_reaper.ready|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>3&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper)|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );

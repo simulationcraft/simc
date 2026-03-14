@@ -4911,9 +4911,16 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
 
-    // TODO: use the spell data in some way
-    if ( p()->action.hand_of_frost && p()->talents.hand_of_frost_3.ok() && d->current_tick % 2 == 1 )
-      p()->action.hand_of_frost->execute_on_target( d->target );
+    if ( p()->action.hand_of_frost && p()->talents.hand_of_frost_3.ok() )
+    {
+      // TODO: This is a bit of a hack to make it work for both 4 and 8 in spell data
+      // TODO: In game, there's actually a global "RoF tick" counter that triggers HoF on every second tick
+      // (so it's possible to get HoF ticks on 1/3/5/7 but also 2/4/6/8).
+      int every = static_cast<int>(
+          std::round( ( dot_duration / base_tick_time ) / p()->talents.hand_of_frost_3->effectN( 1 ).base_value() ) );
+      if ( ( d->current_tick - 1 ) % every == 0 )
+        p()->action.hand_of_frost->execute_on_target( d->target );
+    }
   }
 
   void execute() override

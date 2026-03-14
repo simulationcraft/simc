@@ -43,6 +43,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
 actions.aoe=voltaic_blaze,if=talent.surging_totem.enabled&dot.flame_shock.remains=0
+actions.aoe+=/flame_shock,if=!ticking
 actions.aoe+=/surging_totem
 actions.aoe+=/ascendance,if=ti_chain_lightning
 actions.aoe+=/call_action_list,name=buffs
@@ -69,6 +70,7 @@ actions.aoe+=/stormstrike,if=!talent.surging_totem.enabled
 actions.aoe+=/lava_lash
 actions.aoe+=/stormstrike
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/flame_shock
 
 # Buff action priority list
 actions.buffs=use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)
@@ -85,6 +87,7 @@ actions.buffs+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_root
 # Single target action priority list for the Stormbringer hero talent tree
 actions.single_sb=primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)
 actions.single_sb+=/voltaic_blaze,if=dot.flame_shock.remains=0&time<5
+actions.single_sb+=/flame_shock,if=!ticking
 actions.single_sb+=/lava_lash,if=!debuff.lashing_flames.up&time<5
 actions.single_sb+=/call_action_list,name=buffs
 actions.single_sb+=/sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled
@@ -105,9 +108,11 @@ actions.single_sb+=/sundering
 actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=8
 actions.single_sb+=/crash_lightning
 actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single_sb+=/flame_shock
 
 # Single target action priority list for the Totemic hero talent tree
 actions.single_totemic=voltaic_blaze,if=dot.flame_shock.remains=0
+actions.single_totemic+=/flame_shock,if=!ticking
 actions.single_totemic+=/surging_totem
 actions.single_totemic+=/call_action_list,name=buffs
 actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up
@@ -127,6 +132,7 @@ actions.single_totemic+=/stormstrike
 actions.single_totemic+=/voltaic_blaze
 actions.single_totemic+=/crash_lightning
 actions.single_totemic+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single_totemic+=/flame_shock
 
 head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892

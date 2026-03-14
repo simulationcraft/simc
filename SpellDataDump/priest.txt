@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1305,6 +1305,7 @@ $penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<har
 $penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}
 
 Name             : Dispersion (id=47585) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
@@ -1319,7 +1320,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x08000000
 Affecting Spells : Intangibility (288733 effect#1), Heightened Alteration (453729 effect#2)
 Family Flags     : 50
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), No Threat (42), Immunity Purges Effect (47), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), No Threat (42), Immunity Purges Effect (47), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=39811)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 0x7f | Target: Self (1)
@@ -11990,7 +11991,6 @@ Effects          :
 Description      : $@spelldesc405554
 
 Name             : Shadowy Apparition (id=413231) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -16603,7 +16603,6 @@ Effects          :
 Description      : $@spelldesc341491
 
 Name             : Void Apparition (id=1264176) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic

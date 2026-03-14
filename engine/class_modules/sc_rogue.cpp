@@ -1550,6 +1550,7 @@ public:
 
   proc_t* supercharged_cp_proc;
   proc_t* cold_blood_consumed_proc;
+  proc_t* unshakeable_drive_consumed_proc;
 
   // Affect flags for various dynamic effects
   struct damage_affect_data
@@ -1594,6 +1595,7 @@ public:
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
     bool summarily_dispatched = false;
+    bool unshakeable_drive_2 = false;
     bool zoldyck_insignia = false;
 
     bool mid1_assassination_4pc = false;
@@ -1628,7 +1630,8 @@ public:
     _breaks_stealth( true ),
     secondary_trigger_type( secondary_trigger::NONE ),
     supercharged_cp_proc( nullptr ),
-    cold_blood_consumed_proc( nullptr )
+    cold_blood_consumed_proc( nullptr ),
+    unshakeable_drive_consumed_proc( nullptr )
   {
     ab::parse_options( options );
     parse_spell_data( s );
@@ -1645,6 +1648,11 @@ public:
     if ( p->talent.deathstalker.momentum_of_despair->ok() )
     {
       affected_by.momentum_of_despair = ab::data().affected_by( p->spell.momentum_of_despair_buff->effectN( 2 ) );
+    }
+
+    if ( p->talent.deathstalker.unshakeable_drive->ok() )
+    {
+      affected_by.unshakeable_drive_2 = ab::data().affected_by( p->spell.unshakeable_drive_buff->effectN( 2 ) );
     }
 
     if ( p->talent.trickster.unseen_blade->ok() )
@@ -1768,6 +1776,11 @@ public:
       cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
     }
 
+    if ( p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2 )
+    {
+      unshakeable_drive_consumed_proc = p()->get_proc( "Unshakeable Drive " + ab::name_str );
+    }
+
     if ( !is_secondary_action() && shadow_clone_attack() )
     {
       ab::add_child( shadow_clone_attack() );
@@ -1850,8 +1863,8 @@ public:
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 1_ms );
-    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ),
-                           nullptr, 1_ms, true ); // Works with WM
+    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2,
+                           unshakeable_drive_consumed_proc, 0_ms, true, true );
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
@@ -2344,6 +2357,13 @@ public:
       {
         m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
       }
+    }
+
+    // Unshakeable Drive Secondary Effect
+    if ( affected_by.unshakeable_drive_2 && p()->buffs.unshakeable_drive->check() )
+    {
+      m *= 1.0 + p()->spell.unshakeable_drive_buff->effectN( 2 ).percent() *
+        ( p()->buffs.unshakeable_drive->is_stacking ? p()->buffs.unshakeable_drive->stack() : p()->buffs.unshakeable_drive->up() );
     }
 
     // Darkest Night
@@ -9743,7 +9763,7 @@ void rogue_t::init_spells()
   // Hero Talent Background Spells
   // Deathstalker
   spell.darkest_night_buff = talent.deathstalker.darkest_night->ok() ? find_spell( 457280 ) : spell_data_t::not_found();
-  spell.unshakeable_drive_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
+  spell.unshakeable_drive_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 1248775 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_debuff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457129 ) : spell_data_t::not_found();
   spell.hunt_them_down_damage = talent.deathstalker.hunt_them_down->ok() ? find_spell( 457193 ) : spell_data_t::not_found();
@@ -10393,7 +10413,13 @@ void rogue_t::create_buffs()
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
-  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakable_drive", spell.unshakeable_drive_buff );
+  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false )
+    ->set_is_stacking_mod( bugs ); // 2026-03-13 -- Does not suppress points stacking even though only one stack is decremented
+  if ( spell.unshakeable_drive_buff->ok() )
+  {
+    // Use the 50% modifier as the "generic" version of this buff, Shadowstrike has a lower buff in effect 2
+    buffs.unshakeable_drive->set_direct_mod( spell.unshakeable_drive_buff, 1 );
+  }
 
   buffs.lingering_darkness = make_buff( this, "lingering_darkness", spell.lingering_darkness_buff )
     ->set_default_value_from_effect( 1 )

@@ -676,21 +676,14 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
     } );
   }
 
-  if ( player->talent.shado_pan.shado_over_the_battlefield->ok() )
-  {
-    shado_over_the_battlefield = new shado_over_the_battlefield_t( player );
-    add_child( shado_over_the_battlefield );
-  }
+  shado_over_the_battlefield = new shado_over_the_battlefield_t( player );
+  add_child( shado_over_the_battlefield );
 
   flurry_strike_variants.insert( { FLURRY_STRIKES, new flurry_strike_t( player, "flurry_strike" ) } );
-  if ( player->talent.shado_pan.stand_ready->ok() )
-    flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
-  if ( player->talent.shado_pan.wisdom_of_the_wall->ok() )
-  {
-    flurry_strike_variants.insert(
-        { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
-    wisdom_of_the_wall = player->get_cooldown( "wisdom_of_the_wall" );
-  }
+  flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
+  flurry_strike_variants.insert(
+      { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
+  wisdom_of_the_wall = player->get_cooldown( "wisdom_of_the_wall" );
 
   for ( auto &[ key, variant ] : flurry_strike_variants )
   {
@@ -727,9 +720,11 @@ void flurry_strikes_t::execute( source_e source )
       p()->buff.flurry_charge->expire();
       break;
     case STAND_READY:
-      if ( p()->buff.stand_ready->check() && !p()->bugs )
+      if ( p()->buff.stand_ready->up() )
+      {
         count = as<int>( p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value() );
-      p()->buff.stand_ready->expire();
+        p()->buff.stand_ready->expire();
+      }
       break;
     case WISDOM_OF_THE_WALL:
       if ( ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() ) && wisdom_of_the_wall->up() )
@@ -4080,8 +4075,7 @@ struct shuffle_t : monk_buff_t<>
     accumulator = 0_s;
   }
 
-  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double = -1.0,
-                timespan_t duration = timespan_t::min() ) override
+  bool trigger( int = -1, double = DEFAULT_VALUE(), double = -1.0, timespan_t duration = timespan_t::min() ) override
   {
     if ( !p().talent.brewmaster.shuffle->ok() )
       return false;
@@ -5131,25 +5125,25 @@ bool monk_t::validate_actor()
     return false;
   }
 
-  if ( specialization() == MONK_WINDWALKER && has_hero_tree( HERO_CONDUIT_OF_THE_CELESTIALS ) )
+  int expected = 13;
+  for ( const auto &hero_tree : player_sub_trees )
   {
-    auto count =
-        range::count_if( player_traits, [ is_ptr = is_ptr() ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-            return false;
-          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-          if ( !trait )
-            return false;
-          return static_cast<hero_tree_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
-        } );
+    int count = range::count_if( player_traits,
+                                 [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+                                   if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+                                     return false;
+                                   const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+                                   if ( !trait )
+                                     return false;
+                                   return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+                                 } );
 
     // Report without counting the hidden talent that activates the subtree
     count -= 1;
-    if ( count < 10 )
+    if ( count < expected )
     {
-      sim->error(
-          "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
-          count );
+      sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
+                  expected );
       return false;
     }
   }
@@ -6173,8 +6167,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_steel = make_buff_fallback<buff_t>( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
-                                                    talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
+  buff.whirling_steel = make_buff_fallback( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
+                                            talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
 }
 
 void monk_t::init_gains()
@@ -6958,7 +6952,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
-    ReportIssue( "Stand Ready buff is consumed but does not trigger Flurry Strikes", "2026-02-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
 
     os << "<div class=\"player-section\">\n";

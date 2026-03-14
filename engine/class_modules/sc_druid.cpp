@@ -6120,7 +6120,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     if ( !p->buff.dream_guide->is_fallback )
     {
       auto eff = &find_effect( p->buff.dream_guide, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE );
-      assert( eff->index() + 1 == 5 && "Adjust dream guide effect_mask_t in parse_action_effects." );
+      assert( eff->index() + 1 == 3 && "Adjust dream guide effect_mask_t in parse_action_effects." );
 
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.dream_guide )
@@ -11503,7 +11503,7 @@ void druid_t::create_actions()
       _owl->name_str_reporting = "Moonkin";
 
       auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
-        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), nullptr, flag_e::NONE );
+        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), find_spell( 1286243 ), flag_e::NONE );
       _owl_driver->damage->name_str_reporting = "HotW";
       _owl_driver->damage->base_multiplier *= talent.heart_of_the_wild->effectN( 5 ).percent();
 
@@ -14090,7 +14090,7 @@ void druid_t::parse_action_effects( action_t* action )
   }
 
   // snapshots regrowth hot, so disable the effect
-  _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+  _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 3 ), CONSUME_BUFF );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   _a->parse_effects( buff.gory_fur, CONSUME_BUFF );

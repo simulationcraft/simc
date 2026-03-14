@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -785,7 +785,6 @@ Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
-Hotfixed         : Description
 Talent Entry     : Generic [free=(Assassination), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -7637,7 +7636,6 @@ Description      : $@spelldesc340092
 Tooltip          : Damage increased by $w1%.
 
 Name             : Hemotoxin (desc=PvP Talent) (id=354124) [Spell Family (8), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7651,7 +7649,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=886329)   : Apply Aura (6) | Proc Trigger Spell (42): Hemotoxin
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1291471 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 42), Base Value (-30 -> 0), Misc Value (12 -> 0), Affects Spells, Trigger Spell (0 -> 1291471)
 Description      : Shiv also reduces the target's healing received by $1291471S1% for $1291471d.
 
 Name             : Drink Up Me Hearties (desc=PvP Talent) (id=354425) [Spell Family (8), Passive, Hidden] 
@@ -16535,7 +16532,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | Target: Targeted Enemy (6)
-Hotfixed         : Target 1 (22 -> 6), Target 2 (15 -> 0)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387
@@ -17630,7 +17626,6 @@ Description      : Damage done increased by $s1%.
 
 
 Name             : Hemotoxin (id=1291471) [Spell Family (8)] 
-Hotfixed         : NEW SPELL
 Class            : Rogue
 School           : Nature
 Spell Type       : None
@@ -17647,7 +17642,6 @@ Effects          :
 #1 (id=1310845)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc354124
 Tooltip          : Healing received reduced by $w1%.
 

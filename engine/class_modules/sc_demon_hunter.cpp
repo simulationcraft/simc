@@ -83,6 +83,7 @@ public:
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
+constexpr unsigned HAVOC_MAX_SOUL_FRAGMENTS    = 5;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
 
@@ -5660,8 +5661,8 @@ struct demonsurge_t : public surge_base_t
 
   void execute() override
   {
-    p()->buff.demonsurge->trigger();
     surge_base_t::execute();
+    p()->buff.demonsurge->trigger();
   }
 };
 
@@ -12502,7 +12503,7 @@ unsigned demon_hunter_t::max_soul_fragments() const
     case DEMON_HUNTER_DEVOURER:
       return DEVOURER_MAX_SOUL_FRAGMENTS;
     case DEMON_HUNTER_HAVOC:
-      return MAX_SOUL_FRAGMENTS;
+      return HAVOC_MAX_SOUL_FRAGMENTS;
     case DEMON_HUNTER_VENGEANCE:
       return MAX_SOUL_FRAGMENTS;
     default:

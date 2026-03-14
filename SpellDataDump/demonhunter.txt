@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -5369,7 +5369,6 @@ Effects          :
 Description      : $@spelldesc317009
 
 Name             : Swallowed Anger (id=320313) [Spell Family (107), Passive] 
-Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical

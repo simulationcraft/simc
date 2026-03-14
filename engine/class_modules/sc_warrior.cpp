@@ -269,6 +269,7 @@ public:
     // Arms Apex
     buff_t* master_of_warfare_proc;
     buff_t* master_of_warfare; // Damage buff
+    buff_t* master_of_warfare_colossus_smash;
 
     // Fury Apex
     buff_t* berserk;
@@ -1654,6 +1655,16 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       p()->cooldown.sudden_death_icd->start();
       p()->cooldown.execute->reset( true );
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = attack_t::composite_target_multiplier( target );
+    auto target_data = td( target );
+    if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
+    target_data->debuffs_colossus_smash->up() && p()->buff.master_of_warfare_colossus_smash->up() )
+      m *= 1.0 + ( p()->buff.master_of_warfare_colossus_smash->stack_value() / 100 );
+    return m;
   }
 
   player_t* select_random_target() const
@@ -3486,7 +3497,10 @@ struct heroic_strike_t : public slam_base_t
     p()->buff.master_of_warfare->trigger();
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
-      p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
+    {
+      // p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
+      p()->buff.master_of_warfare_colossus_smash->trigger();
+    }
   }
 
   bool ready() override
@@ -8116,6 +8130,11 @@ void warrior_t::create_buffs()
                                 ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
+  buff.master_of_warfare_colossus_smash = make_buff( this, "master_of_warfare_colossus_smash", find_spell( 1269306 ) )
+                                ->set_max_stack( 2 )
+                                ->set_default_value( 3 )
+                                ->set_duration( 30_s );
+
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
 }
@@ -9320,6 +9339,76 @@ struct warrior_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Warrior", "2026-3-13", "Piercing Howl cooldown to 90s", 12323,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 90000 )
+        .verification_value( 30000 );
+    // Arms
+    hotfix::register_effect( "Warrior", "2026-3-13", "Direct Damage Aura Buffed 15%", 179733,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Periodic Damage Aura Buffed 15%", 186754,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Pet Damage Aura Buffed 15%", 191014,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Guardian Damage Aura Buffed 15%", 191015,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 0 );
+
+    // Fury
+    hotfix::register_effect( "Warrior", "2026-3-13", "Direct Damage Aura Buffed 10%", 179734,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Periodic Damage Aura Buffed 10%", 191010,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Pet Damage Aura Buffed 10%", 191011,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Guardian Damage Aura Buffed 10%", 191012,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Warrior", "2026-3-13", "Fury reap the storm proc chance nerfed to 20%", 1300777,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 30 );
   }
 
   void init( player_t* p ) const override
