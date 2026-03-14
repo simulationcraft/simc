@@ -7894,7 +7894,10 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend_dot", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
-  debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
+  debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
+                                      ->set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
+                                        p.buff.master_of_warfare_colossus_smash->expire();
+                                      });
 
   debuffs_fatal_mark = make_buff( *this, "fatal_mark", p.spell.fatal_mark_debuff );
 

@@ -13183,7 +13183,9 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
       for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, true ) )
       {
         if ( rule.condition_type == rule_type && rule.condition_value_1 == rule_value )
+        {
           return replace_spell( source_spell_id, target_spell_id );
+        }
       }
     }
 
@@ -13191,7 +13193,14 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   };
 
   if ( conditionally_replace_spell( 188196, 454009, AC_AURA_ON_PLAYER, 454015 ) )
+  {
     return;
+  }
+
+  if ( conditionally_replace_spell( 197214, 1218090, AC_AURA_ON_PLAYER, 1218125 ) )
+  {
+    return;
+  }
 
   player_t::parse_assisted_combat_step( step, assisted_combat );
 }
