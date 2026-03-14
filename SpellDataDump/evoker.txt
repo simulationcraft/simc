@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -3747,7 +3747,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 25294 | Target: Front of Self (47)
 #2 (id=1044076)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 5)
                    Modified By: Tempo Charged (1237978 effect#3)
 #3 (id=1179965)  : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34997 | Target: Front of Self (47)
@@ -12575,7 +12574,6 @@ Description      : $@spelldesc1256577
 Tooltip          : Reversion is upgraded to Merithra's Blessing.
 
 Name             : Merithra's Blessing (desc=Green) (id=1256581) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -12596,12 +12594,10 @@ Attributes       : Allow Cast While Dead (23), Bouncy Chain Missiles (146), Trea
 Effects          :
 #1 (id=1264151)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Hotfixed         : Target 1 (45 -> 0)
 #2 (id=1264152)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | PvP Coefficient: 1.4 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Chain Heal Ally (45)
 #3 (id=1308097)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
-Hotfixed         : NEW EFFECT
 Description      : Spring a bloom of life from your target, healing them and up to ${$x2-1} other allies within $s3 yards for $s2. Blooms may heal your primary target multiple times if no nearby injured allies are present.
 Variables        : $cap=${6}
 

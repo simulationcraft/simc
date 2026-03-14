@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -3213,6 +3213,7 @@ Description      : $@spelldesc190925
 Tooltip          : Stunned.
 
 Name             : Aspect of the Turtle (id=186265) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3225,7 +3226,7 @@ Labels           : 16: Class Spells
                  : 930
 Affecting Spells : Call of the Wild (206332 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Improved Aspect of the Turtle (1258485 effect#1), Shell Wall (1267218 effect#1)
 Family Flags     : 15
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=271189)   : Apply Aura (6) | Modify Attacker Melee Hit Chance (184)
                    Base Value: -200 | Scaled Value: -200 | SP Coefficient: 0.25 | Target: Self (1)

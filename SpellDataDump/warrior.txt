@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -477,10 +477,8 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #6 (id=1312103)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 #7 (id=1312104)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : Causes the targeted enemy to cower in fear while all enemies within $a2 yards flee from you and their movement speed is reduced by $s3% for $d.
 Damage may cancel the effect.
 Tooltip          : Terrified of $@auracaster.
