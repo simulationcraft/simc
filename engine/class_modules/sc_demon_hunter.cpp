@@ -4998,11 +4998,11 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   struct pick_up_event_t : public event_t
   {
     demon_hunter_t* dh;
-    soul_fragment_t* frag;
+    soul_fragment type;
     expr_t* expr;
 
-    pick_up_event_t( soul_fragment_t* f, timespan_t time, expr_t* e )
-      : event_t( *f->dh, time ), dh( f->dh ), frag( f ), expr( e )
+    pick_up_event_t( demon_hunter_t* p, soul_fragment t, timespan_t time, expr_t* e )
+      : event_t( *p, time ), dh( p ), type( t ), expr( e )
     {
     }
 
@@ -5013,8 +5013,20 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      // Evaluate if_expr to make sure the actor still wants to consume.
-      if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
+      // Re-select a fragment at execution time rather than storing a pointer
+      // from when the action fired. The original fragment may have been consumed
+      // and deleted during the movement delay.
+      soul_fragment_t* frag = nullptr;
+      for ( auto f : dh->soul_fragments )
+      {
+        if ( f->is_type( type ) && f->active() )
+        {
+          frag = f;
+          break;
+        }
+      }
+
+      if ( frag && ( !expr || expr->eval() ) )
       {
         frag->consume( false );
       }
@@ -5204,7 +5216,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     timespan_t time = calculate_movement_time( frag );
 
     assert( p()->soul_fragment_pick_up == nullptr );
-    p()->soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr.get() );
+    p()->soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, p(), type, time, if_expr.get() );
   }
 
   bool ready() override
