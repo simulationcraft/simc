@@ -15567,6 +15567,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         misc_type = RESOURCE_MANA;  // hardcode to mana
         pct_val = modifying_eff.average( this );
         break;
+      case A_MOD_TARGET_ARMOR_PCT:  // 280
       case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
         pct_val = -modifying_eff.average( this );  // reversed value
         break;

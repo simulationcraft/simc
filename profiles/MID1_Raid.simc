@@ -3,8 +3,8 @@ default_actions=1
 
 MID1_Death_Knight_Blood.simc
 MID1_Death_Knight_Blood_Deathbringer.simc
-# MID1_Death_Knight_Frost.simc
-# MID1_Death_Knight_Frost_Rider.simc
+MID1_Death_Knight_Frost.simc
+MID1_Death_Knight_Frost_Rider.simc
 # MID1_Death_Knight_Frost_Deathbringer.simc
 MID1_Death_Knight_Unholy.simc
 MID1_Death_Knight_Unholy_San'layn.simc
@@ -27,8 +27,8 @@ MID1_Evoker_Devastation_FS.simc
 
 MID1_Hunter_Beast_Mastery.simc
 MID1_Hunter_Marksmanship.simc
-MID1_Hunter_Survival_Sentinel_2H.simc
-MID1_Hunter_Survival_PackLeader_DW.simc
+MID1_Hunter_Survival_PL_DW.simc
+MID1_Hunter_Survival.simc
 
 MID1_Mage_Arcane.simc
 MID1_Mage_Arcane_Sunfury.simc
@@ -65,7 +65,6 @@ MID1_Warlock_Affliction.simc
 MID1_Warlock_Affliction_Hellcaller.simc
 # # MID1_Warlock_Demonology_Soul_Harvester.simc
 # MID1_Warlock_Demonology.simc
-# # MID1_Warlock_Destruction.simc
 MID1_Warlock_Destruction_Diabolist.simc
 MID1_Warlock_Destruction.simc
 
