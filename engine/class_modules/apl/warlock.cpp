@@ -169,8 +169,8 @@ void demonology( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-  action_priority_list_t* variables = p->get_action_priority_list( "soulharvest" );
-  action_priority_list_t* variables = p->get_action_priority_list( "diabolist" );
+  action_priority_list_t* soulharvest = p->get_action_priority_list( "soulharvest" );
+  action_priority_list_t* diabolist = p->get_action_priority_list( "diabolist" );
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
