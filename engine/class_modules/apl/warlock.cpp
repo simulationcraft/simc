@@ -174,15 +174,15 @@ void demonology( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_actions( "variable,name=in_opener,op=set,value=1" );
-  precombat->add_actions( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
-  precombat->add_actions( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
-  precombat->add_actions( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration" );
-  precombat->add_actions( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration" );
-  precombat->add_actions( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)" );
-  precombat->add_actions( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.2.cooldown.duration=0)" );
-  precombat->add_actions( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl" );
-  precombat->add_actions( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>(((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
+  precombat->add_action( "variable,name=in_opener,op=set,value=1" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration" );
+  precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)" );
+  precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.2.cooldown.duration=0)" );
+  precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>(((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
   precombat->add_action( "power_siphon" );
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up&(talent.ruination&!talent.grimoire_imp_lord|talent.ruination&!talent.summon_doomguard)" );
   precombat->add_action( "shadow_bolt" );
