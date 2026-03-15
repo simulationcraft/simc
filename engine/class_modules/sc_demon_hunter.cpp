@@ -1222,6 +1222,7 @@ public:
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
     double soul_fragment_from_shattered_souls_chance = 0.4;
+    bool shattered_souls_chance_aoe_reduction_linear = false;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
     double void_metamorphosis_initial_drain          = 7.0;
@@ -6200,10 +6201,14 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
+      if ( p()->options.shattered_souls_chance_aoe_reduction_linear )
+        m /= s->n_targets;
+
 
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
-      m *= pow( s->n_targets, -0.7 );
+      else
+        m *= pow( s->n_targets, -0.7 );
 
       return m;
     }
@@ -10139,6 +10144,8 @@ void demon_hunter_t::create_options()
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
+  add_option(
+      opt_bool( "shattered_souls_chance_aoe_reduction_linear", options.shattered_souls_chance_aoe_reduction_linear ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
