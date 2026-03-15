@@ -3112,6 +3112,8 @@ struct exploding_keg_proc_t : public monk_spell_t
 
 struct exploding_keg_t : public monk_spell_t
 {
+  cooldown_t *keg_smash;
+
   exploding_keg_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "exploding_keg", p->talent.brewmaster.exploding_keg )
   {
@@ -3119,6 +3121,8 @@ struct exploding_keg_t : public monk_spell_t
     cast_during_sck = true;
     aoe             = -1;
     add_child( p->action.exploding_keg );
+
+    keg_smash = player->get_cooldown( "keg_smash" );
   }
 
   void execute() override
@@ -3135,6 +3139,8 @@ struct exploding_keg_t : public monk_spell_t
           as<int>( p()->talent.brewmaster.fuel_on_the_fire->effectN( 1 ).base_value() ) );
 
     monk_spell_t::execute();
+
+    keg_smash->reset( true );
   }
 
   void impact( action_state_t *s ) override
