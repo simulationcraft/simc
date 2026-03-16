@@ -43,9 +43,8 @@ MID1_Monk_Windwalker_Conduit.simc
 
 MID1_Paladin_Protection.simc
 MID1_Paladin_Protection_Lightsmith.simc
-# MID1_Paladin_Retribution.simc
-# MID1_Paladin_Retribution_Templar_BIS.simc
-# MID1_Paladin_Retribution_Herald.simc
+MID1_Paladin_Retribution.simc
+MID1_Paladin_Retribution_Herald.simc
 
 MID1_Priest_Shadow.simc
 MID1_Priest_Shadow_Archon.simc

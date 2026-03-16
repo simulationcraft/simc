@@ -71,7 +71,9 @@ void do_execute( action_t* action, execute_type type )
     {
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
-      action->player->sequence_add( action, action->target );
+      action->player->sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+        t_str = action->target->name_str;
+      } );
     }
     action->execute();
     action->line_cooldown->start();

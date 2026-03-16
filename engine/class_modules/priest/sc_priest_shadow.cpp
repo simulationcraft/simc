@@ -335,12 +335,6 @@ public:
       may_miss                   = false;
       may_crit                   = true;
       mod                        = _mod;
-
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1384
-      if ( priest().bugs )
-      {
-        spell_power_mod.direct *= 2.0;
-      } 
     }
 
     double composite_target_multiplier( player_t* t ) const override

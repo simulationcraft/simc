@@ -14590,7 +14590,7 @@ Paladin
 397191   Recompense
 398901   Inflorescence of the Sunwell
 402912   Righteous Cause
-402916  *Righteous Cause
+402916   Righteous Cause
 402964   Sanctified Plates
 402971   Jurisdiction
 403010   Blessed Champion

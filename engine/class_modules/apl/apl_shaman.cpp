@@ -8,7 +8,7 @@ namespace shaman_apl
 
 std::string flask_elemental( const player_t* p )
 {
-  return ( p->true_level >= 81 ) ? "flask_of_the_magister_2" : "disabled";
+  return ( p->true_level >= 81 ) ? "flask_of_the_magisters_2" : "disabled";
 }
 
 std::string food_elemental( const player_t* p )

@@ -26,7 +26,7 @@ actions.precombat+=/deaths_caress
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/use_items,use_off_gcd=1
+actions+=/use_items
 actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
 actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
 actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15

@@ -86,8 +86,8 @@ actions.ec_st+=/convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.c
 # Enter Lunar
 actions.ec_st+=/lunar_eclipse,if=cooldown.ca_inc.full_recharge_time>15|variable.opener
 # Spenders
-actions.ec_st+=/starfall,if=buff.starweavers_warp.react|buff.touch_the_cosmos.react&talent.starweaver|buff.eclipse_lunar.remains>3
-actions.ec_st+=/starsurge,if=astral_power>80|!variable.eclipse_down|buff.starweavers_weft.react
+actions.ec_st+=/starfall,if=buff.starweavers_warp.react|buff.touch_the_cosmos.react&talent.starweaver&buff.ascendant_stars.down
+actions.ec_st+=/starsurge,if=astral_power>80|!variable.eclipse_down|buff.starweavers_weft.react|buff.touch_the_cosmos.react&buff.ascendant_stars.up
 # Fury of Elune
 actions.ec_st+=/fury_of_elune
 # Builders
@@ -96,7 +96,8 @@ actions.ec_st+=/new_moon,if=astral_power.deficit>energize_amount
 actions.ec_st+=/half_moon,if=astral_power.deficit>energize_amount
 actions.ec_st+=/full_moon,if=astral_power.deficit>energize_amount
 actions.ec_st+=/wild_mushroom,if=buff.eclipse_solar.up|cooldown.wild_mushroom.full_recharge_time<cooldown.ca_inc.remains
-actions.ec_st+=/starfire
+actions.ec_st+=/starfire,if=!variable.eclipse_down
+actions.ec_st+=/wrath,if=variable.eclipse_down
 
 # Cooldowns
 actions.kotg_st=celestial_alignment,if=prev_gcd.1.force_of_nature|fight_remains<20

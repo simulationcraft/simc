@@ -835,7 +835,9 @@ void dot_t::schedule_tick()
       current_action->set_target( target );
       if ( !current_action->quiet )
       {
-        current_action->player->sequence_add( current_action, target );
+        current_action->player->sequence_add( current_action, target, [ this ]( std::string& a_str, std::string& t_str ) {
+          t_str = current_action->target->name_str;
+        } );
       }
       current_action->execute();
       if ( current_action->result_is_hit(

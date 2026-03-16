@@ -1124,6 +1124,9 @@ public:
     // Annihilator
     proc_t* soul_fragment_from_meteoric_rise;
     proc_t* soul_fragment_from_world_killer;
+    proc_t* voidfall_from_builder;
+    proc_t* voidfall_from_meteoric_rise;
+    proc_t* voidfall_from_mass_acceleration;
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
@@ -1222,6 +1225,7 @@ public:
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
     double soul_fragment_from_shattered_souls_chance = 0.4;
+    bool shattered_souls_chance_aoe_reduction_linear = false;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
     double void_metamorphosis_initial_drain          = 7.0;
@@ -2963,6 +2967,7 @@ struct voidfall_building_trigger_t : public BASE
       return;
     }
 
+    BASE::p()->proc.voidfall_from_builder->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() ) );
   }
@@ -3117,6 +3122,7 @@ struct mass_acceleration_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.mass_acceleration->ok() )
       return;
 
+    BASE::p()->proc.voidfall_from_mass_acceleration->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
 
@@ -6200,10 +6206,13 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
+      if ( p()->options.shattered_souls_chance_aoe_reduction_linear )
+        m /= s->n_targets;
 
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
-      m *= pow( s->n_targets, -0.7 );
+      else
+        m *= pow( s->n_targets, -0.7 );
 
       return m;
     }
@@ -6273,6 +6282,7 @@ struct void_ray_t
 
       if ( p()->talent.annihilator.meteoric_rise->ok() )
       {
+        p()->proc.voidfall_from_meteoric_rise->occur();
         p()->buff.voidfall_building->trigger();
       }
     }
@@ -9165,16 +9175,20 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
   {
     base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
     disable_ticking( true );
-    expire_at_max_stack = true;
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
-  void expire( timespan_t d ) override
+  void bump( int stacks, double value ) override
   {
-    int stacks = current_stack;
+    base_t::bump( stacks, value );
 
-    base_t::expire( d );
-
-    p()->buff.voidfall_spending->trigger( stacks );
+    if ( at_max_stacks() )
+    {
+      make_event( *sim, [ this ] {
+        expire();
+        p()->buff.voidfall_spending->trigger( max_stack() );
+      } );
+    }
   }
 };
 
@@ -9183,6 +9197,7 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   voidfall_spending_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_spending", p->hero_spec.voidfall_spending_buff )
   {
     disable_ticking( true );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
   void decrement( int stacks, double value ) override
@@ -9619,7 +9634,7 @@ void demon_hunter_t::activate()
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
 
-    if ( talent.devourer.entropy.enabled() )
+    if ( talent.devourer.entropy->ok() )
     {
       register_precombat_begin( [ this ]( player_t* ) {
         int starting_souls = options.entropy_starting_souls == -1
@@ -9900,11 +9915,13 @@ void demon_hunter_t::create_buffs()
                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                  ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
                                  ->set_quiet( true )
-                                 ->set_allow_precombat( true );
+                                 ->set_allow_precombat( true )
+                                 ->set_duration_multiplier( talent.annihilator.doomsayer->effectN( 2 ).base_value() );
   buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
                                      ->set_quiet( true )
                                      ->set_allow_precombat( true );
@@ -10139,6 +10156,8 @@ void demon_hunter_t::create_options()
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
+  add_option(
+      opt_bool( "shattered_souls_chance_aoe_reduction_linear", options.shattered_souls_chance_aoe_reduction_linear ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
@@ -10298,6 +10317,9 @@ void demon_hunter_t::init_procs()
   // Annihilator
   proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
   proc.soul_fragment_from_world_killer  = get_proc( "Soul Fragment from World Killer" );
+  proc.voidfall_from_builder            = get_proc( "Voidfall from Builder" );
+  proc.voidfall_from_mass_acceleration  = get_proc( "Voidfall from Mass Acceleration" );
+  proc.voidfall_from_meteoric_rise      = get_proc( "Voidfall from Meteoric Rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )

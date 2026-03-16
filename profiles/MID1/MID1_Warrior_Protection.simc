@@ -91,7 +91,7 @@ actions.thane_st+=/devastate
 actions.variables=variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 
 head=night_enders_tusks,id=249952,ilevel=289,enchant_id=7961
-neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240906/240906
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240906
 shoulders=night_enders_pauldrons,id=249950,ilevel=289,enchant_id=8031
 back=adherents_silken_shroud,id=239656,ilevel=285,embellishment=arcanoweave_lining,crafted_stats=49/36
 chest=night_enders_breastplate,id=249955,ilevel=289,enchant_id=7987
@@ -101,7 +101,7 @@ waist=night_enders_girdle,id=249949,ilevel=289
 legs=night_enders_chausses,id=249951,ilevel=289,enchant_id=8163
 feet=night_enders_greatboots,id=249954,ilevel=289,enchant_id=7993
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240906,enchant_id=7969
-finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240906/240906,enchant_id=7969
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240906,enchant_id=7969
 trinket1=algethar_puzzle_box,id=193701,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
 main_hand=turalyons_false_echo,id=249295,ilevel=289,enchant_id=8039
@@ -112,8 +112,8 @@ off_hand=ward_of_the_spellbreaker,id=251105,ilevel=289
 # gear_strength=1243
 # gear_stamina=17489
 # gear_intellect=190
-# gear_crit_rating=669
-# gear_haste_rating=1343
+# gear_crit_rating=637
+# gear_haste_rating=1329
 # gear_mastery_rating=518
 # gear_versatility_rating=56
 # gear_leech_rating=249

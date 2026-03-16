@@ -120,7 +120,7 @@ void blood( player_t* p )
   precombat->add_action( "deaths_caress" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "use_items,use_off_gcd=1" );
+  default_->add_action( "use_items" );
   default_->add_action( "fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8" );
   default_->add_action( "blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12" );
   default_->add_action( "berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15" );

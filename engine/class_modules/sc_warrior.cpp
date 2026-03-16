@@ -1659,7 +1659,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 
   double composite_target_multiplier( player_t* target ) const override
   {
-    double m = attack_t::composite_target_multiplier( target );
+    double m = base_t::composite_target_multiplier( target );
     auto target_data = td( target );
     if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
     target_data->debuffs_colossus_smash->up() && p()->buff.master_of_warfare_colossus_smash->up() )
@@ -9379,28 +9379,28 @@ struct warrior_module_t : public module_t
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
+        .modifier( 10 )
         .verification_value( 0 );
 
     hotfix::register_effect( "Warrior", "2026-3-13", "Periodic Damage Aura Buffed 10%", 191010,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
+        .modifier( 10 )
         .verification_value( 0 );
 
     hotfix::register_effect( "Warrior", "2026-3-13", "Pet Damage Aura Buffed 10%", 191011,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
+        .modifier( 10 )
         .verification_value( 0 );
 
     hotfix::register_effect( "Warrior", "2026-3-13", "Guardian Damage Aura Buffed 10%", 191012,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
+        .modifier( 10 )
         .verification_value( 0 );
 
     hotfix::register_effect( "Warrior", "2026-3-13", "Fury reap the storm proc chance nerfed to 20%", 1300777,

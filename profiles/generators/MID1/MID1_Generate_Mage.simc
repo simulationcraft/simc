@@ -144,19 +144,20 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
-shoulder=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577
-back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/12384,ilevel=285,crafted_stats=32/49
+shoulder=mantle_of_dark_devotion,id=251085,ilevel=289
+back=rigid_scale_greatcloak,id=258575,ilevel=289
 chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
 wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
 hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
 waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
 legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
-feet=icesteeped_sandals,id=49805,bonus_id=4786/12806
+feet=dreamscorched_striders,id=249373,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=umbral_spire_of_zuraal,id=258514,ilevel=289,enchant_id=7981
+main_hand=skybreakers_blade,id=258218,ilevel=289,enchant_id=7981
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=285,crafted_stats=36/32
 
 save=MID1_Mage_Frost.simc
 
@@ -176,18 +177,19 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
-shoulder=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577
-back=adherents_silken_shroud,id=239656,bonus_id=8960/12214/12384,ilevel=285,crafted_stats=32/49
+shoulder=mantle_of_dark_devotion,id=251085,ilevel=289
+back=rigid_scale_greatcloak,id=258575,ilevel=289
 chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
 wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
 hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
 waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
 legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
-feet=icesteeped_sandals,id=49805,bonus_id=4786/12806
+feet=dreamscorched_striders,id=249373,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=umbral_spire_of_zuraal,id=258514,ilevel=289,enchant_id=7981
+main_hand=skybreakers_blade,id=258218,ilevel=289,enchant_id=7981
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=285,crafted_stats=36/32
 
 save=MID1_Mage_Frost_Frostfire.simc

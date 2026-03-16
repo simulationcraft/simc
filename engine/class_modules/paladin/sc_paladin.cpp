@@ -1542,9 +1542,6 @@ struct judgment_ret_t : public judgment_t
   {
     judgment_t::execute();
 
-    if ( p()->spec.judgment_3->ok() )
-      p()->resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p()->gains.judgment );
-
     if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
     {
       p()->active.divine_resonance_ret->execute_on_target( execute_state->target );

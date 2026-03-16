@@ -2898,7 +2898,7 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_dot_t* proc_dot;
 
   deadly_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->talent.assassination.deadly_poison ),
+    rogue_poison_t( name, p, p->talent.assassination.deadly_poison, true ),
     proc_instant( nullptr ), proc_dot( nullptr )
   {
     proc_instant = p->get_background_action<deadly_poison_dd_t>(
@@ -2938,7 +2938,7 @@ struct instant_poison_t : public rogue_poison_t
   };
 
   instant_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->spell.instant_poison )
+    rogue_poison_t( name, p, p->spell.instant_poison, true )
   {
     impact_action = p->get_background_action<instant_poison_dd_t>(
       "instant_poison", p->spell.instant_poison->effectN( 1 ).trigger() );
@@ -2968,7 +2968,7 @@ struct wound_poison_t : public rogue_poison_t
   };
 
   wound_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->spell.wound_poison )
+    rogue_poison_t( name, p, p->spell.wound_poison, true )
   {
     impact_action = p->get_background_action<wound_poison_dd_t>(
       "wound_poison", p->spell.wound_poison->effectN( 1 ).trigger() );
@@ -2994,7 +2994,7 @@ struct amplifying_poison_t : public rogue_poison_t
   };
 
   amplifying_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->talent.assassination.amplifying_poison )
+    rogue_poison_t( name, p, p->talent.assassination.amplifying_poison, true )
   {
     impact_action = p->get_background_action<amplifying_poison_dd_t>(
       "amplifying_poison", p->talent.assassination.amplifying_poison->effectN( 3 ).trigger() );
@@ -7633,9 +7633,24 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   if ( !p()->rng().roll( chance ) )
     return;
 
-  // MIDNIGHT TOCHECK -- Diminishing returns how?
-  p()->resource_gain( RESOURCE_ENERGY, p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value(),
-                      p()->gains.venomous_wounds );
+  int poisoned_bleeds = 1;
+  for ( auto t : ab::sim->target_non_sleeping_list )
+  {
+    if ( t == state->target )
+      continue;
+
+    rogue_td_t* tdata = p()->get_target_data( t );
+    if ( tdata->is_lethal_poisoned() )
+    {
+      poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
+    }
+  }
+
+  // MIDNIGHT TOCHECK -- Currently diminishes to 1 when any AoE units are present
+  double energy_gain = ( poisoned_bleeds > 1 ?
+                         p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value() :
+                         p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
+  p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.venomous_wounds );
 }
 
 template <typename Base>

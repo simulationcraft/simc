@@ -36,19 +36,24 @@ actions.aoe+=/sundering,if=talent.surging_elements.enabled|buff.whirling_earth.u
 actions.aoe+=/lava_lash,if=buff.whirling_fire.up
 actions.aoe+=/doom_winds
 actions.aoe+=/crash_lightning,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.doom_winds.up|buff.ascendance.up)
-actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.ascendance.up)
-actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.doom_winds.up)
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&buff.whirling_air.up
 actions.aoe+=/lava_lash,if=talent.splitstream.enabled&buff.hot_hand.up
 actions.aoe+=/tempest,if=buff.maelstrom_weapon.stack>=10&(!buff.ascendance.up|!buff.doom_winds.up)
 actions.aoe+=/primordial_storm,if=buff.maelstrom_weapon.stack>=10
+actions.aoe+=/crash_lightning,if=talent.thorims_invocation.enabled&(buff.doom_winds.up|buff.ascendance.up)&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)&talent.splitstream.enabled&buff.hot_hand.up
 actions.aoe+=/voltaic_blaze,if=talent.fire_nova.enabled
 actions.aoe+=/crash_lightning
-actions.aoe+=/windstrike
-actions.aoe+=/stormstrike,if=buff.doom_winds.up
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)
 actions.aoe+=/sundering,if=talent.feral_spirit.enabled
 actions.aoe+=/voltaic_blaze
 actions.aoe+=/lava_lash,if=pet.searing_totem.active
+actions.aoe+=/windstrike
 actions.aoe+=/stormstrike,if=charges_fractional>=1.8|buff.converging_storms.stack=buff.converging_storms.max_stack
 actions.aoe+=/sundering,if=cooldown.surging_totem.remains>25
 actions.aoe+=/stormstrike,if=!talent.surging_totem.enabled
@@ -58,7 +63,7 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/flame_shock
 
 # Buff action priority list
-actions.buffs=use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)
+actions.buffs=use_item,name=algethar_puzzle_box,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)
 actions.buffs+=/use_item,name=unyielding_netherprism,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|fight_remains<=20
 actions.buffs+=/use_item,slot=trinket1,if=!variable.trinket1_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.1.has_use_buff
 actions.buffs+=/use_item,slot=trinket2,if=!variable.trinket2_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.2.has_use_buff
@@ -100,8 +105,8 @@ actions.single_totemic=voltaic_blaze,if=dot.flame_shock.remains=0
 actions.single_totemic+=/flame_shock,if=!ticking
 actions.single_totemic+=/surging_totem
 actions.single_totemic+=/call_action_list,name=buffs
-actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up
 actions.single_totemic+=/sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled
+actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up
 actions.single_totemic+=/doom_winds
 actions.single_totemic+=/crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled
 actions.single_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)

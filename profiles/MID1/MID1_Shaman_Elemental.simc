@@ -9,7 +9,7 @@ talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNA
 
 # Default consumables
 potion=lights_potential_2
-flask=flask_of_the_magister_2
+flask=flask_of_the_magisters_2
 food=harandar_celebration
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2,if=!talent.flametongue_weapon

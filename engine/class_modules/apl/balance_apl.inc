@@ -58,15 +58,16 @@ ec_st->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_do
 ec_st->add_action( "sunfire,target_if=remains<2|refreshable&variable.eclipse_down" );
 ec_st->add_action( "convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50|fight_remains<30","Convoke" );
 ec_st->add_action( "lunar_eclipse,if=cooldown.ca_inc.full_recharge_time>15|variable.opener","Enter Lunar" );
-ec_st->add_action( "starfall,if=buff.starweavers_warp.react|buff.touch_the_cosmos.react&talent.starweaver|buff.eclipse_lunar.remains>3","Spenders" );
-ec_st->add_action( "starsurge,if=astral_power>80|!variable.eclipse_down|buff.starweavers_weft.react" );
+ec_st->add_action( "starfall,if=buff.starweavers_warp.react|buff.touch_the_cosmos.react&talent.starweaver&buff.ascendant_stars.down","Spenders" );
+ec_st->add_action( "starsurge,if=astral_power>80|!variable.eclipse_down|buff.starweavers_weft.react|buff.touch_the_cosmos.react&buff.ascendant_stars.up" );
 ec_st->add_action( "fury_of_elune","Fury of Elune" );
 ec_st->add_action( "force_of_nature","Builders" );
 ec_st->add_action( "new_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "half_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "full_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "wild_mushroom,if=buff.eclipse_solar.up|cooldown.wild_mushroom.full_recharge_time<cooldown.ca_inc.remains" );
-ec_st->add_action( "starfire" );
+ec_st->add_action( "starfire,if=!variable.eclipse_down" );
+ec_st->add_action( "wrath,if=variable.eclipse_down" );
 
 kotg_st->add_action( "celestial_alignment,if=prev_gcd.1.force_of_nature|fight_remains<20","Cooldowns" );
 kotg_st->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down","Dots" );

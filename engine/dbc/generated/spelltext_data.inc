@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66384
-static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19348,6 +19348,7 @@ static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
   {  402898, "$@spelldesc402813", "You sense the distant flood of tidal magma.", 0 },
   {  402903, "$@spelldesc402813\r\n", "Your next harmful spell or ranged ability will launch a Lava Wave towards your target.", 0 },
   {  402912, "Each Holy Power spent has a $s1% chance to reset the cooldown of Blade of Justice$?s1261113[ and increase the damage of its next cast by $406086s2%.][.]", 0, 0 },
+  {  402916, "Final Verdict has a $h% chance to reset the cooldown of Blade of Justice.", "The cooldown of Blade of Justice has been reset$?s1261113[ and it deals $w1% increased damage.][.]", 0 },
   {  402928, "$?|CFF20ff20Critically striking an enemy has a chance to shock them and 2 nearby enemies, dealing $s1 Nature damage.", 0, 0 },
   {  402929, "$?|CFF20ff20Moving builds an electrical charge, causing your next damaging ability to also deal $s1 Nature damage.", 0, 0 },
   {  402930, "|CFF20ff20Dealing damage has a chance to set the enemy on fire, dealing $s1 Fire damage over $403225d.", 0, 0 },

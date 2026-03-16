@@ -3585,9 +3585,12 @@ struct duplicate_t : evoker_pet_t
   {
     eruption_t( duplicate_t* p ) : pet_spell_t( p, "eruption", p->evoker()->talent.duplicate_eruption_spell )
     {
-      background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+
+      // GCD is unhasted and lasts for the entire cast duration. Last Tested Feb 01 26
+      gcd_type = gcd_haste_type::NONE;
+      trigger_gcd = base_execute_time;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -9813,7 +9816,7 @@ void evoker_t::init_spells()
 
   register_passive_effect_mask( spec.close_as_clutchmates, effect_mask_t( true ).disable( 1, 2 ) );
 
-  // register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
+  register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
 
   // Register passives
   parse_all_class_passives();
@@ -10812,6 +10815,9 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   {
     parse_effects( evoker()->buff.unrelenting_siege );
   }
+
+  auto burst_mask    = effect_mask_t( true ).enable( 2, 3 );
+  parse_effects( evoker()->buff.essence_burst, burst_mask );
 
   if ( evoker()->talent.duplicate3.enabled() )
   {

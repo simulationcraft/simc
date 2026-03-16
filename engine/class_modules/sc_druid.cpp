@@ -38,7 +38,7 @@ static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
 // lunar bolt delay between bolts
 static constexpr timespan_t LUNAR_BOLT_DELAY = 200_ms;
 // summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
-static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
+static constexpr std::array<timespan_t, 2> FERAL_FLICKER_DELAY = { 400_ms, 500_ms };
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
 static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 // unseen swipe reduced_aoe_targets
@@ -4095,7 +4095,6 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       background = dual = proc = true;
       aoe = -1;
       direct_bleed = false;
-      travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
       dot_name = "frantic_frenzy_tick";
     }
@@ -4104,6 +4103,11 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
       return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
+    }
+
+    timespan_t travel_time() const override
+    {
+      return rng().range( FERAL_FLICKER_DELAY );
     }
 
     void execute() override
@@ -4126,8 +4130,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
 
       // scripted so must be manually configured
       base_tick_time = 200_ms;  // wild ass guess
-      dot_duration = 1000_ms;   // ticks 6 times despite tooltip saying 5
-      tick_zero = true;         // this zero tick may be a bug?
+      dot_duration = base_tick_time * p->talent.frantic_frenzy->effectN( 1 ).base_value();
 
       const auto& energize_eff = find_effect( p->find_spell( 1278969 ), E_ENERGIZE );
       energize_type = action_energize::PER_TICK;
@@ -4841,9 +4844,13 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
-    travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return rng().range( FERAL_FLICKER_DELAY );
   }
 
   void impact( action_state_t* s ) override
@@ -4916,7 +4923,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( BASE::td( s->target )->dots.red_moon->is_ticking() )
+    if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
     {
       if ( p_->buff.lunar_wrath->consume( this ) )
       {
@@ -5335,7 +5342,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::impact( s );
 
-    if ( red_moon_extend > 0_ms )
+    if ( !proc && red_moon_extend > 0_ms )
     {
       auto _dot = td( s->target )->dots.red_moon;
       if ( _dot->is_ticking() )
@@ -5540,9 +5547,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
       p()->resource_loss( RESOURCE_RAGE, kb_excess_rage );
       stats->consume_resource( RESOURCE_RAGE, kb_excess_rage );
 
-      if ( !p()->bugs )
-        consume_rage_memory_of_ysera( kb_excess_rage );
-
+      consume_rage_memory_of_ysera( kb_excess_rage );
       consume_rage_after_the_wildfire( kb_excess_rage );
       consume_rage_ursocs_guidance( kb_excess_rage );
     }
@@ -7973,9 +7978,9 @@ struct shooting_stars_t : public druid_spell_t
     }
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    druid_spell_t::impact( s );
+    druid_spell_t::execute();
 
     p()->buff.orbit_breaker->trigger();
 
@@ -11481,9 +11486,9 @@ void druid_t::create_actions()
 
   if ( talent.heart_of_the_wild.ok() )
   {
-    // set up cat
     if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_RESTORATION )
     {
+      // set up cat
       auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>>(
         "heart_of_the_wild_cat", this, apply_override( talent.heart_of_the_wild, spec.cat_form ), flag_e::NONE );
       _cat->name_str_reporting = "Cat";
@@ -11493,11 +11498,8 @@ void druid_t::create_actions()
       _cat->tick_action->base_multiplier *= talent.heart_of_the_wild->effectN( 2 ).percent();
 
       active.hotw_cat = _cat;
-    }
 
-    // set up owl
-    if ( specialization() != DRUID_BALANCE )
-    {
+      // set up owl
       auto _owl =
         new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
       _owl->name_str_reporting = "Moonkin";
@@ -11505,7 +11507,6 @@ void druid_t::create_actions()
       auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
         "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), find_spell( 1286243 ), flag_e::NONE );
       _owl_driver->damage->name_str_reporting = "HotW";
-      _owl_driver->damage->base_multiplier *= talent.heart_of_the_wild->effectN( 5 ).percent();
 
       replace_stats( _owl, _owl_driver, false );
       replace_stats( _owl, _owl_driver->damage );
@@ -12043,26 +12044,14 @@ bool druid_t::validate_actor()
 {
   sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
   
-  static constexpr std::string_view feral[] = {
-    "frantic frenzy does not proc overflowing power",
-    "frantic frenzy does not proc coiled to spring",
-    "frantic frenzy/unseen attacks assumed to have 500ms delay",
-  };
-
   static constexpr std::string_view guardian[] = {
-    "killing blow excess rage does not trigger memory of ysera",
     "when multiple dread shades are active only the latest one casts dire echo",
-    "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
     "tier 4pc repeats can proc wild guardian echoes",
   };
 
 #ifdef NDEBUG
   switch ( specialization() )
   {
-    case DRUID_FERAL:
-      for ( auto ph : feral )
-        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
-      break;
     case DRUID_GUARDIAN:
       for ( auto ph : guardian )
         sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
@@ -12928,10 +12917,6 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
 
   if ( r == RESOURCE_COMBO_POINT )
   {
-    // frantic frenzy does not proc overflowing power nor coiled to spring
-    if ( bugs && a && a->data().id() == 1244079 )
-      return actual;
-
     auto over = amount - actual;
 
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
@@ -13278,13 +13263,43 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
     if ( util::str_compare_ci( name, "astral_power" ) )
       return make_ref_expr( name, resources.current[ RESOURCE_ASTRAL_POWER ] );
 
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "buff" ) &&
+         util::str_compare_ci( splits[ 1 ], "eclipse" ) )
+    {
+      splits[ 1 ] = "eclipse_solar";
+      auto solar = druid_t::create_expression( util::string_join( splits, "." ) );
+      splits[ 1 ] = "eclipse_lunar";
+      auto lunar = druid_t::create_expression( util::string_join( splits, "." ) );
+
+      return make_fn_expr( name, [ solar = std::move( solar ), lunar = std::move( lunar ), this ] {
+        return buff.eclipse_lunar->check() ? lunar->evaluate() : solar->evaluate();
+      } );
+    }
+
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+         ( util::str_compare_ci( splits[ 1 ], "solar_eclipse" ) ||
+           util::str_compare_ci( splits[ 1 ], "lunar_eclipse" ) ) )
+    {
+      splits[ 1 ] = "eclipse";
+
+      return druid_t::create_expression( util::string_join( splits, "." ) );
+    }
+
+    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "solar" ) )
+        return make_fn_expr( name, [ this ] { return !buff.lunar_eclipse_override->check(); } );
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar" ) )
+        return make_fn_expr( name, [ this ] { return buff.lunar_eclipse_override->check(); } );
+    }
+
     // New Moon stage related expressions
     if ( util::str_compare_ci( name, "new_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage == NEW_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage == NEW_MOON; } );
     else if ( util::str_compare_ci( name, "half_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage == HALF_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage == HALF_MOON; } );
     else if ( util::str_compare_ci( name, "full_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage >= FULL_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage >= FULL_MOON; } );
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
     if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
@@ -13299,13 +13314,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
     {
       if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
       {
-        return make_fn_expr( name, [ this ]() {
+        return make_fn_expr( name, [ this ] {
           return buff.fury_of_elune->check() + buff.sundered_firmament->check();
         } );
       }
       else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
       {
-        return make_fn_expr( name, [ this ]() {
+        return make_fn_expr( name, [ this ] {
           return std::max( buff.fury_of_elune->remains(), buff.sundered_firmament->remains() );
         } );
       }
