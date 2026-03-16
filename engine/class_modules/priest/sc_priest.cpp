@@ -1159,6 +1159,26 @@ public:
     ab::snapshot_state( s, rt );
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = ab::composite_energize_amount( s );
+
+    if ( cast_state( s )->chain_number > 0 )
+    {
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1385
+      if ( priest().bugs )
+      {
+        ea = std::round( ea * priest().talents.shadow.deaths_torment->effectN( 2 ).percent() );
+      }
+      else
+      {
+        ea *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+      }
+    }
+
+    return ea;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_da_multiplier( s );
