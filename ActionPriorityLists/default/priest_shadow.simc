@@ -62,8 +62,8 @@ actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_
 actions.main+=/void_volley
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
-# Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions.
-actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles|dot.vampiric_touch.refreshable)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)&(!talent.maddening_tentacles|(insanity+6)>=action.shadow_word_madness.cost|active_dot.vampiric_touch<active_enemies|!dot.shadow_word_madness.ticking)
+# Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 actions.main+=/shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
@@ -73,6 +73,8 @@ actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to
 actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
 # MFI is a good button
 actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
+# Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)
 # Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)
 # Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used.
