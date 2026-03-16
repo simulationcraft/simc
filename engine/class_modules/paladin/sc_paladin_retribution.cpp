@@ -1010,11 +1010,7 @@ void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
-  double perc        = talents.execution_sentence->effectN( 2 ).percent();
-  // 14.02.26 Fluttershy - ES still only accumulates 10% of the damage
-  if ( bugs )
-    perc = .1;
-  double accumulated = buffs.execution_sentence->check_value() * perc;
+  double accumulated = buffs.execution_sentence->check_value() * talents.execution_sentence->effectN( 2 ).percent();
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;

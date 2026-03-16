@@ -12774,9 +12774,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Presence, RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     // 2025-07-28 If an ability costs more than its base_cost, RE takes the higher cost.
     trigger_runic_empowerment( calc_rp_cost );
-    if ( action->id == spell.necrotic_coil_action->id() )
-      calc_rp_cost = actual_amount;  // Necrotic Coil uses actual RP spent
-    trigger_runic_corruption( procs.rp_runic_corruption, calc_rp_cost, false );
+    trigger_runic_corruption( procs.rp_runic_corruption, bugs ? actual_amount : calc_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() )
     {

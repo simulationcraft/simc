@@ -27,7 +27,7 @@ save=MID1_Shaman_Elemental.simc
 
 shaman="MID1_Shaman_Enhancement_Totemic"
 level=90
-race=troll
+race=orc
 spec=enhancement
 role=attack
 position=back
@@ -54,28 +54,28 @@ save=MID1_Shaman_Enhancement.simc
 
 shaman="MID1_Shaman_Enhancement_Stormbringer"
 level=90
-race=troll
+race=orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzYmZmZmZmhZmZAAAAAAAAAsBYzMG2ILwMM0gFAmlZMzMWWmBmZ2YZmZmhhxMAAzwwMmZCMzAYMA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzwMzMzMzMzMzMzAAAAAAAAAsBYzMG2ILwMM0gFAmlZMzMWWmBmZ2YZmZmhhxMAAzwwwMTgZGMYcBA
 
 head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant=enchant_helm__empowered_rune_of_avoidance_2
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240906/240906
-shoulder=tempests_of_the_primal_core,id=249977,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289,enchant=enchant_shoulders__amirdrassils_grace_2
-back=adherents_silken_shroud,id=239656,bonus_id=12214/12497/12066/8793/13622/13667/12667/8960/12384,ilevel=285
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240890/240890
+shoulders=tempests_of_the_primal_core,id=249977,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289,enchant=enchant_shoulders__amirdrassils_grace_2
+back=adherents_silken_shroud,id=239656,bonus_id=8793/8960/12066/12214/12384/12667/13622/13667/12497,ilevel=285
 chest=embrace_of_the_primal_core,id=249982,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant=enchant_chest__mark_of_the_worldsoul_2
-wrist=fallen_kings_cuffs,id=249304,ilevel=289,gem_id=240892
+wrists=fallen_kings_cuffs,id=249304,ilevel=289,gem_id=240906
 hands=earthgrips_of_the_primal_core,id=249980,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=ceinture_of_the_primal_core,id=249976,bonus_id=1808,ilevel=289,gem_id=240906
+waist=scabrous_zombie_leather_belt,id=49810,bonus_id=1808,ilevel=289,gem_id=240906
 legs=eternal_flame_scaleguards,id=249324,ilevel=289,enchant=forest_hunters_armor_kit_2
-feet=whipcoil_sabatons,id=251084,ilevel=289,enchant=enchant_boots__lynxs_dexterity_2
+feet=boots_of_explosive_growth,id=193715,ilevel=289,enchant=enchant_boots__lynxs_dexterity_2
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240906/240906,enchant=enchant_ring__silvermoons_alacrity_2
-finger2=omission_of_light,id=251093,ilevel=289,gem_id=240892,enchant=enchant_ring__natures_fury_2
+finger2=occlusion_of_void,id=251217,ilevel=289,gem_id=240906,enchant=enchant_ring__natures_fury_2
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=algethar_puzzle_box,id=193701,ilevel=289
 main_hand=clutchmates_caress,id=249287,ilevel=289,enchant=enchant_weapon__acuity_of_the_rendorei_2
-off_hand=farstriders_chopper,id=237850,bonus_id=8793/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,crafted_stats=40/32,enchant=enchant_weapon__acuity_of_the_rendorei_2
+off_hand=farstriders_chopper,id=237850,bonus_id=8793/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant=enchant_weapon__acuity_of_the_rendorei_2,crafted_stats=40/32
 
 save=MID1_Shaman_Enhancement_Stormbringer.simc
 
