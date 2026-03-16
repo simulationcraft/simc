@@ -20,7 +20,7 @@ namespace warlock_apl{
 
   std::string food( const player_t* p )
   {
-    if ( p->true_level >= 90 ) return "blooming_feast";
+    if ( p->true_level >= 90 ) return "harandar_celebration";
     return ( p->true_level >= 80 ) ? "feast_of_the_divine_day" : "disabled";
   }
 
