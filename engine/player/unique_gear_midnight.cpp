@@ -743,8 +743,7 @@ void primal_spore_binding( special_effect_t& effect )
 // 1252389 dot
 void prismatic_focusing_iris( special_effect_t& effect )
 {
-  // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
-  auto dot_damage = effect.driver()->effectN( 1 ).average( effect ) / 5;
+  auto dot_damage = effect.driver()->effectN( 1 ).average( effect );
 
   auto dot =
     create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, effect.trigger()->effectN( 1 ).trigger() );
