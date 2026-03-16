@@ -4129,11 +4129,9 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
-    //       Early data leans towards it being the case.
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
-      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
     }
 
     return cc;
@@ -5219,11 +5217,9 @@ struct multishot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
-    //       Early data leans towards it being the case.
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
-      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
     }
 
     return cc;

@@ -8253,16 +8253,6 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
   {
-    if ( p->talent.aldrachi_reaver.keen_engagement->ok() )
-    {
-      energize_type     = action_energize::ON_CAST;
-      energize_resource = data().effectN( 2 ).resource_gain_type();
-      energize_amount   = p->talent.aldrachi_reaver.keen_engagement->effectN( 1 ).resource( energize_resource );
-    }
-    else
-    {
-      energize_type = action_energize::NONE;
-    }
   }
 
   void execute() override
@@ -10985,7 +10975,6 @@ void demon_hunter_t::init_spells()
   }
 
   // Hero spec background spells
-  hero_spec.reavers_glaive                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
   hero_spec.reavers_mark                   = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
   hero_spec.glaive_flurry                  = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
   hero_spec.rending_strike                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
@@ -10999,10 +10988,12 @@ void demon_hunter_t::init_spells()
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
+      hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
       break;
     case DEMON_HUNTER_VENGEANCE:
+      hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 1283344 );
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
       break;
