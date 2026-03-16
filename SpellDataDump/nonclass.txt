@@ -246940,7 +246940,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 23.65937 (coefficient=0.180495) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18.9275 (coefficient=0.144396) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+Hotfixed         : Coefficient (0.180495 -> 0.144396)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -252646,12 +252647,13 @@ Description      : $@spelldesc1271211
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Crucible of Erratic Energies (id=1272091) [Passive] 
+Hotfixed         : Proc Flags 1 (87296 -> 87312)
 School           : Physical
 Spell Type       : None
 Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 4
-Proc Flags       : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42): Voidlust | Scaling Class: Secondary Rating (-7)
