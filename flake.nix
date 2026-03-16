@@ -67,6 +67,8 @@
             qtwebengine
           ];
         };
+
+        rev = self.rev or "dirty";
       in
       {
         formatter = treefmt.config.build.wrapper;
@@ -80,7 +82,7 @@
 
         packages.simc = llvm.stdenv.mkDerivation rec {
           pname = "simc";
-          version = "0.0.1";
+          version = "1201.01.${rev}";
           src = self;
           nativeBuildInputs = nbi;
           buildInputs = packages;
