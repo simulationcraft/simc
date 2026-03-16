@@ -15,14 +15,17 @@ actions.precombat+=/consecration
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/use_item,name=algethar_puzzle_box
 actions+=/use_items
 actions+=/potion,if=buff.avenging_wrath.up
 actions+=/avenging_wrath,if=cooldown.divine_toll.remains<=10
 actions+=/fireblood,if=buff.avenging_wrath.up
 actions+=/divine_toll,if=buff.avenging_wrath.up|(!talent.righteous_protector.enabled&cooldown.avenging_wrath.remains<30)
-actions+=/hammer_of_light,if=!buff.undisputed_ruling.up|buff.hammer_of_light_ready.remains<5
-actions+=/shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up
+actions+=/hammer_of_light,if=(!buff.undisputed_ruling.up|buff.hammer_of_light_ready.remains<5)&debuff.judgment.up
+actions+=/shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up|prev_gcd.1.divine_toll
 actions+=/holy_armaments,if=next_armament=sacred_weapon&(buff.sacred_weapon.remains<6|!buff.sacred_weapon.up)
+actions+=/hammer_of_wrath,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
+actions+=/judgment,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
 actions+=/avengers_shield,if=buff.vanguard.up|(buff.avenging_wrath.up&apex.3)
 actions+=/holy_armaments,if=next_armament=holy_bulwark&cooldown.avenging_wrath.remains<5
 actions+=/consecration,if=buff.divine_guidance.stack>=5
@@ -37,4 +40,5 @@ actions+=/consecration,if=!consecration.up
 actions+=/blessed_hammer
 actions+=/hammer_of_the_righteous
 actions+=/arcane_torrent
+actions+=/word_of_glory,if=buff.shining_light_free.up
 actions+=/consecration

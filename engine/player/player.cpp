@@ -12417,12 +12417,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+      // since we have no fallback system for cooldowns, all cooldowns must be created if not found.
+      auto _cooldown = find_cooldown( splits[ 1 ] );
+
+      if ( !_cooldown )
       {
-        return cooldown->create_expression( splits[ 2 ] );
+        sim->print_debug( "{} cooldown '{}' not found, creating placeholder.", *this, splits[ 1 ] );
+        _cooldown = get_cooldown( splits[ 1 ] );
       }
 
-      throw sc_invalid_apl_argument( fmt::format( "Cooldown '{}' not found.", splits[ 1 ] ) );
+      return _cooldown->create_expression( splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -13782,14 +13786,22 @@ void player_t::create_options()
                         thewarwithin_opts.attuned_to_the_aether ) );
 
   // Midnight options
-  add_option( opt_string( "midnight.darkmoon_hunt_race", midnight_opts.darkmoon_hunt_race ) );
-  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
-                            500_ms, 5_s ) );
-  add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
-  add_option( opt_float( "midnight.refueling_orb_heal_chance", midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
-  add_option( opt_bool( "midnight.crucible_of_erratic_energies_violence", midnight_opts.crucible_of_erratic_energies_violence ) );
-  add_option( opt_bool( "midnight.crucible_of_erratic_energies_sustenance", midnight_opts.crucible_of_erratic_energies_sustenance ) );
-  add_option( opt_bool( "midnight.crucible_of_erratic_energies_predation", midnight_opts.crucible_of_erratic_energies_predation ) );
+  add_option(   opt_string( "midnight.darkmoon_hunt_race",
+                            midnight_opts.darkmoon_hunt_race ) );
+  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time",
+                            midnight_opts.sealed_chaos_urn_dispell_time, 500_ms, 5_s ) );
+  add_option(     opt_bool( "midnight.sealed_chaos_urn_dispell",
+                            midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option(    opt_float( "midnight.refueling_orb_heal_chance",
+                            midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_violence",
+                            midnight_opts.crucible_of_erratic_energies_violence ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_sustenance",
+                            midnight_opts.crucible_of_erratic_energies_sustenance ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_predation",
+                            midnight_opts.crucible_of_erratic_energies_predation ) );
+  add_option(    opt_float( "midnight.vessel_of_tortured_souls_miss_chance",
+                            midnight_opts.vessel_of_tortured_souls_miss_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -15567,6 +15579,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         misc_type = RESOURCE_MANA;  // hardcode to mana
         pct_val = modifying_eff.average( this );
         break;
+      case A_MOD_TARGET_ARMOR_PCT:  // 280
       case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
         pct_val = -modifying_eff.average( this );  // reversed value
         break;

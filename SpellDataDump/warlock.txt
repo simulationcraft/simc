@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66337 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -16746,7 +16746,6 @@ Effects          :
 #2 (id=1311804)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 1851 (Label) | Target: Self (1)
                    Affected Spells (Label): Felstorm (89751), Felstorm (89753)
-Hotfixed         : NEW EFFECT
 Description      : The cooldown of your Felguard's Felstorm is reduced by ${$1263938s1/-1000} sec and damage dealt to your primary demon is reduced by $1263938s2%.
 
 Name             : Fel Armaments (id=1263938) [Spell Family (5), Hidden] 

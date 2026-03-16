@@ -450,7 +450,8 @@ void profilesets_insert_data( highchart::bar_chart_t& chart,
   double data_value = mean ? data.mean : data.median;
 
   entry.set( "name", name );
-  entry.set( "reldiff", baseline_value > 0 ? (data_value / baseline_value - 1.0) * 100 : 0);
+  entry.set( "reldiff", baseline_value > 0 ? ( data_value / baseline_value - 1.0 ) * 100 : 0 );
+  entry.set( "absdiff", std::round( data_value - baseline_value ) );
   entry.set( "y", util::round( data_value ) );
 
   chart.add( data_idx_str + "series.0.data", entry );
@@ -1175,6 +1176,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
       {
         has_diff = true;
         e.set( "reldiff", 100.0 * value / base_value - 100.0 );
+        e.set( "absdiff", value - base_value );
       }
 
       bc.add( "__data." + series_id_str + ".series.0.data", e );
@@ -1247,7 +1249,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
 
   if ( s.chart_show_relative_difference && has_diff )
   {
-    n_chars += 5;
+    n_chars += s.chart_show_relative_difference_percent ? 5 : 8;
   }
 
   if ( precision > 0 )
@@ -1320,17 +1322,31 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
     formatter +=
         "var fmt = '<span style=\"color:' + "
         "this.series.chart.options.__colors['C_' + this.point.name.replace('.', '_')] + ';\">';";
-    formatter +=
-        "if (this.point.reldiff === undefined || this.point.reldiff === 0) { "
-        "fmt += Highcharts.numberFormat(this.point.y, " +
-        util::to_string( precision ) + "); }";
-    formatter += "else {";
-    formatter += "  fmt += Highcharts.numberFormat(this.point.y, " +
-                 util::to_string( precision ) + ") + ";
-    formatter +=
-        "         ' (' + Highcharts.numberFormat(this.point.reldiff, 2) + "
-        "'%)';";
-    formatter += "}";
+    if ( s.chart_show_relative_difference_percent )
+    {
+      formatter +=
+          "if (this.point.reldiff === undefined || this.point.reldiff === 0) { "
+          "fmt += Highcharts.numberFormat(this.point.y, " +
+          util::to_string( precision ) + "); }";
+      formatter += "else {";
+      formatter += "  fmt += Highcharts.numberFormat(this.point.y, " + util::to_string( precision ) + ") + ";
+      formatter +=
+          "         ' (' + Highcharts.numberFormat(this.point.reldiff, 2) + "
+          "'%)';";
+      formatter += "}";
+    }
+    else
+    {
+      formatter +=
+          "if (this.point.absdiff === undefined || this.point.absdiff === 0) { "
+          "fmt += Highcharts.numberFormat(this.point.y, " +
+          util::to_string( precision ) + "); }";
+      formatter += "else {";
+      formatter += "  fmt += Highcharts.numberFormat(this.point.y, " + util::to_string( precision ) + ") + ";
+      formatter += "         ' (' + Highcharts.numberFormat(this.point.absdiff, " + util::to_string( precision ) +
+                   ") + ')';";
+      formatter += "}";
+    }
     formatter += "fmt += '</span>';";
     formatter += "return fmt;";
     formatter += "}";
@@ -1800,7 +1816,14 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
 
   if ( sim.chart_show_relative_difference )
   {
-    chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)" );
+    if ( sim.chart_show_relative_difference_percent )
+    {
+      chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)" );
+    }
+    else
+    {
+      chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.absdiff})" );
+    }
   }
 
   profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results, baseline,

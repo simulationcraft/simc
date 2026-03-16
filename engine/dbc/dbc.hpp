@@ -592,43 +592,44 @@ private:
 namespace dbc
 {
 // Wrapper for fetching spell data through various spell data variants
-template <typename T>
-const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
+template <
+  typename T, typename U,
+  typename = std::enable_if_t<std::is_convertible_v<U, unsigned> || std::is_convertible_v<U, const spell_data_t*>>>
+const spell_data_t* find_spell( const T* obj, U data )
 {
-  auto return_spell = obj->dbc_override->find_spell( spell->id(), obj->dbc->ptr );
-  if ( return_spell )
-    return return_spell;
+  // check for existing overrides
+  unsigned spell_id;
 
-  if ( !obj->disable_hotfixes )
-    return_spell = hotfix::find_spell( spell, obj->dbc->ptr );
+  if constexpr ( std::is_convertible_v<U, unsigned> )
+    spell_id = data;
   else
-    return_spell = spell;
+    spell_id = data->id();
 
-  // always clone matching class spell family or label
-  if constexpr ( std::is_base_of_v<T, player_t> )
-  {
-    if ( !obj->disable_class_spell_auto_cloning &&
-         ( as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) ||
-           return_spell->affected_by_label( dbc::get_class_spell_label( obj->type ) ) ) )
-    {
-      return_spell = T::clone_dbc_override_spell( obj, return_spell );
-    }
-  }
-
-  return return_spell;
-}
-
-template <typename T>
-const spell_data_t* find_spell( const T* obj, unsigned spell_id )
-{
   auto return_spell = obj->dbc_override->find_spell( spell_id, obj->dbc->ptr );
   if ( return_spell )
+  {
+    // check if we have sim-wide overrides that needs to be cloned into the player
+    if constexpr ( std::is_base_of_v<T, player_t> )
+    {
+      if ( obj->sim->dbc_override->find_spell( spell_id, obj->dbc->ptr ) == return_spell )
+        return_spell = T::clone_dbc_override_spell( obj, return_spell );
+    }
+
     return return_spell;
+  }
+
+  // check for registered hotfixes
+  const spell_data_t* spell_data;
+
+  if constexpr ( std::is_convertible_v<U, unsigned> )
+    spell_data = obj->dbc->spell( data );
+  else
+    spell_data = data;
 
   if ( !obj->disable_hotfixes )
-    return_spell = hotfix::find_spell( obj->dbc->spell( spell_id ), obj->dbc->ptr );
+    return_spell = hotfix::find_spell( spell_data, obj->dbc->ptr );
   else
-    return_spell = obj->dbc->spell( spell_id );
+    return_spell = spell_data;
 
   // always clone matching class spell family or label
   if constexpr ( std::is_base_of_v<T, player_t> )

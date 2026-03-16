@@ -22,9 +22,9 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=arcane_intellect
-actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=cast_remains_time,value=0.2
 actions.precombat+=/variable,name=pooling_time,value=10*gcd.max
+actions.precombat+=/variable,name=flamestriking,op=reset,default=1
 # Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg.
 actions.precombat+=/variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
 # Flamestrike at 4 targets.
@@ -65,16 +65,16 @@ actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.do
 
 actions.ff_combustion=combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)|prev_gcd.1.meteor
 # Precast into Combustion. Prioritize Pyroclasm if available.
-actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&(buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down)
+actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&variable.flamestriking&(buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down)
 actions.ff_combustion+=/pyroblast,if=buff.pyroclasm.up&!buff.hot_streak.react&buff.combustion.down
 actions.ff_combustion+=/fireball,if=buff.combustion.down
 # Meteor is used towards the end of Combustion to maximize the Ignite bank for Burnout. If not playing Burnout, just make sure the Meteor lands during Combustion at any time.
 actions.ff_combustion+=/meteor,if=(talent.burnout&buff.combustion.remains<8)|(!talent.burnout&buff.combustion.remains>2)
 # Spend Hot Streaks on Pyroblast in ST or Flamestrike in AoE.
-actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&(buff.hot_streak.react)
+actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&variable.flamestriking&(buff.hot_streak.react)
 actions.ff_combustion+=/pyroblast,if=buff.hot_streak.react
 # Make sure Pyroclasm FINISHES its cast before Combustion ends.
-actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&(buff.pyroclasm.up&cast_time<buff.combustion.remains)
+actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&variable.flamestriking&(buff.pyroclasm.up&cast_time<buff.combustion.remains)
 actions.ff_combustion+=/pyroblast,if=buff.pyroclasm.up&cast_time<buff.combustion.remains
 actions.ff_combustion+=/scorch,if=buff.heat_shimmer.react|talent.scald&target.health.pct<30&buff.frostfire_empowerment.down
 actions.ff_combustion+=/fireball
@@ -85,10 +85,10 @@ actions.ff_filler=meteor,if=time>=(variable.combustion_delay-gcd.max)
 # During Firestarter, only use Pyroblast as your spender, even for AoE.
 actions.ff_filler+=/pyroblast,if=buff.hot_streak.up&talent.firestarter&time<variable.combustion_delay
 # Hold Hot Streak if Combustion is coming up soon. Do not hold if intentionally delaying Combustion.
-actions.ff_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&(buff.hot_streak.react&(cooldown.combustion.remains>=5|time<variable.combustion_delay))
+actions.ff_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&variable.flamestriking&(buff.hot_streak.react&(cooldown.combustion.remains>=5|time<variable.combustion_delay))
 actions.ff_filler+=/pyroblast,if=buff.hot_streak.react&(cooldown.combustion.remains>=5|time<variable.combustion_delay)
 # Spend Pyroclasm immediately if you have 2 stacks available. Otherwise, hold one stack if it lasts until Combustion comes up.
-actions.ff_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&(buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2)
+actions.ff_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&variable.flamestriking&(buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2)
 actions.ff_filler+=/pyroblast,if=buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2
 actions.ff_filler+=/scorch,if=buff.heat_shimmer.react
 actions.ff_filler+=/fireball
@@ -110,7 +110,7 @@ actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=fight_remain
 actions.sf_combustion=combustion,use_off_gcd=1,use_while_casting=1,if=action.scorch.executing&(action.scorch.execute_remains<variable.cast_remains_time)|action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)|action.flamestrike.executing&(action.flamestrike.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3|buff.bloodlust.up)&!talent.sunfury_execution
 # Precast one of these into Combustion.
 actions.sf_combustion+=/meteor,if=buff.bloodlust.up&buff.combustion.down&(talent.blast_zone|active_enemies>=4)&!talent.sunfury_execution
-actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&(buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up)
+actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up)
 actions.sf_combustion+=/pyroblast,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up
 actions.sf_combustion+=/scorch,if=buff.combustion.down&(target.health.pct<30|active_enemies>=4)
 # If precasting Meteor into Combustion, can fit a Fireball unless Bloodlust is active.
@@ -118,25 +118,25 @@ actions.sf_combustion+=/fireball,if=buff.combustion.down&(!prev_gcd.1.meteor|buf
 # Meteor is used towards the end of Combustion to maximize the Ignite bank for Burnout. If not playing Burnout, just make sure the Meteor lands during Combustion at any time.
 actions.sf_combustion+=/meteor,if=(talent.burnout&buff.combustion.remains<8|!talent.burnout&buff.combustion.remains>2)|buff.combustion.remains>2&active_enemies>=4
 # Spend Hot Streaks on Pyroblast in ST or Flamestrike in AoE. The Scorch condition is simply to simulate predictable guaranteed crits during Combustion.
-actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2)
+actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2)
 actions.sf_combustion+=/pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2
 # Make sure Pyroclasm FINISHES its cast before Combustion ends.
-actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&(buff.pyroclasm.up&!buff.hot_streak.up&cast_time<buff.combustion.remains)
+actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.pyroclasm.up&!buff.hot_streak.up&cast_time<buff.combustion.remains)
 actions.sf_combustion+=/pyroblast,if=buff.pyroclasm.up&!buff.hot_streak.up&cast_time<buff.combustion.remains
 actions.sf_combustion+=/scorch
 actions.sf_combustion+=/fireball
 # We prioritize starting to cast Pyroclasm (on 2 stacks) over Fire Blast if there's no risk of overcapping. In AoE, we also do not want to cast Fire Blast during a hardcast Flamestrike.
-actions.sf_combustion+=/call_action_list,name=fireblast,if=!talent.pyroclasm|(buff.pyroclasm.stack<2|action.pyroblast.executing&action.pyroblast.execute_remains>0.2&buff.pyroclasm.stack=2|cooldown.fire_blast.charges_fractional>=2|buff.combustion.remains<action.pyroblast.cast_time)&(active_enemies<variable.sf_combustion_flamestrike|buff.pyroclasm.down|!action.flamestrike.executing)
+actions.sf_combustion+=/call_action_list,name=fireblast,if=!talent.pyroclasm|(buff.pyroclasm.stack<2|action.pyroblast.executing&action.pyroblast.execute_remains>0.2&buff.pyroclasm.stack=2|cooldown.fire_blast.charges_fractional>=2|buff.combustion.remains<action.pyroblast.cast_time)&(active_enemies<variable.sf_combustion_flamestrike&variable.flamestriking|buff.pyroclasm.down|!action.flamestrike.executing)
 
 # In AoE, outside of Bloodlust, we can use Meteor into a Hardcast as a precast for Combustion.
 actions.sf_filler=meteor,if=active_enemies>=4&time>variable.combustion_delay&cooldown.combustion.remains<=gcd.max+variable.combustion_precast_time&buff.bloodlust.down
 # During Firestarter, only use Pyroblast as your spender, even for AoE
 actions.sf_filler+=/pyroblast,if=buff.hot_streak.up&talent.firestarter&time<variable.combustion_delay
 # Spend Hot Streaks on Pyroblast in ST or Flamestrike in AoE. The Scorch condition is simply to simulate predictable guaranteed crits during execute.
-actions.sf_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_filler_flamestrike&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2|buff.hyperthermia.up)
+actions.sf_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_filler_flamestrike&variable.flamestriking&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2|buff.hyperthermia.up)
 actions.sf_filler+=/pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2|buff.hyperthermia.up
 # Spend Pyroclasm immediately if you have 2 stacks available or if Firestarter is active. Otherwise, hold one stack if it lasts until Combustion comes up.
-actions.sf_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_filler_flamestrike&buff.pyroclasm.up&((cooldown.combustion.remains>=12|time<variable.combustion_delay&(talent.firestarter|time>(variable.combustion_delay-action.flamestrike.cast_time)))|buff.pyroclasm.stack=2)
+actions.sf_filler+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_filler_flamestrike&variable.flamestriking&buff.pyroclasm.up&((cooldown.combustion.remains>=12|time<variable.combustion_delay&(talent.firestarter|time>(variable.combustion_delay-action.flamestrike.cast_time)))|buff.pyroclasm.stack=2)
 actions.sf_filler+=/pyroblast,if=buff.pyroclasm.up&(cooldown.combustion.remains>=12|time<variable.combustion_delay&(talent.firestarter|time>(variable.combustion_delay-action.pyroblast.cast_time)))|buff.pyroclasm.stack=2
 # Meteor is used on CD with Blast Zone starting from the first Combustion. Without Blast Zone, it's used either purely during Combustion or within 12 seconds before if talented into Sunfury Execution.
 actions.sf_filler+=/meteor,if=(!talent.blast_zone&talent.sunfury_execution&cooldown.combustion.remains<12&buff.pyroclasm.stack<2)|(talent.blast_zone&time>variable.combustion_delay)
@@ -165,10 +165,10 @@ main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,il
 # gear_ilvl=288.47
 # gear_stamina=17604
 # gear_intellect=1661
-# gear_crit_rating=83
-# gear_haste_rating=1185
-# gear_mastery_rating=1187
-# gear_versatility_rating=55
+# gear_crit_rating=87
+# gear_haste_rating=1201
+# gear_mastery_rating=1205
+# gear_versatility_rating=59
 # gear_speed_rating=98
 # gear_avoidance_rating=407
 # gear_armor=531

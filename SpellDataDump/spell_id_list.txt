@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.66337
+Class Spell ID List, wow build 12.0.1.66384
 
 Death Knight
 3714     Path of Frost
@@ -5379,6 +5379,7 @@ Druid
 1283650  Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1286243  Starfall
 1286247  Starfall
+1292031  Dream Guide
 
 Evoker
 351338   Quell
@@ -14589,7 +14590,7 @@ Paladin
 397191   Recompense
 398901   Inflorescence of the Sunwell
 402912   Righteous Cause
-402916  *Righteous Cause
+402916   Righteous Cause
 402964   Sanctified Plates
 402971   Jurisdiction
 403010   Blessed Champion

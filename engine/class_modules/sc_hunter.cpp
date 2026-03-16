@@ -4125,6 +4125,20 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
     return new state_t( this, target );
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
+    //       Early data leans towards it being the case.
+    if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
+    {
+      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
+    }
+
+    return cc;
+  }
+
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
     hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
@@ -5205,10 +5219,11 @@ struct multishot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO confirm if crit bonus stacks with Windrunner Quiver
+    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
+    //       Early data leans towards it being the case.
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
-      cc += p()->talents.critical_precision->effectN( 1 ).percent();
+      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
     }
 
     return cc;

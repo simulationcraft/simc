@@ -1542,9 +1542,6 @@ struct judgment_ret_t : public judgment_t
   {
     judgment_t::execute();
 
-    if ( p()->spec.judgment_3->ok() )
-      p()->resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p()->gains.judgment );
-
     if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
     {
       p()->active.divine_resonance_ret->execute_on_target( execute_state->target );
@@ -3784,7 +3781,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
 
-  std::string protection_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
+  std::string protection_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -3807,7 +3804,7 @@ std::string paladin_t::default_food() const
 {
   std::string retribution_food = ( true_level > 80 ) ? "royal_roast" : "disabled";
 
-  std::string protection_food = ( true_level > 70 ) ? "feast_of_the_divine_day" : "disabled";
+  std::string protection_food = ( true_level > 80 ) ? "blooming_feast" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -3830,7 +3827,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 80 ) ? "flask_of_the_magisters_2" : "disabled";
 
-  std::string protection_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
+  std::string protection_flask = ( true_level > 80 ) ? "flask_of_the_shattered_sun_2" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -3861,7 +3858,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
+      return true_level < 81 ? "disabled" : "main_hand:thalassian_phoenix_oil_2,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
       return true_level < 81 ? "disabled" : "main_hand:thalassian_phoenix_oil_2";
 

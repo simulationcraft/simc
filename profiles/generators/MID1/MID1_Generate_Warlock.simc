@@ -55,32 +55,31 @@ off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 save=MID1_Warlock_Affliction_Hellcaller.simc
 
 
-# # warlock="MID1_Warlock_Demonology_Soul_Harvester"
-# # spec=demonology
-# # level=80
-# # race=Orc
-# # role=spell
-# # position=ranged_back
-# # talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjYWMMmtZmZYWGAAAAAAAAAAzM22GYADYG2CZsxMzMGjZ2MzMzMGzMwMzMDzMDAAA
+warlock="MID1_Warlock_Demonology_Soul_Harvester"
+spec=demonology
+level=90
+race=Orc
+role=spell
+position=ranged_back
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbGjx2sMzMjZAAzMzMzAMzMmxMDAAwYmZmZMDLDAD
 
-# # head=devotees_discarded_headdress,id=212440,bonus_id=1540/10299/523,ilevel=639,gem_id=213743
-# # neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/8781,ilevel=639,gem_id=213473/213485
-# # shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# # back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
-# # chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-# # wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8795,gem_id=213461,enchant_id=7397,crafted_stats=32/36
-# # hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# # waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213461
-# # legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
-# # feet=assimilated_eggshell_slippers,id=225582,bonus_id=1540/10299/10376,enchant_id=7418
-# # finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213461/213461,enchant_id=7340
-# # finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213467/213491,enchant_id=7340
-# # trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-# # trinket2=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
-# # main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
-# # off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8792,crafted_stats=32/36
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
+shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12214/12214/12214/12214/12214/12384/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240892
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
+finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
+trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
 
-# # save=MID1_Warlock_Demonology_Soul_Harvester.simc
+save=MID1_Warlock_Demonology_Soul_Harvester.simc
 
 # warlock="MID1_Warlock_Demonology_Diabolist"
 # spec=demonology

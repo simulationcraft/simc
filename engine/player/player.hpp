@@ -918,6 +918,8 @@ struct player_t : public actor_t
     bool crucible_of_erratic_energies_violence = false;
     bool crucible_of_erratic_energies_sustenance = false;
     bool crucible_of_erratic_energies_predation = false;
+    // Chance to miss vessel of tortured souls orb
+    double vessel_of_tortured_souls_miss_chance = 0.1;
   } midnight_opts;
 
 private:

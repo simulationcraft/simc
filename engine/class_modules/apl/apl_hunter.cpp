@@ -294,8 +294,8 @@ void marksmanship( player_t* p )
   sentst->add_action( "rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)" );
   sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=2&variable.trueshot_ready" );
-  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=2" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies>1" );
   sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
@@ -377,8 +377,8 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)" );
   sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies=2&variable.trueshot_ready" );
-  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=2" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready" );
+  sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies>1" );
   sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );

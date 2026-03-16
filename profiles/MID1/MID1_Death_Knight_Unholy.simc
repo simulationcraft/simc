@@ -63,7 +63,7 @@ actions.cooldowns+=/outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestile
 actions.cooldowns+=/army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)
 actions.cooldowns+=/dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead
 actions.cooldowns+=/soul_reaper,if=!talent.pestilence|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35
-actions.cooldowns+=/putrefy,if=(variable.st_planning|variable.adds_remain)&cooldown.dark_transformation.remains>15&((talent.soul_reaper&!target.health.pct<=35&!action.soul_reaper.ready|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>3&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))
+actions.cooldowns+=/putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper)|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))
 
 # Racials
 actions.racials=ancestral_call,if=variable.cds_active
@@ -116,9 +116,9 @@ main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=624
 # gear_ilvl=288.47
 # gear_strength=1243
 # gear_stamina=17372
-# gear_crit_rating=981
+# gear_crit_rating=993
 # gear_haste_rating=319
-# gear_mastery_rating=1250
+# gear_mastery_rating=1274
 # gear_avoidance_rating=266
 # gear_armor=1863
 # set_bonus=midnight_season_1_2pc=1

@@ -1,4 +1,3 @@
-ptr=1
 # MID1
 # MID Season 1
 # * Set pieces are permitted up to the item level cap (?). ["bonus_id=?/?"]
@@ -31,7 +30,7 @@ MID1_Generate_Druid.simc
 MID1_Generate_Evoker.simc
 
 # Hunter
-# MID1_Generate_Hunter.simc
+MID1_Generate_Hunter.simc
 
 # Mage
 MID1_Generate_Mage.simc
@@ -40,7 +39,7 @@ MID1_Generate_Mage.simc
 MID1_Generate_Monk.simc
 
 # Paladin
-# MID1_Generate_Paladin.simc
+MID1_Generate_Paladin.simc
 
 # Priest
 MID1_Generate_Priest.simc

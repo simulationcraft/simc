@@ -13,6 +13,7 @@ actions.assisted_combat+=/thunderstrike_ward,if=buff.thunderstrike_ward.down
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/ascendance
 actions.assisted_combat+=/chain_lightning,if=active_enemies>3&buff.stormkeeper.up&buff.stormkeeper.remains<=3
+actions.assisted_combat+=/tempest,if=buff.stormkeeper.up&buff.stormkeeper.remains<=3
 actions.assisted_combat+=/lightning_bolt,if=buff.stormkeeper.up&buff.stormkeeper.remains<=3
 actions.assisted_combat+=/flame_shock,if=talent.voltaic_blaze&active_enemies>2&!talent.purging_flames&!dot.flame_shock.ticking
 actions.assisted_combat+=/flame_shock,if=talent.voltaic_blaze&active_enemies>2&talent.purging_flames&buff.purging_flames.down
@@ -26,6 +27,7 @@ actions.assisted_combat+=/elemental_blast
 actions.assisted_combat+=/earth_shock
 actions.assisted_combat+=/lava_burst,if=active_enemies>2&buff.purging_flames.up
 actions.assisted_combat+=/chain_lightning,if=buff.stormkeeper.up&active_enemies>3
+actions.assisted_combat+=/tempest,if=buff.stormkeeper.up
 actions.assisted_combat+=/lightning_bolt,if=buff.stormkeeper.up
 actions.assisted_combat+=/ancestral_swiftness,if=active_enemies>3&cooldown.chain_lightning.ready
 actions.assisted_combat+=/chain_lightning,if=active_enemies>3,cooldown_allow_casting_success=1
@@ -33,6 +35,7 @@ actions.assisted_combat+=/ancestral_swiftness,if=cooldown.lava_burst.ready
 actions.assisted_combat+=/lava_burst,if=charges>=2,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lava_burst,if=buff.master_of_the_elements.down&talent.master_of_the_elements
 actions.assisted_combat+=/lava_burst,if=!talent.master_of_the_elements
+actions.assisted_combat+=/tempest,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lightning_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lava_burst
 
@@ -43,3 +46,4 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/ascendance

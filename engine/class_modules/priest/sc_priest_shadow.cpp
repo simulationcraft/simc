@@ -2497,7 +2497,8 @@ void priest_t::trigger_random_idol( action_state_t* s )
       break;
     case idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
-      trigger_idol_of_cthun( s );
+      // Tentacle Slam already rolled this idol. Spawn directly to avoid additional C'Thun RPPM gating.
+      spawn_idol_of_cthun( s );
       break;
     default:
       sim->print_debug( "Could not trigger a valid Idol" );

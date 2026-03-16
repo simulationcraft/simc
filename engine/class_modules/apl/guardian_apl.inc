@@ -51,4 +51,4 @@ cooldowns->add_action( "lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.up
 cooldowns->add_action( "convoke_the_spirits" );
 cooldowns->add_action( "sundering_roar,if=(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)" );
 cooldowns->add_action( "berserk,if=!cooldown.heart_of_the_wild.up" );
-cooldowns->add_action( "wild_guardian" );
+cooldowns->add_action( "wild_guardian,if=(buff.ravage.up&talent.ravage.enabled)|!talent.ravage.enabled" );

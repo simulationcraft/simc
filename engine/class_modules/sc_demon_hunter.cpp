@@ -83,6 +83,7 @@ public:
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
+constexpr unsigned HAVOC_MAX_SOUL_FRAGMENTS    = 5;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
 
@@ -781,6 +782,7 @@ public:
     const spell_data_t* consume;
     const spell_data_t* consume_energize;
     const spell_data_t* devour;
+    const spell_data_t* devour_energize;
     const spell_data_t* voidblade;
     const spell_data_t* soul_immolation_energize;
     const spell_data_t* reap;
@@ -846,6 +848,7 @@ public:
     const spell_data_t* inner_demon_buff;
     const spell_data_t* inner_demon_damage;
     const spell_data_t* exergy_buff;
+    const spell_data_t* inertia_trigger_buff;
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
     const spell_data_t* soulscar_debuff;
@@ -1121,6 +1124,9 @@ public:
     // Annihilator
     proc_t* soul_fragment_from_meteoric_rise;
     proc_t* soul_fragment_from_world_killer;
+    proc_t* voidfall_from_builder;
+    proc_t* voidfall_from_meteoric_rise;
+    proc_t* voidfall_from_mass_acceleration;
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
@@ -1219,9 +1225,10 @@ public:
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
     double soul_fragment_from_shattered_souls_chance = 0.4;
+    bool shattered_souls_chance_aoe_reduction_linear = false;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
-    double void_metamorphosis_initial_drain          = 8.0;
+    double void_metamorphosis_initial_drain          = 7.0;
     double void_metamorphosis_drain_per_stack        = 0.025;
   } options;
 
@@ -2201,20 +2208,23 @@ public:
     ab::parse_effects( p()->talent.scarred.blind_focus, blind_focus_direct_mask, USE_CURRENT );
 
     effect_mask_t blind_focus_periodic_mask = effect_mask_t( false ).enable( 2, 4 );
-    ab::parse_effects( p()->talent.scarred.blind_focus, [ this ]( double v ) {
-      if ( p()->buff.metamorphosis->check() )
-      {
-        if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
-        {
-          v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
-        }
-        else
-        {
-          v *= 1.0 + p()->spec.metamorphosis_buff->effectN( 13 ).percent();
-        }
-      }
-      return v;
-    }, blind_focus_periodic_mask );
+    ab::parse_effects(
+        p()->talent.scarred.blind_focus,
+        [ this ]( double v ) {
+          if ( p()->buff.metamorphosis->check() )
+          {
+            if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
+            {
+              v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+            }
+            else
+            {
+              v *= 1.0 + p()->spec.metamorphosis_buff->effectN( 13 ).percent();
+            }
+          }
+          return v;
+        },
+        blind_focus_periodic_mask );
 
     // Tier sets
   }
@@ -2957,6 +2967,7 @@ struct voidfall_building_trigger_t : public BASE
       return;
     }
 
+    BASE::p()->proc.voidfall_from_builder->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() ) );
   }
@@ -3111,6 +3122,7 @@ struct mass_acceleration_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.mass_acceleration->ok() )
       return;
 
+    BASE::p()->proc.voidfall_from_mass_acceleration->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
 
@@ -5348,10 +5360,22 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    demon_hunter_spell_t::init_finished();
+    harmful = !is_precombat;  // Do not count towards the precombat hostile action limit
+  }
+
+  bool usable_precombat() const override
+  {
+    return true;  // Has virtual travel time due to Sigil activation delay
+  }
+
   void execute() override
   {
     demon_hunter_spell_t::execute();
     sigil->place_sigil( target );
+    p()->buff.reavers_glaive->trigger();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -5643,8 +5667,8 @@ struct demonsurge_t : public surge_base_t
 
   void execute() override
   {
-    p()->buff.demonsurge->trigger();
     surge_base_t::execute();
+    p()->buff.demonsurge->trigger();
   }
 };
 
@@ -5669,9 +5693,6 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr )
   {
     cooldown = p->cooldown.consume;
-
-    execute_energize_action =
-        p->get_background_action<demon_hunter_energize_t>( "consume_energize", p->spec.consume_energize );
   }
 
   void execute() override
@@ -5692,7 +5713,9 @@ struct devour_t : public consume_base_t
 
   devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
-    reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
+    reap_cdr                = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
+    execute_energize_action = p->get_background_action<demon_hunter_energize_t>(
+        "devour_energize", p->spec.devour_energize->ok() ? p->spec.devour_energize : p->spec.consume_energize );
   }
 
   void init_finished() override
@@ -5723,6 +5746,8 @@ struct consume_t : public consume_base_t
 {
   consume_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "consume", p, p->spec.consume, o )
   {
+    execute_energize_action =
+        p->get_background_action<demon_hunter_energize_t>( "consume_energize", p->spec.consume_energize );
   }
 
   void init_finished() override
@@ -5742,9 +5767,11 @@ struct consume_t : public consume_base_t
   }
 };
 
+// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
+
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct voidblade_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
@@ -6179,10 +6206,13 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
+      if ( p()->options.shattered_souls_chance_aoe_reduction_linear )
+        m /= s->n_targets;
 
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
-      m *= pow( s->n_targets, -0.7 );
+      else
+        m *= pow( s->n_targets, -0.7 );
 
       return m;
     }
@@ -6252,6 +6282,7 @@ struct void_ray_t
 
       if ( p()->talent.annihilator.meteoric_rise->ok() )
       {
+        p()->proc.voidfall_from_meteoric_rise->occur();
         p()->buff.voidfall_building->trigger();
       }
     }
@@ -6510,9 +6541,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    int tick_count                          = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
-    timespan_t duration                     = timespan_t::from_seconds( tick_count / 2 );
-    timespan_t pulse_time                   = duration / tick_count;
+    int tick_count        = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
+    timespan_t duration   = timespan_t::from_seconds( tick_count / 2 );
+    timespan_t pulse_time = duration / tick_count;
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -6880,8 +6911,8 @@ struct blade_dance_base_t
         trail_of_ruin_dot( nullptr ),
         last_attack( false )
     {
-      background = dual      = true;
-      aoe                    = 0;
+      background = dual = true;
+      aoe               = 0;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6911,7 +6942,6 @@ struct blade_dance_base_t
         {
           trail_of_ruin_dot->execute_on_target( s->target );
         }
-
       }
     }
   };
@@ -7650,6 +7680,7 @@ struct essence_break_t : public demon_hunter_attack_t
 
 // Felblade =================================================================
 // TODO: Real movement stuff.
+// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
 
 struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
@@ -8767,7 +8798,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( p()->talent.havoc.ragefire->ok() )
       {
-        make_event( *sim, 0_ms, [ this ] {
+        make_event( *sim, 200_ms, [ this ] {
           p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
           ragefire_accumulator      = 0;
           ragefire_crit_accumulator = 0;
@@ -8804,7 +8835,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       add_invalidate( CACHE_ARMOR );
     }
 
-    if ( p->talent.havoc.a_fire_inside )
+    if ( p->talent.havoc.a_fire_inside->ok() )
     {
       set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
       set_max_stack( 5 );
@@ -8830,7 +8861,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, [ this ] { trigger(); } );
+            make_event( sim, 300_ms, [ this ] { trigger(); } );
           }
         } );
       }
@@ -9144,16 +9175,20 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
   {
     base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
     disable_ticking( true );
-    expire_at_max_stack = true;
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
-  void expire( timespan_t d ) override
+  void bump( int stacks, double value ) override
   {
-    int stacks = current_stack;
+    base_t::bump( stacks, value );
 
-    base_t::expire( d );
-
-    p()->buff.voidfall_spending->trigger( stacks );
+    if ( at_max_stacks() )
+    {
+      make_event( *sim, [ this ] {
+        expire();
+        p()->buff.voidfall_spending->trigger( max_stack() );
+      } );
+    }
   }
 };
 
@@ -9162,6 +9197,7 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   voidfall_spending_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_spending", p->hero_spec.voidfall_spending_buff )
   {
     disable_ticking( true );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
   void decrement( int stacks, double value ) override
@@ -9598,7 +9634,7 @@ void demon_hunter_t::activate()
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
 
-    if ( talent.devourer.entropy.enabled() )
+    if ( talent.devourer.entropy->ok() )
     {
       register_precombat_begin( [ this ]( player_t* ) {
         int starting_souls = options.entropy_starting_souls == -1
@@ -9760,7 +9796,7 @@ void demon_hunter_t::create_buffs()
   buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
   } );
-  buff.inertia_trigger = make_buff( this, "inertia_trigger", spell_data_t::nil() )->set_quiet( true );
+  buff.inertia_trigger = make_buff( this, "inertia_trigger", spec.inertia_trigger_buff );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
@@ -9879,11 +9915,13 @@ void demon_hunter_t::create_buffs()
                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                  ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
                                  ->set_quiet( true )
-                                 ->set_allow_precombat( true );
+                                 ->set_allow_precombat( true )
+                                 ->set_duration_multiplier( talent.annihilator.doomsayer->effectN( 2 ).base_value() );
   buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
                                      ->set_quiet( true )
                                      ->set_allow_precombat( true );
@@ -10118,6 +10156,8 @@ void demon_hunter_t::create_options()
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
+  add_option(
+      opt_bool( "shattered_souls_chance_aoe_reduction_linear", options.shattered_souls_chance_aoe_reduction_linear ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
@@ -10277,6 +10317,9 @@ void demon_hunter_t::init_procs()
   // Annihilator
   proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
   proc.soul_fragment_from_world_killer  = get_proc( "Soul Fragment from World Killer" );
+  proc.voidfall_from_builder            = get_proc( "Voidfall from Builder" );
+  proc.voidfall_from_mass_acceleration  = get_proc( "Voidfall from Mass Acceleration" );
+  proc.voidfall_from_meteoric_rise      = get_proc( "Voidfall from Meteoric Rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
@@ -10466,6 +10509,7 @@ void demon_hunter_t::init_spells()
   spec.consume                  = find_spell( 473662, DEMON_HUNTER_DEVOURER );
   spec.consume_energize         = find_spell( 1261710, DEMON_HUNTER_DEVOURER );
   spec.devour                   = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
+  spec.devour_energize          = find_spell( 1288123, DEMON_HUNTER_DEVOURER );
   spec.voidblade                = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
   spec.soul_immolation_energize = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
   spec.reap                     = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
@@ -10865,37 +10909,38 @@ void demon_hunter_t::init_spells()
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
-  spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
-  spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
-  spec.demon_blades                     = find_spell( 203555, DEMON_HUNTER_HAVOC );
-  spec.demon_blades_damage              = spec.demon_blades->effectN( 1 ).trigger();
-  spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
+  spec.burning_wound_debuff                      = talent.havoc.burning_wound->effectN( 1 ).trigger();
+  spec.chaos_theory_buff                         = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
+  spec.demon_blades                              = find_spell( 203555, DEMON_HUNTER_HAVOC );
+  spec.demon_blades_damage                       = spec.demon_blades->effectN( 1 ).trigger();
+  spec.essence_break_debuff                      = talent_spell_lookup( talent.havoc.essence_break, 320338 );
   cooldown.essence_break_proc_icd->base_duration = spec.essence_break_debuff->internal_cooldown();
-  spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
-  spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
-  spec.first_blood_blade_dance_damage   = talent_spell_lookup( talent.havoc.first_blood, 391374 );
-  spec.first_blood_blade_dance_2_damage = talent_spell_lookup( talent.havoc.first_blood, 391378 );
-  spec.first_blood_death_sweep_damage   = talent_spell_lookup( talent.havoc.first_blood, 393055 );
-  spec.first_blood_death_sweep_2_damage = talent_spell_lookup( talent.havoc.first_blood, 393054 );
-  spec.glaive_tempest                   = talent_spell_lookup( talent.havoc.glaive_tempest, 342817 );
-  spec.glaive_tempest_damage            = talent_spell_lookup( talent.havoc.glaive_tempest, 342857 );
-  spec.initiative_buff                  = talent_spell_lookup( talent.havoc.initiative, 391215 );
-  spec.inner_demon_buff                 = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
-  spec.inner_demon_damage               = talent_spell_lookup( talent.havoc.inner_demon, 390137 );
-  spec.exergy_buff                      = talent_spell_lookup( talent.havoc.exergy, 208628 );
-  spec.inertia_buff                     = talent_spell_lookup( talent.havoc.inertia, 427641 );
-  spec.ragefire_damage                  = talent_spell_lookup( talent.havoc.ragefire, 390197 );
-  spec.soulscar_debuff                  = talent_spell_lookup( talent.havoc.soulscar, 390181 );
-  spec.tactical_retreat_buff            = talent_spell_lookup( talent.havoc.tactical_retreat, 389890 );
-  spec.unbound_chaos_buff               = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
-  spec.cycle_of_hatred_buff             = talent_spell_lookup( talent.havoc.cycle_of_hatred, 1214887 );
-  spec.furious_throws_damage            = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
-  spec.collective_anguish               = talent_spell_lookup( talent.havoc.collective_anguish, 393831 );
-  spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
-  spec.essence_break_proc_damage        = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
-  spec.empowered_eye_beam_buff          = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
-  spec.empowered_eye_beam_damage        = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
-  spec.eternal_hunt_buff                = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
+  spec.eye_beam_damage                           = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
+  spec.furious_gaze_buff                         = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
+  spec.first_blood_blade_dance_damage            = talent_spell_lookup( talent.havoc.first_blood, 391374 );
+  spec.first_blood_blade_dance_2_damage          = talent_spell_lookup( talent.havoc.first_blood, 391378 );
+  spec.first_blood_death_sweep_damage            = talent_spell_lookup( talent.havoc.first_blood, 393055 );
+  spec.first_blood_death_sweep_2_damage          = talent_spell_lookup( talent.havoc.first_blood, 393054 );
+  spec.glaive_tempest                            = talent_spell_lookup( talent.havoc.glaive_tempest, 342817 );
+  spec.glaive_tempest_damage                     = talent_spell_lookup( talent.havoc.glaive_tempest, 342857 );
+  spec.initiative_buff                           = talent_spell_lookup( talent.havoc.initiative, 391215 );
+  spec.inner_demon_buff                          = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
+  spec.inner_demon_damage                        = talent_spell_lookup( talent.havoc.inner_demon, 390137 );
+  spec.exergy_buff                               = talent_spell_lookup( talent.havoc.exergy, 208628 );
+  spec.inertia_trigger_buff                      = talent_spell_lookup( talent.havoc.inertia, 1215159 );
+  spec.inertia_buff                              = talent_spell_lookup( talent.havoc.inertia, 427641 );
+  spec.ragefire_damage                           = talent_spell_lookup( talent.havoc.ragefire, 390197 );
+  spec.soulscar_debuff                           = talent_spell_lookup( talent.havoc.soulscar, 390181 );
+  spec.tactical_retreat_buff                     = talent_spell_lookup( talent.havoc.tactical_retreat, 389890 );
+  spec.unbound_chaos_buff                        = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
+  spec.cycle_of_hatred_buff                      = talent_spell_lookup( talent.havoc.cycle_of_hatred, 1214887 );
+  spec.furious_throws_damage                     = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
+  spec.collective_anguish                        = talent_spell_lookup( talent.havoc.collective_anguish, 393831 );
+  spec.collective_anguish_damage                 = spec.collective_anguish->effectN( 1 ).trigger();
+  spec.essence_break_proc_damage                 = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
+  spec.empowered_eye_beam_buff                   = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
+  spec.empowered_eye_beam_damage                 = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
+  spec.eternal_hunt_buff                         = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame_damage           = find_spell( 204598, DEMON_HUNTER_VENGEANCE );
@@ -11420,12 +11465,14 @@ std::string demon_hunter_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::flask_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::flask_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::flask_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::flask_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
@@ -11433,7 +11480,17 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return demon_hunter_apl::potion( this );
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      return demon_hunter_apl::potion_devourer( this );
+    case DEMON_HUNTER_HAVOC:
+      return demon_hunter_apl::potion_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::potion_vengeance( this );
+    default:
+      return "disabled";
+  }
 }
 
 // demon_hunter_t::default_food ====================================================
@@ -11442,12 +11499,14 @@ std::string demon_hunter_t::default_food() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::food_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::food_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::food_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::food_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
@@ -11464,12 +11523,14 @@ std::string demon_hunter_t::default_temporary_enchant() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::temporary_enchant_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::temporary_enchant_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::temporary_enchant_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::temporary_enchant_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
@@ -11506,7 +11567,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.relentless_onslaught_icd                  = get_cooldown( "relentless_onslaught_icd" );
   cooldown.fel_rush_vengeful_retreat_movement_shared = get_cooldown( "fel_rush_vengeful_retreat_movement_shared" );
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
-  cooldown.essence_break_proc_icd = get_target_specific_cooldown( "essence_break_proc_icd" );
+  cooldown.essence_break_proc_icd                    = get_target_specific_cooldown( "essence_break_proc_icd" );
 
   // Vengeance
   cooldown.demon_spikes              = get_cooldown( "demon_spikes" );
@@ -12464,7 +12525,7 @@ unsigned demon_hunter_t::max_soul_fragments() const
     case DEMON_HUNTER_DEVOURER:
       return DEVOURER_MAX_SOUL_FRAGMENTS;
     case DEMON_HUNTER_HAVOC:
-      return MAX_SOUL_FRAGMENTS;
+      return HAVOC_MAX_SOUL_FRAGMENTS;
     case DEMON_HUNTER_VENGEANCE:
       return MAX_SOUL_FRAGMENTS;
     default:

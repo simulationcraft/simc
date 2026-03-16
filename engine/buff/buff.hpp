@@ -598,7 +598,10 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
-  { return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( value_direct() - 1.0 ); }
+  {
+    buff_t::stack();
+    return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( value_direct() - 1.0 );
+  }
 
   // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const

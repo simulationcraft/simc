@@ -28,56 +28,80 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 actions.precombat=snapshot_stats
 # optional variable that sends regrowth casts. Turned off by default
 actions.precombat+=/variable,name=regrowth,op=reset
+# toggle this to 1 if you are setting static timers for tigers fury/berserk. Convoke will automatically be paired with berserk.
+actions.precombat+=/variable,name=use_custom_timers,op=set,value=0
+# set timer for the very first cast of each (value=) if using custom timers
+actions.precombat+=/variable,name=nextTFTimer,op=set,value=0
+actions.precombat+=/variable,name=nextBSTimer,op=set,value=1
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,value=5
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&!talent.infected_wounds,value=3
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=!talent.wild_slashes&talent.infected_wounds,value=8
-actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=equipped.algethar_puzzle_box
-actions.precombat+=/use_item,name=algethar_puzzle_box
+# for practicism, we give a 1s leeway from cast end until start of the fight.
+actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=(!variable.use_custom_timers|variable.use_custom_timers&variable.nextBSTimer<=4)&(trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff)
+actions.precombat+=/use_item,name=algethar_puzzle_box,if=(!variable.use_custom_timers|variable.use_custom_timers&variable.nextBSTimer<=4)&(trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff)
 actions.precombat+=/cat_form,if=buff.cat_form.down
 actions.precombat+=/prowl
+actions.precombat+=/tigers_fury,if=variable.use_custom_timers&variable.nextTFTimer=0
 
 # Executed every time the actor is available.
 actions=prowl,if=buff.bs_inc.down&!buff.prowl.up&!buff.shadowmeld.up
 actions+=/cat_form,if=!buff.cat_form.up&!talent.fluid_form
 # Line up <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk</a>.
 actions+=/invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|!talent.berserk_heart_of_the_lion
+actions+=/call_action_list,name=custom_timers,if=variable.use_custom_timers
+# instead of using tigers fury remains, we want to use our next timer for tigers fury
+actions+=/variable,name=tfRemains,op=setif,condition=variable.use_custom_timers,value=(!variable.tfNow*(variable.nextTFTimer-time)),value_else=cooldown.tigers_fury.remains
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
 # tigers fury on cooldown
-actions+=/tigers_fury
+actions+=/tigers_fury,if=(cooldown.frantic_frenzy.remains<buff.tigers_fury.duration-1.5|cooldown.frantic_frenzy.remains>22|!talent.frantic_frenzy|spell_targets=1)&!variable.use_custom_timers|variable.tfNow
 # rake out of stealth
 actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
-# chomp if its possible
+# chomp if its possible. Check this in aoe
 actions+=/chomp,if=buff.chomp_enabler.up
+actions+=/call_action_list,name=cooldown
 # cast bite with apex procs asap
 actions+=/ferocious_bite,if=buff.apex_predators_craving.up
-actions+=/call_action_list,name=cooldown
-actions+=/call_action_list,name=finisher,if=combo_points>=4&spell_targets=1
-actions+=/call_action_list,name=aoe_finisher,if=combo_points>=4&spell_targets>=2
-actions+=/call_action_list,name=builder,if=spell_targets=1&combo_points<4
-actions+=/call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<4
+actions+=/call_action_list,name=finisher,if=spell_targets=1
+actions+=/call_action_list,name=aoe_finisher,if=spell_targets>=2
+actions+=/call_action_list,name=builder,if=spell_targets=1&combo_points<=4
+actions+=/call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4
 actions+=/regrowth,if=buff.predatory_swiftness.up&variable.regrowth
 
-# ensure at last 1 rake at all times if wildstalker, rake highest prio with dcr
-actions.aoe_builder=rake,target_if=refreshable,if=talent.doubleclawed_rake|hero_tree.wildstalker&active_dot.rake=0
-# with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t
-actions.aoe_builder+=/swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.up
+# ensure at last 2(pg)/3(nopg) rake at all times if wildstalker, rake highest prio with dcr. on 4t raking all 4 first (no pg) is 0.3% gain. DCR PG LI rakes up to 6 then moonfire
+actions.aoe_builder=rake,target_if=refreshable,if=(talent.doubleclawed_rake&(!talent.lunar_inspiration|!talent.panthers_guile|active_dot.rake<5))|hero_tree.wildstalker&(active_dot.rake<2+!talent.panthers_guile+talent.lunar_inspiration)
+# there are scenarios where this is -0.1/-0.2% vs being under cc swipe line, but im willing to scrap that complexity
+actions.aoe_builder+=/moonfire_cat,target_if=refreshable
+# with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t. Ignore cc at 2t. Wildstalker begins ignoring cc again if you have the energy to rake at 7t
+actions.aoe_builder+=/swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.react&spell_targets>2&(hero_tree.druid_of_the_claw|spell_targets<7)
+# sa swipe takes precedence over single-rake at 5t for dotc 7t for wildstalker (0.1% at 7t for wildstalker, 0.2% for dotc at 5t)
+actions.aoe_builder+=/swipe_cat,if=buff.sudden_ambush.up&spell_targets.swipe_cat>=5+(2*hero_tree.wildstalker)
 # no dcr, spread rakes up to 3t(ws+noiw)->5t(nows+noiw/wild slashes+iw)->8t(no ws+iw)
 actions.aoe_builder+=/rake,target_if=refreshable,if=hero_tree.wildstalker|spell_targets.swipe_cat<=variable.dotc_rake_threshold
-actions.aoe_builder+=/swipe_cat
+# on 2t replace weaker rakes with stronger ones. (its a tiny gain for 3t too, @0.2% but keeping track of 3 snapshots is a bit much I think)
+actions.aoe_builder+=/rake,target_if=min:pmultiplier,if=persistent_multiplier>pmultiplier&spell_targets=2
+# with panther's guile, its worth using shred at 0/1 combo points on 2t
+actions.aoe_builder+=/shred,if=combo_points<=1&spell_targets=2&talent.panthers_guile
+actions.aoe_builder+=/swipe_cat,if=combo_points>1|spell_targets>2|!talent.panthers_guile
 
 # primal wrath in pandemic during berserk, else with sub 6.5s remaining
-actions.aoe_finisher=primal_wrath,target_if=min:dot.primal_wrath.ticking,if=spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)
-# we can send bite with rampant or under 5t with vines, 8t with ravage
-actions.aoe_finisher+=/ferocious_bite,if=talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5
+actions.aoe_finisher=primal_wrath,target_if=min:remains,if=combo_points>=5&spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)
+# without pw, we prio ravage>rip at 2t with rampant ferocity, and 5t without TODO: check vines
+actions.aoe_finisher+=/ferocious_bite,if=buff.ravage.up&combo_points>=4&!talent.primal_wrath&spell_targets>=2+(3*!talent.rampant_ferocity)
+# if we dont have primal wrath, indefinitely apply manual 4cp rips (minmax note: without rampant, its ~0.3% better to do 5cp rip/5cp bite on 3/4t)
+actions.aoe_finisher+=/rip,target_if=min:remains,if=combo_points>=4&!talent.primal_wrath&refreshable
+# we can send bite with rampant or under 5t with vines, 8t with ravage. TODO: check these numbers
+actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath&(talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5)
 # fallback primal wrath
-actions.aoe_finisher+=/primal_wrath
+actions.aoe_finisher+=/primal_wrath,if=combo_points>=5
+# if we dont have primal wrath then bite here
+actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath
 
 actions.builder=prowl,if=!buff.shadowmeld.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)
 actions.builder+=/shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)
 # freely upgrade rakes
-actions.builder+=/rake,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
+actions.builder+=/rake,if=(buff.tigers_fury.up|remains<variable.tfRemains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
 # freely upgrade li
-actions.builder+=/moonfire_cat,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
+actions.builder+=/moonfire_cat,if=(buff.tigers_fury.up|remains<variable.tfRemains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
 actions.builder+=/shred
 
 # TLDR, maximize number of cooldown overlaps whilst minimizing number of casts lost.
@@ -90,50 +114,85 @@ actions.cd_variable+=/variable,name=slot2CountRemaining,value=floor(((fight_rema
 actions.cd_variable+=/variable,name=firstHoldBerserkCondition,value=variable.zerkCountRemaining=1&(variable.convokeCountRemaining=1&cooldown.convoke_the_spirits.remains>10|variable.potCountRemaining=1&cooldown.potion.remains)
 # hold berserk if there are as many zerk casts as convoke casts remaining and holding zerk for convoke does not lose you a cast
 actions.cd_variable+=/variable,name=secondHoldBerserkCondition,value=cooldown.convoke_the_spirits.remains>20&variable.convokeCountRemaining=variable.zerkCountRemaining&variable.zerkCountRemaining=floor(((fight_remains-variable.convoke_cd)%cooldown.bs_inc.duration)+(fight_remains>cooldown.convoke_the_spirits.remains))
-actions.cd_variable+=/variable,name=holdBerserk,value=variable.firstHoldBerserkCondition|variable.secondHoldBerserkCondition
+actions.cd_variable+=/variable,name=holdBerserk,value=variable.firstHoldBerserkCondition|variable.secondHoldBerserkCondition|variable.use_custom_timers&variable.nextBSTimer-5>time&!variable.zerkNow
 # hold the last convoke if there is another berserk cast remaining and Berserk isn't already up
-actions.cd_variable+=/variable,name=holdConvoke,value=variable.convokeCountRemaining=1&variable.zerkCountRemaining=1&!buff.bs_inc.up
+actions.cd_variable+=/variable,name=holdConvoke,value=variable.convokeCountRemaining=1&variable.zerkCountRemaining=1&!buff.bs_inc.up|variable.zerkCountRemaining>0&talent.ashamanes_guidance&cooldown.bs_inc.remains<50&variable.use_custom_timers
 # hold potion for berserk if doing so does not lose you a cast
 actions.cd_variable+=/variable,name=holdPot,value=variable.potCountRemaining=floor(((fight_remains-variable.bs_inc_cd)%cooldown.potion.duration)+(fight_remains>cooldown.bs_inc.remains))
-actions.cd_variable+=/variable,name=bs_inc_cd,value=cooldown.bs_inc.remains+10
+actions.cd_variable+=/variable,name=bs_inc_cd,op=setif,condition=!variable.use_custom_timers,value=cooldown.bs_inc.remains+10,value_else=variable.nextBSTimer-time+10
 actions.cd_variable+=/variable,name=convoke_cd,value=cooldown.convoke_the_spirits.remains+10
 actions.cd_variable+=/variable,name=pot_cd,value=cooldown.potion.remains+25
-actions.cd_variable+=/variable,name=highestCDremaining,op=setif,condition=talent.convoke_the_spirits,value=cooldown.convoke_the_spirits.remains<?cooldown.bs_inc.remains<?cooldown.potion.remains,value_else=cooldown.bs_inc.remains<?cooldown.potion.remains
-actions.cd_variable+=/variable,name=lowestCDremaining,op=setif,condition=talent.convoke_the_spirits,value=cooldown.convoke_the_spirits.remains>?cooldown.bs_inc.remains>?cooldown.potion.remains,value_else=cooldown.bs_inc.remains>?cooldown.potion.remains
-actions.cd_variable+=/variable,name=secondLowestCDremaining,op=setif,condition=cooldown.convoke_the_spirits.remains>cooldown.bs_inc.remains,value=cooldown.convoke_the_spirits.remains>?cooldown.potion.remains,value_else=cooldown.bs_inc.remains>?cooldown.potion.remains
+actions.cd_variable+=/variable,name=highestCDremaining,op=setif,condition=talent.convoke_the_spirits,value=cooldown.convoke_the_spirits.remains<?((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10)<?cooldown.potion.remains,value_else=((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10)<?cooldown.potion.remains
+actions.cd_variable+=/variable,name=lowestCDremaining,op=setif,condition=talent.convoke_the_spirits,value=cooldown.convoke_the_spirits.remains>?((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10)>?cooldown.potion.remains,value_else=((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10)>?cooldown.potion.remains
+actions.cd_variable+=/variable,name=secondLowestCDremaining,op=setif,condition=cooldown.convoke_the_spirits.remains>((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10),value=cooldown.convoke_the_spirits.remains>?cooldown.potion.remains,value_else=((cooldown.bs_inc.remains+10<?variable.bs_inc_cd)-10)>?cooldown.potion.remains
 
 # this line is here to reduce the amount of variable calls in the APL
 actions.cooldown=call_action_list,name=cd_variable,if=!cooldown.bs_inc.remains|!cooldown.convoke_the_spirits.remains|!cooldown.potion.remains|!trinket.1.cooldown.remains|!trinket.2.cooldown.remains
 # non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket
-actions.cooldown+=/use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20)
-actions.cooldown+=/use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20)
-actions.cooldown+=/berserking,if=buff.bs_inc.up
+actions.cooldown+=/use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20&!variable.use_custom_timers|variable.use_custom_timers&cooldown.tigers_fury.remains<25&variable.tfRemains>20&!variable.tfNow))
+actions.cooldown+=/use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20&!variable.use_custom_timers|variable.use_custom_timers&cooldown.tigers_fury.remains<25&variable.tfRemains>20&!variable.tfNow))
+actions.cooldown+=/berserking
 # potion during berserk, fallback pot if the fight is going to end within its duration. Expedite use if you would lose a pot use by holding it.
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|buff.tigers_fury.up&!variable.holdPot
 # non trinket gear-on-uses have variable rules on whether or not they trigger the trinket shared CD. For the cases they do we will need specific APL entries. For now just use on cooldown.
 actions.cooldown+=/use_items
 # stat on-use trinkets, essentially this compares the number of trinket uses to the number of other cooldown uses remaining in the fight to determine whether or not to send the trinket.
-actions.cooldown+=/use_item,slot=trinket1,use_off_gcd=1,if=(time>10|buff.bs_inc.up)&trinket.1.has_use_buff&(cooldown.tigers_fury.remains>=25|trinket.1.is.algethar_puzzle_box&cooldown.tigers_fury.remains<2)&(buff.potion.up|variable.slot1CountRemaining!=variable.potCountRemaining)&((cooldown.bs_inc.remains<5|buff.bs_inc.remains>=14)&!variable.holdBerserk|cooldown.convoke_the_spirits.remains<10&!variable.holdConvoke&talent.convoke_the_spirits|variable.lowestCDremaining>trinket.1.cooldown.duration|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&(variable.highestCDremaining+3)>trinket.1.cooldown.duration|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.bs_inc.remains<?cooldown.convoke_the_spirits.remains)>trinket.1.cooldown.duration|variable.slot1CountRemaining=variable.potCountRemaining-1&buff.potion.up|trinket.2.has_use_buff&(variable.secondLowestCDremaining>trinket.1.cooldown.duration&variable.lowestCDremaining>trinket.2.cooldown.remains|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&variable.highestCDremaining>trinket.2.cooldown.remains|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.convoke_the_spirits.remains<?cooldown.bs_inc.remains)>trinket.2.cooldown.remains|variable.convokeCountRemaining=0&variable.zerkCountRemaining=0&variable.potCountRemaining=0))
-actions.cooldown+=/use_item,slot=trinket2,use_off_gcd=1,if=(time>10|buff.bs_inc.up)&trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>20)&(cooldown.tigers_fury.remains>=25|trinket.2.is.algethar_puzzle_box&cooldown.tigers_fury.remains<2)&(buff.potion.up|variable.slot2CountRemaining!=variable.potCountRemaining)&((cooldown.bs_inc.remains<5|buff.bs_inc.remains>=14)&!variable.holdBerserk|cooldown.convoke_the_spirits.remains<10&!variable.holdConvoke&talent.convoke_the_spirits|variable.lowestCDremaining>trinket.2.cooldown.duration|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&(variable.highestCDremaining+3)>trinket.2.cooldown.duration|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.bs_inc.remains<?cooldown.convoke_the_spirits.remains)>trinket.2.cooldown.duration|variable.slot1CountRemaining=variable.potCountRemaining-1&buff.potion.up|trinket.1.has_use_buff&(variable.secondLowestCDremaining>trinket.2.cooldown.duration&variable.lowestCDremaining>trinket.1.cooldown.remains|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&variable.highestCDremaining>trinket.1.cooldown.remains|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.convoke_the_spirits.remains<?cooldown.bs_inc.remains)>trinket.1.cooldown.remains|variable.convokeCountRemaining=0&variable.zerkCountRemaining=0&variable.potCountRemaining=0))
+actions.cooldown+=/use_item,slot=trinket1,use_off_gcd=1,if=(time>10|buff.bs_inc.up)&trinket.1.has_use_buff&(cooldown.tigers_fury.remains>=25|trinket.1.is.algethar_puzzle_box&(!variable.use_custom_timers&cooldown.tigers_fury.remains<2|variable.use_custom_timers&(variable.tfRemains<2|variable.tfNow)))&(buff.potion.up|variable.slot1CountRemaining!=variable.potCountRemaining)&((cooldown.bs_inc.remains<5|buff.bs_inc.remains>=14)&!variable.holdBerserk|cooldown.convoke_the_spirits.remains<10&!variable.holdConvoke&talent.convoke_the_spirits|variable.lowestCDremaining>trinket.1.cooldown.duration|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&(variable.highestCDremaining+3)>trinket.1.cooldown.duration|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.bs_inc.remains<?cooldown.convoke_the_spirits.remains)>trinket.1.cooldown.duration|variable.slot1CountRemaining=variable.potCountRemaining-1&buff.potion.up|trinket.2.has_use_buff&(variable.secondLowestCDremaining>trinket.1.cooldown.duration&variable.lowestCDremaining>trinket.2.cooldown.remains|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&variable.highestCDremaining>trinket.2.cooldown.remains|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.convoke_the_spirits.remains<?cooldown.bs_inc.remains)>trinket.2.cooldown.remains|variable.convokeCountRemaining=0&variable.zerkCountRemaining=0&variable.potCountRemaining=0))
+actions.cooldown+=/use_item,slot=trinket2,use_off_gcd=1,if=(time>10|buff.bs_inc.up)&trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>20)&(cooldown.tigers_fury.remains>=25|trinket.1.is.algethar_puzzle_box&(!variable.use_custom_timers&cooldown.tigers_fury.remains<2|variable.use_custom_timers&(variable.tfRemains<2|variable.tfNow)))&(buff.potion.up|variable.slot2CountRemaining!=variable.potCountRemaining)&((cooldown.bs_inc.remains<5|buff.bs_inc.remains>=14)&!variable.holdBerserk|cooldown.convoke_the_spirits.remains<10&!variable.holdConvoke&talent.convoke_the_spirits|variable.lowestCDremaining>trinket.2.cooldown.duration|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&(variable.highestCDremaining+3)>trinket.2.cooldown.duration|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.bs_inc.remains<?cooldown.convoke_the_spirits.remains)>trinket.2.cooldown.duration|variable.slot1CountRemaining=variable.potCountRemaining-1&buff.potion.up|trinket.1.has_use_buff&(variable.secondLowestCDremaining>trinket.2.cooldown.duration&variable.lowestCDremaining>trinket.1.cooldown.remains|variable.zerkCountRemaining=1&(!talent.convoke_the_spirits|variable.convokeCountRemaining=1)&variable.potCountRemaining=1&variable.highestCDremaining>trinket.1.cooldown.remains|variable.zerkCountRemaining=variable.convokeCountRemaining&talent.convoke_the_spirits&variable.zerkCountRemaining!=variable.potCountRemaining&(cooldown.convoke_the_spirits.remains<?cooldown.bs_inc.remains)>trinket.1.cooldown.remains|variable.convokeCountRemaining=0&variable.zerkCountRemaining=0&variable.potCountRemaining=0))
 # fallback use if fight is ending soon
 actions.cooldown+=/use_item,slot=trinket1,if=fight_remains<=(21<?trinket.1.proc.any_dps.duration)
 actions.cooldown+=/use_item,slot=trinket2,if=fight_remains<=(21<?trinket.2.proc.any_dps.duration)
-actions.cooldown+=/incarnation,if=buff.tigers_fury.up&!variable.holdBerserk
-actions.cooldown+=/berserk,if=buff.tigers_fury.up&!variable.holdBerserk
-# 0/1/2 combo points outside zerk, 0-4 combo points inside zerk
-actions.cooldown+=/feral_frenzy,if=buff.tigers_fury.up&combo_points<=2+(2*buff.bs_inc.up)
-actions.cooldown+=/frantic_frenzy,if=combo_points<=2+(2*buff.bs_inc.up)
-# always line up convoke with berserk if you can
-actions.cooldown+=/convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buff.bs_inc.remains<5-talent.ashamanes_guidance|buff.tigers_fury.up&!variable.holdConvoke&(prev_gcd.1.rip|prev_gcd.1.ferocious_bite)
+actions.cooldown+=/incarnation,if=buff.tigers_fury.up&!variable.holdBerserk&!variable.use_custom_timers|variable.zerkNow
+actions.cooldown+=/berserk,if=buff.tigers_fury.up&!variable.holdBerserk&!variable.use_custom_timers|variable.zerkNow
+# 0-2 combo points outside zerk, 0-4 combo points inside zerk
+actions.cooldown+=/feral_frenzy,if=!talent.frantic_frenzy&combo_points<=2+(2*buff.bs_inc.up)
+actions.cooldown+=/frantic_frenzy,if=buff.tigers_fury.up&spell_targets>=2|(spell_targets=1|fight_style.dungeonslice|fight_style.dungeonroute)&combo_points<=2+(2*buff.bs_inc.up)
+# always line up convoke with berserk if you can. If we are using jank tigers fury timings, send naked convoke
+actions.cooldown+=/convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buff.bs_inc.remains<5-talent.ashamanes_guidance|buff.tigers_fury.up&!variable.holdConvoke&(prev_gcd.1.rip|prev_gcd.1.ferocious_bite)|variable.use_custom_timers&variable.nextTFTimer+cooldown.convoke_the_spirits.duration-10>variable.nextBSTimer&combo_points<=2
 
-# maintain rip in single-target, try to have it buffed by tf if it lines up (0.1% gain)
-actions.finisher=rip,if=refreshable&(buff.tigers_fury.up|dot.rip.remains<cooldown.tigers_fury.remains)
-# actions.finisher+=/wait,sec=buff.ravage.up|energy.deficit<30,if=!buff.ravage.up&energy.deficit>30
+# hold our current timer
+actions.custom_timers=variable,name=currentTFTimer,default=-10,op=set,if=time>variable.nextTFTimer,value=variable.nextTFTimer
+actions.custom_timers+=/variable,name=currentBSTimer,default=-10,op=set,if=time>variable.nextBSTimer,value=variable.nextBSTimer
+# Tiger's Fury Timers (the value= are where you would edit, leave the rest alone). I recommend some leeway esp if youre playing puzzlebox
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=30
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=60
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=90
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=120
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=151
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=181
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=211
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=241
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=271
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=301
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=332
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=362
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=392
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=422
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=452
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=482
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=513
+actions.custom_timers+=/variable,name=nextTFTimer,op=set,if=time>variable.nextTFTimer,value=543
+# Berserk Timers
+actions.custom_timers+=/variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=121
+actions.custom_timers+=/variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=242
+actions.custom_timers+=/variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=363
+actions.custom_timers+=/variable,name=nextBSTimer,op=set,if=time>variable.nextBSTimer,value=483
+# if we run out of custom timers, assume default behavior from that point on. THIS MUST STAY BELOW ALL OF THE SET TIMERS
+actions.custom_timers+=/variable,name=use_custom_timers,op=set,if=time>variable.nextTFTimer&time>variable.nextBSTimer,value=0
+# we are clear to use tigers fury. This is the same as timer < time < timer + 4. So if our timer is 30s, then its true between 30 and 34 seconds.
+actions.custom_timers+=/variable,name=tfNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentTFTimer+4>time&time>=variable.currentTFTimer)
+# we are clear to use berserk. This is the same timer < time < timer + 4, so if our timer is 121s, then its true between 121 and 125 seconds.
+actions.custom_timers+=/variable,name=zerkNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentBSTimer+4>time&time>=variable.currentBSTimer)
+
+# maintain rip in single-target. 5cp rips is a ~0.3% loss for dotc
+actions.finisher=rip,if=combo_points>=4&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)
 actions.finisher+=/pool_resource,for_next=1
 # ferocious bite asap, dont pool
-actions.finisher+=/ferocious_bite,if=!talent.saber_jaws|!buff.ravage.up
+actions.finisher+=/ferocious_bite,if=combo_points>=4+buff.bs_inc.up&(!talent.saber_jaws|buff.bs_inc.up)
+# &(!talent.saber_jaws|!buff.ravage.up)
 actions.finisher+=/pool_resource,for_next=1
-actions.finisher+=/ferocious_bite,max_energy=1
+# with sj + without panthers guile, its a sizable increase to do 5cp bite
+actions.finisher+=/ferocious_bite,max_energy=1,if=combo_points>=5-talent.panthers_guile&!buff.bs_inc.up
 
 head=branches_of_the_luminous_bloom,id=250024,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,ilevel=289,gem_id=240892/240892
@@ -156,8 +215,8 @@ main_hand=roostwardens_bough,id=251077,ilevel=289,enchant_id=8039
 # gear_agility=1246
 # gear_stamina=17604
 # gear_crit_rating=526
-# gear_haste_rating=915
-# gear_mastery_rating=1023
+# gear_haste_rating=943
+# gear_mastery_rating=1037
 # gear_versatility_rating=37
 # gear_leech_rating=28
 # gear_avoidance_rating=200

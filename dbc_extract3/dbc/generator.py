@@ -1642,6 +1642,7 @@ class SpellDataGenerator(DataGenerator):
             ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
             ( 431522, 0),           # Dawnlight Buff
             ( 406957, 0),           # Divine Toll Judgment
+            ( 402916, 0),           # Righteous Cause Buff
         ),
 
         # Hunter:

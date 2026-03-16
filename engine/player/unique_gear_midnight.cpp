@@ -433,16 +433,6 @@ void flames_of_the_sindorei( special_effect_t& effect )
 void stat_weapon_enchant( special_effect_t& effect )
 {
   auto proc_value = effect.driver()->effectN( 1 ).average( effect );
-
-  // Arcane Mastery rank 1 looks bugged and triggers rank 2 instead of the rppm driver. After getting the value,
-  // manually set the effect spell_id to the rank 2 spell, which has correct data. It's currently unknown if this data
-  // bug has any detrimental effect on the enchant in-game.
-  if ( effect.spell_id == 1236712 )
-  {
-    assert( effect.trigger()->id() == 1236721 && "Arcane Mastery Rank 1 fix no longer necessary." );
-    effect.spell_id = 1236721;
-  }
-
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_subtype = proc_data->effectN( 1 ).subtype();
 
@@ -1366,15 +1356,63 @@ void kroluks_warbanner( special_effect_t& effect )
 // 1250602 Driver
 // 1265513 Area Trigger
 // 1265566 Buff
-// TODO: RNG for missing pots of souls? They spawn witnin 5 yards of the player, qutie hard to miss.
 void vessel_of_souls( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1265566 ) )
                 ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
-  effect.custom_buff = buff;
+  // create the fake tracker buff to track orb spawns
+  auto orb = create_buff<buff_t>( effect.player, "a_restless_soul_orb", effect.trigger() )
+    ->set_quiet( true )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_max_stack( 15 )  // sufficiently high??
+    ->set_chance( 1.0 - effect.player->midnight_opts.vessel_of_tortured_souls_miss_chance );
+
+  effect.custom_buff = orb;
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  // create a fake callback to proc on next ability that can be cast while moving
+  auto pickup = new special_effect_t( effect.player );
+  pickup->name_str = "a_restless_soul_pickup";
+  pickup->spell_id = orb->data().id();
+  pickup->proc_flags_ = PF_CAST_SUCCESSFUL;
+  pickup->proc_chance_ = 1.0;
+  pickup->set_can_only_proc_from_class_abilites( true );
+  pickup->set_can_proc_from_procs( false );
+  effect.player->special_effects.push_back( pickup );
+
+  struct a_restless_soul_pickup_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    buff_t* orb;
+
+    a_restless_soul_pickup_cb_t( const special_effect_t& e, buff_t* buff, buff_t* orb )
+      : dbc_proc_callback_t( e.player, e ), buff( buff ), orb( orb )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      // trigger only if the action is usable while moving
+      // we can't just use usable_moving() since it returns false for melee abilities
+      if ( ( a->trigger_gcd > 0_ms && a->execute_time() == 0_ms ) || ( a->channeled && a->usable_moving() ) )
+        dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      if ( auto move_delay = a->gcd() - 10_ms; orb->remains_gt( move_delay ) )
+      {
+        make_event( *a->sim, move_delay, [ this ] {
+          buff->trigger();
+          orb->decrement();
+        } );
+      }
+    }
+  };
+
+  auto cb = new a_restless_soul_pickup_cb_t( *pickup, buff, orb );
+  cb->activate_with_buff( orb );
 }
 
 // Mark of Light

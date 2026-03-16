@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1268,8 +1268,8 @@ Effects          :
                    Modified By: Arcing Cleave (231564 effect#1)
 #4 (id=186532)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Arcane Blast (30451)
-                   Family Flags: 29
+                   Affected Spells: Arcane Blast (30451), Arcane Pulse (1241462), Arcane Pulse (1243460)
+                   Family Flags: 18, 29
 #5 (id=219758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451), Arcane Pulse (1241462), Arcane Pulse (1243460)
@@ -1508,7 +1508,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.1) | Delay: 800_ms | Trigger Spell: 228596 | Target: Targeted Enemy (6)
 #5 (id=1289745)  : Trigger Spell (64): Flurry
                    Base Value: 0 | Scaled Value: 0 (delta=0.1) | Delay: 1200_ms | Trigger Spell: 228596 | Target: Targeted Enemy (6)
-Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s1*$s1} Frost damage.
+Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s1*$s1} $?a1248002[Frostfire][Frost] damage.
 
 |CFFffffffApplies ${$1246769s2*$s1} $lstack:stacks; of Freezing.|R
 
@@ -1825,7 +1825,6 @@ Tooltip          : Haste increased by $w1%. $?$W4>0[Time rate increased by $w4%.
 When the effect ends, all affected players are frozen in time for $356346d.][]
 
 Name             : Temporal Displacement (id=80354) 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -1956,7 +1955,7 @@ Attributes       : Aura Is Debuff (26), No Threat (42), Suppress Caster Procs (1
 Effects          :
 #1 (id=88812)    : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-#2 (id=88814)    : Direct Heal (10)
+#2 (id=88814)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=157298)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2113,7 +2112,7 @@ Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.789 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
                    Modified By: Rollin' Hot (1219035 effect#2)
-Description      : Blasts the enemy, critically striking for ${$s1*2} Fire damage.
+Description      : Blasts the enemy, critically striking for ${$s1*2} $?a1248002[Frostfire][Fire] damage.
 
 Castable while casting other spells.
 
@@ -2927,7 +2926,6 @@ Effects          :
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -3036,7 +3034,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage (3): fire every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.52 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
-Hotfixed         : Period (1000 -> 500)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
@@ -3935,11 +3932,11 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2459 (Type 0x1): Hand of Frost (1263249 effect#2)
+Category         : 2459 (Type 0x1)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Ray of Frost (208141 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Frostfire Infusion (431166 effects: #3, #4), Archmage's Wrath (444968 effect#2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Mastery: Freeze and Shatter (1246752 effects: #1, #3), Frigid Focus (1247055 effect#1), Comet Storm! (1247778 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263249 effect#3), Hand of Frost (1263263 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
+Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Ray of Frost (208141 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Frostfire Infusion (431166 effects: #3, #4), Archmage's Wrath (444968 effect#2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Mastery: Freeze and Shatter (1246752 effects: #1, #3), Frigid Focus (1247055 effect#1), Comet Storm! (1247778 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263249 effect#2), Hand of Frost (1263263 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 20, 56
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Bouncy Chain Missiles (146), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -4175,7 +4172,6 @@ Description      : $@spelldesc1246832
 Tooltip          : $w1 |4Icicle:Icicles; stored. Upon reaching 5 Icicles, your $?s431044[Frostfire Bolt][Frostbolt] is replaced with Glacial Spike.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -9703,7 +9699,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Allow Cast While Casting (135), Floating Combat Text On Cast (198), Allow Cast While Channeling (308), Unknown (465)
+Attributes       : Allow Cast While Casting (135), Floating Combat Text On Cast (198), Allow Cast While Channeling (308), Do Not Display Cast Time (441), Unknown (465)
 Effects          :
 #1 (id=1016061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -9713,7 +9709,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Pyroblast (11366), Pyroblast (460475), Flamestrike (1254851), Pyroblast (1262863)
                    Family Flags: 22, 99
-Description      : $@spelldesc383860
+Description      : Pyroblast and Flamestrike have no cast time, are guaranteed to critically strike, and increase the damage of Pyroblast and Flamestrike by $1242220s1%.
 Tooltip          : Pyroblast and Flamestrike have no cast time, are guaranteed to critically strike, and increase the damage of Pyroblast and Flamestrike by $1242220s1%.
 
 Name             : Sun King's Blessing (id=383882) [Spell Family (3)] 
@@ -11555,7 +11551,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1118636)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : $?a137020[Ice Block and Ice Cold reset the cooldowns of your Fire spells]?a137019[Cauterize resets the cooldown of your Frost spells with a base cooldown shorter than $s1 minutes when it activates.][Ice Block and Ice Cold reset the cooldowns of your Fire spells.
+Description      : $?a137020[Ice Block and Ice Cold reset the cooldowns of your Fire spells.]?a137019[Cauterize resets the cooldown of your Frost spells with a base cooldown shorter than $s1 minutes when it activates.][Ice Block and Ice Cold reset the cooldowns of your Fire spells.
 
 Cauterize resets the cooldown of your Frost spells with a base cooldown shorter than $s1 minutes when it activates.]
 
@@ -12098,7 +12094,6 @@ Effects          :
 Description      : $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
 
 Name             : Controlled Instincts (id=444487) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12147,7 +12142,6 @@ Effects          :
 Description      : $?c1[Casting Arcane Barrage conjures an Arcane Splinter for every $s1 Arcane Salvo stacks consumed][Ice Lance conjures a Frost Splinter for every $s3 Freezing stacks Shattered from its primary target].
 
 Name             : Controlled Instincts (id=444720) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -13534,7 +13528,7 @@ Effects          :
                    Affected Spells: Shatter (1246949), Winter's End (1280757)
                    Family Flags: 35
 Description      : $@spelldesc453720
-Tooltip          : The damage of Ice Lance is increased by $s1%.
+Tooltip          : All Shatter damage is increased by $s1%.
 
 Name             : Blessing of the Phoenix (id=455134) [Spell Family (3)] 
 Class            : Mage
@@ -14661,7 +14655,7 @@ Name             : Glacial Spike! (id=1222865) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -14949,12 +14943,12 @@ Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=310993)
 Spell Level      : 6
 Range            : 40 yards
-Cast Time        : 1.75 seconds
+Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Arcane Charge (36032 effects: #1, #5, #6), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Impetus (383676 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Burden of Power (451035 effect#4), Burden of Power (451049 effect#4), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Signature Spell (470021 effect#3), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Overflowing Insight (1243542 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage Arcane 12.0 Class Set 4pc (1264833 effect#1), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
+Affecting Spells : Arcane Charge (36032 effects: #1, #4, #5, #6), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Impetus (383676 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Burden of Power (451035 effect#4), Burden of Power (451049 effect#4), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Signature Spell (470021 effect#3), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Overflowing Insight (1243542 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage Arcane 12.0 Class Set 4pc (1264833 effect#1), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 18
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow Class Ability Procs (416)
 Effects          :
@@ -15069,7 +15063,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Arcane Charge (36032 effects: #1, #5, #6), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Impetus (383676 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Burden of Power (451035 effect#4), Burden of Power (451049 effect#4), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Signature Spell (470021 effect#3), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Overflowing Insight (1243542 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage Arcane 12.0 Class Set 4pc (1264833 effect#1), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
+Affecting Spells : Arcane Charge (36032 effects: #1, #4, #5, #6), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Impetus (383676 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Burden of Power (451035 effect#4), Burden of Power (451049 effect#4), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Signature Spell (470021 effect#3), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Overflowing Insight (1243542 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage Arcane 12.0 Class Set 4pc (1264833 effect#1), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 12, 18, 100
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow Class Ability Procs (416)
 Effects          :
@@ -15537,9 +15531,7 @@ Effects          :
 Description      : Frost crystallizes around you, generating an Icicle every ${$t1}.1 sec. Upon generating $s2 Icicles, $?s431044[Frostfire Bolt][Frostbolt] upgrades to Glacial Spike for its next cast.
 
 $@spellicon199786 $@spellname199786
-$@spelldesc199786
-
-Icicles generate more rapidly out of combat.
+$@spelldesc199786
 
 Name             : Shatter (id=1246949) [Spell Family (3)] 
 Class            : Mage
@@ -16785,7 +16777,7 @@ Effects          :
 #1 (id=1266517)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1257950
-Tooltip          : Suffering ${$w1*$1257950s2} Arcane damage every $t sec. Radiating $w1 Arcane damage to nearby enemies.
+Tooltip          : Suffering ${$w1*(1+$1257950s2/100)} Arcane damage every $t sec. Radiating $w1 Arcane damage to nearby enemies.
 
 Name             : Ashes of Inspiration (id=1260272) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
@@ -17057,7 +17049,6 @@ Effects          :
 Description      : $@spelldesc1262843
 
 Name             : Pyroblast (id=1262863) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -17161,17 +17152,14 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1273786)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#2 (id=1273787)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2459 (Category) | Target: Self (1)
-                   Affected Spells (Category): Ray of Frost (205021)
-#3 (id=1273788)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+#2 (id=1273787)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
 Description      : Ray of Frost summons $s1 Hands of Frost over its duration.
 
-Ray of Frost gains an additional charge and its damage is increased by $s3%.
+Ray of Frost damage is increased by $s2%.
 
 Name             : Hand of Frost (id=1263263) [Spell Family (3)] 
 Class            : Mage
@@ -17634,7 +17622,7 @@ Effects          :
 #1 (id=1283986)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Targeted Enemy (6)
                    Modified By: Rollin' Hot (1219035 effect#2)
-Description      : $@spelldesc1271171
+Description      : $@spelldesc1271177
 
 Name             : Arcane Intellect Highlight (id=1271907) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -17832,4 +17820,19 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Damage done increased by $s1%.
 
+
+Name             : Cauterize (id=1286444) [Spell Family (3)] 
+Class            : Mage
+School           : Fire
+Spell Type       : None
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5340
+Attributes       : No Threat (42), Suppress Caster Procs (112), Ignore Caster Modifiers (125), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=1303295)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc86949
 

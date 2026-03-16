@@ -38,7 +38,7 @@ static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
 // lunar bolt delay between bolts
 static constexpr timespan_t LUNAR_BOLT_DELAY = 200_ms;
 // summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
-static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
+static constexpr std::array<timespan_t, 2> FERAL_FLICKER_DELAY = { 400_ms, 500_ms };
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
 static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 // unseen swipe reduced_aoe_targets
@@ -4095,7 +4095,6 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       background = dual = proc = true;
       aoe = -1;
       direct_bleed = false;
-      travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
       dot_name = "frantic_frenzy_tick";
     }
@@ -4104,6 +4103,11 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
       return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
+    }
+
+    timespan_t travel_time() const override
+    {
+      return rng().range( FERAL_FLICKER_DELAY );
     }
 
     void execute() override
@@ -4126,8 +4130,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
 
       // scripted so must be manually configured
       base_tick_time = 200_ms;  // wild ass guess
-      dot_duration = 1000_ms;   // ticks 6 times despite tooltip saying 5
-      tick_zero = true;         // this zero tick may be a bug?
+      dot_duration = base_tick_time * p->talent.frantic_frenzy->effectN( 1 ).base_value();
 
       const auto& energize_eff = find_effect( p->find_spell( 1278969 ), E_ENERGIZE );
       energize_type = action_energize::PER_TICK;
@@ -4841,9 +4844,13 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
-    travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return rng().range( FERAL_FLICKER_DELAY );
   }
 
   void impact( action_state_t* s ) override
@@ -4916,7 +4923,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( BASE::td( s->target )->dots.red_moon->is_ticking() )
+    if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
     {
       if ( p_->buff.lunar_wrath->consume( this ) )
       {
@@ -5335,15 +5342,13 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::impact( s );
 
-    if ( red_moon_extend > 0_ms )
+    if ( !proc && red_moon_extend > 0_ms )
     {
       auto _dot = td( s->target )->dots.red_moon;
       if ( _dot->is_ticking() )
       {
         _dot->adjust_duration( red_moon_extend );
-
-        if ( !p()->bugs )
-          p()->resource_gain( RESOURCE_RAGE, red_moon_rage, red_moon_gain );
+        p()->resource_gain( RESOURCE_RAGE, red_moon_rage, red_moon_gain );
       }
     }
   }
@@ -5542,9 +5547,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
       p()->resource_loss( RESOURCE_RAGE, kb_excess_rage );
       stats->consume_resource( RESOURCE_RAGE, kb_excess_rage );
 
-      if ( !p()->bugs )
-        consume_rage_memory_of_ysera( kb_excess_rage );
-
+      consume_rage_memory_of_ysera( kb_excess_rage );
       consume_rage_after_the_wildfire( kb_excess_rage );
       consume_rage_ursocs_guidance( kb_excess_rage );
     }
@@ -6122,7 +6125,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     if ( !p->buff.dream_guide->is_fallback )
     {
       auto eff = &find_effect( p->buff.dream_guide, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE );
-      assert( eff->index() + 1 == 5 && "Adjust dream guide effect_mask_t in parse_action_effects." );
+      assert( eff->index() + 1 == 3 && "Adjust dream guide effect_mask_t in parse_action_effects." );
 
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.dream_guide )
@@ -7975,9 +7978,9 @@ struct shooting_stars_t : public druid_spell_t
     }
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    druid_spell_t::impact( s );
+    druid_spell_t::execute();
 
     p()->buff.orbit_breaker->trigger();
 
@@ -9839,7 +9842,7 @@ void druid_t::activate()
         g = get_gain( "Hunger for Battle" ),
         amt = find_effect( find_spell( 1244550 ), E_ENERGIZE ).resource( RESOURCE_ENERGY ) ]
       ( player_t* t ) {
-        if ( get_target_data( t )->dots.rip->is_ticking() )
+        if ( auto td = find_target_data( t ); td && td->dots.rip->is_ticking() )
         {
           buff.hunger_for_battle->trigger();
           resource_gain( RESOURCE_ENERGY, amt, g );
@@ -9850,27 +9853,30 @@ void druid_t::activate()
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
-      auto td = get_target_data( t );
-      auto stacks = td->debuff.bloodseeker_vines->check();
-      auto dur = td->dots.bloodseeker_vines->remains();
-      if ( stacks && dur > 0_ms )
+      if ( auto td = find_target_data( t ) )
       {
-        auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
-        const auto& tl = vines->target_list();
-        if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
+        auto stacks = td->debuff.bloodseeker_vines->check();
+        auto dur = td->dots.bloodseeker_vines->remains();
+
+        if ( stacks && dur > 0_ms )
         {
-          // TODO: ugly hack. possibly use custom action_state
-          auto orig_dur = vines->dot_duration;
+          auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
+          const auto& tl = vines->target_list();
+          if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
+          {
+            // TODO: ugly hack. possibly use custom action_state
+            auto orig_dur = vines->dot_duration;
 
-          vines->dot_duration = dur;
-          vines->dual = true;
-          vines->dot_stacks = stacks;
+            vines->dot_duration = dur;
+            vines->dual = true;
+            vines->dot_stacks = stacks;
 
-          vines->execute_on_target( tar );
+            vines->execute_on_target( tar );
 
-          vines->dot_duration = orig_dur;
-          vines->dual = false;
-          vines->dot_stacks = 1;
+            vines->dot_duration = orig_dur;
+            vines->dual = false;
+            vines->dot_stacks = 1;
+          }
         }
       }
     } );
@@ -10483,9 +10489,6 @@ void druid_t::init_spells()
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
-
-  // Effect is cosmetic for tooltip purposes
-  register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
 
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION
@@ -11483,9 +11486,9 @@ void druid_t::create_actions()
 
   if ( talent.heart_of_the_wild.ok() )
   {
-    // set up cat
     if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_RESTORATION )
     {
+      // set up cat
       auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>>(
         "heart_of_the_wild_cat", this, apply_override( talent.heart_of_the_wild, spec.cat_form ), flag_e::NONE );
       _cat->name_str_reporting = "Cat";
@@ -11495,19 +11498,15 @@ void druid_t::create_actions()
       _cat->tick_action->base_multiplier *= talent.heart_of_the_wild->effectN( 2 ).percent();
 
       active.hotw_cat = _cat;
-    }
 
-    // set up owl
-    if ( specialization() != DRUID_BALANCE )
-    {
+      // set up owl
       auto _owl =
         new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
       _owl->name_str_reporting = "Moonkin";
 
       auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
-        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), nullptr, flag_e::NONE );
+        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), find_spell( 1286243 ), flag_e::NONE );
       _owl_driver->damage->name_str_reporting = "HotW";
-      _owl_driver->damage->base_multiplier *= talent.heart_of_the_wild->effectN( 5 ).percent();
 
       replace_stats( _owl, _owl_driver, false );
       replace_stats( _owl, _owl_driver->damage );
@@ -11645,7 +11644,7 @@ void druid_t::create_actions()
 
     if ( talent.red_moon.ok() )
     {
-      auto s_data = find_trigger( buff.lunar_wrath ).trigger();
+      auto s_data = find_spell( 1253609 );  // hardcoded
 
       auto lw = get_secondary_action<druid_spell_t>( "lunar_wrath", this, s_data );
       lw->proc = true;
@@ -12043,32 +12042,16 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
 bool druid_t::validate_actor()
 {
-  sim->error( error_level_e::SEVERE, "Druid sims are untested and full of bugs. RESULTS ARE UNRELIABLE." );
+  sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
   
-  static constexpr std::string_view feral[] = {
-    "frantic frenzy does not proc overflowing power",
-    "frantic frenzy does not proc coiled to spring",
-    "frantic frenzy/unseen attacks assumed to have 500ms delay",
-    "primal fury does not proc from 2nd rake with double-clawed rake",
-  };
-
   static constexpr std::string_view guardian[] = {
-    "red moon does not generate rage when the target is hit with mangle",
-    "killing blow excess rage does not trigger memory of ysera",
     "when multiple dread shades are active only the latest one casts dire echo",
-    "4th rank of wild guardian does not increase the effectiveness of each echo",
-    "all echoed maul/raze/ravage from wild guardians are at 50% effectiveness",
-    "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
     "tier 4pc repeats can proc wild guardian echoes",
   };
 
 #ifdef NDEBUG
   switch ( specialization() )
   {
-    case DRUID_FERAL:
-      for ( auto ph : feral )
-        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
-      break;
     case DRUID_GUARDIAN:
       for ( auto ph : guardian )
         sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
@@ -12601,7 +12584,7 @@ void druid_t::init_special_effects()
           throw sc_runtime_error( fmt::format( "{} triggering Moonless Night on {}.", *a, *s->target ) );
         }
 
-        if ( !s->result_amount || !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+        if ( !s->result_amount )
           return;
 
         // raze (400254) & ravage (441605) trigger moonless night despite being an aoe spell
@@ -12610,6 +12593,7 @@ void druid_t::init_special_effects()
         {
           case 164812:  // moonfire
           case 164815:  // sunfire
+          case 400360:  // moonless night
             return;     // end
           case 400254:  // raze
           case 441605:  // ravage
@@ -12620,6 +12604,9 @@ void druid_t::init_special_effects()
             else
               break;    // continue
         }
+
+        if ( auto td = p()->find_target_data( s->target ); !td || !td->dots.moonfire->is_ticking() )
+          return;
 
         druid_cb_t::trigger( a, s );
       }
@@ -12930,10 +12917,6 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
 
   if ( r == RESOURCE_COMBO_POINT )
   {
-    // frantic frenzy does not proc overflowing power nor coiled to spring
-    if ( bugs && a && a->data().id() == 1244079 )
-      return actual;
-
     auto over = amount - actual;
 
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
@@ -13580,16 +13563,17 @@ void druid_t::target_mitigation( school_e school, result_amount_type rt, action_
 
   if ( s->action->player != this )
   {
-    auto td = get_target_data( s->action->player );
+    if ( auto td = find_target_data( s->action->player ) )
+    {
+      if ( talent.rend_and_tear.ok() )
+        s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() * td->dots.thrash->current_stack();
 
-    if ( talent.rend_and_tear.ok() )
-      s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() * td->dots.thrash->current_stack();
+      if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
+        s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
 
-    if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
-      s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
-
-    if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking())
-      s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
+      if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking() )
+        s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
+    }
   }
 
   player_t::target_mitigation( school, rt, s );
@@ -13880,15 +13864,23 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
     {
       // sort by time remaining
       range::sort( tl, [ this, &dot ]( player_t* a, player_t* b ) {
-        return std::invoke( dot, get_target_data( a )->dots )->remains() <
-               std::invoke( dot, get_target_data( b )->dots )->remains();
+        auto td_a = find_target_data( a );
+        auto td_b = find_target_data( b );
+
+        if ( td_a && td_b )
+          return std::invoke( dot, td_a->dots )->remains() < std::invoke( dot, td_b->dots )->remains();
+        else
+          return ( td_a != nullptr ) < ( td_b != nullptr );
       } );
     }
     else
     {
       // prioritize undotted over dotted
       std::partition( tl.begin(), tl.end(), [ this, &dot ]( player_t* t ) {
-        return !std::invoke( dot, get_target_data( t )->dots )->is_ticking();
+        if ( auto td = find_target_data( t ) )
+          return !std::invoke( dot, td->dots )->is_ticking();
+        else
+          return true;
       } );
     }
   }
@@ -14083,7 +14075,7 @@ void druid_t::parse_action_effects( action_t* action )
   }
 
   // snapshots regrowth hot, so disable the effect
-  _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+  _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 3 ), CONSUME_BUFF );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   _a->parse_effects( buff.gory_fur, CONSUME_BUFF );

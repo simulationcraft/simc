@@ -612,6 +612,7 @@ struct sim_t : private sc_thread_t
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
+  bool chart_show_relative_difference_percent;
   // Use the max metric actor as the relative difference base instead of the min
   bool relative_difference_from_max;
   // Which actor to use as the base for computing relative difference.

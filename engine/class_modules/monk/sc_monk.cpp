@@ -135,18 +135,10 @@ void monk_action_t<Base>::apply_buff_effects()
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
-      const std::array<unsigned, 3> rsk_ids = {
-          p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.glory_of_the_dawn_damage->id() };
-
-      double value = effect.mastery_value();
-      if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
-        value *= 1.0 + p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
           .set_func( [ & ] { return ww_mastery; } )
-          .set_value( value )
+          .set_value( effect.mastery_value() )
           .set_mastery( true )
           .set_eff( &effect );
     };
@@ -676,21 +668,14 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
     } );
   }
 
-  if ( player->talent.shado_pan.shado_over_the_battlefield->ok() )
-  {
-    shado_over_the_battlefield = new shado_over_the_battlefield_t( player );
-    add_child( shado_over_the_battlefield );
-  }
+  shado_over_the_battlefield = new shado_over_the_battlefield_t( player );
+  add_child( shado_over_the_battlefield );
 
   flurry_strike_variants.insert( { FLURRY_STRIKES, new flurry_strike_t( player, "flurry_strike" ) } );
-  if ( player->talent.shado_pan.stand_ready->ok() )
-    flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
-  if ( player->talent.shado_pan.wisdom_of_the_wall->ok() )
-  {
-    flurry_strike_variants.insert(
-        { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
-    wisdom_of_the_wall = player->get_cooldown( "wisdom_of_the_wall" );
-  }
+  flurry_strike_variants.insert( { STAND_READY, new flurry_strike_t( player, "flurry_strike_stand_ready" ) } );
+  flurry_strike_variants.insert(
+      { WISDOM_OF_THE_WALL, new flurry_strike_t( player, "flurry_strike_wisdom_of_the_wall" ) } );
+  wisdom_of_the_wall = player->get_cooldown( "wisdom_of_the_wall" );
 
   for ( auto &[ key, variant ] : flurry_strike_variants )
   {
@@ -727,9 +712,11 @@ void flurry_strikes_t::execute( source_e source )
       p()->buff.flurry_charge->expire();
       break;
     case STAND_READY:
-      if ( p()->buff.stand_ready->check() && !p()->bugs )
+      if ( p()->buff.stand_ready->up() )
+      {
         count = as<int>( p()->talent.shado_pan.stand_ready->effectN( 1 ).base_value() );
-      p()->buff.stand_ready->expire();
+        p()->buff.stand_ready->expire();
+      }
       break;
     case WISDOM_OF_THE_WALL:
       if ( ( p()->buff.zenith->check() || p()->buff.invoke_niuzao->check() ) && wisdom_of_the_wall->up() )
@@ -881,6 +868,13 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_note( "Nearby Enemy Scaling" )
             .set_eff( &effect );
       }
+
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && !player->bugs )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.combo_strikes )
+            .set_value( effect.percent() )
+            .set_note( "Applies when buffed by Mastery" )
+            .set_eff( &effect );
     }
 
     void impact( action_state_t *state ) override
@@ -993,6 +987,12 @@ struct rising_sun_kick_t : monk_melee_attack_t
     damage_t( monk_t *player )
       : combined_type_t( player, "rising_sun_kick_damage", player->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && player->bugs )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.combo_strikes )
+            .set_value( effect.percent() )
+            .set_note( "Applies when buffed by Mastery" )
+            .set_eff( &effect );
     }
   };
 
@@ -1853,12 +1853,15 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       bool allowed;
 
-      damage_t( monk_t *player )
+      damage_t( monk_t *player, weapon_t *weapon )
         : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
         may_miss                  = false;
+
+        if ( weapon->group() == WEAPON_2H )
+          add_parse_entry( da_multiplier_effects ).set_value( 3.6 / 2.6 * 2.0 - 1.0 ).set_note( "Two-hand adjustment" );
       }
 
       void reset() override
@@ -1892,7 +1895,7 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( action_t *dt = player->find_action( "dual_threat" ); dt )
         damage = debug_cast<damage_t *>( dt );
       else
-        damage = new damage_t( player );
+        damage = new damage_t( player, weapon );
 
       if ( action_t *aa = player->find_action( "auto_attack" ); aa )
         aa->add_child( damage );
@@ -3109,6 +3112,8 @@ struct exploding_keg_proc_t : public monk_spell_t
 
 struct exploding_keg_t : public monk_spell_t
 {
+  cooldown_t *keg_smash;
+
   exploding_keg_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "exploding_keg", p->talent.brewmaster.exploding_keg )
   {
@@ -3116,6 +3121,8 @@ struct exploding_keg_t : public monk_spell_t
     cast_during_sck = true;
     aoe             = -1;
     add_child( p->action.exploding_keg );
+
+    keg_smash = player->get_cooldown( "keg_smash" );
   }
 
   void execute() override
@@ -3132,6 +3139,8 @@ struct exploding_keg_t : public monk_spell_t
           as<int>( p()->talent.brewmaster.fuel_on_the_fire->effectN( 1 ).base_value() ) );
 
     monk_spell_t::execute();
+
+    keg_smash->reset( true );
   }
 
   void impact( action_state_t *s ) override
@@ -4080,8 +4089,7 @@ struct shuffle_t : monk_buff_t<>
     accumulator = 0_s;
   }
 
-  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double = -1.0,
-                timespan_t duration = timespan_t::min() ) override
+  bool trigger( int = -1, double = DEFAULT_VALUE(), double = -1.0, timespan_t duration = timespan_t::min() ) override
   {
     if ( !p().talent.brewmaster.shuffle->ok() )
       return false;
@@ -4945,7 +4953,6 @@ void monk_t::parse_player_effects()
   parse_target_effects( td_fn( &monk_td_t::dots_t::breath_of_fire ), talent.brewmaster.breath_of_fire_dot );
 
   // windwalker talent auras
-  parse_effects( buff.memory_of_the_monastery );
   parse_effects( buff.momentum_boost_speed );
   parse_effects( talent.windwalker.ferociousness, [ & ]( double value ) {
     if ( buff.invoke_xuen->check() )
@@ -5131,25 +5138,25 @@ bool monk_t::validate_actor()
     return false;
   }
 
-  if ( specialization() == MONK_WINDWALKER && has_hero_tree( HERO_CONDUIT_OF_THE_CELESTIALS ) )
+  int expected = 13;
+  for ( const auto &hero_tree : player_sub_trees )
   {
-    auto count =
-        range::count_if( player_traits, [ is_ptr = is_ptr() ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+    int count = as<int>( range::count_if(
+        player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
           if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
             return false;
           const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
           if ( !trait )
             return false;
-          return static_cast<hero_tree_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
-        } );
+          return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+        } ) );
 
     // Report without counting the hidden talent that activates the subtree
     count -= 1;
-    if ( count < 10 )
+    if ( count < expected )
     {
-      sim->error(
-          "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
-          count );
+      sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
+                  expected );
       return false;
     }
   }
@@ -5505,7 +5512,6 @@ void monk_t::init_spells()
     talent.windwalker.echo_technique                 = _ST( "Echo Technique" );
     talent.windwalker.universal_energy               = _ST( "Universal Energy" );
     talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
-    talent.windwalker.memory_of_the_monastery_buff   = find_spell( 454970 );
     talent.windwalker.rushing_wind_kick              = _ST( "Rushing Wind Kick" );
     talent.windwalker.rushing_wind_kick_buff         = find_spell( 1250554 );
     talent.windwalker.rushing_wind_kick_action       = find_spell( 467307 );
@@ -6033,11 +6039,6 @@ void monk_t::create_buffs()
                          "invoke_xuen_the_white_tiger", talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger )
                          ->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.memory_of_the_monastery =
-      make_buff_fallback( talent.windwalker.memory_of_the_monastery->ok(), this, "memory_of_the_monastery",
-                          talent.windwalker.memory_of_the_monastery_buff )
-          ->set_trigger_spell( talent.windwalker.memory_of_the_monastery );
-
   buff.momentum_boost_damage =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
                           talent.windwalker.momentum_boost->effectN( 1 ).trigger() )
@@ -6173,8 +6174,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.shado_pan.stand_ready->ok(), this, "stand_ready", talent.shado_pan.stand_ready_buff )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_steel = make_buff_fallback<buff_t>( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
-                                                    talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
+  buff.whirling_steel = make_buff_fallback( talent.shado_pan.whirling_steel->ok(), this, "whirling_steel",
+                                            talent.shado_pan.whirling_steel->effectN( 1 ).trigger() );
 }
 
 void monk_t::init_gains()
@@ -6956,10 +6957,9 @@ public:
     };
 
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
-    ReportIssue( "Stand Ready buff is consumed but does not trigger Flurry Strikes", "2026-02-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
+    ReportIssue( "Sunfire Spiral only applies to Rising Sun Kick.", "20205-03-14", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";

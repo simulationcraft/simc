@@ -158,6 +158,7 @@ void to_json( JsonOutput root, const buff_t* b )
   if ( b->source && b->source != b->player )
   {
     root[ "source" ] = b->source->name();
+    root[ "target" ] = b->player->name();
   }
 
   if ( b->cooldown && b->cooldown->duration > timespan_t::zero() )

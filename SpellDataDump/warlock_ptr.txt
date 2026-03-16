@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1510,8 +1510,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : A ghostly soul haunts a single target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
-If the target dies, Haunt's cooldown is reset.
-Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
+$?a1261984[While active, Haunt deals ${$1262710s1*($48181d/$48181t5)} Shadow damage to its host and ${$1262710x1-1} enemies within $1278047a1 yards suffering from your Corruption or Wither.][] If the target dies, Haunt's cooldown is reset.
+Tooltip          : Taking $s2% increased damage from the Warlock. $?e4[Suffering ${$1262710s1*($48181d/$48181t5)} Shadow damage.][] Haunt's cooldown will be reset on death.
 
 Name             : Shadow Bite (desc=Basic Attack) (id=54049) [Spell Family (57)] 
 Class            : Warlock
@@ -14717,6 +14717,8 @@ Attributes       : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not
 Effects          :
 #1 (id=1160432)  : Energize Power (30)
                    Base Value: 0.5 | Scaled Value: 0.5 | Resource: soul_shard | Target: Master (27)
+#2 (id=1307046)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc264364
 Tooltip          : Generates $s1 Soul Shard Fragment.
 
@@ -16204,18 +16206,22 @@ Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Afflicti
 Family Flags     : 40, 49
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Asynchronous Buff (490)
 Effects          :
-#1 (id=1269007)  : Dummy (3)
+#1 (id=1269007)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4136 | Scaled Value: 4136 | Target: Targeted Enemy (6)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | Target: Targeted Enemy (6)
-#3 (id=1305431)  : Dummy (3)
+#3 (id=1305431)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
+#4 (id=1305448)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
 Description      : Afflicts the target with $o2 Shadow damage over $d. Multiple uses of this ability may overlap.
 
-If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.
+If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d. This damage is increased by $s3% per stack on the target.
 
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r
-Tooltip          : Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.
+Tooltip          : Suffering $w2 Shadow damage every $t2 sec. 
+
+If dispelled, causes ${(($w2*$s1/100)*(1+($w3-$w4)/100))*$w4/$w3} damage to the dispeller and silence them for $196364d.
 
 Name             : Practiced Pestilence (id=1259811) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Affliction [tree=spec, row=6, col=2, max_rank=1, req_points=8]
@@ -17072,7 +17078,7 @@ Effects          :
 #2 (id=1282213)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8 | Misc Value 2: 5920 (Label) | Target: Self (1)
                    Affected Spells (Label): Mortal Coil (108396)
-Description      : Increases the range of Mortal Coil by $s1 yds and the amount it heals by $s2%.
+Description      : Increases the range of Mortal Coil by $s1 yds and Mortal Coil now heals for an additional $s2% of maximum health.
 
 Name             : Echo of Sargeras (id=1265884) [Spell Family (5)] 
 Class            : Warlock
@@ -17159,7 +17165,7 @@ Effects          :
                    Affected Spells: Rain of Fire (42223)
                    Family Flags: 92
                    Modified By: Malevolence (442726 effect#4)
-Description      : Increases the damage of $?s1259790[Unstable Affliction by $s1][Chaos Bolt by $s4]% and $?s27243[Seed of Corruption by $s3][Rain of Fire by $s5]%.
+Description      : Increases the damage of $?a137043[Unstable Affliction by $s1][Chaos Bolt by $s4]% and $?a137043[Seed of Corruption by $s3][Rain of Fire by $s5]%.
 
 This effect is doubled while Malevolence is active.
 
@@ -17658,7 +17664,6 @@ Description      : $@spelldesc1265801
 Tooltip          : Faded into the nether and only able to use Demonic Gateway once more.
 
 Name             : Blight of Weakness (id=1271748) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -17701,7 +17706,6 @@ Description      : $@spelldesc1271748
 Tooltip          : Time between attacks increased by $w1%. Chance to critically strike reduced by $w2%.
 
 Name             : Blight of Tongues (id=1271802) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=6, max_rank=1, req_points=23, select_idx=200]
 Class            : Warlock
 School           : Shadow

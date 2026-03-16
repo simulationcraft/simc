@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66337
-static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
+// Spell text, wow build 12.0.1.66384
+static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19348,6 +19348,7 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   {  402898, "$@spelldesc402813", "You sense the distant flood of tidal magma.", 0 },
   {  402903, "$@spelldesc402813\r\n", "Your next harmful spell or ranged ability will launch a Lava Wave towards your target.", 0 },
   {  402912, "Each Holy Power spent has a $s1% chance to reset the cooldown of Blade of Justice$?s1261113[ and increase the damage of its next cast by $406086s2%.][.]", 0, 0 },
+  {  402916, "Final Verdict has a $h% chance to reset the cooldown of Blade of Justice.", "The cooldown of Blade of Justice has been reset$?s1261113[ and it deals $w1% increased damage.][.]", 0 },
   {  402928, "$?|CFF20ff20Critically striking an enemy has a chance to shock them and 2 nearby enemies, dealing $s1 Nature damage.", 0, 0 },
   {  402929, "$?|CFF20ff20Moving builds an electrical charge, causing your next damaging ability to also deal $s1 Nature damage.", 0, 0 },
   {  402930, "|CFF20ff20Dealing damage has a chance to set the enemy on fire, dealing $s1 Fire damage over $403225d.", 0, 0 },
@@ -27298,7 +27299,7 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   { 1259503, "$@spelldesc1244005", 0, 0 },
   { 1259504, "$@spelldesc1244005", 0, 0 },
   { 1259508, "$@spelldesc1244005", 0, 0 },
-  { 1259518, "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s4 Haste for $1264337d as you speed them to their fate.", 0, 0 },
+  { 1259518, "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s2 Haste for $1264337d as you speed them to their fate.", 0, 0 },
   { 1259591, "$@spelldesc1244005", 0, 0 },
   { 1259612, "After spending $s1 combo points, if you spend no combo points for $1259613d, abilities affected by Restless Blades will cool down $1259614s1% faster for $1259614d or until you spend a combo point.", 0, 0 },
   { 1259614, "$@spelldesc1259612", "Cooldown recovery rate of Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Grappling Hook, Keep it Rolling, Killing Spree, Roll the Bones, and Sprint increased by $w1%.", 0 },
@@ -28633,18 +28634,15 @@ static constexpr std::array<spelltext_data_t, 28633> __spelltext_data { {
   { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291471, "$@spelldesc354124", "Healing received reduced by $w1%.", 0 },
+  { 1292031, "$@spelldesc1278886", "When you or a nearby ally drops below $s1% health, you consume a charge of Dream Guide to automatically cast Regrowth on them.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66337
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
-  {    5938,  0, "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[\r\n\r\nYour Nature and Bleed ]?a319032[\r\n\r\nYour Nature ]?a400783[\r\n\r\nYour Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $1291471S1% for $1291471d.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r" },
-  {  320313,  0, "Consume Magic generates $278326s2 Fury when a beneficial Magic effect is successfully removed from the target.", "Consume Magic generates $1277738s1 Fury when a beneficial Magic effect is successfully removed from the target." },
-  {  354124,  0, "Shiv also reduces the target's healing received by $S1% for $319504d.", "Shiv also reduces the target's healing received by $1291471S1% for $1291471d." },
-  { 1251906,  0, "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$1252383s2} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per.", "Your spells and abilities have a chance to activate the Iris, firing a focused beam of light at your target and dealing ${$<rolemult>*$s1} Arcane damage every second for $1252389d.\r\n\r\nEach unique gem color you have socketed empowers the Iris, causing it to deal $s3% additional damage per." },
-  { 1259130,  0, nullptr, "$@spelldesc1244276" },
+// spelltext hotfix entries, wow build 12.0.1.66384
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1259518,  0, "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s4 Haste for $1264337d as you speed them to their fate.", "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s2 Haste for $1264337d as you speed them to their fate." },
 } };
 
-// Spell description variables, wow build 12.0.1.66337
+// Spell description variables, wow build 12.0.1.66384
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29341,7 +29339,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66337
+// spelldesc_vars hotfix entries, wow build 12.0.1.66384
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

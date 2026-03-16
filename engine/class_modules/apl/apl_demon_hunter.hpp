@@ -6,7 +6,9 @@ struct player_t;
 
 namespace demon_hunter_apl
 {
-std::string potion( const player_t* );
+std::string potion_devourer( const player_t* );
+std::string potion_havoc( const player_t* );
+std::string potion_vengeance( const player_t* );
 std::string flask_devourer( const player_t* );
 std::string flask_havoc( const player_t* );
 std::string flask_vengeance( const player_t* );

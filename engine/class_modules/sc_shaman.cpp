@@ -2101,6 +2101,7 @@ public:
   void init_action_list() override;
   void init_action_list_enhancement();
   void init_action_list_restoration_dps();
+  void init_blizzard_action_list() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
@@ -5147,9 +5148,8 @@ struct lava_lash_t : public shaman_attack_t
     if ( p()->talent.ashen_catalyst.ok() &&
       td( execute_state->target )->dot.flame_shock->is_ticking() )
     {
-      // Ashen Catalyst does not get the Lava Lash recharge multiplier applied to it
       p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value(),
-        false, false );
+        false );
     }
   }
 
@@ -6257,6 +6257,8 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
+  strike_variant sv;
+
   chain_lightning_t( shaman_t* player, util::string_view options_str ) :
     chain_lightning_t( player, "chain_lightning", player->talent.chain_lightning,
       variant_flag( spell_variant::NORMAL ), options_str )
@@ -6274,7 +6276,8 @@ struct chain_lightning_t : public chained_base_t
   chain_lightning_t( shaman_t* player, util::string_view name_str, const spell_data_t* spell,
     unsigned t, util::string_view options_str )
     : chained_base_t( player, name_str, t, spell,
-        player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
+        player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str ),
+        sv( strike_variant::NORMAL )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -6330,6 +6333,13 @@ struct chain_lightning_t : public chained_base_t
         ps_action->add_child( this );
       }
     }
+  }
+
+  void trigger( strike_variant sv_, player_t* target )
+  {
+    sv = sv_;
+
+    execute_on_target( target );
   }
 
   void proc_lightning_rod()
@@ -6396,6 +6406,11 @@ struct chain_lightning_t : public chained_base_t
       m *= p()->talent.primordial_storm->effectN( 2 ).percent();
     }
 
+    if ( sv == strike_variant::STORMFLURRY )
+    {
+      m *= p()->talent.stormflurry->effectN( 2 ).percent();
+    }
+
     return m;
   }
 
@@ -6450,7 +6465,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.thorims_invocation.ok() && ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::PRIMORDIAL_STORM ) ) )
     {
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
@@ -7194,7 +7209,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.thorims_invocation.ok() && ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::PRIMORDIAL_STORM ) ) )
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
@@ -11473,19 +11488,28 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
   {
     cooldown.strike->adjust(
       timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
-      false, false );
+      false );
     cooldown.lava_lash->adjust(
       timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
-      false, false );
+      false );
   }
 
   if ( talent.lightning_strikes.ok() && stacks > 0 )
   {
-    ls_counter += as<unsigned>( stacks );
-    if ( ls_counter >= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
+    // [BUG] 2026-03-13: Lightning Strikes in-game only triggers if you consume exactly 10 stacks.
+    // There is no counter-based mechanism.
+    if ( bugs && stacks == as<int>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
     {
-      ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
       buff.lightning_strikes->trigger();
+    }
+    else if ( !bugs )
+    {
+      ls_counter += as<unsigned>( stacks );
+      if ( ls_counter >= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
+      {
+        ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
+        buff.lightning_strikes->trigger();
+      }
     }
   }
 
@@ -12191,7 +12215,19 @@ void shaman_t::trigger_ride_the_lightning( const action_state_t* state, action_t
     return;
   }
 
-  trigger->execute_on_target( state->target );
+  auto cl = debug_cast<chain_lightning_t*>( trigger );
+  switch( state->action->id )
+  {
+    case 60103: // Lava Lash
+      cl->trigger( strike_variant::NORMAL, state->target );
+      break;
+    default: // Strikes
+    {
+      auto strike = debug_cast<stormstrike_base_t*>( state->action );
+      cl->trigger( strike->strike_type, state->target );
+      break;
+    }
+  }
 }
 
 void shaman_t::trigger_thorims_invocation( const action_state_t* state )
@@ -12712,7 +12748,9 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.ascendance ).build( a );
   eff::source_eff_builder_t( buff.hot_hand ).build( a );
   eff::source_eff_builder_t( buff.arc_discharge ).build( a );
-  eff::source_eff_builder_t( buff.whirling_earth ).build( a );
+  eff::source_eff_builder_t( buff.whirling_earth )
+    .add_affect_list( affect_list_t( 1 ).remove_spell( 467283 ) ) // Splitstream Sundering
+    .build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
@@ -12932,6 +12970,7 @@ void shaman_t::init_action_list_enhancement()
 
   // AOE
   aoe->add_action( "voltaic_blaze,if=talent.surging_totem.enabled&dot.flame_shock.remains=0" );
+  aoe->add_action( "flame_shock,if=!ticking" );
   aoe->add_action( "surging_totem" );
   aoe->add_action( "ascendance,if=ti_chain_lightning" );
   aoe->add_action( "call_action_list,name=buffs" );
@@ -12939,28 +12978,34 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( "lava_lash,if=buff.whirling_fire.up" );
   aoe->add_action( "doom_winds" );
   aoe->add_action( "crash_lightning,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.doom_winds.up|buff.ascendance.up)" );
-  aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.ascendance.up)" );
-  aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.doom_winds.up)" );
+  aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up" );
+  aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&buff.whirling_air.up" );
   aoe->add_action( "lava_lash,if=talent.splitstream.enabled&buff.hot_hand.up" );
   aoe->add_action( "tempest,if=buff.maelstrom_weapon.stack>=10&(!buff.ascendance.up|!buff.doom_winds.up)" );
   aoe->add_action( "primordial_storm,if=buff.maelstrom_weapon.stack>=10" );
+  aoe->add_action( "crash_lightning,if=talent.thorims_invocation.enabled&(buff.doom_winds.up|buff.ascendance.up)&talent.splitstream.enabled&buff.hot_hand.up" );
+  aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&talent.splitstream.enabled&buff.hot_hand.up" );
+  aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&talent.splitstream.enabled&buff.hot_hand.up" );
+  aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)&talent.splitstream.enabled&buff.hot_hand.up" );
   aoe->add_action( "voltaic_blaze,if=talent.fire_nova.enabled" );
   aoe->add_action( "crash_lightning" );
-  aoe->add_action( "windstrike" );
-  aoe->add_action( "stormstrike,if=buff.doom_winds.up" );
+  aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled" );
+  aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)" );
   aoe->add_action( "sundering,if=talent.feral_spirit.enabled" );
   aoe->add_action( "voltaic_blaze" );
   aoe->add_action( "lava_lash,if=pet.searing_totem.active" );
+  aoe->add_action( "windstrike" );
   aoe->add_action( "stormstrike,if=charges_fractional>=1.8|buff.converging_storms.stack=buff.converging_storms.max_stack" );
   aoe->add_action( "sundering,if=cooldown.surging_totem.remains>25" );
   aoe->add_action( "stormstrike,if=!talent.surging_totem.enabled" );
   aoe->add_action( "lava_lash" );
   aoe->add_action( "stormstrike" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_action( "flame_shock" );
 
   // Buffs
-  buffs->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)" );
+  buffs->add_action( "use_item,name=algethar_puzzle_box,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)" );
   buffs->add_action( "use_item,name=unyielding_netherprism,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|fight_remains<=20" );
   buffs->add_action( "use_item,slot=trinket1,if=!variable.trinket1_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.1.has_use_buff" );
   buffs->add_action( "use_item,slot=trinket2,if=!variable.trinket2_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.2.has_use_buff" );
@@ -12974,6 +13019,7 @@ void shaman_t::init_action_list_enhancement()
   // Stormbringer Single Target
   single_sb->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)" );
   single_sb->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0&time<5" );
+  single_sb->add_action( "flame_shock,if=!ticking" );
   single_sb->add_action( "lava_lash,if=!debuff.lashing_flames.up&time<5" );
   single_sb->add_action( "call_action_list,name=buffs" );
   single_sb->add_action( "sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled" );
@@ -12994,13 +13040,15 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=8" );
   single_sb->add_action( "crash_lightning" );
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
+  single_sb->add_action( "flame_shock" );
 
   // Totemic Single Target
   single_totemic->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0" );
+  single_totemic->add_action( "flame_shock,if=!ticking" );
   single_totemic->add_action( "surging_totem" );
   single_totemic->add_action( "call_action_list,name=buffs" );
-  single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
   single_totemic->add_action( "sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled" );
+  single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
   single_totemic->add_action( "doom_winds" );
   single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_totemic->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)" );
@@ -13016,6 +13064,7 @@ void shaman_t::init_action_list_enhancement()
   single_totemic->add_action( "voltaic_blaze" );
   single_totemic->add_action( "crash_lightning" );
   single_totemic->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
+  single_totemic->add_action( "flame_shock" );
 
 // def->add_action( "call_action_list,name=opener" );
 }
@@ -13052,6 +13101,27 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( this, "Flame Shock", "moving=1" );
   def->add_action( this, "Frost Shock", "moving=1" );
 }
+
+// shaman_t::init_blizzard_action_list ======================================
+
+void shaman_t::init_blizzard_action_list()
+{
+  parse_player_effects_t::init_blizzard_action_list();
+
+  if ( !use_cds_with_blizzard_action_list )
+  {
+    return;
+  }
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  cooldowns->add_action( "ascendance" );
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    cooldowns->add_action( "doom_winds" );
+  }
+}
+
 
 // shaman_t::init_actions ===================================================
 
@@ -13122,13 +13192,13 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
     return;
 
   auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
-  if ( step.spell_id == source_spell_id )
-  {
-    assisted_combat_step_data_t custom_step = step;
-    custom_step.spell_id                    = target_spell_id;
-    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
-    return true;
-  }
+    if ( step.spell_id == source_spell_id )
+    {
+      assisted_combat_step_data_t custom_step = step;
+      custom_step.spell_id                    = target_spell_id;
+      player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+      return true;
+    }
 
     return false;
   };
@@ -13140,7 +13210,9 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
       for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, true ) )
       {
         if ( rule.condition_type == rule_type && rule.condition_value_1 == rule_value )
+        {
           return replace_spell( source_spell_id, target_spell_id );
+        }
       }
     }
 
@@ -13148,7 +13220,30 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   };
 
   if ( conditionally_replace_spell( 188196, 454009, AC_AURA_ON_PLAYER, 454015 ) )
+  {
     return;
+  }
+
+  if ( conditionally_replace_spell( 197214, 1218090, AC_AURA_ON_PLAYER, 1218125 ) )
+  {
+    return;
+  }
+
+  // Make Lightning bolt equivalent lines for tempest
+  if ( step.spell_id == 188196 )
+  {
+    auto custom_step = step;
+    custom_step.spell_id = 452201;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+  }
+
+  // Add Windstrike lines by copying Stormstrike lines
+  if ( step.spell_id == 17364 )
+  {
+    auto custom_step = step;
+    custom_step.spell_id = 115356;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+  }
 
   player_t::parse_assisted_combat_step( step, assisted_combat );
 }

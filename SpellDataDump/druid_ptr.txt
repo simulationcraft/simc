@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66220 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -477,7 +477,6 @@ Effects          :
                    Affected Spells (Label): Adaptive Swarm (325727)
 
 Name             : Wrath (id=5176) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1008,7 +1007,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Heal
-Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Class Trigger Only On Target (129), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=8658)     : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25 | Target: Self (1)
@@ -4021,12 +4020,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Cyclone (33786)
                    Family Flags: 37
-#7 (id=1247562)  : Apply Aura (6) | Modify Stance Mask (275)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
+#7 (id=1303900)  : Apply Aura (6) | Modify Stance Mask (275)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Cyclone (33786)
                    Family Flags: 37
-Description      : Your next Regrowth, $?$a1246126[ Cyclone, ][]Rebirth, $?s473909[Ancient of Lore, ][]or Entangling Roots is instant, free, castable in all forms, and heals for an additional $s2%.
-Tooltip          : Your next Regrowth, Rebirth, or Entangling Roots is instant, free, castable in all forms, and heals for an additional $w2%.
+Description      : Your next Regrowth, $?$a1246126[Cyclone, ][]Rebirth, $?s473909[Ancient of Lore, ][]or Entangling Roots is instant, free, castable in all forms, and heals for an additional $s2%.
+Tooltip          : Your next Regrowth, $?$a1246126[Cyclone, ][]Rebirth, or Entangling Roots is instant, free, castable in all forms, and heals for an additional $w2%.
 
 Name             : Visual Effect: Tree of Life (id=132213) [Hidden] 
 Class            : Druid
@@ -5716,7 +5715,6 @@ Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Starsurge (id=197626) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Feral, Guardian, Restoration [tree=class, row=2, col=9, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
@@ -5740,7 +5738,6 @@ Effects          :
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage.
 
 Name             : Starfire (id=197628) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Feral, Guardian, Restoration [tree=class, row=1, col=8, max_rank=1, req_points=0]
                  : Feral, Guardian [tree=class, row=1, col=8, max_rank=1, req_points=0]
 Class            : Druid
@@ -8935,7 +8932,6 @@ Description      : $@spelldesc202110
 Tooltip          : Swipe and Thrash damage increased by $m1%.
 
 Name             : Ursoc's Endurance (id=280161) [Spell Family (7), Hidden] 
-Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -8951,27 +8947,6 @@ Effects          :
 #1 (id=737503)   : Apply Aura (6) | Proc Trigger Spell (42): Ursoc's Endurance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280165 | Target: Self (1)
 Description      : $@spelldesc280013
-
-Name             : Ursoc's Endurance (id=280165) 
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 8 seconds
-Labels           : 292
-                 : 374
-                 : 378
-                 : 415
-Triggered By     : Ursoc's Endurance (280161)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=737511)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-#2 (id=737512)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280013
-Description      : $@spelldesc280013
-Tooltip          : Absorbs $w1 damage.
 
 Name             : The Curse of Restlessness (id=281493) [Spell Family (7), Passive] 
 School           : Physical
@@ -12594,7 +12569,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1019276)  : Apply Aura (6) | Proc Trigger Spell (42): Matted Fur
                    Base Value: 1200 | Scaled Value: 1200 | Trigger Spell: 385787 | Target: Self (1)
-Description      : When you use Barkskin or Survival Instincts, absorb $<shield> damage for $280165d.
+Description      : When you use Barkskin or Survival Instincts, absorb $<shield> damage for $385787d.
 Variables        : $shield=${$s1/100*1.25*$AP*(1+$@versadmg)}
 
 Name             : Matted Fur (id=385787) [Spell Family (7)] 
@@ -15532,10 +15507,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1095708)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Target: Self (1)
-Description      : When you spend extra Energy on Ferocious Bite, the extra damage is increased by $s1%.
-
-
-
+Description      : When you spend extra Energy on Ferocious Bite, the extra damage is increased by $s1%.
 
 Name             : Nourish (id=422090) [Spell Family (7)] 
 Class            : Druid
@@ -17477,7 +17449,6 @@ Description      : $@spelldesc441583
 Tooltip          : Your next $?s400254[Raze][Maul] becomes Ravage.
 
 Name             : Ravage (id=441605) [Spell Family (7)] 
-Hotfixed         : GCD (1000 -> 1500)
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -20578,7 +20549,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Frantic Frenzy (id=1244079) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -21122,7 +21092,6 @@ Effects          :
 Description      : $@spelldesc1253461
 
 Name             : Waking Nightmare (id=1253488) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -21138,7 +21107,6 @@ Effects          :
 Description      : $@spelldesc1253461
 
 Name             : Dire Echo (id=1253489) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -21531,7 +21499,7 @@ Description      : Perform a powerful off-role ability depending on your current
 Empowered Wild Growth that heals up to $48438s2 injured allies within $48438A1 yards of the target for ${$48438o1*$s4/100} over $48438d.]$?c1[]?c2[][
 
 |cFFFFFFFFCat Form:|r
-Unleash an empowered Feral Frenzy on your enemy target, dealing ${$274838s1*$s2/100} Physical damage and an additional ${$s2/100*$274838s3*$274838d/$274838t3} Bleed damage over $274838d. Awards 5 combo points.
+Unleash an empowered Feral Frenzy, clawing your target $274837m2 times for ${$274837m2*$274838s1*$s2/100} Physical damage and an additional ${$274837m2*$s2/100*$274838s3*$274838d/$274838t3} Bleed damage over $274838d. Awards 5 combo points.
 
 |cFFFFFFFFMoonkin Form:|r
 Call down waves of empowered falling stars upon enemies within $50286A1 yds, dealing ${54*$191037s1} Astral damage over $191034d.]$?c3[][
@@ -21620,7 +21588,6 @@ Effects          :
 Description      : Mark of the Wild is $s1% more effective on yourself.
 
 Name             : Lunar Bolt (id=1263137) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -22031,7 +21998,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1276074)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : $?c1[Entering an Eclipse summons a Dryad to assist you for $1264618d, casting Starsurge dealing $1264677s1 astral damage and Starfall at $s2% effectiveness.][Your periodic heals have a chance to empower your next Swiftmend to summon a Dryad to assist you, casting Tranquility at $s1% effectiveness and Regrowth to heal $1264664s1 damage onto your lowest health ally.]
+Description      : $?c1[Entering an Eclipse summons a Dryad to assist you for $1264618d, casting Starsurge dealing $1264677s1 Astral damage and Starfall at $s2% effectiveness.][Your periodic heals have a chance to empower your next Swiftmend to summon a Dryad to assist you, casting Tranquility at $s1% effectiveness and Regrowth to heal $1264664s1 damage onto your lowest health ally.]
 
 Name             : Sylvan Beckoning (id=1264618) [Spell Family (7)] 
 Class            : Druid
@@ -22711,7 +22678,6 @@ Description      : $@spelldesc1269614
 Tooltip          : Your next cast of Frenzied Regeneration will be echoed.
 
 Name             : Echo of Raze (id=1269972) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee

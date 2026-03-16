@@ -1558,6 +1558,7 @@ sim_t::sim_t()
     pause_mutex( nullptr ),
     paused( false ),
     chart_show_relative_difference( false ),
+    chart_show_relative_difference_percent( true ),
     relative_difference_from_max( false ),
     relative_difference_base(),
     chart_boxplot_percentile( .25 ),
@@ -3916,6 +3917,7 @@ void sim_t::create_options()
   add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_bool( "chart_show_relative_difference_percent", chart_show_relative_difference_percent ) );
   add_option( opt_string( "relative_difference_base", relative_difference_base ) );
   add_option( opt_bool( "relative_difference_from_max", relative_difference_from_max ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );

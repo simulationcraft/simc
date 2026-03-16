@@ -398,6 +398,7 @@ public:
     buff_t* implacable_tracker;
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
+    damage_buff_t* inspiring_strike;
     damage_buff_t* kingsbane;
     stat_buff_t* regicides_reward;
     buff_t* scent_of_blood;
@@ -811,7 +812,7 @@ public:
 
       player_talent_t zoldyck_recipe;
       player_talent_t regicides_reward;
-      // Inspiring Strike NYI
+      player_talent_t inspiring_strike;
       player_talent_t poisoners_drive;
       player_talent_t deadly_momentum;
       player_talent_t scent_of_blood;
@@ -1549,6 +1550,7 @@ public:
 
   proc_t* supercharged_cp_proc;
   proc_t* cold_blood_consumed_proc;
+  proc_t* unshakeable_drive_consumed_proc;
 
   // Affect flags for various dynamic effects
   struct damage_affect_data
@@ -1593,6 +1595,7 @@ public:
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
     bool summarily_dispatched = false;
+    bool unshakeable_drive_2 = false;
     bool zoldyck_insignia = false;
 
     bool mid1_assassination_4pc = false;
@@ -1627,7 +1630,8 @@ public:
     _breaks_stealth( true ),
     secondary_trigger_type( secondary_trigger::NONE ),
     supercharged_cp_proc( nullptr ),
-    cold_blood_consumed_proc( nullptr )
+    cold_blood_consumed_proc( nullptr ),
+    unshakeable_drive_consumed_proc( nullptr )
   {
     ab::parse_options( options );
     parse_spell_data( s );
@@ -1644,6 +1648,11 @@ public:
     if ( p->talent.deathstalker.momentum_of_despair->ok() )
     {
       affected_by.momentum_of_despair = ab::data().affected_by( p->spell.momentum_of_despair_buff->effectN( 2 ) );
+    }
+
+    if ( p->talent.deathstalker.unshakeable_drive->ok() )
+    {
+      affected_by.unshakeable_drive_2 = ab::data().affected_by( p->spell.unshakeable_drive_buff->effectN( 2 ) );
     }
 
     if ( p->talent.trickster.unseen_blade->ok() )
@@ -1767,6 +1776,11 @@ public:
       cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
     }
 
+    if ( p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2 )
+    {
+      unshakeable_drive_consumed_proc = p()->get_proc( "Unshakeable Drive " + ab::name_str );
+    }
+
     if ( !is_secondary_action() && shadow_clone_attack() )
     {
       ab::add_child( shadow_clone_attack() );
@@ -1805,6 +1819,7 @@ public:
     register_damage_buff( p()->buffs.fatebound_coin_heads );
     register_damage_buff( p()->buffs.finish_the_job );
     register_damage_buff( p()->buffs.flawless_form );
+    register_damage_buff( p()->buffs.inspiring_strike );
     register_damage_buff( p()->buffs.kingsbane );
     register_damage_buff( p()->buffs.momentum_of_despair );
     register_damage_buff( p()->buffs.shadow_focus );
@@ -1848,8 +1863,8 @@ public:
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 1_ms );
-    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ),
-                           nullptr, 1_ms, true ); // Works with WM
+    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2,
+                           unshakeable_drive_consumed_proc, 0_ms, true, true );
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
@@ -2342,6 +2357,13 @@ public:
       {
         m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
       }
+    }
+
+    // Unshakeable Drive Secondary Effect
+    if ( affected_by.unshakeable_drive_2 && p()->buffs.unshakeable_drive->check() )
+    {
+      m *= 1.0 + p()->spell.unshakeable_drive_buff->effectN( 2 ).percent() *
+        ( p()->buffs.unshakeable_drive->is_stacking ? p()->buffs.unshakeable_drive->stack() : p()->buffs.unshakeable_drive->up() );
     }
 
     // Darkest Night
@@ -2876,7 +2898,7 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_dot_t* proc_dot;
 
   deadly_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->talent.assassination.deadly_poison ),
+    rogue_poison_t( name, p, p->talent.assassination.deadly_poison, true ),
     proc_instant( nullptr ), proc_dot( nullptr )
   {
     proc_instant = p->get_background_action<deadly_poison_dd_t>(
@@ -2916,7 +2938,7 @@ struct instant_poison_t : public rogue_poison_t
   };
 
   instant_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->spell.instant_poison )
+    rogue_poison_t( name, p, p->spell.instant_poison, true )
   {
     impact_action = p->get_background_action<instant_poison_dd_t>(
       "instant_poison", p->spell.instant_poison->effectN( 1 ).trigger() );
@@ -2946,7 +2968,7 @@ struct wound_poison_t : public rogue_poison_t
   };
 
   wound_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->spell.wound_poison )
+    rogue_poison_t( name, p, p->spell.wound_poison, true )
   {
     impact_action = p->get_background_action<wound_poison_dd_t>(
       "wound_poison", p->spell.wound_poison->effectN( 1 ).trigger() );
@@ -2972,7 +2994,7 @@ struct amplifying_poison_t : public rogue_poison_t
   };
 
   amplifying_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->talent.assassination.amplifying_poison )
+    rogue_poison_t( name, p, p->talent.assassination.amplifying_poison, true )
   {
     impact_action = p->get_background_action<amplifying_poison_dd_t>(
       "amplifying_poison", p->talent.assassination.amplifying_poison->effectN( 3 ).trigger() );
@@ -4153,6 +4175,11 @@ struct envenom_t : public rogue_attack_t
           trigger_combo_point_gain( as<int>( p()->spec.poisoners_drive_energize->effectN( 1 ).base_value() ),
                                     p()->gains.poisoners_drive );
         } );
+      }
+
+      if ( p()->talent.assassination.inspiring_strike->ok() )
+      {
+        p()->buffs.inspiring_strike->trigger( envenom_duration );
       }
 
       p()->buffs.implacable_tracker->trigger();
@@ -7606,9 +7633,24 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   if ( !p()->rng().roll( chance ) )
     return;
 
-  // MIDNIGHT TOCHECK -- Diminishing returns how?
-  p()->resource_gain( RESOURCE_ENERGY, p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value(),
-                      p()->gains.venomous_wounds );
+  int poisoned_bleeds = 1;
+  for ( auto t : ab::sim->target_non_sleeping_list )
+  {
+    if ( t == state->target )
+      continue;
+
+    rogue_td_t* tdata = p()->get_target_data( t );
+    if ( tdata->is_lethal_poisoned() )
+    {
+      poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
+    }
+  }
+
+  // MIDNIGHT TOCHECK -- Currently diminishes to 1 when any AoE units are present
+  double energy_gain = ( poisoned_bleeds > 1 ?
+                         p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value() :
+                         p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
+  p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.venomous_wounds );
 }
 
 template <typename Base>
@@ -9536,6 +9578,7 @@ void rogue_t::init_spells()
   talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
   talent.assassination.improved_garrote = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Garrote" );
   talent.assassination.improved_poisons = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Poisons" );
+  talent.assassination.inspiring_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Strike" );
   talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
   talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
   talent.assassination.iron_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Wire" );
@@ -9735,7 +9778,7 @@ void rogue_t::init_spells()
   // Hero Talent Background Spells
   // Deathstalker
   spell.darkest_night_buff = talent.deathstalker.darkest_night->ok() ? find_spell( 457280 ) : spell_data_t::not_found();
-  spell.unshakeable_drive_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
+  spell.unshakeable_drive_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 1248775 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_debuff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457129 ) : spell_data_t::not_found();
   spell.hunt_them_down_damage = talent.deathstalker.hunt_them_down->ok() ? find_spell( 457193 ) : spell_data_t::not_found();
@@ -10244,6 +10287,10 @@ void rogue_t::create_buffs()
         buffs.implacable->trigger( 1, regen_bonus );
         buffs.implacable_tracker->expire();
       }
+      if ( new_ == 0 && talent.assassination.inspiring_strike->ok() )
+      {
+        buffs.inspiring_strike->expire();
+      }
     } );
 
   // Outlaw =================================================================
@@ -10381,7 +10428,13 @@ void rogue_t::create_buffs()
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
-  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakable_drive", spell.unshakeable_drive_buff );
+  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false )
+    ->set_is_stacking_mod( bugs ); // 2026-03-13 -- Does not suppress points stacking even though only one stack is decremented
+  if ( spell.unshakeable_drive_buff->ok() )
+  {
+    // Use the 50% modifier as the "generic" version of this buff, Shadowstrike has a lower buff in effect 2
+    buffs.unshakeable_drive->set_direct_mod( spell.unshakeable_drive_buff, 1 );
+  }
 
   buffs.lingering_darkness = make_buff( this, "lingering_darkness", spell.lingering_darkness_buff )
     ->set_default_value_from_effect( 1 )
@@ -10509,6 +10562,18 @@ void rogue_t::create_buffs()
   buffs.implacable_tracker = make_buff( this, "implacable_tracker", spec.implacable_tracker_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ); // Set to 14s in spell data to match Envenom, makes timing easier this way
+
+  // Part of the Envenom buff in effects 8-10 but entirely scripted in-game, handle as a distinct buff in sims for tracking
+  // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
+  buffs.inspiring_strike = make_buff<damage_buff_t>( this, "inspiring_strike", talent.assassination.inspiring_strike, false );
+  buffs.inspiring_strike->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  if ( talent.assassination.inspiring_strike->ok() )
+  {
+    const double talent_value = talent.assassination.inspiring_strike->effectN( 1 ).percent();
+    buffs.inspiring_strike->set_direct_mod( spec.envenom, 8, talent_value );
+    buffs.inspiring_strike->set_periodic_mod( spec.envenom, 9, talent_value );
+    buffs.inspiring_strike->set_auto_attack_mod( spec.envenom, 10, talent_value );
+  }
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::DISABLED );
