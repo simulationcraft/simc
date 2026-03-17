@@ -4254,11 +4254,18 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots.immolate->is_ticking() )
-        td( s->target )->dots.immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      warlock_td_t* tdata = td( s->target );
+      const timespan_t extra_time = p()->talents.raging_demonfire->effectN( 2 ).time_value();
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots.wither->is_ticking() )
-        td( s->target )->dots.wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      if ( p()->talents.raging_demonfire.ok() && tdata->dots.immolate->is_ticking() )
+        tdata->dots.immolate->adjust_duration( extra_time );
+
+      if ( p()->talents.raging_demonfire.ok() && tdata->dots.wither->is_ticking() )
+      {
+        tdata->dots.wither->adjust_duration( extra_time );
+        tdata->debuffs.wither->extend_duration( p(), extra_time );
+        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
+      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
