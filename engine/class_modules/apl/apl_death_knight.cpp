@@ -121,6 +121,8 @@ void blood( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "use_items" );
+  default_->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15" );
+  default_->add_action( "use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25" );
   default_->add_action( "fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8" );
   default_->add_action( "blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12" );
   default_->add_action( "berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15" );
