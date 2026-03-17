@@ -48,6 +48,7 @@ struct warlock_td_t : public actor_target_data_t
 {
   struct debuffs_t
   {
+    // Aff
     propagate_const<buff_t*> haunt;
 
     // Demo
@@ -63,6 +64,7 @@ struct warlock_td_t : public actor_target_data_t
 
     // Hellcaller
     propagate_const<buff_t*> blackened_soul; // Dummy/Hidden debuff that triggers stack collapse
+    propagate_const<buff_t*> wither; // Dummy debuff to show Wither dot info (stacks, uptime, ...) in the final report
   } debuffs;
 
   struct dots_t
@@ -71,15 +73,15 @@ struct warlock_td_t : public actor_target_data_t
     propagate_const<dot_t*> drain_life;
     propagate_const<dot_t*> corruption;
 
-    // Destro
-    propagate_const<dot_t*> immolate;
-
     // Aff
     propagate_const<dot_t*> agony;
     propagate_const<dot_t*> seed_of_corruption;
     propagate_const<dot_t*> drain_soul;
     propagate_const<dot_t*> unstable_affliction;
     propagate_const<dot_t*> malefic_grasp;
+
+    // Destro
+    propagate_const<dot_t*> immolate;
 
     // Hellcaller
     propagate_const<dot_t*> wither;
@@ -252,6 +254,7 @@ struct warlock_t : public parse_player_effects_t
 {
 public:
   player_t* havoc_target;
+  bool bugged_mayhem; // Used to control if in a particular moment mayhem is bugged and its not working
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
@@ -570,7 +573,7 @@ public:
     const spell_data_t* internal_combustion_dmg;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t rain_of_chaos; // TOCHECK: Confirm RNG behavior (deck of cards) periodically
+    player_talent_t rain_of_chaos;
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     // Summoner's Embrace (shared with Affliction)
@@ -602,7 +605,7 @@ public:
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
 
-    player_talent_t avatar_of_destruction; // TOCHECK: Is Overfiend benefitting from owner's Mastery?
+    player_talent_t avatar_of_destruction;
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
@@ -747,6 +750,7 @@ public:
     action_t* echo_of_sargeras_cb;
     action_t* echo_of_sargeras_sb;
     action_t* echo_of_sargeras_rof;
+    action_t* embers_of_nihilam;
     action_t* shadow_of_nathreza;
     action_t* wrath_of_nathreza;
   } proc_actions;
@@ -1064,6 +1068,9 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   bool normalize_destruction_mastery;
+  bool eye_explosion_instanced_bug_cb;
+  bool eye_explosion_instanced_bug_sb;
+  bool eye_explosion_instanced_bug_rof;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
