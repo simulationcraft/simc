@@ -4351,14 +4351,6 @@ struct magus_pet_t : public death_knight_pet_t
       cooldown->duration = dk()->pet_spell.frostbolt->duration();
     }
 
-    void execute() override
-    {
-      // Magus of the Dead waits a little bit after executing
-      if ( dk()->bugs )
-        trigger_gcd = execute_time() + rng().gauss_ab( 1_s, 200_ms, 250_ms, 2_s );
-      magus_spell_t::execute();
-    }
-
     // Frostbolt applies a slowing debuff on non-boss targets
     // This is needed because Frostbolt won't ever target an enemy affected by the debuff
     void impact( action_state_t* state ) override
@@ -4377,14 +4369,6 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, std::string_view options_str )
       : magus_spell_t( p, "shadow_bolt", p->dk()->pet_spell.shadow_bolt, options_str )
     {
-    }
-
-    void execute() override
-    {
-      // Magus of the Dead waits a little bit after executing
-      if ( dk()->bugs )
-        trigger_gcd = execute_time() + rng().gauss_ab( 1_s, 200_ms, 250_ms, 2_s );
-      magus_spell_t::execute();
     }
   };
 
@@ -4854,31 +4838,12 @@ struct whitemane_pet_t final : public horseman_pet_t
   struct death_coil_whitemane_background_t final : public horseman_spell_t
   {
     death_coil_whitemane_background_t( std::string_view name, horseman_pet_t* p )
-      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil ), dc_cd( nullptr )
+      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       background         = true;
       base_multiplier    = dk()->talent.rider.let_terror_reign->effectN( 2 ).percent();
       cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
-      dc_cd              = debug_cast<whitemane_pet_t*>( p )->death_coil_foreground->cooldown;
     }
-
-    void execute() override
-    {
-      if ( dk()->bugs )
-      {
-        // Whitemane's forced death coil triggers the cooldown for her main death coil, preventing it from being cast
-        // most of the time.
-        assert( dc_cd && "Whitemane's background Death Coil cant find the main Death Coil's cooldown" );
-        if ( dc_cd->ongoing() )
-          dc_cd->adjust( dc_cd->duration - dc_cd->remains() );
-        else
-          dc_cd->start();
-      }
-
-      horseman_spell_t::execute();
-    }
-
-    cooldown_t* dc_cd;
   };
 
   struct epidemic_aoe_whitemane_t final : public horseman_spell_t
@@ -7047,7 +7012,7 @@ struct runic_corruption_buff_t final : public death_knight_buff_t
   {
     timespan_t initial_duration = death_knight_buff_t::buff_duration();
 
-    return initial_duration * p()->cache.attack_haste();
+    return initial_duration * ( p()->bugs ? 1.0 : p()->cache.attack_haste() );
   }
 };
 

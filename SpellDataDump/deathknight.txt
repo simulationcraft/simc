@@ -19473,6 +19473,8 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 5503: Mastery: Dreadblade (77515 effect#6)
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1254947)  : Apply Aura (6) | Modify Crit Damage Done% (163)
