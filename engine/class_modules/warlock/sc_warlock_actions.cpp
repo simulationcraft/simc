@@ -3569,6 +3569,16 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       dot->adjust_duration( -remaining );
+      if ( p()->hero.wither.ok() )
+      {
+        auto& wither_debuff = td( target )->debuffs.wither;
+        if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
+          wither_debuff->expire();
+        else
+          wither_debuff->extend_duration( p(), -remaining );
+
+        assert( dot->current_stack() == wither_debuff->check() && dot->remains() == wither_debuff->remains() );
+      }
     }
   };
 
