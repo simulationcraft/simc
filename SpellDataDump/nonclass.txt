@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66384 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66431 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -238228,7 +238228,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1232896)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcane Mastery | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 66.33289 (coefficient=0.506047) | Trigger Spell: 1241729 | Target: Self (1)
-Hotfixed         : Trigger Spell (1236721 -> 1241729)
 Description      : $@spelldesc445385
 
 Name             : Arcane Mastery (id=1236721) [Passive] 
@@ -247953,7 +247952,6 @@ Effects          :
 Description      : $@spelldesc1244005
 
 Name             : Shadow of the Empyrean Requiem (id=1259518) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -248733,10 +248731,11 @@ Tooltip          : Your harmful spells and abilities have a $?a1248927[${($12489
 $?a1262364[Mandate of Sacred Death has a very small chance to execute non-boss enemies.]?a1262359[Mandate of Sacred Death has a very small chance to execute non-boss enemies.][]
 
 Name             : Mandate of Sacred Death (id=1261341) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Ignore Positive Damage Taken Modifiers (321), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1271040)  : Take Max Health% Damage (165)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -253624,4 +253623,18 @@ Effects          :
 Description      : Temporarily grants your shoulders a magical illusion of nature's splendor.
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
+
+Name             : Holy Bounding Hand Grenade (id=1292874) [Hidden] 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Damage Taken Modifiers (136), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Unknown (450)
+Effects          :
+#1 (id=1313221)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc1262076
+Tooltip          : Stunned
 
