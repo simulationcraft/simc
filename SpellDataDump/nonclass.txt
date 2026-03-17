@@ -245473,7 +245473,8 @@ Labels           : 4133
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1256802)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Prismatic Focusing Iris | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1556.482 (coefficient=12.17872) | Trigger Spell: 1252383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 778.1547 (coefficient=6.088682) | Trigger Spell: 1252383 | Target: Self (1)
+Hotfixed         : Coefficient (12.178715 -> 6.088682)
 #2 (id=1257591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1266101)  : Apply Aura (6) | Dummy (4)
@@ -245619,13 +245620,14 @@ Effects          :
 Description      : $@spelldesc1251906
 
 Name             : Prismatic Focusing Iris (id=1252389) 
+Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 4 seconds
 Labels           : 1218
 Triggered By     : Prismatic Focusing Iris (1252383)
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Extra Initial Period (169), Do Not Display Duration (170), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Do Not Display Cast Time (441)
+Attributes       : Ignore Line of Sight (66), DoT Stacking Rule (103), Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1257504)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
